@@ -502,7 +502,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
 			+ " AND c.IsActive = 'Y' "
 			+ "ORDER BY ");
-		if (table.isUUIDKeyTable())
+		if (table.isUUIDKeyTable() || p_keyColumn.endsWith("_UU"))
 			sqlc.append("CASE WHEN c.columnname=").append(DB.TO_STRING(uucolName)).append("THEN 0 ELSE 1 END");
 		else
 			sqlc.append("c.IsKey DESC");
@@ -514,6 +514,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			pstmt.setInt(1, AD_Table_ID);
 			pstmt.setInt(2, AD_Window_ID);
 			rs = pstmt.executeQuery();
+			boolean keyDefined = false;
 			while (rs.next())
 			{
 				String columnName = rs.getString(1);
@@ -534,11 +535,12 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				StringBuffer colSql = new StringBuffer(columnSql);
 				Class<?> colClass = null;
 
-				if (isKey)
+				if (isKey && !keyDefined)
 					colClass = IDColumn.class;
-				else if (uucolName.equals(columnName) && table.isUUIDKeyTable())
+				else if (uucolName.equals(columnName) && (table.isUUIDKeyTable() || p_keyColumn.endsWith("_UU"))) {
 					colClass = UUIDColumn.class;
-				else if (!isDisplayed)
+					keyDefined = true;
+				} else if (!isDisplayed)
 					;
 				else if (displayType == DisplayType.YesNo)
 					colClass = Boolean.class;

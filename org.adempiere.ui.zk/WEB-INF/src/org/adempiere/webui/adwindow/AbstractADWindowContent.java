@@ -1152,9 +1152,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onAttachment()
     {
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+    	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
 		if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + record_ID);
 
-		if (record_ID == -1)	//	No Key
+		if (record_ID== -1 && Util.isEmpty(recordUU))	//	No Key
 		{
 			return;
 		}
@@ -1168,7 +1169,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		};
 		//	Attachment va =
 		WAttachment win = new WAttachment (	curWindowNo, adTabbox.getSelectedGridTab().getAD_AttachmentID(),
-							adTabbox.getSelectedGridTab().getAD_Table_ID(), record_ID, null, listener);		
+							adTabbox.getSelectedGridTab().getAD_Table_ID(), record_ID, recordUU, null, listener);		
 		win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -1185,9 +1186,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onChat()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
-    	if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + recordId);
+    	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
+    	if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + recordId + ", Record_UU=" + recordUU);
 
-		if (recordId== -1)	//	No Key
+		if (recordId== -1 && Util.isEmpty(recordUU))	//	No Key
 		{
 			return;
 		}
@@ -1211,7 +1213,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 		String description = infoName + ": " + infoDisplay;
 
-    	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, description, null);
+    	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(),
+    			recordId, recordUU, description, null);
     	chat.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -1232,7 +1235,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onPostIt()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
-    	if (recordId== -1)	//	No Key
+    	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
+		if (recordId== -1 && Util.isEmpty(recordUU))	//	No Key
     	{
     		return;
     	}
@@ -1253,7 +1257,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	String header = infoName + ": " + infoDisplay;
 
-    	WPostIt postit = new WPostIt(header, adTabbox.getSelectedGridTab().getAD_PostIt_ID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, null);
+    	WPostIt postit = new WPostIt(header, adTabbox.getSelectedGridTab().getAD_PostIt_ID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, recordUU, null);
     	postit.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
     		@Override
     		public void onEvent(Event event) throws Exception {
@@ -2003,17 +2007,17 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         
         //update recent item
         if (changed && !readOnly && !toolbar.isSaveEnable() ) {
-        	if (tabPanel.getGridTab().getRecord_ID() > 0) {
+        	if (!Util.isEmpty(tabPanel.getGridTab().getRecord_UU())) {
             	if (adTabbox.getSelectedIndex() == 0 && !detailTab) {
             		MRecentItem.addModifiedField(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
-            				adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx),
+            				adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx),
             				Env.getAD_Role_ID(ctx), adTabbox.getSelectedGridTab().getAD_Window_ID(),
             				adTabbox.getSelectedGridTab().getAD_Tab_ID());
             	} else {
 	        		GridTab mainTab = getMainTabAbove();
 	        		if (mainTab != null) {
 			        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
-			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+			        			mainTab.getRecord_ID(), mainTab.getRecord_UU(), Env.getAD_User_ID(ctx),
 			        			Env.getAD_Role_ID(ctx), mainTab.getAD_Window_ID(),
 			        			mainTab.getAD_Tab_ID());
 	        		}
@@ -2057,7 +2061,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             canHaveAttachment = false;
         }
-        if (canHaveAttachment && adTabbox.getSelectedGridTab().getRecord_ID() == -1)    //   No Key
+        if (canHaveAttachment && adTabbox.getSelectedGridTab().getRecord_ID() == -1 && Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU()))    //   No Key
         {
             canHaveAttachment = false;
         }
@@ -2078,7 +2082,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             canHaveChat = false;
         }
-        if (canHaveChat && adTabbox.getSelectedGridTab().getRecord_ID() == -1)    //   No Key
+        if (canHaveChat && adTabbox.getSelectedGridTab().getRecord_ID() == -1 && Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU()))    //   No Key
         {
             canHaveChat = false;
         }
@@ -2264,7 +2268,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		focusToActivePanel();
 		// IDEMPIERE-1328 - refresh recent item after running a process, i.e. completing a doc that changes documentno
     	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
-    			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx));
+    			adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx));
 	}
 
     /**
@@ -2853,17 +2857,17 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (wasChanged) {
 		    if (newRecord) {
-		    	if (adTabbox.getSelectedGridTab().getRecord_ID() > 0) {
+		    	if (!Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU())) {
 		        	if (adTabbox.getSelectedIndex() == 0) {
 			        	MRecentItem.addModifiedField(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
-			        			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx),
+			        			adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx),
 			        			Env.getAD_Role_ID(ctx), adTabbox.getSelectedGridTab().getAD_Window_ID(),
 			        			adTabbox.getSelectedGridTab().getAD_Tab_ID());
 		        	} else {
 		        		GridTab mainTab = getMainTabAbove();
 		        		if (mainTab != null) {
 				        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
-				        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+				        			mainTab.getRecord_ID(), mainTab.getRecord_UU(), Env.getAD_User_ID(ctx),
 				        			Env.getAD_Role_ID(ctx), mainTab.getAD_Window_ID(),
 				        			mainTab.getAD_Tab_ID());
 		        		}
@@ -2872,12 +2876,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    } else {
 		    	if (adTabbox.getSelectedIndex() == 0) {
 		        	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
-		        			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx));
+		        			adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx));
 		    	} else {
 	        		GridTab mainTab = getMainTabAbove();
 		    		if (mainTab != null) {
 			        	MRecentItem.touchUpdatedRecord(ctx, mainTab.getAD_Table_ID(),
-			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx));
+			        			mainTab.getRecord_UU(), Env.getAD_User_ID(ctx));
 		    		}
 		    	}
 		    }
@@ -3126,6 +3130,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							{
 								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
 							}
+				            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
 						}
 						if (postCallback != null)
 							postCallback.onCallback(result);
@@ -3173,6 +3178,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							{
 								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
 							}
+				            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
 						}
 						if (postCallback != null)
 							postCallback.onCallback(result.getValue().equals(deleteConfirmationLogic));

@@ -66,7 +66,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4206879140460545905L;
+	private static final long serialVersionUID = 4325276636597337437L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -522,6 +522,17 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 	
 	/**
+	 * @return true if table has a UUID key
+	 */
+	public boolean hasUUIDKey()
+	{
+		String uuColName = PO.getUUIDColumnName(getTableName());
+		if (m_columns == null)
+			getColumns(false);
+		return m_columnNameMap.get(uuColName.toUpperCase()) != null;
+	}
+
+	/**
 	 * 	Get Identifier Columns of Table
 	 *	@return Identifier columns
 	 */
@@ -867,6 +878,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return (tablename.equals("AD_Org") ||
 				tablename.equals("AD_OrgInfo") ||
 				tablename.equals("AD_Client") || // IDEMPIERE-668
+				tablename.equals("AD_ClientInfo") ||
 				tablename.equals("AD_AllClients_V") ||
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
@@ -904,5 +916,23 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
 	}
 
-	
+	/**
+	 * Get the UUID from the Zero ID record
+	 * @return
+	 */
+	public String getUUIDFromZeroID() {
+		if (! MTable.isZeroIDTable(getTableName()))
+			return null;
+		StringBuilder sqluu = new StringBuilder()
+				.append("SELECT ")
+				.append(PO.getUUIDColumnName(getTableName()))
+				.append(" FROM ")
+				.append(getTableName())
+				.append(" WHERE ")
+				.append(getKeyColumns()[0])
+				.append("=0");
+		String uuidFromZeroID = DB.getSQLValueStringEx(get_TrxName(), sqluu.toString());
+		return uuidFromZeroID;
+	}
+
 }	//	MTable

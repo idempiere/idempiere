@@ -15,10 +15,12 @@
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
     <stringAttribute key="location" value="${workspace_loc}/runtime-install.silent.app"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
@@ -30,6 +32,7 @@
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bcutil@default:default"/>
+        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
         <setEntry value="com.github.librepdf.openpdf@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
@@ -85,9 +88,32 @@
         <setEntry value="org.jsr-305@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
+        <setEntry value="org.osgi.annotation.bundle@default:default"/>
+        <setEntry value="org.osgi.annotation.versioning@default:default"/>
+        <setEntry value="org.osgi.service.cm@default:default"/>
+        <setEntry value="org.osgi.service.component.annotations@default:default"/>
+        <setEntry value="org.osgi.service.component@default:default"/>
+        <setEntry value="org.osgi.service.coordinator@default:default"/>
+        <setEntry value="org.osgi.service.device@default:default"/>
+        <setEntry value="org.osgi.service.event@default:default"/>
+        <setEntry value="org.osgi.service.log.stream@default:default"/>
+        <setEntry value="org.osgi.service.metatype.annotations@default:default"/>
+        <setEntry value="org.osgi.service.metatype@default:default"/>
+        <setEntry value="org.osgi.service.prefs@default:default"/>
+        <setEntry value="org.osgi.service.provisioning@default:default"/>
+        <setEntry value="org.osgi.service.upnp@default:default"/>
+        <setEntry value="org.osgi.service.useradmin@default:default"/>
+        <setEntry value="org.osgi.service.wireadmin@default:default"/>
+        <setEntry value="org.osgi.util.function@default:default"/>
+        <setEntry value="org.osgi.util.measurement@default:default"/>
+        <setEntry value="org.osgi.util.position@default:default"/>
+        <setEntry value="org.osgi.util.promise@default:default"/>
+        <setEntry value="org.osgi.util.pushstream@default:default"/>
+        <setEntry value="org.osgi.util.tracker@default:default"/>
+        <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="slf4j.api*1.7.30@default:default"/>
-        <setEntry value="slf4j.jcl@default:false"/>
+        <setEntry value="slf4j.jdk14@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
         <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>

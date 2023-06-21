@@ -52,6 +52,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
@@ -133,7 +134,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6216075383041481835L;
+	private static final long serialVersionUID = -3055980415629613992L;
 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
@@ -974,6 +975,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         
         if (paging != null && paging.getParent() == null)
         	insertPagingComponent();
+
+        Mask mask = getMaskObj();
+        if (mask == null || mask.getParent() == null)
+        	this.invalidate();
     }
 
     /**
@@ -1537,6 +1542,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 		return key;
 	}   //  getSelectedRowKey
+
+	/**
+	 *  Get the integer key of currently selected row
+	 *  @param tableId
+	 *  @return selected key
+	 */
+	protected Integer getIntSelectedRowKey(int tableId)
+	{
+		Object key = getSelectedRowKey();
+		
+		if (key == null)
+			return Integer.valueOf(-1);
+
+		if (key instanceof Integer)
+			return (Integer) key;
+
+		MTable table = MTable.get(tableId);
+		table.getPOByUU((String) key, null);
+		return Integer.valueOf(table.get_ID());
+	}   //  getIntSelectedRowKey
 
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
@@ -2428,7 +2453,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		m_pi.setAD_PInstance_ID(pInstanceID);		
 		m_pi.setAD_InfoWindow_ID(infoWindow.getAD_InfoWindow_ID());
 		
-		//HengSin - to let process end with message and requery
+		//let process end with message and re-query
 		WProcessCtl.process(p_WindowNo, m_pi, (Trx)null, new EventListener<Event>() {
 
 			@Override
@@ -2472,8 +2497,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}
 					recordSelectedData.clear();
 				}
-				
-		//HengSin -- end --
 			}
 		});   		
     }

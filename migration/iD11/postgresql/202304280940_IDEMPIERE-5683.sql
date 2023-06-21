@@ -2,7 +2,7 @@
 SELECT register_migration_script('202304280940_IDEMPIERE-5683.sql') FROM dual;
 
 -- Apr 28, 2023, 9:41:24 AM CEST
-UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=19 | @AD_Reference_ID@=30 | @AD_Reference_ID@=18 | @AD_Reference_ID@=21 | @AD_Reference_ID@=25 | @AD_Reference_ID@=31 | @AD_Reference_ID@=35 | @AD_Reference_ID@=33 | @AD_Reference_ID@=32 | @AD_Reference_ID@=53370 | @AD_Reference_ID@=200233 | @AD_Reference_ID@=200234 | @AD_Reference_ID@=200235 | @AD_Reference_ID@=200202',Updated=TO_TIMESTAMP('2023-04-28 09:41:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202519
+UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=19 | @AD_Reference_ID@=30 | @AD_Reference_ID@=18 | @AD_Reference_ID@=21 | @AD_Reference_ID@=25 | @AD_Reference_ID@=31 | @AD_Reference_ID@=35 | @AD_Reference_ID@=33 | @AD_Reference_ID@=32 | @AD_Reference_ID@=53370 | @AD_Reference_ID@=200233 | @AD_Reference_ID@=200234 | @AD_Reference_ID@=200235 | @AD_Reference_ID@=200202 | @AD_Reference_ID@=200240',Updated=TO_TIMESTAMP('2023-04-28 09:41:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202519
 ;
 
 -- update Constraint Type based on java arrays from PO_Record.java
@@ -42,9 +42,9 @@ UPDATE AD_Val_Rule SET Code='(
 /* Cascade/SetNull/Forbid supported for all DB constraints */
 OR (AD_Ref_List.Value IN (''C'',''S'',''N'') AND @AD_Reference_ID@ IN (18,19,21,25,30,31,32,33,35,53370,200233,200234,200235))
 /* ModelCascade supported for Table/TableDir/Search/RecordID */
-OR (AD_Ref_List.Value = ''M''            AND @AD_Reference_ID@ IN (18,19,30,200202))
+OR (AD_Ref_List.Value = ''M''            AND @AD_Reference_ID@ IN (18,19,30,200202,200240))
 /* ModelSetNull/ModelForbid supported for RecordID */
-OR (AD_Ref_List.Value IN (''T'',''O'')     AND @AD_Reference_ID@ IN (200202))
+OR (AD_Ref_List.Value IN (''T'',''O'')     AND @AD_Reference_ID@ IN (200202,200240))
 )',Updated=TO_TIMESTAMP('2023-05-05 20:57:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200064
 ;
 

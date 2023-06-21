@@ -30,7 +30,7 @@ public class X_AD_PostIt extends PO implements I_AD_PostIt, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20230529L;
 
     /** Standard Constructor */
     public X_AD_PostIt (Properties ctx, int AD_PostIt_ID, String trxName)
@@ -184,6 +184,21 @@ public class X_AD_PostIt extends PO implements I_AD_PostIt, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Record UUID.
+		@param Record_UU Record UUID
+	*/
+	public void setRecord_UU (String Record_UU)
+	{
+		set_Value (COLUMNNAME_Record_UU, Record_UU);
+	}
+
+	/** Get Record UUID.
+		@return Record UUID	  */
+	public String getRecord_UU()
+	{
+		return (String)get_Value(COLUMNNAME_Record_UU);
 	}
 
 	/** Set Description.

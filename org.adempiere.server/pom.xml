@@ -9,21 +9,4 @@
 	</parent>
 	<artifactId>org.adempiere.server</artifactId>
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<configuration>
-					<compilerArgs>
-						<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
-						<arg>-warn:+forbidden</arg>
-		      			<arg>--add-exports</arg>
-		      			<arg>java.naming/com.sun.jndi.ldap=ALL-UNNAMED</arg>
-					</compilerArgs>
-				</configuration>
-			</plugin>			
-		</plugins>
-	</build>
 </project>

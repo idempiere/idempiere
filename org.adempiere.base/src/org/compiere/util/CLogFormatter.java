@@ -136,8 +136,8 @@ public class CLogFormatter extends Formatter
 		sb.append(" ")
 			.append(record.getLevel().getLocalizedName());
 		/**	Thread			**/
-		if (record.getThreadID() != 10)
-			sb.append(" [").append(record.getThreadID()).append("]");
+		if (record.getLongThreadID() != 10)
+			sb.append(" [").append(record.getLongThreadID()).append("]");
 		
 		//
 		sb.append(NL);
