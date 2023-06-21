@@ -2074,8 +2074,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
-		String orderClause = getUserOrderClause();
 		String dynJoin = getSQLJoin(m_sqlMain);
+		String orderClause = getUserOrderClause();
         StringBuilder sql = new StringBuilder (m_sqlMain);
         boolean whereTrimmed = false;
         
@@ -2129,18 +2129,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
      * @return SQL JOIN
      */
     private String getSQLJoin(String sqlMain) {
-		if(Util.isEmpty(joinTable))
+		if(Util.isEmpty(joinTableForUserOrder))
 			return "";
 		StringBuilder builder = new StringBuilder();
 		for(TableInfo tableInfo : tableInfos) {
-			if(joinTable.equalsIgnoreCase(tableInfo.getTableName())) {
+			if(joinTableForUserOrder.equalsIgnoreCase(tableInfo.getTableName())) {
 				return "";
 			}
 		}
-		if(!sqlMain.contains(" LEFT JOIN " + joinTable)) {
-			builder.append(" LEFT JOIN ").append(joinTable).append(" ON (")
-				.append(joinTable).append(".").append(joinTable).append("_ID = ")
-				.append(getTableName()).append(".").append(joinTable).append("_ID)");
+		if(!sqlMain.contains(" LEFT JOIN " + joinTableForUserOrder)) {
+			builder.append(" LEFT JOIN ").append(joinTableForUserOrder).append(" ON (")
+				.append(joinTableForUserOrder).append(".").append(joinTableForUserOrder).append("_ID = ")
+				.append(getTableName()).append(".").append(joinTableForUserOrder).append("_ID)");
 		}
 		return builder.toString();
     }
