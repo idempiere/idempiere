@@ -1343,6 +1343,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (indexOrderColumn < 0) {
 			return m_sqlOrder;
 		}
+		else {
+			// join tables to sort by display value
+			ColumnInfo orderColumn = p_layout[indexOrderColumn];
+			String displayColumn = orderColumn.getDisplayColumn();
+			if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(orderColumn.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumn.getAD_Reference_ID()))) {
+				MTable table = getTable(orderColumn.getAD_Reference_Value_ID(), orderColumn.getColumnName());
+				if(table != null && !table.getTableName().equals(joinTableForUserOrder))
+					joinTableForUserOrder = table.getTableName();
+			}
+		}
 		
 		if (m_sqlUserOrder == null) {
 			m_sqlUserOrder = getUserOrderClause (indexOrderColumn);
@@ -1357,7 +1367,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return
 	 */
 	protected String getUserOrderClause(int col) {
-		joinTableForUserOrder = null;
 		String displayColumn = p_layout[col].getDisplayColumn();
 		String colsql = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 		int lastSpaceIdx = colsql.lastIndexOf(" ");
@@ -3001,13 +3010,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		isColumnSortAscending = ascending;
 		String displayColumn = p_layout[col].getDisplayColumn();
 		sqlOrderColumn = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
-
-		// join tables to sort by display value
-		if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(p_layout[col].getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(p_layout[col].getAD_Reference_ID()))) {
-			MTable table = getTable(p_layout[col].getAD_Reference_Value_ID(), p_layout[col].getColumnName());
-			if(table != null && !table.getTableName().equals(joinTableForUserOrder))
-				joinTableForUserOrder = table.getTableName();
-		}
 		m_sqlUserOrder = null; // clear cache value
 		
 		if (m_useDatabasePaging)

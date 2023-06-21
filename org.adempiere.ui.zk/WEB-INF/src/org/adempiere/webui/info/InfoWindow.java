@@ -2074,8 +2074,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
-		String dynJoin = getSQLJoin(m_sqlMain);
-		String orderClause = getUserOrderClause();
+		String orderClause = getUserOrderClause();	// initializes joinTableForUserOrder
+		String dynJoin = getSQLJoin(m_sqlMain);	// needs to be called after getUserOrderClause()
         StringBuilder sql = new StringBuilder (m_sqlMain);
         boolean whereTrimmed = false;
         
@@ -2142,6 +2142,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				.append(joinTableForUserOrder).append(".").append(joinTableForUserOrder).append("_ID = ")
 				.append(getTableName()).append(".").append(joinTableForUserOrder).append("_ID)");
 		}
+		joinTableForUserOrder = null;
 		return builder.toString();
     }
 
