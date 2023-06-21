@@ -288,7 +288,7 @@
 		<plugin id="org.w3c.dom.svg"/>
 		<plugin id="org.zkoss.zsoup"/>
 		<plugin id="slf4j.api"/>
-		<plugin id="slf4j.jcl"/>
+		<plugin id="slf4j.jdk14"/>
 		<plugin id="stax2-api"/>
 		<plugin id="wrapped.com.google.http-client.google-http-client-gson"/>
 		<plugin id="wrapped.com.google.zxing.javase"/>
@@ -321,6 +321,7 @@
 		<plugin id="wrapped.org.springframework.spring-core"/>
 		<plugin id="wrapped.org.springframework.spring-expression"/>
 		<plugin id="wrapped.org.springframework.spring-web"/>
+		<plugin id="wrapped.org.springframework.spring-jcl"/>
 		<plugin id="wrapped.wsdl4j.wsdl4j"/>
 		<plugin id="xstream"/>
 		<plugin id="zcommon"/>

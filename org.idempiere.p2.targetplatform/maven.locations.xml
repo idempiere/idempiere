@@ -1097,6 +1097,19 @@ Bundle-Version:        ${version}
 Import-Package:        *;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jcl</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
 	</location>	
 	<!-- org.glassfish.jersey -->
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
@@ -1317,7 +1330,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<!-- org.slf4j -->
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jcl</artifactId>
+      <artifactId>slf4j-jdk14</artifactId>
       <version>1.7.30</version>
       <type>jar</type>
 	</location>

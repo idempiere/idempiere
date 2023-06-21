@@ -1069,6 +1069,13 @@
          unpack="false"/>
 
    <plugin
+         id="wrapped.org.springframework.spring-jcl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
          id="org.osgi.util.pushstream.source"
          download-size="0"
          install-size="0"
@@ -1175,7 +1182,7 @@
          unpack="false"/>
 
    <plugin
-         id="slf4j.jcl"
+         id="slf4j.jdk14"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1365,6 +1372,13 @@
          unpack="false"/>
 
    <plugin
+         id="wrapped.org.springframework.spring-jcl.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
          id="org.eclipse.jetty.osgi.boot.warurl"
          download-size="0"
          install-size="0"
@@ -1442,7 +1456,7 @@
          unpack="false"/>
 
    <plugin
-         id="slf4j.jcl.source"
+         id="slf4j.jdk14.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
