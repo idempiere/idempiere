@@ -417,19 +417,22 @@ public class MArchive extends X_AD_Archive {
 	}
 
 	/**
-	 * Get number of document and report archive by table and record id
+	 * Get number of document and report archive by table and record UUID
 	 * 
 	 * @param AD_Table_ID
-	 * @param Record_ID
-	 * @param Record_UU
+	 * @param Record_ID - record ID used when UUID comes empty, or C_BPartner_ID when searching for this table
+	 * @param Record_UU - record UUID
 	 * @param trxName
 	 * @return int[], [0] = report count and [1] = document count
 	 */
 	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String Record_UU, String trxName) {
 		int reportCount = 0;
 		int documentCount = 0;
-		StringBuilder sql = new StringBuilder("SELECT IsReport, COUNT(*) FROM AD_Archive ")
-				.append("WHERE (AD_Table_ID=? AND Record_UU=?) ");
+		StringBuilder sql = new StringBuilder("SELECT IsReport, COUNT(*) FROM AD_Archive ");
+		if (Util.isEmpty(Record_UU))
+			sql.append("WHERE (AD_Table_ID=? AND Record_ID=?) ");
+		else
+			sql.append("WHERE (AD_Table_ID=? AND Record_UU=?) ");
 		if (AD_Table_ID == MBPartner.Table_ID)
 			sql.append(" OR C_BPartner_ID=?");
 		sql.append(" GROUP BY IsReport"); 
@@ -439,7 +442,10 @@ public class MArchive extends X_AD_Archive {
 		{
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt(1, AD_Table_ID);
-			pstmt.setString(2, Record_UU);
+			if (Util.isEmpty(Record_UU))
+				pstmt.setInt(2, Record_ID);
+			else
+				pstmt.setString(2, Record_UU);
 			if (AD_Table_ID == MBPartner.Table_ID)
 				pstmt.setInt(3, Record_ID);
 			rs = pstmt.executeQuery ();
