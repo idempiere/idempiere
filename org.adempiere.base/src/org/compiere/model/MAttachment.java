@@ -552,6 +552,11 @@ public class MAttachment extends X_AD_Attachment
 	{
 		if (Util.isEmpty(getTitle()))
 			setTitle(NONE);
+		if (getRecord_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+			MTable table = MTable.get(getAD_Table_ID());
+			PO po = table.getPO(getRecord_ID(), get_TrxName());
+			setRecord_UU(po.get_UUID());
+		}
 		return saveLOBData();		//	save in BinaryData
 	}	//	beforeSave
 
