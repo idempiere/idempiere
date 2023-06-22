@@ -58,6 +58,10 @@
 	cursor: move;
 }
 
+.z-calevent-daylong-month .z-calevent-text {
+	height:18px;
+}
+
 .dashboard-layout {
 	width: 100%;
 	height: 100%;
