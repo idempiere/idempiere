@@ -172,8 +172,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected boolean isIDColumnKeyOfView = false;
 	protected boolean hasRightQuickEntry = true;
 	protected boolean isHasNextPage = false;
-	/* Table name for SQL JOIN clause used when sorting ID columns by their display value */
-	protected String joinTableForUserOrder = null;
+	/* List of table names for SQL JOIN clause used when sorting ID columns by their display value */
+	protected ArrayList<String> joinTableForUserOrder = new ArrayList<String>();
 	/**
 	 * store selected record info
 	 * key of map is value of column play as keyView
@@ -1349,8 +1349,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			String displayColumn = orderColumn.getDisplayColumn();
 			if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(orderColumn.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumn.getAD_Reference_ID()))) {
 				MTable table = getTable(orderColumn.getAD_Reference_Value_ID(), orderColumn.getColumnName());
-				if(table != null && !table.getTableName().equals(joinTableForUserOrder))
-					joinTableForUserOrder = table.getTableName();
+				if(table != null && !joinTableForUserOrder.contains(table.getTableName()))
+					joinTableForUserOrder.add(table.getTableName());
+				if(displayColumn.contains(table.getTableName()+"_Trl")) {
+					joinTableForUserOrder.add(table.getTableName()+"_Trl");
+				}
 			}
 		}
 		

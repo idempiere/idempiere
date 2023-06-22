@@ -1072,7 +1072,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private String parseAliases(String displayColumn, String tableName) {
 		if(Util.isEmpty(displayColumn))
 			return null;
+		String tabelNameTrl = tableName + "_Trl";
 		String alias = getAlias(tableName);
+
+		if(displayColumn.contains(tabelNameTrl+".")) {
+			if(displayColumn.contains(tableName+".") && !tableName.equalsIgnoreCase(alias)) {
+				return displayColumn.replace(tableName+".", alias+".");
+			}
+			return displayColumn;
+		}
+
 		if(displayColumn.contains(alias+".")){
 			return displayColumn;
 		}
@@ -2113,15 +2122,63 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         if (otherClause.length() > 0) {
         	dataSql = dataSql + " " + otherClause;
         }
-        // add ORDER BY clause 
+        // add ORDER BY clause
         dataSql = dataSql + orderClause;
-        
+
+        // for SELECT DISTINCT, ORDER BY expressions must appear in select list
+        if(dataSql.startsWith("SELECT DISTINCT")) {
+		dataSql = appendOrderByToSelectList(dataSql, orderClause);
+        }
+
         if (end > start && isUseDatabasePaging() && DB.getDatabase().isPagingSupported())
         {
-        	dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
+		dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
         }
 		return dataSql;
 	}
+
+    /**
+     * Append ORDER BY expressions into the select list
+     * @param sql
+     * @param orderBy
+     * @return String parsed sql
+     */
+    private String appendOrderByToSelectList(String sql, String orderBy) {
+    	if(Util.isEmpty(sql) || Util.isEmpty(orderBy))
+    		return sql;
+		int idxFrom = getIdxFrom(sql);
+		if(idxFrom < 0)
+			return sql;
+	
+		String select = sql.substring(0, idxFrom);
+		select += ", " + orderBy.replace("ORDER BY", "").replace("ASC", "").replace("DESC", "");
+		return select + sql.substring(idxFrom);
+    }
+
+    /**
+     * Get the index of the FROM statement
+     * @param sql
+     * @return int idx
+     */
+    private int getIdxFrom(String sql) {
+	int parenthesisLevel = 0;
+	int idxSelect = sql.indexOf("SELECT DISTINCT");
+	sql = sql.substring(idxSelect);
+
+	for(int i = 0; i < sql.length(); i++) {
+		// identify and ignore sub-query
+		char c = sql.charAt(i);
+			if (c == ')')
+				parenthesisLevel--;
+			else if (c == '(')
+				parenthesisLevel++;
+
+			if(sql.substring(i).startsWith("FROM") && parenthesisLevel == 0)
+				return i;
+	}
+
+	return -1;
+    }
 
     /**
      * Join tables required for the ORDER BY clause
@@ -2129,20 +2186,29 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
      * @return SQL JOIN
      */
     private String getSQLJoin(String sqlMain) {
-		if(Util.isEmpty(joinTableForUserOrder))
+		if(joinTableForUserOrder.size() <= 0)
 			return "";
 		StringBuilder builder = new StringBuilder();
-		for(TableInfo tableInfo : tableInfos) {
-			if(joinTableForUserOrder.equalsIgnoreCase(tableInfo.getTableName())) {
-				return "";
+		for(String tableName : joinTableForUserOrder) {
+			boolean doJoin = true;
+			for(TableInfo tableInfo : tableInfos) {
+				if(tableName.equalsIgnoreCase(tableInfo.getTableName())) {
+					doJoin = false;
+					break;
+				}
+			}
+			String keyCol = !tableName.endsWith("_Trl") ? tableName + "_ID" : tableName.replace("_Trl", "")+"_ID";
+			if(doJoin && !sqlMain.contains(" LEFT JOIN " + tableName)) {
+				builder.append(" LEFT JOIN ").append(tableName).append(" ON (")
+					.append(tableName).append(".").append(keyCol).append(" = ")
+					.append(getTableName()).append(".").append(columnInfos[indexOrderColumn].getColumnName());
+				if(tableName.endsWith("_Trl")) {
+					builder.append(" AND AD_Language = '").append(Env.getAD_Language(Env.getCtx())).append("'");
+				}
+				builder.append(")");
 			}
 		}
-		if(!sqlMain.contains(" LEFT JOIN " + joinTableForUserOrder)) {
-			builder.append(" LEFT JOIN ").append(joinTableForUserOrder).append(" ON (")
-				.append(joinTableForUserOrder).append(".").append(joinTableForUserOrder).append("_ID = ")
-				.append(getTableName()).append(".").append(joinTableForUserOrder).append("_ID)");
-		}
-		joinTableForUserOrder = null;
+		joinTableForUserOrder.clear();
 		return builder.toString();
     }
 
