@@ -1428,9 +1428,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if(displayColumn.contains(table.getTableName()+"_Trl")) {
 			String tableNameTrl = tableName+"_Trl";
 			MTable tableTrl = MTable.get(Env.getCtx(), tableNameTrl);
+			String sqlSelect = orderColumnInfo.getSelectClause();
 			String[] keyCols = tableTrl.getKeyColumns();
-			String alias = getAlias(tableName);
-			
+
 			fromClause += " JOIN " + tableNameTrl + " ON (";
 			for(int i = 0; i < keyCols.length; i++) {
 				String keyCol = keyCols[i];
@@ -1443,7 +1443,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				if("AD_Language".equalsIgnoreCase(keyCol))
 					fromClause += " '" + Env.getAD_Language(Env.getCtx()) + "' ";
 				else
-					fromClause += (!tableName.equals(alias) ? alias : getTableName()) + "." + keyCol;						
+					fromClause += sqlSelect;
 			}
 			fromClause += ") ";
 		}
@@ -1459,13 +1459,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		MTable table = getTable(orderColumnInfo.getAD_Reference_Value_ID(), orderColumnInfo.getColumnName());
 		String tableName = table.getTableName();
 		String[] keyCols = table.getKeyColumns();
-		String alias = getAlias(tableName);
+		String sqlSelect = orderColumnInfo.getSelectClause();
 		String whereClause = "";
 		
 		for(String keyCol : keyCols) {
 			if(!Util.isEmpty(whereClause))
 				whereClause += " AND ";
-			whereClause += tableName + "." + keyCol + " = " + (!tableName.equals(alias) ? alias : getTableName()) + "." + keyCol;
+			whereClause += tableName + "." + keyCol + " = " + sqlSelect;
 		}
 		return whereClause;
 	}
