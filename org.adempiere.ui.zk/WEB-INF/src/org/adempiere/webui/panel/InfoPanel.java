@@ -84,6 +84,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
@@ -172,8 +173,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected boolean isIDColumnKeyOfView = false;
 	protected boolean hasRightQuickEntry = true;
 	protected boolean isHasNextPage = false;
-	/* List of table names for SQL JOIN clause used when sorting ID columns by their display value */
-	protected ArrayList<String> joinTableForUserOrder = new ArrayList<String>();
 	/**
 	 * store selected record info
 	 * key of map is value of column play as keyView
@@ -1334,6 +1333,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		}
 			
 	}
+	
 	/**
 	 * build order clause of current sort order, and save it to m_sqlUserOrder
 	 * @return
@@ -1342,19 +1342,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		validateOrderIndex();
 		if (indexOrderColumn < 0) {
 			return m_sqlOrder;
-		}
-		else {
-			// join tables to sort by display value
-			ColumnInfo orderColumn = p_layout[indexOrderColumn];
-			String displayColumn = orderColumn.getDisplayColumn();
-			if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(orderColumn.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumn.getAD_Reference_ID()))) {
-				MTable table = getTable(orderColumn.getAD_Reference_Value_ID(), orderColumn.getColumnName());
-				if(table != null && !joinTableForUserOrder.contains(table.getTableName()))
-					joinTableForUserOrder.add(table.getTableName());
-				if(displayColumn.contains(table.getTableName()+"_Trl")) {
-					joinTableForUserOrder.add(table.getTableName()+"_Trl");
-				}
-			}
 		}
 		
 		if (m_sqlUserOrder == null) {
@@ -1370,8 +1357,29 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return
 	 */
 	protected String getUserOrderClause(int col) {
-		String displayColumn = p_layout[col].getDisplayColumn();
+		ColumnInfo orderColumnInfo = p_layout[col];
+		String displayColumn = orderColumnInfo.getDisplayColumn();
 		String colsql = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
+		
+		colsql = getSelectForOrderBy(colsql);
+		if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID()))) {
+			String from = getFromForOrderBy(orderColumnInfo, displayColumn);
+			String where = getWhereForOrderBy(orderColumnInfo);
+			
+			return String.format(" ORDER BY (SELECT %s FROM %s WHERE %s) %s ", colsql, from, where, isColumnSortAscending? "" : "DESC");
+		}
+		else {
+			return String.format(" ORDER BY %s %s ", colsql, isColumnSortAscending? "" : "DESC");
+		}
+	}
+
+	/**
+	 * Get SQL SELECT clause for ORDER BY
+	 * @param colsql
+	 * @return String SELECT clause
+	 */
+	private String getSelectForOrderBy(String colsql) {
+		
 		int lastSpaceIdx = colsql.lastIndexOf(" ");
 		if (lastSpaceIdx > 0)
 		{
@@ -1400,10 +1408,45 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				}
 			}
 		}
-		
-		return String.format(" ORDER BY %s %s ", colsql, isColumnSortAscending? "" : "DESC");
+		return colsql;
 	}
+	
+	/**
+	 * Get SQL FROM clause for ORDER BY
+	 * @param orderColumnInfo
+	 * @param displayColumn
+	 * @return String FROM clause
+	 */
+	private String getFromForOrderBy(ColumnInfo orderColumnInfo, String displayColumn) {
+		String fromClause = "";
+		MTable table = getTable(orderColumnInfo.getAD_Reference_Value_ID(), orderColumnInfo.getColumnName());
+		String tableName = table.getTableName();
+		if(table != null)
+			fromClause += tableName;
 
+		// join translation table
+		if(displayColumn.contains(table.getTableName()+"_Trl")) {
+			String keyCol = tableName + "_ID";
+			fromClause += " JOIN " + tableName + "_Trl ON ("
+					+ tableName + "_Trl." + keyCol + " = " + getTableName() + "." + keyCol
+					+ " AND " + tableName + "_Trl.AD_Language = '" + Env.getAD_Language(Env.getCtx()) + "') ";
+		}
+		return fromClause;
+	}
+	
+	/**
+	 * Get WHERE clause for ORDER BY
+	 * @param orderColumnInfo
+	 * @return String WHERE clause
+	 */
+	private String getWhereForOrderBy(ColumnInfo orderColumnInfo) {
+		MTable table = getTable(orderColumnInfo.getAD_Reference_Value_ID(), orderColumnInfo.getColumnName());
+		String tableName = table.getTableName();
+		String keyCol = tableName + "_ID";
+		String alias = getAlias(tableName);
+		return tableName + "." + keyCol + " = " + (!tableName.equals(alias) ? alias : getTableName()) + "." + keyCol;
+	}
+	
     private void addDoubleClickListener() {
     	Iterator<EventListener<? extends Event>> i = contentPanel.getEventListeners(Events.ON_DOUBLE_CLICK).iterator();
 		while (i.hasNext()) {
@@ -1414,6 +1457,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		contentPanel.addEventListener(Events.ON_SELECT, this);
 	}
 
+	/**
+	 * Get alias of the table, or the table name
+	 * @return String alias
+	 */
+	public String getAlias(String tableName) {
+		if(Util.isEmpty(tableName))
+			return "";
+		String alias = tableName;
+		for(TableInfo tableInfo : infoWindow.getTableInfos()) {
+			if(tableName.equalsIgnoreCase(tableInfo.getTableName()))
+				alias = !Util.isEmpty(tableInfo.getSynonym()) ? tableInfo.getSynonym() : tableName;
+		}
+		return alias;
+	}
+    
     /**
      * add paging component for list box
      */

@@ -1098,21 +1098,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return displayColumn;
 	}
 
-	/**
-	 * Get alias of the table, or the table name
-	 * @return String alias
-	 */
-	private String getAlias(String tableName) {
-		if(Util.isEmpty(tableName))
-			return "";
-		String alias = tableName;
-		for(TableInfo tableInfo : tableInfos) {
-			if(tableName.equalsIgnoreCase(tableInfo.getTableName()))
-				alias = !Util.isEmpty(tableInfo.getSynonym()) ? tableInfo.getSynonym() : tableName;
-		}
-		return alias;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.adempiere.webui.panel.InfoPanel#getSQLWhere()
 	 */
@@ -2083,35 +2068,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
-		String orderClause = getUserOrderClause();	// initializes joinTableForUserOrder
-		String dynJoin = getSQLJoin(m_sqlMain);	// needs to be called after getUserOrderClause()
+		String orderClause = getUserOrderClause();
         StringBuilder sql = new StringBuilder (m_sqlMain);
-        boolean whereTrimmed = false;
         
-        // trim WHERE clause to add dynamic JOIN clauses
-        if(dynJoin.length() > 0 && !Util.isEmpty(p_whereClause) && sql.toString().endsWith(p_whereClause)) {
-        	int index = sql.lastIndexOf(p_whereClause);
-        	sql.delete(index, sql.length());
-        	whereTrimmed = true;
-        }
+        // add dynamic WHERE clause
+        if (dynWhere.length() > 0)
+            sql.append(dynWhere);   //  includes first AND
+        
         // trim trailing WHERE statement
         if (sql.toString().trim().endsWith("WHERE")) {
         	int index = sql.lastIndexOf(" WHERE");
         	sql.delete(index, sql.length());
-        }
-        // add dynamic JOIN clauses
-        if(dynJoin.length() > 0) {
-        	sql.append(dynJoin);
-        }
-        // add trimmed WHERE clause if needed
-        if(whereTrimmed) {
-        	sql.append(" WHERE ").append(p_whereClause);
-        }
-        // add dynamic WHERE CLAUSE
-        if (dynWhere.length() > 0) {
-        	if(Util.isEmpty(p_whereClause))
-        		sql.append(" WHERE ");
-			sql.append(dynWhere);   //  includes first AND
         }
         dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());    //  Variables
         dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
@@ -2125,14 +2092,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         // add ORDER BY clause
         dataSql = dataSql + orderClause;
 
-        // for SELECT DISTINCT, ORDER BY expressions must appear in select list
-        if(dataSql.startsWith("SELECT DISTINCT")) {
-		dataSql = appendOrderByToSelectList(dataSql, orderClause);
+        // for SELECT DISTINCT, ORDER BY expressions must appear in select list - applies for lookup columns and multiselection columns
+        if(dataSql.startsWith("SELECT DISTINCT") && indexOrderColumn > 0) {
+        	ColumnInfo orderColumnInfo = p_layout[indexOrderColumn];
+        	if (DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID())) {
+        		dataSql = appendOrderByToSelectList(dataSql, orderClause);
+        	}
         }
 
         if (end > start && isUseDatabasePaging() && DB.getDatabase().isPagingSupported())
         {
-		dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
+        	dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
         }
 		return dataSql;
 	}
@@ -2161,55 +2131,23 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
      * @return int idx
      */
     private int getIdxFrom(String sql) {
-	int parenthesisLevel = 0;
-	int idxSelect = sql.indexOf("SELECT DISTINCT");
-	sql = sql.substring(idxSelect);
-
-	for(int i = 0; i < sql.length(); i++) {
-		// identify and ignore sub-query
-		char c = sql.charAt(i);
-			if (c == ')')
-				parenthesisLevel--;
-			else if (c == '(')
-				parenthesisLevel++;
-
-			if(sql.substring(i).startsWith("FROM") && parenthesisLevel == 0)
-				return i;
-	}
-
-	return -1;
-    }
-
-    /**
-     * Join tables required for the ORDER BY clause
-     * @param orderClause
-     * @return SQL JOIN
-     */
-    private String getSQLJoin(String sqlMain) {
-		if(joinTableForUserOrder.size() <= 0)
-			return "";
-		StringBuilder builder = new StringBuilder();
-		for(String tableName : joinTableForUserOrder) {
-			boolean doJoin = true;
-			for(TableInfo tableInfo : tableInfos) {
-				if(tableName.equalsIgnoreCase(tableInfo.getTableName())) {
-					doJoin = false;
-					break;
-				}
-			}
-			String keyCol = !tableName.endsWith("_Trl") ? tableName + "_ID" : tableName.replace("_Trl", "")+"_ID";
-			if(doJoin && !sqlMain.contains(" LEFT JOIN " + tableName)) {
-				builder.append(" LEFT JOIN ").append(tableName).append(" ON (")
-					.append(tableName).append(".").append(keyCol).append(" = ")
-					.append(getTableName()).append(".").append(columnInfos[indexOrderColumn].getColumnName());
-				if(tableName.endsWith("_Trl")) {
-					builder.append(" AND AD_Language = '").append(Env.getAD_Language(Env.getCtx())).append("'");
-				}
-				builder.append(")");
-			}
+		int parenthesisLevel = 0;
+		int idxSelect = sql.indexOf("SELECT DISTINCT");
+		sql = sql.substring(idxSelect);
+	
+		for(int i = 0; i < sql.length(); i++) {
+			// identify and ignore sub-query
+			char c = sql.charAt(i);
+				if (c == ')')
+					parenthesisLevel--;
+				else if (c == '(')
+					parenthesisLevel++;
+	
+				if(sql.substring(i).startsWith("FROM") && parenthesisLevel == 0)
+					return i;
 		}
-		joinTableForUserOrder.clear();
-		return builder.toString();
+	
+		return -1;
     }
 
     private String getOtherClauseParsed() {
