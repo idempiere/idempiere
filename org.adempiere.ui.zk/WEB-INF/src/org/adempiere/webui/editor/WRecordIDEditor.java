@@ -292,9 +292,9 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 
 		if (fire 
 			&& 
-			 (     (value == null && recordIDValue != null) 
-				|| (value != null && recordIDValue == null) 
-				|| !value.equals(recordIDValue)
+			 (     (value == null && recordIDValue != null)
+				|| (value != null && recordIDValue == null)
+				|| (value != null && !value.equals(recordIDValue))
 			 )) {
 			// Record_ID
 			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), recordIDValue, value);
