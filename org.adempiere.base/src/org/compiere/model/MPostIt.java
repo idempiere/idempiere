@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	PostIt Model
@@ -34,7 +35,7 @@ public class MPostIt extends X_AD_PostIt
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1450160105051825278L;
+	private static final long serialVersionUID = 7817778632231317976L;
 
 	/**
     * UUID based Constructor
@@ -142,6 +143,21 @@ public class MPostIt extends X_AD_PostIt
 		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_UU=?";
 		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
 		return postItID;
+	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getRecord_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+			MTable table = MTable.get(getAD_Table_ID());
+			PO po = table.getPO(getRecord_ID(), get_TrxName());
+			setRecord_UU(po.get_UUID());
+		}
+		return true;
 	}
 
 }	//	MPostIt

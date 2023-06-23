@@ -47,11 +47,17 @@ public class ReportSendEMailEventData {
 	private String m_subject;
 	private int m_tableId;
 	private int m_recordId;
+	private String m_recordUU;
 
 	public ReportSendEMailEventData(int windowNo, int tableId, int recordId, PrintInfo printInfo, String subject) {
+		this(windowNo, tableId, recordId, null, printInfo, subject);
+	}
+
+	public ReportSendEMailEventData(int windowNo, int tableId, int recordId, String recordUU, PrintInfo printInfo, String subject) {
 		m_windowNo = windowNo;
 		m_tableId = tableId;
 		m_recordId = recordId;
+		m_recordUU = recordUU;
 		m_printInfo = printInfo;
 		m_subject = subject;
 	}
@@ -78,6 +84,14 @@ public class ReportSendEMailEventData {
 
 	public void setRecordId(int recordId) {
 		m_recordId = recordId;
+	}
+
+	public String getRecordUU() {
+		return m_recordUU;
+	}
+
+	public void setRecordUU(String recordUU) {
+		m_recordUU = recordUU;
 	}
 
 	public PrintInfo getFrom() {
