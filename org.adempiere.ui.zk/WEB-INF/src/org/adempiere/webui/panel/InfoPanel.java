@@ -1426,10 +1426,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 		// join translation table
 		if(displayColumn.contains(table.getTableName()+"_Trl")) {
-			String keyCol = tableName + "_ID";
-			fromClause += " JOIN " + tableName + "_Trl ON ("
-					+ tableName + "_Trl." + keyCol + " = " + getTableName() + "." + keyCol
-					+ " AND " + tableName + "_Trl.AD_Language = '" + Env.getAD_Language(Env.getCtx()) + "') ";
+			String tableNameTrl = tableName+"_Trl";
+			MTable tableTrl = MTable.get(Env.getCtx(), tableNameTrl);
+			String[] keyCols = tableTrl.getKeyColumns();
+			String alias = getAlias(tableName);
+			
+			fromClause += " JOIN " + tableNameTrl + " ON (";
+			for(int i = 0; i < keyCols.length; i++) {
+				String keyCol = keyCols[i];
+				
+				if(i > 0)
+					fromClause += " AND ";
+				
+				fromClause += tableNameTrl + "." + keyCol + " = ";
+				
+				if("AD_Language".equalsIgnoreCase(keyCol))
+					fromClause += " '" + Env.getAD_Language(Env.getCtx()) + "' ";
+				else
+					fromClause += (!tableName.equals(alias) ? alias : getTableName()) + "." + keyCol;						
+			}
+			fromClause += ") ";
 		}
 		return fromClause;
 	}
@@ -1442,9 +1458,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private String getWhereForOrderBy(ColumnInfo orderColumnInfo) {
 		MTable table = getTable(orderColumnInfo.getAD_Reference_Value_ID(), orderColumnInfo.getColumnName());
 		String tableName = table.getTableName();
-		String keyCol = tableName + "_ID";
+		String[] keyCols = table.getKeyColumns();
 		String alias = getAlias(tableName);
-		return tableName + "." + keyCol + " = " + (!tableName.equals(alias) ? alias : getTableName()) + "." + keyCol;
+		String whereClause = "";
+		
+		for(String keyCol : keyCols) {
+			if(!Util.isEmpty(whereClause))
+				whereClause += " AND ";
+			whereClause += tableName + "." + keyCol + " = " + (!tableName.equals(alias) ? alias : getTableName()) + "." + keyCol;
+		}
+		return whereClause;
 	}
 	
     private void addDoubleClickListener() {
