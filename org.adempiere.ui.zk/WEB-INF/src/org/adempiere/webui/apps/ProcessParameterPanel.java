@@ -582,9 +582,10 @@ public class ProcessParameterPanel extends Panel implements
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);
+			WEditor wEditor = (WEditor) m_wEditors.get(i);
+			WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
 			if (field.isMandatory(true)) // check context
 			{				
-				WEditor wEditor = (WEditor) m_wEditors.get(i);
 				Object data = wEditor.getValue();
 				if (data == null || data.toString().length() == 0) {
 					field.setInserting(true); // set editable (i.e. updateable)
@@ -598,7 +599,6 @@ public class ProcessParameterPanel extends Panel implements
 				} else
 					field.setError(false);
 				// Check for Range
-				WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
 				if (wEditor2 != null) {
 					Object data2 = wEditor2.getValue();
 					GridField field2 = (GridField) m_mFields2.get(i);
@@ -615,12 +615,129 @@ public class ProcessParameterPanel extends Panel implements
 						field2.setError(false);
 				} // range field
 			} // mandatory
-		} // field loop
+			
+			if (sb.length() != 0) {
+				Dialog.error(m_WindowNo, "FillMandatory", sb.toString());
+				return false;
+			}
 
-		if (sb.length() != 0) {
-			Dialog.error(m_WindowNo, "FillMandatory", sb.toString());
-			return false;
-		}
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+			if(field.getValueMin() != null && wEditor.getValue() != null) {
+				BigDecimal valueMin_BD = null;
+				BigDecimal value_BD = null;
+				BigDecimal valueTo_BD = null;
+				
+				Timestamp valueMin_TS = null;
+				Timestamp value_TS = null;
+				Timestamp valueTo_TS = null;
+				try {
+					valueMin_BD = new BigDecimal(field.getValueMin());
+					value_BD = new BigDecimal(wEditor.getValue().toString());
+
+					if(wEditor2!=null && wEditor2.getValue() != null) {
+						valueTo_BD = new BigDecimal(wEditor2.getValue().toString());
+					}
+				}
+				catch (Exception ex){}
+				
+				try {
+					valueMin_TS = new Timestamp(dateFormat.parse(field.getValueMin()).getTime());
+					value_TS = new Timestamp(dateFormat.parse(wEditor.getValue().toString()).getTime());
+					if(wEditor2!=null && wEditor2.getValue() != null) {
+						valueTo_TS = new java.sql.Timestamp(dateFormat.parse(wEditor2.getValue().toString()).getTime());
+					}
+				}
+				catch (Exception ex){}
+				
+				if(value_BD != null && valueMin_BD !=null) {
+					if(valueMin_BD.compareTo(value_BD) > 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" LessThanMinValue", field.getValueMin());
+						return false;
+					}
+					if(valueTo_BD!=null && valueMin_BD.compareTo(valueTo_BD) > 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" To LessThanMinValue", field.getValueMin());
+						return false;
+					}
+				}else if(value_TS != null && valueMin_TS != null){
+					if(value_TS.before(valueMin_TS)) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" LessThanMinValue", field.getValueMin());
+						return false;
+					}
+					if(valueTo_TS !=null && valueTo_TS.before(valueMin_TS)) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" To LessThanMinValue", field.getValueMin());
+						return false;
+					}
+					
+				}else {
+					if(field.getValueMin().compareTo(wEditor.getValue().toString()) > 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" LessThanMinValue", field.getValueMin());
+						return false;
+					}
+					if(wEditor2!=null && field.getValueMin().compareTo(wEditor2.getValue().toString()) > 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" To LessThanMinValue", field.getValueMin());
+						return false;
+					}
+				}
+			}// min value
+			
+			if(field.getValueMax() != null && wEditor.getValue() != null) {
+				BigDecimal valueMax_BD = null;
+				BigDecimal value_BD = null;
+				BigDecimal valueTo_BD = null;
+				
+				Timestamp valueMax_TS = null;
+				Timestamp value_TS = null;
+				Timestamp valueTo_TS = null;
+				try {
+					valueMax_BD = new BigDecimal(field.getValueMax());
+					value_BD = new BigDecimal(wEditor.getValue().toString());
+
+					if(wEditor2!=null && wEditor2.getValue() != null) {
+						valueTo_BD = new BigDecimal(wEditor2.getValue().toString());
+					}
+				}
+				catch (Exception ex){}
+				
+				try {
+					valueMax_TS = new Timestamp(dateFormat.parse(field.getValueMax()).getTime());
+					value_TS = new Timestamp(dateFormat.parse(wEditor.getValue().toString()).getTime());
+					if(wEditor2!=null && wEditor2.getValue() != null) {
+						valueTo_TS = new java.sql.Timestamp(dateFormat.parse(wEditor2.getValue().toString()).getTime());
+					}
+				}
+				catch (Exception ex){}
+				
+				if(value_BD != null && valueMax_BD !=null) {
+					if(valueMax_BD.compareTo(value_BD) < 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" MoreThanMaxValue", field.getValueMax());
+						return false;
+					}
+					if(valueTo_BD!=null && valueMax_BD.compareTo(valueTo_BD) < 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" To MoreThanMaxValue", field.getValueMax());
+						return false;
+					}
+				}else if(value_TS != null && valueMax_TS != null){
+					if(value_TS.after(valueMax_TS)) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" MoreThanMaxValue", field.getValueMax());
+						return false;
+					}
+					if(valueTo_TS !=null && valueTo_TS.after(valueMax_TS)) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" To MoreThanMaxValue", field.getValueMax());
+						return false;
+					}
+					
+				}else {
+					if(field.getValueMax().compareTo(wEditor.getValue().toString()) < 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" MoreThanMaxValue", field.getValueMax());
+						return false;
+					}
+					if(wEditor2!=null && field.getValueMax().compareTo(wEditor2.getValue().toString()) < 0) {
+						Dialog.error(m_WindowNo, field.getColumnName()+" To MoreThanMaxValue", field.getValueMax());
+						return false;
+					}
+				}
+			}// max value
+		} // field loop
 
 		/** call {@link IProcessParameterListener} validate(ProcessParameterPanel) **/
 		if (m_processInfo.getAD_Process_ID() > 0) {

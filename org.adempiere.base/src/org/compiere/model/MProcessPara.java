@@ -16,10 +16,15 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
@@ -372,6 +377,36 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			MProcess p = MProcess.get(getAD_Process_ID());
 			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getProcedureName()) && Util.isEmpty(p.getJasperReport()))
 				setIsShowNegateButton(true);
+		}
+		
+		if(getValueMin()!=null) {
+			try {
+				if(getAD_Reference_ID()==15) { // Date
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						new Timestamp(dateFormat.parse(getValueMin()).getTime());
+				}
+				else if(getAD_Reference_ID()==11 || getAD_Reference_ID()==12 || getAD_Reference_ID()==22 
+						|| getAD_Reference_ID()==29 || getAD_Reference_ID()==37) { // Number
+					new BigDecimal(getValueMin());
+				}
+			} catch (Exception e) {
+				throw new AdempiereException("Min Value : "+ e.getLocalizedMessage());
+			}
+		}
+
+		if(getValueMax()!=null) {
+			try {
+				if(getAD_Reference_ID()==15) { // Date
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						new Timestamp(dateFormat.parse(getValueMax()).getTime());
+				}
+				else if(getAD_Reference_ID()==11 || getAD_Reference_ID()==12 || getAD_Reference_ID()==22 
+						|| getAD_Reference_ID()==29 || getAD_Reference_ID()==37) { // Number
+					new BigDecimal(getValueMax());
+				}
+			} catch (Exception e) {
+				throw new AdempiereException("Max Value : "+ e.getLocalizedMessage());
+			}
 		}
 
 		return true;
