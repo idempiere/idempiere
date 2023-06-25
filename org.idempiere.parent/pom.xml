@@ -12,7 +12,7 @@
 	<properties>
 		<revision>11.0.0-SNAPSHOT</revision>
 		<jdk.version>17</jdk.version>
-		<tycho.version>3.0.5-SNAPSHOT</tycho.version>
+		<tycho.version>3.0.5</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
@@ -34,14 +34,7 @@
 		<skipClean>false</skipClean>
     	<target.version>17</target.version>
 	</properties>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>tycho-snapshots</id>
-			<url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
+	
 	<build>
 		<pluginManagement>
 			<plugins>
