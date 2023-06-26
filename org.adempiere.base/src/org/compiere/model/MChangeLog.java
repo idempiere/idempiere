@@ -16,15 +16,14 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -63,37 +62,10 @@ public class MChangeLog extends X_AD_ChangeLog
 	 */
 	private static void fillChangeLog()
 	{
-		ArrayList<Integer> list = new ArrayList<Integer>(40);
-		String sql = "SELECT t.AD_Table_ID FROM AD_Table t "
-			+ "WHERE t.IsChangeLog='Y'"					//	also inactive
-			+ " OR EXISTS (SELECT * FROM AD_Column c "
-				+ "WHERE t.AD_Table_ID=c.AD_Table_ID AND c.ColumnName='EntityType') "
-			+ "ORDER BY t.AD_Table_ID";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-				list.add(Integer.valueOf(rs.getInt(1)));
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		//	Convert to Array
-		s_changeLog = new int [list.size()];
-		for (int i = 0; i < s_changeLog.length; i++)
-		{
-			Integer id = (Integer)list.get(i);
-			s_changeLog[i] = id.intValue();
-		}
+		final String where = "IsChangeLog='Y' OR EXISTS (SELECT * FROM AD_Column c WHERE AD_Table.AD_Table_ID=c.AD_Table_ID AND c.ColumnName='EntityType')";
+		s_changeLog = new Query(Env.getCtx(), MTable.Table_Name, where, null)
+				.setOrderBy(MTable.COLUMNNAME_AD_Table_ID)
+				.getIDs();
 		if (s_log.isLoggable(Level.INFO)) s_log.info("#" + s_changeLog.length);
 	}	//	fillChangeLog
 

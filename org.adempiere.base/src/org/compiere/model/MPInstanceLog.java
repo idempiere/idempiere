@@ -20,10 +20,12 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Process Instance Log Model.
@@ -46,11 +48,11 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 	  int P_ID, BigDecimal P_Number, String P_Msg)
 	{
-		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0);
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0, X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
 	}	//	MPInstance_Log
 
 	/**
-	 * Full Constructor
+	 * Constructor without PInstanceLogType
 	 * @param AD_PInstance_ID
 	 * @param Log_ID
 	 * @param P_Date
@@ -63,6 +65,43 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID)
 	{
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
+	}	//	MPInstance_Log
+	
+	/**
+	 * Constructor without AD_PInstance_Log_UU
+	 * @param AD_PInstance_ID
+	 * @param Log_ID
+	 * @param P_Date
+	 * @param P_ID
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param PInstanceLogType Log Type
+	 */
+	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
+	{
+		this("", AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, PInstanceLogType);
+	}
+	
+	/**
+	 * Full Constructor
+	 * @param AD_PInstance_Log_UU
+	 * @param AD_PInstance_ID
+	 * @param Log_ID
+	 * @param P_Date
+	 * @param P_ID
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param PInstanceLogType Log Type
+	 */
+	public MPInstanceLog (String AD_PInstance_Log_UU, int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
+	{
 		setAD_PInstance_ID(AD_PInstance_ID);
 		setLog_ID(Log_ID);
 		setP_Date(P_Date);
@@ -71,6 +110,9 @@ public class MPInstanceLog
 		setP_Msg(P_Msg);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setPInstanceLogType(PInstanceLogType);
+		if(!Util.isEmpty(AD_PInstance_Log_UU))
+			setAD_PInstance_Log_UU(AD_PInstance_Log_UU);
 	}	//	MPInstance_Log
 
 	/**
@@ -97,6 +139,8 @@ public class MPInstanceLog
 	private String m_P_Msg;
 	private int m_AD_Table_ID;
 	private int m_Record_ID;
+	private String m_PInstanceLogType;
+	private String m_AD_PInstance_Log_UU;
 
 
 	/**
@@ -121,8 +165,18 @@ public class MPInstanceLog
 
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
-			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU)"
-			+ " VALUES (?,?,?,?,?,?,?,?,?)";
+			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
+			+ " VALUES (?,?,?,?,?,?,?,?,?,?) ";
+	
+	private final static String updateSql = "UPDATE AD_PInstance_Log "
+			+ " SET P_Date = ?, "
+			+ " 	P_ID = ?, "
+			+ " 	P_Number = ?, "
+			+ " 	P_Msg = ?, "
+			+ " 	AD_Table_ID = ?, "
+			+ " 	Record_ID = ?, "
+			+ " 	PInstanceLogType = ? "
+			+ " WHERE AD_PInstance_Log_UU = ? ";
 
 	/**
 	 *	Save to Database
@@ -130,7 +184,7 @@ public class MPInstanceLog
 	 */
 	public boolean save ()
 	{
-		int no = DB.executeUpdate(insertSql, getInsertParams(), false, null);	//	outside of trx
+		int no = DB.executeUpdate(insertSql, getParams(true), false, null);	//	outside of trx
 		return no == 1;
 	} 	//	save
 
@@ -139,35 +193,70 @@ public class MPInstanceLog
 	 */
 	public void saveEx ()
 	{
-		DB.executeUpdateEx(insertSql, getInsertParams(), null);	//	outside of trx
+		DB.executeUpdateEx(insertSql, getParams(true), null);	//	outside of trx
 	} 	//	saveEx
 
-	private Object[] getInsertParams() {
+	/**
+	 *	Update record in Database
+	 * 	@return true if saved
+	 */
+	public boolean update ()
+	{
+		int no = DB.executeUpdate(updateSql, getParams(false), false, null);	//	outside of trx
+		return no == 1;
+	} 	//	update
+
+	/**
+	 *	Update record in Database, throwing Exception
+	 */
+	public void updateEx ()
+	{
+		DB.executeUpdateEx(updateSql, getParams(false), null);	//	outside of trx
+	} 	//	updateEx
+	
+	/**
+	 * Get parameters for SQL INSERT or UPDATE
+	 * @param isInsert - if true, get parameters for INSERT, else get parameters for UPDATE
+	 * @return Object[] parameters
+	 */
+	private Object[] getParams(boolean isInsert) {
 		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
 		int maxMsgLength = colMsg.getFieldLength();
-		Object[] params = new Object[9];
-		params[0] = m_AD_PInstance_ID;
-		params[1] = m_Log_ID;
-		if (m_P_Date != null)
-			params[2] = m_P_Date;
-		if (m_P_ID != 0)
-			params[3] = m_P_ID;
-		if (m_P_Number != null)
-			params[4] = m_P_Number;
-		if (m_P_Msg != null) {
-			if (m_P_Msg.length() > maxMsgLength)
-				params[5] = m_P_Msg.substring(0,  maxMsgLength);
-			else
-				params[5] = m_P_Msg;
+		ArrayList<Object> params = new ArrayList <Object>();
+		
+		
+		if(isInsert) {
+			params.add(m_AD_PInstance_ID);
+			params.add(m_Log_ID);
 		}
-		if (m_AD_Table_ID != 0)
-			params[6] = m_AD_Table_ID;
-		if (m_Record_ID != 0)
-			params[7] = m_Record_ID;
-		params[8] = UUID.randomUUID().toString();
-		return params;
-	}
-
+		params.add(m_P_Date != null ? m_P_Date : null);
+		
+		params.add(m_P_ID != 0 ? m_P_ID : null);
+		
+		params.add(m_P_Number != null ? m_P_Number : null);
+		
+		if (m_P_Msg != null) {
+			params.add(m_P_Msg.length() > maxMsgLength ? m_P_Msg.substring(0,  maxMsgLength) : m_P_Msg);
+		}
+		else {
+			params.add(null);
+		}
+		
+		params.add(m_AD_Table_ID != 0 ? m_AD_Table_ID : null);
+		
+		params.add(m_Record_ID != 0 ? m_Record_ID : null);
+		
+		if(isInsert)
+			params.add(getAD_PInstance_Log_UU());
+		
+		params.add(m_PInstanceLogType);
+		
+		if(!isInsert)
+			params.add(getAD_PInstance_Log_UU());
+		
+		return params.toArray();
+	}	//	getParams
+	
 	/**
 	 * 	Get AD_PInstance_ID
 	 *	@return Instance id
@@ -310,6 +399,40 @@ public class MPInstanceLog
 	public void setRecord_ID(int recordId)
 	{
 		m_Record_ID = recordId;
+	}
+
+	/**
+	 * Get Log Type
+	 * @return Log Type
+	 */
+	public String getPInstanceLogType() {
+		return m_PInstanceLogType;
+	}
+
+	/**
+	 * Set Log Type
+	 * @param m_PInstanceLogType
+	 */
+	public void setPInstanceLogType(String m_PInstanceLogType) {
+		this.m_PInstanceLogType = m_PInstanceLogType;
+	}
+
+	/**
+	 * Set AD_PInstance_Log_UU
+	 * @return Sting AD_PInstance_Log_UU
+	 */
+	public String getAD_PInstance_Log_UU() {
+		if(Util.isEmpty(m_AD_PInstance_Log_UU))
+			m_AD_PInstance_Log_UU = UUID.randomUUID().toString();
+		return m_AD_PInstance_Log_UU;
+	}
+	
+	/**
+	 * Get AD_PInstance_Log_UU
+	 * @param m_AD_PInstance_Log_UU
+	 */
+	public void setAD_PInstance_Log_UU(String m_AD_PInstance_Log_UU) {
+		this.m_AD_PInstance_Log_UU = m_AD_PInstance_Log_UU;
 	}
 
 } //	MPInstance_Log

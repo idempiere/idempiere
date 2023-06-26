@@ -76,6 +76,7 @@ public class CalloutTimeExpense extends CalloutEngine
 				+ " AND pp.M_PriceList_Version_ID=pv.M_PriceList_Version_ID"
 				+ " AND pv.M_PriceList_ID=pl.M_PriceList_ID"
 				+ " AND pv.IsActive='Y'"
+				+ " AND pp.IsActive='Y'"
 				+ " AND p.M_Product_ID=?"		//	1
 				+ " AND pl.M_PriceList_ID=?"	//	2
 				+ " ORDER BY pv.ValidFrom DESC";
@@ -117,6 +118,7 @@ public class CalloutTimeExpense extends CalloutEngine
 					+ " AND pp.M_PriceList_Version_ID=pv.M_PriceList_Version_ID"
 					+ " AND pv.M_PriceList_ID=bpl.M_PriceList_ID"
 					+ " AND pv.IsActive='Y'"
+					+ " AND pp.IsActive='Y'"
 					+ " AND bpl.M_PriceList_ID=pl.BasePriceList_ID"	//	Base
 					+ " AND p.M_Product_ID=?"		//  1
 					+ " AND pl.M_PriceList_ID=?"	//	2

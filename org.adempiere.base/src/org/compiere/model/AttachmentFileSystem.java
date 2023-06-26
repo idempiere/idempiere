@@ -282,7 +282,11 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		
 		StringBuilder msgreturn = new StringBuilder().append(attach.getAD_Client_ID()).append(File.separator)
 				.append(attach.getAD_Org_ID()).append(File.separator)
-				.append(attach.getAD_Table_ID()).append(File.separator).append(attach.getRecord_ID());
+				.append(attach.getAD_Table_ID()).append(File.separator);
+		if (attach.getRecord_ID() > 0)
+			msgreturn.append(attach.getRecord_ID());
+		else
+			msgreturn.append(attach.getRecord_UU());
 		return msgreturn.toString();
 	}
 

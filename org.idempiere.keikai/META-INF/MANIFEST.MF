@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: zk keikai
 Bundle-SymbolicName: org.idempiere.keikai
 Bundle-Version: 11.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Bundle-ClassPath: .,
  lib/keikai-oss.jar,
  lib/keikai-model-oss.jar,

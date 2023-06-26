@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="11.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="11.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
 
    <configIni use="default">
    </configIni>
@@ -24,7 +24,7 @@
    </launcher>
 
    <vm>
-      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11</linux>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17</linux>
    </vm>
 
    <plugins>

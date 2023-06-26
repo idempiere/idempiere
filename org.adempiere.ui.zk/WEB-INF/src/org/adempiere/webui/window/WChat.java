@@ -66,8 +66,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5265835393257520762L;
-	
+	private static final long serialVersionUID = 8839053486411714175L;
+
 	private static final String USER_LABEL_STYLE = "font-weight: bold";
 	private static final String TIME_LABEL_STYLE = "font-size:xx-small;color:gray;margin-left:20px";
 
@@ -78,11 +78,12 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	 *  @param CM_Chat_ID chat
 	 *  @param AD_Table_ID table
 	 *  @param Record_ID record key
+	 *  @param Record_UU record UUID
 	 *  @param Description description
 	 *  @param trxName transaction
 	 */
 	public WChat (int WindowNo, int CM_Chat_ID,
-		int AD_Table_ID, int Record_ID, String Description,
+		int AD_Table_ID, int Record_ID, String Record_UU, String Description,
 		String trxName)
 	{
 		super();
@@ -104,7 +105,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		if (CM_Chat_ID > 0)
 			m_chat = new MChat (Env.getCtx(), CM_Chat_ID, trxName);
 		else
-			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Description, trxName);
+			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Record_UU, Description, trxName);
 		loadChat();
 		//
 	}	//	Attachment

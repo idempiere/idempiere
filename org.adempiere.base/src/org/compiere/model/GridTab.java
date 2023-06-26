@@ -810,7 +810,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			+ " INNER JOIN AD_Column cc ON (r.AD_Key=cc.AD_Column_ID) "
 			+ "WHERE c.AD_Reference_ID IN (?,?,?,?)"
 			+ " AND c.ColumnName=?";
-		String refColName = DB.getSQLValueStringEx(null, sql1, DisplayType.Table, DisplayType.Search, DisplayType.TableUU, DisplayType.SearchUU);
+		String refColName = DB.getSQLValueStringEx(null, sql1, DisplayType.Table, DisplayType.Search, DisplayType.TableUU, DisplayType.SearchUU, colName);
 		//	Reference Column found
 		if (refColName != null)
 		{
@@ -2104,7 +2104,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean canHaveAttachment()
 	{
-		if (getKeyColumnName().endsWith("_ID"))
+		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU"))
 			return true;
 		return false;
 	}   //	canHaveAttachment
@@ -2126,8 +2126,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return 0;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MAttachment.getID(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MAttachment.getID(m_vo.AD_Table_ID, recordUU);
 	}	//	getAttachmentID
 
 	/**
@@ -2147,8 +2147,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return 0;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MChat.getID(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MChat.getID(m_vo.AD_Table_ID, recordUU);
 	}	//	getCM_ChatID
 	
 	public boolean hasPostIt()
@@ -2164,8 +2164,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return 0;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MPostIt.getID(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MPostIt.getID(m_vo.AD_Table_ID, recordUU);
 	}	//	getAD_PostIt_ID	
 	
 	/**
@@ -2176,8 +2176,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return false;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordUU);
 	}	//	hasLabel
 
 	/**
@@ -2769,8 +2769,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		if (log.isLoggable(Level.FINE)) log.fine(field.getColumnName() + "=" + value + " - Row=" + m_currentRow);
 
-		if (DisplayType.isID(field.getDisplayType()) && value instanceof Integer && ((Integer)value).intValue() < 0)
-			value = null;
+		if (value instanceof Integer) {
+			if (((Integer)value).intValue() < 0 && DisplayType.isID(field.getDisplayType())) {
+				value = null;
+			} else if (((Integer)value).intValue() == 0 && field.isLookup()) {
+				MColumn column = MColumn.get(field.getAD_Column_ID());
+				if (! MTable.isZeroIDTable(column.getReferenceTableName()))
+					value = null;
+			}
+		}
 
 		int col = m_mTable.findColumn(field.getColumnName());
 		m_mTable.setValueAt(value, m_currentRow, col, false);

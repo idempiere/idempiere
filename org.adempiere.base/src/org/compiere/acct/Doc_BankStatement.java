@@ -54,7 +54,7 @@ public class Doc_BankStatement extends Doc
 	 */
 	public Doc_BankStatement (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (as, MBankStatement.class, rs, DOCTYPE_BankStatement, trxName);
+		super (as, MBankStatement.class, rs, null, trxName);
 	}	//	Doc_Bank
 
 	/** Bank Account			*/

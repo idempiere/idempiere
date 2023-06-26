@@ -1152,9 +1152,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onAttachment()
     {
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+    	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
 		if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + record_ID);
 
-		if (record_ID == -1)	//	No Key
+		if (record_ID== -1 && Util.isEmpty(recordUU))	//	No Key
 		{
 			return;
 		}
@@ -1168,7 +1169,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		};
 		//	Attachment va =
 		WAttachment win = new WAttachment (	curWindowNo, adTabbox.getSelectedGridTab().getAD_AttachmentID(),
-							adTabbox.getSelectedGridTab().getAD_Table_ID(), record_ID, null, listener);		
+							adTabbox.getSelectedGridTab().getAD_Table_ID(), record_ID, recordUU, null, listener);		
 		win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -1185,9 +1186,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onChat()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
-    	if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + recordId);
+    	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
+    	if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + recordId + ", Record_UU=" + recordUU);
 
-		if (recordId== -1)	//	No Key
+		if (recordId== -1 && Util.isEmpty(recordUU))	//	No Key
 		{
 			return;
 		}
@@ -1211,7 +1213,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 		String description = infoName + ": " + infoDisplay;
 
-    	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, description, null);
+    	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(),
+    			recordId, recordUU, description, null);
     	chat.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -1232,7 +1235,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onPostIt()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
-    	if (recordId== -1)	//	No Key
+    	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
+		if (recordId== -1 && Util.isEmpty(recordUU))	//	No Key
     	{
     		return;
     	}
@@ -1253,7 +1257,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	String header = infoName + ": " + infoDisplay;
 
-    	WPostIt postit = new WPostIt(header, adTabbox.getSelectedGridTab().getAD_PostIt_ID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, null);
+    	WPostIt postit = new WPostIt(header, adTabbox.getSelectedGridTab().getAD_PostIt_ID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, recordUU, null);
     	postit.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
     		@Override
     		public void onEvent(Event event) throws Exception {
@@ -2057,7 +2061,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             canHaveAttachment = false;
         }
-        if (canHaveAttachment && adTabbox.getSelectedGridTab().getRecord_ID() == -1)    //   No Key
+        if (canHaveAttachment && adTabbox.getSelectedGridTab().getRecord_ID() == -1 && Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU()))    //   No Key
         {
             canHaveAttachment = false;
         }
@@ -2078,7 +2082,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             canHaveChat = false;
         }
-        if (canHaveChat && adTabbox.getSelectedGridTab().getRecord_ID() == -1)    //   No Key
+        if (canHaveChat && adTabbox.getSelectedGridTab().getRecord_ID() == -1 && Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU()))    //   No Key
         {
             canHaveChat = false;
         }
@@ -3246,8 +3250,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result) {
 					int table_ID = adTabbox.getSelectedGridTab().getAD_Table_ID();
 					int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+					String record_UU = adTabbox.getSelectedGridTab().getRecord_UU();
 
-					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
+					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, record_UU, true);
 					if (dialog.isValid()) {
 						dialog.setBorder("normal");						
 						getComponent().getParent().appendChild(dialog);
@@ -3416,10 +3421,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		if (toolbar.getEvent() != null)
 		{
-			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
-				return;
-
-			new WArchive(toolbar.getToolbarItem("Archive"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+			new WArchive(toolbar.getToolbarItem("Archive"),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(),
+					adTabbox.getSelectedGridTab().getRecord_ID(),
+					adTabbox.getSelectedGridTab().getRecord_UU());
 		}
 	}
 
