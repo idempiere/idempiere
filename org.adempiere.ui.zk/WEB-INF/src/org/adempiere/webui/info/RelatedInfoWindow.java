@@ -324,9 +324,22 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 
 		long startTime = System.currentTimeMillis();
         dataSql = info.getInfoSql();
+        
+        // Other Clause and Order By clause
+        String otherClause = info.getInfowin().getOtherClause();
+        String orderByClause = info.getInfowin().getOrderByClause();
+        if (!Util.isEmpty(otherClause)) {
+        	dataSql = dataSql + " " + otherClause;
+        }
         if (!Util.isEmpty(m_sqlUserOrder)) {
         	dataSql = dataSql + m_sqlUserOrder;
+        	if(!Util.isEmpty(orderByClause))
+        		dataSql = dataSql + orderByClause;
         }
+        else if(!Util.isEmpty(orderByClause)) {
+        	dataSql = dataSql + " ORDER BY " + orderByClause;
+        }
+        //
         isHasNextPage = false;
         if (log.isLoggable(Level.FINER))
         	log.finer(dataSql);
