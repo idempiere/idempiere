@@ -3250,8 +3250,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result) {
 					int table_ID = adTabbox.getSelectedGridTab().getAD_Table_ID();
 					int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+					String record_UU = adTabbox.getSelectedGridTab().getRecord_UU();
 
-					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
+					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, record_UU, true);
 					if (dialog.isValid()) {
 						dialog.setBorder("normal");						
 						getComponent().getParent().appendChild(dialog);
@@ -3420,10 +3421,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		if (toolbar.getEvent() != null)
 		{
-			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
-				return;
-
-			new WArchive(toolbar.getToolbarItem("Archive"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+			new WArchive(toolbar.getToolbarItem("Archive"),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(),
+					adTabbox.getSelectedGridTab().getRecord_ID(),
+					adTabbox.getSelectedGridTab().getRecord_UU());
 		}
 	}
 

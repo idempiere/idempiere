@@ -742,7 +742,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
 				from, "", "", "", new FileDataSource(attachment),
-				m_WindowNo, m_AD_Table_ID, m_Record_ID, null);
+				m_WindowNo, ar.getAD_Table_ID(), ar.getRecord_ID(), ar.getRecord_UU(), null);
 
 		AEnv.showWindow(dialog);
 	}
@@ -867,14 +867,27 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	 * 	Execute query.
 	 *	@param isReport report
 	 *	@param AD_Table_ID table
-	 *	@param Record_ID tecord
-	 */	
-	public void query (boolean isReport, int AD_Table_ID, int Record_ID)
+	 *	@param Record_ID record
+	 */
+	public void query(boolean isReport, int AD_Table_ID, int Record_ID)
 	{
-		if (log.isLoggable(Level.CONFIG)) log.config("Report=" + isReport + ", AD_Table_ID=" + AD_Table_ID + ",Record_ID=" + Record_ID);
+		query(isReport, AD_Table_ID, Record_ID, null);
+	}
+
+	/**
+	 * 	Execute query.
+	 *	@param isReport report
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record ID
+	 *	@param Record_UU record UUID
+	 */	
+	public void query(boolean isReport, int AD_Table_ID, int Record_ID, String Record_UU)
+	{
+		if (log.isLoggable(Level.CONFIG)) log.config("Report=" + isReport + ", AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + ", Record_UU=" + Record_UU);
 		reportField.setChecked(isReport);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
+		m_Record_UU = Record_UU;
 		cmd_query();
 	}	//	query	
 	
