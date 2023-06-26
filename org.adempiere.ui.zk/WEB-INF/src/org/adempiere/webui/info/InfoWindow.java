@@ -873,6 +873,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				String s_sqlFrom = embedInfo.getFromClause();
 				/** Where Clause						*/
 				String s_sqlWhere = relatedInfo.getLinkColumnName() + "=?";
+				String infoWhere = embedInfo.getWhereClause(); 
+				if(!Util.isEmpty(infoWhere))
+					s_sqlWhere += " AND (" + infoWhere + ")";
 				String s_sqlCount = "SELECT COUNT(*) FROM " + s_sqlFrom + " WHERE " + s_sqlWhere;
 				m_sqlEmbedded = embeddedTbl.prepareTable(s_layoutEmbedded, s_sqlFrom, s_sqlWhere, false, tableName);
 
