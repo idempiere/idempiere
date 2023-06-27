@@ -1724,18 +1724,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             		fQueryName.setReadonly(false); 
             	}
             	msgLabel.setText("");
-
-            	if(index == 0) 
-            	{ // no query - wipe and start over.
-            		List<?> rowList = advancedPanel.getChildren();
-            		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
-            			rowList.remove(rowIndex);
-            		createFields();  
-            	}
-    			else
-    			{
-    				parseUserQuery(userQueries[index-1]);
-    			}
+            	onSelectedQueryChanged();
     		}
         	else if (event.getTarget() instanceof Combobox)
             {
@@ -2010,8 +1999,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
 		else {
 			MUserQuery uq = userQueries[index-1];
-			btnSave.setDisabled(!uq.userCanSave());
-			btnShare.setDisabled(!uq.userCanShare());
+			btnSave.setDisabled(!uq.userCanSave() || uq.getCode().startsWith("@SQL="));
+			btnShare.setDisabled(!uq.userCanShare() || uq.getCode().startsWith("@SQL="));
 			parseUserQuery(userQueries[index-1]);
 		}
     }
