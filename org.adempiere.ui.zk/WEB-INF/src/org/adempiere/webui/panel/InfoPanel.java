@@ -338,7 +338,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		addEventListener(ON_RUN_PROCESS, this);
 		addEventListener(ON_SELECT_ALL_RECORDS, this);
 		addEventListener(Events.ON_CLOSE, this);
-		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	InfoPanel
 
 	/**
