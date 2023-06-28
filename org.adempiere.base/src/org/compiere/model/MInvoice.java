@@ -392,7 +392,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			setDateInvoiced(invoiceDate);
 		setDateAcct(getDateInvoiced());
 		//
-		setSalesRep_ID(ship.getSalesRep_ID());
+		if (getSalesRep_ID() == 0)
+			setSalesRep_ID(ship.getSalesRep_ID());
 	}	//	MInvoice
 
 	/**
@@ -625,6 +626,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			setC_BPartner_Location_ID(order.getBill_Location_ID());
 			// Overwrite Contact
 			setAD_User_ID(order.getBill_User_ID());
+			setSalesRep_ID(order.getSalesRep_ID());
 			//
 		}
         // Check if Shipment/Receipt is based on RMA
@@ -3208,6 +3210,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		{
 			setPaymentRule(order.getPaymentRule());
 			setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
+			setSalesRep_ID(order.getSalesRep_ID());
 			saveEx();
 			load(get_TrxName()); // refresh from DB
 			// copy payment schedule from order if invoice doesn't have a current payment schedule
