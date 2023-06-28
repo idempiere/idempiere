@@ -1998,8 +1998,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
 		else {
 			MUserQuery uq = userQueries[index-1];
-			btnSave.setDisabled(!uq.userCanSave() || uq.getCode().startsWith("@SQL="));
-			btnShare.setDisabled(!uq.userCanShare() || uq.getCode().startsWith("@SQL="));
+			btnSave.setDisabled(!uq.userCanSave());
+			btnShare.setDisabled(!uq.userCanShare());
 			parseUserQuery(userQueries[index-1]);
 		}
     }
