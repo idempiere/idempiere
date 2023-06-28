@@ -994,6 +994,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected void cancelProcess() 
 	{
 		m_cancel = true;
+		if(getParent() != null && getParent() instanceof HtmlBasedComponent)
+			((HtmlBasedComponent)getParent()).focus();
 		this.dispose();
 	}
 	
