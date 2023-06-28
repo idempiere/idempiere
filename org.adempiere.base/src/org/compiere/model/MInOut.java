@@ -2940,6 +2940,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setC_Project_ID(order.getC_Project_ID());
 			setC_Campaign_ID(order.getC_Campaign_ID());
 			setC_Activity_ID(order.getC_Activity_ID());
+			setSalesRep_ID (order.getSalesRep_ID());
 			setUser1_ID(order.getUser1_ID());
 			setUser2_ID(order.getUser2_ID());
 
