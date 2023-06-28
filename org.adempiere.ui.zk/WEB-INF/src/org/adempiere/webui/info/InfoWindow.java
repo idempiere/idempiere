@@ -2114,14 +2114,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
      * @return String parsed sql
      */
     private String appendOrderByToSelectList(String sql, String orderBy) {
-    	if(Util.isEmpty(sql) || Util.isEmpty(orderBy))
+    	if(Util.isEmpty(orderBy))
     		return sql;
 		int idxFrom = getIdxFrom(sql);
 		if(idxFrom < 0)
 			return sql;
 	
 		String select = sql.substring(0, idxFrom);
-		select += ", " + orderBy.replace("ORDER BY", "").replace("ASC", "").replace("DESC", "");
+		select += ", " + orderBy.replaceFirst("\\s+ORDER BY\\s+", "").replaceAll("\\s+ASC\\s+", "").replaceAll("\\s+DESC\\s+", "");	// \s+ stands for one or more whitespace character
 		return select + sql.substring(idxFrom);
     }
 
@@ -2143,7 +2143,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				else if (c == '(')
 					parenthesisLevel++;
 	
-				if(sql.substring(i).startsWith("FROM") && parenthesisLevel == 0)
+				// RegEx ^(\s+FROM)(\s) checks for <whitespace>FROM<whitespace> pattern
+				if(sql.substring(i, i+6).toUpperCase().matches("^(\\s+FROM)(\\s)") && parenthesisLevel == 0)
 					return i;
 		}
 	

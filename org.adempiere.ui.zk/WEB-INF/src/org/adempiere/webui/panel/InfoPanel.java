@@ -1320,7 +1320,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (indexOrderColumn > 0 && (indexOrderColumn + 1 > p_layout.length || !p_layout[indexOrderColumn].getColSQL().trim().equals(sqlOrderColumn))) {
 			// try to find out new index of ordered column, in case has other column is hide or display
 			for (int testIndex = 0; testIndex < p_layout.length; testIndex++) {
-				if (p_layout[testIndex].getColSQL().trim().equals(sqlOrderColumn) || sqlOrderColumn.equals(p_layout[testIndex].getDisplayColumn())) {
+				if (p_layout[testIndex].getColSQL().trim().equals(sqlOrderColumn) || p_layout[testIndex].getDisplayColumn().equals(sqlOrderColumn)) {
 					indexOrderColumn = testIndex;
 					break;
 				}
@@ -1328,7 +1328,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			
 			// index still incorrect and can't find out new index (ordered column become hide column)
 			if (indexOrderColumn > 0 && (indexOrderColumn + 1 > p_layout.length
-					|| (!sqlOrderColumn.equals(p_layout[indexOrderColumn].getColSQL().trim()) && !p_layout[indexOrderColumn].getDisplayColumn().equals(sqlOrderColumn)))) {
+					|| (!p_layout[indexOrderColumn].getColSQL().trim().equals(sqlOrderColumn) && !p_layout[indexOrderColumn].getDisplayColumn().equals(sqlOrderColumn)))) {
 				indexOrderColumn = -1;
 				sqlOrderColumn = null;
 				m_sqlUserOrder = null;
@@ -1461,15 +1461,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private String getWhereForOrderBy(ColumnInfo orderColumnInfo) {
 		MTable table = getTable(orderColumnInfo.getAD_Reference_Value_ID(), orderColumnInfo.getColumnName());
 		String tableName = table.getTableName();
-		String[] keyCols = table.getKeyColumns();
+		String keyCol = table.getKeyColumns()[0];
 		String sqlSelect = orderColumnInfo.getSelectClause();
 		String whereClause = "";
 		
-		for(String keyCol : keyCols) {
-			if(!Util.isEmpty(whereClause))
-				whereClause += " AND ";
-			whereClause += tableName + "." + keyCol + " = " + sqlSelect;
-		}
+		whereClause += tableName + "." + keyCol + " = " + sqlSelect;
 		return whereClause;
 	}
 	
@@ -3118,7 +3114,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if(refValID > 0) {
 			return MTable.get(Env.getCtx(), MRefTable.get(Env.getCtx(), refValID).getAD_Table_ID());
 		}
-		else if (columnName.endsWith("_ID")) {
+		else if (columnName.endsWith("_ID") || columnName.endsWith("_UU")) {
 			return MTable.get(Env.getCtx(), columnName.substring(0, columnName.length() - 3));
 		}
 		else {

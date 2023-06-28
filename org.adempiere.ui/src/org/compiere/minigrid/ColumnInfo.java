@@ -343,7 +343,7 @@ public class ColumnInfo
 	 * @return DisplayColumn
 	 */
 	public String getDisplayColumn() {
-		return m_displayColumn;
+		return m_displayColumn != null ? m_displayColumn : "";
 	}
 
 	/**
