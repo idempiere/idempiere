@@ -26,6 +26,7 @@ package org.adempiere.report.jasper;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.function.BiFunction;
 
 import org.adempiere.apps.graph.ChartBuilder;
@@ -97,6 +98,10 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 							return getLocator((Number) key);
 						} else if (DisplayType.PAttribute == column.getAD_Reference_ID() && (key instanceof Number)) {
 							return getAttributeSetInstance((Number) key);
+						} else  if (DisplayType.isNumeric(column.getAD_Reference_ID())) {
+							return DisplayType.getNumberFormat(column.getAD_Reference_ID(), language).format((Number) key);
+						} else if (DisplayType.isDate(column.getAD_Reference_ID())) {
+							return DisplayType.getDateFormat(column.getAD_Reference_ID(), language).format((Date) key);
 						}
 					}
 				}
