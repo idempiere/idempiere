@@ -285,7 +285,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	
     /** IDEMPIERE-2836  User Query Where */
     private String          m_whereUserQuery;
-    /** Toolbar for avdance search tab. North of {@link #winAdvanced}. */
+    /** Toolbar for advance search tab. North of {@link #winAdvanced}. */
     private ToolBar advancedPanelToolBar;
     
     /**IDEMPIERE-4085*/
@@ -633,7 +633,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listhead.appendChild(lstHQueryTo);
         listhead.appendChild(lstHRightBracket);
         advancedPanel.appendChild(listhead);
-        ZKUpdateUtil.setVflex(advancedPanel, true);
 
         Borderlayout layout = new Borderlayout();
         ZKUpdateUtil.setHflex(layout, "1");
@@ -1723,18 +1722,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             		fQueryName.setReadonly(false); 
             	}
             	msgLabel.setText("");
-
-            	if(index == 0) 
-            	{ // no query - wipe and start over.
-            		List<?> rowList = advancedPanel.getChildren();
-            		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
-            			rowList.remove(rowIndex);
-            		createFields();  
-            	}
-    			else
-    			{
-    				parseUserQuery(userQueries[index-1]);
-    			}
+            	onSelectedQueryChanged();
     		}
         	else if (event.getTarget() instanceof Combobox)
             {
@@ -3559,6 +3547,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private void showAdvanced() {
 		advancedPanelToolBar.setVisible(true);
 		advancedPanel.setVisible(true);
+		winAdvanced.invalidate();
 	}
 	
 	/**
