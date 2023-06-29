@@ -138,9 +138,29 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 */
 	public WEMailDialog(String title, MUser from, String to, String subject, String message, DataSource attachment,
 			int m_WindowNo, int ad_Table_ID, int record_ID, PrintInfo printInfo) {
+		this(title, from, to, subject, message, attachment, m_WindowNo, ad_Table_ID, record_ID, null, printInfo);
+	}
+
+	/**
+	 * EMail Dialog
+	 * @param title title
+	 * @param from from
+	 * @param to to 
+	 * @param subject subject
+	 * @param message message
+	 * @param attachment optional attachment
+	 * @param m_WindowNo
+	 * @param ad_Table_ID
+	 * @param record_ID
+	 * @param record_UU
+	 * @param printInfo
+	 */
+	public WEMailDialog(String title, MUser from, String to, String subject, String message, DataSource attachment,
+			int m_WindowNo, int ad_Table_ID, int record_ID, String record_UU, PrintInfo printInfo) {
 		super();
 		this.m_AD_Table_ID = ad_Table_ID;
 		this.m_Record_ID = record_ID;
+		this.m_Record_UU = record_UU;
         this.setTitle(title);
         this.setSclass("popup-dialog email-dialog");
 		this.setClosable(true);
@@ -167,7 +187,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		commonInit(from, to, subject, message, attachment);	
 
 		clearEMailContext(m_WindowNo);
-		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, null, "");
+		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, m_Record_UU, null, "");
 		setValuesFromContext(m_WindowNo);
 	}
 
@@ -224,6 +244,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private String  m_subject;
 	private String  m_message;
 	private int m_Record_ID;
+	private String m_Record_UU;
 	private int m_AD_Table_ID;
 	/**	File to be optionally attached	*/
 	private DataSource	m_attachment;
@@ -952,12 +973,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * @param windowNo
 	 * @param tableId
 	 * @param recordId
+	 * @param recordUU
 	 * @param printInfo
 	 * @param subject
 	 */
-	private void sendEvent(int windowNo, int tableId, int recordId, PrintInfo printInfo, String subject) {
-		ReportSendEMailEventData eventData = new ReportSendEMailEventData(windowNo, tableId, recordId, printInfo,
-				subject);
+	private void sendEvent(int windowNo, int tableId, int recordId, String recordUU, PrintInfo printInfo, String subject) {
+		ReportSendEMailEventData eventData = new ReportSendEMailEventData(windowNo, tableId, recordId, recordUU, printInfo, subject);
 		org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.REPORT_SEND_EMAIL, eventData);
 		EventManager.getInstance().sendEvent(event);
 	}
