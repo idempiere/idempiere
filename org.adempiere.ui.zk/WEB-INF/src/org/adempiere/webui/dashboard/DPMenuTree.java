@@ -17,27 +17,31 @@ package org.adempiere.webui.dashboard;
 import org.adempiere.webui.panel.MenuTreePanel;
 
 /**
- * Dashboard item: Menu Tree
+ * Dashboard gadget: Menu Tree
  * @author Elaine
  * @date July 31, 2012
  */
 public class DPMenuTree extends DashboardPanel {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3095921038206382907L;
 	
 	private MenuTreePanel menuTreePanel;
 
+	/**
+	 * Default constructor
+	 */
 	public DPMenuTree()
 	{
 		super();
 		
 		menuTreePanel = new MenuTreePanel(this);
-        this.appendChild(menuTreePanel);
 	}
 	
+	/**
+	 * @return {@link MenuTreePanel}
+	 */
 	public MenuTreePanel getMenuTreePanel()
 	{
 		return menuTreePanel;

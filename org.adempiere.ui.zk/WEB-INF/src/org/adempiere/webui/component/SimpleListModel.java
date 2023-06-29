@@ -31,29 +31,39 @@ import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * 
+ * List model for {@link Listbox} that also implements {@link ListitemRenderer} interface. 
  * @author Low Heng Sin
- *
  */
 public class SimpleListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt, Sortable<Object> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -572148106182756840L;
 
+	/** List backing this model instance */
 	protected List<Object> list;
 	
+	/** Comparator for sorting */
 	private Comparator<Object> _sorting;
 
+	/** Sort Direction. True for Ascending, False for Descrending */
 	private boolean _sortDir;
 	
+	/** Max length for each column (value <= 0 means no Max length) */
 	private int[] maxLength;
 
+	/**
+	 * Default constructor
+	 */
 	public SimpleListModel() {
 		this(new ArrayList<Object>());
 	}
 	
+	/**
+	 * Create model from list
+	 * @param list List<?>
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleListModel(List<?> list) {
 		this.list = (List<Object>)list;
@@ -72,6 +82,13 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		return list.size();
 	}
 
+	/**
+	 * Truncate src to maxLength.<br/> 
+	 * "..." will be added to the end of truncated text to indicate text have been truncated.
+	 * @param src Input text
+	 * @param maxLength Maximum length of text
+	 * @return truncated text
+	 */
 	protected StringBuffer truncate(String src, int maxLength) {
 		int j = maxLength;
 		while (j > 0 && Character.isWhitespace(src.charAt(j - 1)))
@@ -92,6 +109,12 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		}		
 	}
 	
+	/**
+	 * Render text {@link Listbox} cell/column
+	 * @param col Column index
+	 * @param item Listitem 
+	 * @param value Text content for cell
+	 */
 	protected void renderCell(int col, Listitem item, String value) {
 		String tooltip = null;
 		if (maxLength != null && maxLength.length > col && maxLength[col] > 0 && value.length() > maxLength[col]) {
@@ -113,6 +136,11 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 			ZkCssHelper.appendStyle(listCell, "font-weight: bold");
 	}
 
+	/**
+	 * Render collection of values
+	 * @param item Listitem 
+	 * @param data Collection<?>
+	 */
 	private void renderCollection(Listitem item, Collection<?> data) {
 		int i = 0;
 		for (Object col : data) {
@@ -122,6 +150,11 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		}
 	}
 
+	/**
+	 * Render array of values
+	 * @param item Listitem 
+	 * @param data Object[] 
+	 */
 	private void renderArray(Listitem item, Object[] data) {
 		int i = 0;
 		for (Object col : data) {			
@@ -148,32 +181,57 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		return item;
 	}
 	
+	/**
+	 * Set max length for each column
+	 * @param maxLength int[]
+	 */
 	public void setMaxLength(int[] maxLength) {
 		this.maxLength = maxLength;
 	}
 	
+	/**
+	 * Append new row
+	 * @param obj Object 
+	 */
 	public void addElement(Object obj) {
 		list.add(obj);
 		int index = list.size() - 1;
 		fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
 	}
 	
+	/**
+	 * Add new row at index
+	 * @param index
+	 * @param obj Object 
+	 */
 	public void add(int index, Object obj) {
 		list.add(index, obj);
 		fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
 	}
 
+	/**
+	 * Remove all elements
+	 */
 	public void removeAllElements() {
 		list.clear();
 		fireEvent(ListDataEvent.CONTENTS_CHANGED, -1, -1);
 	}
 
+	/**
+	 * Remove element from list
+	 * @param element
+	 */
 	public void removeElement(Object element) {
 		int index = list.indexOf(element);
 		list.remove(element);
 		fireEvent(ListDataEvent.INTERVAL_REMOVED, index, index); 
 	}
 
+	/**
+	 * Replace element at index
+	 * @param element Object
+	 * @param index List index
+	 */
 	public void setElementAt(Object element, int index) {
 		list.set(index, element);
 		fireEvent(ListDataEvent.CONTENTS_CHANGED, index, index);

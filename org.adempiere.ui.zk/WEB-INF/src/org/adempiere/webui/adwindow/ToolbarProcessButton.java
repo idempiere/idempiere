@@ -28,22 +28,30 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 
 /**
+ * Model for AD_ToolBarButton with AD_Process_ID > 0
  * @author hengsin
- *
  */
 public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 
+	/** model instance for AD_ToolBarButton **/
 	private MToolBarButton mToolbarButton;
-	private IADTabpanel adTabpanel;	
+	/** {@link IADTabpanel} that own this ToolbarProcessButton instance **/
+	private IADTabpanel adTabpanel;
+	/** translated process name **/
 	private String name;
+	/** translated process description **/
 	private String description;
+	/** ActionListener for button **/
 	private ActionListener actionListener;
+	/** Button instance **/
 	private Button button;
 	private int windowNo;
 
 	/**
-	 * @param windowNo 
-	 * 
+	 * @param mToolbarButton
+	 * @param adTabpanel
+	 * @param listener
+	 * @param windowNo
 	 */
 	public ToolbarProcessButton(MToolBarButton mToolbarButton, IADTabpanel adTabpanel, ActionListener listener, int windowNo) {
 		this.mToolbarButton = mToolbarButton;
@@ -118,10 +126,16 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		return name;
 	}
 
+	/**
+	 * @return {@link Button}
+	 */
 	public Button getButton() {
 		return button;
 	}
 	
+	/**
+	 * Dynamic update of button state.
+	 */
 	public void dynamicDisplay() {
 		String displayLogic = mToolbarButton.getDisplayLogic();
 		if (displayLogic == null || displayLogic.trim().length() == 0)
@@ -140,6 +154,9 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	    	return Env.getContext (Env.getCtx(), windowNo, tabNo, variableName, false, true);
 	}
 
+	/**
+	 * Evaluate readOnlyLogic (if defined)
+	 */
 	public void readOnlyLogic() {
 
 		String readOnlyLogic = mToolbarButton.getReadOnlyLogic();
@@ -150,6 +167,9 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		button.setDisabled(disabled);
 	} // readOnlyLogic
 
+	/**
+	 * Evaluate pressedLogic (if defined)
+	 */
 	public void pressedLogic() {
 
 		String pressedLogic = mToolbarButton.getPressedLogic();
@@ -160,8 +180,14 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		button.setAttribute(ProcessButtonPopup.BUTTON_ATTRIBUTE_PRESSED, isPressed ? "Y" : "N");
 	} // pressedLogic
 
+	/**
+	 * Evaluate SQL or boolean logic expression.
+	 * For SQL expression, return true if the SQL expression has result (it doesn't check the return value of the SQL statement).
+	 * @param logic SQL (@SQL=) or boolean expression
+	 * @param tabNo
+	 * @return result of evaluation of logic 
+	 */
 	private boolean validateLogic(String logic, int tabNo) {
-
 		boolean isValid = false;
 		if (logic.startsWith("@SQL=")) {
 			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, getColumnName());

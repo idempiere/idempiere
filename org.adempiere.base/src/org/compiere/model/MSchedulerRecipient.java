@@ -35,14 +35,23 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements Immu
 	 */
 	private static final long serialVersionUID = -4928359768598663557L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_SchedulerRecipient_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSchedulerRecipient(Properties ctx, String AD_SchedulerRecipient_UU, String trxName) {
+        super(ctx, AD_SchedulerRecipient_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_SchedulerRecipient_ID id
 	 *	@param trxName transaction
 	 */	
-	public MSchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID,
-		String trxName)
+	public MSchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
 	{
 		super (ctx, AD_SchedulerRecipient_ID, trxName);
 	}	//	MSchedulerRecipient

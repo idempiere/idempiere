@@ -32,8 +32,9 @@ import org.zkoss.zul.Imagemap;
 /**
  * @author Paul Bowden, Adaxa Pty Ltd
  * @author hengsin
- *
+ * @deprecated replace by billboard based implementation
  */
+@Deprecated
 /* package */ class ChartRenderer {
 
 	private static final CLogger log = CLogger.getCLogger(ChartRenderer.class);

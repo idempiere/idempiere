@@ -113,6 +113,16 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	private static CLogger	s_log	= CLogger.getCLogger (MInventoryLineMA.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InventoryLineMA_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInventoryLineMA(Properties ctx, String M_InventoryLineMA_UU, String trxName) {
+        super(ctx, M_InventoryLineMA_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

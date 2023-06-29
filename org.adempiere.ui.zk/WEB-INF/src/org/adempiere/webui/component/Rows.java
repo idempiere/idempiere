@@ -18,7 +18,7 @@
 package org.adempiere.webui.component;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Rows}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -26,10 +26,14 @@ package org.adempiere.webui.component;
 public class Rows extends org.zkoss.zul.Rows
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5100123951371296683L;
     
+	/**
+	 * Create new Row
+	 * @return Row
+	 */
     public Row newRow() {
     	Row row = new Row();    	
     	appendChild(row);

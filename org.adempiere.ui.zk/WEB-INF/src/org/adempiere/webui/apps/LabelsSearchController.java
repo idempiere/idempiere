@@ -56,14 +56,25 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 import org.zkoss.zul.Vlayout;
 
+/**
+ * Controller for search on AD_Label* records.
+ */
 public class LabelsSearchController implements EventListener<Event>{
+	/** Event echo from {@link #onSelect(LabelItem)} **/
 	public static final String ON_POST_SELECT_LABELITEM_EVENT = "onPostSelectLabelitem";
-	private static final String ON_SEARCH_ECHO = "onSearchEcho";
-	private static final String ON_LOAD_MORE = "onLoadMore";
+	/** Event echo to initiate search for a given input text **/
+	private static final String ON_SEARCH_ECHO_EVENT = "onSearchEcho";
+	/** TODO: not used, candidate for removal **/
+	private static final String ON_LOAD_MORE_EVENT = "onLoadMore";
+	/** parent of {@link #layout} **/
 	private Component parent;
+	/** Listbox to display search result **/
 	private Listbox listbox;
+	/** model for {@link #listbox} **/
 	private ListModelList<LabelItem> model;
+	/** main layout **/
 	private Vlayout layout;
+	/** label window panel, provider for AD_Table_ID and Record_UU **/
 	private LabelsPanel labelsPanel;
 
 	/**
@@ -103,13 +114,13 @@ public class LabelsSearchController implements EventListener<Event>{
 		ZKUpdateUtil.setWidth(listheader, "30px");
 		listhead.appendChild(listheader);
 		
-		layout.addEventListener(ON_SEARCH_ECHO, this);
-		layout.addEventListener(ON_LOAD_MORE, this);
+		layout.addEventListener(ON_SEARCH_ECHO_EVENT, this);
+		layout.addEventListener(ON_LOAD_MORE_EVENT, this);
 	}
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (event.getName().equals(ON_SEARCH_ECHO)) {
+		if (event.getName().equals(ON_SEARCH_ECHO_EVENT)) {
         	onSearchEcho((String) event.getData());
 		} else if (Events.ON_CLICK.equals(event.getName())) {
 			if (event.getTarget() instanceof ListItem) {
@@ -121,16 +132,16 @@ public class LabelsSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * Search for a given text
+	 * Echo {@link #ON_SEARCH_ECHO_EVENT} to initiate search for value
 	 * @param value
 	 */
 	public void search(String value) {
 		listbox.setModel((ListModel<?>)null);
-		Events.echoEvent(ON_SEARCH_ECHO, layout, value);
+		Events.echoEvent(ON_SEARCH_ECHO_EVENT, layout, value);
 	}
 	
 	/**
-	 * Search for a given text
+	 * Handle {@link #ON_SEARCH_ECHO_EVENT} to execute search for a given text
 	 * @param value
 	 */
 	public void onSearchEcho(String value) {
@@ -237,12 +248,13 @@ public class LabelsSearchController implements EventListener<Event>{
 		// Assign
 		if (!MLabelAssignment.hasLabelAssignment(label.get_ID(),
 				labelsPanel.getAD_Table_ID(),
-				labelsPanel.getRecord_ID())) {
+				labelsPanel.getRecord_UU())) {
 			MLabelAssignment assign = new MLabelAssignment(Env.getCtx(), 0, null);
 			assign.setAD_Org_ID(label.getAD_Org_ID());
 			assign.setAD_Label_ID(label.get_ID());
 			assign.setAD_Table_ID(labelsPanel.getAD_Table_ID());
 			assign.setRecord_ID(labelsPanel.getRecord_ID());
+			assign.setRecord_UU(labelsPanel.getRecord_UU());
 			assign.saveEx();
 		}
 		

@@ -53,8 +53,18 @@ public class MEXPFormatLine extends X_EXP_FormatLine implements ImmutablePOSuppo
 	
 	
 	
-	public MEXPFormatLine(Properties ctx, int C_EDIFormat_Line_ID, String trxName) {
-		super(ctx, C_EDIFormat_Line_ID, trxName);
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param EXP_FormatLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MEXPFormatLine(Properties ctx, String EXP_FormatLine_UU, String trxName) {
+        super(ctx, EXP_FormatLine_UU, trxName);
+    }
+
+	public MEXPFormatLine(Properties ctx, int EXP_FormatLine_ID, String trxName) {
+		super(ctx, EXP_FormatLine_ID, trxName);
 	}
 	
 	public MEXPFormatLine (Properties ctx, ResultSet rs, String trxName) {

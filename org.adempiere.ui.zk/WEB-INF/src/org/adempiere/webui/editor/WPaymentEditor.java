@@ -45,7 +45,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Comboitem;
 
 /**
- * 
+ * Default editor for {@link DisplayType#Payment}.<br/>
+ * Implemented with {@link Paymentbox} component, {@link WPaymentFormWindow} and {@link IPaymentForm} service.
  * @author Elaine
  *
  */
@@ -56,6 +57,8 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 	public final static String[] LISTENER_EVENTS = {Events.ON_SELECT};
 	
 	private MPaymentLookup lookup;
+	
+	/** Payment rule (Cash, credit card, etc) */
 	private Object oldValue;
 	
 	/**
@@ -78,6 +81,9 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 		init();
 	}
 	
+	/**
+	 * Init component and context menu
+	 */
 	private void init()
     {
         getComponent().getCombobox().setAutocomplete(true);
@@ -213,6 +219,9 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 		getComponent().setEnabled(readWrite, readWrite && !m_onlyRule);
 	}
 	
+	/**
+	 * Refresh lookup list
+	 */
 	private void refreshList()
     {
     	if (getComponent().getCombobox().getItemCount() > 0)
@@ -368,17 +377,23 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 	@Override
 	public void intervalRemoved(javax.swing.event.ListDataEvent e) {}
 	
+	/**
+	 * @param newValue
+	 * @return true if newValue is different from {@link #oldValue}
+	 */
 	private boolean isValueChange(Object newValue) {
 		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null)
 				|| ((oldValue != null && newValue != null) && !oldValue.equals(newValue));
 	}
 
+	@Override
 	public String[] getEvents() {
 		return LISTENER_EVENTS;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)
+	/**
+	 * Set style to combobox inside {@link Paymentbox}
+	 * @param style
 	 */
 	@Override
 	protected void setFieldStyle(String style) {
@@ -404,6 +419,9 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 		}
 	}
 
+	/**
+	 * Refresh lookup list
+	 */
     public void actionRefresh()
     {    	
 		if (lookup != null)

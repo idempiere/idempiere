@@ -92,6 +92,16 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		return acct;
 	}	//	get
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Product_Category_Acct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductCategoryAcct(Properties ctx, String M_Product_Category_Acct_UU, String trxName) {
+        super(ctx, M_Product_Category_Acct_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

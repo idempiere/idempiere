@@ -29,6 +29,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 /**
  *	Requisition Line Model
  *	
@@ -115,6 +116,18 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	}
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_RequisitionLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequisitionLine(Properties ctx, String M_RequisitionLine_UU, String trxName) {
+        super(ctx, M_RequisitionLine_UU, trxName);
+		if (Util.isEmpty(M_RequisitionLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -129,12 +142,17 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	public MRequisitionLine(Properties ctx, int M_RequisitionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_RequisitionLine_ID, trxName, virtualColumns);
 		if (M_RequisitionLine_ID == 0)
-		{
-			setLine (0);	// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM M_RequisitionLine WHERE M_Requisition_ID=@M_Requisition_ID@
-			setLineNetAmt (Env.ZERO);
-			setPriceActual (Env.ZERO);
-			setQty (Env.ONE);	// 1
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);	// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM M_RequisitionLine WHERE M_Requisition_ID=@M_Requisition_ID@
+		setLineNetAmt (Env.ZERO);
+		setPriceActual (Env.ZERO);
+		setQty (Env.ONE);	// 1
 	}
 
 	/**

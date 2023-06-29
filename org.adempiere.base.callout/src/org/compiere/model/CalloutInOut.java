@@ -78,6 +78,7 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("FreightAmt", order.getFreightAmt());
 
 			mTab.setValue("C_BPartner_ID", Integer.valueOf(order.getC_BPartner_ID()));
+			mTab.setValue("SalesRep_ID", Integer.valueOf(order.getSalesRep_ID()));
 
 			//[ 1867464 ]
 			mTab.setValue("C_BPartner_Location_ID", Integer.valueOf(order.getC_BPartner_Location_ID()));

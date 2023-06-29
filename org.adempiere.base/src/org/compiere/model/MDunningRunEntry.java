@@ -26,6 +26,7 @@ import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Dunning Run Entry Model
@@ -47,6 +48,18 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	/** Logger								*/
 	private static CLogger		s_log = CLogger.getCLogger (MPayment.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_DunningRunEntry_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDunningRunEntry(Properties ctx, String C_DunningRunEntry_UU, String trxName) {
+        super(ctx, C_DunningRunEntry_UU, trxName);
+		if (Util.isEmpty(C_DunningRunEntry_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * Standard Constructor
 	 * @param ctx context
@@ -57,12 +70,17 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	{
 		super (ctx, C_DunningRunEntry_ID, trxName);
 		if (C_DunningRunEntry_ID == 0)
-		{
-			setAmt (Env.ZERO);
-			setQty (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MDunningRunEntry
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAmt (Env.ZERO);
+		setQty (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * Load Constructor

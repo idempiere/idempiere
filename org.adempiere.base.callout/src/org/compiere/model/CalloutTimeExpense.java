@@ -39,7 +39,7 @@ public class CalloutTimeExpense extends CalloutEngine
 	/**
 	 *	Expense Report Line
 	 *		- called from M_Product_ID, S_ResourceAssignment_ID
-	 *		- set ExpenseAmt
+	 *		- set Price
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab
@@ -76,6 +76,7 @@ public class CalloutTimeExpense extends CalloutEngine
 				+ " AND pp.M_PriceList_Version_ID=pv.M_PriceList_Version_ID"
 				+ " AND pv.M_PriceList_ID=pl.M_PriceList_ID"
 				+ " AND pv.IsActive='Y'"
+				+ " AND pp.IsActive='Y'"
 				+ " AND p.M_Product_ID=?"		//	1
 				+ " AND pl.M_PriceList_ID=?"	//	2
 				+ " ORDER BY pv.ValidFrom DESC";
@@ -117,6 +118,7 @@ public class CalloutTimeExpense extends CalloutEngine
 					+ " AND pp.M_PriceList_Version_ID=pv.M_PriceList_Version_ID"
 					+ " AND pv.M_PriceList_ID=bpl.M_PriceList_ID"
 					+ " AND pv.IsActive='Y'"
+					+ " AND pp.IsActive='Y'"
 					+ " AND bpl.M_PriceList_ID=pl.BasePriceList_ID"	//	Base
 					+ " AND p.M_Product_ID=?"		//  1
 					+ " AND pl.M_PriceList_ID=?"	//	2
@@ -163,7 +165,7 @@ public class CalloutTimeExpense extends CalloutEngine
 		//	finish
 		if (priceActual == null)
 			priceActual = Env.ZERO;
-		mTab.setValue("ExpenseAmt", priceActual);
+		mTab.setValue("PriceEntered", priceActual);
 		return "";
 	}	//	Expense_Product
 
@@ -206,5 +208,49 @@ public class CalloutTimeExpense extends CalloutEngine
 
 		return "";
 	}	//	Expense_Amount
+	
+	/**
+	 *	Price or Quantity.
+	 *		- called from Price, Quantity
+	 *		- calculates Expense Amount
+	 *  @param ctx context
+	 *  @param WindowNo current Window No
+	 *  @param mTab Grid Tab
+	 *  @param mField Grid Field
+	 *  @param value New Value
+	 *  @return null or error message
+	 */
+	public String priceOrQty(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		BigDecimal qty = Env.ZERO;
+		BigDecimal price = Env.ZERO;
+
+		String columnName = mField.getColumnName();
+		if (MTimeExpenseLine.COLUMNNAME_Qty.equals(columnName))
+		{
+			qty = (BigDecimal) value;
+			price = (BigDecimal) mTab.getValue(MTimeExpenseLine.COLUMNNAME_PriceEntered);
+		}
+		else
+		{
+			price = (BigDecimal) value;
+			qty = (BigDecimal) mTab.getValue(MTimeExpenseLine.COLUMNNAME_Qty);
+		}
+		
+		if(qty == null)
+		{
+			qty = Env.ZERO;
+		}
+
+		if(price == null)
+		{
+			price = Env.ZERO;
+		}
+		
+		BigDecimal expenseAmt = price.multiply(qty);
+		mTab.setValue(MTimeExpenseLine.COLUMNNAME_ExpenseAmt, expenseAmt);
+
+		return "";
+	} // Price or Quantity
 
 }	//	CalloutTimeExpense

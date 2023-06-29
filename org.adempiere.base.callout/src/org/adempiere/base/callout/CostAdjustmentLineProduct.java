@@ -61,6 +61,8 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 				trxName = gt.get_TrxName();
 			}
 		}
+		if (mTab.getValue("M_Inventory_ID") == null)
+			return null;
 		MInventory inventory = new MInventory(ctx, (Integer) mTab.getValue("M_Inventory_ID"), trxName);
 		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(inventory.getC_DocType().getDocSubTypeInv())) {
 			String costingMethod = inventory.getCostingMethod();

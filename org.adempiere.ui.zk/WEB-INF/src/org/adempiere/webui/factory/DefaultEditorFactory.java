@@ -37,6 +37,8 @@ import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WPasswordEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WRadioGroupEditor;
+import org.adempiere.webui.editor.WRecordIDEditor;
+import org.adempiere.webui.editor.WRecordUUIDEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -157,8 +159,9 @@ public class DefaultEditorFactory implements IEditorFactory {
         }
 
         /** Table Direct */
-        else if (displayType == DisplayType.TableDir ||
-                displayType == DisplayType.Table || displayType == DisplayType.List)
+        else if (displayType == DisplayType.TableDir || displayType == DisplayType.TableDirUU ||
+                displayType == DisplayType.Table || displayType == DisplayType.TableUU ||
+                displayType == DisplayType.List)
         {
             editor = new WTableDirEditor(gridField, tableEditor, editorConfiguration);
         }
@@ -173,7 +176,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         	editor = new WUrlEditor(gridField, tableEditor, editorConfiguration);
         }
 
-        else if (displayType == DisplayType.Search)
+        else if (displayType == DisplayType.Search || displayType == DisplayType.SearchUU)
         {
         	editor = new WSearchEditor(gridField, tableEditor, editorConfiguration);
         }
@@ -229,6 +232,14 @@ public class DefaultEditorFactory implements IEditorFactory {
         else if (displayType == DisplayType.TimeZoneId)
         {
         	editor = new WTimeZoneEditor(gridField, tableEditor);
+        }
+		else if (displayType == DisplayType.RecordID)
+        {
+        	editor = new WRecordIDEditor(gridField, tableEditor, editorConfiguration);
+        }
+		else if (displayType == DisplayType.RecordUU)
+        {
+        	editor = new WRecordUUIDEditor(gridField, tableEditor, editorConfiguration);
         }
         else
         {

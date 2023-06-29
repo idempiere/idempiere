@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Landed Cost Model
@@ -80,6 +81,18 @@ public class MLandedCost extends X_C_LandedCost
 	private static CLogger s_log = CLogger.getCLogger (MLandedCost.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_LandedCost_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLandedCost(Properties ctx, String C_LandedCost_UU, String trxName) {
+        super(ctx, C_LandedCost_UU, trxName);
+		if (Util.isEmpty(C_LandedCost_UU))
+			setInitialDefaults();
+    }
+
 	/***************************************************************************
 	 * Standard Constructor
 	 * 
@@ -91,10 +104,15 @@ public class MLandedCost extends X_C_LandedCost
 	{
 		super (ctx, C_LandedCost_ID, trxName);
 		if (C_LandedCost_ID == 0)
-		{
-			setLandedCostDistribution (LANDEDCOSTDISTRIBUTION_Quantity);	// Q
-		}
+			setInitialDefaults();
 	}	//	MLandedCost
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLandedCostDistribution (LANDEDCOSTDISTRIBUTION_Quantity);	// Q
+	}
 
 	/**
 	 * 	Load Constructor

@@ -14,6 +14,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * Asset Model
@@ -58,15 +59,32 @@ public class MAsset extends X_A_Asset {
 					.list();
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAsset(Properties ctx, String A_Asset_UU, String trxName) {
+        super(ctx, A_Asset_UU, trxName);
+		if (Util.isEmpty(A_Asset_UU))
+			setInitialDefaults();
+    }
+
 	/** Create constructor */
 	public MAsset (Properties ctx, int A_Asset_ID, String trxName)
 	{
 		super (ctx, A_Asset_ID,trxName);
 		if (A_Asset_ID == 0)
-		{
-			setA_Asset_Status(A_ASSET_STATUS_New);
-		}
+			setInitialDefaults();
 	}	//	MAsset
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setA_Asset_Status(A_ASSET_STATUS_New);
+	}
 
 	/**
 	 * Load Constructor

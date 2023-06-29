@@ -38,6 +38,7 @@ import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.Adempiere;
@@ -2408,24 +2409,51 @@ public final class DB
 	 * saveKeys is map with key is rowID, value is list value of all viewID
 	 * viewIDIndex is index of viewID need save.
 	 * @param AD_PInstance_ID
-	 * @param saveKeys
+	 * @param saveKeys - Collection of KeyNamePair
 	 * @param trxName
 	 */
-	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
+	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName) {
+		Collection<NamePair> saveKeysNP = new ArrayList<NamePair>();
+		for (NamePair saveKey : saveKeys)
+			saveKeysNP.add(saveKey);
+		createT_SelectionNewNP(AD_PInstance_ID, saveKeysNP, trxName);
+	}
+
+	/**
+	 * Create persistent selection in T_Selection table
+	 * saveKeys is map with key is rowID, value is list value of all viewID
+	 * viewIDIndex is index of viewID need save.
+	 * @param AD_PInstance_ID
+	 * @param saveKeys can receive a Collection of KeyNamePair (IDs) or ValueNamePair (UUIDs)
+	 * @param trxName
+	 */
+	public static void createT_SelectionNewNP (int AD_PInstance_ID, Collection<NamePair> saveKeys, String trxName)
 	{
-		StringBuilder insert = new StringBuilder();
-		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
+		String initialInsert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, T_SELECTION_UU, ViewID) ";
+		StringBuilder insert = new StringBuilder(initialInsert);
 		int counter = 0;
-		for(KeyNamePair saveKey : saveKeys)
+		for(NamePair saveKey : saveKeys)
 		{
-			Integer selectedId = saveKey.getKey();
+			Object selectedId;
+			if (saveKey instanceof KeyNamePair)
+				selectedId = ((KeyNamePair)saveKey).getKey();
+			else if (saveKey instanceof ValueNamePair)
+				selectedId = ((ValueNamePair)saveKey).getValue();
+			else
+				throw new AdempiereException("NamePair type not allowed in DB.createT_SelectionNewNP, just KeyNamePair or ValueNamePair are allowed");
 			counter++;
 			if (counter > 1)
 				insert.append(" UNION ");
 			insert.append("SELECT ");
 			insert.append(AD_PInstance_ID);
 			insert.append(", ");
-			insert.append(selectedId);
+			if (selectedId instanceof Integer) {
+				insert.append((Integer)selectedId);
+				insert.append(", ' '");
+			} else {
+				insert.append("0, ");
+				insert.append(DB.TO_STRING(selectedId.toString()));
+			}
 			insert.append(", ");
 			
 			String viewIDValue = saveKey.getName();
@@ -2433,9 +2461,7 @@ public final class DB
 			if (viewIDValue == null){
 				insert.append("NULL");
 			}else{
-				insert.append("'");
-				insert.append(viewIDValue);
-				insert.append("'");
+				insert.append(DB.TO_STRING(viewIDValue));
 			}
 			
 			insert.append(" FROM DUAL ");
@@ -2443,8 +2469,8 @@ public final class DB
 			if (counter >= 1000)
 			{
 				DB.executeUpdateEx(insert.toString(), trxName);
-				insert = new StringBuilder();
-				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
+				insert.delete(0,  insert.length());
+				insert.append(initialInsert);
 				counter = 0;
 			}
 		}

@@ -87,6 +87,16 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 		new ImmutableIntPOCache<Integer,MBank> (Table_Name, 3);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Bank_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBank(Properties ctx, String C_Bank_UU, String trxName) {
+        super(ctx, C_Bank_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

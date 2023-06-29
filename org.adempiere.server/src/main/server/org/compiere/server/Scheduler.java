@@ -258,7 +258,7 @@ public class Scheduler extends AdempiereServer
 					note.saveEx();
 					String log = pi.getLogInfo(true);
 					if (log != null &&  log.trim().length() > 0) {
-						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), null);
 						attachment.setClientOrg(scheduler.getAD_Client_ID(), scheduler.getAD_Org_ID());
 						attachment.setTextMsg(schedulerName);
 						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
@@ -269,9 +269,9 @@ public class Scheduler extends AdempiereServer
 		}
 		
 		List<String> sendErrors = new ArrayList<>();
-		// always notify recipients
+		// notify recipients
 		Integer[] userIDs = scheduler.getRecipientAD_User_IDs(true);
-		if (userIDs.length > 0) 
+		if (userIDs.length > 0 && pi.isNotifyRecipients()) 
 		{
 			ProcessInfoUtil.setLogFromDB(pi);
 			List<File> fileList = new ArrayList<File>();
@@ -307,7 +307,7 @@ public class Scheduler extends AdempiereServer
 						MAttachment attachment = null;
 						if (fileList != null && !fileList.isEmpty()) {
 							//	Attachment
-							attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+							attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), null);
 							attachment.setClientOrg(scheduler.getAD_Client_ID(), scheduler.getAD_Org_ID());
 							attachment.setTextMsg(schedulerName);
 							for (File entry : fileList)
@@ -317,7 +317,7 @@ public class Scheduler extends AdempiereServer
 						String log = pi.getLogInfo(true);
 						if (log != null &&  log.trim().length() > 0) {
 							if (attachment == null) {
-								attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+								attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), null);
 								attachment.setClientOrg(scheduler.getAD_Client_ID(), scheduler.getAD_Org_ID());
 								attachment.setTextMsg(schedulerName);
 							}

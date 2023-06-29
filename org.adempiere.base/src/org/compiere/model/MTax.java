@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -139,6 +140,18 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		return tax;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Tax_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTax(Properties ctx, String C_Tax_UU, String trxName) {
+        super(ctx, C_Tax_UU, trxName);
+		if (Util.isEmpty(C_Tax_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -149,18 +162,23 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	{
 		super (ctx, C_Tax_ID, trxName);
 		if (C_Tax_ID == 0)
-		{
-			setIsDefault (false);
-			setIsDocumentLevel (true);
-			setIsSummary (false);
-			setIsTaxExempt (false);
-			setRate (Env.ZERO);
-			setRequiresTaxCertificate (false);
-			setSOPOType (SOPOTYPE_Both);
-			setValidFrom (TimeUtil.getDay(1990,1,1));
-			setIsSalesTax(false);
-		}
+			setInitialDefaults();
 	}	//	MTax
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setIsDocumentLevel (true);
+		setIsSummary (false);
+		setIsTaxExempt (false);
+		setRate (Env.ZERO);
+		setRequiresTaxCertificate (false);
+		setSOPOType (SOPOTYPE_Both);
+		setValidFrom (TimeUtil.getDay(1990,1,1));
+		setIsSalesTax(false);
+	}
 
 	/**
 	 * 	Load Constructor

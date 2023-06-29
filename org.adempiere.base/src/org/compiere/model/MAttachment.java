@@ -58,7 +58,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1685512419870004665L;
+	private static final long serialVersionUID = 1447398065894212273L;
 
 	/**
 	 * 
@@ -96,6 +96,17 @@ public class MAttachment extends X_AD_Attachment
 	private MStorageProvider provider;
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Attachment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttachment(Properties ctx, String AD_Attachment_UU, String trxName) {
+        super(ctx, AD_Attachment_UU, trxName);
+		initAttachmentStoreDetails(ctx, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -115,13 +126,33 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
 	 *	@param trxName transaction
+	 *  @deprecated Use {@link MAttachment#MAttachment(Properties, int, int, String, String)} instead
 	 */
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
-		this (ctx, MAttachment.getID(AD_Table_ID, Record_ID) > 0 ? MAttachment.getID(AD_Table_ID, Record_ID) : 0, trxName);
+		this(ctx, AD_Table_ID, Record_ID, null, trxName);
+		if (Record_ID > 0) {
+			MTable table = MTable.get(AD_Table_ID);
+			PO po = table.getPO(Record_ID, trxName);
+			setRecord_UU(po.get_UUID());
+		}
+	}
+
+	/**
+	 * 	New Constructor
+	 *	@param ctx context
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param trxName transaction
+	 */
+	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
+	{
+		this (ctx, MAttachment.getID(AD_Table_ID, Record_UU) > 0 ? MAttachment.getID(AD_Table_ID, Record_UU) : 0, trxName);
 		if (get_ID() == 0) {
 			setAD_Table_ID (AD_Table_ID);
 			setRecord_ID (Record_ID);
+			setRecord_UU (Record_UU);
 		}
 	}	//	MAttachment
 
@@ -521,6 +552,11 @@ public class MAttachment extends X_AD_Attachment
 	{
 		if (Util.isEmpty(getTitle()))
 			setTitle(NONE);
+		if (getRecord_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+			MTable table = MTable.get(getAD_Table_ID());
+			PO po = table.getPO(getRecord_ID(), get_TrxName());
+			setRecord_UU(po.get_UUID());
+		}
 		return saveLOBData();		//	save in BinaryData
 	}	//	beforeSave
 
@@ -647,11 +683,25 @@ public class MAttachment extends X_AD_Attachment
 	 * Get the attachment ID based on table_id and record_id
 	 * @param Table_ID
 	 * @param Record_ID
-	 * @return AD_Attachment_ID 
+	 * @return AD_Attachment_ID
+ 	 * @deprecated Use {@link MAttachment#getID(int, String)} instead
 	 */
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
 		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_ID);
+		return attachid;
+	}
+
+	/**
+	 * IDEMPIERE-530
+	 * Get the attachment ID based on table_id and record_id
+	 * @param Table_ID
+	 * @param Record_UU record UUID
+	 * @return AD_Attachment_ID 
+	 */
+	public static int getID(int Table_ID, String Record_UU) {
+		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_UU=?";
+		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_UU);
 		return attachid;
 	}
 
@@ -660,7 +710,8 @@ public class MAttachment extends X_AD_Attachment
 			return null;
 		}
 
-		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_" + getRecord_ID();
+		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_"
+				+ (getRecord_ID() > 0 ? getRecord_ID() : getRecord_UU());
 
 		File tempfolder = null; 
 		try {

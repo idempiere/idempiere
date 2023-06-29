@@ -42,6 +42,16 @@ public class MMFARegistration extends X_MFA_Registration {
 	 */
 	private static final long serialVersionUID = -2032862057961778934L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param MFA_Registration_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMFARegistration(Properties ctx, String MFA_Registration_UU, String trxName) {
+        super(ctx, MFA_Registration_UU, trxName);
+    }
+
 	/**
 	 * Read/Create empty MFA Registration
 	 *

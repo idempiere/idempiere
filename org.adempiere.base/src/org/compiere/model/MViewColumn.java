@@ -32,6 +32,16 @@ public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	 */
 	private static final long serialVersionUID = 4049071242637196213L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ViewColumn_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MViewColumn(Properties ctx, String AD_ViewColumn_UU, String trxName) {
+        super(ctx, AD_ViewColumn_UU, trxName);
+    }
+
 	/**
 	 * Standard constructor
 	 * @param ctx context

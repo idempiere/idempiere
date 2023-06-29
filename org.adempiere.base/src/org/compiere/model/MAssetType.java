@@ -70,6 +70,16 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 		return null;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Type_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetType(Properties ctx, String A_Asset_Type_UU, String trxName) {
+        super(ctx, A_Asset_Type_UU, trxName);
+    }
+
 	/** Standard Constructor */
 	public MAssetType (Properties ctx, int A_Asset_Type_ID, String trxName)
 	{

@@ -25,7 +25,7 @@
 								<artifactItem>
 									<groupId>org.outerj.daisy</groupId>
 									<artifactId>daisydiff</artifactId>
-									<version>1.1.15-atlassian-hosted</version>
+									<version>1.2.2-atlassian-hosted</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
@@ -35,7 +35,7 @@
 								<artifactItem>
 									<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
 									<artifactId>owasp-java-html-sanitizer</artifactId>
-									<version>20200713.1</version>
+									<version>20220608.1</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

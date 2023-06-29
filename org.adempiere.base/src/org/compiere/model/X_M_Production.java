@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Production
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Production")
-public class X_M_Production extends PO implements I_M_Production, I_Persistent 
+public class X_M_Production extends PO implements I_M_Production, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230606L;
 
     /** Standard Constructor */
     public X_M_Production (Properties ctx, int M_Production_ID, String trxName)
@@ -42,6 +42,7 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
       super (ctx, M_Production_ID, trxName);
       /** if (M_Production_ID == 0)
         {
+			setC_DocType_ID (0);
 			setDocumentNo (null);
 			setIsCreated (null);
 // N
@@ -63,6 +64,51 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
       super (ctx, M_Production_ID, trxName, virtualColumns);
       /** if (M_Production_ID == 0)
         {
+			setC_DocType_ID (0);
+			setDocumentNo (null);
+			setIsCreated (null);
+// N
+			setIsUseProductionPlan (false);
+// N
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setM_Production_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProductionQty (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Production (Properties ctx, String M_Production_UU, String trxName)
+    {
+      super (ctx, M_Production_UU, trxName);
+      /** if (M_Production_UU == null)
+        {
+			setC_DocType_ID (0);
+			setDocumentNo (null);
+			setIsCreated (null);
+// N
+			setIsUseProductionPlan (false);
+// N
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setM_Production_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProductionQty (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Production (Properties ctx, String M_Production_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Production_UU, trxName, virtualColumns);
+      /** if (M_Production_UU == null)
+        {
+			setC_DocType_ID (0);
 			setDocumentNo (null);
 			setIsCreated (null);
 // N
@@ -85,7 +131,7 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -207,6 +253,34 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
+
+	/** Set Document Type.
+		@param C_DocType_ID Document type or rules
+	*/
+	public void setC_DocType_ID (int C_DocType_ID)
+	{
+		if (C_DocType_ID < 0)
+			set_Value (COLUMNNAME_C_DocType_ID, null);
+		else
+			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
+	}
+
+	/** Get Document Type.
+		@return Document type or rules
+	  */
+	public int getC_DocType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -481,7 +555,7 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -500,10 +574,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public boolean isComplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsComplete);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -544,10 +618,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public boolean isUseProductionPlan()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUseProductionPlan);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -720,10 +794,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -771,10 +845,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -812,10 +886,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

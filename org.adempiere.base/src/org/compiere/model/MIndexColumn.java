@@ -27,6 +27,16 @@ public class MIndexColumn extends X_AD_IndexColumn {
 	 */
 	private static final long serialVersionUID = -7588207529142215755L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_IndexColumn_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MIndexColumn(Properties ctx, String AD_IndexColumn_UU, String trxName) {
+        super(ctx, AD_IndexColumn_UU, trxName);
+    }
+
 	/**
 	 * Standard constructor
 	 * @param ctx context

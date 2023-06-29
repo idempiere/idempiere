@@ -18,8 +18,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
+ * {@link BundleActivator} for web client.
+ * Start {@link WindowValidatorManager}.
  * @author hengsin
- *
  */
 public class WebUIActivator implements BundleActivator {
 
@@ -44,6 +45,10 @@ public class WebUIActivator implements BundleActivator {
 		WindowValidatorManager.getInstance().stop(context);
 	}
 
+	/**
+	 * 
+	 * @return {@link BundleContext}
+	 */
 	public static BundleContext getBundleContext() {
 		return bundleContext;
 	}

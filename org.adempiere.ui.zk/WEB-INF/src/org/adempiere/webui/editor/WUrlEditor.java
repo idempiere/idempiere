@@ -25,9 +25,14 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
+import org.compiere.util.DisplayType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
+/**
+ * Default editor for {@link DisplayType#URL}.<br/>
+ * Implemented with {@link Urlbox} component. 
+ */
 public class WUrlEditor extends WEditor implements ContextMenuListener
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
@@ -110,7 +115,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 		getComponent().setEnabled(readWrite);
 	}
 
-
+	@Override
 	public void onEvent(Event event)
 	{
 		if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
@@ -128,6 +133,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;

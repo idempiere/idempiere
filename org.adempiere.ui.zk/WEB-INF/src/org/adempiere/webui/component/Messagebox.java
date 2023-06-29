@@ -55,18 +55,17 @@ import org.zkoss.zul.Vbox;
 * @date    Jul 31, 2007
 * @contributor Andreas Sumerauer IDEMPIERE-4702
 */
-
 public class Messagebox extends Window implements EventListener<Event>
 {	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8928526331932742124L;
 	
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 230pt; max-width: 450pt;";	
 	private static final String SMALLER_MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 180pt; ";
-	private String msg = new String("");
-	private String imgSrc = new String("");
+	private String msg = "";
+	private String imgSrc = "";
 
 	private Text lblMsg = new Text();
 
@@ -83,6 +82,7 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	private Image img = new Image();
 
+	/** button constant for button pressed by user */
 	private int returnValue;
 	@SuppressWarnings("rawtypes")
 	private Callback callback;
@@ -127,11 +127,17 @@ public class Messagebox extends Window implements EventListener<Event>
 	/** Contains no symbols. */
 	public static final String NONE = null;
 
+	/**
+	 * Default constructor
+	 */
 	public Messagebox()
 	{
 		super();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void init()
 	{
 		setSclass("popup-dialog");
@@ -254,21 +260,60 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setPosition("left, top");
 	}
 
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL sfor message box icon
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon)
 	{
 		return show(message, title, buttons, icon, null);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon, Callback<Integer> callback)
 	{
 		return show(message, title, buttons, icon, callback, false);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
 		return show(message, title, buttons, icon, null, false, callback, modal);
 	}
 
+	/**
+	 * Show message box dialog with optional input editor
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param editor optional input editor
+	 * @param isInputMandatory true if editor input is mandatory
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
@@ -350,32 +395,81 @@ public class Messagebox extends Window implements EventListener<Event>
 		return returnValue;
 	}
 
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons
+	 * @param icon image URL for message box icon
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon) 
 	{
 		return showDialog(message, title, buttons, icon, null);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<Integer> callback)
 	{
 		return showDialog(message, title, buttons, icon, callback, false);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
 		return showDialog(message, title, buttons, icon, null, false, callback, modal);
 	}
 
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param editor
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal) {
 		return showDialog(message, title, buttons, icon, editor, false, callback, modal);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param editor optional input editor
+	 * @param isInputMandatory true if input editor is mandatory
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		Messagebox msg = new Messagebox();
 		return msg.show(message, title, buttons, icon, editor, isInputMandatory, callback, modal);
 	}
 	
-    // Andreas Sumerauer IDEMPIERE 4702
 	@Listen("onCancel")
     public void onCancel() throws Exception
     {
@@ -383,7 +477,7 @@ public class Messagebox extends Window implements EventListener<Event>
     	close();
     }
 
-
+	@Override
 	public void onEvent(Event event) throws Exception
 	{
 		if (event == null)
@@ -425,6 +519,10 @@ public class Messagebox extends Window implements EventListener<Event>
 		validateOnClose();
 	}
 	
+	/**
+	 * Perform validation before closing of dialog.<br/>
+	 * Throw {@link WrongValueException} if there's any validation error.
+	 */
 	private void validateOnClose() {
 		
 		// Don't close on OK if input is mandatory while input field is empty 
@@ -454,6 +552,9 @@ public class Messagebox extends Window implements EventListener<Event>
 		//
 	}
 	
+	/**
+	 * Close dialog
+	 */
 	private void close() {
 		try {
 			this.detach();

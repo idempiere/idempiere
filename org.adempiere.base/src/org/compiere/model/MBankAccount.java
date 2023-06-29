@@ -90,6 +90,18 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MBankAccount>	s_cache
 		= new ImmutableIntPOCache<Integer,MBankAccount>(Table_Name, 5);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankAccount_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankAccount(Properties ctx, String C_BankAccount_UU, String trxName) {
+        super(ctx, C_BankAccount_UU, trxName);
+		if (Util.isEmpty(C_BankAccount_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Bank Account Model
 	 *	@param ctx context
@@ -100,13 +112,18 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	{
 		super (ctx, C_BankAccount_ID, trxName);
 		if (C_BankAccount_ID == 0)
-		{
-			setIsDefault (false);
-			setBankAccountType (BANKACCOUNTTYPE_Checking);
-			setCurrentBalance (Env.ZERO);
-			setCreditLimit (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MBankAccount
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setBankAccountType (BANKACCOUNTTYPE_Checking);
+		setCurrentBalance (Env.ZERO);
+		setCreditLimit (Env.ZERO);
+	}
 
 	/**
 	 * 	Bank Account Model

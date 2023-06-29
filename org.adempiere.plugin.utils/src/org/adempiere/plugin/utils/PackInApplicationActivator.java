@@ -150,12 +150,14 @@ public class PackInApplicationActivator extends AbstractActivator{
 	private boolean packIn(File packinFile) {
 		if (packinFile != null) {
 			String fileName = packinFile.getName();
-			logger.warning("Installing " + fileName + " ...");
-
 			// The convention for package names is: yyyymmddHHMM_ClientValue_InformationalDescription.zip
 			String [] parts = fileName.split("_");
+			if (parts.length < 2) {
+				logger.warning("Wrong name, ignored " + fileName);
+				return false;
+			}
+			logger.warning("Installing " + fileName + " ...");
 			String clientValue = parts[1];
-			
 			boolean allClients = clientValue.startsWith("ALL-CLIENTS");
 			
 			int[] clientIDs;
@@ -353,7 +355,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 	@Override
 	protected void frameworkStarted() {
 		if (service != null) {
-			if (Adempiere.getThreadPoolExecutor() != null) {
+			if (Adempiere.isStarted()) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
 					@Override
 					public void run() {

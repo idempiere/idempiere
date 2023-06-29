@@ -46,6 +46,16 @@ public class MPOSPayment extends X_C_POSPayment
 	/**	Logger	*/
 	protected static CLogger s_log = CLogger.getCLogger (MPOSPayment.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_POSPayment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPOSPayment(Properties ctx, String C_POSPayment_UU, String trxName) {
+        super(ctx, C_POSPayment_UU, trxName);
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context

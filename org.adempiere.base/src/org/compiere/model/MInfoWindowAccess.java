@@ -17,6 +17,16 @@ public class MInfoWindowAccess extends X_AD_InfoWindow_Access {
 	 */
 	private static final long serialVersionUID = -5134731157350014858L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_InfoWindow_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInfoWindowAccess(Properties ctx, String AD_InfoWindow_Access_UU, String trxName) {
+        super(ctx, AD_InfoWindow_Access_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param ignored

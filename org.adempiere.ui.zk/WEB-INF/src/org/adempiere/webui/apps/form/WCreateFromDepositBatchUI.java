@@ -44,6 +44,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDepositBatch;
+import org.compiere.model.MDepositBatchLine;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
@@ -60,16 +61,15 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 
 /**
- * 
+ * Form to create Deposit Batch ({@link MDepositBatch} and {@link MDepositBatchLine}) from payment transactions.
  * @author Elaine
- *
  */
 public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements EventListener<Event>
 {
+	/** UI form instance */
 	private WCreateFromWindow window;
 	
 	/**
-	 * 
 	 * @param tab
 	 */
 	public WCreateFromDepositBatchUI(GridTab tab) 
@@ -96,11 +96,13 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		AEnv.showWindow(window);
 	}
 	
-	/** Window No               */
+	/** Window No */
 	private int p_WindowNo;
 
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WCreateFromDepositBatchUI.class);
+	
+	/** form parameters for loading of payment transactions ({@link #loadBankAccount}) */
 	
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;
@@ -119,6 +121,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	
 	protected Label amtFromLabel = new Label(Msg.translate(Env.getCtx(), "PayAmt"));
 	protected WNumberEditor amtFromField = new WNumberEditor("AmtFrom", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtFrom"));
+	
 	protected Label amtToLabel = new Label("-");
 	protected WNumberEditor amtToField = new WNumberEditor("AmtTo", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtTo"));
 	
@@ -127,6 +130,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 
 	protected Label dateFromLabel = new Label(Msg.translate(Env.getCtx(), "DateTrx"));
 	protected WDateEditor dateFromField = new WDateEditor("DateFrom", false, false, true, Msg.translate(Env.getCtx(), "DateFrom"));
+	
 	protected Label dateToLabel = new Label("-");
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 
@@ -185,6 +189,10 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * Layout {@link #window}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
@@ -265,10 +273,11 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	}
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e event
 	 *  @throws Exception 
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());

@@ -71,6 +71,16 @@ public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MHierarchy> s_cache 
 		= new ImmutableIntPOCache<Integer, MHierarchy> (Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_Hierarchy_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MHierarchy(Properties ctx, String PA_Hierarchy_UU, String trxName) {
+        super(ctx, PA_Hierarchy_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context

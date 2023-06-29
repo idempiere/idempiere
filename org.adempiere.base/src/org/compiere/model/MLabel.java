@@ -72,6 +72,16 @@ public class MLabel extends X_AD_Label {
 			"#8C0D22"
 	};
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Label_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLabel(Properties ctx, String AD_Label_UU, String trxName) {
+        super(ctx, AD_Label_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

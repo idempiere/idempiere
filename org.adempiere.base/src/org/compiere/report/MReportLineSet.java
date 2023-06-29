@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.X_PA_ReportLineSet;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -39,6 +40,18 @@ public class MReportLineSet extends X_PA_ReportLineSet
 	 */
 	private static final long serialVersionUID = 6882950634644885097L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ReportLineSet_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportLineSet(Properties ctx, String PA_ReportLineSet_UU, String trxName) {
+        super(ctx, PA_ReportLineSet_UU, trxName);
+		if (!Util.isEmpty(PA_ReportLineSet_UU))
+			loadLines();
+    }
+
 	/**
 	 * 	Constructor
 	 * 	@param ctx context
@@ -48,10 +61,7 @@ public class MReportLineSet extends X_PA_ReportLineSet
 	public MReportLineSet (Properties ctx, int PA_ReportLineSet_ID, String trxName)
 	{
 		super (ctx, PA_ReportLineSet_ID, trxName);
-		if (PA_ReportLineSet_ID == 0)
-		{
-		}
-		else
+		if (PA_ReportLineSet_ID != 0)
 			loadLines();
 	}	//	MReportLineSet
 	

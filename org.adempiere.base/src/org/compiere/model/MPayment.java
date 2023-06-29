@@ -132,6 +132,18 @@ public class MPayment extends X_C_Payment
 		return retValue;
 	}	//	getOfBankTransfer
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Payment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPayment(Properties ctx, String C_Payment_UU, String trxName) {
+        super(ctx, C_Payment_UU, trxName);
+		if (Util.isEmpty(C_Payment_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context
@@ -143,39 +155,44 @@ public class MPayment extends X_C_Payment
 		super (ctx, C_Payment_ID, trxName);
 		//  New
 		if (C_Payment_ID == 0)
-		{
-			setDocAction(DOCACTION_Complete);
-			setDocStatus(DOCSTATUS_Drafted);
-			setTrxType(TRXTYPE_Sales);
-			//
-			setR_AvsAddr (R_AVSZIP_Unavailable);
-			setR_AvsZip (R_AVSZIP_Unavailable);
-			//
-			setIsReceipt (true);
-			setIsApproved (false);
-			setIsReconciled (false);
-			setIsAllocated(false);
-			setIsOnline (false);
-			setIsSelfService(false);
-			setIsDelayedCapture (false);
-			setIsPrepayment(false);
-			setProcessed(false);
-			setProcessing(false);
-			setPosted (false);
-			//
-			setPayAmt(Env.ZERO);
-			setDiscountAmt(Env.ZERO);
-			setTaxAmt(Env.ZERO);
-			setWriteOffAmt(Env.ZERO);
-			setIsOverUnderPayment (true);
-			setOverUnderAmt(Env.ZERO);
-			//
-			setDateTrx (new Timestamp(System.currentTimeMillis()));
-			setDateAcct (getDateTrx());
-			setTenderType(TENDERTYPE_Check);
-		}
+			setInitialDefaults();
 	}   //  MPayment
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction(DOCACTION_Complete);
+		setDocStatus(DOCSTATUS_Drafted);
+		setTrxType(TRXTYPE_Sales);
+		//
+		setR_AvsAddr (R_AVSZIP_Unavailable);
+		setR_AvsZip (R_AVSZIP_Unavailable);
+		//
+		setIsReceipt (true);
+		setIsApproved (false);
+		setIsReconciled (false);
+		setIsAllocated(false);
+		setIsOnline (false);
+		setIsSelfService(false);
+		setIsDelayedCapture (false);
+		setIsPrepayment(false);
+		setProcessed(false);
+		setProcessing(false);
+		setPosted (false);
+		//
+		setPayAmt(Env.ZERO);
+		setDiscountAmt(Env.ZERO);
+		setTaxAmt(Env.ZERO);
+		setWriteOffAmt(Env.ZERO);
+		setIsOverUnderPayment (true);
+		setOverUnderAmt(Env.ZERO);
+		//
+		setDateTrx (new Timestamp(System.currentTimeMillis()));
+		setDateAcct (getDateTrx());
+		setTenderType(TENDERTYPE_Check);
+	}
+
 	/**
 	 *  Load Constructor
 	 *  @param ctx context
@@ -2272,7 +2289,7 @@ public class MPayment extends X_C_Payment
 		counter.setRef_Payment_ID(getC_Payment_ID());
 		//
 		String sql = "SELECT C_BankAccount_ID FROM C_BankAccount "
-			+ "WHERE C_Currency_ID=? AND AD_Org_ID IN (0,?) AND IsActive='Y' AND AD_Client_ID = ?"
+			+ "WHERE C_Currency_ID=? AND AD_Org_ID IN (0,?) AND IsActive='Y' AND AD_Client_ID = ? "
 			+ "ORDER BY IsDefault DESC";
 		int C_BankAccount_ID = DB.getSQLValue(get_TrxName(), sql, getC_Currency_ID(), counterAD_Org_ID,getAD_Client_ID());
 		counter.setC_BankAccount_ID(C_BankAccount_ID);

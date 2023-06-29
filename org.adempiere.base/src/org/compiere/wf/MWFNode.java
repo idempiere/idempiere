@@ -38,8 +38,9 @@ import org.compiere.model.X_AD_WF_Node;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.idempiere.cache.ImmutablePOSupport;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Workflow Node Model
@@ -109,6 +110,22 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Node_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFNode(Properties ctx, String AD_WF_Node_UU, String trxName) {
+        super(ctx, AD_WF_Node_UU, trxName);
+		if (Util.isEmpty(AD_WF_Node_UU))
+			setInitialDefaults();
+		if (getAD_WF_Node_ID() > 0) {
+			loadNext();
+			loadTrl();
+		}
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor - save to cache
 	 *	@param ctx context
@@ -119,28 +136,33 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	{
 		super (ctx, AD_WF_Node_ID, trxName);
 		if (AD_WF_Node_ID == 0)
-		{
-		//	setAD_WF_Node_ID (0);
-		//	setAD_Workflow_ID (0);
-		//	setValue (null);
-		//	setName (null);
-			setAction (ACTION_WaitSleep);
-			setCost (Env.ZERO);
-			setDuration (0);
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsCentrallyMaintained (true);	// Y
-			setJoinElement (JOINELEMENT_XOR);	// X
-			setLimit (0);
-			setSplitElement (SPLITELEMENT_XOR);	// X
-			setWaitingTime (0);
-			setXPosition (0);
-			setYPosition (0);
-		}
+			setInitialDefaults();
 		if (getAD_WF_Node_ID() > 0) {
 			loadNext();
 			loadTrl();
 		}
 	}	//	MWFNode
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		//	setAD_WF_Node_ID (0);
+		//	setAD_Workflow_ID (0);
+		//	setValue (null);
+		//	setName (null);
+		setAction (ACTION_WaitSleep);
+		setCost (Env.ZERO);
+		setDuration (0);
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsCentrallyMaintained (true);	// Y
+		setJoinElement (JOINELEMENT_XOR);	// X
+		setLimit (0);
+		setSplitElement (SPLITELEMENT_XOR);	// X
+		setWaitingTime (0);
+		setXPosition (0);
+		setYPosition (0);
+	}
 
 	/**
 	 * 	Parent Constructor

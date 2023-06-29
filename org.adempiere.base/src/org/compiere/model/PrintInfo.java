@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.Util;
 
 
 /**
@@ -37,6 +38,7 @@ public class PrintInfo
 		setAD_Process_ID(pi.getAD_Process_ID());
 		setAD_Table_ID(pi.getTable_ID());
 		setRecord_ID(pi.getRecord_ID());
+		setRecord_UU(pi.getRecord_UU());
 	}	//	PrintInfo
 	
 	
@@ -49,9 +51,23 @@ public class PrintInfo
 	 */
 	public PrintInfo (String Name, int AD_Table_ID, int Record_ID, int C_BPartner_ID)
 	{
+		this (Name, AD_Table_ID, Record_ID, null, C_BPartner_ID);
+	}
+
+	/**
+	 * 	Document Archive Info
+	 *	@param Name name
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record ID
+	 *	@param Record_UU record UUID
+	 *	@param C_BPartner_ID bpartner
+	 */
+	public PrintInfo (String Name, int AD_Table_ID, int Record_ID, String Record_UU, int C_BPartner_ID)
+	{
 		setName(Name);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setRecord_UU(Record_UU);
 		setC_BPartner_ID(C_BPartner_ID);
 	}	//	ArchiveInfo
 
@@ -63,10 +79,23 @@ public class PrintInfo
 	 */
 	public PrintInfo (String Name, int AD_Table_ID, int Record_ID)
 	{
+		this (Name, AD_Table_ID, Record_ID, null);
+	}
+
+	/**
+	 * 	Report Archive Info
+	 *	@param Name name
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record ID
+	 *	@param Record_UU record UUID
+	 */
+	public PrintInfo (String Name, int AD_Table_ID, int Record_ID, String Record_UU)
+	{
 		setName(Name);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
-	}	//	ArchiveInfo
+		setRecord_UU(Record_UU);
+	}	//	PrintInfo
 	
 	boolean m_withDialog = false;
 	private int m_copies = 1;
@@ -79,6 +108,7 @@ public class PrintInfo
 	private int m_AD_Process_ID = 0;
 	private int m_AD_Table_ID = 0;
 	private int m_Record_ID = 0;
+	private String m_Record_UU = null;
 	private int m_C_BPartner_ID = 0;
 	
 	
@@ -259,6 +289,20 @@ public class PrintInfo
 	{
 		m_Record_ID = record_ID;
 	}
+	/**
+	 * @return Returns the record_UU.
+	 */
+	public String getRecord_UU ()
+	{
+		return m_Record_UU;
+	}
+	/**
+	 * @param record_UU The record_UU to set.
+	 */
+	public void setRecord_UU (String record_UU)
+	{
+		m_Record_UU = record_UU;
+	}
 	
 	/**
 	 * 	String Representation
@@ -274,6 +318,8 @@ public class PrintInfo
 			sb.append(",AD_Table_ID=").append(getAD_Table_ID());
 		if (getRecord_ID()!= 0)
 			sb.append(",Record_ID=").append(getRecord_ID());
+		if (!Util.isEmpty(getRecord_UU()))
+			sb.append(",Record_UU=").append(getRecord_UU());
 		if (getC_BPartner_ID() != 0)
 			sb.append(",C_BPartner_ID=").append(getC_BPartner_ID());
 		

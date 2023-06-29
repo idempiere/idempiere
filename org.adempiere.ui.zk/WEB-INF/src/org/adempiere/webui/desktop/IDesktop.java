@@ -25,6 +25,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.EventQueue;
 
 /**
  * Desktop interface
@@ -34,6 +35,7 @@ import org.zkoss.zk.ui.Page;
 public interface IDesktop extends UIPart {
 
 	public static final String WINDOWNO_ATTRIBUTE = "desktop.windowno";
+	/** {@link EventQueue} name for activities (workflow activities, request, notice and unprocessed documents) */
 	public static final String ACTIVITIES_EVENT_QUEUE = "ActivitiesEventQueue";
 	public static final String ON_ACTIVITIES_CHANGED_EVENT = "onActivitiesChanged";
 
@@ -62,6 +64,12 @@ public interface IDesktop extends UIPart {
 	 * @return Object
 	 */
 	public Object findWindow(int WindowNo);
+
+	/**
+	 * @param component
+	 * @return register window no or -1 if not found
+	 */
+	public int findWindowNo(Component component);
 
 	/**
 	 * close active window

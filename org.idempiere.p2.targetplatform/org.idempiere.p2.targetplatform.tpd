@@ -1,9 +1,8 @@
-
-target "idempiere-221205"
+target "idempiere-230620"
 
 with source configurePhase allEnvironments
 
-location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.3" {
+location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.4" {
 	zcommon
 	zel
 	zhtml
@@ -33,9 +32,31 @@ location eclipse "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.apache.httpcomponents.httpcore
 }
 
-location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
+location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	// equinox core framework
 	org.eclipse.osgi
+	org.osgi.annotation.bundle
+	org.osgi.annotation.versioning
+	org.osgi.service.cm
+	org.osgi.service.component
+	org.osgi.service.component.annotations
+	org.osgi.service.coordinator
+	org.osgi.service.device
+	org.osgi.service.event
+	org.osgi.service.log.stream
+	org.osgi.service.metatype
+	org.osgi.service.metatype.annotations
+	org.osgi.service.prefs
+	org.osgi.service.provisioning
+	org.osgi.service.upnp
+	org.osgi.service.useradmin
+	org.osgi.service.wireadmin
+	org.osgi.util.function
+	org.osgi.util.measurement
+	org.osgi.util.position
+	org.osgi.util.promise
+	org.osgi.util.pushstream
+	org.osgi.util.xml
 	//<< equinox framework starter kit
 	org.apache.felix.gogo.command
 	org.apache.felix.gogo.runtime
@@ -106,26 +127,12 @@ location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
 	org.eclipse.core.resources
 	org.eclipse.core.variables
 	org.eclipse.jdt.core
+	org.eclipse.jdt.core.compiler.batch
 	org.eclipse.text	
-}
-
-location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
 	//<< for test
 	org.opentest4j
-	org.apiguardian	
+	org.apiguardian.api
 	org.junit
-	org.junit.jupiter.api
-	org.junit.jupiter.params
-	org.junit.jupiter.engine
-	org.junit.jupiter.migrationsupport
-	org.junit.vintage.engine
-	org.junit.platform.engine
-	org.junit.platform.commons
-	org.junit.platform.launcher
-	org.junit.platform.runner
-	org.junit.platform.suite.api
-	org.junit.platform.suite.commons
-	org.junit.platform.suite.engine
 	org.eclipse.pde.junit.runtime
 	org.eclipse.jdt.junit.runtime
 	org.eclipse.jdt.junit5.runtime

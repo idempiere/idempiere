@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Order Line Model.
@@ -93,6 +94,18 @@ public class MDDOrderLine extends X_DD_OrderLine
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MDDOrderLine.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param DD_OrderLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDDOrderLine(Properties ctx, String DD_OrderLine_UU, String trxName) {
+        super(ctx, DD_OrderLine_UU, trxName);
+		if (Util.isEmpty(DD_OrderLine_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context
@@ -103,7 +116,13 @@ public class MDDOrderLine extends X_DD_OrderLine
 	{
 		super (ctx, C_OrderLine_ID, trxName);
 		if (C_OrderLine_ID == 0)
-		{
+			setInitialDefaults();
+	}	//	MDDOrderLine
+	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		//	setC_Order_ID (0);
 		//	setLine (0);
 		//	setM_Warehouse_ID (0);	// @M_Warehouse_ID@
@@ -111,30 +130,29 @@ public class MDDOrderLine extends X_DD_OrderLine
 		//	setC_BPartner_Location_ID (0);	// @C_BPartner_Location_ID@
 		//	setC_Currency_ID (0);	// @C_Currency_ID@
 		//	setDateOrdered (new Timestamp(System.currentTimeMillis()));	// @DateOrdered@
-			//
+		//
 		//	setC_Tax_ID (0);
 		//	setC_UOM_ID (0);
-			//
-			setFreightAmt (Env.ZERO);
-			setLineNetAmt (Env.ZERO);
-			//
-			setM_AttributeSetInstance_ID(0);
-			//
-			setQtyEntered (Env.ZERO);
-			setQtyInTransit (Env.ZERO);
-			setConfirmedQty(Env.ZERO);
-			setTargetQty(Env.ZERO);
-			setPickedQty(Env.ZERO);
-			setQtyOrdered (Env.ZERO);	// 1
-			setQtyDelivered (Env.ZERO);
-			setQtyReserved (Env.ZERO);
-			//
-			setIsDescription (false);	// N
-			setProcessed (false);
-			setLine (0);
-		}
-	}	//	MDDOrderLine
-	
+		//
+		setFreightAmt (Env.ZERO);
+		setLineNetAmt (Env.ZERO);
+		//
+		setM_AttributeSetInstance_ID(0);
+		//
+		setQtyEntered (Env.ZERO);
+		setQtyInTransit (Env.ZERO);
+		setConfirmedQty(Env.ZERO);
+		setTargetQty(Env.ZERO);
+		setPickedQty(Env.ZERO);
+		setQtyOrdered (Env.ZERO);	// 1
+		setQtyDelivered (Env.ZERO);
+		setQtyReserved (Env.ZERO);
+		//
+		setIsDescription (false);	// N
+		setProcessed (false);
+		setLine (0);
+	}
+
 	/**
 	 *  Parent Constructor.
 	 		ol.setM_Product_ID(wbl.getM_Product_ID());

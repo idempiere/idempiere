@@ -72,66 +72,82 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vbox;
 
-
+/**
+ * Form to customise print format of a {@link ReportEngine} instance (i.e starting from report output).<br/> 
+ * Open from {@link ZkReportViewer}.
+ */
 @org.idempiere.ui.zk.annotation.Form
 public class WReportCustomization  implements IFormController,EventListener<Event> {
-	
+	/** Custom form/window instance */	
 	private CustomForm form = new CustomForm();	
+		
+	/** Window No */
+	private int m_WindowNo = -1;
 	
-	
-	/** Window No					*/
-	private int                 m_WindowNo = -1;
-	
-	int curStep = 0;
-	/**	Print Context				*/
-	private Properties			m_ctx;
-	
-	private boolean				m_isCanExport;
+	protected int curStep = 0;
+	/**	Context */
+	private Properties m_ctx;
+	/** true if current login role has export right */
+	private boolean	m_isCanExport;
 	
 	private ReportEngine m_reportEngine=null;
-	public ArrayList<MPrintFormatItem> pfi ; 
+	/** Print format items from {@link ReportEngine#getPrintFormat()} */
+	protected  ArrayList<MPrintFormatItem> pfi ; 
 	
+	/** North of {@link #form} */
 	private Hlayout headerPanel=new Hlayout();
+	/** Print format name */
 	private WStringEditor name = new WStringEditor();
 	private String tempName = "";
+	/** Button to create new print format */
 	private Button newPrintFormat;
 	private Label selectAll;
 	private Label deselectAll;
 	private Label pipeSeparator;
-	private Button bExport = new Button();
-	private Button bnext ;
-	private Button btnSave;
+	
+	/** Center of {@link #form} */
 	private Tabbox tabbox = new Tabbox();
 	private Tabs tabs = new Tabs();
 	private Tabpanels tabpanels = new Tabpanels(); 
-	private Window winExportFile = null;
-	private Listbox cboType = new Listbox();
-	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-	private ConfirmPanel confirmPanelMain = new ConfirmPanel(true);
-	public boolean isChange=false;
-	public ZkReportViewer viewer;
-	MPrintFormat fm;
 	
+	/** Dialog for export of {@link #m_reportEngine} to file */
+	private Window winExportFile = null;
+	/** Output type (pdf, html, etc) for {@link #winExportFile} */
+	private Listbox cboType = new Listbox();
+	/** Confirm panel for {@link #winExportFile} */
+	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	
+	/** Footer of {@link #form} */
+	private ConfirmPanel confirmPanelMain = new ConfirmPanel(true);
+	private Button bExport = new Button();
+	private Button bnext ;
+	private Button btnSave;
+	
+	/** true if {@link #name} has change */
+	protected boolean isChange=false;
+	/** Print format from {@link ReportEngine#getPrintFormat()} */
+	protected MPrintFormat fm;
+	
+	protected Tab tabdf1=new Tab(Msg.getMsg(Env.getCtx(), "DisplayFields"));
+	protected Tab tabfo2=new Tab(Msg.getMsg(Env.getCtx(), "FieldOrder"));
+	protected Tab tabsc3=new Tab(Msg.getMsg(Env.getCtx(), "SortCriteria"));
+	protected Tab tabgc4=new Tab(Msg.getMsg(Env.getCtx(), "GroupingCriteria"));
+	protected Tab tabsf5=new Tab(Msg.getMsg(Env.getCtx(), "SummaryFields"));
 
-	Tab tabdf1=new Tab(Msg.getMsg(Env.getCtx(), "DisplayFields"));
-	Tab tabfo2=new Tab(Msg.getMsg(Env.getCtx(), "FieldOrder"));
-	Tab tabsc3=new Tab(Msg.getMsg(Env.getCtx(), "SortCriteria"));
-	Tab tabgc4=new Tab(Msg.getMsg(Env.getCtx(), "GroupingCriteria"));
-	Tab tabsf5=new Tab(Msg.getMsg(Env.getCtx(), "SummaryFields"));
+	protected WRC1DisplayFieldsPanel tpdf1 = new WRC1DisplayFieldsPanel();
+	protected WRC2FieldOrderPanel tpfo2 =new WRC2FieldOrderPanel();
+	protected WRC3SortCriteriaPanel tpsc3=new WRC3SortCriteriaPanel();
+	protected WRC4GroupingCriteriaPanel tpgc4=new WRC4GroupingCriteriaPanel();
+	protected WRC5SummaryFieldsPanel tpsf5=new WRC5SummaryFieldsPanel();
 
-	WRC1DisplayFieldsPanel tpdf1 = new WRC1DisplayFieldsPanel();
-	WRC2FieldOrderPanel tpfo2 =new WRC2FieldOrderPanel();
-	WRC3SortCriteriaPanel tpsc3=new WRC3SortCriteriaPanel();
-	WRC4GroupingCriteriaPanel tpgc4=new WRC4GroupingCriteriaPanel();
-	WRC5SummaryFieldsPanel tpsf5=new WRC5SummaryFieldsPanel();
-
+	/** selected tab index */
 	private int oldtabidx = 0;
 	
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WReportCustomization.class);
 
 	/**
-	 * 	Static Layout
+	 * 	Default constructor
 	 * 	@throws Exception
 	 */
 	public WReportCustomization() {
@@ -141,11 +157,10 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	}
 		
 	/**
-	 * 	Static Layout
+	 * 	Set report engine.
 	 * 	@throws Exception
 	 */
 	public void setReportEngine(ReportEngine re) {
-
 		m_reportEngine = re;
 		m_isCanExport=MRole.getDefault().isCanExport();
 	    pfi = new ArrayList<MPrintFormatItem>() ;
@@ -165,13 +180,12 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		}
 	}
 	
+	/**
+	 * Layout {@link #form}
+	 */
 	private void init() 
 	{
-
 		form.setStyle("width: 90%; height: 90%; position: absolute; border:none; padding:none; margin:none;");
-
-		//ZKUpdateUtil.setHeight(headerPanel, "40px");
-		//headerPanel.setWidth("100%"); 
 
 		headerPanel.appendChild(new Separator("vertical"));
 
@@ -373,7 +387,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		}
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)){
 			close();
-		}else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)){			
+		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)){			
 			((WRCTabPanel) tabbox.getSelectedTabpanel()).updatePFI();
 			onSave();
 			close();
@@ -393,6 +407,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		pipeSeparator.setVisible(oldtabidx == 0);
 	}
 
+	/**
+	 * Save changes ({@link #name} and/or {@link #pfi}).
+	 */
 	private void onSave() {
 
 		if (name.getValue() == null || Util.isEmpty((String) name.getValue()))
@@ -427,6 +444,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		setIsChanged(false);
 	}
 
+	/**
+	 * Update AD_PrintFormat_Trl
+	 */
 	private void updateTrl()
 	{
 		List<GenericPO> list = new Query(m_ctx, "AD_PrintFormat_Trl", "AD_PrintFormat_ID = ?", null)
@@ -446,7 +466,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	}
 
 	/**
-	 * 	Export
+	 * Export content of {@link #m_reportEngine} to file.
 	 */
 	private void cmd_export()
 	{		
@@ -513,6 +533,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
 
+	/**
+	 * Export content of {@link #m_reportEngine} to file.
+	 */
 	private void exportFile()
 	{
 		try
@@ -599,11 +622,17 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		}
 	}
 
+	/**
+	 * Close form.
+	 */
 	public void close()
 	{	
 		form.detach();
 	}
 
+	/**
+	 * Create new print format from m_reportEngine.getPrintFormat().
+	 */
 	public void copyFormat(){
 		pfi.clear();
 		MPrintFormat newpf=MPrintFormat.copyToClient(m_ctx, m_reportEngine.getPrintFormat().get_ID() ,Env.getAD_Client_ID(m_ctx));
@@ -640,11 +669,14 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		fm = newpf;
 	}
 
-	 public void setIsChanged(boolean change){
-		 isChange=change;
+	/**
+	 * @param change
+	 */
+	public void setIsChanged(boolean change){
+		isChange=change;
 		 
-		 btnSave.setDisabled(!isChange);
-		 bExport.setDisabled(isChange);
-		 newPrintFormat.setDisabled(isChange);
-	 }
+		btnSave.setDisabled(!isChange);
+		bExport.setDisabled(isChange);
+		newPrintFormat.setDisabled(isChange);
+	}
 }

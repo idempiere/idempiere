@@ -215,6 +215,18 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MProduct> s_cache	= new ImmutableIntPOCache<Integer,MProduct>(Table_Name, 40, 5);	//	5 minutes
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Product_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProduct(Properties ctx, String M_Product_UU, String trxName) {
+        super(ctx, M_Product_UU, trxName);
+		if (Util.isEmpty(M_Product_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -229,22 +241,27 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public MProduct(Properties ctx, int M_Product_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_Product_ID, trxName, virtualColumns);
 		if (M_Product_ID == 0)
-		{
-			setProductType (PRODUCTTYPE_Item);	// I
-			setIsBOM (false);	// N
-			setIsInvoicePrintDetails (false);
-			setIsPickListPrintDetails (false);
-			setIsPurchased (true);	// Y
-			setIsSold (true);	// Y
-			setIsStocked (true);	// Y
-			setIsSummary (false);
-			setIsVerified (false);	// N
-			setIsWebStoreFeatured (false);
-			setIsSelfService(true);
-			setIsExcludeAutoDelivery(false);
-			setProcessing (false);	// N
-			setLowLevel(0);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProductType (PRODUCTTYPE_Item);	// I
+		setIsBOM (false);	// N
+		setIsInvoicePrintDetails (false);
+		setIsPickListPrintDetails (false);
+		setIsPurchased (true);	// Y
+		setIsSold (true);	// Y
+		setIsStocked (true);	// Y
+		setIsSummary (false);
+		setIsVerified (false);	// N
+		setIsWebStoreFeatured (false);
+		setIsSelfService(true);
+		setIsExcludeAutoDelivery(false);
+		setProcessing (false);	// N
+		setLowLevel(0);
 	}
 
 	/**
@@ -854,7 +871,10 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (newRecord)
 		{
 			insert_Accounting("M_Product_Acct", "M_Product_Category_Acct",
-				"p.M_Product_Category_ID=" + getM_Product_Category_ID());
+				"p.M_Product_Category_ID=" + 
+				(getM_Product_Category_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
+				 ? "toRecordId('M_Product_Category',"+DB.TO_STRING(MProductCategory.get(getM_Product_Category_ID()).getM_Product_Category_UU())+")"
+				 : getM_Product_Category_ID()));
 			insert_Tree(X_AD_Tree.TREETYPE_Product);
 		}
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))

@@ -208,6 +208,14 @@ public class AnnotationBasedModelFactory extends AnnotationBasedFactory implemen
 	 * {@inheritDoc}
 	 */
 	@Override
+	public PO getPO(String tableName, String Record_UU, String trxName) {
+		return AbstractModelFactory.getPO(getClass(tableName), tableName, Record_UU, trxName);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public PO getPO(String tableName, ResultSet rs, String trxName) {
 		return AbstractModelFactory.getPO(getClass(tableName), tableName, rs, trxName);
 	}

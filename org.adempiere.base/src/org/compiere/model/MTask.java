@@ -37,6 +37,16 @@ public class MTask extends X_AD_Task
 	 */
 	private static final long serialVersionUID = 5286481246615520755L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Task_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTask(Properties ctx, String AD_Task_UU, String trxName) {
+        super(ctx, AD_Task_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

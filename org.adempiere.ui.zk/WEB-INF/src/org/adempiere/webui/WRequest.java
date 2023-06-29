@@ -36,8 +36,8 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Popup;
 
 /**
- *	Request Button Action.
- *	Popup Menu
+ *	Handle Request Button Action.
+ *	Show Popup Menu.
  *	
  *  @author Jorg Janke
  *  @version $Id: ARequest.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -62,7 +62,7 @@ public class WRequest implements EventListener<Event>
 		m_C_BPartner_ID = C_BPartner_ID;
 		getRequests(invoker);
 		
-	}	//	AReport
+	}	//	WRequest
 
 	/**	The Table						*/
 	private int			m_AD_Table_ID;
@@ -133,6 +133,7 @@ public class WRequest implements EventListener<Event>
 	{
 		if (e.getTarget() instanceof Menuitem) 
 		{
+			//open request window
 			MQuery query = null;
 			if (e.getTarget() == m_active)
 			{
@@ -171,6 +172,11 @@ public class WRequest implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Set initial values for new request record
+	 * @param e
+	 * @param frame
+	 */
 	private void onNew(Event e, ADWindow frame) {
 		//	New - set Table/Record
 		if (e.getTarget() == m_new)

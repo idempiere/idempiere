@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.X_AD_WorkflowProcessorLog;
+import org.compiere.util.Util;
 
 
 /**
@@ -37,6 +38,18 @@ public class MWorkflowProcessorLog extends X_AD_WorkflowProcessorLog
 	 */
 	private static final long serialVersionUID = 7646579803939292482L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WorkflowProcessorLog_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWorkflowProcessorLog(Properties ctx, String AD_WorkflowProcessorLog_UU, String trxName) {
+        super(ctx, AD_WorkflowProcessorLog_UU, trxName);
+		if (Util.isEmpty(AD_WorkflowProcessorLog_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -47,10 +60,15 @@ public class MWorkflowProcessorLog extends X_AD_WorkflowProcessorLog
 	{
 		super (ctx, AD_WorkflowProcessorLog_ID, trxName);
 		if (AD_WorkflowProcessorLog_ID == 0)
-		{
-			setIsError (false);
-		}	
+			setInitialDefaults();
 	}	//	MWorkflowProcessorLog
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsError (false);
+	}
 
 	/**
 	 * 	Load Constructor

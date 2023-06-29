@@ -86,6 +86,16 @@ public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 	
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_Resolution_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MResolution(Properties ctx, String R_Resolution_UU, String trxName) {
+        super(ctx, R_Resolution_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -33,6 +33,7 @@ import org.adempiere.webui.editor.WEditor;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -120,6 +121,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 		if (parentId != null && parentId instanceof IDColumn){
 			IDColumn ID = (IDColumn) parentId;
 			linkPara = ID.getRecord_ID();
+		} else if (parentId != null && parentId instanceof UUIDColumn) {
+			UUIDColumn ID = (UUIDColumn) parentId;
+			linkPara = ID.getRecord_UU();
 		}else if (parentId != null){
 			linkPara = parentId.toString();
 		}
@@ -324,9 +328,22 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 
 		long startTime = System.currentTimeMillis();
         dataSql = info.getInfoSql();
+        
+        // Other Clause and Order By clause
+        String otherClause = info.getInfowin().getOtherClause();
+        String orderByClause = info.getInfowin().getOrderByClause();
+        if (!Util.isEmpty(otherClause)) {
+        	dataSql = dataSql + " " + otherClause;
+        }
         if (!Util.isEmpty(m_sqlUserOrder)) {
         	dataSql = dataSql + m_sqlUserOrder;
+        	if(!Util.isEmpty(orderByClause))
+        		dataSql = dataSql + orderByClause;
         }
+        else if(!Util.isEmpty(orderByClause)) {
+        	dataSql = dataSql + " ORDER BY " + orderByClause;
+        }
+        //
         isHasNextPage = false;
         if (log.isLoggable(Level.FINER))
         	log.finer(dataSql);
@@ -342,6 +359,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			if (parentId != null && parentId instanceof IDColumn){
 				IDColumn ID = (IDColumn) parentId;
 				linkPara = ID.getRecord_ID();
+			} else if (parentId != null && parentId instanceof UUIDColumn) {
+				UUIDColumn ID = (UUIDColumn) parentId;
+				linkPara = ID.getRecord_UU();
 			}else if (parentId != null){
 				linkPara = parentId.toString();
 			}
@@ -423,9 +443,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			Class<?> c = columnsLayout[col].getColClass();
 			int colIndex = col + colOffset;
 			if (c == IDColumn.class)
-			{
 				value = new IDColumn(rs.getInt(colIndex));
-			}
+			else if (c == UUIDColumn.class)
+				value = new UUIDColumn(rs.getString(colIndex));
 			else if (c == Boolean.class)
 				value = Boolean.valueOf("Y".equals(rs.getString(colIndex)));
 			else if (c == Timestamp.class)

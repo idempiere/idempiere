@@ -33,8 +33,9 @@ import org.zkoss.zul.Tree;
  */
 public class FavouriteController
 {
-
-	private static final String			DESKTOP_FAVOURITE_CONTROLLER	= "desktop.FavouriteController";
+	/** Session attribute to store FavouriteController reference */
+	private static final String	DESKTOP_FAVOURITE_CONTROLLER	= "desktop.FavouriteController";
+	/** Node_ID:MTreeNode */
 	private Map<Integer, MTreeNode>		nodeMap;
 	private int							m_AD_Tree_Favorite_ID;
 
@@ -45,11 +46,18 @@ public class FavouriteController
 	private Tree						tree;
 	private FavoriteSimpleTreeModel		treeModel;
 
+	/**
+	 * Private constructor.<br/>
+	 * Use {@link #getInstance(Session)} to get singleton instance for a Session.
+	 */
 	private FavouriteController()
 	{
 		init();
 	}
 
+	/**
+	 * Load user favourites
+	 */
 	private void init()
 	{
 		nodeMap = new LinkedHashMap<>();
@@ -102,7 +110,7 @@ public class FavouriteController
 	 * Get favourites controller instance for current session
 	 * 
 	 * @param  currSess
-	 * @return          FavouriteController session instance
+	 * @return FavouriteController session instance
 	 */
 	public static synchronized FavouriteController getInstance(Session currSess)
 	{
@@ -116,6 +124,12 @@ public class FavouriteController
 		return controller;
 	} // getInstance
 
+	/**
+	 * 
+	 * @param add true for add, false for delete
+	 * @param Menu_ID
+	 * @return true if add/delete is successful
+	 */
 	private boolean barUpdate(boolean add, int Menu_ID)
 	{
 		if (add)
@@ -144,7 +158,7 @@ public class FavouriteController
 	 * Add node (by node id) to favourties
 	 * 
 	 * @param  nodeId
-	 * @return        true if successfully added
+	 * @return true if successfully added
 	 */
 	public boolean addNode(int nodeId)
 	{
@@ -160,7 +174,7 @@ public class FavouriteController
 	 * add tree node to favourites
 	 * 
 	 * @param  node
-	 * @return      true if successfully added
+	 * @return true if successfully added
 	 */
 	public boolean addNode(MTreeNode node)
 	{
@@ -188,7 +202,7 @@ public class FavouriteController
 	 * remove node (by node id) from favourites
 	 * 
 	 * @param  nodeId
-	 * @return        true if found and remove
+	 * @return true if found and remove
 	 */
 	public boolean removeNode(int nodeId)
 	{
@@ -198,7 +212,8 @@ public class FavouriteController
 			if (treeModel != null)
 			{
 				DefaultTreeNode<Object> treeNode = treeModel.find(treeModel.getRoot(), favNode.getAD_Tree_Favorite_Node_ID());
-				treeModel.removeNode(treeNode);
+				if(treeNode != null)
+					treeModel.removeNode(treeNode);
 			}
 
 			nodeMap.remove(nodeId);
@@ -213,7 +228,7 @@ public class FavouriteController
 
 	/**
 	 * @param  nodeId
-	 * @return        true if node id is in the current favourites list
+	 * @return true if node id is in the current favourites list
 	 */
 	public boolean hasNode(int nodeId)
 	{
@@ -253,16 +268,26 @@ public class FavouriteController
 		deletedCallbacks.add(callback);
 	}
 
+	/**
+	 * @return AD_Tree_Favorite_ID
+	 */
 	public int getAD_Tree_Favorite_ID()
 	{
 		return m_AD_Tree_Favorite_ID;
 	}
 
+	/**
+	 * @return root MTreeNode
+	 */
 	public MTreeNode getRootNode()
 	{
 		return rootNode;
 	}
 
+	/**
+	 * @param treeModel FavoriteSimpleTreeModel
+	 * @param tree Tree
+	 */
 	public void setTreeAndModel(FavoriteSimpleTreeModel treeModel, Tree tree)
 	{
 		this.tree = tree;

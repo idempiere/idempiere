@@ -317,7 +317,7 @@ public class Doc_InOut extends Doc
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
 					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 					{
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
@@ -616,7 +616,7 @@ public class Doc_InOut extends Doc
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
 					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 					{
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
@@ -832,7 +832,7 @@ public class Doc_InOut extends Doc
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
 					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 					{
 						p_Error = Msg.getMsg(getCtx(),"Original Receipt not posted yet");
 						return null;
@@ -1048,7 +1048,7 @@ public class Doc_InOut extends Doc
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
 					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 					{
 						p_Error = Msg.getMsg(getCtx(),"Original Receipt not posted yet");
 						return null;

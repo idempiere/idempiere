@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 
@@ -63,6 +64,18 @@ public class MScheduler extends X_AD_Scheduler
 		return retValue;
 	}	//	getActive
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Scheduler_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MScheduler(Properties ctx, String AD_Scheduler_UU, String trxName) {
+        super(ctx, AD_Scheduler_UU, trxName);
+		if (Util.isEmpty(AD_Scheduler_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -73,10 +86,15 @@ public class MScheduler extends X_AD_Scheduler
 	{
 		super (ctx, AD_Scheduler_ID, trxName);
 		if (AD_Scheduler_ID == 0)
-		{
-			setKeepLogDays (7);
-		}
+			setInitialDefaults();
 	}	//	MScheduler
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setKeepLogDays (7);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -325,9 +343,21 @@ public class MScheduler extends X_AD_Scheduler
 		}
 		
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+			String timeZoneId = null;
+			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+				if (clientInfo == null)
+					clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+				timeZoneId = clientInfo.getTimeZone();
+			}
+
 			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
-					clientInfo.getTimeZone());
+					timeZoneId);
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

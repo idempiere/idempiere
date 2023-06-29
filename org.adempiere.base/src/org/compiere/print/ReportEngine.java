@@ -63,9 +63,11 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
 import org.adempiere.print.export.PrintDataXLSXExporter;
+import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.script;
+import org.apache.ecs.xhtml.span;
 import org.apache.ecs.xhtml.style;
 import org.apache.ecs.xhtml.table;
 import org.apache.ecs.xhtml.tbody;
@@ -79,6 +81,7 @@ import org.compiere.model.MDunningRunEntry;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
@@ -91,6 +94,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_StyleLine;
 import org.compiere.print.layout.InstanceAttributeColumn;
@@ -766,6 +770,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				doc.getBody().setNeedClosingTag(false);
 				doc.appendHead("<meta charset=\"UTF-8\" />");
 				
+				if (extension != null && !Util.isEmpty(extension.getWebFontLinks(), true))
+				{
+					doc.appendHead(extension.getWebFontLinks());
+				}
+
 				if (extension != null && extension.getStyleURL() != null)
 				{
 					// maybe cache style content with key is path
@@ -989,29 +998,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						{
 							td td = new td();
 							tr.addElement(td);
-							//set style
-							int AD_FieldStyle_ID = item.getAD_FieldStyle_ID();
-							if(AD_FieldStyle_ID > 0) {
-								MStyle style = MStyle.get(Env.getCtx(), AD_FieldStyle_ID);
-								X_AD_StyleLine[] lines = style.getStyleLines();
-								StringBuilder styleBuilder = new StringBuilder();
-								for (X_AD_StyleLine line : lines)
-								{
-									String inlineStyle = line.getInlineStyle().trim();
-									String displayLogic = line.getDisplayLogic();
-									if (!Util.isEmpty(displayLogic))
-									{
-										if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
-											continue;
-									}
-									if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-										styleBuilder.append("; ");
-									styleBuilder.append(inlineStyle);
-								}
-								if(styleBuilder.length() > 0)
-									td.setStyle(styleBuilder.toString());
-							}
-							//
+							MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
 							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 									: m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							if (obj == null || !isDisplayPFItem(item)){
@@ -1055,34 +1042,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 												MTable mTable = MTable.get(getCtx(), tableID);
 												String tableName = mTable.getTableName();
 												
-												ArrayList<MColumn> list = new ArrayList<MColumn>();
-												for (String idColumnName : mTable.getIdentifierColumns()) {
-													MColumn column = mTable.getColumn(idColumnName);
-													list.add (column);
-												}
-												if(list.size() > 0) {
-													StringBuilder displayColumn = new StringBuilder();
-													String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-													
-													for(int i = 0; i < list.size(); i++) {
-														MColumn identifierColumn = list.get(i);
-														if(i > 0)
-															displayColumn.append("||'").append(separator).append("'||");
-														
-														displayColumn.append("NVL(")
-																	.append(DB.TO_CHAR(identifierColumn.getColumnName(), 
-																						identifierColumn.getAD_Reference_ID(), 
-																						Env.getAD_Language(Env.getCtx())))
-																	.append(",'')");
-													}
-													StringBuilder sql = new StringBuilder("SELECT ");
-													sql.append(displayColumn.toString());
-													sql.append(" FROM ").append(tableName);
-													sql.append(" WHERE ")
-														.append(tableName).append(".").append(tableName).append("_ID=?");
-													
-													value = DB.getSQLValueStringEx(null, sql.toString(), Integer.parseInt(value));
-												}
+												value = getIdentifier(mTable, tableName, Integer.parseInt(value));
+												
 												String foreignColumnName = tableName + "_ID";
 												pde.setForeignColumnName(foreignColumnName);
 												isZoom = true;
@@ -1111,21 +1072,46 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									}
 									if (isZoom) {
 										//link for column
-										a href = new a("javascript:void(0)");									
+										a href = new a("javascript:void(0)");
 										href.setID(pde.getColumnName() + "_" + row + "_a");									
 										td.addElement(href);
 										href.addElement(Util.maskHTML(value));
 										if (cssPrefix != null)
 											href.setClass(cssPrefix + "-href");
+										// Set Style
+										if(style != null && style.isWrapWithSpan())
+											setStyle(href, style);
+										else
+											setStyle(td, style);
 										extension.extendIDColumn(row, td, href, pde);
 									} else {
-										td.addElement(Util.maskHTML(value));
+										// Set Style
+										if(style != null && style.isWrapWithSpan()) {
+											span span = new span();
+											setStyle(span, style);
+											span.addElement(Util.maskHTML(value));
+											td.addElement(span);
+										}
+										else {
+											setStyle(td, style);
+											td.addElement(Util.maskHTML(value));
+										}
 									}
 
 								}
 								else
 								{
-									td.addElement(Util.maskHTML(value));
+									// Set Style
+									if(style != null && style.isWrapWithSpan()) {
+										span span = new span();
+										setStyle(span, style);
+										span.addElement(Util.maskHTML(value));
+										td.addElement(span);
+									}
+									else {
+										setStyle(td, style);
+										td.addElement(Util.maskHTML(value));
+									}
 								}
 								if (cssPrefix != null)
 								{
@@ -1193,7 +1179,90 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return true;
 	}	//	createHTML
 
-
+	/**
+	 * Get record identifier string
+	 * @param mTable
+	 * @param tableName
+	 * @param recordID
+	 * @return String identifier
+	 */
+	private String getIdentifier(MTable mTable, String tableName, int recordID) {
+		ArrayList<MColumn> list = new ArrayList<MColumn>();
+		// get translation table - null if not exists
+		MTable mTableTrl = MTable.get(getCtx(), tableName+"_Trl");
+		String tableNameTrl = "";
+		// get report language
+		String reportLang = getLanguageID() > 0 ? new MLanguage(getCtx(), getLanguageID(), null).getAD_Language() : Language.getLoginLanguage().getAD_Language();
+		
+		// use Trl table or base table
+		boolean isTrl = !Env.isBaseLanguage(Language.getLanguage(reportLang), tableName);
+		
+		if(isTrl && mTableTrl != null)
+			tableNameTrl = mTableTrl.getTableName();
+		else
+			isTrl = false;
+		
+		// load identifier columns
+		for (String idColumnName : mTable.getIdentifierColumns()) {
+			MColumn column = mTable.getColumn(idColumnName);
+			list.add (column);
+		}
+		if(list.size() <= 0) {
+			return String.valueOf(recordID);
+		}
+		
+		StringBuilder displayColumn = new StringBuilder();
+		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+		
+		// get record identifier from SQL
+		for(int i = 0; i < list.size(); i++) {
+			MColumn identifierColumn = list.get(i);
+			if(i > 0)
+				displayColumn.append("||'").append(separator).append("'||");
+			
+			displayColumn.append("COALESCE(")
+						.append(DB.TO_CHAR(addTrlSuffix(identifierColumn, tableName, isTrl)+"."+identifierColumn.getColumnName(), 
+											identifierColumn.getAD_Reference_ID(), 
+											Env.getAD_Language(Env.getCtx())))
+						.append(",")
+						.append(DB.TO_CHAR(tableName+"."+identifierColumn.getColumnName(), 
+								identifierColumn.getAD_Reference_ID(), 
+								Env.getAD_Language(Env.getCtx())))
+						.append(",'')");
+		}
+		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder("SELECT ");
+		sql.append(displayColumn.toString());
+		sql.append(" FROM ").append(tableName);
+		if(isTrl) {
+			sql.append(" LEFT JOIN ").append(tableNameTrl).append(" ON ")
+				.append(tableName).append(".").append(tableName).append("_ID = ")
+				.append(tableNameTrl).append(".").append(tableName).append("_ID AND ")
+				.append(tableNameTrl).append(".AD_Language=?");
+			
+			params.add(reportLang);
+		}
+		sql.append(" WHERE ")
+			.append(tableName).append(".").append(tableName).append("_ID=?");
+		
+		params.add(recordID);		
+		return DB.getSQLValueStringEx(null, sql.toString(), params);
+	} // getIdentifier
+	
+	/**
+	 * Add "_Trl" suffix to table name, if the column is translated
+	 * @param column
+	 * @param tableName
+	 * @param isTrl - is translated
+	 * @return String tableName
+	 */
+	private String addTrlSuffix(MColumn column, String tableName, boolean isTrl) {
+		if(column.isTranslated() && isTrl)
+			return tableName + "_Trl";
+		else
+			return tableName;
+	} // addTrlSuffix
+	
 	private String getCSSFontFamily(String fontFamily) {
 		if ("Dialog".equals(fontFamily) || "DialogInput".equals(fontFamily) || 	"Monospaced".equals(fontFamily))
 		{
@@ -1935,10 +2004,13 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//  Create Query from Parameters
 		MQuery query = null;
-		if (IsForm && pi.getRecord_ID() != 0		//	Form = one record
+		if (IsForm && (pi.getRecord_ID() > 0 || !Util.isEmpty(pi.getRecord_UU()))		//	Form = one record
 				&& !TableName.startsWith("T_") )	//	Not temporary table - teo_sarca, BF [ 2828886 ]
 		{
-			query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
+			if (pi.getRecord_ID() > 0)
+				query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
+			else
+				query = MQuery.getEqualQuery(PO.getUUIDColumnName(TableName), pi.getRecord_UU());
 		}
 		else
 		{
@@ -2758,5 +2830,29 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(ctx),Env.getAD_Org_ID(ctx));
 			instance.setReportType(type);
 		}
+	}
+	
+	private void setStyle(MultiPartElement element, MStyle style) {
+		if (style == null || style.getAD_Style_ID() == 0)
+			return;
+
+		X_AD_StyleLine[] lines = style.getStyleLines();
+		StringBuilder styleBuilder = new StringBuilder();
+		for (X_AD_StyleLine line : lines)
+		{
+			String inlineStyle = line.getInlineStyle().trim();
+			String displayLogic = line.getDisplayLogic();
+			if (!Util.isEmpty(displayLogic))
+			{
+				if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
+					continue;
+			}
+			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+				styleBuilder.append("; ");
+			styleBuilder.append(inlineStyle);
+		}
+		if(styleBuilder.length() > 0)
+			element.setStyle(styleBuilder.toString());
+		//
 	}
 }	//	ReportEngine

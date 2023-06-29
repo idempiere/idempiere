@@ -68,71 +68,93 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
 /**
- * 	Fixed length file import
+ * 	Fixed length file import.<br/>
+ *  Import data from text file into DB with definition from AD_ImpFormat.
  *
  *  @author 	Niraj Sohun
  *  			Aug 16, 2007
- *  
  */
-
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFileImport")
 public class WFileImport extends ADForm implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7462842139127270429L;
 	private static final int MAX_LOADED_LINES = 100;
 	private static final int MAX_SHOWN_LINES = 10;
 	
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WFileImport.class);
 	
+	/** Current index pointer for {@link #m_data} */
 	private int	m_record = -1;
 	
-	private Listbox pickFormat = new Listbox();
-	private Listbox fCharset = new Listbox();
-	
+	/** Lines of loaded text file */
 	private ArrayList<String> m_data = new ArrayList<String>();
 	private static final String s_none = "----";	//	no format indicator
 
+	/** Import format helper */
 	private ImpFormat m_format;
 	
-	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-
+	/** Parameter fields, child of {@link #northPanel} */
+	
+	/** Button to load import file */ 
 	private Button bFile = new Button();
-	private Button bNext = new Button();
+	/** Character set of import file */
+	private Listbox fCharset = new Listbox();
+	/** Info text for loaded file */
+	private Label info = new Label();
+	/** Label for {@link #pickFormat} */
+	private Label labelFormat = new Label();
+	/**  List of import format (AD_ImpFormat) */
+	private Listbox pickFormat = new Listbox();
+	/** Button to decrease {@link #m_record} by 1 */
 	private Button bPrevious = new Button();
+	/** Info text for {@link #m_record} */
+	private Label record = new Label();
+	/** Button to increase {@link #m_record} by 1 */
+	private Button bNext = new Button();
+	/** Raw text from import file */
+	private Textbox rawData = new Textbox();
 
+	/** Input file stream */
 	private InputStream m_file_istream;
 	
-	private Textbox rawData = new Textbox();
+	/** Array of column/field. Child of {@link #previewPanel}. */
 	private Textbox[] m_fields;
 	
-	private Label info = new Label();
+	/** Array of label for {@link #m_fields}. Child of {@link #previewPanel}. */
 	private Label[] m_labels;
-	private Label record = new Label();
-	private Label labelFormat = new Label();
-
+		
+	/** Preview panel, child of {@link #centerPanel} */
 	private Div previewPanel = new Div();
 
+	/** North part of form */
 	private Vbox northPanel = new Vbox();
 
+	/** Center part of form */
 	private Div centerPanel = new Div();
 
+	/** Action buttons panel. South of form */
+	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	
+	/** 
+	 * Default constructor
+	 */
 	public WFileImport()
 	{
 	}
 	
 	/**
-	 *	Initialize Panel
+	 *	Initialize form
 	 */
 	protected void initForm()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO)) log.info("");
 		try
 		{
-			jbInit();
+			zkInit();
 			dynInit();
 			
 			ZKUpdateUtil.setWidth(this, "100%");
@@ -163,11 +185,10 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	}	//	init
 
 	/**
-	 *	Static Init
+	 *	Layout form
 	 *  @throws Exception
-	 */
-	
-	private void jbInit() throws Exception
+	 */	
+	private void zkInit() throws Exception
 	{
 		Charset[] charsets = Ini.getAvailableCharsets();
 		
@@ -524,8 +545,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	/**
 	 *	Apply Current Pattern
 	 *  @param next next
-	 */
-	
+	 */	
 	private void cmd_applyFormat (boolean next)
 	{
 		if (m_format == null || m_data.size() == 0)

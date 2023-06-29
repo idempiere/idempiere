@@ -34,6 +34,16 @@ public class MAttributeValue extends X_M_AttributeValue
 	 */
 	private static final long serialVersionUID = 4105427429027399512L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_AttributeValue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttributeValue(Properties ctx, String M_AttributeValue_UU, String trxName) {
+        super(ctx, M_AttributeValue_UU, trxName);
+    }
+
 	/**
 	 * 	Constructor
 	 *	@param ctx context

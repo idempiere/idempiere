@@ -45,31 +45,32 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Create from form window
  * @author Elaine
- *
  */
 @org.idempiere.ui.zk.annotation.Form
 public class WCreateFromForm extends ADForm implements EventListener<Event>, WTableModelListener, DialogEvents
-{
-	
+{	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3703236565441597403L;
+	/** Form controller */
 	private CreateFromForm form;
-	
+	/** Form parameter panel. North of form. */
 	private Panel parameterPanel = new Panel();
+	/** Action buttons panel. South of form. */
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	/** Form status bar. South of form. */
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	/** Data grid. Center of form. */
 	private WListbox dataTable = ListboxFactory.newDataTable();
-
+	/** true if form cancelled by user */
 	private boolean isCancel;
-	
+	/** Select all action button Id */
 	public static final String SELECT_ALL = "SelectAll";
 
 	/**
-	 * 
 	 * @param createFrom
 	 */
 	public WCreateFromForm(CreateFromForm createFrom)
@@ -100,6 +101,10 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		}		
     }
 	
+	/**
+	 * Layout form.<br/>
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		Borderlayout contentPane = new Borderlayout();
@@ -211,7 +216,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	}
 	
 	/**
-	 * 
+	 * Call {@link CreateFromForm#save(org.compiere.minigrid.IMiniTable, String, org.compiere.model.GridTab)}.
 	 * @param trxName
 	 * @return true if save success
 	 */
@@ -260,7 +265,6 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	}
 	
 	/**
-	 * 
 	 * @return {@link WListbox}
 	 */
 	public WListbox getWListbox()
@@ -269,7 +273,6 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	}
 	
 	/**
-	 * 
 	 * @return {@link Panel}
 	 */
 	public Panel getParameterPanel()
@@ -278,7 +281,6 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	}
 	
 	/**
-	 * 
 	 * @return {@link ConfirmPanel}
 	 */
 	public ConfirmPanel getConfirmPanel()
@@ -287,7 +289,6 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	}
 	
 	/**
-	 * 
 	 * @return true if cancel by user
 	 */
 	public boolean isCancel() 

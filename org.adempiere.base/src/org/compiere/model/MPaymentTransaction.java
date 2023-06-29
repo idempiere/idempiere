@@ -43,32 +43,49 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	 */
 	private static final long serialVersionUID = 8722189788479132158L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaymentTransaction_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaymentTransaction(Properties ctx, String C_PaymentTransaction_UU, String trxName) {
+        super(ctx, C_PaymentTransaction_UU, trxName);
+		if (Util.isEmpty(C_PaymentTransaction_UU))
+			setInitialDefaults();
+    }
+
 	public MPaymentTransaction(Properties ctx, int C_PaymentTransaction_ID, String trxName) {
 		super(ctx, C_PaymentTransaction_ID, trxName);
 		
 		//  New
 		if (C_PaymentTransaction_ID == 0)
-		{
-			setTrxType(TRXTYPE_Sales);
-			//
-			setR_AvsAddr (R_AVSZIP_Unavailable);
-			setR_AvsZip (R_AVSZIP_Unavailable);
-			//
-			setIsReceipt (true);
-			setIsApproved (false);
-			setIsOnline (false);
-			setIsSelfService(false);
-			setIsDelayedCapture (false);
-			setProcessed(false);
-			//
-			setPayAmt(Env.ZERO);
-			setTaxAmt(Env.ZERO);
-			//
-			setDateTrx (new Timestamp(System.currentTimeMillis()));
-			setTenderType(TENDERTYPE_Check);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setTrxType(TRXTYPE_Sales);
+		//
+		setR_AvsAddr (R_AVSZIP_Unavailable);
+		setR_AvsZip (R_AVSZIP_Unavailable);
+		//
+		setIsReceipt (true);
+		setIsApproved (false);
+		setIsOnline (false);
+		setIsSelfService(false);
+		setIsDelayedCapture (false);
+		setProcessed(false);
+		//
+		setPayAmt(Env.ZERO);
+		setTaxAmt(Env.ZERO);
+		//
+		setDateTrx (new Timestamp(System.currentTimeMillis()));
+		setTenderType(TENDERTYPE_Check);
+	}
+
 	public MPaymentTransaction(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}

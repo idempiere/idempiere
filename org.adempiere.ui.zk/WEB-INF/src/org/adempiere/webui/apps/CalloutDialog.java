@@ -21,7 +21,7 @@ import org.compiere.model.MLookup;
 import org.zkoss.zk.ui.Desktop;
 
 /**
- * Callout Dialog used for Ask For Input
+ * Callout Dialog used to ask for input from user.
  *
  * @author Murilo H. Torquato (devCoffee, http://devcoffee.com.br)
  *
@@ -31,6 +31,10 @@ public class CalloutDialog implements ICalloutUI {
 	private Desktop desktop;
 	private int m_windowNo;
 
+	/**
+	 * @param desktop
+	 * @param windowNo
+	 */
 	public CalloutDialog(Desktop desktop, int windowNo) {
 		this.desktop = desktop;
 		this.m_windowNo = windowNo;

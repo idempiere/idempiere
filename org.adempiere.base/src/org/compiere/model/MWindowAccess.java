@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
+
 
 /**
  *	
@@ -34,6 +36,18 @@ public class MWindowAccess extends X_AD_Window_Access
 	 */
 	private static final long serialVersionUID = -1236781018671637481L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Window_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWindowAccess(Properties ctx, String AD_Window_Access_UU, String trxName) {
+        super(ctx, AD_Window_Access_UU, trxName);
+		if (Util.isEmpty(AD_Window_Access_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -46,10 +60,15 @@ public class MWindowAccess extends X_AD_Window_Access
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
 		else
-		{
-			setIsReadWrite (true);
-		}
+			setInitialDefaults();
 	}	//	MWindowAccess
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsReadWrite (true);
+	}
 
 	/**
 	 * 	MWindowAccess

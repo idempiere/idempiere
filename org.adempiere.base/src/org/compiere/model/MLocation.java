@@ -166,6 +166,18 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 	private static CLogger	s_log = CLogger.getCLogger(MLocation.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Location_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLocation(Properties ctx, String C_Location_UU, String trxName) {
+        super(ctx, C_Location_UU, trxName);
+		if (Util.isEmpty(C_Location_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -176,15 +188,20 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 	{
 		super (ctx, C_Location_ID, trxName);
 		if (C_Location_ID == 0)
-		{
-			MCountry defaultCountry = MCountry.getDefault(); 
-			setCountry(defaultCountry);
-			MRegion defaultRegion = MRegion.getDefault();
-			if (defaultRegion != null 
-				&& defaultRegion.getC_Country_ID() == defaultCountry.getC_Country_ID())
-				setRegion(defaultRegion);
-		}
+			setInitialDefaults();
 	}	//	MLocation
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		MCountry defaultCountry = MCountry.getDefault(); 
+		setCountry(defaultCountry);
+		MRegion defaultRegion = MRegion.getDefault();
+		if (defaultRegion != null 
+			&& defaultRegion.getC_Country_ID() == defaultCountry.getC_Country_ID())
+			setRegion(defaultRegion);
+	}
 
 	/**
 	 * 	Parent Constructor

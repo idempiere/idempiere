@@ -53,20 +53,29 @@ import org.zkoss.zul.Vlayout;
  */
 public class DocumentSearchController implements EventListener<Event>{
 
+	/** {@link A} component attribute to hold reference to corresponding {@link #SEARCH_RESULT} **/
 	private static final String SEARCH_RESULT = "search.result";
-	private static final String ON_SEARCH_DOCUMENTS = "onSearchDocuments";
+	/** onSearchDocuments event **/
+	private static final String ON_SEARCH_DOCUMENTS_EVENT = "onSearchDocuments";
 	private int MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = 3;
+	/** layout to show links ({@link A}) for each {@link #SEARCH_RESULT} in {@link #list} **/
 	private Vlayout layout;
+	/** results from execution of search **/
 	private ArrayList<SearchResult> list;
+	/** Current selected index of {@link #list} **/
 	private int selected = -1;
 
 	/**
-	 * 
+	 * default constructor
 	 */
 	public DocumentSearchController() {
 		MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = MSysConfig.getIntValue(MSysConfig.MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER, 3, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
+	/**
+	 * Create {@link #layout} for search result
+	 * @param parent
+	 */
 	public void create(Component parent) {
 		layout = new Vlayout();
 		layout.setStyle("padding: 3px; overflow:auto;");
@@ -75,14 +84,23 @@ public class DocumentSearchController implements EventListener<Event>{
 		
 		parent.appendChild(layout);
 		
-		layout.addEventListener(ON_SEARCH_DOCUMENTS, this);
+		layout.addEventListener(ON_SEARCH_DOCUMENTS_EVENT, this);
 	}
 
+	/**
+	 * Echo {@link #ON_SEARCH_DOCUMENTS_EVENT} with value as event data.
+	 * @param value
+	 */
 	public void search(String value) {
 		layout.getChildren().clear();
-		Events.echoEvent(ON_SEARCH_DOCUMENTS, layout, value);
+		Events.echoEvent(ON_SEARCH_DOCUMENTS_EVENT, layout, value);
 	}
 	
+	/**
+	 * Handle {@link #ON_SEARCH_DOCUMENTS_EVENT} event.
+	 * Delegate execution of search to {@link #doSearch(String)}.
+	 * @param searchString
+	 */
 	private void onSearchDocuments(String searchString) {
 		list = new ArrayList<SearchResult>();
 		if (Util.isEmpty(searchString)) {
@@ -119,6 +137,11 @@ public class DocumentSearchController implements EventListener<Event>{
 		}
 	}
 	
+	/**
+	 * Perform search with searchString using definition from AD_SearchDefinition.
+	 * @param searchString
+	 * @return List of {@link SearchResult}
+	 */
 	private List<SearchResult> doSearch(String searchString) {
 		final MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), true);
 				
@@ -199,6 +222,17 @@ public class DocumentSearchController implements EventListener<Event>{
 		return list;
 	}
 	
+	/**
+	 * Execute query and output result to list.
+	 * @param msd
+	 * @param builder
+	 * @param params
+	 * @param lookup
+	 * @param window
+	 * @param tableName
+	 * @param extraWhereClase
+	 * @param list
+	 */
 	private void doRetrieval(MSearchDefinition msd, StringBuilder builder, List<Object> params, MLookup lookup, MWindow window, String tableName, 
 			String extraWhereClase, List<SearchResult> list) {
 		PreparedStatement pstmt = null;
@@ -250,17 +284,24 @@ public class DocumentSearchController implements EventListener<Event>{
     			SearchResult result = (SearchResult) event.getTarget().getAttribute(SEARCH_RESULT);
     			doZoom(result);
     		}
-        } else if (event.getName().equals(ON_SEARCH_DOCUMENTS)) {
+        } else if (event.getName().equals(ON_SEARCH_DOCUMENTS_EVENT)) {
         	onSearchDocuments((String)event.getData());
         }
 	}
 
+	/**
+	 * Zoom to AD Window
+	 * @param result
+	 */
 	private void doZoom(SearchResult result) {
 		MQuery query = new MQuery();
 		query.addRestriction(result.getTableName()+"_ID", "=", result.getRecordId());
 		AEnv.zoom(result.getWindowId(), query);
 	}
 	
+	/**
+	 * Value class to hold search result
+	 */
 	public static class SearchResult {
 		private String windowName;
 		private int windowId;
@@ -344,6 +385,13 @@ public class DocumentSearchController implements EventListener<Event>{
 		}		
 	}
 
+	/**
+	 * Find {@link SearchResult} link from {@link #layout} that matches text from textbox.
+	 * <br/>
+	 * Call {@link #doZoom(SearchResult)} if a match is found.
+	 * @param textbox
+	 * @return true if a match is found
+	 */
 	public boolean onOk(Textbox textbox) {
 		String text = textbox.getText();
 		if (Util.isEmpty(text))
@@ -374,11 +422,16 @@ public class DocumentSearchController implements EventListener<Event>{
 			result = (SearchResult) firstStart.getAttribute(SEARCH_RESULT);
 		if (result != null) {
 			doZoom(result);
+			return true;
 		}
 		
 		return false;
 	}
 
+	/**
+	 * Select and return {@link SearchResult} that comes before the current selected {@link SearchResult} link in {@link #layout}.
+	 * @return {@link SearchResult}
+	 */
 	public SearchResult selectPrior() {
 		if (selected > 0) {
 			selected--;
@@ -399,6 +452,10 @@ public class DocumentSearchController implements EventListener<Event>{
 		return null;
 	}
 
+	/**
+	 * Select and return {@link SearchResult} that comes after the current selected {@link SearchResult} link in {@link #layout}.
+	 * @return {@link SearchResult}
+	 */
 	public SearchResult selectNext() {
 		if (selected < (list.size()-1)) {
 			selected++;

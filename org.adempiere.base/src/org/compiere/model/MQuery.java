@@ -409,6 +409,9 @@ public class MQuery implements Serializable, Cloneable
 		int index = tableName.lastIndexOf("_ID");
 		if (index != -1)
 			return tableName.substring(0, index);
+		index = tableName.lastIndexOf("_UU");
+		if (index != -1)
+			return tableName.substring(0, index);
 		return tableName;
 	}	//	getZoomTableName
 

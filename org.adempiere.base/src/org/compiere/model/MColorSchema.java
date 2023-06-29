@@ -131,6 +131,16 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MColorSchema> s_cache 
 		= new ImmutableIntPOCache<Integer, MColorSchema> (Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ColorSchema_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MColorSchema(Properties ctx, String PA_ColorSchema_UU, String trxName) {
+        super(ctx, PA_ColorSchema_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -37,8 +37,7 @@ public class MTest extends X_Test
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5750690186875693958L;
-
+	private static final long serialVersionUID = -5390179651635427303L;
 
 	/**
 	 * 	Constructor
@@ -63,6 +62,17 @@ public class MTest extends X_Test
 	}	//	MTest
 
 	/**
+	 * 	Constructor
+	 *	@param ctx context
+	 *	@param Test_UU
+	 *	@param trxName transaction
+	 */
+	public MTest(Properties ctx, String Test_UU, String trxName)
+	{
+		super (ctx, Test_UU, trxName);
+	}	//	MTest
+
+	/**
 	 * 	Test Object Constructor
 	 *	@param ctx context
 	 *	@param testString test string
@@ -70,7 +80,19 @@ public class MTest extends X_Test
 	 */
 	public MTest (Properties ctx, String testString, int testNo)
 	{
-		super(ctx, 0, null);
+		this(ctx, testString, testNo, null);
+	}
+
+	/**
+	 * 	Test Object Constructor
+	 *	@param ctx context
+	 *	@param testString test string
+	 *	@param testNo test no
+	 *  @param trxName
+	 */
+	public MTest (Properties ctx, String testString, int testNo, String trxName)
+	{
+		super(ctx, 0, trxName);
 		testString = testString + "_" + testNo;
 		setName(testString);
 		setDescription(testString + " " + testString + " " + testString);

@@ -82,7 +82,7 @@ public final class MLookup extends Lookup implements Serializable
 		}
 
 		//  Don't load Search or CreatedBy/UpdatedBy
-		if (m_info.DisplayType == DisplayType.Search 
+		if (m_info.DisplayType == DisplayType.Search || m_info.DisplayType == DisplayType.SearchUU
 			|| m_info.IsCreadedUpdatedBy)
 			return;
 		//  Don't load Parents/Keys
@@ -584,7 +584,11 @@ public final class MLookup extends Lookup implements Serializable
 				}
 				else
 				{
-					String value = rs.getString(2);
+					String value;
+					if (m_info.KeyColumn.endsWith("_UU"))
+						value = rs.getString(1);
+					else
+						value = rs.getString(2);
 					ValueNamePair p = new ValueNamePair(value, name.toString());
 					if (saveInCache)		//	save if
 						m_lookup.put(value, p);
@@ -720,7 +724,11 @@ public final class MLookup extends Lookup implements Serializable
 					}
 					else
 					{
-						String value = rs.getString(2);
+						String value;
+						if (m_info.KeyColumn.endsWith("_UU"))
+							value = rs.getString(1);
+						else
+							value = rs.getString(2);
 						ValueNamePair p = new ValueNamePair(value, name.toString());
 						vnpCache.put(p.getValue(), p);
 						Integer idx  = notInCaches.get(p.getValue());
@@ -844,7 +852,9 @@ public final class MLookup extends Lookup implements Serializable
 		{
 			//force refresh
 			m_lookup.clear();
-			fillComboBox(isMandatory(), true, true, false, isShortList()); // idempiere 90		
+			MReference ref = m_info.AD_Reference_Value_ID > 0 ? MReference.get(Env.getCtx(),m_info.AD_Reference_Value_ID) : null;
+			boolean onlyActive = ref == null || !ref.isShowInactiveRecords();
+			fillComboBox(isMandatory(), true, onlyActive, false, isShortList()); // idempiere 90		
 			return m_lookup.size();
 		}
 		finally
@@ -1174,7 +1184,11 @@ public final class MLookup extends Lookup implements Serializable
 					}
 					else
 					{
-						String value = rs.getString(2);
+						String value;
+						if (m_info.KeyColumn.endsWith("_UU"))
+							value = rs.getString(1);
+						else
+							value = rs.getString(2);
 						ValueNamePair p = new ValueNamePair(value, name.toString());
 						m_lookup.put(value, p);
 						vnpCache.add(p);

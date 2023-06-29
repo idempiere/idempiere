@@ -58,6 +58,7 @@ import org.compiere.apps.form.PayPrint;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -70,11 +71,8 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.South;
 
 /**
- *  Payment Print and Export
+ *  Form to Print and Export payment.
  *
- * 	@author 	Jorg Janke
- * 	@version 	$Id: VPayPrint.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
- * 
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
  *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286 
@@ -82,10 +80,11 @@ import org.zkoss.zul.South;
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPayPrint")
 public class WPayPrint extends PayPrint implements IFormController, EventListener<Event>, ValueChangeListener
 {
+	/** Custom form/window instance */
 	private CustomForm form = new CustomForm();
 
 	/**
-	 *	Initialize Panel
+	 *	Default constructor
 	 */
 	public WPayPrint()
 	{
@@ -114,41 +113,54 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		}
 	}	//	WPayPrint
 
-	//  Instance Variables
-	protected Panel centerPanel = new Panel();
-	protected ConfirmPanel southPanel = new ConfirmPanel(true, false, false, false, false, false, false);
-	protected Grid centerLayout = GridFactory.newGridLayout();
+	/** Action buttons panel. South of {@link #form} */
+	protected ConfirmPanel southPanel = new ConfirmPanel(true, false, false, false, false, false, false);	
+	/** Button to print check */
 	protected Button bPrint = southPanel.createButton(ConfirmPanel.A_PRINT);
+	/** Button to export payment to file */
 	protected Button bExport = southPanel.createButton(ConfirmPanel.A_EXPORT);
 	protected Button bCancel = southPanel.getButton(ConfirmPanel.A_CANCEL);
+	/** Button to process PAYMENTRULE_DirectDeposit payments */
 	protected Button bProcess = southPanel.createButton(ConfirmPanel.A_PROCESS);
+	
+	/** Center of {@link #form} */
+	protected Panel centerPanel = new Panel();		
+	/** Layout of {@link #centerPanel} */
+	protected Grid centerLayout = GridFactory.newGridLayout();
 	protected Label lPaySelect = new Label();
+	/** Payment selections */
 	protected WSearchEditor paySelectSearch = null;
 	protected Label lBank = new Label();
+	/** Bank name from C_BankAccount.C_Bank_ID */
 	protected Label fBank = new Label();
 	protected Label lPaymentRule = new Label();
+	/** Payment rules */
 	protected Listbox fPaymentRule = ListboxFactory.newDropdownListbox();
 	protected Label lDocumentNo = new Label();
+	/** Bank account document number (C_BankAccountDoc). Usually for check number. */
 	protected WNumberEditor fDocumentNo = new WNumberEditor();
 	protected Label lNoPayments = new Label();
+	/** Number of C_PaySelectionCheck records */
 	protected Label fNoPayments = new Label();
 	protected Label lBalance = new Label();
+	/** C_PaySelection.CurrentBalance */
 	protected WNumberEditor fBalance = new WNumberEditor();
 	protected Label lCurrency = new Label();
+	/** ISO_Code from C_BankAccount.C_Currency_ID */
 	protected Label fCurrency = new Label();
 	protected Label lDepositBatch = new Label();
 	protected WYesNoEditor fDepositBatch = new WYesNoEditor("", "", "Book as one post", false, false, true) ;
 	protected Label lSumPayments = new Label();
+	/** Sum of C_PaySelectionCheck.PayAmt */
 	protected WNumberEditor fSumPayments = new WNumberEditor();
 
 	
 	/**
-	 *  Static Init
+	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
 	protected void zkInit() throws Exception
 	{
-		//
 		centerPanel.appendChild(centerLayout);
 		//
 		bPrint.addActionListener(this);
@@ -240,11 +252,10 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		MLookup lookupPS = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		paySelectSearch = new WSearchEditor("C_PaySelection_ID", true, false, true, lookupPS);
 		paySelectSearch.addValueChangeListener(this);
-
 	}   //  dynInit
 
 	/**
-	 * 	Dispose
+	 * Close form.
 	 */
 	public void dispose()
 	{
@@ -266,9 +277,9 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}	//	setsetPaySelection
 
 
-	/**************************************************************************
-	 *  Action Listener
-	 *  @param e event
+	/**
+	 * Event Listener
+	 * @param e event
 	 */
 	@Override
 	public void onEvent(Event e)
@@ -289,7 +300,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}
 
 	/**
-	 *  load pay selection details
+	 * load pay selection details
 	 */
 	protected void loadPaySelectInfo()
 	{
@@ -349,8 +360,8 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		
 		if(sumPayments != null)
 			fSumPayments.setValue(sumPayments);
-
-		bProcess.setEnabled(PaymentRule.equals("T"));
+		
+		bProcess.setEnabled(PaymentRule.equals(X_C_Order.PAYMENTRULE_DirectDeposit));
 
 		if(documentNo != null)
 			fDocumentNo.setValue(documentNo);
@@ -398,8 +409,8 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}   // getPluginFeatures 
 	
 	
-	/**************************************************************************
-	 *  Export payments to file
+	/**
+	 * Export payments to file
 	 */
 	protected void cmd_export()
 	{
@@ -568,7 +579,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}   //  cmd_print
 
 
-	/**************************************************************************
+	/**
 	 *  Get Checks
 	 *  @param PaymentRule Payment Rule
 	 *  @return true if payments were created
@@ -592,7 +603,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}
 
 	/**
-	 *  Vetoable Change Listener.
+	 *  Vetoable Change Listener.<br/>
 	 *  - Payment Selection
 	 *  @param e event
 	 */
@@ -612,5 +623,4 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			loadPaySelectInfo();
 		}
 	}
-
-}   //  PayPrint
+}

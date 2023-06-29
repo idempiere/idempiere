@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
@@ -32,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Order Line Model.
@@ -56,7 +58,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7152360636393521683L;
+	private static final long serialVersionUID = 7994694334621222461L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -116,6 +118,18 @@ public class MOrderLine extends X_C_OrderLine
 	/**	Logger	*/
 	protected static CLogger s_log = CLogger.getCLogger (MOrderLine.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_OrderLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MOrderLine(Properties ctx, String C_OrderLine_UU, String trxName) {
+        super(ctx, C_OrderLine_UU, trxName);
+		if (Util.isEmpty(C_OrderLine_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context
@@ -130,27 +144,32 @@ public class MOrderLine extends X_C_OrderLine
 	public MOrderLine(Properties ctx, int C_OrderLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_OrderLine_ID, trxName, virtualColumns);
 		if (C_OrderLine_ID == 0)
-		{
-			setFreightAmt (Env.ZERO);
-			setLineNetAmt (Env.ZERO);
-			//
-			setPriceEntered(Env.ZERO);
-			setPriceActual (Env.ZERO);
-			setPriceLimit (Env.ZERO);
-			setPriceList (Env.ZERO);
-			//
-			setM_AttributeSetInstance_ID(0);
-			//
-			setQtyEntered (Env.ZERO);
-			setQtyOrdered (Env.ZERO);	// 1
-			setQtyDelivered (Env.ZERO);
-			setQtyInvoiced (Env.ZERO);
-			setQtyReserved (Env.ZERO);
-			//
-			setIsDescription (false);	// N
-			setProcessed (false);
-			setLine (0);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setFreightAmt (Env.ZERO);
+		setLineNetAmt (Env.ZERO);
+		//
+		setPriceEntered(Env.ZERO);
+		setPriceActual (Env.ZERO);
+		setPriceLimit (Env.ZERO);
+		setPriceList (Env.ZERO);
+		//
+		setM_AttributeSetInstance_ID(0);
+		//
+		setQtyEntered (Env.ZERO);
+		setQtyOrdered (Env.ZERO);	// 1
+		setQtyDelivered (Env.ZERO);
+		setQtyInvoiced (Env.ZERO);
+		setQtyReserved (Env.ZERO);
+		//
+		setIsDescription (false);	// N
+		setProcessed (false);
+		setLine (0);
 	}
 
 	/**
@@ -348,7 +367,7 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public void setLineNetAmt ()
 	{
-		BigDecimal bd = getPriceActual().multiply(getQtyOrdered()); 
+		BigDecimal bd = getPriceEntered().multiply(getQtyEntered()); 
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, RoundingMode.HALF_UP);
@@ -1063,4 +1082,21 @@ public class MOrderLine extends X_C_OrderLine
 	{
 		this.m_parent = null;
 	}
+
+	/**
+	 * Get the description stripping the Close tag that was created when closing the order
+	 * @return
+	 */
+	public String getDescriptionStrippingCloseTag() {
+		String description = getDescription();
+		if (description == null)
+			return description;
+		Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
+		String[] parts = pattern.split(description);
+		StringBuilder description_sb = new StringBuilder();
+		for (String s : parts)
+			description_sb.append(s);
+		return description_sb.toString();
+	}
+
 }	//	MOrderLine

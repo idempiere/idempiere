@@ -38,6 +38,16 @@ public class MAlertRule extends X_AD_AlertRule
 {
 	private static final long serialVersionUID = -1267260460210893262L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AlertRule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAlertRule(Properties ctx, String AD_AlertRule_UU, String trxName) {
+        super(ctx, AD_AlertRule_UU, trxName);
+    }
+
 	/**
 	 * 	Standatd Constructor
 	 *	@param ctx context

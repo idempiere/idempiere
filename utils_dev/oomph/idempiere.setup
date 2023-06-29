@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Project
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jdt="http://www.eclipse.org/oomph/setup/jdt/1.0"
+    xmlns:maven="http://www.eclipse.org/oomph/setup/maven/1.0"
+    xmlns:pde="http://www.eclipse.org/oomph/setup/pde/1.0"
+    xmlns:predicates="http://www.eclipse.org/oomph/predicates/1.0"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
+    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/maven/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Maven.ecore http://www.eclipse.org/oomph/setup/pde/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
+    name="idempiere.11.230620"
+    label="iDempiere 11">
+  <setupTask
+    xsi:type="setup:PreferenceTask"
+    key="/instance/org.eclipse.oomph.setup.ui/preference.recorder.target"
+    value="${workspace.location|uri}/.metadata/.plugins/org.eclipse.oomph.setup/workspace.setup#/"/>
+  <setupTask
+      xsi:type="setup:VariableTask"
+      type="FOLDER"
+      name="idempiere.source.location"
+      defaultValue="${workspace.location}/idempiere"
+      storageURI="scope://Workspace"
+      label="iDempiere Source"/>
+  <setupTask
+      xsi:type="setup:VariableTask"
+      name="idempiere.target.platform"
+      defaultValue="idempiere-230620"
+      storageURI="scope://Workspace"
+      label="Target Platform"/>
+  <setupTask
+      xsi:type="jdt:JRETask"
+      version="JavaSE-17"
+      location="${jre.location-17}"
+      storageURI="scope://Workspace">
+    <description>Define the JRE needed to compile and run the Java projects of ${scope.project.label}</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup:CompoundTask"
+      name="org.eclipse.jdt.core">
+    <setupTask
+        xsi:type="setup:PreferenceTask"
+        key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform"
+        value="11"/>
+    <setupTask
+        xsi:type="setup:PreferenceTask"
+        key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance"
+        value="11"/>
+    <setupTask
+        xsi:type="setup:PreferenceTask"
+        key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.release"
+        value="enabled"/>
+    <setupTask
+        xsi:type="setup:PreferenceTask"
+        key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source"
+        value="11"/>
+  </setupTask>
+  <setupTask
+      xsi:type="maven:MavenImportTask"
+      id="org.idempiere.main">
+    <sourceLocator
+        rootFolder="${idempiere.source.location}"
+        locateNestedProjects="true">
+      <predicate
+          xsi:type="predicates:NotPredicate">
+        <operand
+            xsi:type="predicates:FilePredicate"
+            filePattern="pom.xml"
+            contentPattern="&lt;artifactId>org.idempiere.main&lt;/artifactId>"/>
+      </predicate>
+    </sourceLocator>
+  </setupTask>
+  <setupTask
+      xsi:type="maven:MavenImportTask"
+      id="org.idempiere.parent">
+    <sourceLocator
+        rootFolder="${idempiere.source.location}/org.idempiere.parent"/>
+  </setupTask>
+  <setupTask
+      xsi:type="setup.workingsets:WorkingSetTask">
+    <workingSet
+        name="org.idempiere.main">
+      <predicate
+          xsi:type="predicates:NaturePredicate"
+          nature="org.eclipse.m2e.core.maven2Nature"/>
+    </workingSet>
+  </setupTask>
+  <setupTask
+      xsi:type="pde:TargetPlatformTask"
+      name="${idempiere.target.platform}"/>
+  <stream name="master"
+      label="Master"/>
+  <logicalProjectContainer
+      xsi:type="setup:Project"
+      href="index:/org.eclipse.setup#//@projectCatalogs[name='com.github']/@projects[name='user.project']"/>
+  <description>iDempiere provides cool stuff.</description>
+</setup:Project>

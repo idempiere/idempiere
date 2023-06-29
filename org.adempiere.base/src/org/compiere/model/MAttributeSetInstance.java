@@ -102,6 +102,16 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	private static CLogger		s_log = CLogger.getCLogger (MAttributeSetInstance.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_AttributeSetInstance_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttributeSetInstance(Properties ctx, String M_AttributeSetInstance_UU, String trxName) {
+        super(ctx, M_AttributeSetInstance_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -111,9 +121,6 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	public MAttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)
 	{
 		super (ctx, M_AttributeSetInstance_ID, trxName);
-		if (M_AttributeSetInstance_ID == 0)
-		{
-		}
 	}	//	MAttributeSetInstance
 
 	/**

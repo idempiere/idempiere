@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Column
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Column")
-public class X_AD_Column extends PO implements I_AD_Column, I_Persistent 
+public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230505L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -111,6 +111,82 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Column (Properties ctx, String AD_Column_UU, String trxName)
+    {
+      super (ctx, AD_Column_UU, trxName);
+      /** if (AD_Column_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_Element_ID (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAllowCopy (true);
+// Y
+			setIsAlwaysUpdateable (false);
+// N
+			setIsAutocomplete (false);
+// N
+			setIsEncrypted (null);
+// N
+			setIsIdentifier (false);
+			setIsKey (false);
+			setIsMandatory (false);
+			setIsParent (false);
+			setIsSecure (false);
+// N
+			setIsSelectionColumn (false);
+			setIsToolbarButton (null);
+// Y
+			setIsTranslated (false);
+			setIsUpdateable (true);
+// Y
+			setName (null);
+			setVersion (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Column (Properties ctx, String AD_Column_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Column_UU, trxName, virtualColumns);
+      /** if (AD_Column_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_Element_ID (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAllowCopy (true);
+// Y
+			setIsAlwaysUpdateable (false);
+// N
+			setIsAutocomplete (false);
+// N
+			setIsEncrypted (null);
+// N
+			setIsIdentifier (false);
+			setIsKey (false);
+			setIsMandatory (false);
+			setIsParent (false);
+			setIsSecure (false);
+// N
+			setIsSelectionColumn (false);
+			setIsToolbarButton (null);
+// Y
+			setIsTranslated (false);
+			setIsUpdateable (true);
+// Y
+			setName (null);
+			setVersion (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Column (Properties ctx, ResultSet rs, String trxName)
     {
@@ -118,7 +194,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -478,7 +554,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getColumnName());
     }
@@ -588,14 +664,18 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public static final int FKCONSTRAINTTYPE_AD_Reference_ID=200075;
 	/** Cascade = C */
 	public static final String FKCONSTRAINTTYPE_Cascade = "C";
-	/** Do Not Create = D */
-	public static final String FKCONSTRAINTTYPE_DoNotCreate = "D";
+	/** Do Not Create - Ignore = D */
+	public static final String FKCONSTRAINTTYPE_DoNotCreate_Ignore = "D";
 	/** Model Cascade = M */
 	public static final String FKCONSTRAINTTYPE_ModelCascade = "M";
-	/** No Action = N */
-	public static final String FKCONSTRAINTTYPE_NoAction = "N";
+	/** No Action - Forbid Deletion = N */
+	public static final String FKCONSTRAINTTYPE_NoAction_ForbidDeletion = "N";
+	/** Model No Action - Forbid Deletion = O */
+	public static final String FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion = "O";
 	/** Set Null = S */
 	public static final String FKCONSTRAINTTYPE_SetNull = "S";
+	/** Model Set Null = T */
+	public static final String FKCONSTRAINTTYPE_ModelSetNull = "T";
 	/** Set Constraint Type.
 		@param FKConstraintType Constraint Type
 	*/
@@ -658,10 +738,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isAllowCopy()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowCopy);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -681,10 +761,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isAllowLogging()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowLogging);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -704,10 +784,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isAlwaysUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAlwaysUpdateable);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -727,10 +807,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isAutocomplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutocomplete);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -773,10 +853,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isHtml()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHtml);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -796,10 +876,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isIdentifier()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -819,10 +899,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isKey()
 	{
 		Object oo = get_Value(COLUMNNAME_IsKey);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -842,10 +922,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -865,10 +945,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isParent()
 	{
 		Object oo = get_Value(COLUMNNAME_IsParent);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -888,10 +968,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isSecure()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSecure);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -911,10 +991,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isSelectionColumn()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelectionColumn);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -975,10 +1055,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isTranslated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTranslated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -998,10 +1078,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUpdateable);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

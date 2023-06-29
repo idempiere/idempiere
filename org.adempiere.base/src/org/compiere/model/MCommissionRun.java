@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Commission Run
@@ -38,6 +39,18 @@ public class MCommissionRun extends X_C_CommissionRun
      */
     private static final long serialVersionUID = -3103035295526318283L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CommissionRun_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCommissionRun(Properties ctx, String C_CommissionRun_UU, String trxName) {
+        super(ctx, C_CommissionRun_UU, trxName);
+		if (Util.isEmpty(C_CommissionRun_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -48,11 +61,16 @@ public class MCommissionRun extends X_C_CommissionRun
 	{
 		super(ctx, C_CommissionRun_ID, trxName);
 		if (C_CommissionRun_ID == 0)
-		{
-			setGrandTotal (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MCommissionRun
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setGrandTotal (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Parent Constructor

@@ -32,6 +32,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Project Issue Model
@@ -48,6 +49,19 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	
 	private DocActionDelegate<MProjectIssue> docActionDelegate = null;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ProjectIssue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProjectIssue(Properties ctx, String C_ProjectIssue_UU, String trxName) {
+        super(ctx, C_ProjectIssue_UU, trxName);
+		if (Util.isEmpty(C_ProjectIssue_UU))
+			setInitialDefaults();
+		init();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -58,13 +72,18 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	{
 		super (ctx, C_ProjectIssue_ID, trxName);
 		if (C_ProjectIssue_ID == 0)
-		{
-			setMovementQty (Env.ZERO);
-			setPosted (false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 		init();
 	}	//	MProjectIssue
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setMovementQty (Env.ZERO);
+		setPosted (false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

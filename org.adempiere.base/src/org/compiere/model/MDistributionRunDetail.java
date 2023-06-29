@@ -86,6 +86,16 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MDistributionRunDetail.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param T_DistributionRunDetail_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDistributionRunDetail(Properties ctx, String T_DistributionRunDetail_UU, String trxName) {
+        super(ctx, T_DistributionRunDetail_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

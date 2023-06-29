@@ -643,7 +643,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
 			from, to, subject, "", new FileDataSource(attachment),
-			m_WindowNo, m_printInfo.getAD_Table_ID(), m_printInfo.getRecord_ID(), m_printInfo);
+			m_WindowNo, m_printInfo.getAD_Table_ID(), m_printInfo.getRecord_ID(),
+			m_printInfo.getRecord_UU(), m_printInfo);
 
 		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail

@@ -109,6 +109,16 @@ public class MValRule extends X_AD_Val_Rule implements ImmutablePOSupport
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MValRule.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Val_Rule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MValRule(Properties ctx, String AD_Val_Rule_UU, String trxName) {
+        super(ctx, AD_Val_Rule_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

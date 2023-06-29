@@ -27,6 +27,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
+import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
@@ -55,7 +56,10 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Vlayout;
 
 /**
- *
+ * Header and detail UI for AD_Tabs.
+ * This class manage a list of tabs with the current selected tab as the visible {@link ADTabpanel} instance.
+ * Child tabs of selected tab is shown in {@link DetailPane} using {@link Tabbox}.
+ * 
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Feb 25, 2007
@@ -63,27 +67,45 @@ import org.zkoss.zul.Vlayout;
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
+	/**
+	 * DetailPane attribute to hold list of child tabs.
+	 * List of Object[] of tabIndex, tabPanel, tabLabel, enable.
+	 */
+	private static final String DETAILPANE_TABLIST_ATTR = "detailpane.tablist";
+
+	/** Execution attribute to hold reference to detail ADTabpanel that's handling onEditDetail event **/
 	public static final String AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE = "ADTabbox.onEditDetail";
 
+	/** after tab selection change event **/
 	private static final String ON_POST_TAB_SELECTION_CHANGED_EVENT = "onPostTabSelectionChanged";
 	
+	/** event echo from ON_POST_TAB_SELECTION_CHANGED_EVENT handler **/
 	private static final String ON_TAB_SELECTION_CHANGED_ECHO_EVENT = "onTabSelectionChangedEcho";
 
+	/** tab selection change event **/
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
-
+	/** List of all tab **/
     private List<ADTabListModel.ADTabLabel> tabLabelList = new ArrayList<ADTabListModel.ADTabLabel>();
     
+    /** List of all tab panel **/
     private List<IADTabpanel> tabPanelList = new ArrayList<IADTabpanel>();
 
+    /** main layout component **/
     private Vlayout layout;
 
+    /** tab selection change listener **/
 	private EventListener<Event> selectionListener;
 
+	/** {@link IADTabpanel} instance for selected tab **/
 	private IADTabpanel headerTab;
 	
+	/** Index of selected tab **/
 	private int selectedIndex = 0;
 
+	/**
+	 * default constructor
+	 */
     public CompositeADTabbox(){    	    	
     }
 
@@ -221,6 +243,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 			}
 
+			/**
+			 * Delete current row of selected detail tab
+			 */
 			private void onDelete() {
 				if (headerTab.getGridTab().isNew()) return;
 				
@@ -245,6 +270,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 			}
 
+			/**
+			 * Delete selected rows of selected detail tab
+			 * @param tabPanel
+			 */
 			private void onDeleteSelected(final IADTabpanel tabPanel) {
 				if (tabPanel == null || tabPanel.getGridTab() == null) return;
 				
@@ -283,6 +312,10 @@ public class CompositeADTabbox extends AbstractADTabbox
     	return detailPane;
     }
     
+    /**
+     * defer execution of adTabPanel.focus()
+     * @param adTabPanel
+     */
     private void focusToTabpanel(IADTabpanel adTabPanel ) {
 		if (adTabPanel != null && adTabPanel instanceof HtmlBasedComponent) {
 			final HtmlBasedComponent comp = (HtmlBasedComponent) adTabPanel;
@@ -291,7 +324,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
     
     /**
-     * Edit selected detail tab
+     * Edit current row of selected detail tab.
+     * Make selected detail tab the new header tab.
      * @param row
      * @param formView
      */
@@ -328,6 +362,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 	}
     
+    /**
+     * Create layout and setup listeners for bread crumb.
+     * Vertical layout with {@link ADTabpanel} as the only child component.
+     */
     @Override
     protected Component doCreatePart(Component parent)
     {
@@ -359,8 +397,9 @@ public class CompositeADTabbox extends AbstractADTabbox
     	breadCrumb.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
+				//send tab selection change event
 				int oldIndex = selectedIndex;
-				if (event.getTarget() instanceof BreadCrumbLink) {
+				if (event.getTarget() instanceof BreadCrumbLink) {					
 					BreadCrumbLink link = (BreadCrumbLink) event.getTarget();
 					int newIndex = Integer.parseInt(link.getPathId());
 					
@@ -381,8 +420,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 
     @Override
 	protected void doAddTab(GridTab gTab, IADTabpanel tabPanel) {
-    	ADTabListModel.ADTabLabel tabLabel = new ADTabListModel.ADTabLabel(gTab.getName(), gTab.getTabLevel(),gTab.getDescription(),
-        		gTab.getWindowNo(),gTab.getAD_Tab_ID());
+    	ADTabListModel.ADTabLabel tabLabel = new ADTabListModel.ADTabLabel(gTab.getName(), gTab.getTabLevel(), gTab.getDescription(),
+        		gTab.getWindowNo(), gTab.getAD_Tab_ID());
         tabLabelList.add(tabLabel);
         tabPanelList.add(tabPanel);
         
@@ -480,6 +519,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			});
         }
         
+        //add to header or detail pane
     	if (layout.getChildren().isEmpty()) {
     		layout.appendChild(tabPanel);
     		headerTab = tabPanel;    		
@@ -516,6 +556,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 		return b;
 	}
 
+	/**
+	 * Call {@link ADTabpanel#activateDetailIfVisible()}
+	 */
 	private void activateDetailIfVisible() {
     	if (headerTab instanceof ADTabpanel) {
 	    	((ADTabpanel)headerTab).activateDetailIfVisible();
@@ -595,7 +638,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		
 		//set state
 		headerTab.setDetailPaneMode(false);
-		//show empty path, update later with actual path in onTabSelectionChangedEcho
+		//show empty path, update later with actual path in onPostTabSelectionChanged
 		getBreadCrumb().getFirstChild().getChildren().clear();
 		getBreadCrumb().getFirstChild().appendChild(new Label(""));
 		
@@ -603,11 +646,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
 
 	/**
-	 * first after tab selection change event, follow by onTabSelectionChangedEcho event
+	 * Handle after tab selection change event, echo onTabSelectionChangedEcho event.
 	 * @param back
 	 */
 	private void onPostTabSelectionChanged(Boolean back) {
-		if (headerTab instanceof ADTabpanel && !headerTab.getGridTab().isSortTab()) {			 			
+		if (headerTab instanceof ADTabpanel && !headerTab.getGridTab().isSortTab()) {
+			//gather all child tabs (both immediate and not immediate)
+			//Object[]: tabIndex, tabPanel, tabLabel, enable
 			List<Object[]> list = new ArrayList<Object[]>();
 			int tabIndex = -1;
 			int currentLevel = headerTab.getTabLevel();
@@ -633,7 +678,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (detailPane == null) {
 					detailPane = createDetailPane();					
 				}
-				detailPane.setAttribute("detailpane.tablist", list);
+				detailPane.setAttribute(DETAILPANE_TABLIST_ATTR, list);
 				
 				ZKUpdateUtil.setVflex(detailPane, "true");
 				if (headerTab.getDetailPane() == null) {
@@ -658,7 +703,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 			//setup tabs of detail pane
 			if (detailPane != null) {
 				@SuppressWarnings("unchecked")
-				List<Object[]> list = (List<Object[]>) detailPane.removeAttribute("detailpane.tablist");
+				//tabIndex, tabPanel, tabLabel, enable
+				List<Object[]> list = (List<Object[]>) detailPane.removeAttribute(DETAILPANE_TABLIST_ATTR);
 				if (list != null && !list.isEmpty()) {
 					int currentLevel = headerTab.getTabLevel();
 					for (Object[] value : list) {
@@ -709,7 +755,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 								setDetailPaneStatusMessage(msg, false);
 							}
 
-							if (selectDetailPanel.getGridTab().isTreeTab()) {
+							if (selectDetailPanel.getGridTab().isTreeTab() && selectDetailPanel.getTreePanel() != null) {
 								if (selectDetailPanel.getGridTab().getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))
 									selectDetailPanel.getTreePanel().getParent().setVisible(false);
 								else
@@ -747,6 +793,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	private void updateBreadCrumb() {		
 		BreadCrumb breadCrumb = getBreadCrumb();
 		breadCrumb.reset();
+		//add parent path
 		if (selectedIndex > 0) {
 			List<ADTabLabel> parents = new ArrayList<ADTabListModel.ADTabLabel>();
 			List<Integer> parentIndex = new ArrayList<Integer>();
@@ -771,6 +818,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (!breadCrumb.isVisible())
 			breadCrumb.setVisible(true);			
 		
+		//Links for other child tabs at same level
+		//Tab Index:Tab Label 
 		LinkedHashMap<String, String> links = new LinkedHashMap<String, String>();
 		int parentIndex = 0;
 		if (headerTab.getTabLevel() > 1) {
@@ -823,6 +872,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}		
 	}
 
+	/**
+	 * @return {@link BreadCrumb}
+	 */
 	private BreadCrumb getBreadCrumb() {
 		ADWindowContent window = (ADWindowContent) adWindowPanel;
 		BreadCrumb breadCrumb = window.getBreadCrumb();
@@ -844,6 +896,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 		return null;
 	}
 
+	/**
+	 * Notify selected detail tab after data status change of header tab	 
+	 */
 	class SyncDataStatusListener implements DataStatusListener {
 
 		private IADTabpanel tabPanel;
@@ -867,7 +922,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	        	
 	        	IADTabpanel detailTab = getSelectedDetailADTabpanel();
 	        	if (detailTab != null) {
-		        	//check data action
+		        	//check is data action from detail tab
 	        		String uuid = (String) execution.getAttribute(CompositeADTabbox.class.getName()+".dataAction");
 	        		if (uuid != null && uuid.equals(detailTab.getUuid()) && detailTab.getGridTab().isCurrent()) {
 	        			//refresh current row
@@ -909,7 +964,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
 
 	/**
-	 * 
 	 * @return true if selected detail tab have been activated
 	 */
 	public boolean isDetailActivated() {
@@ -1074,6 +1128,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 	}
 
+	/**
+	 * force invalidate of tabPanel
+	 * @param tabPanel
+	 */
 	private void invalidateTabPanel(IADTabpanel tabPanel) {
 		Center center = findCenter(tabPanel.getGridView());
 		if (center != null)
@@ -1082,6 +1140,11 @@ public class CompositeADTabbox extends AbstractADTabbox
 			tabPanel.invalidate();
 	}
 	
+	/**
+	 * Find {@link Center} that own gridView
+	 * @param gridView
+	 * @return {@link Center}
+	 */
 	private Center findCenter(GridView gridView) {
 		if (gridView == null)
 			return null;

@@ -113,6 +113,18 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	get
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InOutLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInOutLine(Properties ctx, String M_InOutLine_UU, String trxName) {
+        super(ctx, M_InOutLine_UU, trxName);
+		if (Util.isEmpty(M_InOutLine_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -127,15 +139,20 @@ public class MInOutLine extends X_M_InOutLine
 	public MInOutLine(Properties ctx, int M_InOutLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_InOutLine_ID, trxName, virtualColumns);
 		if (M_InOutLine_ID == 0)
-		{
-			setM_AttributeSetInstance_ID(0);
-			setConfirmedQty(Env.ZERO);
-			setPickedQty(Env.ZERO);
-			setScrappedQty(Env.ZERO);
-			setTargetQty(Env.ZERO);
-			setIsInvoiced (false);
-			setIsDescription (false);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);
+		setConfirmedQty(Env.ZERO);
+		setPickedQty(Env.ZERO);
+		setScrappedQty(Env.ZERO);
+		setTargetQty(Env.ZERO);
+		setIsInvoiced (false);
+		setIsDescription (false);
 	}
 
 	/**

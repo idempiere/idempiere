@@ -47,6 +47,16 @@ public class MLabelCategory extends X_AD_LabelCategory implements ImmutablePOSup
 	/**	Cache of Client						*/
 	private static CCache<Integer,MLabelCategory[]>	s_cacheAll = new CCache<Integer,MLabelCategory[]>(Table_Name, Table_Name+"_Of_Client", 5);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_LabelCategory_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLabelCategory(Properties ctx, String AD_LabelCategory_UU, String trxName) {
+        super(ctx, AD_LabelCategory_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

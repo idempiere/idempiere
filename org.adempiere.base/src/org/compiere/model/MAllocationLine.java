@@ -26,6 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -41,6 +42,18 @@ public class MAllocationLine extends X_C_AllocationLine
 	 */
 	private static final long serialVersionUID = 5532305715886380749L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AllocationLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAllocationLine(Properties ctx, String C_AllocationLine_UU, String trxName) {
+        super(ctx, C_AllocationLine_UU, trxName);
+		if (Util.isEmpty(C_AllocationLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -51,13 +64,18 @@ public class MAllocationLine extends X_C_AllocationLine
 	{
 		super (ctx, C_AllocationLine_ID, trxName);
 		if (C_AllocationLine_ID == 0)
-		{
-			setAmount (Env.ZERO);
-			setDiscountAmt (Env.ZERO);
-			setWriteOffAmt (Env.ZERO);
-			setOverUnderAmt(Env.ZERO);
-		}	
+			setInitialDefaults();
 	}	//	MAllocationLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAmount (Env.ZERO);
+		setDiscountAmt (Env.ZERO);
+		setWriteOffAmt (Env.ZERO);
+		setOverUnderAmt(Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

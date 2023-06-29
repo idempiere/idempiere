@@ -105,9 +105,14 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 
 	private void init() {
 		setBorder("normal");
-		if (ThemeManager.isUseCSSForWindowSize()) {
+		if (!ThemeManager.isUseCSSForWindowSize()) {
 			ZKUpdateUtil.setWindowHeightX(this, 450);
 			ZKUpdateUtil.setWindowWidthX(this, 800);
+		} else {
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
 		}
 		setStyle("position: absolute;");
 		setSizable(false);
@@ -284,7 +289,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	}
 	
 	private void onSize() {
-		editor.invalidate();
+		if(editor != null)
+			editor.invalidate();
 	}
 	
 	private void updateStatus(int newLength) {

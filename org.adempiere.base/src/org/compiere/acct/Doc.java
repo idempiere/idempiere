@@ -31,12 +31,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.I_C_AllocationHdr;
-import org.compiere.model.I_C_BankStatement;
 import org.compiere.model.I_C_Cash;
 import org.compiere.model.I_C_ProjectIssue;
 import org.compiere.model.I_M_MatchInv;
 import org.compiere.model.I_M_MatchPO;
-import org.compiere.model.I_M_Production;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
@@ -662,7 +660,7 @@ public abstract class Doc
 			String AD_MessageValue = "PostingError-" + p_Status;
 			int AD_User_ID = p_po.getUpdatedBy();
 			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID,
-				getAD_Client_ID(), getAD_Org_ID(), null);
+				getAD_Client_ID(), getAD_Org_ID(), p_po.get_TrxName());
 			note.setRecord(p_po.get_Table_ID(), p_po.get_ID());
 			//  Reference
 			note.setReference(toString());	//	Document
@@ -1105,7 +1103,7 @@ public abstract class Doc
 			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), (String)null);
 		//	Is Period Open?
 		if (m_period != null
-			&& m_period.isOpen(getDocumentType(), getDateAcct()))
+			&& m_period.isOpen(getDocumentType(), getDateAcct(), true))
 			m_C_Period_ID = m_period.getC_Period_ID();
 		else
 			m_C_Period_ID = -1;
@@ -1864,13 +1862,6 @@ public abstract class Doc
 				if (docTypeId > 0)
 					return docTypeId;
 			}
-			else if (p_po.get_TableName().equals(I_C_BankStatement.Table_Name)) 
-			{				
-				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
-						p_po.getAD_Client_ID(), Doc.DOCTYPE_BankStatement);
-				if (docTypeId > 0)
-					return docTypeId;
-			}
 			else if (p_po.get_TableName().equals(I_C_Cash.Table_Name)) 
 			{				
 				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
@@ -1882,13 +1873,6 @@ public abstract class Doc
 			{				
 				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
 						p_po.getAD_Client_ID(), Doc.DOCTYPE_ProjectIssue);
-				if (docTypeId > 0)
-					return docTypeId;
-			}
-			else if (p_po.get_TableName().equals(I_M_Production.Table_Name)) 
-			{				
-				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
-						p_po.getAD_Client_ID(), Doc.DOCTYPE_MatProduction);
 				if (docTypeId > 0)
 					return docTypeId;
 			}

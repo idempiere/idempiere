@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Revenue Recognition Plan
@@ -39,6 +40,18 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 	 */
 	private static final long serialVersionUID = -8437258098744762898L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RevenueRecognition_Plan_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRevenueRecognitionPlan(Properties ctx, String C_RevenueRecognition_Plan_UU, String trxName) {
+        super(ctx, C_RevenueRecognition_Plan_UU, trxName);
+		if (Util.isEmpty(C_RevenueRecognition_Plan_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -48,11 +61,16 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 	{
 		super (ctx, C_RevenueRecognition_Plan_ID, trxName);
 		if (C_RevenueRecognition_Plan_ID == 0)
-		{
-			setTotalAmt (Env.ZERO);
-			setRecognizedAmt (Env.ZERO);
-		}	
+			setInitialDefaults();
 	}	//	MRevenueRecognitionPlan
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setTotalAmt (Env.ZERO);
+		setRecognizedAmt (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

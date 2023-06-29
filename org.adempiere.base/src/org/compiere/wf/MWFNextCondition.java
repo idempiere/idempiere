@@ -46,6 +46,16 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	 */
 	private static final long serialVersionUID = 3119863973003103716L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_NextCondition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFNextCondition(Properties ctx, String AD_WF_NextCondition_UU, String trxName) {
+        super(ctx, AD_WF_NextCondition_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context

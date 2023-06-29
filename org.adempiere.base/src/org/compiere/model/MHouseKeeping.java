@@ -36,6 +36,16 @@ public class MHouseKeeping extends X_AD_HouseKeeping {
 	 */
 	private static final long serialVersionUID = 6481567026614278994L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_HouseKeeping_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MHouseKeeping(Properties ctx, String AD_HouseKeeping_UU, String trxName) {
+        super(ctx, AD_HouseKeeping_UU, trxName);
+    }
+
 	public MHouseKeeping(Properties ctx, int AD_HouseKeeping_ID, String trxName) {
 		super(ctx, AD_HouseKeeping_ID, trxName);
 	}

@@ -37,6 +37,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 
@@ -49,6 +50,18 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 	 */
 	private static final long serialVersionUID = -6091468617167291836L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankTransfer_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankTransfer(Properties ctx, String C_BankTransfer_UU, String trxName) {
+        super(ctx, C_BankTransfer_UU, trxName);
+		if (Util.isEmpty(C_BankTransfer_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 
 	 * @param ctx
@@ -58,14 +71,19 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 	public MBankTransfer(Properties ctx, int C_BankTransfer_ID, String trxName) {
 		super(ctx, C_BankTransfer_ID, trxName);
 		if (C_BankTransfer_ID == 0)
-        {
-			setDocAction(DOCACTION_Complete);
-			setDocStatus(DOCSTATUS_Drafted);
-			setPayDate(new Timestamp(System.currentTimeMillis()));
-			setProcessed(false);
-        }
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction(DOCACTION_Complete);
+		setDocStatus(DOCSTATUS_Drafted);
+		setPayDate(new Timestamp(System.currentTimeMillis()));
+		setProcessed(false);
+	}
+
 	/**
 	 * 
 	 * @param ctx

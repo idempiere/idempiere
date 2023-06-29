@@ -46,6 +46,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -62,10 +63,15 @@ import org.zkoss.zul.South;
  */
 public class WFieldRecordInfo extends Window implements EventListener<Event>
 {
- 	private static final long serialVersionUID = 3859352394520596098L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 439310027130417727L;
+
 	private int AD_Table_ID;
 	private int AD_Column_ID;
 	private int Record_ID;
+	private String Record_UU;
 
 	/**
 	 *	Record Info
@@ -73,8 +79,9 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	 *	@param AD_Table_ID
 	 *  @param AD_Column_ID
 	 *  @param Record_ID
+	 *  @param Record_UU
 	 */
-	public WFieldRecordInfo (String title, int AD_Table_ID, int AD_Column_ID, int Record_ID)
+	public WFieldRecordInfo (String title, int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU)
 	{
 		super ();
 		this.setTitle(title);
@@ -99,7 +106,8 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		this.AD_Table_ID = AD_Table_ID;
 		this.AD_Column_ID = AD_Column_ID;
 		this.Record_ID = Record_ID;
-		
+		this.Record_UU = Record_UU;
+
 		try
 		{
 			init ( dynInit(title) );
@@ -186,13 +194,13 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))
 			return false;
 		
-		if (Record_ID == 0)
+		if (Record_ID == 0 && Util.isEmpty(Record_UU))
 			return false;
 		
 		//	Data
 		String sql = "SELECT AD_Column_ID, Updated, UpdatedBy, OldValue, NewValue "
 			+ "FROM AD_ChangeLog "
-			+ "WHERE AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=?"
+			+ "WHERE AD_Table_ID=? AND (Record_ID=? OR Record_UU=?) AND AD_Column_ID=? "
 			+ "ORDER BY Updated DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -201,7 +209,8 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, AD_Table_ID);
 			pstmt.setInt (2, Record_ID);
-			pstmt.setInt (3, AD_Column_ID);
+			pstmt.setString (3, Record_UU);
+			pstmt.setInt (4, AD_Column_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
@@ -379,7 +388,8 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	public static void start(GridField gridField) {
 		new WFieldRecordInfo(gridField.getColumnName(), 
 				gridField.getGridTab().getAD_Table_ID(), gridField.getAD_Column_ID(), 
-				gridField.getGridTab().getRecord_ID());
+				gridField.getGridTab().getRecord_ID(),
+				gridField.getGridTab().getRecord_UU());
 	}
 
 	/**

@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -225,6 +226,18 @@ public class MCountry extends X_C_Country
 	private static String		DISPLAYSEQUENCE = "@C@, @P@";
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Country_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCountry(Properties ctx, String C_Country_UU, String trxName) {
+        super(ctx, C_Country_UU, trxName);
+		if (Util.isEmpty(C_Country_UU))
+			setInitialDefaults();
+    }
+
 	/*************************************************************************
 	 *	Create empty Country
 	 * 	@param ctx context
@@ -235,14 +248,19 @@ public class MCountry extends X_C_Country
 	{
 		super (ctx, C_Country_ID, trxName);
 		if (C_Country_ID == 0)
-		{
-			setDisplaySequence(DISPLAYSEQUENCE);
-			setHasRegion(false);
-			setHasPostal_Add(false);
-			setIsAddressLinesLocalReverse (false);
-			setIsAddressLinesReverse (false);
-		}
+			setInitialDefaults();
 	}   //  MCountry
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDisplaySequence(DISPLAYSEQUENCE);
+		setHasRegion(false);
+		setHasPostal_Add(false);
+		setIsAddressLinesLocalReverse (false);
+		setIsAddressLinesReverse (false);
+	}
 
 	/**
 	 *	Create Country from current row in ResultSet

@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
 
 /**
@@ -42,6 +43,18 @@ public class MRegistration extends X_A_Registration
 	 */
 	private static final long serialVersionUID = -5178339895228217372L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Registration_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRegistration(Properties ctx, String A_Registration_UU, String trxName) {
+        super(ctx, A_Registration_UU, trxName);
+		if (Util.isEmpty(A_Registration_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -51,8 +64,15 @@ public class MRegistration extends X_A_Registration
 	{
 		super(ctx, A_Registration_ID, trxName);
 		if (A_Registration_ID == 0)
-			setIsRegistered (true);
+			setInitialDefaults();
 	}	//	MRegistration
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsRegistered (true);
+	}
 
 	/**
 	 * 	New Constructor

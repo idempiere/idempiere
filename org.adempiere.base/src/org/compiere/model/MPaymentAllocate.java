@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Payment Allocate Model
@@ -51,6 +52,18 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 		return list.toArray(new MPaymentAllocate[list.size()]);
 	}	//	get
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaymentAllocate_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaymentAllocate(Properties ctx, String C_PaymentAllocate_UU, String trxName) {
+        super(ctx, C_PaymentAllocate_UU, trxName);
+		if (Util.isEmpty(C_PaymentAllocate_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -61,14 +74,19 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 	{
 		super (ctx, C_PaymentAllocate_ID, trxName);
 		if (C_PaymentAllocate_ID == 0)
-		{
-			setAmount (Env.ZERO);
-			setDiscountAmt (Env.ZERO);
-			setOverUnderAmt (Env.ZERO);
-			setWriteOffAmt (Env.ZERO);
-			setInvoiceAmt(Env.ZERO);
-		}	
+			setInitialDefaults();
 	}	//	MPaymentAllocate
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAmount (Env.ZERO);
+		setDiscountAmt (Env.ZERO);
+		setOverUnderAmt (Env.ZERO);
+		setWriteOffAmt (Env.ZERO);
+		setInvoiceAmt(Env.ZERO);
+	}
 
 	/**	The Invoice				*/
 	private MInvoice	m_invoice = null;

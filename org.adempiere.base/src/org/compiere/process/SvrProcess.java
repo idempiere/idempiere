@@ -270,9 +270,9 @@ public abstract class SvrProcess implements ProcessCall
 			if (msg == null)
 				msg = e.toString();
 			if (e.getCause() != null)
-				log.log(Level.SEVERE, msg, e.getCause());
+				log.log(Level.SEVERE, Msg.parseTranslation(getCtx(), msg), e.getCause());
 			else 
-				log.log(Level.SEVERE, msg, e);
+				log.log(Level.SEVERE, Msg.parseTranslation(getCtx(), msg), e);
 			success = false;
 		//	throw new RuntimeException(e);
 		}
@@ -282,6 +282,9 @@ public abstract class SvrProcess implements ProcessCall
 			success = false;
 
 		if (success) {
+			// if the connection has not been used, then the buffer log is never flushed
+			//   f.e. when the process uses local transactions like UUIDGenerator
+			m_trx.getConnection();
 			m_trx.addTrxEventListener(new TrxEventListener() {				
 				@Override
 				public void afterRollback(Trx trx, boolean success) {
@@ -614,7 +617,55 @@ public abstract class SvrProcess implements ProcessCall
 		}
 		listEntryLog = null; // flushed - to avoid flushing it again in case is called
 	}
+	
+	/**
+	 *  Save Progress Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
+	 */
+	public String saveProgress (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveProgress(id, date, number, msg);
+		return "";
+	}	//	saveProgress
 
+	/**
+	 *  Save Status Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
+	 */
+	public String saveStatus (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveStatus(id, date, number, msg);
+		return "";
+	}	//	saveStatus
+	
+	/**
+	 *  Update Progress Log Entry with the specified AD_PInstance_Log_UU, update if exists
+	 *  @param pInstanceLogUU AD_PInstance_Log_UU
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 */
+	public void updateProgress (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (m_pi != null)
+			m_pi.updateProgress(pInstanceLogUU, id, date, number, msg);
+		
+		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
+	}	//	saveLog
+	
 	/**************************************************************************
 	 * 	Execute function
 	 * 	@param className class
@@ -652,8 +703,9 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.FINE)) log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID());
 		try 
 		{
-			DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
-				+ m_pi.getAD_PInstance_ID(), null);		//	outside trx
+			if(m_pi.getAD_PInstance_ID() > 0)	// Update only when AD_PInstance_ID > 0 (When we Start Process w/o saving process instance (No Process Audit))
+				DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
+					+ m_pi.getAD_PInstance_ID(), null);		//	outside trx
 		} catch (Exception e)
 		{
 			log.severe("lock() - " + e.getLocalizedMessage());
@@ -676,20 +728,22 @@ public abstract class SvrProcess implements ProcessCall
 			//clear interrupt signal so that we can unlock the ad_pinstance record
 			if (Thread.currentThread().isInterrupted())
 				Thread.interrupted();
-				
-			MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
-			if (mpi.get_ID() == 0)
-			{
-				log.log(Level.SEVERE, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
-				return;
-			}
-			mpi.setIsProcessing(false);
-			mpi.setResult(!m_pi.isError());
-			mpi.setErrorMsg(m_pi.getSummary());
-			mpi.saveEx();
-			if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
 			
-			ProcessInfoUtil.saveLogToDB(m_pi);
+			if(m_pi.getAD_PInstance_ID() > 0) {
+				MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
+				if (mpi.get_ID() == 0)
+				{
+					log.log(Level.INFO, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
+					return;
+				}
+				mpi.setIsProcessing(false);
+				mpi.setResult(!m_pi.isError());
+				mpi.setErrorMsg(m_pi.getSummary());
+				mpi.saveEx();
+				if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
+				
+				ProcessInfoUtil.saveLogToDB(m_pi);
+			}
 		} 
 		catch (Exception e)
 		{
@@ -759,12 +813,14 @@ public abstract class SvrProcess implements ProcessCall
             String name = parameter.getParameterName().trim().toLowerCase();
             Field field = map.get(name);
             Field toField = map.containsKey(name + "_to") ? map.get(name + "_to") : null;
+            Field notField = map.containsKey(name + "_not") ? map.get(name + "_not") : null;
 
             // try to match fields using the "p_" prefix convention
             if(field==null) {
             	String candidate = "p_" + name;
                 field = map.get(candidate);
                 toField = map.containsKey(candidate + "_to") ? map.get(candidate + "_to") : null;
+                notField = map.containsKey(candidate + "_not") ? map.get(candidate + "_not") : null;
             }
 
             // try to match fields with same name as metadata declaration after stripping "_"
@@ -772,6 +828,7 @@ public abstract class SvrProcess implements ProcessCall
             	String candidate = name.replace("_", "");
                 field = map.get(candidate);
                 toField = map.containsKey(candidate + "to") ? map.get(candidate + "to") : null;
+                notField = map.containsKey(candidate + "not") ? map.get(candidate + "not") : null;
             }
 
             if(field==null)
@@ -785,6 +842,8 @@ public abstract class SvrProcess implements ProcessCall
                     	toField.set(this, parameter.getParameter_ToAsInt());
                 } else if (type.equals(String.class)) {
                     field.set(this, (String) parameter.getParameter());
+                    if(notField != null)
+                    	notField.set(this, (boolean) parameter.isNotClause());
                 } else if (type.equals(java.sql.Timestamp.class)) {
                     field.set(this, (Timestamp) parameter.getParameter());
                     if(parameter.getParameter_To()!=null && toField != null)

@@ -19,31 +19,30 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.editor.WEditor;
 
 /**
- * 
+ * Interface for container that host one or more field editors
  * @author hengsin
  *
  */
 public interface IFieldEditorContainer {
 	/**
-	 * focus to first field editor
+	 * set focus to first field editor
 	 */
 	public void focusToFirstEditor();
 	
 	/**
-	 * focus to next field editor from ref
+	 * set focus to next field editor from ref
 	 * @param ref
 	 */
 	public void focusToNextEditor(WEditor ref);
 	
 	/**
-	 * helper method to loop thru editor collection of panel <br/>
-	 * can use on callout to check relative editor
+	 * Call editorTaverseCallback for all editors hosted by this container
 	 * @param editorTaverseCallback
 	 */
 	public void editorTraverse (Callback<WEditor> editorTaverseCallback);
 	
 	/**
-	 * default implement for {@link #editorTraverse(Callback)}
+	 * Default implementation for {@link #editorTraverse(Callback)}
 	 * @param editorTaverseCallback
 	 * @param editors
 	 */

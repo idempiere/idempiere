@@ -45,6 +45,16 @@ public class MUserDefInfoRelated extends X_AD_UserDef_Info_Related {
 	 */
 	private static final long serialVersionUID = -2317004482077725245L;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Info_Related_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefInfoRelated(Properties ctx, String AD_UserDef_Info_Related_UU, String trxName) {
+        super(ctx, AD_UserDef_Info_Related_UU, trxName);
+    }
+
 	public MUserDefInfoRelated(Properties ctx, int AD_UserDef_Info_Related_ID, String trxName) {
 		super(ctx, AD_UserDef_Info_Related_ID, trxName);
 	}

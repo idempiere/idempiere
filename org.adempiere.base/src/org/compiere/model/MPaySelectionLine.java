@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Payment Selection Line Model
@@ -37,6 +38,18 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 */
 	private static final long serialVersionUID = -1880961891234637133L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaySelectionLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaySelectionLine(Properties ctx, String C_PaySelectionLine_UU, String trxName) {
+        super(ctx, C_PaySelectionLine_UU, trxName);
+		if (Util.isEmpty(C_PaySelectionLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -47,16 +60,21 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	{
 		super(ctx, C_PaySelectionLine_ID, trxName);
 		if (C_PaySelectionLine_ID == 0)
-		{
-			setIsSOTrx (false);
-			setOpenAmt(Env.ZERO);
-			setPayAmt (Env.ZERO);
-			setDiscountAmt(Env.ZERO);
-			setWriteOffAmt (Env.ZERO);
-			setDifferenceAmt (Env.ZERO);
-			setIsManual (false);
-		}
+			setInitialDefaults();
 	}	//	MPaySelectionLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsSOTrx (false);
+		setOpenAmt(Env.ZERO);
+		setPayAmt (Env.ZERO);
+		setDiscountAmt(Env.ZERO);
+		setWriteOffAmt (Env.ZERO);
+		setDifferenceAmt (Env.ZERO);
+		setIsManual (false);
+	}
 
 	/**
 	 * 	Load Constructor

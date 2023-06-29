@@ -28,11 +28,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.model.MArchive;
-import org.compiere.model.MAttachment;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_UUID_Map;
 import org.compiere.process.ProcessInfoParameter;
@@ -49,8 +49,6 @@ import org.compiere.util.ValueNamePair;
 public class CleanOrphanCascade extends SvrProcess
 {
 
-	private boolean p_IsCleanChangeLog;
-
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -58,12 +56,7 @@ public class CleanOrphanCascade extends SvrProcess
 	{
 		for (ProcessInfoParameter para : getParameter())
 		{
-			String name = para.getParameterName();
-			if ("IsCleanChangeLog".equals(name)) {
-				p_IsCleanChangeLog  = para.getParameterAsBoolean();
-			} else {
-				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
-			}
+			MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 	}	//	prepare
 
@@ -120,9 +113,6 @@ public class CleanOrphanCascade extends SvrProcess
 				+ "            FROM   AD_Column ck "
 				+ "            WHERE  ck.IsActive='Y' AND ck.AD_Table_ID = AD_Table.AD_Table_ID "
 				+ "                   AND ck.ColumnName = AD_Table.TableName || '_ID')";
-		if (! p_IsCleanChangeLog) {
-			whereTables += " AND TableName != 'AD_ChangeLog'";
-		}
 
 		List<MTable> tables = new Query(getCtx(), "AD_Table", whereTables, get_TrxName())
 				.setOnlyActiveRecords(true)
@@ -135,15 +125,20 @@ public class CleanOrphanCascade extends SvrProcess
 
 			StringBuilder sqlRef = new StringBuilder();
 			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ");
-			sqlRef.append("                t.TableName ");
+			sqlRef.append("                t.TableName, ");
+			sqlRef.append("                c.FKConstraintType, ");
+			sqlRef.append("                c.IsMandatory ");
 			sqlRef.append("FROM   ").append(tableName).append(" r ");
 			sqlRef.append("       JOIN AD_Table t ON ( r.AD_Table_ID = t.AD_Table_ID ) ");
+			sqlRef.append("       JOIN AD_Column c ON (t.AD_Table_ID = c.AD_Table_ID AND c.ColumnName = 'Record_ID') ");
 			sqlRef.append("ORDER  BY t.Tablename");
 			List<List<Object>> rowTables = DB.getSQLArrayObjectsEx(get_TrxName(), sqlRef.toString());
 			if (rowTables != null) {
 				for (List<Object> row : rowTables) {
 					int refTableID = ((BigDecimal) row.get(0)).intValue();
 					String refTableName = row.get(1).toString();
+					String constraintType = row.get(2).toString();
+					Boolean isMandatory = row.get(3).toString().equalsIgnoreCase("Y");
 
 					MTable refTable = MTable.get(getCtx(), refTableID);
 					StringBuilder whereClause = new StringBuilder();
@@ -167,28 +162,24 @@ public class CleanOrphanCascade extends SvrProcess
 						}
 					}
 
-					int noDel = 0;
-					if (MAttachment.Table_Name.equals(tableName)) {
-						// special case for attachment because of store
-						List<MAttachment> attachments = new Query(getCtx(), tableName, whereClause.toString(), get_TrxName()).list();
-						for (MAttachment attachment : attachments) {
-							attachment.deleteEx(true, get_TrxName());
-							noDel++;
+					int noDeleted = 0;
+					int noSetNull = 0;
+					List<PO> poList = new Query(getCtx(), tableName, whereClause.toString(), get_TrxName()).list();
+					for (PO po : poList) {
+						if (MColumn.FKCONSTRAINTTYPE_ModelCascade.equals(constraintType)) {
+							po.deleteEx(true, get_TrxName());
+							noDeleted++;
+						} else if (MColumn.FKCONSTRAINTTYPE_ModelSetNull.equals(constraintType)) {
+							if (isMandatory)
+								po.set_ValueOfColumn("Record_ID", 0);
+							else
+								po.set_ValueOfColumn("Record_ID", null);
+							po.saveEx(get_TrxName());
+							noSetNull++;
 						}
-					} else if (MArchive.Table_Name.equals(tableName)) {
-						// special case for archive because of store
-						List<MArchive> archives = new Query(getCtx(), tableName, whereClause.toString(), get_TrxName()).list();
-						for (MArchive archive : archives) {
-							archive.deleteEx(true, get_TrxName());
-							noDel++;
-						}
-					} else {
-						StringBuilder sqlDelete = new StringBuilder();
-						sqlDelete.append("DELETE FROM ").append(tableName).append(" WHERE ").append(whereClause);
-						noDel = DB.executeUpdateEx(sqlDelete.toString(), get_TrxName());
 					}
-					if (noDel > 0) {
-						addLog(Msg.parseTranslation(getCtx(), noDel + " " + tableName + " " + "@Deleted@ -> " + refTableName));
+					if (noDeleted > 0 || noSetNull > 0) {
+						addLog(Msg.parseTranslation(getCtx(), tableName + ": " + noDeleted + " @Deleted@ / " + noSetNull + " @Reset@ -> " + refTableName));
 					}
 				}
 
@@ -199,17 +190,18 @@ public class CleanOrphanCascade extends SvrProcess
 	}	//	doIt
 
 	private void delTree(String treeTable, String foreignTable, String columnName, int treeId) {
-		StringBuilder sqlDelete = new StringBuilder()
-				.append("DELETE FROM ").append(treeTable)
-				.append(" WHERE ").append(columnName).append(">0 AND ")
-				.append(columnName).append(" NOT IN (SELECT ").append(foreignTable).append("_ID FROM ").append(foreignTable).append(")");
-		if (treeId > 0) {
-			sqlDelete.append(" AND AD_Tree_ID=").append(treeId);
+		String whereClause = columnName + ">0 AND  " + columnName + " NOT IN (SELECT " + foreignTable + "_ID FROM " + foreignTable + ")";
+		if(treeId > 0)
+			whereClause += " AND AD_Tree_ID=" + treeId;
+		List<PO> poList = new Query(getCtx(), treeTable, whereClause, get_TrxName()).list();
+		
+		int noDel = 0;
+		for(PO po : poList) {
+			po.deleteEx(true, get_TrxName());
+			noDel++;
 		}
-		int noDel = DB.executeUpdateEx(sqlDelete.toString(), get_TrxName());
 		if (noDel > 0) {
-			addLog(Msg.parseTranslation(getCtx(), noDel + " " + treeTable + " " + "@Deleted@ -> " + foreignTable
-					+ (treeId > 0 ? " Tree=" + treeId: "" )));
+			addLog(Msg.parseTranslation(getCtx(), treeTable + ": " + noDel + " @Deleted@ -> " + foreignTable + (treeId > 0 ? " Tree=" + treeId: "" )));
 		}
 	}	//	delTree
 

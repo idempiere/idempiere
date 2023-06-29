@@ -29,6 +29,16 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, Immut
 	 */
 	private static final long serialVersionUID = 4000783886138460291L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_InfoRelated_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInfoRelated(Properties ctx, String AD_InfoRelated_UU, String trxName) {
+        super(ctx, AD_InfoRelated_UU, trxName);
+    }
+
 	public MInfoRelated(Properties ctx, int AD_InfoRelated_ID, String trxName) {
 		super(ctx, AD_InfoRelated_ID, trxName);
 	}

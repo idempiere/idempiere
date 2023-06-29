@@ -26,33 +26,47 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 
 /**
- * 
+ * Composite component of {@link Combobox} and {@link Button}.
+ * For Payment Rule editor.
  * @author Elaine
- *
  */
 public class Paymentbox extends Div {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1807586169091171780L;
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
+	/** List of payment rules */
 	protected Combobox combo;
+	/** Button to open payment form */
 	protected Button btn;
 	
+	/**
+	 * Default constructor
+	 */
 	public Paymentbox() {
 		initComponents();
 	}
 	
+	/**
+	 * @param comboitem
+	 */
 	public Paymentbox(Comboitem comboitem) {
 		initComponents();
 		setSelectedComboItem(comboitem);
 	}
 	
+	/**
+	 * Set image URL of button
+	 * @param imageSrc
+	 */
 	public void setButtonImage(String imageSrc) {
 		btn.setImage(imageSrc);
 	}
 	
+	/**
+	 * Layout component
+	 */
 	private void initComponents() {
 		combo = new Combobox();
 		appendChild(combo);
@@ -67,18 +81,33 @@ public class Paymentbox extends Div {
 		LayoutUtils.addSclass("payment-rule-editor", this);
 	}
 	
+	/**
+	 * @return Combobox 
+	 */
 	public Combobox getCombobox() {
 		return combo;
 	}
 	
+	/**
+	 * Set selected Combo Item
+	 * @param comboitem
+	 */
 	public void setSelectedComboItem(Comboitem comboitem) {
 		combo.setSelectedItem(comboitem);
 	}
 	
+	/**
+	 * @return selected Comboitem  
+	 */
 	public Comboitem getSelectedComboItem() {
 		return combo.getSelectedItem();
 	}
 	
+	/**
+	 * Set enable/disable. Hide button if disable.
+	 * @param isComboEnabled
+	 * @param isBtnEnabled
+	 */
 	public void setEnabled(boolean isComboEnabled, boolean isBtnEnabled) {
 		if (! MSysConfig.getBooleanValue(MSysConfig.ENABLE_PAYMENTBOX_BUTTON, true, Env.getAD_Client_ID(Env.getCtx())))
 			isBtnEnabled = false;
@@ -105,10 +134,20 @@ public class Paymentbox extends Div {
 		}
 	}
 	
+	/**
+	 * @return true if enable, false otherwise
+	 */
 	public boolean isEnabled() {
 		return combo.isEnabled();
 	}
 	
+	/**
+	 * If evtnm is ON_CLICK, add listener to {@link #btn}.
+	 * Otherwise add listener to {@link #combo}.
+	 * @param evtnm
+	 * @param listener
+	 * @return true if listener added to Button or Combobox
+	 */
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_CLICK.equals(evtnm)) {
 			return btn.addEventListener(evtnm, listener);
@@ -117,10 +156,16 @@ public class Paymentbox extends Div {
 		}
 	}
 	
+	/**
+	 * @param l PropertyChangeListener
+	 */
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}
 	
+	/**
+	 * @return Button
+	 */
 	public Button getButton() {
 		return btn;
 	}	

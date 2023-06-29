@@ -13,12 +13,14 @@
 package org.adempiere.webui.editor;
 
 /**
- * 
+ * Interface for field editor that support zoom to AD window.
  * @author Low Heng Sin
- *
  */
 public interface IZoomableEditor {
 
+	/**
+	 * Zoom to AD window
+	 */
 	public void actionZoom();
 
 }

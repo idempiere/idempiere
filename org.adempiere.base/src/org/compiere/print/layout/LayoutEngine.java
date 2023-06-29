@@ -1271,21 +1271,25 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				+ " - AD_Column_ID=" + AD_Column_ID + " - " + item);
 			return null;
 		}
-		int Record_ID = 0;
-		try
-		{
-			Record_ID = Integer.parseInt(recordString);
-		}
-		catch (Exception e)
-		{
-			data.dumpCurrentRow();
-			log.log(Level.SEVERE, "Invalid Record Key - " + recordString
-				+ " (" + e.getMessage()
-				+ ") - AD_Column_ID=" + AD_Column_ID + " - " + item);
-			return null;
-		}
 		MQuery query = new MQuery (format.getAD_Table_ID());
-		query.addRestriction(item.getColumnName(), MQuery.EQUAL, Integer.valueOf(Record_ID));
+		if (Util.isUUID(recordString)) {
+			query.addRestriction(item.getColumnName(), MQuery.EQUAL, recordString);
+		} else {
+			int Record_ID = 0;
+			try
+			{
+				Record_ID = Integer.parseInt(recordString);
+			}
+			catch (Exception e)
+			{
+				data.dumpCurrentRow();
+				log.log(Level.SEVERE, "Invalid Record Key - " + recordString
+					+ " (" + e.getMessage()
+					+ ") - AD_Column_ID=" + AD_Column_ID + " - " + item);
+				return null;
+			}
+			query.addRestriction(item.getColumnName(), MQuery.EQUAL, Integer.valueOf(Record_ID));
+		}
 		format.setTranslationViewQuery(query);
 		if (log.isLoggable(Level.FINE))
 			log.fine(query.toString());

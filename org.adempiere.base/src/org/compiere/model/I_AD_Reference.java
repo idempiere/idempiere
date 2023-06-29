@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Reference 
 {
@@ -194,6 +194,19 @@ public interface I_AD_Reference
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name ShowInactive */
+    public static final String COLUMNNAME_ShowInactive = "ShowInactive";
+
+	/** Set Show Inactive.
+	  * Show Inactive Records
+	  */
+	public void setShowInactive (String ShowInactive);
+
+	/** Get Show Inactive.
+	  * Show Inactive Records
+	  */
+	public String getShowInactive();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

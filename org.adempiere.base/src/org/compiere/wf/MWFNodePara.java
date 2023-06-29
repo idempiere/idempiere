@@ -58,6 +58,16 @@ public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 	}	//	getParameters
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Node_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFNodePara(Properties ctx, String AD_WF_Node_Para_UU, String trxName) {
+        super(ctx, AD_WF_Node_Para_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

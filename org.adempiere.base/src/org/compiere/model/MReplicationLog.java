@@ -33,6 +33,16 @@ public class MReplicationLog extends X_AD_Replication_Log
 	 */
 	private static final long serialVersionUID = -8815834636981996509L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Replication_Log_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReplicationLog(Properties ctx, String AD_Replication_Log_UU, String trxName) {
+        super(ctx, AD_Replication_Log_UU, trxName);
+    }
+
 	/**
 	 * 	Create new Log
 	 * 	@param ctx context

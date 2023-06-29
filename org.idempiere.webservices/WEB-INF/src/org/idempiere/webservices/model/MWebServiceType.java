@@ -217,6 +217,16 @@ public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOS
 	@SuppressWarnings("unused")
 	private static final CLogger	s_log	= CLogger.getCLogger (MWebServiceType.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param WS_WebServiceType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWebServiceType(Properties ctx, String WS_WebServiceType_UU, String trxName) {
+        super(ctx, WS_WebServiceType_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -226,14 +236,6 @@ public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOS
 	public MWebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
 	{
 		super (ctx, WS_WebServiceType_ID, trxName);
-        /** if (WS_WebServiceType_ID == 0)
-        {
-			setName (null);
-			setValue (null);
-			setWS_WebService_ID (0);
-			setWS_WebServiceMethod_ID (0);
-			setWS_WebServiceType_ID (0);
-        } */
 	}	//	MWebServiceType
 
 	/**

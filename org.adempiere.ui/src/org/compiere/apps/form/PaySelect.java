@@ -331,7 +331,7 @@ public class PaySelect
 			boolean onlyPositiveBalance, KeyNamePair bpartner, KeyNamePair docType, IMiniTable miniTable)
 	{
 		//  not yet initialized
-		if (m_sql == null)
+		if (m_sql == null || paymentRule == null)
 			return;
 
 		String sql = m_sql;

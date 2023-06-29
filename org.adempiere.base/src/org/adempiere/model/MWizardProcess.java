@@ -27,13 +27,18 @@ public class MWizardProcess extends X_AD_WizardProcess {
 	 */
 	private static final long serialVersionUID = -7713151820360928310L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WizardProcess_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWizardProcess(Properties ctx, String AD_WizardProcess_UU, String trxName) {
+        super(ctx, AD_WizardProcess_UU, trxName);
+    }
+
 	public MWizardProcess(Properties ctx, int AD_WizardProcess_ID, String trxName) {
 		super(ctx, AD_WizardProcess_ID, trxName);
-		if (AD_WizardProcess_ID == 0)
-		{
-			setIsActive(true); 
-			
-		}		
 	}
 
 	public MWizardProcess(Properties ctx, ResultSet rs, String trxName) {

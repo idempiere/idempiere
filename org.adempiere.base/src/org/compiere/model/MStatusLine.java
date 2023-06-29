@@ -61,6 +61,16 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	public static final String BEFORE_PARSE_STATUS_LINE = "idempiere/statusLine/beforeParse";
 	public static final String EVENT_WINDOWNO = "event.windowno";
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_StatusLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStatusLine(Properties ctx, String AD_StatusLine_UU, String trxName) {
+        super(ctx, AD_StatusLine_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

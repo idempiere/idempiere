@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Recurring Model
@@ -37,18 +38,35 @@ public class MRecurring extends X_C_Recurring
 	 */
 	private static final long serialVersionUID = 6053691462050896981L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Recurring_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRecurring(Properties ctx, String C_Recurring_UU, String trxName) {
+        super(ctx, C_Recurring_UU, trxName);
+		if (Util.isEmpty(C_Recurring_UU))
+			setInitialDefaults();
+    }
+
 	public MRecurring (Properties ctx, int C_Recurring_ID, String trxName)
 	{
 		super (ctx, C_Recurring_ID, trxName);
 		if (C_Recurring_ID == 0)
-		{
-			setDateNextRun (new Timestamp(System.currentTimeMillis()));
-			setFrequencyType (FREQUENCYTYPE_Monthly);
-			setFrequency(1);
-			setRunsMax (1);
-			setRunsRemaining (0);
-		}
+			setInitialDefaults();
 	}	//	MRecurring
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateNextRun (new Timestamp(System.currentTimeMillis()));
+		setFrequencyType (FREQUENCYTYPE_Monthly);
+		setFrequency(1);
+		setRunsMax (1);
+		setRunsRemaining (0);
+	}
 
 	public MRecurring (Properties ctx, ResultSet rs, String trxName)
 	{

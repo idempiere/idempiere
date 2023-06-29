@@ -47,6 +47,16 @@ public class MPOSTerminal extends X_U_POSTerminal
     }
 
     /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param U_POSTerminal_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPOSTerminal(Properties ctx, String U_POSTerminal_UU, String trxName) {
+        super(ctx, U_POSTerminal_UU, trxName);
+    }
+
+    /**
      * @param ctx
      * @param U_POSTerminal_ID
      * @param trxName

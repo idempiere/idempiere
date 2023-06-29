@@ -66,7 +66,6 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
-import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
@@ -114,7 +113,10 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3153695115162945843L;
+	private static final long serialVersionUID = -7758079724744033518L;
+
+	/* String key to create a new record based in UUID constructor */
+	public static final String UUID_NEW_RECORD = "";
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -154,13 +156,24 @@ public abstract class PO
 
 	/**
 	 *  Create and Load existing Persistent Object
-	 *  @param ID The unique ID of the object
 	 *  @param ctx context
+	 *  @param ID The unique ID of the object
 	 *  @param trxName transaction name
 	 */
 	public PO (Properties ctx, int ID, String trxName)
 	{
 		this (ctx, ID, trxName, null, (String[]) null);
+	}   //  PO
+
+	/**
+	 *  Create and Load existing Persistent Object
+	 *  @param ctx context
+	 *  @param UUID The unique UUID of the object
+	 *  @param trxName transaction name
+	 */
+	public PO (Properties ctx, String UUID, String trxName)
+	{
+		this (ctx, UUID, trxName, null, (String[]) null);
 	}   //  PO
 
 	/**
@@ -173,6 +186,18 @@ public abstract class PO
 	public PO (Properties ctx, int ID, String trxName, String ... virtualColumns)
 	{
 		this (ctx, ID, trxName, null, virtualColumns);
+	}
+
+	/**
+	 * Create and load existing Persistent Object
+	 * @param ctx Context
+	 * @param UUID Unique UUID of the object
+	 * @param trxName Transaction name
+	 * @param virtualColumns names of virtual columns to load along with the regular table columns
+	 */
+	public PO (Properties ctx, String UUID, String trxName, String ... virtualColumns)
+	{
+		this (ctx, UUID, trxName, null, virtualColumns);
 	}
 
 	/**
@@ -225,6 +250,59 @@ public abstract class PO
 			load(rs);
 		else
 			load(ID, trxName, virtualColumns);
+
+		checkCrossTenant(false);
+	}   //  PO
+
+	/**
+	 *  Create and Load existing Persistent Object.
+	 *  <pre>
+	 *  You load
+	 * 		- an existing single key record with 	new PO (ctx, Record_ID)
+	 * 			or									new PO (ctx, Record_ID, trxName)
+	 * 			or									new PO (ctx, rs, get_TrxName())
+	 * 		- a new single key record with			new PO (ctx, 0)
+	 * 		- an existing multi key record with		new PO (ctx, rs, get_TrxName())
+	 * 		- a new multi key record with			new PO (ctx, null)
+	 *  The ID for new single key records is created automatically,
+	 *  you need to set the IDs for multi-key records explicitly.
+	 *	</pre>
+	 *  @param ctx context
+	 *  @param UUID the UUID if "", the record defaults are applied - ignored if re exists
+	 *  @param trxName transaction name
+	 *  @param rs optional - load from current result set position (no navigation, not closed)
+	 *  @param virtualColumns optional - names of virtual columns to load along with the regular table columns
+	 */
+	public PO (Properties ctx, String UUID, String trxName, ResultSet rs, String ... virtualColumns)
+	{
+		p_ctx = ctx != null ? ctx : Env.getCtx();
+		m_trxName = trxName;
+
+		p_info = initPO(ctx);
+		if (p_info == null || p_info.getTableName() == null)
+			throw new IllegalArgumentException ("Invalid PO Info - " + p_info);
+		//
+		int size = p_info.getColumnCount();
+		m_oldValues = new Object[size];
+		m_newValues = new Object[size];
+		m_setErrors = new ValueNamePair[size];
+		m_setErrorsFilled = false;
+
+		if (rs != null)
+		{
+			load(rs);
+		}
+		else
+		{
+			if (UUID != null && UUID.length() == 0) //	new
+			{
+				initNewRecord();
+			}
+			else
+			{
+				loadPO(UUID, trxName, virtualColumns);
+			}
+		}
 
 		checkCrossTenant(false);
 	}   //  PO
@@ -469,6 +547,17 @@ public abstract class PO
 	}   //  getID
 
 	/**
+	 * @return UUID value
+	 */
+	public String get_UUID() {
+		String uidColumn = getUUIDColumnName();
+		if (p_info.getColumnIndex(uidColumn) >=0)
+			return get_ValueAsString(uidColumn);
+		else
+			return null;
+	}
+	
+	/**
 	 * 	Get Context
 	 * 	@return context
 	 */
@@ -560,13 +649,26 @@ public abstract class PO
 	}   //  get_ValueE
 
 	/**
-	 * 	Get Column Value
-	 *	@param variableName name
-	 *	@return value or ""
+	 * Get String Value
+	 * @param columnName
+	 * @return String value
 	 */
-	public String get_ValueAsString (String variableName)
+	public String get_ValueAsString(String columnName)
 	{
-		Object value = get_Value (variableName);
+		int idx = get_ColumnIndex(columnName);
+		if (idx < 0)
+			return "";
+		return get_ValueAsString(idx);
+	}
+
+	/**
+	 * 	Get String Value
+	 *	@param idx column index
+	 *	@return String value or ""
+	 */
+	public String get_ValueAsString(int idx)
+	{
+		Object value = get_Value(idx);
 		if (value == null)
 			return "";
 		return value.toString();
@@ -1359,12 +1461,19 @@ public abstract class PO
 		}
 		else	//	new
 		{
-			loadDefaults();
-			m_createNew = true;
-			setKeyInfo();	//	sets m_IDs
-			loadComplete(true);
+			initNewRecord();
 		}
 	}	//	load
+
+	/**
+	 * Prepare PO for capturing of new record
+	 */
+	private void initNewRecord() {
+		loadDefaults();
+		m_createNew = true;
+		setKeyInfo();	//	sets m_IDs
+		loadComplete(true);
+	}
 
 	/**
 	 * Load record with UUID
@@ -1387,7 +1496,7 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
 			
-		load(uuID,trxName, virtualColumns);
+		loadPO(uuID,trxName, virtualColumns);
 	} // loadByUU
 
 	/**
@@ -1397,18 +1506,20 @@ public abstract class PO
 	 *  @return true if loaded
 	 */
 	public boolean load (String trxName, String ... virtualColumns) {
-		return load(null, trxName, virtualColumns);
+		return loadPO(null, trxName, virtualColumns);
 	}
 	
 	/**
-	 *  (re)Load record with uuID
-	 *  @param uuID RecrodUU
+	 *  (re)Load record with uuID or {@link #m_IDs}
+	 *  @param uuID RecrodUU if not null, load by uuID, otherwise by m_IDs
 	 *  @param trxName transaction
 	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	protected boolean load (String uuID, String trxName, String ... virtualColumns)
+	protected boolean loadPO (String uuID, String trxName, String ... virtualColumns)
 	{
+		if (log.isLoggable(Level.FINEST)) log.finest("UU=" + uuID);
+
 		m_trxName = trxName;
 		boolean success = true;
 		StringBuilder sql = new StringBuilder("SELECT ");
@@ -1845,12 +1956,12 @@ public abstract class PO
 				m_KeyColumns = new String[] {ColumnName};
 				if (p_info.getColumnName(i).endsWith("_ID"))
 				{
-				Integer ii = (Integer)get_Value(i);
-				if (ii == null)
-					m_IDs = new Object[] {I_ZERO};
-				else
-					m_IDs = new Object[] {ii};
-				if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
+					Integer ii = (Integer)get_Value(i);
+					if (ii == null)
+						m_IDs = new Object[] {I_ZERO};
+					else
+						m_IDs = new Object[] {ii};
+					if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
 				}
 				else
 				{
@@ -1874,31 +1985,55 @@ public abstract class PO
 		}
 		//	Set FKs
 		int size = columnNames.size();
-		if (size == 0)
-			throw new IllegalStateException("No PK nor FK - " + p_info.getTableName());
-		m_IDs = new Object[size];
-		m_KeyColumns = new String[size];
-		for (int i = 0; i < size; i++)
+		if (size > 0)
 		{
-			m_KeyColumns[i] = (String)columnNames.get(i);
-			if (m_KeyColumns[i].endsWith("_ID"))
+			m_IDs = new Object[size];
+			m_KeyColumns = new String[size];
+			for (int i = 0; i < size; i++)
 			{
-				Integer ii = null;
-				try
+				m_KeyColumns[i] = (String)columnNames.get(i);
+				if (m_KeyColumns[i].endsWith("_ID"))
 				{
-					ii = (Integer)get_Value(m_KeyColumns[i]);
+					Integer ii = null;
+					try
+					{
+						ii = (Integer)get_Value(m_KeyColumns[i]);
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "", e);
+					}
+					if (ii != null)
+						m_IDs[i] = ii;
 				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, "", e);
-				}
-				if (ii != null)
-					m_IDs[i] = ii;
+				else
+					m_IDs[i] = get_Value(m_KeyColumns[i]);
+				if (log.isLoggable(Level.FINEST)) log.finest("(FK) " + m_KeyColumns[i] + "=" + m_IDs[i]);
 			}
-			else
-				m_IDs[i] = get_Value(m_KeyColumns[i]);
-			if (log.isLoggable(Level.FINEST)) log.finest("(FK) " + m_KeyColumns[i] + "=" + m_IDs[i]);
 		}
+
+		if (m_KeyColumns == null || m_KeyColumns.length == 0)
+		{
+			//	Search for UUID Key
+			for (int i = 0; i < p_info.getColumnCount(); i++)
+			{
+				String ColumnName = p_info.getColumnName(i);
+				if (ColumnName.equals(PO.getUUIDColumnName(get_TableName())))
+				{
+					m_KeyColumns = new String[] {ColumnName};
+					Object oo = get_Value(i);
+					if (oo == null)
+						m_IDs = new Object[] {null};
+					else
+						m_IDs = new Object[] {oo};
+					if (log.isLoggable(Level.FINEST)) log.finest("(UU) " + ColumnName + "=" + oo);
+					return;
+				}
+			}	//	UUID key search
+		}
+
+		if (m_KeyColumns == null || m_KeyColumns.length == 0)
+			throw new IllegalStateException("No PK, UU nor FK - " + p_info.getTableName());
 	}	//	setKeyInfo
 
 
@@ -2201,10 +2336,6 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
-		checkImmutable();
-		
-		checkValidContext();
-		checkCrossTenant(true);
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -2212,6 +2343,12 @@ public abstract class PO
 			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
+
+		checkImmutable();
+		checkValidContext();
+		checkCrossTenant(true);
+		checkRecordIDCrossTenant();
+		checkRecordUUCrossTenant();
 
 		if (m_setErrorsFilled) {
 			for (int i = 0; i < m_setErrors.length; i++) {
@@ -2452,6 +2589,21 @@ public abstract class PO
 	}
 
 	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @param trxName transaction
+	 * @throws AdempiereException
+	 * @see #saveEx(String)
+	 */
+	public void saveCrossTenantSafeEx() {
+		try {
+			PO.setCrossTenantSafe();
+			saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+	}
+
+	/**
 	 * 	Finish Save Process
 	 *	@param newRecord new
 	 *	@param success success
@@ -2538,7 +2690,7 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord)
-			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
+			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_UUID());
 		if (CacheMgt.get().hasCache(p_info.getTableName())) {
 			if (!newRecord)
 				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
@@ -2566,6 +2718,21 @@ public abstract class PO
 		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
+	}
+
+	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @param trxName transaction
+	 * @throws AdempiereException
+	 * @see #saveEx(String)
+	 */
+	public void saveCrossTenantSafeEx(String trxName) {
+		try {
+			PO.setCrossTenantSafe();
+			saveEx(trxName);
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 	}
 
 	/**
@@ -2630,22 +2797,18 @@ public abstract class PO
 		return saveFinish (false, ok);
 	}   //  saveUpdate
 
+	/**
+	 * @return true if sql migration script should be logged for changes to this PO instance
+	 */
 	private boolean isLogSQLScript() {
-		boolean logMigrationScript = false;
-		if (Ini.isClient()) {
-			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
-		} else {
-			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
-			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
-		return logMigrationScript;
+		return Env.isLogMigrationScript(p_info.getTableName());
 	}
 
 	private boolean doUpdate(boolean withValues) {
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
-				
-		String where = get_WhereClause(true);
+
+		String where = withValues && get_ID() > MTable.MAX_OFFICIAL_ID ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
 		
 		List<Object> optimisticLockingParams = new ArrayList<Object>();
 		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
@@ -2667,6 +2830,18 @@ public abstract class PO
 		if (session == null)
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
+
+		//uuid secondary key - when updating, if the record doesn't have UUID, assign one
+		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
+		if (uuidIndex >= 0)
+		{
+			String value = (String)get_Value(uuidIndex);
+			if (p_info.getColumn(uuidIndex).FieldLength == 36 && (value == null || value.length() == 0))
+			{
+				UUID uuid = UUID.randomUUID();
+				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
+			}
+		}
 
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++)
@@ -2737,6 +2912,55 @@ public abstract class PO
 				//  values
 				if (value == Null.NULL)
 					sql.append("NULL");
+				else if (value instanceof Integer && "Record_ID".equalsIgnoreCase(columnName))
+				{
+					Integer idValue = (Integer) value;
+					if (idValue <= MTable.MAX_OFFICIAL_ID) 
+					{
+						sql.append(value);
+					}
+					else if (p_info.getColumnIndex("AD_Table_ID") >= 0)
+					{
+						int tableId = get_ValueAsInt("AD_Table_ID");
+						if (tableId > 0)
+						{
+							MTable refTable = MTable.get(Env.getCtx(), tableId);
+							String refTableName = refTable.getTableName();
+							String refKeyColumnName = refTable.getKeyColumns()[0];
+							String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+							String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+									+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+							sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+						}
+						else
+						{
+							sql.append(value);
+						}
+					}
+					else
+					{
+						sql.append(value);
+					}
+				}
+				else if (value instanceof Integer && p_info.isColumnLookup(i))
+				{
+					Integer idValue = (Integer) value;
+					if (idValue <= MTable.MAX_OFFICIAL_ID) 
+					{
+						sql.append(value);
+					}
+					else
+					{
+						MColumn col = MColumn.get(p_info.getAD_Column_ID(columnName));
+						String refTableName = col.getReferenceTableName();
+						MTable refTable = MTable.get(Env.getCtx(), refTableName);
+						String refKeyColumnName = refTable.getKeyColumns()[0];
+						String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+						String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+								+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+						sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+					}
+				}
 				else if (value instanceof Integer || value instanceof BigDecimal)
 					sql.append(value);
 				else if (c == Boolean.class)
@@ -2798,7 +3022,6 @@ public abstract class PO
 
 			//	Change Log	- Only
 			if (session != null
-				&& m_IDs.length == 1
 				&& p_info.isAllowLogging(i)		//	logging allowed
 				&& !p_info.isEncrypted(i)		//	not encrypted
 				&& !p_info.isVirtualColumn(i)	//	no virtual column
@@ -2815,7 +3038,7 @@ public abstract class PO
 				MChangeLog cLog = session.changeLog (
 					m_trxName, AD_ChangeLog_ID,
 					p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-					get_ID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
+					(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
 				if (cLog != null)
 					AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 			}
@@ -3038,7 +3261,7 @@ public abstract class PO
 	{
 		//  Set ID for single key - Multi-Key values need explicitly be set previously
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
-			&& m_KeyColumns[0].endsWith("_ID"))	//	AD_Language, EntityType
+			&& m_KeyColumns[0].endsWith("_ID") && (Env.isUseCentralizedId(p_info.getTableName()) || !isLogSQLScript()))	//	AD_Language, EntityType
 		{
 			int no = saveNew_getID();
 			if (no <= 0)
@@ -3121,7 +3344,6 @@ public abstract class PO
 	}   //  saveNew
 
 	private boolean doInsert(boolean withValues) {
-		int index;
 		lobReset();
 
 		//	Change Log
@@ -3132,9 +3354,99 @@ public abstract class PO
 
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
-		
+				
 		//	SQL
-		StringBuilder sqlInsert = new StringBuilder("INSERT INTO ");
+		StringBuilder sqlInsert = new StringBuilder();
+		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false);
+		//
+		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
+							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
+		boolean ok = no == 1;
+		if (ok)
+		{
+			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
+					&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
+			{
+				StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
+				int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
+				m_IDs[0] = Integer.valueOf(id);
+				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+			}
+
+			if (withValues && !Env.isUseCentralizedId(p_info.getTableName()))
+			{
+				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
+				//	Change Log	- Only
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				if (   session != null
+					&& p_info.isAllowLogging(ki)		//	logging allowed
+					&& !p_info.isEncrypted(ki)		//	not encrypted
+					&& !p_info.isVirtualColumn(ki)	//	no virtual column
+					&& !"Password".equals(p_info.getColumnName(ki))
+					&& (   insertLog.equalsIgnoreCase("Y")
+						|| (   insertLog.equalsIgnoreCase("K") 
+							&& (   p_info.getColumn(ki).IsKey
+								|| (   !p_info.hasKeyColumn() 
+									&& p_info.getColumn(ki).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))))
+				{
+					int id = (m_IDs.length == 1 ? get_ID() : 0);
+					// change log on new
+					MChangeLog cLog = session.changeLog (
+							m_trxName, AD_ChangeLog_ID,
+							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
+							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, (id == 0 ? get_UUID() : id), MChangeLog.EVENTCHANGELOG_Insert);
+					if (cLog != null)
+						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+				}
+			}
+			ok = lobSave();
+			if (!load(m_trxName))		//	re-read Info
+			{
+				if (m_trxName == null)
+					log.log(Level.SEVERE, "reloading");
+				else
+					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
+				ok = false;;
+			}
+		}
+		else
+		{
+			String msg = "Not inserted - ";
+			if (CLogMgt.isLevelFiner())
+				msg += sqlInsert.toString();
+			else
+				msg += get_TableName();
+			if (m_trxName == null)
+				log.log(Level.WARNING, msg);
+			else
+				log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
+		}
+		return ok;
+	}
+
+	/**
+	 * Export data as insert SQL statement
+	 */
+	public String toInsertSQL() 
+	{
+		StringBuilder sqlInsert = new StringBuilder();
+		buildInsertSQL(sqlInsert, true, null, null, 0, true);
+		return sqlInsert.toString();
+	}
+	
+	/**
+	 * Build insert SQL statement and capture change log
+	 * @param sqlInsert
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @param params statement parameters when withValues is false
+	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
+	 * @param AD_ChangeLog_ID initial change log id
+	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
+	 * @return last AD_ChangeLog_ID
+	 */
+	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
+			int AD_ChangeLog_ID, boolean generateScriptOnly) {
+		sqlInsert.append("INSERT INTO ");
 		sqlInsert.append(p_info.getTableName()).append(" (");
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
@@ -3156,6 +3468,13 @@ public abstract class PO
 					continue;
 			}
 
+			//do not export secure column
+			if (generateScriptOnly)
+			{
+				if (p_info.isEncrypted(i) || p_info.isSecure(i) || "Password".equalsIgnoreCase(p_info.getColumnName(i)))
+					continue;
+			}
+			
 			//	** add column **
 			if (doComma)
 			{
@@ -3172,10 +3491,72 @@ public abstract class PO
 			{				
 				try
 				{
-					if (c == Object.class) //  may have need to deal with null values differently
+					if (m_IDs.length == 1 && p_info.hasKeyColumn()
+							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && (generateScriptOnly || !Env.isUseCentralizedId(p_info.getTableName())))
+					{
+						if (generateScriptOnly && get_ID() > 0 && get_ID() <= MTable.MAX_OFFICIAL_ID)
+						{
+							sqlValues.append(value);
+						}
+						else
+						{
+							MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
+							sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
+						}
+					}
+					else if (c == Object.class) //  may have need to deal with null values differently
 						sqlValues.append (saveNewSpecial (value, i));
 					else if (value == null || value.equals (Null.NULL))
 						sqlValues.append ("NULL");
+					else if (value instanceof Integer && "Record_ID".equalsIgnoreCase(p_info.getColumnName(i)))
+					{
+						Integer idValue = (Integer) value;
+						if (idValue <= MTable.MAX_OFFICIAL_ID) 
+						{
+							sqlValues.append(value);
+						}
+						else if (p_info.getColumnIndex("AD_Table_ID") >= 0)
+						{
+							int tableId = get_ValueAsInt("AD_Table_ID");
+							if (tableId > 0)
+							{
+								MTable refTable = MTable.get(Env.getCtx(), tableId);
+								String refTableName = refTable.getTableName();
+								String refKeyColumnName = refTable.getKeyColumns()[0];
+								String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+								String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+										+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+								sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+							}
+							else
+							{
+								sqlValues.append(value);
+							}
+						}
+						else
+						{
+							sqlValues.append(value);
+						}
+					}
+					else if (value instanceof Integer && p_info.isColumnLookup(i))
+					{
+						Integer idValue = (Integer) value;
+						if (idValue <= MTable.MAX_OFFICIAL_ID) 
+						{
+							sqlValues.append(value);
+						}
+						else
+						{
+							MColumn col = MColumn.get(p_info.getAD_Column_ID(p_info.getColumnName(i)));
+							String refTableName = col.getReferenceTableName();
+							MTable refTable = MTable.get(Env.getCtx(), refTableName);
+							String refKeyColumnName = refTable.getKeyColumns()[0];
+							String refUUColumnName = MTable.getUUIDColumnName(refTable.getTableName());
+							String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+									+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+							sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+						}
+					}
 					else if (value instanceof Integer || value instanceof BigDecimal)
 						sqlValues.append (value);
 					else if (c == Boolean.class)
@@ -3268,27 +3649,31 @@ public abstract class PO
 				}
 			}
 
-			//	Change Log	- Only
-			String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
-			if (   session != null
-				&& m_IDs.length == 1
-				&& p_info.isAllowLogging(i)		//	logging allowed
-				&& !p_info.isEncrypted(i)		//	not encrypted
-				&& !p_info.isVirtualColumn(i)	//	no virtual column
-				&& !"Password".equals(p_info.getColumnName(i))
-				&& (insertLog.equalsIgnoreCase("Y")
-						|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(i).IsKey))
-				)
+			if (session != null && (!withValues || Env.isUseCentralizedId(p_info.getTableName())))
+			{
+				//	Change Log	- Only
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				if (!generateScriptOnly && session != null
+					&& p_info.isAllowLogging(i)		//	logging allowed
+					&& !p_info.isEncrypted(i)		//	not encrypted
+					&& !p_info.isVirtualColumn(i)	//	no virtual column
+					&& !"Password".equals(p_info.getColumnName(i))
+					&& (insertLog.equalsIgnoreCase("Y")
+							|| (insertLog.equalsIgnoreCase("K")
+								&& (   p_info.getColumn(i).IsKey)
+									|| (   !p_info.hasKeyColumn()
+										&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))
+					)
 				{
 					// change log on new
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
+							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
-
+			}
 		}
 		//	Custom Columns
 		if (m_custom != null)
@@ -3297,7 +3682,7 @@ public abstract class PO
 			while (it.hasNext())
 			{
 				String column = (String)it.next();
-				index = p_info.getColumnIndex(column);
+				int index = p_info.getColumnIndex(column);
 				String value = (String)m_custom.get(column);
 				if (value == null)
 					continue;
@@ -3330,35 +3715,7 @@ public abstract class PO
 		}
 		sqlInsert.append(sqlValues)
 			.append(")");
-		//
-		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
-							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
-		boolean ok = no == 1;
-		if (ok)
-		{
-			ok = lobSave();
-			if (!load(m_trxName))		//	re-read Info
-			{
-				if (m_trxName == null)
-					log.log(Level.SEVERE, "reloading");
-				else
-					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
-				ok = false;;
-			}
-		}
-		else
-		{
-			String msg = "Not inserted - ";
-			if (CLogMgt.isLevelFiner())
-				msg += sqlInsert.toString();
-			else
-				msg += get_TableName();
-			if (m_trxName == null)
-				log.log(Level.WARNING, msg);
-			else
-				log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
-		}
-		return ok;
+		return AD_ChangeLog_ID;
 	}
 
 	/**
@@ -3505,16 +3862,17 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
-		checkImmutable();
-		
-		checkValidContext();
-		checkCrossTenant(true);
 		CLogger.resetLast();
 		if (is_new())
 			return true;
 
+		checkImmutable();
+		checkValidContext();
+		checkCrossTenant(true);
+
 		int AD_Table_ID = p_info.getAD_Table_ID();
 		int Record_ID = get_ID();
+		String Record_UU = get_UUID();
 
 		if (!force)
 		{
@@ -3613,6 +3971,8 @@ public abstract class PO
 			}
 			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
 			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
+			if (errorMsg == null && Record_UU != null)
+				errorMsg = PO_Record.exists(AD_Table_ID, Record_UU, m_trxName);
 			if (errorMsg != null)
 			{
 				log.saveError("CannotDelete", errorMsg);
@@ -3657,16 +4017,23 @@ public abstract class PO
 				if (get_ColumnIndex("IsSummary") >= 0) {
 					delete_Tree(MTree_Base.TREETYPE_CustomTable);
 				}
-				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
-				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
 
-				//delete cascade only for single key column record
 				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
+					//delete cascade only for single key column record
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
+					//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, localTrxName);
+					// Set referencing Record_ID Null AD_Table_ID/Record_ID
+					PO_Record.setRecordNull(AD_Table_ID, Record_ID, localTrxName);
+				}
+				if (Record_UU != null) {
+					PO_Record.deleteModelCascade(p_info.getTableName(), Record_UU, localTrxName);
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, localTrxName);
+					PO_Record.setRecordNull(AD_Table_ID, Record_UU, localTrxName);
 				}
 		
 				//	The Delete Statement
-				String where = get_WhereClause(true);
+				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
 				List<Object> optimisticLockingParams = new ArrayList<Object>();
 				if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
 				{
@@ -3742,7 +4109,7 @@ public abstract class PO
 									MChangeLog cLog = session.changeLog (
 										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
 										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-										Record_ID, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+										(m_IDs.length == 1 ? Record_ID : 0), Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
 									if (cLog != null)
 										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 								}
@@ -4153,7 +4520,7 @@ public abstract class PO
 		//
 		String tableName = p_info.getTableName();
 		String keyColumn = m_KeyColumns[0];
-		StringBuilder sql = new StringBuilder ("DELETE  FROM  ")
+		StringBuilder sql = new StringBuilder ("DELETE FROM ")
 			.append(tableName).append("_Trl WHERE ")
 			.append(keyColumn).append("=").append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), trxName);
@@ -4222,7 +4589,9 @@ public abstract class PO
 		if (uuidColumn != null && uuidFunction)
 			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
 		//	..	SELECT
-		sb.append(") SELECT ").append(get_ID())
+		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				 ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				 : get_ID())
 			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
 			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
 		for (int i = 0; i < s_acctColumns.size(); i++)
@@ -4231,12 +4600,19 @@ public abstract class PO
 			sb.append(",generate_uuid()");
 		//	.. 	FROM
 		sb.append(" FROM ").append(acctBaseTable)
-			.append(" p WHERE p.AD_Client_ID=").append(getAD_Client_ID());
+			.append(" p WHERE p.AD_Client_ID=")
+			.append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+					? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(getAD_Client_ID()).getAD_Client_UU())+")" 
+					: getAD_Client_ID());
 		if (whereClause != null && whereClause.length() > 0)
 			sb.append (" AND ").append(whereClause);
 		sb.append(" AND NOT EXISTS (SELECT * FROM ").append(acctTableName)
 			.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
-			.append(get_TableName()).append("_ID=").append(get_ID()).append(")");
+			.append(get_TableName()).append("_ID=");
+		if (get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()))
+			sb.append("toRecordId(").append(DB.TO_STRING(get_TableName())).append(",").append(DB.TO_STRING(get_UUID())).append("))");
+		else
+			sb.append(get_ID()).append(")");
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0) {
@@ -4304,24 +4680,41 @@ public abstract class PO
 		else
 			sb.append(") ");
 		sb.append("SELECT t.AD_Client_ID, 0, 'Y', getDate(), "+getUpdatedBy()+", getDate(), "+getUpdatedBy()+","
-				+ "t.AD_Tree_ID, ").append(get_ID()).append(", 0, 999");
+				+ "t.AD_Tree_ID, ")
+		  .append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				  ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				  : get_ID())
+		  .append(", 0, 999");
 		if (uuidColumn != null && uuidFunction)
 			sb.append(", Generate_UUID() ");
 		else
 			sb.append(" ");
 		sb.append("FROM AD_Tree t "
-				+ "WHERE t.AD_Client_ID=").append(getAD_Client_ID()).append(" AND t.IsActive='Y'");
+				+ "WHERE t.AD_Client_ID=")
+		  .append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				  ? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(getAD_Client_ID()).getAD_Client_UU())+")" 
+				  : getAD_Client_ID())
+		  .append(" AND t.IsActive='Y'");
 		//	Account Element Value handling
 		if (C_Element_ID != 0)
 			sb.append(" AND EXISTS (SELECT * FROM C_Element ae WHERE ae.C_Element_ID=")
-				.append(C_Element_ID).append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
+			  .append(C_Element_ID > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+					  ? "toRecordId('C_Element',"+DB.TO_STRING(new MElement(getCtx(), C_Element_ID, get_TrxName()).getC_Element_UU())+")" 
+					  : C_Element_ID)
+			  .append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
 		else	//	std trees
 			sb.append(" AND t.IsAllNodes='Y' AND t.TreeType='").append(treeType).append("'");
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
-			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
+			sb.append(" AND t.AD_Table_ID=")
+			  .append(get_Table_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+					  ? "toRecordId('AD_Table',"+DB.TO_STRING(MTable.get(get_Table_ID()).getAD_Table_UU())+")" 
+					  : get_Table_ID());
 		//	Duplicate Check
 		sb.append(" AND NOT EXISTS (SELECT * FROM " + MTree_Base.getNodeTableName(treeType) + " e "
-				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=").append(get_ID()).append(")");
+				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=")
+		  .append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				  ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				  : get_ID()).append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
@@ -4606,7 +4999,7 @@ public abstract class PO
 	{
 		getAttachment (false);
 		if (m_attachment == null)
-			m_attachment = new MAttachment (getCtx(), p_info.getAD_Table_ID(), get_ID(), null);
+			m_attachment = new MAttachment (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), null);
 		return m_attachment;
 	}	//	createAttachment
 
@@ -5311,8 +5704,15 @@ public abstract class PO
 			String fktab = vnp.getName();
 			int index = get_ColumnIndex(fkcol); 
 			if (is_new() || is_ValueChanged(index)) {
-				int fkval = get_ValueAsInt(index);
-				if (fkval > 0) {
+				Object fkval = null;
+				if (fkcol.endsWith("_UU")) {
+					fkval = get_ValueAsString(index);
+				} else {
+					fkval = Integer.valueOf(get_ValueAsInt(index));
+				}
+				if (fkval != null
+					&& (   (fkval instanceof Integer && ((Integer)fkval).intValue() > 0)
+						|| (fkval instanceof String && ((String)fkval).length() > 0) )) {
 					MTable ft = MTable.get(getCtx(), fktab);
 					boolean systemAccess = false;
 					String accessLevel = ft.getAccessLevel();
@@ -5347,6 +5747,98 @@ public abstract class PO
 	}
 
 	/**
+	 * Verify Foreign key based on AD_Table_ID+Record_ID for cross tenant
+	 * @return true if all the foreign keys are valid
+	 */
+	private void checkRecordIDCrossTenant() {
+		if (isSafeCrossTenant.get())
+			return;
+		int idxRecordId = p_info.getColumnIndex("Record_ID");
+		if (idxRecordId < 0)
+			return;
+		int idxTableId = p_info.getColumnIndex("AD_Table_ID");
+		if (idxTableId < 0)
+			return;
+		if ( ! (is_new() || is_ValueChanged(idxTableId) || is_ValueChanged(idxRecordId)))
+			return;
+		int recordId = get_ValueAsInt(idxRecordId);
+		if (recordId <= 0)
+			return;
+		int tableId = get_ValueAsInt(idxTableId);
+		if (tableId <= 0)
+			return;
+		MTable ft = MTable.get(getCtx(), tableId);
+		if (ft.getKeyColumns().length > 1)
+			return; // multi-key-table
+		boolean systemAccess = false;
+		String accessLevel = ft.getAccessLevel();
+		if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+			systemAccess = true;
+		}
+		StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+				.append(ft.getTableName())
+				.append(" WHERE ")
+				.append(ft.getKeyColumns()[0])
+				.append("=?");
+		int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), recordId);
+		if (pocid < 0)
+			throw new AdempiereException("Foreign ID " + recordId + " not found in " + ft.getTableName());
+		if (pocid == 0 && !systemAccess)
+			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
+		int curcid = getAD_Client_ID();
+		if (pocid > 0 && pocid != curcid)
+			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
+	}
+
+	/**
+	 * Verify Foreign key based on AD_Table_ID+Record_UU for cross tenant
+	 * @return true if all the foreign keys are valid
+	 */
+	private void checkRecordUUCrossTenant() {
+		if (isSafeCrossTenant.get())
+			return;
+		int idxRecordUU = p_info.getColumnIndex("Record_UU");
+		if (idxRecordUU < 0)
+			return;
+		int idxTableId = p_info.getColumnIndex("AD_Table_ID");
+		if (idxTableId < 0)
+			return;
+		if ( ! (is_new() || is_ValueChanged(idxTableId) || is_ValueChanged(idxRecordUU)))
+			return;
+		int tableId = get_ValueAsInt(idxTableId);
+		if (tableId <= 0)
+			return;
+		String recordUU = get_ValueAsString(idxRecordUU);
+		if (Util.isEmpty(recordUU))
+			return;
+		MTable ft = MTable.get(getCtx(), tableId);
+		if (!ft.hasUUIDKey())
+			return; // no UUID key in table
+		boolean systemAccess = false;
+		String accessLevel = ft.getAccessLevel();
+		if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+			systemAccess = true;
+		}
+		StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+				.append(ft.getTableName())
+				.append(" WHERE ")
+				.append(PO.getUUIDColumnName(ft.getTableName()))
+				.append("=?");
+		int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), recordUU);
+		if (pocid < 0)
+			throw new AdempiereException("Foreign UUID " + recordUU + " not found in " + ft.getTableName());
+		if (pocid == 0 && !systemAccess)
+			throw new AdempiereException("System UUID " + recordUU + " cannot be used in " + ft.getTableName());
+		int curcid = getAD_Client_ID();
+		if (pocid > 0 && pocid != curcid)
+			throw new AdempiereException("Cross tenant UUID " + recordUU + " not allowed in " + ft.getTableName());
+	}
+
+	/**
 	 * Returns a list of indexes for the foreign columns, null if none
 	 * @return array of int indexes
 	 */
@@ -5360,7 +5852,8 @@ public abstract class PO
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++) {
 			int dt = p_info.getColumnDisplayType(i);
-			if (dt != DisplayType.ID && DisplayType.isID(dt)) {
+			if (   (dt != DisplayType.ID   && DisplayType.isID(dt)  )
+				|| (dt != DisplayType.UUID && DisplayType.isUUID(dt)) ) {
 				MColumn col = MColumn.get(p_info.getColumn(i).AD_Column_ID);
 				if ("AD_Client_ID".equals(col.getColumnName())) {
 					// ad_client_id is verified with checkValidClient

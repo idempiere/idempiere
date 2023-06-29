@@ -124,6 +124,18 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	}	//	copyFrom
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param DD_Order_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDDOrder(Properties ctx, String DD_Order_UU, String trxName) {
+        super(ctx, DD_Order_UU, trxName);
+		if (Util.isEmpty(DD_Order_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context
@@ -135,36 +147,40 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		super (ctx, DD_Order_ID, trxName);
 		//  New
 		if (DD_Order_ID == 0)
-		{
-			setDocStatus(DOCSTATUS_Drafted);
-			setDocAction (DOCACTION_Prepare);
-			//
-			setDeliveryRule (DELIVERYRULE_Availability);
-			setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
-			setPriorityRule (PRIORITYRULE_Medium);
-			setDeliveryViaRule (DELIVERYVIARULE_Pickup);
-			//
-			setIsSelected (false);
-			setIsSOTrx (true);
-			setIsDropShip(false);
-			setSendEMail (false);
-			//
-			setIsApproved(false);
-			setIsPrinted(false);
-			setIsDelivered(false);
-			//
-			super.setProcessed(false);
-			setProcessing(false);
-			setPosted(false);
-			
-			setDatePromised (new Timestamp(System.currentTimeMillis()));
-			setDateOrdered (new Timestamp(System.currentTimeMillis()));
-
-			setFreightAmt (Env.ZERO);
-			setChargeAmt (Env.ZERO);
-
-		}
+			setInitialDefaults();
 	}	//	MDDOrder
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocStatus(DOCSTATUS_Drafted);
+		setDocAction (DOCACTION_Prepare);
+		//
+		setDeliveryRule (DELIVERYRULE_Availability);
+		setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
+		setPriorityRule (PRIORITYRULE_Medium);
+		setDeliveryViaRule (DELIVERYVIARULE_Pickup);
+		//
+		setIsSelected (false);
+		setIsSOTrx (true);
+		setIsDropShip(false);
+		setSendEMail (false);
+		//
+		setIsApproved(false);
+		setIsPrinted(false);
+		setIsDelivered(false);
+		//
+		super.setProcessed(false);
+		setProcessing(false);
+		setPosted(false);
+		
+		setDatePromised (new Timestamp(System.currentTimeMillis()));
+		setDateOrdered (new Timestamp(System.currentTimeMillis()));
+
+		setFreightAmt (Env.ZERO);
+		setChargeAmt (Env.ZERO);
+	}
 
 	/**************************************************************************
 	 *  Project Constructor

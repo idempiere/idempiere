@@ -39,14 +39,12 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Window for Request Event 
  * @author Elaine
- *
  */
 public class EventWindow extends Window implements EventListener<Event> {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4758066526040260586L;
 	private DatetimeBox dtBeginDate, dtEndDate;
@@ -55,6 +53,9 @@ public class EventWindow extends Window implements EventListener<Event> {
 	
 	private int R_Request_ID = 0;
 	
+	/**
+	 * Default constructor
+	 */
 	public EventWindow() {
 		
 		super();
@@ -94,8 +95,7 @@ public class EventWindow extends Window implements EventListener<Event> {
 		
 		confirmPanel = new ConfirmPanel(false, false, false, false, false, true);
 		confirmPanel.addActionListener(this);
-		
-		
+				
 		Grid grid = GridFactory.newGridLayout();
 		
 		Columns columns = new Columns();
@@ -150,6 +150,10 @@ public class EventWindow extends Window implements EventListener<Event> {
 		south.appendChild(confirmPanel);
 	}
 	
+	/**
+	 * Update UI component with details from event
+	 * @param event {@link ADCalendarEvent}
+	 */
 	public void setData(ADCalendarEvent event) {
 		txtHeaderColor.setStyle("background-color: " + event.getHeaderColor());
 		txtContentColor.setStyle("background-color: " + event.getContentColor());
@@ -162,6 +166,7 @@ public class EventWindow extends Window implements EventListener<Event> {
 		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setEnabled(R_Request_ID > 0);
 	}
 	
+	@Override
 	public void onEvent(Event e) throws Exception {
 		if (e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK))
 			setVisible(false);

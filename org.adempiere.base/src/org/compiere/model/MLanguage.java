@@ -117,6 +117,16 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 		}
 	}	//	maintain
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Language_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLanguage(Properties ctx, String AD_Language_UU, String trxName) {
+        super(ctx, AD_Language_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

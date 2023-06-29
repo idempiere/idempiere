@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Service Level Agreement Goals
@@ -40,6 +41,18 @@ public class MSLAGoal extends X_PA_SLA_Goal
 	 */
 	private static final long serialVersionUID = -5165579804502911120L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_SLA_Goal_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSLAGoal(Properties ctx, String PA_SLA_Goal_UU, String trxName) {
+        super(ctx, PA_SLA_Goal_UU, trxName);
+		if (Util.isEmpty(PA_SLA_Goal_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -50,12 +63,17 @@ public class MSLAGoal extends X_PA_SLA_Goal
 	{
 		super (ctx, PA_SLA_Goal_ID, trxName);
 		if (PA_SLA_Goal_ID == 0)
-		{
-			setMeasureActual (Env.ZERO);
-			setMeasureTarget (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MSLAGoal
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setMeasureActual (Env.ZERO);
+		setMeasureTarget (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -63,6 +63,18 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MBPBankAccount.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BP_BankAccount_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBPBankAccount(Properties ctx, String C_BP_BankAccount_UU, String trxName) {
+        super(ctx, C_BP_BankAccount_UU, trxName);
+		if (Util.isEmpty(C_BP_BankAccount_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Constructor
 	 *	@param ctx context
@@ -73,11 +85,16 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	{
 		super (ctx, C_BP_BankAccount_ID, trxName);
 		if (C_BP_BankAccount_ID == 0)
-		{
-			setIsACH (false);
-			setBPBankAcctUse(BPBANKACCTUSE_Both);
-		}
+			setInitialDefaults();
 	}	//	MBP_BankAccount
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsACH (false);
+		setBPBankAcctUse(BPBANKACCTUSE_Both);
+	}
 
 	/**
 	 * 	Constructor

@@ -34,8 +34,8 @@ import org.adempiere.base.sso.ISSOPrinciple;
 import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
-import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
@@ -78,7 +78,7 @@ import org.zkoss.zk.ui.util.Clients;
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
-public class LoginWindow extends FWindow implements EventListener<Event>
+public class LoginWindow extends Window implements EventListener<Event>
 {
 	/**
 	 * 
@@ -397,7 +397,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 		else
 			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
     	loginOk(loginName, true, login.getClients());
-    	getDesktop().getSession().setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+    	getDesktop().getSession().setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
     	pnlRole.setChangeRole(true);
     	pnlRole.changeRole(ctx);
     }
