@@ -66,6 +66,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
@@ -80,6 +81,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.part.MultiTabPart;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
@@ -119,6 +121,7 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.Borderlayout;
@@ -296,6 +299,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	/** Column name attribute set instance */
 	private static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+	
+	/** timestamp of previous key event **/
+	private long prevKeyEventTime = 0;
+	
+	/**
+	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
+	 */
+	private KeyEvent prevKeyEvent;
 
     /**
      * FindWindow Constructor
@@ -366,6 +377,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         LayoutUtils.addSclass("find-window", this);
         
         addEventListener(Events.ON_CANCEL, e -> onCancel());
+        setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_targetWindowNo);	// for closing the window with shortcut
+    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
         setFireWindowCloseEventOnDetach(false);
     }
     
@@ -1971,6 +1984,25 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	}
             }
         }
+        else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+        	if (LayoutUtils.isReallyVisible(this)) {
+	        	//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
+	        	this.onCtrlKeyEvent(keyEvent);
+        	}
+		}
     }   //  onEvent
 
     /**
@@ -3981,4 +4013,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	   	MTable table = new MTable(Env.getCtx(), m_AD_Table_ID, null);
     	return table.getColumnIndex(COLUMNNAME_M_AttributeSetInstance_ID) > 0? true:false; 
 	}	// isAttributeTable
+	 
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+			if (m_targetWindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_targetWindowNo);
+			}
+		}
+	}
 }

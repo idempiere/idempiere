@@ -20,7 +20,9 @@ package org.adempiere.webui.panel;
 import java.util.logging.Level;
 
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -33,6 +35,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 
 /**
  * Adempiere Web UI custom form.
@@ -67,6 +71,12 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	private ProcessInfo m_pi;
 
 	private IFormController m_customForm;
+	/** timestamp of previous key event **/
+	private long prevKeyEventTime = 0;
+	/**
+	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
+	 */
+	private KeyEvent prevKeyEvent;
 
     /**
      * Constructor
@@ -203,6 +213,8 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
         		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), predefinedContextVariables);
         		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", isSOTrx);
 				form.init(adFormID, name);
+		    	form.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, form.getWindowNo());	// for closing the window with shortcut
+		    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, form);
 				return form;
     		}
     		else
@@ -219,6 +231,25 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     {
 		if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Form, getAdFormId());
+		}
+		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+        	if (LayoutUtils.isReallyVisible(this)) {
+	        	//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
+	        	this.onCtrlKeyEvent(keyEvent);
+        	}
 		}
     }
 
@@ -260,5 +291,20 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	public GridTab getGridTab()
 	{
 		return gridTab;
+	}
+	
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+			if (m_WindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
+			}
+		}
 	}
 }

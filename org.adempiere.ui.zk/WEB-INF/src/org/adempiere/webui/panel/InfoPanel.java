@@ -57,6 +57,7 @@ import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -338,6 +339,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		addEventListener(ON_RUN_PROCESS, this);
 		addEventListener(ON_SELECT_ALL_RECORDS, this);
 		addEventListener(Events.ON_CLOSE, this);
+		
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, p_WindowNo);	// for closing the window with shortcut
 	}	//	InfoPanel
 
 	/**
@@ -602,6 +605,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected Button btCbbProcess;
 	protected Combobox cbbProcess;
 	protected Button btMenuProcess;
+	/** timestamp of previous key event **/
+	private long prevKeyEventTime = 0;
+	/**
+	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
+	 */
+	private KeyEvent prevKeyEvent;
+	
 	/**
 	 *  Loaded correctly
 	 *  @return true if loaded OK
@@ -2283,6 +2293,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         {
     		KeyEvent keyEvent = (KeyEvent) event;
     		if (LayoutUtils.isReallyVisible(this)) {
+    			//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
     			this.onCtrlKeyEvent(keyEvent);
     		}
     	}else if (event.getName().equals(Events.ON_OK)){// on ok when focus at non parameter component. example grid result
@@ -2324,6 +2347,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
 			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
+		} else if (keyEvent.getKeyCode() == 0x58) { // Alt+X
+			if (p_WindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(p_WindowNo);
+			}
 		}
 	}
 

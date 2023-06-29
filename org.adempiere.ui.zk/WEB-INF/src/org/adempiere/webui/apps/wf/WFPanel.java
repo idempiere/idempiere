@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -37,11 +39,12 @@ import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.South;
 
 /**
  *	WorkFlow Panel
@@ -55,7 +58,13 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	 */
 	private static final long serialVersionUID = 8777798080154603970L;
 
-
+	/** timestamp of previous key event **/
+	private long prevKeyEventTime = 0;
+	/**
+	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
+	 */
+	private KeyEvent prevKeyEvent;
+	
 	/**
 	 * 	Create Workflow Panel
 	 */
@@ -65,12 +74,15 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		{
 			jbInit();
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
+			
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "WFPanel", e);
 		}
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);	// for closing the window with shortcut
+		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	}	//	WFPanel
 
 	/**	Window No			*/
@@ -274,8 +286,28 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 				}
 			}
 		}
-		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
+		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, m_wf.getAD_Workflow_ID());
+		}
+		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+        	if (LayoutUtils.isReallyVisible(this)) {
+	        	//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
+	        	this.onCtrlKeyEvent(keyEvent);
+        	}
+		}
 	}
 
 	private void start(MWFNode wfn) {
@@ -295,4 +327,18 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		}
 	}
 
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+			if (m_WindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
+			}
+		}
+	}
 }	//	WFPanel
