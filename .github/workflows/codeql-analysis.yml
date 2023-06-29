@@ -15,7 +15,7 @@ on:
     - cron: '0 7 * * 4'
 
 env:
-    java: 11
+    java: 17
     # use temurin because of this one https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Hosted-Tool-Cache
     java_distribution: 'temurin'
     # to build cache key for maven per branch. master branch need to add more info for current stand
