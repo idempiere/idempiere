@@ -29,6 +29,7 @@ import org.adempiere.base.upload.IUploadService;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -50,6 +51,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
@@ -62,6 +64,7 @@ import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MColumn;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
@@ -81,6 +84,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Center;
@@ -199,6 +203,16 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private Borderlayout resultPanel;
 
 	private RModel m_rmodel;
+	/** timestamp of previous key event **/
+	private long prevKeyEventTime = 0;
+	/**
+	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
+	 */
+	private KeyEvent prevKeyEvent;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**	Logger				*/
 	private static final CLogger log = CLogger.getCLogger(WAcctViewer.class);
@@ -234,6 +248,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			dynInit (AD_Table_ID, Record_ID);
 			setAttribute(MODE_KEY, MODE_EMBEDDED);
 			setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
+	    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 			AEnv.showWindow(this);
 		}
 		catch(Exception e)
@@ -789,6 +805,25 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		}
 		else if (Events.ON_DOUBLE_CLICK.equals(e.getName()) && source instanceof Listbox && source == table) {
 			actionZoomFactAcct();
+		}
+		else if (e.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) e;
+        	if (LayoutUtils.isReallyVisible(this)) {
+	        	//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
+	        	this.onCtrlKeyEvent(keyEvent);
+        	}
 		}
 	} // onEvent
 
@@ -1392,5 +1427,21 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null)
 			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
+	}
+	
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
+			if (m_windowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_windowNo);
+			}
+		}
 	}
 }

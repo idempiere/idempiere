@@ -935,7 +935,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
-			if ((keyEvent.getKeyCode() == VK_X && !isUseEscForTabClosing))
+			if ((keyEvent.getKeyCode() == VK_X))
 			{
 				closeWindow(keyEvent);
 			}

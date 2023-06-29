@@ -1206,8 +1206,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58 && !isUseEscForTabClosing)	// Alt-X
-				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 					// ESC
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (m_WindowNo > 0) {
 				prevKeyEventTime = System.currentTimeMillis();
 				prevKeyEvent = keyEvent;

@@ -2351,8 +2351,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
 			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
-		} else if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58 && !isUseEscForTabClosing)	// Alt-X
-				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 						// ESC
+		} else if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (p_WindowNo > 0) {
 				prevKeyEventTime = System.currentTimeMillis();
 				prevKeyEvent = keyEvent;
