@@ -203,6 +203,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private int prevWidth;
 	/** AD Window content part that own this toolbar **/
 	private AbstractADWindowContent windowContent;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * default constructor
@@ -931,20 +935,17 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
-			if (keyEvent.getKeyCode() == VK_X)
+			if ((keyEvent.getKeyCode() == VK_X && !isUseEscForTabClosing))
 			{
-				if (windowNo > 0)
-				{
-					prevKeyEventTime = System.currentTimeMillis();
-		        	prevKeyEvent = keyEvent;
-					keyEvent.stopPropagation();
-					SessionManager.getAppDesktop().closeWindow(windowNo);
-				}
+				closeWindow(keyEvent);
 			}
 			else
 			{
 				btn = altKeyMap.get(keyEvent.getKeyCode());
 			}
+		}
+		else if (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing) {	// ESC
+			closeWindow(keyEvent);
 		}
 		else if (!keyEvent.isAltKey() && keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
@@ -980,6 +981,20 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		fireButtonClickEvent(keyEvent, btn);
 	}
 
+	/**
+	 * Close Window
+	 * @param keyEvent
+	 */
+	private void closeWindow(KeyEvent keyEvent) {
+		if (windowNo > 0)
+		{
+			prevKeyEventTime = System.currentTimeMillis();
+        	prevKeyEvent = keyEvent;
+			keyEvent.stopPropagation();
+			SessionManager.getAppDesktop().closeWindow(windowNo);
+		}
+	}
+	
 	/**
 	 * Fire ON_Click event for button, trigger by shortcut key event.
 	 * @param keyEvent source shortcut key event

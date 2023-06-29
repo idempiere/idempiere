@@ -27,6 +27,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -64,6 +65,10 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
 	 */
 	private KeyEvent prevKeyEvent;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
 	 * 	Create Workflow Panel
@@ -332,7 +337,8 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	 * @param keyEvent
 	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58 && !isUseEscForTabClosing)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 					// ESC
 			if (m_WindowNo > 0) {
 				prevKeyEventTime = System.currentTimeMillis();
 				prevKeyEvent = keyEvent;

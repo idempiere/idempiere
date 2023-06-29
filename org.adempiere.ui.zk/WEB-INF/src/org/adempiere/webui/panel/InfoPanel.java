@@ -611,6 +611,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
 	 */
 	private KeyEvent prevKeyEvent;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
 	 *  Loaded correctly
@@ -2347,7 +2351,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
 			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
-		} else if (keyEvent.getKeyCode() == 0x58) { // Alt+X
+		} else if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58 && !isUseEscForTabClosing)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 						// ESC
 			if (p_WindowNo > 0) {
 				prevKeyEventTime = System.currentTimeMillis();
 				prevKeyEvent = keyEvent;

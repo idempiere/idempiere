@@ -130,6 +130,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	
 	protected final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 			new ExportFormat(PDF_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
@@ -674,7 +678,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58 && !isUseEscForTabClosing)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 					// ESC
 			if (m_WindowNo > 0) {
 				prevKeyEventTime = System.currentTimeMillis();
 				prevKeyEvent = keyEvent;
