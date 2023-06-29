@@ -30,6 +30,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.base.sso.ISSOPrinciple;
 import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
@@ -430,6 +431,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    final Desktop desktop = Executions.getCurrent().getDesktop();    	
 	    final WebApp wapp = desktop.getWebApp();
 	    final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(desktop.getSession());	    	    
+	    boolean isAdminLogin = false;
+	    if (desktop.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN) != null)
+	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN);
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -438,7 +442,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect("index.zul");       
+        Executions.sendRedirect(isAdminLogin ? "admin.zul" : "index.zul");       
         
         try {
     		desktopCache.removeDesktop(desktop);

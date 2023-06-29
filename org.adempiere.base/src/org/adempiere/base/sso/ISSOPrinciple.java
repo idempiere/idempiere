@@ -27,6 +27,8 @@ import org.compiere.util.Language;
 public interface ISSOPrinciple
 {
 	public static final String	SSO_PRINCIPLE_SESSION_NAME	= "sso.principle";
+	
+	public static final String	SSO_ADMIN_LOGIN				= "sso.admin.login";
 
 	public boolean hasAuthenticationCode(HttpServletRequest request, HttpServletResponse response);
 

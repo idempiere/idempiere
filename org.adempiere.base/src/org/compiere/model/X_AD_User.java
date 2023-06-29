@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_User")
 public class X_AD_User extends PO implements I_AD_User, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230522L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -234,6 +234,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getAnswer()
 	{
 		return (String)get_Value(COLUMNNAME_Answer);
+	}
+
+	/** AuthenticationType AD_Reference_ID=200239 */
+	public static final int AUTHENTICATIONTYPE_AD_Reference_ID=200239;
+	/** Application and SSO = AAS */
+	public static final String AUTHENTICATIONTYPE_ApplicationAndSSO = "AAS";
+	/** Application Only = APO */
+	public static final String AUTHENTICATIONTYPE_ApplicationOnly = "APO";
+	/** SSO Only = SSO */
+	public static final String AUTHENTICATIONTYPE_SSOOnly = "SSO";
+	/** Set Authentication Type.
+		@param AuthenticationType Authentication Type
+	*/
+	public void setAuthenticationType (String AuthenticationType)
+	{
+
+		set_Value (COLUMNNAME_AuthenticationType, AuthenticationType);
+	}
+
+	/** Get Authentication Type.
+		@return Authentication Type	  */
+	public String getAuthenticationType()
+	{
+		return (String)get_Value(COLUMNNAME_AuthenticationType);
 	}
 
 	/** Set Birthday.

@@ -42,12 +42,12 @@ public class SSOWebuiFilter implements Filter
 	private static ISSOPrinciple	m_SSOPrinciple	= null;
 
 	/**
-	 * AdempiereMonitorFilter
+	 * SSOWebuiFilter
 	 */
 	public SSOWebuiFilter()
 	{
 		super();
-	} // AdempiereMonitorFilter
+	} // SSOWebuiFilter
 
 	/**
 	 * Filter
@@ -65,7 +65,25 @@ public class SSOWebuiFilter implements Filter
 		{
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
-			boolean isRedirectToLoginOnError = false; 
+			boolean isRedirectToLoginOnError = false;
+
+			boolean isAdminResRequest = false;
+			if (httpRequest.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN) != null)
+				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN);
+			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().startsWith("/admin");
+			
+			// work as default log in
+			if (httpRequest.getServletPath().toLowerCase().startsWith("/index") || httpRequest.getServletPath().equalsIgnoreCase("/"))
+				isAdminResRequest = false;
+			
+			httpRequest.getSession().setAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN, isAdminResRequest);
+			// redirect to admin zul file
+			if(isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin"))
+			 {
+				httpResponse.sendRedirect("/webui/admin.zul");
+				return;
+			 }
+			
 			try
 			{
 				if (m_SSOPrinciple == null)
@@ -73,7 +91,7 @@ public class SSOWebuiFilter implements Filter
 					m_SSOPrinciple = SSOUtils.getSSOPrinciple();
 				}
 
-				if (m_SSOPrinciple != null)
+				if (m_SSOPrinciple != null && !isAdminResRequest)
 				{
 					if (m_SSOPrinciple.hasAuthenticationCode(httpRequest, httpResponse))
 					{
@@ -110,6 +128,11 @@ public class SSOWebuiFilter implements Filter
 				}
 				return;
 			}
+		}
+		else if (request instanceof HttpServletRequest && ((HttpServletRequest) request).getServletPath().startsWith("/admin"))
+		{
+			((HttpServletResponse) response).setStatus(404);
+			return;
 		}
 		chain.doFilter(request, response);
 		return;
