@@ -87,11 +87,10 @@ import org.zkoss.zul.Toolbar;
  * @author hengsin
  */
 public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
-
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6251897492168864784L;
+	private static final long serialVersionUID = 3764215603459946930L;
 
 	public static final String BTN_PROCESS_ID = "BtnProcess";
 
@@ -129,14 +128,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private static final String SAVE_IMAGE = "images/Save16.png";
 	private static final String QUICK_FORM_IMAGE = "images/QuickForm16.png";
 	private static final String TOGGLE_IMAGE = "images/Multi16.png";
-
-	/** Timestamp for previous key event **/
-	private long prevKeyEventTime = 0;
-	/**
-	 * Previous KeyEvent reference.
-	 * Use together with {@link #prevKeyEventTime} to detect double firing of key event by browser.
-	 */
-	private KeyEvent prevKeyEvent;
 
 	/** tabbox for AD_Tabs **/
 	private Tabbox tabbox;
@@ -800,22 +791,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			LayoutUtils.redraw(this);
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+		if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-        	}
 		}
 	}
 	
@@ -1147,8 +1124,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			}
 		} 
 		if (btn != null) {
-			prevKeyEventTime = System.currentTimeMillis();
-        	prevKeyEvent = keyEvent;
 			keyEvent.stopPropagation();
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));
@@ -1164,12 +1139,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 * Custom {@link org.adempiere.webui.component.Tabpanel} implementation for DetailPane.
 	 */
 	public static class Tabpanel extends org.adempiere.webui.component.Tabpanel {
-
 		/**
 		 * generated serial id 
 		 */
-		private static final long serialVersionUID = 8248794614430375822L;
-		
+		private static final long serialVersionUID = -2502140440194514450L;
+
 		private ToolBar toolbar;
 
 		private RecordToolbar recordToolBar;
@@ -1357,11 +1331,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 *
 	 */
 	private static class RecordToolbar extends Hlayout {
-		
 		/**
 		 * generated serial id
 		 */
-		private static final long serialVersionUID = 5024630043211194429L;
+		private static final long serialVersionUID = -3369063577339438823L;
+
 		private ToolBarButton btnFirst;
 		private ToolBarButton btnPrevious;
 		private ToolBarButton btnRecordInfo;

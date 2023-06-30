@@ -57,6 +57,7 @@ import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -136,7 +137,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3055980415629613992L;
+	private static final long serialVersionUID = 8253708190979803268L;
 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
@@ -340,7 +341,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		addEventListener(ON_RUN_PROCESS, this);
 		addEventListener(ON_SELECT_ALL_RECORDS, this);
 		addEventListener(Events.ON_CLOSE, this);
-		addEventListener(Events.ON_CANCEL, e -> onCancel());
+
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, p_WindowNo);	// for closing the window with shortcut
 	}	//	InfoPanel
 
 	/**
@@ -605,6 +607,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected Button btCbbProcess;
 	protected Combobox cbbProcess;
 	protected Button btMenuProcess;
+
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	/**
 	 *  Loaded correctly
 	 *  @return true if loaded OK
@@ -2378,9 +2386,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getName().equals(Events.ON_CTRL_KEY))
         {
     		KeyEvent keyEvent = (KeyEvent) event;
-    		if (LayoutUtils.isReallyVisible(this)) {
+		if (LayoutUtils.isReallyVisible(this))
     			this.onCtrlKeyEvent(keyEvent);
-    		}
     	}else if (event.getName().equals(Events.ON_OK)){// on ok when focus at non parameter component. example grid result
         	if (m_lookup && contentPanel.getSelectedIndex() >= 0){
     			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
@@ -2420,6 +2427,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
 			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
+		} else if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
+			if (p_WindowNo > 0) {
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(p_WindowNo);
+			}
 		}
 	}
 

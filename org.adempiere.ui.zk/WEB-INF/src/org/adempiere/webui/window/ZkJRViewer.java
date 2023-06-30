@@ -93,7 +93,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7204858572267608018L;
+	private static final long serialVersionUID = -8782402996207677811L;
 
 	private JasperPrint jasperPrint;
 	private java.util.List<JasperPrint> jasperPrintList;
@@ -109,8 +109,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
-	private long prevKeyEventTime = 0;
-	private KeyEvent prevKeyEvent;
 
 	private String m_title; // local title - embedded windows clear the title
 	Toolbar toolbar = new Toolbar();
@@ -130,6 +128,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	
 	protected final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 			new ExportFormat(PDF_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
@@ -654,30 +656,15 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			actionPerformed(event);
 		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
 			KeyEvent keyEvent = (KeyEvent) event;
-			if (LayoutUtils.isReallyVisible(this)) {
-				//filter same key event that is too close
-				//firefox fire key event twice when grid is visible
-				long time = System.currentTimeMillis();
-				if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-						prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-						prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-						prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-						prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-						prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-					if ((time - prevKeyEventTime) <= 300) {
-						return;
-					}
-				}
+			if (LayoutUtils.isReallyVisible(this))
 				this.onCtrlKeyEvent(keyEvent);
-			}
 		}
 	}
 
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (m_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
 				keyEvent.stopPropagation();
 				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
 			}

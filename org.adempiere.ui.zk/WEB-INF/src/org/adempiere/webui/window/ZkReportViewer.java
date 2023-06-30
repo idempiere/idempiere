@@ -149,12 +149,11 @@ import org.zkoss.zul.impl.XulElement;
  * @author Low Heng Sin
  */
 public class ZkReportViewer extends Window implements EventListener<Event>, IReportViewerExportSource {
-
 	/**
-	 * generated serial id
+	 *
 	 */
-	private static final long serialVersionUID = 6307014622485159910L;
-	
+	private static final long serialVersionUID = 3732290698059632847L;
+
 	protected static final String CSV_OUTPUT_TYPE = "CSV";	
 	protected static final String HTML_OUTPUT_TYPE = "HTML";	
 	protected static final String PDF_OUTPUT_TYPE = "PDF";
@@ -163,8 +162,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 
 	/** Window No					*/
 	protected int                 m_WindowNo = -1;
-	private long prevKeyEventTime = 0;
-	private KeyEvent prevKeyEvent;
 	/**	Print Context				*/
 	private Properties			m_ctx;
 	/**	Setting Values				*/
@@ -242,6 +239,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private Center center;
 
 	private FindWindow find;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+
 	/**
 	 * 	Static Layout
 	 * 	@throws Exception
@@ -1158,22 +1160,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			onRenderReportEvent();
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+		if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-        	}
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
@@ -1201,10 +1189,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (m_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
 				keyEvent.stopPropagation();
 				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
 			}

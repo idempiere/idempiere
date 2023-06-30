@@ -458,7 +458,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         ZKUpdateUtil.setVflex(tabpanel, "1");
         ZKUpdateUtil.setHflex(tabpanel, "1");
         tabpanel.setSclass("desktop-tabpanel");
-        
+
         if (refTab == null)  
         {
         	tabbox.getTabs().appendChild(tab);
