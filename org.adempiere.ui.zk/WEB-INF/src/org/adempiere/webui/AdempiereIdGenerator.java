@@ -15,6 +15,7 @@
 package org.adempiere.webui;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -106,6 +107,8 @@ public class AdempiereIdGenerator implements IdGenerator {
 	}
 
 	public static String escapeId(String prefix) {
+		if (! "true".equals(System.getProperty("UseAdempiereIdGenerator.escapeId")))
+			return UUID.randomUUID().toString();
 		Pattern pattern = Pattern.compile("[^a-zA-Z_0-9]");
 		Matcher matcher = pattern.matcher(prefix);
 		StringBuffer sb = new StringBuffer();
