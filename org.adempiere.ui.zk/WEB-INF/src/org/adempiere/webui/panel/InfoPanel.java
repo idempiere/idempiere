@@ -135,7 +135,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3055980415629613992L;
+	private static final long serialVersionUID = 8253708190979803268L;
 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
@@ -339,7 +339,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		addEventListener(ON_RUN_PROCESS, this);
 		addEventListener(ON_SELECT_ALL_RECORDS, this);
 		addEventListener(Events.ON_CLOSE, this);
-		
+
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, p_WindowNo);	// for closing the window with shortcut
 	}	//	InfoPanel
 
@@ -605,12 +605,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected Button btCbbProcess;
 	protected Combobox cbbProcess;
 	protected Button btMenuProcess;
-	/** timestamp of previous key event **/
-	private long prevKeyEventTime = 0;
-	/**
-	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
-	 */
-	private KeyEvent prevKeyEvent;
+
 	/**
 	 * SysConfig USE_ESC_FOR_TAB_CLOSING
 	 */
@@ -2296,22 +2291,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getName().equals(Events.ON_CTRL_KEY))
         {
     		KeyEvent keyEvent = (KeyEvent) event;
-    		if (LayoutUtils.isReallyVisible(this)) {
-    			//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+		if (LayoutUtils.isReallyVisible(this))
     			this.onCtrlKeyEvent(keyEvent);
-    		}
     	}else if (event.getName().equals(Events.ON_OK)){// on ok when focus at non parameter component. example grid result
         	if (m_lookup && contentPanel.getSelectedIndex() >= 0){
     			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
@@ -2354,8 +2335,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		} else if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (p_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
 				keyEvent.stopPropagation();
 				SessionManager.getAppDesktop().closeWindow(p_WindowNo);
 			}

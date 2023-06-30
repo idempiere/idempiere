@@ -80,20 +80,19 @@ import org.zkoss.zul.Vbox;
 public class InfoSchedule extends Window implements EventListener<Event>
 {
 	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3349721592479638482L;
+
+	/**
 	 *  @param mAssignment optional assignment
 	 *  @param createNew if true, allows to create new assignments
 	 */
-	private static final long serialVersionUID = -5948901371276429661L;
 	private Callback<MResourceAssignment> m_callback;
 	private Component m_parent;
 	/** Window No */
 	private int m_windowNo;
-	/** timestamp of previous key event **/
-	private long prevKeyEventTime = 0;
-	/**
-	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
-	 */
-	private KeyEvent prevKeyEvent;
+
 	/**
 	 * SysConfig USE_ESC_FOR_TAB_CLOSING
 	 */
@@ -175,11 +174,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "InfoSchedule", ex);
 		}
 		displayCalendar();
-		
+
 		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
     	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
-		
+
 	}	//	InfoSchedule
 
 	/**
@@ -502,22 +501,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			displayCalendar();
 		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
-	        	this.onCtrlKeyEvent(keyEvent);
-        	}
+		if (LayoutUtils.isReallyVisible(this))
+			this.onCtrlKeyEvent(keyEvent);
 		}
 		//
 	}
@@ -699,7 +684,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			mask.detach();
 		}
 	}
-	
+
 	/**
 	 * Handle shortcut key event
 	 * @param keyEvent
@@ -708,8 +693,6 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
 			if (m_windowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
 				keyEvent.stopPropagation();
 				SessionManager.getAppDesktop().closeWindow(m_windowNo);
 			}

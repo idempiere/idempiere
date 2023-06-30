@@ -57,14 +57,8 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8777798080154603970L;
+	private static final long serialVersionUID = 3748544216557474367L;
 
-	/** timestamp of previous key event **/
-	private long prevKeyEventTime = 0;
-	/**
-	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
-	 */
-	private KeyEvent prevKeyEvent;
 	/**
 	 * SysConfig USE_ESC_FOR_TAB_CLOSING
 	 */
@@ -79,7 +73,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		{
 			jbInit();
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
-			
 		}
 		catch(Exception e)
 		{
@@ -296,22 +289,8 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		}
 		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+		if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-        	}
 		}
 	}
 
@@ -340,8 +319,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (m_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
 				keyEvent.stopPropagation();
 				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
 			}

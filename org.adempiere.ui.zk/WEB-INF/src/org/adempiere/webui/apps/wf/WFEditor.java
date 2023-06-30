@@ -178,7 +178,7 @@ public class WFEditor extends ADForm {
 	@Override
 	public void onEvent(Event event) throws Exception {
 		super.onEvent(event);
-		
+
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 			this.detach();
 		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))

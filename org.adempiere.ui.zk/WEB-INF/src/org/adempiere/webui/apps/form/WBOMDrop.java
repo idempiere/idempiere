@@ -679,7 +679,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	public void onEvent (Event e) throws Exception
 	{
 		super.onEvent(e);
-		
+
 		if (log.isLoggable(Level.CONFIG)) log.config(e.getName());
 		
 		Object source = e.getTarget();
