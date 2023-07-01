@@ -105,6 +105,14 @@ public class AdempiereIdGenerator implements IdGenerator {
 		return name.toLowerCase();
 	}
 
+	/**
+	 * Generate an id with just alphanumeric characters
+	 * This is used for ZkUnitTest that requires predictable iDs, f.e. Selenium
+	 * WARNING: it doesn't work well with non-alphanumeric languages
+	 *   f.e. in Russian the translation for bank and account lead to the same id ____
+	 * @param prefix
+	 * @return
+	 */
 	public static String escapeId(String prefix) {
 		Pattern pattern = Pattern.compile("[^a-zA-Z_0-9]");
 		Matcher matcher = pattern.matcher(prefix);
