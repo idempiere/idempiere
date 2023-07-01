@@ -33,6 +33,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -376,20 +377,22 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setSizable(true);
 
 		this.setVisible(true);
-		String id = "MessageBox_"+AdempiereIdGenerator.escapeId(title);
-		//make sure id is unique
-		Page page = AEnv.getDesktop().getFirstPage();
-		Component fellow = page.getFellowIfAny(id);
-		if (fellow != null) {
-			int count = 0;
-			String newId = null;
-			while (fellow != null) {
-				newId = id + "_" + ++count;
-				fellow = page.getFellowIfAny(newId);				
+		if (SystemProperties.isZkUnitTest()) {
+			String id = "MessageBox_"+AdempiereIdGenerator.escapeId(title);
+			//make sure id is unique
+			Page page = AEnv.getDesktop().getFirstPage();
+			Component fellow = page.getFellowIfAny(id);
+			if (fellow != null) {
+				int count = 0;
+				String newId = null;
+				while (fellow != null) {
+					newId = id + "_" + ++count;
+					fellow = page.getFellowIfAny(newId);				
+				}
+				id = newId;
 			}
-			id = newId;
+			this.setId(id);
 		}
-		this.setId(id);
 		AEnv.showCenterScreen(this);
 
 		return returnValue;

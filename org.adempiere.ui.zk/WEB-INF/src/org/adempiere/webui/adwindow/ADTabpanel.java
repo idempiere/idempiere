@@ -86,6 +86,7 @@ import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemProperties;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CCache;
@@ -447,8 +448,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         this.dataBinder = new GridTabDataBinder(gridTab);
 
         this.getChildren().clear();
-        
-        setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
+
+		if (SystemProperties.isZkUnitTest())
+			setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
 
         int AD_Tree_ID = 0;
 		if (gridTab.isTreeTab())
