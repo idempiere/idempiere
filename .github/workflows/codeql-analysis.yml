@@ -18,8 +18,8 @@ env:
     java: 17
     # use temurin because of this one https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Hosted-Tool-Cache
     java_distribution: 'temurin'
-    # to build cache key for maven per branch. master branch need to add more info for current stand
-    branch_name: ${{ github.ref_name == 'master' && 'master-11' || github.ref_name }}
+    # to build cache key for maven per branch
+    branch_name: ${{ github.ref_name }}
 
 jobs:
   analyze_java_sonar:
