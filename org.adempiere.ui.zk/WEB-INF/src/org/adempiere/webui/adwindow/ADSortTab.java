@@ -46,6 +46,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -303,7 +304,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 		ZKUpdateUtil.setVflex(yesList, true);
 		ZKUpdateUtil.setVflex(noList, true);
 
-        setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
+		if (SystemProperties.isZkUnitTest())
+			setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
 
         EventListener<Event> mouseListener = new EventListener<Event>()
 		{
