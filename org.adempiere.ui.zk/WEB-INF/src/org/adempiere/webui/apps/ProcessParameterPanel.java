@@ -649,34 +649,55 @@ public class ProcessParameterPanel extends Panel implements
 				}
 				catch (Exception ex){}
 				
+				List<String>params = new ArrayList<>();
 				if(value_BD != null && valueMin_BD !=null) {
 					if(valueMin_BD.compareTo(value_BD) > 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" LessThanMinValue", field.getValueMin());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						
+						if (m_wEditors2.get(i) != null) // is a range
+							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
+
+						params.add(column.toString());
 					}
 					if(valueTo_BD!=null && valueMin_BD.compareTo(valueTo_BD) > 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" To LessThanMinValue", field.getValueMin());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
+						params.add(column.toString());
 					}
 				}else if(value_TS != null && valueMin_TS != null){
 					if(value_TS.before(valueMin_TS)) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" LessThanMinValue", field.getValueMin());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						
+						if (m_wEditors2.get(i) != null) // is a range
+							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
+
+						params.add(column.toString());
 					}
 					if(valueTo_TS !=null && valueTo_TS.before(valueMin_TS)) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" To LessThanMinValue", field.getValueMin());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
+						params.add(column.toString());
 					}
 					
 				}else {
 					if(field.getValueMin().compareTo(wEditor.getValue().toString()) > 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" LessThanMinValue", field.getValueMin());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						
+						if (m_wEditors2.get(i) != null) // is a range
+							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
+
+						params.add(column.toString());
 					}
 					if(wEditor2!=null && field.getValueMin().compareTo(wEditor2.getValue().toString()) > 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" To LessThanMinValue", field.getValueMin());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
+						params.add(column.toString());
 					}
+				}
+				
+				if(params.size()>0) {
+					Dialog.error(m_WindowNo, String.join(",", params) , Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {field.getValueMin()}));
+					return false;
 				}
 			}// min value
 			
@@ -706,35 +727,56 @@ public class ProcessParameterPanel extends Panel implements
 					}
 				}
 				catch (Exception ex){}
-				
+
+				List<String>params = new ArrayList<>();
 				if(value_BD != null && valueMax_BD !=null) {
 					if(valueMax_BD.compareTo(value_BD) < 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" MoreThanMaxValue", field.getValueMax());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						
+						if (m_wEditors2.get(i) != null) // is a range
+							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
+
+						params.add(column.toString());
 					}
 					if(valueTo_BD!=null && valueMax_BD.compareTo(valueTo_BD) < 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" To MoreThanMaxValue", field.getValueMax());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
+						params.add(column.toString());
 					}
 				}else if(value_TS != null && valueMax_TS != null){
 					if(value_TS.after(valueMax_TS)) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" MoreThanMaxValue", field.getValueMax());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						
+						if (m_wEditors2.get(i) != null) // is a range
+							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
+
+						params.add(column.toString());
 					}
 					if(valueTo_TS !=null && valueTo_TS.after(valueMax_TS)) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" To MoreThanMaxValue", field.getValueMax());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
+						params.add(column.toString());
 					}
 					
 				}else {
 					if(field.getValueMax().compareTo(wEditor.getValue().toString()) < 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" MoreThanMaxValue", field.getValueMax());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						
+						if (m_wEditors2.get(i) != null) // is a range
+							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
+
+						params.add(column.toString());
 					}
 					if(wEditor2!=null && field.getValueMax().compareTo(wEditor2.getValue().toString()) < 0) {
-						Dialog.error(m_WindowNo, field.getColumnName()+" To MoreThanMaxValue", field.getValueMax());
-						return false;
+						StringBuffer column = new StringBuffer(field.getColumnName());
+						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
+						params.add(column.toString());
 					}
+				}
+
+				if(params.size()>0) {
+					Dialog.error(m_WindowNo, String.join(",", params) , Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {field.getValueMax()}));
+					return false;
 				}
 			}// max value
 		} // field loop

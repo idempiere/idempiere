@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -381,12 +380,12 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		
 		if(getValueMin()!=null) {
 			try {
-				if(getAD_Reference_ID()==15) { // Date
+				if(getAD_Reference_ID()==DisplayType.Date) { // Date
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 						new Timestamp(dateFormat.parse(getValueMin()).getTime());
 				}
-				else if(getAD_Reference_ID()==11 || getAD_Reference_ID()==12 || getAD_Reference_ID()==22 
-						|| getAD_Reference_ID()==29 || getAD_Reference_ID()==37) { // Number
+				else if(getAD_Reference_ID()==DisplayType.Integer || getAD_Reference_ID()==DisplayType.Amount || getAD_Reference_ID()==DisplayType.Number 
+						|| getAD_Reference_ID()==DisplayType.Quantity || getAD_Reference_ID()==DisplayType.CostPrice) { // Number
 					new BigDecimal(getValueMin());
 				}
 			} catch (Exception e) {
@@ -396,12 +395,12 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 
 		if(getValueMax()!=null) {
 			try {
-				if(getAD_Reference_ID()==15) { // Date
+				if(getAD_Reference_ID()==DisplayType.Date) { // Date
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 						new Timestamp(dateFormat.parse(getValueMax()).getTime());
 				}
-				else if(getAD_Reference_ID()==11 || getAD_Reference_ID()==12 || getAD_Reference_ID()==22 
-						|| getAD_Reference_ID()==29 || getAD_Reference_ID()==37) { // Number
+				else if(getAD_Reference_ID()==DisplayType.Integer || getAD_Reference_ID()==DisplayType.Amount || getAD_Reference_ID()==DisplayType.Number 
+						|| getAD_Reference_ID()==DisplayType.Quantity || getAD_Reference_ID()==DisplayType.CostPrice) { // Number
 					new BigDecimal(getValueMax());
 				}
 			} catch (Exception e) {
