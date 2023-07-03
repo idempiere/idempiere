@@ -47,7 +47,11 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1357447647930552555L;
+	private static final long serialVersionUID = -1116840975434565353L;
+
+	/**
+	 * 
+	 */
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
@@ -377,15 +381,13 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getProcedureName()) && Util.isEmpty(p.getJasperReport()))
 				setIsShowNegateButton(true);
 		}
-		
-		if(getValueMin()!=null) {
+
+		if (getValueMin() != null) {
 			try {
-				if(getAD_Reference_ID()==DisplayType.Date) { // Date
+				if (getAD_Reference_ID() == DisplayType.Date) { // Date
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						new Timestamp(dateFormat.parse(getValueMin()).getTime());
-				}
-				else if(getAD_Reference_ID()==DisplayType.Integer || getAD_Reference_ID()==DisplayType.Amount || getAD_Reference_ID()==DisplayType.Number 
-						|| getAD_Reference_ID()==DisplayType.Quantity || getAD_Reference_ID()==DisplayType.CostPrice) { // Number
+					new Timestamp(dateFormat.parse(getValueMin()).getTime());
+				} else if (DisplayType.isNumeric(getAD_Reference_ID())) {
 					new BigDecimal(getValueMin());
 				}
 			} catch (Exception e) {
@@ -393,14 +395,12 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			}
 		}
 
-		if(getValueMax()!=null) {
+		if (getValueMax() != null) {
 			try {
-				if(getAD_Reference_ID()==DisplayType.Date) { // Date
+				if (getAD_Reference_ID() == DisplayType.Date) { // Date
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						new Timestamp(dateFormat.parse(getValueMax()).getTime());
-				}
-				else if(getAD_Reference_ID()==DisplayType.Integer || getAD_Reference_ID()==DisplayType.Amount || getAD_Reference_ID()==DisplayType.Number 
-						|| getAD_Reference_ID()==DisplayType.Quantity || getAD_Reference_ID()==DisplayType.CostPrice) { // Number
+					new Timestamp(dateFormat.parse(getValueMax()).getTime());
+				} else if (DisplayType.isNumeric(getAD_Reference_ID())) {
 					new BigDecimal(getValueMax());
 				}
 			} catch (Exception e) {

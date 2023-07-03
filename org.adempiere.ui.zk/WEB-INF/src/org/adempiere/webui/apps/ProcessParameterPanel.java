@@ -78,6 +78,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -102,7 +103,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1398301240136128512L;
+	private static final long serialVersionUID = -8847249274740131848L;
 
 	/** Event post from {@link #valueChange(ValueChangeEvent)} **/
 	private static final String ON_POST_EDITOR_VALUE_CHANGE_EVENT = "onPostEditorValueChange";
@@ -578,207 +579,29 @@ public class ProcessParameterPanel extends Panel implements
 		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		//mandatory fields validation
-		StringBuilder sb = new StringBuilder();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);
+			GridField field2 = (GridField) m_mFields2.get(i);
 			WEditor wEditor = (WEditor) m_wEditors.get(i);
 			WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
-			if (field.isMandatory(true)) // check context
-			{				
-				Object data = wEditor.getValue();
-				if (data == null || data.toString().length() == 0) {
-					field.setInserting(true); // set editable (i.e. updateable)
-												// otherwise deadlock
-					field.setError(true);
-					if (sb.length() > 0)
-						sb.append(", ");
-					sb.append(field.getHeader());
-					if (m_wEditors2.get(i) != null) // is a range
-						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-				} else
-					field.setError(false);
-				// Check for Range
-				if (wEditor2 != null) {
-					Object data2 = wEditor2.getValue();
-					GridField field2 = (GridField) m_mFields2.get(i);
-					if (data2 == null || data2.toString().length() == 0) {
-						field2.setInserting(true); // set editable (i.e.
-													// updateable) otherwise
-													// deadlock
-						field2.setError(true);
-						if (sb.length() > 0)
-							sb.append(", ");
-						sb.append(field2.getHeader());
-						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-					} else
-						field2.setError(false);
-				} // range field
-			} // mandatory
-			
-			if (sb.length() != 0) {
-				Dialog.error(m_WindowNo, "FillMandatory", sb.toString());
-				return false;
+			Object data = wEditor.getValue();
+			String msg = validate(data, field.getValueMin(), field.getValueMax(), field.isMandatory(true), field.getDisplayType());
+			if (msg != null) {
+				field.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
+				field.setError(true);
+				throw new WrongValueException(wEditor.getComponent(), msg);
+			}
+			if (m_wEditors2.get(i) != null) { // is a range
+				data = wEditor2.getValue();
+				msg = validate(data, field.getValueMin(), field.getValueMax(), field.isMandatory(true), field.getDisplayType());
+				if (msg != null) {
+					field2.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
+					field2.setError(true);
+					throw new WrongValueException(wEditor2.getComponent(), msg);
+				}
 			}
 
-		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-			if(field.getValueMin() != null && wEditor.getValue() != null) {
-				BigDecimal valueMin_BD = null;
-				BigDecimal value_BD = null;
-				BigDecimal valueTo_BD = null;
-				
-				Timestamp valueMin_TS = null;
-				Timestamp value_TS = null;
-				Timestamp valueTo_TS = null;
-				try {
-					valueMin_BD = new BigDecimal(field.getValueMin());
-					value_BD = new BigDecimal(wEditor.getValue().toString());
-
-					if(wEditor2!=null && wEditor2.getValue() != null) {
-						valueTo_BD = new BigDecimal(wEditor2.getValue().toString());
-					}
-				}
-				catch (Exception ex){}
-				
-				try {
-					valueMin_TS = new Timestamp(dateFormat.parse(field.getValueMin()).getTime());
-					value_TS = new Timestamp(dateFormat.parse(wEditor.getValue().toString()).getTime());
-					if(wEditor2!=null && wEditor2.getValue() != null) {
-						valueTo_TS = new java.sql.Timestamp(dateFormat.parse(wEditor2.getValue().toString()).getTime());
-					}
-				}
-				catch (Exception ex){}
-				
-				List<String>params = new ArrayList<>();
-				if(value_BD != null && valueMin_BD !=null) {
-					if(valueMin_BD.compareTo(value_BD) > 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						
-						if (m_wEditors2.get(i) != null) // is a range
-							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-
-						params.add(column.toString());
-					}
-					if(valueTo_BD!=null && valueMin_BD.compareTo(valueTo_BD) > 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-						params.add(column.toString());
-					}
-				}else if(value_TS != null && valueMin_TS != null){
-					if(value_TS.before(valueMin_TS)) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						
-						if (m_wEditors2.get(i) != null) // is a range
-							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-
-						params.add(column.toString());
-					}
-					if(valueTo_TS !=null && valueTo_TS.before(valueMin_TS)) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-						params.add(column.toString());
-					}
-					
-				}else {
-					if(field.getValueMin().compareTo(wEditor.getValue().toString()) > 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						
-						if (m_wEditors2.get(i) != null) // is a range
-							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-
-						params.add(column.toString());
-					}
-					if(wEditor2!=null && field.getValueMin().compareTo(wEditor2.getValue().toString()) > 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-						params.add(column.toString());
-					}
-				}
-				
-				if(params.size()>0) {
-					Dialog.error(m_WindowNo, String.join(",", params) , Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {field.getValueMin()}));
-					return false;
-				}
-			}// min value
-			
-			if(field.getValueMax() != null && wEditor.getValue() != null) {
-				BigDecimal valueMax_BD = null;
-				BigDecimal value_BD = null;
-				BigDecimal valueTo_BD = null;
-				
-				Timestamp valueMax_TS = null;
-				Timestamp value_TS = null;
-				Timestamp valueTo_TS = null;
-				try {
-					valueMax_BD = new BigDecimal(field.getValueMax());
-					value_BD = new BigDecimal(wEditor.getValue().toString());
-
-					if(wEditor2!=null && wEditor2.getValue() != null) {
-						valueTo_BD = new BigDecimal(wEditor2.getValue().toString());
-					}
-				}
-				catch (Exception ex){}
-				
-				try {
-					valueMax_TS = new Timestamp(dateFormat.parse(field.getValueMax()).getTime());
-					value_TS = new Timestamp(dateFormat.parse(wEditor.getValue().toString()).getTime());
-					if(wEditor2!=null && wEditor2.getValue() != null) {
-						valueTo_TS = new java.sql.Timestamp(dateFormat.parse(wEditor2.getValue().toString()).getTime());
-					}
-				}
-				catch (Exception ex){}
-
-				List<String>params = new ArrayList<>();
-				if(value_BD != null && valueMax_BD !=null) {
-					if(valueMax_BD.compareTo(value_BD) < 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						
-						if (m_wEditors2.get(i) != null) // is a range
-							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-
-						params.add(column.toString());
-					}
-					if(valueTo_BD!=null && valueMax_BD.compareTo(valueTo_BD) < 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-						params.add(column.toString());
-					}
-				}else if(value_TS != null && valueMax_TS != null){
-					if(value_TS.after(valueMax_TS)) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						
-						if (m_wEditors2.get(i) != null) // is a range
-							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-
-						params.add(column.toString());
-					}
-					if(valueTo_TS !=null && valueTo_TS.after(valueMax_TS)) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-						params.add(column.toString());
-					}
-					
-				}else {
-					if(field.getValueMax().compareTo(wEditor.getValue().toString()) < 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						
-						if (m_wEditors2.get(i) != null) // is a range
-							column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-
-						params.add(column.toString());
-					}
-					if(wEditor2!=null && field.getValueMax().compareTo(wEditor2.getValue().toString()) < 0) {
-						StringBuffer column = new StringBuffer(field.getColumnName());
-						column.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-						params.add(column.toString());
-					}
-				}
-
-				if(params.size()>0) {
-					Dialog.error(m_WindowNo, String.join(",", params) , Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {field.getValueMax()}));
-					return false;
-				}
-			}// max value
 		} // field loop
 
 		/** call {@link IProcessParameterListener} validate(ProcessParameterPanel) **/
@@ -797,6 +620,68 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	}	//	validateParameters
 	
+	/**
+	 * Validate mandatory and min/max value
+	 * @param value
+	 * @param valueMin
+	 * @param valueMax
+	 * @param isMandatory
+	 * @param fieldType
+	 * @return null if OK, any message if not OK
+	 */
+	public static String validate(Object value, String valueMin, String valueMax, boolean isMandatory, int fieldType) {
+
+		if (isMandatory) {
+			if (value == null || value.toString().length() == 0) {
+				return Msg.getMsg(Env.getCtx(), "FillMandatory");
+			}
+		}
+
+		BigDecimal value_BD = null;
+		BigDecimal valueMin_BD = null;
+		BigDecimal valueMax_BD = null;
+		Timestamp value_TS = null;
+		Timestamp valueMin_TS = null;
+		Timestamp valueMax_TS = null;
+
+		if (fieldType == DisplayType.Date) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+			if (value != null) {
+				try { value_TS = new Timestamp(dateFormat.parse(value.toString()).getTime()); } catch (Exception ex){}
+			}
+			if (valueMin != null) {
+				try { valueMin_TS = new Timestamp(dateFormat.parse(valueMin).getTime()); } catch (Exception ex){}
+			}
+			if (valueMax != null) {
+				try { valueMax_TS = new Timestamp(dateFormat.parse(valueMax).getTime()); } catch (Exception ex){}
+			}
+		} else if (DisplayType.isNumeric(fieldType)) {
+			if (value != null) {
+				try { value_BD = new BigDecimal(value.toString()); } catch (Exception ex){}
+			}
+			if (valueMin != null) {
+				try { valueMin_BD = new BigDecimal(valueMin); } catch (Exception ex){}
+			}
+			if (valueMax != null) {
+				try { valueMax_BD = new BigDecimal(valueMax); } catch (Exception ex){}
+			}
+		}
+
+		if (   (value_TS != null && valueMin_TS != null && value_TS.before(valueMin_TS))
+			|| (value_BD != null && valueMin_BD != null && valueMin_BD.compareTo(value_BD) > 0)
+			|| (value != null && valueMin != null && valueMin.compareTo(value.toString()) > 0)
+		   )
+			return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+		if (   (value_TS != null && valueMax_TS != null && value_TS.after(valueMax_TS))
+			|| (value_BD != null && valueMax_BD != null && valueMax_BD.compareTo(value_BD) < 0)
+			|| (value != null && valueMax != null && valueMax.compareTo(value.toString()) < 0)
+		   )
+			return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+
+		return null;
+	}
+
 	/** 
 	 * load parameters from saved instance
 	 * @param instance
