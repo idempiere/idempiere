@@ -958,7 +958,7 @@ public class MRequest extends X_R_Request
 	/**
 	 * Get number of active and inactive request
 	 * @param AD_Table_ID
-	 * @param Record_ID Record ID
+	 * @param Record_ID Record ID - used when Record_UU is null, and also to compare with User, BPartner, Order, Invoice, Payment, Project, Campaign and Asset
 	 * @param Record_UU Record UUID
 	 * @param whereClause
 	 * @param trxName
@@ -1041,7 +1041,8 @@ public class MRequest extends X_R_Request
 	 * Create new request
 	 * @param tab Grid Tab for request
 	 * @param AD_Table_ID
-	 * @param Record_ID Record ID
+	 * @param Record_ID Record ID - to fill Record_ID and also to fill with BPartner, User, Project, Asset,
+	 *   Order (also from OrderLine), Invoice, Product, Payment, InOut, RMA, RequestRelated (when from Request)
 	 * @param Record_UU Record UUID
 	 * @param C_BPartner_ID
 	 */
