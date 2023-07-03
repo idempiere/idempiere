@@ -110,6 +110,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserDefInfo;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -1904,10 +1905,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
         mField.addPropertyChangeListener(editor);
         mField.setValue(mField.getDefaultForPanel(), true);
+        editor.fireValueChange(new ValueChangeEvent(editor, mField.getColumnName(), mField.getOldValue(), mField.getValue()));
         
         if(infoColumn.isRange()) {
         	mField2.addPropertyChangeListener(editor2);
         	mField2.setValue(mField2.getDefaultForPanel(), true);
+        	editor2.fireValueChange(new ValueChangeEvent(editor2, mField2.getColumnName(), mField2.getOldValue(), mField2.getValue()));
         }
 
     }   // addSelectionColumn
@@ -2199,16 +2202,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             if (evt.getNewValue() == null) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), "");
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), "");
+            	Env.setContext(Env.getCtx(), p_WindowNo, editor.getColumnName(), "");
             } else if (evt.getNewValue() instanceof Boolean) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), (Boolean)evt.getNewValue());
+            	Env.setContext(Env.getCtx(), p_WindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
             } else if (evt.getNewValue() instanceof Timestamp) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO+"|"+editor.getColumnName(), (Timestamp)evt.getNewValue());
+            	Env.setContext(Env.getCtx(), p_WindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
             } else {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), evt.getNewValue().toString());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
+            	Env.setContext(Env.getCtx(), p_WindowNo, editor.getColumnName(), evt.getNewValue().toString());
             }
+            if (infoWindow != null)
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
+			else
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
             dynamicDisplay(editor);
             
             if (queryAfterChangeEditors != null && queryAfterChangeEditors.contains(editor)) {            	

@@ -607,6 +607,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected Combobox cbbProcess;
 	protected Button btMenuProcess;
 	/**
+	 * Contains the indexes of selected row, maintains the selection order
+	 */
+	protected ArrayList<Integer> m_rowSelectionOrder = new ArrayList<Integer>();
+	/**
+	 * Number of selected rows
+	 */
+	protected int m_selectedCount = 0;
+	
+	/**
 	 *  Loaded correctly
 	 *  @return true if loaded OK
 	 */
@@ -660,7 +669,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				}
 			}
 		}	
-		
+		m_selectedCount = selectedCount;
 		String msg = Msg.getMsg(Env.getCtx(), "IWStatusSelected", new Object [] {String.valueOf(selectedCount)});
 		statusBar.setSelectedRowNumber(msg);
 		btnSelectAll.setEnabled(m_count > 0 && selectedCount != m_count);
@@ -2214,6 +2223,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
         	enableButtons();
+        	updateRowSelectionOrder();
+        	updateContext();
         }
         else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
         {
@@ -2299,10 +2310,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (ON_SELECT_ALL_RECORDS.equals(event.getName()))
         {
         	selectAllRecords();
+        	updateRowSelectionOrder();
+        	updateContext();
         }
         else if (event.getTarget().equals(btnDeSelectAll))
         {
         	deSelectAllRecords();
+        	updateRowSelectionOrder();
+        	updateContext();
         }
         // IDEMPIERE-1334 handle event click into process button start
         else if (ON_RUN_PROCESS.equals(event.getName())){
@@ -3317,4 +3332,52 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return null;
 	} // getWidgetLines
 
+	/**
+	 * Update row selection order
+	 */
+	protected void updateRowSelectionOrder() {
+    	if(m_selectedCount == m_count) {
+			for(int rowIdx = 0; rowIdx < m_count; rowIdx++) {
+				if(!m_rowSelectionOrder.contains(rowIdx))
+					m_rowSelectionOrder.add((Integer)rowIdx);
+			}
+		}
+		else if(m_selectedCount == 0) {
+			m_rowSelectionOrder.clear();
+		}
+		else {
+    		if(m_rowSelectionOrder.contains(m_lastSelectedIndex))
+    			m_rowSelectionOrder.remove((Integer)m_lastSelectedIndex);
+    		else
+    			m_rowSelectionOrder.add(m_lastSelectedIndex);
+		}
+	} // updateRowSelectionOrder
+	
+	/**
+	 * Put values from the selected row into the context
+	 */
+	protected void updateContext() {
+		Map<Object, List<Object>> rowInfo = getSelectedRowInfo();
+		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? rowInfo.get(getRowKeyAt(m_rowSelectionOrder.get(m_rowSelectionOrder.size() - 1))) : null;
+		
+		// put the values of the last selected row into the context
+		for(int i = 0; i < p_layout.length; i++) {
+			Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
+			if (value == null) {
+            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), "");
+            } else if (value instanceof Boolean) {
+            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), (Boolean)value);
+            } else if (value instanceof Timestamp) {
+            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), (Timestamp)value);
+            } else {
+            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), value.toString());
+            }
+		}
+		// update Quick Info widget
+		if (infoWindow != null)
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
+		else
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0, this);
+	} // updateContext
+	
 }	//	Info
