@@ -77,6 +77,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -1231,7 +1232,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		else if (e.getTarget() == bWizard)
 			cmd_Wizard();
 		else if (e.getTarget() == bRefresh)
-			cmd_report();
+			cmd_refresh();
 		else if (e.getTarget() == bReRun)
 			cmd_reRun();
 		//
@@ -1517,14 +1518,35 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_report
 
 	/**
+	 * Refresh with same parameters
+	 */
+	private void cmd_refresh() {
+		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		if(AD_Process_ID <= 0)
+			this.cmd_report();
+		else
+			this.cmd_reRun(MProcess.SHOWHELP_RunSilently_TakeDefaults);
+	}
+	
+	/**
 	 * Refresh With Parameters
 	 */
 	private void cmd_reRun() {
+		this.cmd_reRun(null);
+	}
+	
+	/**
+	 * Refresh With Parameters
+	 * @param showHelp
+	 */
+	private void cmd_reRun(String showHelp) {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		if(AD_Process_ID <= 0)
 			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
 		pi.setReplaceTabContent();
+		if(!Util.isEmpty(showHelp))
+			pi.setShowHelp(showHelp);
 		setTabOnCloseHandler();
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
