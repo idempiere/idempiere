@@ -901,90 +901,92 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	private void onPreviewReport() {
-		try {
-			mediaVersion++;
-			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-			String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
-			HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-			if (url.startsWith(request.getContextPath() + "/"))
-				url = url.substring((request.getContextPath() + "/").length());
-			reportLink.setHref(url);
-			reportLink.setLabel(media.getName());			
-			
-			Listitem selected = previewType.getSelectedItem();
-			String outputType = previewType.getSelectedItem().getValue();
-			if (ClientInfo.isMobile()) {				
-				if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {
-					attachIFrame();
-					iframe.setSrc(pdfJsUrl);
-				} else if (HTML_OUTPUT_TYPE.equals(outputType)) {
-					attachIFrame();
-					iframe.setSrc(null);
-					iframe.setContent(media);
-				} else {
-					IMediaView view = null;
-					boolean showOptions = false;
-					if (XLS_OUTPUT_TYPE.equals(outputType) || XLSX_OUTPUT_TYPE.equals(outputType)) {						
-						if (XLS_OUTPUT_TYPE.equals(outputType))
-							view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, true);
-						else
-							view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, true);
-						showOptions = true;
-					} else if (CSV_OUTPUT_TYPE.equals(outputType)) {
-						view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, true);
-						showOptions = true;
-					}
-					
-					if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
-						detachIFrame();
-						final IMediaView fview = view;
-						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
-						options.setPage(getPage());
-						options.doHighlighted();
-					} else {
+		if(media != null) {
+			try {
+				mediaVersion++;
+				String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
+				String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+				HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+				if (url.startsWith(request.getContextPath() + "/"))
+					url = url.substring((request.getContextPath() + "/").length());
+				reportLink.setHref(url);
+				reportLink.setLabel(media.getName());			
+				
+				Listitem selected = previewType.getSelectedItem();
+				String outputType = previewType.getSelectedItem().getValue();
+				if (ClientInfo.isMobile()) {				
+					if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {
 						attachIFrame();
-						iframe.setSrc(null);
-						iframe.setContent(null);
-						String script = "zk.Widget.$('#" + reportLink.getUuid()+"').$n().click();";
-						Clients.evalJavaScript(script);
-					}
-				}
-			} else {
-				if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
-						&& (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue()))) {
-					attachIFrame();
-					iframe.setSrc(pdfJsUrl);
-				} else {
-					IMediaView view = null;
-					boolean showOptions = false;
-					if (XLS_OUTPUT_TYPE.equals(outputType) || XLSX_OUTPUT_TYPE.equals(outputType)) {						
-						if (XLS_OUTPUT_TYPE.equals(outputType))
-							view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, false);
-						else
-							view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, false);
-						showOptions = true;
-					} else if (CSV_OUTPUT_TYPE.equals(outputType)) {
-						view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, false);
-						showOptions = true;
-					}
-					
-					if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
-						detachIFrame();
-						final IMediaView fview = view;
-						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
-						options.setPage(getPage());
-						options.doHighlighted();
-					} else {
+						iframe.setSrc(pdfJsUrl);
+					} else if (HTML_OUTPUT_TYPE.equals(outputType)) {
 						attachIFrame();
 						iframe.setSrc(null);
 						iframe.setContent(media);
+					} else {
+						IMediaView view = null;
+						boolean showOptions = false;
+						if (XLS_OUTPUT_TYPE.equals(outputType) || XLSX_OUTPUT_TYPE.equals(outputType)) {						
+							if (XLS_OUTPUT_TYPE.equals(outputType))
+								view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, true);
+							else
+								view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, true);
+							showOptions = true;
+						} else if (CSV_OUTPUT_TYPE.equals(outputType)) {
+							view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, true);
+							showOptions = true;
+						}
+						
+						if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
+							detachIFrame();
+							final IMediaView fview = view;
+							WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+							options.setPage(getPage());
+							options.doHighlighted();
+						} else {
+							attachIFrame();
+							iframe.setSrc(null);
+							iframe.setContent(null);
+							String script = "zk.Widget.$('#" + reportLink.getUuid()+"').$n().click();";
+							Clients.evalJavaScript(script);
+						}
+					}
+				} else {
+					if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
+							&& (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue()))) {
+						attachIFrame();
+						iframe.setSrc(pdfJsUrl);
+					} else {
+						IMediaView view = null;
+						boolean showOptions = false;
+						if (XLS_OUTPUT_TYPE.equals(outputType) || XLSX_OUTPUT_TYPE.equals(outputType)) {						
+							if (XLS_OUTPUT_TYPE.equals(outputType))
+								view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, false);
+							else
+								view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, false);
+							showOptions = true;
+						} else if (CSV_OUTPUT_TYPE.equals(outputType)) {
+							view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, false);
+							showOptions = true;
+						}
+						
+						if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
+							detachIFrame();
+							final IMediaView fview = view;
+							WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+							options.setPage(getPage());
+							options.doHighlighted();
+						} else {
+							attachIFrame();
+							iframe.setSrc(null);
+							iframe.setContent(media);
+						}
 					}
 				}
+				
+				revalidate();
+			} finally {
+				hideBusyDialog();
 			}
-			
-			revalidate();
-		} finally {
-			hideBusyDialog();
 		}
 	}
 
