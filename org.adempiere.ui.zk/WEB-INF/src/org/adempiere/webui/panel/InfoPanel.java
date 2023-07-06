@@ -73,6 +73,7 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.UUIDColumn;
+import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.InfoRelatedVO;
@@ -86,7 +87,6 @@ import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
@@ -614,6 +614,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Number of selected rows
 	 */
 	protected int m_selectedCount = 0;
+	/** 
+	 * Values that will be put into the context on re-query 
+	 */
+	protected HashMap<String, Object> paraCtxValues = new HashMap<String, Object>();
 	
 	/**
 	 *  Loaded correctly
@@ -2219,12 +2223,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
        		}
 
         	enableButtons();
+        	if(!isLookup()) {
+	        	updateRowSelectionOrder();
+	        	updateContext(false);
+        	}
         	
         }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
         	enableButtons();
-        	updateRowSelectionOrder();
-        	updateContext();
         }
         else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
         {
@@ -2310,14 +2316,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (ON_SELECT_ALL_RECORDS.equals(event.getName()))
         {
         	selectAllRecords();
-        	updateRowSelectionOrder();
-        	updateContext();
+        	if(!isLookup()) {
+		    	updateRowSelectionOrder();
+		    	updateContext(false);
+        	}
         }
         else if (event.getTarget().equals(btnDeSelectAll))
         {
         	deSelectAllRecords();
-        	updateRowSelectionOrder();
-        	updateContext();
+        	if(!isLookup()) {
+	        	updateRowSelectionOrder();
+	        	updateContext(false);
+        	}
         }
         // IDEMPIERE-1334 handle event click into process button start
         else if (ON_RUN_PROCESS.equals(event.getName())){
@@ -2867,6 +2877,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		isQueryByUser = false;
     		hideBusyDialog();
     	}
+    	if(!isLookup()) {
+			updateRowSelectionOrder();
+			updateContext(true);
+    	}
     }
 
     /**
@@ -3230,7 +3244,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
-		if (newpage != null) {
+		if (newpage != null && !isLookup()) {
 			if (infoWindow != null)
 				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
 			else
@@ -3356,22 +3370,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * Put values from the selected row into the context
 	 */
-	protected void updateContext() {
+	protected void updateContext(boolean checkQueryCriteria) {
 		Map<Object, List<Object>> rowInfo = getSelectedRowInfo();
 		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? rowInfo.get(getRowKeyAt(m_rowSelectionOrder.get(m_rowSelectionOrder.size() - 1))) : null;
 		
-		// put the values of the last selected row into the context
-		for(int i = 0; i < p_layout.length; i++) {
-			Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
-			if (value == null) {
-            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), "");
-            } else if (value instanceof Boolean) {
-            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), (Boolean)value);
-            } else if (value instanceof Timestamp) {
-            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), (Timestamp)value);
-            } else {
-            	Env.setContext(Env.getCtx(), p_WindowNo, p_layout[i].getColumnName(), value.toString());
-            }
+		if(checkQueryCriteria) {
+			// put parameter values into the context
+			for(Map.Entry<String, Object> e : paraCtxValues.entrySet()) {
+				String columnName = e.getKey();
+				Object value = e.getValue();
+				setContext(columnName, value);
+			}
+		}
+		else {
+			// put the values of the last selected row into the context
+			for(int i = 0; i < p_layout.length; i++) {
+				String columnName = p_layout[i].getColumnName();
+				Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
+				setContext(columnName, value);
+			}
 		}
 		// update Quick Info widget
 		if (infoWindow != null)
@@ -3379,5 +3396,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		else
 			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0, this);
 	} // updateContext
+	
+	/**
+	 * Set context
+	 * @param columnName
+	 * @param value
+	 */
+	protected void setContext(String columnName, Object value) {
+		if(value instanceof KeyNamePair)
+			value = ((KeyNamePair)value).getKey();
+		
+		if (value == null) {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, "");
+        } else if (value instanceof Boolean) {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, (Boolean)value);
+        } else if (value instanceof Timestamp) {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, (Timestamp)value);
+        } else {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, value.toString());
+        }
+	}
 	
 }	//	Info
