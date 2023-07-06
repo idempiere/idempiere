@@ -534,7 +534,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				{
 					toolBar.appendChild(wLanguage.getComponent());
 				}
-				wLanguage.setValue(m_reportEngine.getLanguageID());
+				// Init Language from Printformat
+				int languageID = 0;
+				if(m_reportEngine.getPrintFormat() != null && m_reportEngine.getPrintFormat().getLanguage() != null) {
+					MLanguage language = MLanguage.get(m_ctx, m_reportEngine.getPrintFormat().getLanguage());
+					if(language != null)
+						languageID = language.getAD_Language_ID();
+				}
+				if(m_reportEngine.getLanguageID() > 0)
+					languageID = m_reportEngine.getLanguageID();
+				wLanguage.setValue(languageID);
 				wLanguage.getComponent().addEventListener(Events.ON_SELECT, this);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage());
