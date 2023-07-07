@@ -826,6 +826,21 @@ public class TimeUtil
 	 */
 	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, int countryID, String trxName)
 	{
+		return getBusinessDaysBetween(startDate, endDate, clientID, countryID, false, trxName);
+	}
+	
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param clientID
+	 * @param countryID
+	 * @param includeEndDate
+	 * @param trxName
+	 * @return number of business days between 2 dates for a specified country, with ability to include the end date in the count
+	 */
+	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, int countryID, boolean includeEndDate, String trxName)
+	{
 		int retValue = 0;
 
 		if (startDate.equals(endDate))
@@ -856,7 +871,7 @@ public class TimeUtil
 		calEnd.set(Calendar.SECOND, 0);
 		calEnd.set(Calendar.MILLISECOND, 0);
 
-		while (cal.before(calEnd)) {
+		while (cal.before(calEnd) || (includeEndDate && cal.equals(calEnd))) {
 			if (nbd == null || !nbd.contains(new Timestamp(cal.getTimeInMillis()))) {
 				if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 					retValue++;
