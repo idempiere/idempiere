@@ -116,6 +116,14 @@ public class Doc_AllocationHdr extends Doc
 				if (payment.isOverrideCurrencyRate())
 					docLine.setCurrencyRate(payment.getCurrencyRate());
 			}
+			else if (line.getC_Invoice_ID() != 0)
+			{
+				MInvoice invoice = new MInvoice (getCtx(), line.getC_Invoice_ID(), getTrxName());
+				int C_ConversionType_ID = invoice.getC_ConversionType_ID();
+				docLine.setC_ConversionType_ID(C_ConversionType_ID);
+				if (invoice.isOverrideCurrencyRate())
+					docLine.setCurrencyRate(invoice.getCurrencyRate());
+			}
 			//
 			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);
