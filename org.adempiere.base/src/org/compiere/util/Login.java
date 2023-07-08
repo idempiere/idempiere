@@ -872,6 +872,7 @@ public class Login
 
 		//	Other Settings
 		Env.setContext(m_ctx, "#YYYY", "Y");
+		Env.setContext(m_ctx, Env.DEVELOPER_MODE, Util.isDeveloperMode() ? "Y" : "N");
 		Env.setContext(m_ctx, Env.STANDARD_PRECISION, 2);
 
 		//	AccountSchema Info (first)
