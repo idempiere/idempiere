@@ -536,7 +536,95 @@ public class AllocationTest extends AbstractTestCase {
 				assertTrue(allocation.isPosted(), "Allocation not posted");
 			}
 		} finally {
-			rollback();		
+			rollback();
+		}
+	}
+	
+	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5591
+	 */
+	public void testInvoiceReversePostingWithDiffCurrency() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		Timestamp date = Env.getContextAsDate(Env.getCtx(), "#Date");
+		
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
+		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
+		BigDecimal eurToUsd = new BigDecimal(0.000063836578);
+		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
+		BigDecimal totalLines = new BigDecimal(33300);
+		
+		try {
+			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			invoice.setBPartner(bpartner);
+			invoice.setIsSOTrx(false);
+			invoice.setC_DocTypeTarget_ID();
+			invoice.setDateInvoiced(date);
+			invoice.setDateAcct(date);
+			invoice.setM_PriceList_ID(M_PriceList_ID);
+			invoice.setC_ConversionType_ID(C_ConversionType_ID);
+			invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id); // Immediate
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setLine(10);
+			invoiceLine.setC_Charge_ID(DictionaryIDs.C_Charge.FREIGHT.id);
+			invoiceLine.setC_Tax_ID(DictionaryIDs.C_Tax.EXEMPT.id);
+			invoiceLine.setQty(BigDecimal.ONE);
+			invoiceLine.setPrice(totalLines);
+			invoiceLine.saveEx();
+			
+			completeDocument(invoice);
+			postDocument(invoice);
+			
+			reverseAccrualDocument(invoice);
+			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
+			postDocument(reversalInvoice);
+			
+			MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
+			assertTrue(allocations.length == 1);
+			
+			MAllocationHdr allocation = allocations[0];
+			postDocument(allocation);
+			
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (MAcctSchema as : ass) {
+				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+					continue;
+				
+				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
+				doc.setC_BPartner_ID(invoice.getC_BPartner_ID());
+				
+				MAccount acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);;
+				
+				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
+						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
+						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
+				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+				for (int id : ids) {
+					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+					if (acctLiability.getAccount_ID() == fa.getAccount_ID()) {
+						if (fa.getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getAmtAcctDr().compareTo(tradeAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());						
+						else if (fa.getAmtAcctDr().signum() < 0)
+							assertTrue(fa.getAmtAcctDr().compareTo(tradeAmtAcct.negate()) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.negate().toPlainString());						
+						else if (fa.getAmtAcctCr().signum() > 0)
+							assertTrue(fa.getAmtAcctCr().compareTo(tradeAmtAcct) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());													
+					}				
+				}
+			}
+			
+		} finally {
+			rollback();
+			deleteConversionRate(cr);		
 		}
 	}
 	

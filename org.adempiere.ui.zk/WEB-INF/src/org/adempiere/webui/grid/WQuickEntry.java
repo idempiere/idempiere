@@ -399,15 +399,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		log.config("");
 		boolean anyChange = false;
 		for (int idxf = 0; idxf < quickEditors.size(); idxf++) {
-			WEditor editor = quickEditors.get(idxf);
-			Object value = editor.getValue();
-			Object initialValue = initialValues.get(idxf);
-
-			boolean changed = (value != null && initialValue == null)
-					|| (value == null && initialValue != null)
-					|| (value != null && initialValue != null && ! value.equals(initialValue));
-
-			if (changed) {
+			if (isChanged(idxf)) {
 				anyChange = true;
 			}
 		}
@@ -444,11 +436,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 				WEditor editor = quickEditors.get(idxf);
 				Object value = editor.getValue();
-				Object initialValue = initialValues.get(idxf);
 
-				boolean changed = (value != null && initialValue == null)
-						|| (value == null && initialValue != null)
-						|| (value != null && initialValue != null && !value.equals(initialValue));
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {
 					if (value == null || value.toString().length() == 0) {
@@ -461,7 +449,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 				}
 
 				po.set_ValueOfColumn(field.getColumnName(), value);
-				if (changed && ! thisMandatoryError) {
+				if (isChanged(idxf) && ! thisMandatoryError) {
 					savePO = true;
 				}
 			}
@@ -501,6 +489,22 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 		return true;
 	}	//	actionSave
+	
+	/**
+	 * 
+	 * @param index of field
+	 * @return true if changed
+	 */
+	private boolean isChanged(int index)
+	{
+		WEditor editor = quickEditors.get(index);
+		Object value = editor.getValue();
+		Object initialValue = initialValues.get(index);
+		
+		return (value != null && initialValue == null)
+				|| (value == null && initialValue != null)
+				|| (value != null && initialValue != null);
+	}
 
 	/**
 	 *	Returns Record_ID

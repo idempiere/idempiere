@@ -1915,7 +1915,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		invoice.setDateAcct(date);
 		invoice.setM_PriceList_ID(M_PriceList_ID);
 		invoice.setC_ConversionType_ID(C_ConversionType_ID);
-		invoice.setC_PaymentTerm_ID(105); // Immediate
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id); // Immediate
 		invoice.setDocStatus(DocAction.STATUS_Drafted);
 		invoice.setDocAction(DocAction.ACTION_Complete);
 		invoice.saveEx();
@@ -1929,6 +1929,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			invoiceLine.setProduct(product);
 		else
 			invoiceLine.setC_Charge_ID(charge.getC_Charge_ID());
+		invoiceLine.setC_Tax_ID(DictionaryIDs.C_Tax.EXEMPT.id);
 		invoiceLine.setQty(qty);
 		invoiceLine.setPrice(price);
 		invoiceLine.saveEx();
