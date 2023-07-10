@@ -901,7 +901,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	private void onPreviewReport() {
-		if(media != null)
+		if(media == null)
 			return;
 		try {
 			mediaVersion++;
