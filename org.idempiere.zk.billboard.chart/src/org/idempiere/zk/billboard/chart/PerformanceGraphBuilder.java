@@ -68,8 +68,6 @@ public class PerformanceGraphBuilder {
 	
 	private void buildDialRendererOptions(Billboard billboard, DialModel dialModel) {
 		DialModelScale dialScale = dialModel.getScale(0);
-		billboard.addRendererOptions("min", 0);
-		billboard.addRendererOptions("max", dialScale.getScaleUpperBound());
 		List<Double> intervals = new ArrayList<Double>();
 		List<String> intervalColors = new ArrayList<String>();
 		for(int i = 0; i < dialScale.rangeSize(); i++) {
@@ -78,13 +76,10 @@ public class PerformanceGraphBuilder {
 			intervals.add(upperBound);
 			intervalColors.add(dialRange.getRangeColor());
 		}
-		List<Double> ticks = new ArrayList<Double>(intervals);
-		ticks.add(0, 0d);
-		billboard.addRendererOptions("ticks", ticks.toArray(new Double[0]));
 		billboard.addRendererOptions("intervals", intervals.toArray(new Double[0]));		
 		billboard.addRendererOptions("intervalColors", intervalColors.toArray(new String[0]));
-		billboard.addRendererOptions("tickColor", dialScale.getTickColor());
 		billboard.addRendererOptions("background", dialModel.getFrameBgColor());
+		billboard.addRendererOptions("showNeedle", Boolean.TRUE);
 	}
 	
 	private  DialModel createDialModel(IndicatorModel model)
