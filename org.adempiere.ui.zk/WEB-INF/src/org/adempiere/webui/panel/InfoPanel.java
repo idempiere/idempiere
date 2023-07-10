@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -142,6 +143,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
+	protected static final String ROW_CTX_VARIABLE_PREFIX = "i_";
+	protected static final String ROW_ID_CTX_VARIABLE_NAME = "Selected_ID";
 	
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
@@ -3387,8 +3390,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			for(int i = 0; i < p_layout.length; i++) {
 				String columnName = p_layout[i].getColumnName();
 				Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
-				setContext(columnName, value);
+				setContext(ROW_CTX_VARIABLE_PREFIX + columnName, value);
 			}
+			// add selected IDs to the context
+			setContext(ROW_ID_CTX_VARIABLE_NAME, getSelectedIDsForCtx());
 		}
 		// update Quick Info widget
 		if (infoWindow != null)
@@ -3415,6 +3420,23 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         } else {
         	Env.setContext(Env.getCtx(), p_WindowNo, columnName, value.toString());
         }
+	}
+	
+	/**
+	 * Get a comma-separated string of selected IDs
+	 * @return String ctx value
+	 */
+	protected String getSelectedIDsForCtx() {
+		String returnVal = null;
+		
+		for(int idx : m_rowSelectionOrder) {
+			String selectedID = Objects.toString(getRowKeyAt(idx));
+			if(returnVal == null)
+				returnVal = selectedID;
+			else
+				returnVal += "," + selectedID;
+		}		
+		return returnVal;
 	}
 	
 }	//	Info
