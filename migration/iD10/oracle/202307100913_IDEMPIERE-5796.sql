@@ -4,14 +4,6 @@ SELECT register_migration_script('202307100913_IDEMPIERE-5796.sql') FROM dual;
 SET SQLBLANKLINES ON
 SET DEFINE OFF
 
--- Jul 10, 2023, 9:13:22 AM CEST
-UPDATE AD_SysConfig SET Value='nmicoud',Updated=TO_TIMESTAMP('2023-07-10 09:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_SysConfig_ID=50001
-;
-
--- Jul 10, 2023, 9:13:23 AM CEST
-UPDATE AD_SysConfig SET Value='hatUt9d5',Updated=TO_TIMESTAMP('2023-07-10 09:13:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_SysConfig_ID=50002
-;
-
 -- Jul 10, 2023, 9:15:43 AM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,TableName,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,AD_Table_UU,Processing) VALUES (200387,'Model Generator Template','AD_ModelGeneratorTemplate','4',0,0,'Y',TO_TIMESTAMP('2023-07-10 09:15:43','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2023-07-10 09:15:43','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','N','N','D','Y','L','fbc5362f-9360-44d9-b6d1-e10d197fcc01','N')
 ;
