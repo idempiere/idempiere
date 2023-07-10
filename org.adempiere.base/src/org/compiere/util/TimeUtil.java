@@ -812,9 +812,23 @@ public class TimeUtil
 	 */
 	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, String trxName)
 	{
-		return getBusinessDaysBetween(startDate, endDate, clientID, MCountry.getDefault().getC_Country_ID(), trxName);
+		return getBusinessDaysBetween(startDate, endDate, clientID, false, trxName);
 	}
 
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param clientID
+	 * @param includeEndDate
+	 * @param trxName
+	 * @return number of business days between 2 dates for the country based on current default country
+	 */
+	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, boolean includeEndDate, String trxName)
+	{
+		return getBusinessDaysBetween(startDate, endDate, clientID, MCountry.getDefault().getC_Country_ID(), includeEndDate, trxName);
+	}
+	
 	/**
 	 * 
 	 * @param startDate
