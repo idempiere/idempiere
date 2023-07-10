@@ -389,28 +389,19 @@ public class DocumentEngine implements DocAction
 			
 			if (m_document != null && ok)
 			{
-				// PostProcess documents
-				List<PO> docsPostProcess = new ArrayList<PO>();
-				if (m_document instanceof IDocsPostProcess) {
-					docsPostProcess = ((IDocsPostProcess) m_document).getDocsPostProcess(); 
-				}
-				
-				if (MClient.isClientAccountingImmediate())
+				if (MClient.isClientAccountingImmediate() && m_document instanceof IDocsPostProcess && m_document instanceof PO)
 				{
-					boolean postNow = true;
-					if (postNow)
-					{
-						if (m_document instanceof PO && docsPostProcess.size() > 0) {
-							if (((PO) m_document).get_ValueAsBoolean("Posted")) {
-								for (PO docafter : docsPostProcess) {								
-									if (docafter.get_ValueAsBoolean("Posted"))
-										continue;
-									String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
-									if (!Util.isEmpty(ignoreError, true)) {
-										log.warning("Error posting " + docafter + ". Error="+ignoreError);
-									} else {
-										docafter.load(docafter.get_TrxName());
-									}
+					List<PO> docsPostProcess = ((IDocsPostProcess) m_document).getDocsPostProcess(); 
+					if (docsPostProcess.size() > 0) {
+						if (((PO) m_document).get_ValueAsBoolean("Posted")) {
+							for (PO docafter : docsPostProcess) {								
+								if (docafter.get_ValueAsBoolean("Posted"))
+									continue;
+								String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
+								if (!Util.isEmpty(ignoreError, true)) {
+									log.warning("Error posting " + docafter + ". Error="+ignoreError);
+								} else {
+									docafter.load(docafter.get_TrxName());
 								}
 							}
 						}
