@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.idempiere.zk.billboard
 Bundle-Version: 11.0.0.qualifier
 Bundle-Vendor: iDempiere
 Automatic-Module-Name: org.idempiere.zk.billboard
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: metainfo.zk,
  org.idempiere.zk.billboard,
  web.js.zul.billboard,

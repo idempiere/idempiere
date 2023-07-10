@@ -20,19 +20,24 @@ package org.adempiere.webui.panel;
 import java.util.logging.Level;
 
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MForm;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 
 /**
  * Adempiere Web UI custom form.
@@ -45,7 +50,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2238655179806815227L;
+	private static final long serialVersionUID = -5381283117636286759L;
 
 	/** The class' logging enabler */
     protected static final CLogger logger;
@@ -67,6 +72,11 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	private ProcessInfo m_pi;
 
 	private IFormController m_customForm;
+
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
     /**
      * Constructor
@@ -203,6 +213,8 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
         		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), predefinedContextVariables);
         		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", isSOTrx);
 				form.init(adFormID, name);
+		    	form.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, form.getWindowNo());	// for closing the window with shortcut
+		    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, form);
 				return form;
     		}
     		else
@@ -219,6 +231,11 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     {
 		if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Form, getAdFormId());
+		}
+		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+		if (LayoutUtils.isReallyVisible(this))
+	        	this.onCtrlKeyEvent(keyEvent);
 		}
     }
 
@@ -260,5 +277,19 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	public GridTab getGridTab()
 	{
 		return gridTab;
+	}
+
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
+			if (m_WindowNo > 0) {
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
+			}
+		}
 	}
 }

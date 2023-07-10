@@ -94,6 +94,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_StyleLine;
 import org.compiere.print.layout.InstanceAttributeColumn;
@@ -2003,10 +2004,13 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//  Create Query from Parameters
 		MQuery query = null;
-		if (IsForm && pi.getRecord_ID() != 0		//	Form = one record
+		if (IsForm && (pi.getRecord_ID() > 0 || !Util.isEmpty(pi.getRecord_UU()))		//	Form = one record
 				&& !TableName.startsWith("T_") )	//	Not temporary table - teo_sarca, BF [ 2828886 ]
 		{
-			query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
+			if (pi.getRecord_ID() > 0)
+				query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
+			else
+				query = MQuery.getEqualQuery(PO.getUUIDColumnName(TableName), pi.getRecord_UU());
 		}
 		else
 		{

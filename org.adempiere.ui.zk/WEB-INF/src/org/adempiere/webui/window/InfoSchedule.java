@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.WSchedule;
 import org.adempiere.webui.session.SessionManager;
@@ -40,6 +41,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.ScheduleUtil;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
@@ -55,6 +57,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Space;
@@ -77,12 +80,23 @@ import org.zkoss.zul.Vbox;
 public class InfoSchedule extends Window implements EventListener<Event>
 {
 	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3349721592479638482L;
+
+	/**
 	 *  @param mAssignment optional assignment
 	 *  @param createNew if true, allows to create new assignments
 	 */
-	private static final long serialVersionUID = -5948901371276429661L;
 	private Callback<MResourceAssignment> m_callback;
 	private Component m_parent;
+	/** Window No */
+	private int m_windowNo;
+
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 *  Constructor
@@ -160,6 +174,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "InfoSchedule", ex);
 		}
 		displayCalendar();
+
+		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
+    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+
 	}	//	InfoSchedule
 
 	/**
@@ -480,6 +499,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			doEdit((CalendarsEvent)event);
 		else if (event.getTarget() == fieldResource)
 			displayCalendar();
+		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+		if (LayoutUtils.isReallyVisible(this))
+			this.onCtrlKeyEvent(keyEvent);
+		}
 		//
 	}
 
@@ -658,6 +682,20 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	protected void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
+		}
+	}
+
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
+			if (m_windowNo > 0) {
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_windowNo);
+			}
 		}
 	}
 }	//	InfoSchedule

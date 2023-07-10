@@ -274,16 +274,10 @@ public class CalloutEngine implements Callout
 
 		String docBase = null;
 		if (doctypeID <= 0) {
-			if (MBankStatement.Table_Name.equals(mTab.getTableName()))
-				docBase = Doc.DOCTYPE_BankStatement;
-			else if (MBankStatementLine.Table_Name.equals(mTab.getTableName()))
-				docBase = Doc.DOCTYPE_BankStatement;
-			else if (MInventory.Table_Name.equals(mTab.getTableName()))
+			if (MInventory.Table_Name.equals(mTab.getTableName()))
 				docBase = Doc.DOCTYPE_MatInventory;
 			else if (MMovement.Table_Name.equals(mTab.getTableName()))
 				docBase = Doc.DOCTYPE_MatMovement;
-			else if (MProduction.Table_Name.equals(mTab.getTableName()))
-				docBase = Doc.DOCTYPE_MatProduction;
 			else if (MRequisition.Table_Name.equals(mTab.getTableName()))
 				docBase = Doc.DOCTYPE_PurchaseRequisition;
 		}

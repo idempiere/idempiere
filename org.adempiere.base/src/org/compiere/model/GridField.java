@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 405469916055906825L;
+	private static final long serialVersionUID = -4496344553246662012L;
 	
 	private static final Character SPECIAL_CASE_DEFAULT = '1';
 	private static final Character SQL_DEFAULT = '2';
@@ -221,7 +221,7 @@ public class GridField
 			return;
 		}
 		//	Prevent loading of CreatedBy/UpdatedBy
-		if (m_vo.displayType == DisplayType.Table
+		if (m_vo.displayType == DisplayType.Table && m_vo.AD_Tab_ID > 0
 			&& (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy")) )
 		{
 			m_vo.lookupInfo.IsCreadedUpdatedBy = true;
@@ -1069,7 +1069,9 @@ public class GridField
 				SimpleDateFormat dateFormat = DisplayType.getDateFormat_JDBC();
 				SimpleDateFormat timeFormat = DisplayType.getTimeFormat_Default();
 				try {
-					if (m_vo.displayType == DisplayType.Date) {
+					if(Util.isEmpty(value, true)) {
+						return null;
+					} else if (m_vo.displayType == DisplayType.Date) {
 						date = dateFormat.parse (value);
 					} else if (m_vo.displayType == DisplayType.Time) {
 						date = timeFormat.parse (value);

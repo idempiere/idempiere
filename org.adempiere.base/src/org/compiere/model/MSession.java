@@ -370,6 +370,9 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 		int AD_Client_ID, int AD_Org_ID,
 		Object OldValue, Object NewValue, String event)
 	{
+		// never log change log itself (recursive error)
+		if (AD_Table_ID == MChangeLog.Table_ID)
+			return null;
 		//	Null handling
 		if (OldValue == null && NewValue == null)
 			return null;

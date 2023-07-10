@@ -27,6 +27,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 
 /**
  *	Print Data Element
@@ -308,6 +309,8 @@ public class PrintDataElement implements Serializable
 			return "";
 		if (m_value instanceof NamePair)
 			return ((NamePair)m_value).getID();
+		if (m_value instanceof String && Util.isUUID((String) m_value))
+			return (String) m_value;
 		return "";
 	}	//	getValueKey
 

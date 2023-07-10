@@ -75,7 +75,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 
 	private String m_text;
 
-	private Div east;
+	private East east;
 
 	private Div popup;
 
@@ -109,7 +109,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         Center center = new Center();
         statusBar.appendChild(center);
 
-        East east = new East();
+        east = new East();
         statusBar.appendChild(east);
 
         LayoutUtils.addSclass("status-selected", selectedLine);

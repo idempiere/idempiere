@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  * Label Assignment Model
@@ -38,7 +39,7 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 2245405505404999887L;
+	private static final long serialVersionUID = 310053368504090622L;
 
 	/**
     * UUID based Constructor
@@ -120,6 +121,22 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Label_ID = ? AND AD_Table_ID=? AND Record_UU=?";
 		int counter = DB.getSQLValueEx(null, sql, AD_Label_ID, Table_ID, Record_UU);
 		return counter > 0;
+	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+			MTable table = MTable.get(getAD_Table_ID());
+			PO po = table.getPO(getRecord_ID(), get_TrxName());
+			if (po != null)
+				setRecord_UU(po.get_UUID());
+		}
+		return true;
 	}
 
 }

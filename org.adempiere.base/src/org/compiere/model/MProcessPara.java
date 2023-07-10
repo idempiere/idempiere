@@ -16,10 +16,14 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
@@ -43,7 +47,11 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1357447647930552555L;
+	private static final long serialVersionUID = -1116840975434565353L;
+
+	/**
+	 * 
+	 */
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
@@ -372,6 +380,32 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			MProcess p = MProcess.get(getAD_Process_ID());
 			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getProcedureName()) && Util.isEmpty(p.getJasperReport()))
 				setIsShowNegateButton(true);
+		}
+
+		if (getValueMin() != null) {
+			try {
+				if (getAD_Reference_ID() == DisplayType.Date) { // Date
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					new Timestamp(dateFormat.parse(getValueMin()).getTime());
+				} else if (DisplayType.isNumeric(getAD_Reference_ID())) {
+					new BigDecimal(getValueMin());
+				}
+			} catch (Exception e) {
+				throw new AdempiereException("Min Value : "+ e.getLocalizedMessage());
+			}
+		}
+
+		if (getValueMax() != null) {
+			try {
+				if (getAD_Reference_ID() == DisplayType.Date) { // Date
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					new Timestamp(dateFormat.parse(getValueMax()).getTime());
+				} else if (DisplayType.isNumeric(getAD_Reference_ID())) {
+					new BigDecimal(getValueMax());
+				}
+			} catch (Exception e) {
+				throw new AdempiereException("Max Value : "+ e.getLocalizedMessage());
+			}
 		}
 
 		return true;

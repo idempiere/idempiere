@@ -221,3 +221,11 @@
 .z-calendars-month-cnt {
 	height: 300px !important;
 }
+
+.z-calevent-cnt > .z-calevent-text {
+	line-height: normal;
+	height: auto;
+}
+.z-calevent-inner .z-calevent-cnt {
+	background-color: #0093F9;
+}

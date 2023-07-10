@@ -90,7 +90,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5151981978053022864L;
+	private static final long serialVersionUID = -2174135931334134570L;
 
 	/**
 	 * Attribute for {@link #overflowPopup} to store the last close timestamp in ms.
@@ -177,13 +177,6 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private boolean isAllowProductInfo = MRole.getDefault().canAccess_Info_Product();
 
 	private int windowNo = 0;
-	/** previous key event time in ms **/
-	private long prevKeyEventTime = 0;
-	/** 
-	 * Previous key event.
-	 * Use together with prevKeyEventTime to detect double fire of key event from browser
-	 */
-	private KeyEvent prevKeyEvent;
 	
 	/**
 	 * Maintain hierarchical Quick form by its parent-child tab while open leaf
@@ -203,6 +196,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private int prevWidth;
 	/** AD Window content part that own this toolbar **/
 	private AbstractADWindowContent windowContent;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * default constructor
@@ -578,22 +575,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 			if (!(keyEvent.getKeyCode() == KeyEvent.F2) && windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
 				return;
 
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
-	        	this.onCtrlKeyEvent(keyEvent);
-        	}
+		if (LayoutUtils.isReallyVisible(this))
+			this.onCtrlKeyEvent(keyEvent);
         } else if (Events.ON_SELECT.equals(eventName)) 
         {
         	int index = fQueryName.getSelectedIndex();
@@ -931,20 +914,17 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
-			if (keyEvent.getKeyCode() == VK_X)
+			if ((keyEvent.getKeyCode() == VK_X))
 			{
-				if (windowNo > 0)
-				{
-					prevKeyEventTime = System.currentTimeMillis();
-		        	prevKeyEvent = keyEvent;
-					keyEvent.stopPropagation();
-					SessionManager.getAppDesktop().closeWindow(windowNo);
-				}
+				closeWindow(keyEvent);
 			}
 			else
 			{
 				btn = altKeyMap.get(keyEvent.getKeyCode());
 			}
+		}
+		else if (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing) {	// ESC
+			closeWindow(keyEvent);
 		}
 		else if (!keyEvent.isAltKey() && keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
@@ -981,6 +961,18 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
+	 * Close Window
+	 * @param keyEvent
+	 */
+	private void closeWindow(KeyEvent keyEvent) {
+		if (windowNo > 0)
+		{
+			keyEvent.stopPropagation();
+			SessionManager.getAppDesktop().closeWindow(windowNo);
+		}
+	}
+	
+	/**
 	 * Fire ON_Click event for button, trigger by shortcut key event.
 	 * @param keyEvent source shortcut key event
 	 * @param btn
@@ -988,8 +980,6 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private void fireButtonClickEvent(KeyEvent keyEvent, ToolBarButton btn)
 	{
 		if (btn != null) {
-			prevKeyEventTime = System.currentTimeMillis();
-        	prevKeyEvent = keyEvent;
 			keyEvent.stopPropagation();
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));

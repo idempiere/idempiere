@@ -112,6 +112,7 @@ import org.compiere.model.MUserPreference;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.StateChangeEvent;
+import org.compiere.model.SystemProperties;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -3250,8 +3251,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result) {
 					int table_ID = adTabbox.getSelectedGridTab().getAD_Table_ID();
 					int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+					String record_UU = adTabbox.getSelectedGridTab().getRecord_UU();
 
-					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
+					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, record_UU, true);
 					if (dialog.isValid()) {
 						dialog.setBorder("normal");						
 						getComponent().getParent().appendChild(dialog);
@@ -3389,15 +3391,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		if (toolbar.getEvent() != null)
 		{
-			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
-				return;
-
 			int C_BPartner_ID = 0;
 			Object bpartner = adTabbox.getSelectedGridTab().getValue("C_BPartner_ID");
 			if(bpartner != null)
 				C_BPartner_ID = Integer.valueOf(bpartner.toString());
 
-			new WRequest(toolbar.getToolbarItem("Requests"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID(), C_BPartner_ID);
+			new WRequest(toolbar.getToolbarItem("Requests"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), C_BPartner_ID);
 		}
 	}
 	
@@ -3420,10 +3419,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		if (toolbar.getEvent() != null)
 		{
-			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
-				return;
-
-			new WArchive(toolbar.getToolbarItem("Archive"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+			new WArchive(toolbar.getToolbarItem("Archive"),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(),
+					adTabbox.getSelectedGridTab().getRecord_ID(),
+					adTabbox.getSelectedGridTab().getRecord_UU());
 		}
 	}
 
@@ -3698,7 +3697,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if(cf.isInitOK())
 				{					
 					final WCreateFromWindow window = (WCreateFromWindow) cf.getWindow();
-					window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
+					if (SystemProperties.isZkUnitTest())
+						window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
 					window.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
@@ -4131,8 +4131,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		ZKUpdateUtil.setHeight(infoWindow, height + "px");
 		}
 		infoWindow.setContentStyle("overflow: auto");
-		
-		infoWindow.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
+
+		if (SystemProperties.isZkUnitTest())
+			infoWindow.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
 		infoWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {

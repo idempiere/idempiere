@@ -40,7 +40,7 @@ public class MChat extends X_CM_Chat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8255793171229953201L;
+	private static final long serialVersionUID = -1188256932717048308L;
 
 	/**
 	 * 	Get Chats Of Table - of client in context
@@ -246,6 +246,22 @@ public class MChat extends X_CM_Chat
 		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_UU=?";
 		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
 		return chatID;
+	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+			MTable table = MTable.get(getAD_Table_ID());
+			PO po = table.getPO(getRecord_ID(), get_TrxName());
+			if (po != null)
+				setRecord_UU(po.get_UUID());
+		}
+		return true;
 	}
 
 }	//	MChat

@@ -65,8 +65,8 @@ Export-Package: bsh,
  org.idempiere.model,
  org.idempiere.print,
  org.idempiere.process
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: com.google.zxing,
  com.google.zxing.qrcode.decoder,
  com.google.zxing.qrcode.encoder,
@@ -98,8 +98,6 @@ Import-Package: com.google.zxing,
  javax.servlet;version="3.0.0",
  javax.servlet.http;version="3.0.0",
  javax.xml.bind;version="2.3.0",
- junit.framework;version="3.8.2";resolution:=optional,
- junit.textui;version="3.8.2";resolution:=optional,
  net.sf.cglib.proxy,
  net.sourceforge.barbecue,
  net.sourceforge.barbecue.linear.ean,

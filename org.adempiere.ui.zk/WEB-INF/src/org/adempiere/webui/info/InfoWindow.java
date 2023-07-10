@@ -873,6 +873,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				String s_sqlFrom = embedInfo.getFromClause();
 				/** Where Clause						*/
 				String s_sqlWhere = relatedInfo.getLinkColumnName() + "=?";
+				String infoWhere = embedInfo.getWhereClause(); 
+				if(!Util.isEmpty(infoWhere))
+					s_sqlWhere += " AND (" + infoWhere + ")";
 				String s_sqlCount = "SELECT COUNT(*) FROM " + s_sqlFrom + " WHERE " + s_sqlWhere;
 				m_sqlEmbedded = embeddedTbl.prepareTable(s_layoutEmbedded, s_sqlFrom, s_sqlWhere, false, tableName);
 
@@ -983,6 +986,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				columnInfo.setColDescription(infoColumn.getNameTrl());
 				columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
+				columnInfo.setAD_Reference_Value_ID(infoColumn.getAD_Reference_Value_ID());
 				columnInfo.setGridField(gridFields.get(i));
 				columnInfo.setColumnName(infoColumn.getColumnName());
 				list.add(columnInfo);
@@ -1037,8 +1041,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (tableInfo.getTableName().equalsIgnoreCase(lookupInfo.TableName))
 					{
 						displayColumn = displayColumn.replace(lookupInfo.TableName+".", tableInfo.getSynonym()+".");
-						ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), displayColumn, KeyNamePair.class, infoColumn.getSelectClause(), infoColumn.isReadOnly() || haveNotProcess);
+						ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), displayColumn, KeyNamePair.class, infoColumn.getSelectClause(), infoColumn.isReadOnly() || haveNotProcess, displayColumn, infoColumn.getSelectClause());
 						return columnInfo;
+					}
+					else
+					{
+				        displayColumn = parseAliases(displayColumn, lookupInfo.TableName);
 					}
 					break;
 				}
@@ -1055,8 +1063,42 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			colSQL += " AS " + infoColumn.getColumnName();
         editorMap.put(colSQL, editor);
         Class<?> colClass = columnName.endsWith("_ID") || columnName.equals("CreatedBy") || columnName.equals("UpdatedBy") ? KeyNamePair.class : String.class;
-		ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, colClass, (String)null, infoColumn.isReadOnly() || haveNotProcess);
+        ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, colClass, (String)null, infoColumn.isReadOnly() || haveNotProcess, displayColumn, infoColumn.getSelectClause());
 		return columnInfo;
+	}
+
+	/**
+	 * Check and parse the correct aliases of the display SQL
+	 * @param displayColumn
+	 * @return parsed displayColumn
+	 */
+	private String parseAliases(String displayColumn, String tableName) {
+		if(Util.isEmpty(displayColumn))
+			return null;
+		String tabelNameTrl = tableName + "_Trl";
+		String alias = getAlias(tableName);
+
+		if(displayColumn.contains(tabelNameTrl+".")) {
+			if(displayColumn.contains(tableName+".") && !tableName.equalsIgnoreCase(alias)) {
+				return displayColumn.replace(tableName+".", alias+".");
+			}
+			return displayColumn;
+		}
+
+		if(displayColumn.contains(alias+".")){
+			return displayColumn;
+		}
+		else if(displayColumn.contains(tableName+".") && !tableName.equalsIgnoreCase(alias)) {
+			return displayColumn.replace(tableName+".", alias+".");
+		}
+		else if(!displayColumn.matches("\\w{1,}\\s{0,}\\((.*?)\\)")) {	// {function name}({*column name*})
+			displayColumn = (alias+"."+displayColumn);
+		}
+		else {
+			return null;
+		}
+
+		return displayColumn;
 	}
 
 	/* (non-Javadoc)
@@ -2029,32 +2071,88 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
+		String orderClause = getUserOrderClause();
         StringBuilder sql = new StringBuilder (m_sqlMain);
+        
+        // add dynamic WHERE clause
         if (dynWhere.length() > 0)
             sql.append(dynWhere);   //  includes first AND
         
+        // trim trailing WHERE statement
         if (sql.toString().trim().endsWith("WHERE")) {
         	int index = sql.lastIndexOf(" WHERE");
         	sql.delete(index, sql.length());
         }
-        
         dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());    //  Variables
         dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
             MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
         
+        // add other SQL clause
         String otherClause = getOtherClauseParsed();
         if (otherClause.length() > 0) {
         	dataSql = dataSql + " " + otherClause;
         }
-        
-        dataSql = dataSql + getUserOrderClause();
-        
+        // add ORDER BY clause
+        dataSql = dataSql + orderClause;
+
+        // for SELECT DISTINCT, ORDER BY expressions must appear in select list - applies for lookup columns and multiselection columns
+        if(dataSql.startsWith("SELECT DISTINCT") && indexOrderColumn > 0) {
+        	ColumnInfo orderColumnInfo = p_layout[indexOrderColumn];
+        	if (DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID())) {
+        		dataSql = appendOrderByToSelectList(dataSql, orderClause);
+        	}
+        }
+
         if (end > start && isUseDatabasePaging() && DB.getDatabase().isPagingSupported())
         {
         	dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
         }
 		return dataSql;
 	}
+
+    /**
+     * Append ORDER BY expressions into the select list
+     * @param sql
+     * @param orderBy
+     * @return String parsed sql
+     */
+    private String appendOrderByToSelectList(String sql, String orderBy) {
+    	if(Util.isEmpty(orderBy))
+    		return sql;
+		int idxFrom = getIdxFrom(sql);
+		if(idxFrom < 0)
+			return sql;
+	
+		String select = sql.substring(0, idxFrom);
+		select += ", " + orderBy.replaceFirst("\\s+ORDER BY\\s+", "").replaceAll("\\s+ASC\\s+", "").replaceAll("\\s+DESC\\s+", "");	// \s+ stands for one or more whitespace character
+		return select + sql.substring(idxFrom);
+    }
+
+    /**
+     * Get the index of the FROM statement
+     * @param sql
+     * @return int idx
+     */
+    private int getIdxFrom(String sql) {
+		int parenthesisLevel = 0;
+		int idxSelect = sql.indexOf("SELECT DISTINCT");
+		sql = sql.substring(idxSelect);
+	
+		for(int i = 0; i < sql.length(); i++) {
+			// identify and ignore sub-query
+			char c = sql.charAt(i);
+				if (c == ')')
+					parenthesisLevel--;
+				else if (c == '(')
+					parenthesisLevel++;
+	
+				// RegEx ^(\s+FROM)(\s) checks for <whitespace>FROM<whitespace> pattern
+				if(sql.substring(i, i+6).toUpperCase().matches("^(\\s+FROM)(\\s)") && parenthesisLevel == 0)
+					return i;
+		}
+	
+		return -1;
+    }
 
     private String getOtherClauseParsed() {
     	String otherClause = "";
@@ -2480,6 +2578,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						columnInfo.setColDescription(infoColumn.getDescriptionTrl());
 						columnInfo.setGridField(getGridField(infoColumn));
 						columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
+						columnInfo.setAD_Reference_Value_ID(infoColumn.getAD_Reference_Value_ID());
 						list.add(columnInfo);
 					}
 
