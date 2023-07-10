@@ -144,7 +144,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
 	protected static final String ROW_CTX_VARIABLE_PREFIX = "i_";
-	protected static final String ROW_ID_CTX_VARIABLE_NAME = "Selected_ID";
+	protected static final String ROW_ID_CTX_VARIABLE_NAME = "ID_Selection";
 	
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
