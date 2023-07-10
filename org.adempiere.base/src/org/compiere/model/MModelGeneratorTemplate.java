@@ -30,7 +30,7 @@ import java.util.Properties;
 /**
  * Generate Model Template
  */
-public class MGenerateModelTemplate extends X_AD_ModelGeneratorTemplate {
+public class MModelGeneratorTemplate extends X_AD_ModelGeneratorTemplate {
 
 	/**
 	 * 
@@ -43,9 +43,9 @@ public class MGenerateModelTemplate extends X_AD_ModelGeneratorTemplate {
     * @param AD_ModelGeneratorTemplate_UU  UUID key
     * @param trxName Transaction
     */
-    public MGenerateModelTemplate(Properties ctx, String AD_ModelGeneratorTemplate_UU, String trxName) {
+    public MModelGeneratorTemplate(Properties ctx, String AD_ModelGeneratorTemplate_UU, String trxName) {
         super(ctx, AD_ModelGeneratorTemplate_UU, trxName);
-    } // MGenerateModelTemplate
+    } // MModelGeneratorTemplate
 
 	/**
 	 * SMTP constructor
@@ -53,9 +53,9 @@ public class MGenerateModelTemplate extends X_AD_ModelGeneratorTemplate {
 	 * @param AD_ModelGeneratorTemplate_ID	ID
 	 * @param trxName		transaction
 	 */
-	public MGenerateModelTemplate(Properties ctx, int AD_ModelGeneratorTemplate_ID, String trxName) {
+	public MModelGeneratorTemplate(Properties ctx, int AD_ModelGeneratorTemplate_ID, String trxName) {
 		super(ctx, AD_ModelGeneratorTemplate_ID, trxName);
-	} // MGenerateModelTemplate
+	} // MModelGeneratorTemplate
 
 	/**
 	 * SMTP constructor
@@ -63,8 +63,8 @@ public class MGenerateModelTemplate extends X_AD_ModelGeneratorTemplate {
 	 * @param rs      ResultSet
 	 * @param trxName transaction
 	 */
-	public MGenerateModelTemplate(Properties ctx, ResultSet rs, String trxName) {
+	public MModelGeneratorTemplate(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-	} // MGenerateModelTemplate
+	} // MModelGeneratorTemplate
 
-} // MGenerateModelTemplate
+} // MModelGeneratorTemplate

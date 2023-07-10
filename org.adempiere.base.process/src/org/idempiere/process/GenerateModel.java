@@ -38,6 +38,7 @@ import org.compiere.util.Util;
 @org.adempiere.base.annotation.Process
 public class GenerateModel extends SvrProcess {
 
+	private int p_generateModelTemplate_ID = 0;
 	private String	p_sourceFolder = "";
 	private String	p_packageName = "";
 	private String	p_tableName = "";
@@ -51,6 +52,9 @@ public class GenerateModel extends SvrProcess {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
 			switch (name) {
+			case "AD_ModelGeneratorTemplate_ID":
+				p_generateModelTemplate_ID = para.getParameterAsInt();
+				break;
 			case "Folder":
 				p_sourceFolder = para.getParameterAsString();
 				break;
@@ -60,10 +64,10 @@ public class GenerateModel extends SvrProcess {
 			case "TableName":
 				p_tableName = para.getParameterAsString();
 				break;
-			case "TableEntityTypeName":
+			case "TableEntityType":
 				p_tableEntityType = para.getParameterAsString();
 				break;
-			case "ColumnEntityTypeName":
+			case "ColumnEntityType":
 				p_columnEntityType = para.getParameterAsString();
 				break;
 
@@ -79,9 +83,6 @@ public class GenerateModel extends SvrProcess {
 	 *  @throws Exception
 	 */
 	protected String doIt() {
-
-		if (Util.isEmpty(p_sourceFolder) || Util.isEmpty(p_packageName) || Util.isEmpty(p_tableName) || Util.isEmpty(p_tableEntityType))
-			return ("@Error@ @FillMandatory@");
 
 		ModelInterfaceGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
 		ModelClassGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
