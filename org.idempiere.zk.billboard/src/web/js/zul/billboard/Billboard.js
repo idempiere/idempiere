@@ -1,5 +1,8 @@
 (function() {
 
+	const __d3_formatLocaleCache = new Map();
+	const __d3_timeFormatLocaleCache = new Map();
+	
 	var Billboard = 
 		zul.billboard.Billboard = zk.$extends(zk.Widget,
 		{
@@ -10,6 +13,7 @@
 			_cursor : false,
 			_highlighter : true,
 			_dataClickTS : 0,
+			_locale: null,
 			
 			$define : {
 				title: null,
@@ -35,10 +39,51 @@
 				timeSeriesInterval: null,
 				timeSeriesFormat: null,
 				xAxisAngle: null,
-				chart: null				
+				chart: null,
+				locale: null				
+			},
+			
+			_loadFormatLocale: async function(url) {
+				try {
+					const definition = await d3.json(url);
+					d3.formatDefaultLocale(definition);
+					__d3_formatLocaleCache.set(url, definition);
+				} catch (error) {
+					__d3_formatLocaleCache.set(url, null);
+				}					
+			},
+			
+			_loadTimeFormatLocale: async function(url) {
+				try {
+					const definition = await d3.json(url);
+					d3.timeFormatDefaultLocale(definition);
+					__d3_timeFormatLocaleCache.set(url, definition);
+				} catch (error) {
+					__d3_timeFormatLocaleCache.set(url, null);
+				}
 			},
 			
 			_dataPrepare : function() {
+				//load locale
+				if (this.getLocale() != null) {
+					const formatURL = "https://unpkg.com/d3-format@3.1.0/locale/"+this.getLocale()+".json";
+					if (__d3_formatLocaleCache.has(formatURL)) {
+						const definition = __d3_formatLocaleCache.get(formatURL);
+						if (definition != null)  
+							d3.formatDefaultLocale(definition);
+					} else {
+						this._loadFormatLocale(formatURL);
+					}
+					const timeFormatURL = "https://unpkg.com/d3-time-format@4.1.0/locale/"+this.getLocale()+".json";
+					if (__d3_timeFormatLocaleCache.has(timeFormatURL)) {
+						const definition = __d3_timeFormatLocaleCache.get(timeFormatURL);
+						if (definition != null)
+							d3.timeFormatDefaultLocale(definition);
+					} else {
+						this._loadTimeFormatLocale(timeFormatURL);
+					}
+				}
+				
 				var dataModel = this.getModel();
 				var data = [];
 				try {

@@ -34,5 +34,5 @@ public class Version {
 	 * Returns the version UID.<br/>
 	 * Must match with version-uid value in lang-addon.xml
 	 */
-	public static final String UID = "3.9.0.20230710";
+	public static final String UID = "3.9.0.20230711";
 }
