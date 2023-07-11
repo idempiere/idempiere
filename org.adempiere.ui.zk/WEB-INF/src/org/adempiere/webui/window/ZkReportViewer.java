@@ -890,6 +890,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	private void onPreviewReport() {
+		if(media == null)
+			return;
 		try {
 			mediaVersion++;
 			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
