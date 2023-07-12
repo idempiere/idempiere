@@ -29,7 +29,6 @@ import org.adempiere.util.ModelInterfaceGenerator;
 import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.Util;
 
 /**
  *	IDEMPIERE-5796 - Generate Model Template
@@ -38,7 +37,6 @@ import org.compiere.util.Util;
 @org.adempiere.base.annotation.Process
 public class GenerateModel extends SvrProcess {
 
-	private int p_generateModelTemplate_ID = 0;
 	private String	p_sourceFolder = "";
 	private String	p_packageName = "";
 	private String	p_tableName = "";
@@ -52,16 +50,13 @@ public class GenerateModel extends SvrProcess {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
 			switch (name) {
-			case "AD_ModelGeneratorTemplate_ID":
-				p_generateModelTemplate_ID = para.getParameterAsInt();
-				break;
 			case "Folder":
 				p_sourceFolder = para.getParameterAsString();
 				break;
 			case "PackageName":
 				p_packageName = para.getParameterAsString();
 				break;
-			case "TableName":
+			case "TableLike":
 				p_tableName = para.getParameterAsString();
 				break;
 			case "TableEntityType":

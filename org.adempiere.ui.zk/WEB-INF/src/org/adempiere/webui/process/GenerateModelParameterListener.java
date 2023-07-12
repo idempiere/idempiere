@@ -34,7 +34,7 @@ import org.compiere.util.Util;
 
 public class GenerateModelParameterListener implements IProcessParameterListener {
 
-	private static final String[] parameters = {"Folder", "PackageName", "TableName", "TableEntityType", "ColumnEntityType"};
+	private static final String[] parameters = {"Folder", "PackageName", "TableLike", "TableEntityType", "ColumnEntityType"};
 
 	@Override
 	public void onChange(ProcessParameterPanel parameterPanel, String columnName, WEditor editor) {
@@ -46,8 +46,12 @@ public class GenerateModelParameterListener implements IProcessParameterListener
 				for (String paramName : parameters) {
 					WEditor param = parameterPanel.getEditor(paramName);
 					if (param != null) {
+
+						if (paramName.equals("TableLike"))
+							paramName = "TableName";
+
 						String rawValue = mgt.get_ValueAsString(paramName);
-						
+						System.out.println(paramName + " : " + rawValue);
 						if (paramName.equals("TableName") && !Util.isEmpty(rawValue) && rawValue.equals("@TableName@"))
 							param.setValue(Env.getContext(Env.getCtx(), parameterPanel.getWindowNo(), "TableName"));
 						else if ((paramName.equals("TableEntityType") || paramName.equals("ColumnEntityType")) && !Util.isEmpty(rawValue) && rawValue.equals("@EntityType@"))

@@ -295,3 +295,11 @@ INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Component
 INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,AD_ToolBarButton_UU,"action",AD_Tab_ID,AD_Process_ID,DisplayLogic,SeqNo,EntityType) VALUES (0,0,TO_TIMESTAMP('2023-07-10 09:27:00','YYYY-MM-DD HH24:MI:SS'),10,'Generate Model','Y',200131,'Generate Model',TO_TIMESTAMP('2023-07-10 09:27:00','YYYY-MM-DD HH24:MI:SS'),10,'N','cb91ee8b-1271-4f45-9556-01240345b225','W',102,200154,'@ValidationType@ = L & @#DeveloperMode@ = Y',10,'D')
 ;
 
+-- Jul 12, 2023, 6:50:28 AM CEST
+UPDATE AD_Process_Para SET Name='Table Like', Help='You can use % or a comma separated list of table names (case sensitive)', ColumnName='TableLike', AD_Element_ID=NULL,Updated=TO_TIMESTAMP('2023-07-12 06:50:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Process_Para_ID=200441
+;
+
+-- Jul 12, 2023, 7:03:28 AM CEST
+UPDATE AD_Field SET Description=NULL, Help='You can use % or a comma separated list of table names (case sensitive)
+Using ''@TableName@'' will change to current table when executing the process', IsCentrallyMaintained='N',Updated=TO_TIMESTAMP('2023-07-12 07:03:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=207695
+;
