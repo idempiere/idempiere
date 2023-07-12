@@ -296,10 +296,18 @@ INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Component
 ;
 
 -- Jul 12, 2023, 6:50:28 AM CEST
-UPDATE AD_Process_Para SET Name='Table Like', Help='You can use % or a comma separated list of table names (case sensitive)', ColumnName='TableLike', AD_Element_ID=NULL,Updated=TO_TIMESTAMP('2023-07-12 06:50:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Process_Para_ID=200441
+UPDATE AD_Process_Para SET Name='Table Like', Description='You can use % or a comma separated list of table names (case sensitive)', ColumnName='TableLike', AD_Element_ID=NULL,Updated=TO_TIMESTAMP('2023-07-12 06:50:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Process_Para_ID=200441
 ;
 
 -- Jul 12, 2023, 7:03:28 AM CEST
 UPDATE AD_Field SET Description=NULL, Help='You can use % or a comma separated list of table names (case sensitive)
 Using ''@TableName@'' will change to current table when executing the process', IsCentrallyMaintained='N',Updated=TO_TIMESTAMP('2023-07-12 07:03:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=207695
+;
+
+-- Jul 12, 2023, 3:52:47 PM CEST
+UPDATE AD_Process_Para SET AD_Reference_ID=200162, AD_Reference_Value_ID=389,Updated=TO_TIMESTAMP('2023-07-12 15:52:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Process_Para_ID=200443
+;
+
+-- Jul 12, 2023, 3:52:55 PM CEST
+UPDATE AD_Process_Para SET AD_Reference_ID=200162, AD_Reference_Value_ID=389,Updated=TO_TIMESTAMP('2023-07-12 15:52:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Process_Para_ID=200444
 ;
