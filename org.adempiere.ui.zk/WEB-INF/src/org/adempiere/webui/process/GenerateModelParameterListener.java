@@ -51,7 +51,7 @@ public class GenerateModelParameterListener implements IProcessParameterListener
 							paramName = "TableName";
 
 						String rawValue = mgt.get_ValueAsString(paramName);
-						System.out.println(paramName + " : " + rawValue);
+
 						if (paramName.equals("TableName") && !Util.isEmpty(rawValue) && rawValue.equals("@TableName@"))
 							param.setValue(Env.getContext(Env.getCtx(), parameterPanel.getWindowNo(), "TableName"));
 						else if ((paramName.equals("TableEntityType") || paramName.equals("ColumnEntityType")) && !Util.isEmpty(rawValue) && rawValue.equals("@EntityType@"))
