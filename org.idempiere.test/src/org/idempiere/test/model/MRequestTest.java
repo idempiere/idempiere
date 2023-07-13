@@ -46,7 +46,7 @@ public class MRequestTest extends AbstractTestCase {
 
 	@Test
 	public void testRequestCount() {
-		int[] counts = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, new StringBuilder(), getTrxName());
+		int[] counts = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), getTrxName());
 		
 		MRequest req = new MRequest(Env.getCtx(), 0, getTrxName());
 		req.setC_BPartner_ID(DictionaryIDs.C_BPartner.PATIO.id);
@@ -58,14 +58,14 @@ public class MRequestTest extends AbstractTestCase {
 		req.setSalesRep_ID(getAD_User_ID());
 		req.saveEx();
 		
-		int[] counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, new StringBuilder(), getTrxName());
+		int[] counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), getTrxName());
 		assertEquals(counts[0], counts1[0], "Unexpected processed request count");
 		assertEquals(counts[1]+1, counts1[1], "Unexpected not processed request count");
 		
 		req.setProcessed(true);
 		req.saveEx();
 		
-		counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, new StringBuilder(), getTrxName());
+		counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), getTrxName());
 		assertEquals(counts[0]+1, counts1[0], "Unexpected processed request count");
 		assertEquals(counts[1], counts1[1], "Unexpected not processed request count");
 	}
@@ -80,7 +80,7 @@ public class MRequestTest extends AbstractTestCase {
 		query.addRestriction("1=2");
 		gridTab.setQuery(query);
 		gridTab.query(false);
-		MRequest.newRequest(gridTab, MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.id);
+		MRequest.newRequest(gridTab, MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, DictionaryIDs.C_BPartner.PATIO.id);
 		assertTrue(gridTab.isNew(), "Current row of Grid Tab is not a new row");
 		assertEquals(MBPartner.Table_ID, gridTab.getValue("AD_Table_ID"));				
 		assertEquals(DictionaryIDs.C_BPartner.PATIO.id, gridTab.getValue("Record_ID"), "Unexpected Record_ID value");

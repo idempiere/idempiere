@@ -255,10 +255,11 @@ public class MChat extends X_CM_Chat
 	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		if (getRecord_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());
-			setRecord_UU(po.get_UUID());
+			if (po != null)
+				setRecord_UU(po.get_UUID());
 		}
 		return true;
 	}

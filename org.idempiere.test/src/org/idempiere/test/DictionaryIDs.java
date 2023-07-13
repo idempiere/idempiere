@@ -118,22 +118,24 @@ public final class DictionaryIDs {
 	}
 	
 	public enum C_BPartner {
-		STANDARD(112),
-		TREE_FARM(114),
-		C_AND_W(117),
-		JOE_BLOCK(118),
-		SEED_FARM(120),
-		PATIO(121),
-		WOOD_INC(50000),
-		COLOR_INC(50001),
-		CHROME_INC(50002),
-		CHEMICAL_INC(50003),
-		AGRI_TECH(200000);
-		
-		public final int id;
+		STANDARD(112,"dc4962ad-066f-4ebf-88ac-545d12c9f1f0"),
+		TREE_FARM(114,"5c557ed6-c443-4b99-ae77-546ccd46bc1f"),
+		C_AND_W(117,"037972d8-b74c-462d-b407-4a9b60e66ca8"),
+		JOE_BLOCK(118,"bead5eef-774d-45f5-9634-0210b4122340"),
+		SEED_FARM(120,"f6efd81a-abe6-4bca-86fe-810d4355d572"),
+		PATIO(121,"39e85feb-94a2-4e41-ae45-e7d49d7be077"),
+		WOOD_INC(50000,"9944d7a8-76bd-4d57-8ceb-2c0327e58bda"),
+		COLOR_INC(50001,"6e967db4-e6a9-488f-ae76-f811fb86186e"),
+		CHROME_INC(50002,"e1b92d09-ca76-4326-aa45-449e0c4509a3"),
+		CHEMICAL_INC(50003,"26abfd12-5aa2-4668-b0c7-76d680ccfb10"),
+		AGRI_TECH(200000,"605450c7-24a7-4da9-990d-a8e5e7dd57eb");
 
-		private C_BPartner(int id) {
+		public final int id;
+		public final String uuid;
+
+		private C_BPartner(int id, String uuid) {
 			this.id = id;
+			this.uuid = uuid;
 		}
 	}
 	

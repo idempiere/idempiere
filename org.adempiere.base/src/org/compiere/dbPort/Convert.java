@@ -529,9 +529,8 @@ public abstract class Convert
 	public static String getMigrationScriptFolder(String dbtype) {
 		// migration/iD[version]/[oracle|postgresql] directory		
 		String version = Adempiere.MAIN_VERSION.substring(8);
-		boolean isIDE = Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
 		String homeScript;
-		if (isIDE)
+		if (Util.isDeveloperMode())
 			homeScript = Adempiere.getAdempiereHome() + File.separator;
 		else
 			homeScript = System.getProperty("java.io.tmpdir") + File.separator;
