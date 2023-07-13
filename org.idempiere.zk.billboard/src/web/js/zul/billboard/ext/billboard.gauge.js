@@ -14,7 +14,7 @@ billboard.GaugeRenderer = class {
         	if (rendererOptions["showNeedle"] && rendererOptions["showNeedle"] == true) {
         		showNeedle = true;
         		gauge.title = "\n{=NEEDLE_VALUE}%";
-        		gauge.width = 40;
+        		gauge.width = 20;
         		gauge.label = {
                 	format: function(_value, _ratio, id) { return id; }
 	            };
