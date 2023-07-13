@@ -196,7 +196,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		}
 		this.getChildren().clear();
 		renderChart(width, height);
-		Events.sendEvent(this, new Event(ON_AFTER_RENDER_CHART_EVENT));
+		Events.sendEvent(this, new Event(ON_AFTER_RENDER_CHART_EVENT, this));
 	}
 
 	/**

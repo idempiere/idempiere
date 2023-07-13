@@ -53,7 +53,7 @@ public class Billboard extends XulElement {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -3888636406033151303L;
+	private static final long serialVersionUID = -2164790050418874185L;
 
 	// Must
 	private ChartModel _model;
@@ -73,6 +73,7 @@ public class Billboard extends XulElement {
 	private String valueAxisLabel = null;
 	private String[] seriesColors = null;
 	private int xAxisAngle = 0;
+	private String locale = null;
 	
 	public static final String ON_DATA_CLICK_EVENT = "onDataClick";
 	
@@ -95,6 +96,7 @@ public class Billboard extends XulElement {
 		render(renderer, "orient", _orient);
 		render(renderer, "timeSeries", timeSeries);
 		render(renderer, "xAxisAngle", xAxisAngle);
+		render(renderer, "locale", toD3Locale(locale));
 		if (timeSeries) {
 			if (timeSeriesInterval != null)
 				render(renderer, "timeSeriesInterval", timeSeriesInterval);
@@ -137,6 +139,15 @@ public class Billboard extends XulElement {
 		 * 	{"values":"Q4","'2001'":55,"'2002'":90}
 		 * ]
 		 */
+	}
+
+	private String toD3Locale(String locale) {
+		if (locale == null)
+			return null;
+		if ("es_CO".equals(locale))
+			return "es-ES";
+		else
+			return locale.replaceFirst("[_]", "-");
 	}
 
 	private JSONObject mapToJSON(Map<String, Object> map) {
@@ -465,5 +476,9 @@ public class Billboard extends XulElement {
 
 	public void setXAxisAngle(int xAxisAngle) {
 		this.xAxisAngle = xAxisAngle;
+	}
+	
+	public void setLocale(String locale) {
+		this.locale = locale;
 	}
 }

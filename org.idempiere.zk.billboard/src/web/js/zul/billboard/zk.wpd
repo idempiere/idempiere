@@ -2,7 +2,8 @@
 <package name="zul.billboard" language="xul/html" depends="zul">
 	<widget name="Billboard" />
 			
-	<script src="ext/billboard.pkgd.js" />
+	<script src="ext/d3.v6.js" />
+	<script src="ext/billboard.js" />
 	<script src="ext/billboard.gauge.js" />		
 	<script src="ext/billboard.bar.js" />
 	<script src="ext/billboard.line.js" />

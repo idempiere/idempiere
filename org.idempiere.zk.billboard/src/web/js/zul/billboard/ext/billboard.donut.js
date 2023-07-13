@@ -54,7 +54,6 @@ billboard.DonutRenderer.prototype.render = function(wgt) {
 	};
 	if (wgt.getTitle())
 		model["donut"]["title"] = wgt.getTitle();
-		//model["title"] = {text: wgt.getTitle()};
 	return model;
 };
 

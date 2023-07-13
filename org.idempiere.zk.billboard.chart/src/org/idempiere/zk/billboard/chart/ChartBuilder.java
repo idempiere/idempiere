@@ -458,6 +458,7 @@ public class ChartBuilder {
 		billboard.setValueAxisLabel(mChart.get_Translation(MChart.COLUMNNAME_RangeLabel));
 		billboard.setTitle(mChart.get_Translation(MChart.COLUMNNAME_Name));
 		billboard.setType(type);
+		billboard.setLocale(Env.getContext(Env.getCtx(), Env.LOCALE));
 		return billboard;
 	}
 

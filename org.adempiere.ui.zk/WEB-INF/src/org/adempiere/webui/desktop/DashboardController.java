@@ -1142,6 +1142,13 @@ public class DashboardController implements EventListener<Event> {
 	    		//following 2 line needed for restore to size the panel correctly
 				ZKUpdateUtil.setHflex(panel, (String)panel.getAttribute(FLEX_GROW_ATTRIBUTE));
 				ZKUpdateUtil.setHeight(panel, "100%");
+				
+				//notify panel content component
+				if (panel.getPanelchildren() != null) {
+					panel.getPanelchildren().getChildren().forEach(child -> {
+						Executions.schedule(dashboardLayout.getDesktop(), e -> Events.postEvent(child, event), new Event("onPostRestore"));
+					});
+				}
 	    	}
 		}
 		else if(eventName.equals(Events.ON_CLICK))
@@ -1250,6 +1257,13 @@ public class DashboardController implements EventListener<Event> {
     						logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
     				} finally {
     					PO.clearCrossTenantSafe();
+    				}
+    			}
+    			
+    			//notify panel content component
+    			if (panel.getPanelchildren() != null) {
+    				for(Component c : panel.getPanelchildren().getChildren()) {
+    					Events.postEvent(c, event);
     				}
     			}
     		}
