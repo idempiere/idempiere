@@ -310,5 +310,19 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 		makeImmutable();
 		return this;
 	}
+	
+	/**
+	 * Get AD_Org_ID from M_Warehouse
+	 * @param ctx - context
+	 * @param warehouseID - M_Warehouse_ID
+	 * @param trxName - transaction name
+	 * @return int AD_Org_ID
+	 */
+	public static int getIDfromWarehouse(Properties ctx, int warehouseID, String trxName) {
+		int orgID = 0;
+		if(warehouseID > 0)
+			orgID = MWarehouse.get(ctx, warehouseID, trxName).getAD_Org_ID();
+		return orgID;
+	}
 
 }	//	MOrg
