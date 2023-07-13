@@ -42,6 +42,8 @@ public class GenerateModel extends SvrProcess {
 	private String	p_tableName = "";
 	private String	p_tableEntityType = "";
 	private String	p_columnEntityType = "";
+	private boolean	p_isGenerateInterface = true;
+	private boolean	p_isGenerateClass = true;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -65,6 +67,12 @@ public class GenerateModel extends SvrProcess {
 			case "ColumnEntityType":
 				p_columnEntityType = para.getParameterAsString();
 				break;
+			case "IsGenerateInterface":
+				p_isGenerateInterface = para.getParameterAsBoolean();
+				break;
+			case "IsGenerateClass":
+				p_isGenerateClass = para.getParameterAsBoolean();
+				break;
 
 			default:
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
@@ -79,8 +87,10 @@ public class GenerateModel extends SvrProcess {
 	 */
 	protected String doIt() {
 
-		ModelInterfaceGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
-		ModelClassGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
+		if (p_isGenerateInterface)
+			ModelInterfaceGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
+		if (p_isGenerateClass)
+			ModelClassGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
 
 		return "@ProcessOK@";
 	}

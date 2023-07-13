@@ -311,3 +311,44 @@ UPDATE AD_Process_Para SET AD_Reference_ID=200162, AD_Reference_Value_ID=389,Upd
 -- Jul 12, 2023, 3:52:55 PM CEST
 UPDATE AD_Process_Para SET AD_Reference_ID=200162, AD_Reference_Value_ID=389,Updated=TO_TIMESTAMP('2023-07-12 15:52:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Process_Para_ID=200444
 ;
+
+-- Jul 13, 2023, 1:55:59 PM CEST
+UPDATE AD_Column SET FieldLength=2000,Updated=TO_TIMESTAMP('2023-07-13 13:55:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215883
+;
+
+-- Jul 13, 2023, 1:56:04 PM CEST
+INSERT INTO t_alter_column values('ad_modelgeneratortemplate','TableName','VARCHAR(2000)',null,'NULL')
+;
+
+-- Jul 13, 2023, 1:56:50 PM CEST
+UPDATE AD_Process_Para SET Description='You can use % or a comma separated list of table names enclosed within single quotes (case sensitive)', FieldLength=2000,Updated=TO_TIMESTAMP('2023-07-13 13:56:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200441
+;
+
+-- Jul 13, 2023, 2:14:18 PM CEST
+UPDATE AD_Process_Para SET SeqNo=41,Updated=TO_TIMESTAMP('2023-07-13 14:14:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200441
+;
+
+-- Jul 13, 2023, 2:14:22 PM CEST
+UPDATE AD_Process_Para SET SeqNo=30,Updated=TO_TIMESTAMP('2023-07-13 14:14:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200442
+;
+
+-- Jul 13, 2023, 2:14:25 PM CEST
+UPDATE AD_Process_Para SET SeqNo=40,Updated=TO_TIMESTAMP('2023-07-13 14:14:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200441
+;
+
+-- Jul 13, 2023, 2:14:53 PM CEST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203820,0,0,'Y',TO_TIMESTAMP('2023-07-13 14:14:41','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-07-13 14:14:41','YYYY-MM-DD HH24:MI:SS'),100,'IsGenerateInterface','Generate Interface',NULL,NULL,'Generate Interface','D','011f0493-36d7-4bc7-a7d8-7ac01662ba67')
+;
+
+-- Jul 13, 2023, 2:15:07 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,DateRangeOption,IsShowNegateButton) VALUES (200445,0,0,'Y',TO_TIMESTAMP('2023-07-13 14:15:07','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-07-13 14:15:07','YYYY-MM-DD HH24:MI:SS'),100,'Generate Interface',200154,70,20,'N',1,'Y','Y','IsGenerateInterface','Y','D',203820,'a681b7c6-56b4-465e-a750-ebd0874d308d','N','N','D','N')
+;
+
+-- Jul 13, 2023, 2:15:23 PM CEST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203821,0,0,'Y',TO_TIMESTAMP('2023-07-13 14:15:12','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-07-13 14:15:12','YYYY-MM-DD HH24:MI:SS'),100,'IsGenerateClass','Generate Class',NULL,NULL,'Generate Class','D','5534d687-c084-4ea7-8943-842f6ad05b2c')
+;
+
+-- Jul 13, 2023, 2:15:33 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,DateRangeOption,IsShowNegateButton) VALUES (200446,0,0,'Y',TO_TIMESTAMP('2023-07-13 14:15:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-07-13 14:15:33','YYYY-MM-DD HH24:MI:SS'),100,'Generate Class',200154,80,20,'N',1,'Y','Y','IsGenerateClass','Y','D',203821,'f439bed8-22bb-4627-a9b9-8626a95844a1','N','N','D','N')
+;
+
