@@ -37,7 +37,7 @@ public class SSOUtils
 
 	public static final String			EVENT_ON_AFTER_SSOLOGIN	= "onAfterSSOLogin";
 
-	private static ArrayList<String>	ignoreResourceURL		= null;
+	private static ArrayList<String>	ignoreResourceURL		= null; //List of url patterns ignored for validating token
 
 	static
 	{
@@ -51,7 +51,7 @@ public class SSOUtils
 	public static ISSOPrincipalService getSSOPrincipalService()
 	{
 		ISSOPrincipalService principal = null;
-		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalService();
+		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig();
 		if (config == null)
 			return null;
 		List<ISSOPrincipalFactory> factories = Service.locator().list(ISSOPrincipalFactory.class).getServices();
@@ -64,6 +64,12 @@ public class SSOUtils
 		return principal;
 	}
 
+	/**
+	 * The target redirect URL for identity provider after authentication 
+	 * @param redirectMode
+	 * @param config
+	 * @return
+	 */
 	public static String getRedirectedURL(String redirectMode, I_SSO_PrincipalConfig config)
 	{
 		if (SSO_MODE_OSGI.equalsIgnoreCase(redirectMode))
@@ -73,6 +79,11 @@ public class SSOUtils
 		return config.getSSO_ApplicationRedirectURIs();
 	}
 
+	/**
+	 * Create Error page for error message
+	 * @param error
+	 * @return
+	 */
 	public static String getCreateErrorResponce(String error)
 	{
 		return new StringBuffer("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>")
@@ -95,6 +106,12 @@ public class SSOUtils
 
 	}
 
+	/**
+	 * if Resource request then it do not redirected to identity provider for authentication
+	 * @param request
+	 * @param isWebUI
+	 * @return
+	 */
 	public static boolean isResourceRequest(HttpServletRequest request, boolean isWebUI)
 	{
 		String[] urlpath = request.getServletPath().toLowerCase().split("/");

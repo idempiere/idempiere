@@ -128,16 +128,16 @@ public class LoginWindow extends Window implements EventListener<Event>
 	/**
 	 * Show role panel after SSO authentication.
 	 * 
-	 * @param result session Principal to get user and language.
+	 * @param Session token for retrieving user and language.
 	 */
-	private void ssoLogin(Object result)
+	private void ssoLogin(Object token)
 	{
 		String errorMessage = null;
 		try
 		{
 			ISSOPrincipalService ssoPrincipal = SSOWebUIFilter.getSSOPrincipal();
-			String username = ssoPrincipal.getUserName(result);
-			Language language = ssoPrincipal.getLanguage(result);
+			String username = ssoPrincipal.getUserName(token);
+			Language language = ssoPrincipal.getLanguage(token);
 			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 			if (Util.isEmpty(username))
 				throw new AdempiereException("No Apps " + (isEmailLogin ? "Email" : "User"));

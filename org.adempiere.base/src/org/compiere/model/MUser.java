@@ -204,7 +204,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 *	@param ctx context
 	 *	@param name name
 	 *	@param password password
-	 *	@param isSSOLogin when isSSOLogin is true, password is ignore.
+	 *	@param isSSOLogin when isSSOLogin is true, password is ignored.
 	 *	@return user or null
 	 */
 	public static MUser get (Properties ctx, String name, String password, boolean isSSOLogin)

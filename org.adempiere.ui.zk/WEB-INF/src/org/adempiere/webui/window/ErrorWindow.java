@@ -34,9 +34,8 @@ public class ErrorWindow extends Window implements EventListener<Event>
 
 	public ErrorWindow()
 	{
-		/**
-		 * If the session token is removed directly then the error page is not load.
-		 * Executions. schedule does not work because request is not alive.
+		/* If the session token is removed directly then the error page is not load.
+		 * Executions.schedule does not work because request is not alive.
 		 * so echo event to remove token after error page load.
 		 * TODO find a way to use Executions.schedule
 		 */
