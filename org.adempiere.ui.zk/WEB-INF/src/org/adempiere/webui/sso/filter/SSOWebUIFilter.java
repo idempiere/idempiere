@@ -24,7 +24,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.adempiere.base.sso.ISSOPrinciple;
+import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
@@ -34,21 +34,21 @@ import org.compiere.util.CLogger;
  * 
  * @author Logilite Technologies
  */
-public class SSOWebuiFilter implements Filter
+public class SSOWebUIFilter implements Filter
 {
 	/** Logger */
-	protected static CLogger		log				= CLogger.getCLogger(SSOWebuiFilter.class);
+	protected static CLogger		log				= CLogger.getCLogger(SSOWebUIFilter.class);
 	// TODO as this is static, will not work on multi tenant environment
-	private static ISSOPrinciple	m_SSOPrinciple	= null;
+	private static ISSOPrincipalService	m_SSOPrincipal	= null;
 
 	/**
-	 * SSOWebuiFilter
+	 * SSOWebUIFilter
 	 */
-	public SSOWebuiFilter()
+	public SSOWebUIFilter()
 	{
 		super();
-	} // SSOWebuiFilter
-
+	} // SSOWebUIFilter
+	
 	/**
 	 * Filter
 	 * 
@@ -65,18 +65,25 @@ public class SSOWebuiFilter implements Filter
 		{
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
-			boolean isRedirectToLoginOnError = false;
 
+			// Ignore the resource request	
+			if (SSOUtils.isResourceRequest(httpRequest, true))
+			{
+				chain.doFilter(request, response);
+				return;
+			}
+
+			boolean isRedirectToLoginOnError = false;
 			boolean isAdminResRequest = false;
-			if (httpRequest.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN) != null)
-				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN);
-			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().startsWith("/admin");
+			if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
+				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
+			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().toLowerCase().startsWith("/admin");
 			
 			// work as default log in
 			if (httpRequest.getServletPath().toLowerCase().startsWith("/index") || httpRequest.getServletPath().equalsIgnoreCase("/"))
 				isAdminResRequest = false;
 			
-			httpRequest.getSession().setAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN, isAdminResRequest);
+			httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN, isAdminResRequest);
 			// redirect to admin zul file
 			if(isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin"))
 			 {
@@ -86,37 +93,31 @@ public class SSOWebuiFilter implements Filter
 			
 			try
 			{
-				if (m_SSOPrinciple == null)
+				if (m_SSOPrincipal == null)
 				{
-					m_SSOPrinciple = SSOUtils.getSSOPrinciple();
+					m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
 				}
 
-				if (m_SSOPrinciple != null && !isAdminResRequest)
+				if (m_SSOPrincipal != null && !isAdminResRequest)
 				{
-					if (m_SSOPrinciple.hasAuthenticationCode(httpRequest, httpResponse))
+					if (m_SSOPrincipal.hasAuthenticationCode(httpRequest, httpResponse))
 					{
 						// Use authentication code get get token
-						m_SSOPrinciple.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
+						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 					}
-					else if (!m_SSOPrinciple.isAuthenticated(httpRequest, httpResponse))
+					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
 						// Redirect to SSO sing in page for authentication
-						m_SSOPrinciple.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
+						m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 						return;
-					}
-					else if (m_SSOPrinciple.isAccessTokenExpired(httpRequest, httpResponse))
-					{
-						// Refresh token after expired
-						isRedirectToLoginOnError = true;
-						m_SSOPrinciple.refreshToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 					}
 				}
 			}
 			catch (Throwable exc)
 			{
 				log.log(Level.SEVERE, "Exception while authenticating: ",exc);
-				if (m_SSOPrinciple != null)
-					m_SSOPrinciple.removePrincipleFromSession(httpRequest);
+				if (m_SSOPrincipal != null)
+					m_SSOPrincipal.removePrincipalFromSession(httpRequest);
 				if(isRedirectToLoginOnError)
 				{
 					httpResponse.sendRedirect("webui/index.zul");
@@ -124,7 +125,8 @@ public class SSOWebuiFilter implements Filter
 				else
 				{
 					httpResponse.setStatus(500);
-					httpResponse.sendRedirect(SSOUtils.ERROR_API);
+                    response.setContentType("text/html");
+                    response.getWriter().append(SSOUtils.getCreateErrorResponce(exc.getLocalizedMessage()));
 				}
 				return;
 			}
@@ -149,8 +151,8 @@ public class SSOWebuiFilter implements Filter
 	{
 	}
 	
-	public static ISSOPrinciple getSSOPrinciple()
+	public static ISSOPrincipalService getSSOPrincipal()
 	{
-		return m_SSOPrinciple;
+		return m_SSOPrincipal;
 	}
 } // AdempiereMonitorFilter

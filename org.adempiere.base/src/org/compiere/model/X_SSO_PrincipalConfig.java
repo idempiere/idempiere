@@ -20,48 +20,70 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-/** Generated Model for SSO_PrincipleConfig
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
-@org.adempiere.base.Model(table="SSO_PrincipleConfig")
-public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, I_Persistent 
+/** Generated Model for SSO_PrincipalConfig
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
+@org.adempiere.base.Model(table="SSO_PrincipalConfig")
+public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230123L;
+	private static final long serialVersionUID = 20230712L;
 
     /** Standard Constructor */
-    public X_SSO_PrincipleConfig (Properties ctx, int SSO_PrincipleConfig_ID, String trxName)
+    public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName)
     {
-      super (ctx, SSO_PrincipleConfig_ID, trxName);
-      /** if (SSO_PrincipleConfig_ID == 0)
+      super (ctx, SSO_PrincipalConfig_ID, trxName);
+      /** if (SSO_PrincipalConfig_ID == 0)
         {
-			setSSO_PrincipleConfig_ID (0);
+			setSSO_PrincipalConfig_ID (0);
 			setSSO_Provider (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_SSO_PrincipleConfig (Properties ctx, int SSO_PrincipleConfig_ID, String trxName, String ... virtualColumns)
+    public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, SSO_PrincipleConfig_ID, trxName, virtualColumns);
-      /** if (SSO_PrincipleConfig_ID == 0)
+      super (ctx, SSO_PrincipalConfig_ID, trxName, virtualColumns);
+      /** if (SSO_PrincipalConfig_ID == 0)
         {
-			setSSO_PrincipleConfig_ID (0);
+			setSSO_PrincipalConfig_ID (0);
+			setSSO_Provider (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_SSO_PrincipalConfig (Properties ctx, String SSO_PrincipalConfig_UU, String trxName)
+    {
+      super (ctx, SSO_PrincipalConfig_UU, trxName);
+      /** if (SSO_PrincipalConfig_UU == null)
+        {
+			setSSO_PrincipalConfig_ID (0);
+			setSSO_Provider (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_SSO_PrincipalConfig (Properties ctx, String SSO_PrincipalConfig_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, SSO_PrincipalConfig_UU, trxName, virtualColumns);
+      /** if (SSO_PrincipalConfig_UU == null)
+        {
+			setSSO_PrincipalConfig_ID (0);
 			setSSO_Provider (null);
         } */
     }
 
     /** Load Constructor */
-    public X_SSO_PrincipleConfig (Properties ctx, ResultSet rs, String trxName)
+    public X_SSO_PrincipalConfig (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -77,7 +99,7 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_SSO_PrincipleConfig[")
+      StringBuilder sb = new StringBuilder ("X_SSO_PrincipalConfig[")
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
@@ -96,10 +118,10 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -266,39 +288,39 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	}
 
 	/** Set SSO Configuration.
-		@param SSO_PrincipleConfig_ID SSO Configuration
+		@param SSO_PrincipalConfig_ID SSO Configuration
 	*/
-	public void setSSO_PrincipleConfig_ID (int SSO_PrincipleConfig_ID)
+	public void setSSO_PrincipalConfig_ID (int SSO_PrincipalConfig_ID)
 	{
-		if (SSO_PrincipleConfig_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_SSO_PrincipleConfig_ID, null);
+		if (SSO_PrincipalConfig_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_SSO_PrincipalConfig_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_SSO_PrincipleConfig_ID, Integer.valueOf(SSO_PrincipleConfig_ID));
+			set_ValueNoCheck (COLUMNNAME_SSO_PrincipalConfig_ID, Integer.valueOf(SSO_PrincipalConfig_ID));
 	}
 
 	/** Get SSO Configuration.
 		@return SSO Configuration	  */
-	public int getSSO_PrincipleConfig_ID()
+	public int getSSO_PrincipalConfig_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_SSO_PrincipleConfig_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_SSO_PrincipalConfig_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
 	/** Set SSO Configuration UU.
-		@param SSO_PrincipleConfig_UU SSO Configuration UU
+		@param SSO_PrincipalConfig_UU SSO Configuration UU
 	*/
-	public void setSSO_PrincipleConfig_UU (String SSO_PrincipleConfig_UU)
+	public void setSSO_PrincipalConfig_UU (String SSO_PrincipalConfig_UU)
 	{
-		set_ValueNoCheck (COLUMNNAME_SSO_PrincipleConfig_UU, SSO_PrincipleConfig_UU);
+		set_ValueNoCheck (COLUMNNAME_SSO_PrincipalConfig_UU, SSO_PrincipalConfig_UU);
 	}
 
 	/** Get SSO Configuration UU.
 		@return SSO Configuration UU	  */
-	public String getSSO_PrincipleConfig_UU()
+	public String getSSO_PrincipalConfig_UU()
 	{
-		return (String)get_Value(COLUMNNAME_SSO_PrincipleConfig_UU);
+		return (String)get_Value(COLUMNNAME_SSO_PrincipalConfig_UU);
 	}
 
 	/** SSO_Provider AD_Reference_ID=200213 */

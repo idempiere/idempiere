@@ -13,52 +13,94 @@
 
 package org.adempiere.base.sso;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.adempiere.base.Service;
-import org.compiere.model.I_SSO_PrincipleConfig;
-import org.compiere.model.MSSOPrincipleConfig;
+import org.compiere.model.I_SSO_PrincipalConfig;
+import org.compiere.model.MSSOPrincipalConfig;
 
 /**
  * @author Logilite Technologies
  */
 public class SSOUtils
 {
-	public static final String	ERROR_API				= "/error.html";
+	public static final String			ERROR_VALIDATION_URL	= "/error.zul";
 
-	public static final String	ERROR_VALIDATION		= "/error.zul";
+	public static final String			SSO_MODE_OSGI			= "SSO_MODE_OSGI";
+	public static final String			SSO_MODE_WEBUI			= "SSO_MODE_WEBUI";
+	public static final String			SSO_MODE_MONITOR		= "SSO_MODE_MONITOR";
 
-	public static final String	SSO_MODE_OSGI			= "SSO_MODE_OSGI";
-	public static final String	SSO_MODE_WEBUI			= "SSO_MODE_WEBUI";
-	public static final String	SSO_MODE_MONITOR		= "SSO_MODE_MONITOR";
+	public static final String			ISCHANGEROLE_REQUEST	= "ISCHANGEROLE_REQUEST";
 
-	public static final String	ISCHANGEROLE_REQUEST	= "ISCHANGEROLE_REQUEST";
+	public static final String			EVENT_ON_AFTER_SSOLOGIN	= "onAfterSSOLogin";
 
-	public static final String	EVENT_ON_AFTER_SSOLOGIN	= "onAfterSSOLogin";
+	private static ArrayList<String>	ignoreResourceURL		= null;
 
-	public static ISSOPrinciple getSSOPrinciple()
+	static
 	{
-		ISSOPrinciple principle = null;
-		MSSOPrincipleConfig config = MSSOPrincipleConfig.getDefaultSSOPrinciple();
+		ignoreResourceURL = new ArrayList<String>();
+		ignoreResourceURL.add("zkau");
+		ignoreResourceURL.add("images");
+		ignoreResourceURL.add("css");
+		ignoreResourceURL.add("res");
+	}
+
+	public static ISSOPrincipalService getSSOPrincipalService()
+	{
+		ISSOPrincipalService principal = null;
+		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalService();
 		if (config == null)
 			return null;
-		List<ISSOPrincipleFactory> factories = Service.locator().list(ISSOPrincipleFactory.class).getServices();
-		for (ISSOPrincipleFactory factory : factories)
+		List<ISSOPrincipalFactory> factories = Service.locator().list(ISSOPrincipalFactory.class).getServices();
+		for (ISSOPrincipalFactory factory : factories)
 		{
-			principle = factory.getSSOPrincipleService(config);
-			if (principle != null)
+			principal = factory.getSSOPrincipalService(config);
+			if (principal != null)
 				break;
 		}
-		return principle;
+		return principal;
 	}
-	
 
-	public static String getRedirectedURL(String redirectMode, I_SSO_PrincipleConfig config)
+	public static String getRedirectedURL(String redirectMode, I_SSO_PrincipalConfig config)
 	{
 		if (SSO_MODE_OSGI.equalsIgnoreCase(redirectMode))
 			return config.getSSO_OSGIRedirectURIs();
 		else if (SSO_MODE_MONITOR.equalsIgnoreCase(redirectMode))
 			return config.getSSO_IDempMonitorRedirectURIs();
 		return config.getSSO_ApplicationRedirectURIs();
+	}
+
+	public static String getCreateErrorResponce(String error)
+	{
+		return new StringBuffer("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>")
+						.append("<html xmlns='http://www.w3.org/1999/xhtml'>")
+						.append("<head>")
+						.append("<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />")
+						.append("<title>iDempiere Server Error</title>")
+						.append("<link href='/standard.css' rel='stylesheet'/>")
+						.append("</head>")
+						.append("<body>")
+						.append("<h1>iDempiere Server Error </h1>")
+						.append("<p>The iDempiere Server encountered a unrecoverable error.</p>")
+						.append("<p>")
+						.append(error)
+						.append("</p>")
+						.append("<h2>Please notify the administrator.</h2>")
+						.append("</body>")
+						.append("</html>")
+						.toString();
+
+	}
+
+	public static boolean isResourceRequest(HttpServletRequest request, boolean isWebUI)
+	{
+		String[] urlpath = request.getServletPath().toLowerCase().split("/");
+		if (isWebUI)
+			return urlpath != null && urlpath.length > 1 && ignoreResourceURL.contains(urlpath[1]);
+		else
+			return urlpath != null && urlpath.length > 3 && ignoreResourceURL.contains(urlpath[3]);
 	}
 }

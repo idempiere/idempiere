@@ -10,13 +10,13 @@
 	</context-param>
 
 	<filter>
-		<display-name>iDempiere WebUI Filter</display-name>
-		<filter-name>idempiereWebuiFilter</filter-name>
-		<filter-class>org.adempiere.webui.sso.filter.SSOWebuiFilter</filter-class>
+		<display-name>SSO WebUI Filter</display-name>
+		<filter-name>ssowebuifilter</filter-name>
+		<filter-class>org.adempiere.webui.sso.filter.SSOWebUIFilter</filter-class>
 		<async-supported>true</async-supported>
 	</filter>
 	<filter-mapping>
-		<filter-name>idempiereWebuiFilter</filter-name>
+		<filter-name>ssowebuifilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 

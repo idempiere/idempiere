@@ -12,8 +12,8 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import org.adempiere.base.sso.ISSOPrinciple;
-import org.adempiere.webui.component.FWindow;
+import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.webui.component.Window;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -21,13 +21,12 @@ import org.zkoss.zk.ui.event.Events;
 
 /**
  * Error window in error.zul
- * Remove SSO principle from session when error.
+ * Remove SSO Principal from session when error.
  * 
  * @author Logilite Technologies
  */
-public class ErrorWindow extends FWindow implements EventListener<Event>
+public class ErrorWindow extends Window implements EventListener<Event>
 {
-
 	/**
 	 * 
 	 */
@@ -35,14 +34,19 @@ public class ErrorWindow extends FWindow implements EventListener<Event>
 
 	public ErrorWindow()
 	{
-		addEventListener("onRemoveSSOPrinciple", this);
-		Events.echoEvent("onRemoveSSOPrinciple", this, null);
+		/**
+		 * If the session token is removed directly then the error page is not load.
+		 * Executions. schedule does not work because request is not alive.
+		 * so echo event to remove token after error page load.
+		 * TODO find a way to use Executions.schedule
+		 */
+		addEventListener("onRemoveSSOPrincipal", this);
+		Events.echoEvent("onRemoveSSOPrincipal", this, null);
 	}
 
 	@Override
 	public void onEvent(Event event) throws Exception
 	{
-		Executions.getCurrent().getSession().removeAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME);
+		Executions.getCurrent().getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
 	}
-
 }

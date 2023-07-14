@@ -12,14 +12,20 @@
  *****************************************************************************/
 package org.adempiere.base.sso;
 
-import org.compiere.model.I_SSO_PrincipleConfig;
+import org.compiere.model.I_SSO_PrincipalConfig;
 
 /**
  * @author Logilite Technologies
  *
  */
-public interface ISSOPrincipleFactory
+public interface ISSOPrincipalFactory
 {
-	public ISSOPrinciple getSSOPrincipleService(I_SSO_PrincipleConfig config);
+	/**
+	 * Get SSO Principal Service for login authentication
+	 * 
+	 * @param  config
+	 * @return
+	 */
+	public ISSOPrincipalService getSSOPrincipalService(I_SSO_PrincipalConfig config);
 }
 	

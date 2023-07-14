@@ -30,7 +30,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.adempiere.base.sso.ISSOPrinciple;
+import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
@@ -494,8 +494,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    final WebApp wapp = desktop.getWebApp();
 	    final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(desktop.getSession());	    	    
 	    boolean isAdminLogin = false;
-	    if (desktop.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN) != null)
-	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrinciple.SSO_ADMIN_LOGIN);
+	    if (desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
+	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.adempiere.base.sso.ISSOPrinciple;
+import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.MSysConfig;
@@ -63,7 +63,7 @@ public class AdempiereMonitorFilter implements Filter
 	/** Authorization Marker */
 	private Long					m_authorization	= null;
 
-	private static ISSOPrinciple	m_SSOPrinciple	= null;
+	private static ISSOPrincipalService	m_SSOPrincipal	= null;
 	
 	/**
 	 * 	Init
@@ -96,52 +96,50 @@ public class AdempiereMonitorFilter implements Filter
 				request.getRequestDispatcher(errorPage).forward(request, response);
 				return;
 			}
+
 			boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 			HttpServletRequest req = (HttpServletRequest)request;
 			HttpServletResponse resp = (HttpServletResponse)response;
 			boolean isRedirectToLoginOnError = false;
 			if (isSSOEnable) {
 				try {
-					if (m_SSOPrinciple == null) {
-						m_SSOPrinciple = SSOUtils.getSSOPrinciple();
+					if (m_SSOPrincipal == null) {
+						m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
 					}
 
-					if (m_SSOPrinciple != null) {
-						if (m_SSOPrinciple.hasAuthenticationCode(req, resp)) {
+					if (m_SSOPrincipal != null) {
+						if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
 							// Use authentication code get get token
-							m_SSOPrinciple.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
-						} else if (!m_SSOPrinciple.isAuthenticated(req, resp)) {
+							m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
+						} else if (!m_SSOPrincipal.isAuthenticated(req, resp)) {
 							// Redirect to SSO sing in page for authentication
-							m_SSOPrinciple.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
+							m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
 							return;
-						} else if (m_SSOPrinciple.isAccessTokenExpired(req, resp)) {
-							// Refresh token after expired
-							isRedirectToLoginOnError = true;
-							m_SSOPrinciple.refreshToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
 						}
 						// validate the user
-						if (checkSSOAuthorization(req.getSession().getAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME)))
+						if (checkSSOAuthorization(req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)))
 						{
 							chain.doFilter(request, response);
 							return;
 						}
 					}
-					req.getSession().removeAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME);
+					req.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
 				} catch (Throwable exc) {
 					log.log(Level.SEVERE, "Exception while authenticating: ", exc);
-					if (m_SSOPrinciple != null)
-						m_SSOPrinciple.removePrincipleFromSession(req);
+					if (m_SSOPrincipal != null)
+						m_SSOPrincipal.removePrincipalFromSession(req);
 					if (isRedirectToLoginOnError) {
 						resp.sendRedirect("idempiereMonitor");
 					} else {
 						resp.setStatus(500);
-						resp.sendRedirect(SSOUtils.ERROR_API);
+						response.setContentType("text/html");
+						response.getWriter().append(SSOUtils.getCreateErrorResponce(exc.getLocalizedMessage()));
 					}
 					return;
 				}
 			}
 
-			if (m_SSOPrinciple == null || !isSSOEnable)
+			if (m_SSOPrincipal == null || !isSSOEnable)
 			{
 				HttpSession session = req.getSession(true);
 				// Previously checked
@@ -175,7 +173,7 @@ public class AdempiereMonitorFilter implements Filter
 			return false;
 		try
 		{
-			String username = m_SSOPrinciple.getUserName(token);
+			String username = m_SSOPrincipal.getUserName(token);
 			return validateUser(username, null, true);
 		}
 		catch (Exception e)
