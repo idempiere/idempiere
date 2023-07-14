@@ -143,8 +143,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
-	protected static final String ROW_CTX_VARIABLE_PREFIX = "i_";
-	protected static final String ROW_ID_CTX_VARIABLE_NAME = "ID_Selection";
+	protected static final String ROW_CTX_VARIABLE_PREFIX = "_IWInfo_";
+	protected static final String ROW_ID_CTX_VARIABLE_NAME = "_IWInfoIDs_Selected";
 	
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
@@ -655,10 +655,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	public void setStatusSelected ()
 	{
-		if (!p_multipleSelection)
-			return;
-		
-		int selectedCount = recordSelectedData.size();
+		int selectedCount = p_multipleSelection ? recordSelectedData.size() : 0;
 		
 		for (int rowIndex = 0; rowIndex < contentPanel.getModel().getRowCount(); rowIndex++){			
 			Object keyCandidate = getColumnValue(rowIndex);
@@ -667,10 +664,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
 						
 			if (contentPanel.getModel().isSelected(candidateRecord)){
-				if (!recordSelectedData.containsKey(keyCandidate)){
+				if(!p_multipleSelection) {
+					selectedCount++;
+					break;
+				}
+				else if (!recordSelectedData.containsKey(keyCandidate)){
 					selectedCount++;
 				}
-			}else{
+			}else if (p_multipleSelection){
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
 					selectedCount--;
 				}
@@ -2272,6 +2273,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
         {
     		recordSelectedData.clear();
+    		setStatusSelected();
         	onUserQuery();
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)))
@@ -3363,10 +3365,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			m_rowSelectionOrder.clear();
 		}
 		else {
-    		if(m_rowSelectionOrder.contains(m_lastSelectedIndex))
-    			m_rowSelectionOrder.remove((Integer)m_lastSelectedIndex);
-    		else
-    			m_rowSelectionOrder.add(m_lastSelectedIndex);
+			if(!p_multipleSelection) {
+				m_rowSelectionOrder.clear();
+				m_rowSelectionOrder.add(m_lastSelectedIndex);
+			}
+			else {
+	    		if(m_rowSelectionOrder.contains(m_lastSelectedIndex))
+	    			m_rowSelectionOrder.remove((Integer)m_lastSelectedIndex);
+	    		else
+	    			m_rowSelectionOrder.add(m_lastSelectedIndex);
+			}
 		}
 	} // updateRowSelectionOrder
 	
@@ -3385,16 +3393,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				setContext(columnName, value);
 			}
 		}
-		else {
-			// put the values of the last selected row into the context
-			for(int i = 0; i < p_layout.length; i++) {
-				String columnName = p_layout[i].getColumnName();
-				Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
-				setContext(ROW_CTX_VARIABLE_PREFIX + columnName, value);
-			}
-			// add selected IDs to the context
-			setContext(ROW_ID_CTX_VARIABLE_NAME, getSelectedIDsForCtx());
+		
+		// put the values of the last selected row into the context
+		for(int i = 0; i < p_layout.length; i++) {
+			String columnName = p_layout[i].getColumnName();
+			Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
+			setContext(ROW_CTX_VARIABLE_PREFIX + columnName, value);
 		}
+		// add selected IDs to the context
+		setContext(ROW_ID_CTX_VARIABLE_NAME, getSelectedIDsForCtx());
+		
 		// update Quick Info widget
 		if (infoWindow != null)
 			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
@@ -3410,6 +3418,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected void setContext(String columnName, Object value) {
 		if(value instanceof KeyNamePair)
 			value = ((KeyNamePair)value).getKey();
+		else if(value instanceof IDColumn)
+			value = ((IDColumn)value).getRecord_ID();
 		
 		if (value == null) {
         	Env.setContext(Env.getCtx(), p_WindowNo, columnName, "");
