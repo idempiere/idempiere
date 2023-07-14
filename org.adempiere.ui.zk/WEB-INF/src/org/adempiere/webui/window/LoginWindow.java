@@ -155,7 +155,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
 				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
 			
-			KeyNamePair[] clients = login.getClients(username, null, null, true);
+			KeyNamePair[] clients = login.getClients(username, null, null, token);
 			if (clients != null)
 				loginOk(username, isShowRolePanel, clients, true);
 			else

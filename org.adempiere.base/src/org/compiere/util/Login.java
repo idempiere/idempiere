@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1266,7 +1267,7 @@ public class Login
 	 * @return client array or null if in error.
 	 */
 	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes) {
-		return getClients(app_user, app_pwd, null, false);
+		return getClients(app_user, app_pwd, roleTypes, null);
 	}
 
 	/**
@@ -1275,10 +1276,10 @@ public class Login
 	 *  @param app_user user id
 	 *  @param app_pwd password
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
-	 *  @param isSSOLogin check only base on user Name
+	 *  @param token validate the user with a token for SSO login.
 	 *  @return client array or null if in error.
 	 */
-	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, boolean isSSOLogin) {
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token) {
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
@@ -1289,6 +1290,17 @@ public class Login
 
 		//	Authentication
 		boolean authenticated = false;
+		boolean isSSOLogin = false;
+		try
+		{
+			isSSOLogin = token != null && SSOUtils.getSSOPrincipalService() != null && SSOUtils.getSSOPrincipalService().getUserName(token).equalsIgnoreCase(app_user);
+		}
+		catch (ParseException e)
+		{
+			log.warning("Parsing failed: " + e.getLocalizedMessage());
+			isSSOLogin = false;
+		}
+
 		MSystem system = MSystem.get(m_ctx);
 		if (system == null)
 			throw new IllegalStateException("No System Info");
