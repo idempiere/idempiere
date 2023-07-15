@@ -233,6 +233,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	private Button btnSelectAll;
 	private Button btnDeSelectAll;
+
+	private boolean registerWindowNo = false;
 	
 	/**************************************************
      *  Detail Constructor
@@ -296,6 +298,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	{				
 		if (WindowNo <= 0) {
 			p_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+			registerWindowNo  = true;
 		} else {
 			p_WindowNo = WindowNo;
 		}
@@ -3245,6 +3248,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
 			if (getFirstChild() != null)
 				saveWlistBoxColumnWidth(getFirstChild());
+			if (registerWindowNo && SessionManager.getAppDesktop() != null)
+				SessionManager.getAppDesktop().unregisterWindow(p_WindowNo);
 		} catch (Exception e){
 			log.log(Level.WARNING, e.getMessage(), e);
 		}
