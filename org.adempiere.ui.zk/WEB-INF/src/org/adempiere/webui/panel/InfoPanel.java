@@ -45,7 +45,6 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.Button;
@@ -522,7 +521,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private int cacheStart;
 	private int cacheEnd;
 	private boolean m_useDatabasePaging = false;
-	private BusyDialog progressWindow;
 	// in case double click to item. this store clicked item (maybe it's un-select item)
 	private int m_lastSelectedIndex = -1;
 	protected GridField m_gridfield;
@@ -2795,18 +2793,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	return -1;
     }
    
-
 	private void showBusyDialog() {
-		progressWindow = new BusyDialog();
-		progressWindow.setPage(this.getPage());
-		progressWindow.doHighlighted();
+		Clients.showBusy(this, Msg.getMsg(Env.getCtx(), "Processing"));
 	}
 
 	private void hideBusyDialog() {		
-		if (progressWindow != null) {
-			progressWindow.dispose();
-			progressWindow = null;
-		}		
+		Clients.clearBusy(this);
 	}
 
 	protected void correctHeaderOrderIndicator() {
