@@ -863,7 +863,7 @@ ContextMenuListener, IZoomableEditor
 	@Override
 	public String getDisplayTextForGridView(Object value) {
 		String s = super.getDisplayTextForGridView(value);
-		if (ClientInfo.isMobile( )&& MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
+		if (s != null && ClientInfo.isMobile( ) && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
 			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, null, Env.getAD_Client_ID(Env.getCtx()));
 			if (!Util.isEmpty(separator, true) && s.indexOf(separator) >= 0) {
 				s = s.replace(separator, "\n");
