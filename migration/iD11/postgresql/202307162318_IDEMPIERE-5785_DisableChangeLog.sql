@@ -271,6 +271,10 @@ UPDATE ad_sysconfig SET value='N' WHERE name='SYSTEM_INSERT_CHANGELOG' AND ad_cl
 /*
 -- Recommended to execute the following two deletes in your instance if you want to clear your AD_ChangeLog
 
+-- delete change log from tables not logged
+DELETE FROM ad_changelog WHERE ad_table_id IN (SELECT ad_table_id FROM ad_table WHERE ischangelog='N')
+;
+
 -- delete change log from columns not logged
 DELETE FROM ad_changelog WHERE ad_column_id IN (SELECT ad_column_id FROM ad_column WHERE isallowlogging='N')
 ;
