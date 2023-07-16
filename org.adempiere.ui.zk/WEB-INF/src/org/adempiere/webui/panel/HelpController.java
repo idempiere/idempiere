@@ -662,11 +662,22 @@ public class HelpController
     	}
     }
 
-    public void renderQuickInfo(GridTab gridTab) {
-    	if (gridTab == null) {
+    public void renderQuickInfo(Object obj) {
+    	if (obj == null) {
         	pnlQuickInfo.setVisible(false);
     	} else {
-    		String widget = gridTab.getStatusLinesWidget();
+    		String widget = "";
+    		if(obj instanceof GridTab) {
+    			widget = ((GridTab)obj).getStatusLinesWidget();
+    		}
+    		else if(obj instanceof InfoPanel) {
+    			widget = ((InfoPanel)obj).getStatusLinesWidget();
+    		}
+    		else {
+    			pnlQuickInfo.setVisible(false);
+    			return;
+    		}
+    		
     		if (widget == null) {
             	pnlQuickInfo.setVisible(false);
     		} else {
