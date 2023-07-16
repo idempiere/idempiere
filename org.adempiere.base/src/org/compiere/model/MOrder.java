@@ -2451,8 +2451,13 @@ public class MOrder extends X_C_Order implements DocAction
 			so.saveEx();
 		}
 
-		if (!createReversals())
-			return false;
+		if (isSOTrx()) {
+			if (!createReversals())
+				return false;
+		} else {
+			if (!createPOReversals())
+				return false;
+		}
 
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 		for (int i = 0; i < lines.length; i++)
@@ -2523,7 +2528,8 @@ public class MOrder extends X_C_Order implements DocAction
 		if (!isSOTrx())
 			return true;
 		
-		log.info("createReversals");
+		if (log.isLoggable(Level.INFO))
+			log.info("createReversals");
 		StringBuilder info = new StringBuilder();
 		
 		//	Reverse All *Shipments*
@@ -2596,7 +2602,30 @@ public class MOrder extends X_C_Order implements DocAction
 		return true;
 	}	//	createReversals
 	
-	
+	/**
+	 * Create match po reversals
+	 * @return true if success
+	 */
+	protected boolean createPOReversals() {
+		if (isSOTrx())
+			return true;
+		
+		Timestamp loginDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), Env.DATE));
+		for(MOrderLine line : getLines()) {
+			MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), line.get_ID(), get_TrxName());
+			for(MMatchPO matchPO : matchPOs) {
+				if (matchPO.getReversal_ID() > 0)
+					continue;
+				if (!matchPO.reverse(loginDate, true)) {
+					m_processMsg = "Could not Reverse " + matchPO;
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
 	/**
 	 * 	Close Document.
 	 * 	Cancel not delivered Quantities
