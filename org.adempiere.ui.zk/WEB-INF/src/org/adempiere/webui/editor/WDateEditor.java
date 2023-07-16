@@ -18,8 +18,10 @@
 package org.adempiere.webui.editor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Objects;
 
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Datebox;
@@ -168,30 +170,43 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     {
     	if (value == null || value.toString().trim().length() == 0)
     	{
+    		Timestamp currentValue = oldValue;
     		oldValue = null;
     		getComponent().setValue(null);
-    		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-            super.fireValueChange(changeEvent);
+    		if (currentValue != null)
+    		{
+    			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, null);
+    			super.fireValueChange(changeEvent);
+    		}
     	}
     	else if (value instanceof Timestamp)
         {
-            getComponent().setValueInLocalDateTime(((Timestamp)value).toLocalDateTime());
-            ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-            super.fireValueChange(changeEvent);
-            oldValue = (Timestamp)value;
+    		Timestamp currentValue = oldValue;
+    		LocalDateTime localDateTime = ((Timestamp)value).toLocalDateTime();
+            getComponent().setValueInLocalDateTime(localDateTime);            
+            oldValue = Timestamp.valueOf(localDateTime);
+            if (!Objects.equals(currentValue, oldValue)) 
+            {
+            	ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
+            	super.fireValueChange(changeEvent);
+            }
         }
     	else
     	{
     		try
     		{
+    			Timestamp currentValue = oldValue;
     			getComponent().setText(value.toString());
-    			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-                super.fireValueChange(changeEvent);
-    		} catch (Exception e) {}
-    		if (getComponent().getValue() != null)
-    			oldValue = Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-    		else
-    			oldValue = null;
+    			if (getComponent().getValue() != null)
+        			oldValue = Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        		else
+        			oldValue = null;
+    			if (!Objects.equals(currentValue, oldValue))
+    			{
+	    			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
+	                super.fireValueChange(changeEvent);
+    			}
+    		} catch (Exception e) {}    		
     	}
     }
 
