@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -45,7 +46,6 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.Button;
@@ -74,6 +74,7 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.UUIDColumn;
+import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.InfoRelatedVO;
@@ -83,10 +84,10 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
+import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
@@ -142,6 +143,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
+	protected static final String ROW_CTX_VARIABLE_PREFIX = "_IWInfo_";
+	protected static final String ROW_ID_CTX_VARIABLE_NAME = "_IWInfoIDs_Selected";
 	
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
@@ -233,6 +236,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	private Button btnSelectAll;
 	private Button btnDeSelectAll;
+
+	private boolean registerWindowNo = false;
 	
 	/**************************************************
      *  Detail Constructor
@@ -296,6 +301,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	{				
 		if (WindowNo <= 0) {
 			p_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+			registerWindowNo  = true;
 		} else {
 			p_WindowNo = WindowNo;
 		}
@@ -522,7 +528,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private int cacheStart;
 	private int cacheEnd;
 	private boolean m_useDatabasePaging = false;
-	private BusyDialog progressWindow;
 	// in case double click to item. this store clicked item (maybe it's un-select item)
 	private int m_lastSelectedIndex = -1;
 	protected GridField m_gridfield;
@@ -614,6 +619,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
+	 * Contains the indexes of selected row, maintains the selection order
+	 */
+	protected ArrayList<Integer> m_rowSelectionOrder = new ArrayList<Integer>();
+	/**
+	 * Number of selected rows
+	 */
+	protected int m_selectedCount = 0;
+	/** 
+	 * Values that will be put into the context on re-query 
+	 */
+	protected HashMap<String, Object> paraCtxValues = new HashMap<String, Object>();
+	
+	/**
 	 *  Loaded correctly
 	 *  @return true if loaded OK
 	 */
@@ -646,10 +664,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	public void setStatusSelected ()
 	{
-		if (!p_multipleSelection)
-			return;
-		
-		int selectedCount = recordSelectedData.size();
+		int selectedCount = p_multipleSelection ? recordSelectedData.size() : 0;
 		
 		for (int rowIndex = 0; rowIndex < contentPanel.getModel().getRowCount(); rowIndex++){			
 			Object keyCandidate = getColumnValue(rowIndex);
@@ -658,16 +673,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
 						
 			if (contentPanel.getModel().isSelected(candidateRecord)){
-				if (!recordSelectedData.containsKey(keyCandidate)){
+				if(!p_multipleSelection) {
+					selectedCount++;
+					break;
+				}
+				else if (!recordSelectedData.containsKey(keyCandidate)){
 					selectedCount++;
 				}
-			}else{
+			}else if (p_multipleSelection){
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
 					selectedCount--;
 				}
 			}
 		}	
-		
+		m_selectedCount = selectedCount;
 		String msg = Msg.getMsg(Env.getCtx(), "IWStatusSelected", new Object [] {String.valueOf(selectedCount)});
 		statusBar.setSelectedRowNumber(msg);
 		btnSelectAll.setEnabled(m_count > 0 && selectedCount != m_count);
@@ -2217,6 +2236,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
        		}
 
         	enableButtons();
+        	if(!isLookup()) {
+	        	updateRowSelectionOrder();
+	        	updateContext(false);
+        	}
         	
         }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
@@ -2259,6 +2282,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
         {
     		recordSelectedData.clear();
+    		setStatusSelected();
         	onUserQuery();
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)))
@@ -2306,10 +2330,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (ON_SELECT_ALL_RECORDS.equals(event.getName()))
         {
         	selectAllRecords();
+        	if(!isLookup()) {
+		    	updateRowSelectionOrder();
+		    	updateContext(false);
+        	}
         }
         else if (event.getTarget().equals(btnDeSelectAll))
         {
         	deSelectAllRecords();
+        	if(!isLookup()) {
+	        	updateRowSelectionOrder();
+	        	updateContext(false);
+        	}
         }
         // IDEMPIERE-1334 handle event click into process button start
         else if (ON_RUN_PROCESS.equals(event.getName())){
@@ -2379,7 +2411,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
     	{
     		if (infoWindow != null)
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
 			else
 				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
     	}
@@ -2795,18 +2827,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	return -1;
     }
    
-
 	private void showBusyDialog() {
-		progressWindow = new BusyDialog();
-		progressWindow.setPage(this.getPage());
-		progressWindow.doHighlighted();
+		Clients.showBusy(this, Msg.getMsg(Env.getCtx(), "Processing"));
 	}
 
 	private void hideBusyDialog() {		
-		if (progressWindow != null) {
-			progressWindow.dispose();
-			progressWindow = null;
-		}		
+		Clients.clearBusy(this);
 	}
 
 	protected void correctHeaderOrderIndicator() {
@@ -2863,6 +2889,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	{
     		isQueryByUser = false;
     		hideBusyDialog();
+    	}
+    	if(!isLookup()) {
+			updateRowSelectionOrder();
+			updateContext(true);
     	}
     }
 
@@ -3227,11 +3257,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
-		if (newpage != null) {
+		if (newpage != null && !isLookup()) {
 			if (infoWindow != null)
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
 			else
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0, this);
 		}
 		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	}
@@ -3245,6 +3275,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
 			if (getFirstChild() != null)
 				saveWlistBoxColumnWidth(getFirstChild());
+			if (registerWindowNo && SessionManager.getAppDesktop() != null)
+				SessionManager.getAppDesktop().unregisterWindow(p_WindowNo);
 		} catch (Exception e){
 			log.log(Level.WARNING, e.getMessage(), e);
 		}
@@ -3302,5 +3334,129 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (btnDeSelectAll != null)
 			btnDeSelectAll.setVisible(multipleSelection);
 	}
+	
 
+	
+	/**
+	 *	Widget support
+	 *	Depending on Window/Tab returns widget lines info
+	 *  @return info
+	 */
+	public String getStatusLinesWidget() {
+		if(infoWindow == null)
+			return null;
+		MStatusLine[] wls = MStatusLine.getStatusLinesWidget(0, 0, 0, infoWindow.getAD_InfoWindow_ID());
+		if (wls != null && wls.length > 0)
+		{
+			StringBuilder lines = new StringBuilder();
+			for (MStatusLine wl : wls) {
+				String line = wl.parseLine(getWindowNo());
+				if (line != null) {
+					lines.append(line).append("<br>");
+				}
+			}
+			if (lines.length() > 0)
+				return lines.toString();
+		}
+		return null;
+	} // getWidgetLines
+
+	/**
+	 * Update row selection order
+	 */
+	protected void updateRowSelectionOrder() {
+    	if(m_selectedCount == m_count) {
+			for(int rowIdx = 0; rowIdx < m_count; rowIdx++) {
+				if(!m_rowSelectionOrder.contains(rowIdx))
+					m_rowSelectionOrder.add((Integer)rowIdx);
+			}
+		}
+		else if(m_selectedCount == 0) {
+			m_rowSelectionOrder.clear();
+		}
+		else {
+			if(!p_multipleSelection) {
+				m_rowSelectionOrder.clear();
+				m_rowSelectionOrder.add(m_lastSelectedIndex);
+			}
+			else {
+	    		if(m_rowSelectionOrder.contains(m_lastSelectedIndex))
+	    			m_rowSelectionOrder.remove((Integer)m_lastSelectedIndex);
+	    		else
+	    			m_rowSelectionOrder.add(m_lastSelectedIndex);
+			}
+		}
+	} // updateRowSelectionOrder
+	
+	/**
+	 * Put values from the selected row into the context
+	 */
+	protected void updateContext(boolean checkQueryCriteria) {
+		Map<Object, List<Object>> rowInfo = getSelectedRowInfo();
+		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? rowInfo.get(getRowKeyAt(m_rowSelectionOrder.get(m_rowSelectionOrder.size() - 1))) : null;
+		
+		if(checkQueryCriteria) {
+			// put parameter values into the context
+			for(Map.Entry<String, Object> e : paraCtxValues.entrySet()) {
+				String columnName = e.getKey();
+				Object value = e.getValue();
+				setContext(columnName, value);
+			}
+		}
+		
+		// put the values of the last selected row into the context
+		for(int i = 0; i < p_layout.length; i++) {
+			String columnName = p_layout[i].getColumnName();
+			Object value = lastSelectedRow != null ? lastSelectedRow.get(i) : null;
+			setContext(ROW_CTX_VARIABLE_PREFIX + columnName, value);
+		}
+		// add selected IDs to the context
+		setContext(ROW_ID_CTX_VARIABLE_NAME, getSelectedIDsForCtx());
+		
+		// update Quick Info widget
+		if (infoWindow != null)
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
+		else
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0, this);
+	} // updateContext
+	
+	/**
+	 * Set context
+	 * @param columnName
+	 * @param value
+	 */
+	protected void setContext(String columnName, Object value) {
+		if(value instanceof KeyNamePair)
+			value = ((KeyNamePair)value).getKey();
+		else if(value instanceof IDColumn)
+			value = ((IDColumn)value).getRecord_ID();
+		
+		if (value == null) {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, "");
+        } else if (value instanceof Boolean) {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, (Boolean)value);
+        } else if (value instanceof Timestamp) {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, (Timestamp)value);
+        } else {
+        	Env.setContext(Env.getCtx(), p_WindowNo, columnName, value.toString());
+        }
+	}
+	
+	/**
+	 * Get a comma-separated string of selected IDs
+	 * @return String ctx value
+	 */
+	protected String getSelectedIDsForCtx() {
+		String returnVal = null;
+		
+		for(int idx : m_rowSelectionOrder) {
+			String selectedID = Objects.toString(getRowKeyAt(idx));
+			if(returnVal == null)
+				returnVal = selectedID;
+			else
+				returnVal += "," + selectedID;
+		}		
+		return returnVal;
+	}
+	
 }	//	Info

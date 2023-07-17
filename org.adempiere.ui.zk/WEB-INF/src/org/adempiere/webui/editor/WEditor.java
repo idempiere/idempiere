@@ -480,7 +480,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * Fire ValueChangeEvent to ValueChangeListener in {@link #listeners}
      * @param event
      */
-    protected void fireValueChange(ValueChangeEvent event)
+    public void fireValueChange(ValueChangeEvent event)
     {
     	//copy to array to avoid concurrent modification exception
     	ValueChangeListener[] vcl = new ValueChangeListener[listeners.size()];
