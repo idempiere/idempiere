@@ -25,8 +25,10 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -67,6 +69,8 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
+import org.compiere.model.MWindowAccess;
+import org.compiere.model.Query;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -104,6 +108,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -7810825026970615029L;
 
+	// AD_Window_ID for Attribute Set Instance window.
+	private static final int ATTRIBUTE_SET_INSTANCE_AD_Window_ID = 358;
+
 	/**
 	 *	Product Attribute Instance Dialog
 	 *	@param M_AttributeSetInstance_ID Product Attribute Set Instance id
@@ -126,7 +133,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		this.setShadow(true);
 		this.setSizable(true);
 		this.setMaximizable(true);
-		
+
+		validadeRoleAccess();
+
 		if (log.isLoggable(Level.CONFIG)) log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
 			+ ", M_Product_ID=" + M_Product_ID
 			+ ", C_BPartner_ID=" + C_BPartner_ID
@@ -211,6 +220,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
 	protected String m_columnName = null;
+
+	private boolean isAllowedToCreate = false;
 
 	/**
 	 *	Layout
@@ -518,22 +529,24 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			return false;
 		}
 
+		cbNewEdit.setEnabled(isAllowedToCreate);
+
 		//	New/Edit Window
 		if (!m_productWindow)
 		{
-			cbNewEdit.setChecked(m_M_AttributeSetInstance_ID == 0);
+			cbNewEdit.setChecked(m_M_AttributeSetInstance_ID == 0 && isAllowedToCreate);
 			cmd_newEdit();
 		}
 		else
 		{
 			cbNewEdit.setSelected(false);
-			cbNewEdit.setEnabled(m_M_AttributeSetInstance_ID > 0);
-			bNewRecord.setEnabled(m_M_AttributeSetInstance_ID > 0);
+			cbNewEdit.setEnabled(m_M_AttributeSetInstance_ID > 0 && isAllowedToCreate);
+			bNewRecord.setEnabled(m_M_AttributeSetInstance_ID > 0 && isAllowedToCreate);
 			boolean rw = m_M_AttributeSetInstance_ID == 0;
 			for (int i = 0; i < m_editors.size(); i++)
 			{
 				WEditor editor = m_editors.get(i);
-				editor.setReadWrite(rw);
+				editor.setReadWrite(rw && isAllowedToCreate);
 			}
 		}
 
@@ -821,7 +834,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		//	OK
 		else if (e.getTarget().getId().equals("Ok"))
 		{
-			if (saveSelection())
+			if (isAllowedToCreate && saveSelection())
 				dispose();
 		}
 		//	Cancel
@@ -858,9 +871,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			for (int i = 0; i < attributes.length; i++)
 				updateAttributeEditor(attributes[i], i);
 			
-			cbNewEdit.setEnabled(true);
+			cbNewEdit.setEnabled(true && isAllowedToCreate);
 			cbNewEdit.setSelected(false);
-			bNewRecord.setEnabled(true);
+			bNewRecord.setEnabled(true && isAllowedToCreate);
 			cmd_edit();
 		}
 	}
@@ -967,7 +980,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	protected void cmd_newEdit()
 	{
-		boolean rw = cbNewEdit.isChecked();
+		boolean rw = cbNewEdit.isChecked() && isAllowedToCreate;
 		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + rw + " " + m_masi);
 		//
 		fieldLotString.setReadonly(!(rw && m_masi.getM_Lot_ID()==0));
@@ -1245,5 +1258,30 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	{
 		return m_changed;
 	}	//	isChanged
+
+	/**
+	 * This method searches for User's Window Access to determinate if it is
+	 * possible to create new ASI records (when IsReadWrite = true), only read
+	 * existing ASI records (when IsReadWrite = false) or open the ASI dialog (when
+	 * there is no Window Access for Attribute Set Instance window).
+	 */
+	private void validadeRoleAccess() {
+		List<MWindowAccess> windowAccesses = new Query(Env.getCtx(), MWindowAccess.Table_Name, "AD_Role_ID = ? AND AD_Window_ID = ?", null)
+				.setParameters(Env.getAD_Role_ID(Env.getCtx()), ATTRIBUTE_SET_INSTANCE_AD_Window_ID)
+				.setClient_ID()
+				.setOnlyActiveRecords(true)
+				.list();
+
+		if (windowAccesses.size() == 0)
+			throw new AdempiereException(Msg.translate(Env.getCtx(), "AccessTableNoView"));
+
+		for (MWindowAccess access : windowAccesses) {
+
+			if (access.isReadWrite()) {
+				isAllowedToCreate = true;
+				break;
+			}
+		}
+	}
 
 } //	WPAttributeDialog
