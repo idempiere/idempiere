@@ -212,7 +212,7 @@
 .performance-indicator-box {
 	background-color: #eee; 
 	border: 1px solid #d8d8d8; 
-	border-radius: 11px; 
+	border-radius: 5px; 
 	cursor: pointer;
 }
 .performance-indicator-title {

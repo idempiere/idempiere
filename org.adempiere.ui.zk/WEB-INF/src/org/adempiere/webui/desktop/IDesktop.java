@@ -19,6 +19,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.UIPart;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -222,6 +223,13 @@ public interface IDesktop extends UIPart {
 	
 	/**
 	 * update help content in help/info panel
+	 * @param infoWindowId
+	 * @param infoPanel
+	 */
+	public void updateHelpContext(String ctxType, int infoWindowId, InfoPanel infoPanel);
+	
+	/**
+	 * update help content in help/info panel
 	 * @param ctxTypes
 	 * @param recordId
 	 */
@@ -247,6 +255,12 @@ public interface IDesktop extends UIPart {
 	 * @param gridTab
 	 */
 	public void updateHelpQuickInfo(GridTab gridTab);
+	
+	/**
+	 * update quick info (status line) in help/info panel
+	 * @param infoPanel
+	 */
+	public void updateHelpQuickInfo(InfoPanel infoPanel);
 
 	/**
 	 * 

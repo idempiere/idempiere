@@ -471,7 +471,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			}
 			else
 			{
-				sql += " ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+				sql += " ORDER BY l.PriorityNo DESC, s.DateMaterialPolicy";
 				if (!FiFo)
 					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 				else
@@ -620,7 +620,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 		else
 		{
-			sql += " ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+			sql += " ORDER BY l.PriorityNo DESC, s.DateMaterialPolicy";
 			if (!FiFo)
 				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 			else

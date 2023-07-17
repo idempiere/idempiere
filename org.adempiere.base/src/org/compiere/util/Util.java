@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -41,6 +43,8 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+
+import org.compiere.Adempiere;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -775,6 +779,13 @@ public class Util
 	public static boolean isUUID(String value)
 	{
 		return value == null ? false : value.matches(UUID_REGEX);
+	}
+
+	/**
+	 * @return true if there is a directory org.adempiere.base within AdempiereHome (is the case when executed from Eclipse) 
+	 */
+	public static boolean isDeveloperMode() {
+		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
 	}
 
 }   //  Util

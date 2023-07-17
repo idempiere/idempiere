@@ -307,10 +307,11 @@ public class MArchive extends X_AD_Archive {
 		byte[] data = super.getBinaryData();
 		if (data == null || data.length == 0)
 			return false;
-		if (getRecord_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());
-			setRecord_UU(po.get_UUID());
+			if (po != null)
+				setRecord_UU(po.get_UUID());
 		}
 		//
 		if (log.isLoggable(Level.FINE)) log.fine(toString());

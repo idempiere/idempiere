@@ -21,6 +21,9 @@ import org.compiere.model.MGoal;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.MaximizeEvent;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -49,6 +52,30 @@ public class DPPerformance extends DashboardPanel {
 		paPanel = new WPAPanel();
 		appendChild(paPanel);
 		paPanel.addEventListener(WPerformanceIndicator.ON_AFTER_RENDER_CHART_EVENT, e -> onPostRender());
+		this.addEventListener(Events.ON_OPEN, (OpenEvent e) -> {
+			if (e.isOpen()) 
+				onPostRestore();
+		});
+		this.addEventListener(Events.ON_MAXIMIZE, (MaximizeEvent e) -> {
+			if (!e.isMaximized())
+				onPostRestore();
+		});
+	}
+	
+	/**
+	 * After state of dashboard panel change from collapse to open or from maximize to normal.
+	 */
+	private void onPostRestore() {
+		if (this.getFirstChild() != null && this.getParent() != null) {
+			Component grid = this.getFirstChild().getFirstChild();
+			String script = "setTimeout(function() { let grid = jq('#" + grid.getUuid() + "');";
+			script = script + "let pa = jq('#" + this.getFirstChild().getUuid() + "');";
+			script = script + "let pc = jq('#" + this.getParent().getUuid() + "');";
+			script = script + "pa.height(grid.css('height'));";
+			script = script + "pc.height(grid.css('height'));}, 10);";
+			if (Executions.getCurrent() != null)
+				Clients.response(new AuScript(script));
+		}
 	}
 	
 	@Override
