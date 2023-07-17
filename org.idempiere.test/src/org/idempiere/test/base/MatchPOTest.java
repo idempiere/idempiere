@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
@@ -55,7 +56,6 @@ import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -571,11 +571,9 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		Match match = new Match();
 		match.setTrxName(getTrxName());
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
 		ColumnInfo[] layout = match.getColumnLayout();
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);		
+		MiniTableImpl fromTable = new MiniTableImpl(layout);
+		MiniTableImpl toTable = new MiniTableImpl(layout);		
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
@@ -759,11 +757,9 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		Match match = new Match();
 		match.setTrxName(getTrxName());		
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
 		ColumnInfo[] layout = match.getColumnLayout();
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);		
+		MiniTableImpl fromTable = new MiniTableImpl(layout);
+		MiniTableImpl toTable = new MiniTableImpl(layout);		
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
@@ -940,11 +936,8 @@ public class MatchPOTest extends AbstractTestCase {
 		//check material receipt line is available for matching in Matching form
 		Match match = new Match();
 		match.setTrxName(getTrxName());
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
 		ColumnInfo[] layout = match.getColumnLayout();
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);		
+		MiniTableImpl fromTable = new MiniTableImpl(layout);
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
