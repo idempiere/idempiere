@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -1555,6 +1556,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if(AD_Process_ID <= 0)
 			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
+		pi.setLanguageID(m_reportEngine.getLanguageID());
+		pi.setReportType(m_reportEngine.getReportType());
 		pi.setReplaceTabContent();
 		if(!Util.isEmpty(showHelp))
 			pi.setShowHelp(showHelp);
@@ -1584,9 +1587,22 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	protected void setPreviewType() {
+		String type = Objects.toString(previewType.getValue());
+		
+		// get default from SysConfig
+		if(type == null) {
+			type = m_reportEngine.getPrintFormat().isForm()
+				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
+				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
+		}
+		m_reportEngine.setReportType(type);
+	}
+	
 	private void postRenderReportEvent() {
 		showBusyDialog();
 		setLanguage();
+		setPreviewType();
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
 		updateRowCount();
 	}
