@@ -560,6 +560,9 @@ public class Messagebox extends Window implements EventListener<Event>
 	 */
 	private void close() {
 		try {
+			// do not allow to close tab for Events.ON_CTRL_KEY event
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+			
 			this.detach();
 		} catch (NullPointerException npe) {
 			if (! (SessionManager.getSessionApplication() == null)) // IDEMPIERE-1937 - ignore when session was closed

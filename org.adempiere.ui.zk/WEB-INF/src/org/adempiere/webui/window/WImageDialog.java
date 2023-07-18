@@ -31,6 +31,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -327,6 +328,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		cancel = true;
 		detach();
 	}

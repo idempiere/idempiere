@@ -26,6 +26,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
@@ -106,6 +107,9 @@ public class WProcessParameterForm extends ADForm
 	}
 	
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.dispose();
 	}
 

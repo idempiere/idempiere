@@ -412,6 +412,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				init();
 				dynInit();
 				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+				addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			}
 			catch(Exception e)
 			{
@@ -427,6 +428,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 		cleanUp();
 	}
@@ -1162,21 +1164,28 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			onRenderReportEvent();
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
-		if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
-		{
-			hideBusyMask();
-			ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
-			if (dialog.isCancel())
+			if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
 			{
-				if (getDesktop() != null)
-					clearTabOnCloseHandler();
+				hideBusyMask();
+				ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+				if (dialog.isCancel())
+				{
+					if (getDesktop() != null)
+						clearTabOnCloseHandler();
+				}
 			}
-		}
+        }
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
         }
 	}
 

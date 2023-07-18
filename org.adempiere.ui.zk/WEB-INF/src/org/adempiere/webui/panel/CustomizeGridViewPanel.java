@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
@@ -333,6 +334,9 @@ public class CustomizeGridViewPanel extends Panel
 	 * cancel form
 	 */
 	public void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		getParent().detach();
 	}
 	

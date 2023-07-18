@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.I_AD_CtxHelpMsg;
 import org.compiere.model.MCtxHelp;
 import org.compiere.model.MCtxHelpMsg;
@@ -172,6 +173,9 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.detach();
 	}
 

@@ -53,6 +53,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
@@ -646,6 +647,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		onClose();
 	}
 	

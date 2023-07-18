@@ -839,6 +839,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	}	//	actionPerformed
 
 	protected void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_changed = false;
 		m_M_AttributeSetInstance_ID = 0;
 		m_M_Locator_ID = 0;

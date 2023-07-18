@@ -419,6 +419,9 @@ public class WQuickForm extends Window implements IQuickForm
 	{
 		super.dispose();
 
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		
 		gridTab.setQuickForm(false);
 		onIgnore();
 		gridTab.removeDataStatusListener(this);

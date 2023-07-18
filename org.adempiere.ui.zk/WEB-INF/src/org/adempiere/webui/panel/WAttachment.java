@@ -45,6 +45,7 @@ import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
@@ -731,7 +732,9 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	}	//	onEvent
 
-	private void onCancel() {
+	private void onCancel() {		
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 		//	Cancel
 		dispose();
 	}

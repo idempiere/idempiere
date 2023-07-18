@@ -791,6 +791,9 @@ public final class WAccountDialog extends Window
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_changed = false;
 		dispose();
 	}

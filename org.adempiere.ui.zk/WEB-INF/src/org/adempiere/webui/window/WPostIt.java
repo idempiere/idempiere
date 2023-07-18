@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MPostIt;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -208,6 +209,9 @@ public class WPostIt extends Window implements EventListener<Event>{
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		detach();
 	}
 

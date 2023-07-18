@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -592,6 +593,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
         	doOnClick(event);
         }
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(eventName)) {
+        	if (windowNo > 0)
+    			SessionManager.getAppDesktop().closeWindow(windowNo);
+        }
     }
 
     /**
@@ -916,7 +921,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		{
 			if ((keyEvent.getKeyCode() == VK_X))
 			{
-				closeWindow(keyEvent);
+				onCloseWithShortcut(keyEvent);
 			}
 			else
 			{
@@ -924,7 +929,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 			}
 		}
 		else if (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing) {	// ESC
-			closeWindow(keyEvent);
+			onCloseWithShortcut(keyEvent);
 		}
 		else if (!keyEvent.isAltKey() && keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
@@ -964,12 +969,9 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	 * Close Window
 	 * @param keyEvent
 	 */
-	private void closeWindow(KeyEvent keyEvent) {
-		if (windowNo > 0)
-		{
-			keyEvent.stopPropagation();
-			SessionManager.getAppDesktop().closeWindow(windowNo);
-		}
+	private void onCloseWithShortcut(KeyEvent keyEvent) {
+		keyEvent.stopPropagation();
+		Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 	}
 	
 	/**
@@ -1204,6 +1206,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 	}
 
@@ -1212,6 +1215,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+			addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		}
 	}
 	

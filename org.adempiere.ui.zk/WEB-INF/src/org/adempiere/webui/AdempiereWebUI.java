@@ -249,6 +249,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      */
     public void onCancel()
     {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
     }
 
     /* (non-Javadoc)

@@ -2431,6 +2431,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}else if (event.getName().equals(Events.ON_CANCEL) || (event.getTarget().equals(this) && event.getName().equals(Events.ON_CLOSE))){
     		onCancel();
     	}
+    	else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (p_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(p_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
         //when user push enter keyboard at input parameter field
         else
         {
@@ -2442,6 +2449,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * handle cancel event
 	 */
 	protected void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_cancel = true;
 		dispose(false);
 	}
@@ -2461,10 +2471,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
 		} else if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
-			if (p_WindowNo > 0) {
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(p_WindowNo);
-			}
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 
@@ -3264,12 +3272,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0, this);
 		}
 		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+		addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 	}
 
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
 		try {
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
+
 			if (SessionManager.getSessionApplication() != null &&
 				SessionManager.getSessionApplication().getKeylistener() != null)
 				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);

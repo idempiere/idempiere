@@ -126,6 +126,9 @@ public class WGadgets extends Window implements  EventListener<Event>{
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.detach();
 	}
 	

@@ -172,6 +172,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageAttached(newpage, oldpage);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+			addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			
 			Component parentTab = this.getParent();
 			if (parentTab != null && parentTab instanceof Tabpanel) {
@@ -185,6 +186,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
 		} catch (Exception e) {}
 	}
@@ -235,9 +237,17 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			}
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-		} else {
+		} 
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
+        else {
 			super.onEvent(event);
 		}
 	}
@@ -266,10 +276,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
-			if (m_WindowNo > 0) {
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
-			}
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 
