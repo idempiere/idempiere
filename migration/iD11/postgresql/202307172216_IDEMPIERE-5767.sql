@@ -21,3 +21,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=1,Updated=TO_TIMESTAMP('2023-07-17 22:19:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207700
 ;
 
+UPDATE pa_documentstatus_trl
+SET description=(SELECT description FROM pa_documentstatus ds WHERE ds.pa_documentstatus_id=pa_documentstatus_trl.pa_documentstatus_id)
+WHERE description IS NULL
+;
