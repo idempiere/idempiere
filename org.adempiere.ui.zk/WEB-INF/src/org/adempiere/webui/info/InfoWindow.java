@@ -2274,7 +2274,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			// reset value of WInfoPAttributeEditor to null when change M_AttributeSet_ID
 			if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
 				((WInfoPAttributeEditor)otherEditor).clearWhereClause();
-			
+
+			if (otherEditor.getGridField() != null)
+				otherEditor.setMandatory(otherEditor.getGridField().isMandatory(true));
+
 			otherEditor.dynamicDisplay();
 		}
 	}
