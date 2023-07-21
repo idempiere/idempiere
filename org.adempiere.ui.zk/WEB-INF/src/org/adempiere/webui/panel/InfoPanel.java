@@ -2450,7 +2450,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		m_cancel = true;
 		dispose(false);
