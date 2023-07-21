@@ -22,12 +22,19 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.exceptions.WarehouseLocatorConflictException;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
+import org.compiere.process.DocumentEngine;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 
 /**
  * 	InOut Line
@@ -805,4 +812,139 @@ public class MInOutLine extends X_M_InOutLine
 		return true;
 	}
 
+	/**
+	 * Match this material receipt line with invoice line
+	 * @param C_InvoiceLine_ID
+	 * @param qty
+	 * @return true if matching is ok
+	 */
+	public boolean matchToInvoiceLine(int C_InvoiceLine_ID, BigDecimal qty) {
+		boolean success = false;
+		if (C_InvoiceLine_ID <= 0)
+			throw new IllegalArgumentException("Invalid C_InvoiceLine_ID argument: " + C_InvoiceLine_ID);
+		
+		// Update Invoice Line
+		MInvoiceLine iLine = new MInvoiceLine (Env.getCtx(), C_InvoiceLine_ID, get_TrxName());
+		if (iLine.get_ID() != C_InvoiceLine_ID) 
+			throw new IllegalArgumentException("Invalid C_InvoiceLine_ID argument: " + C_InvoiceLine_ID);
+		
+		iLine.setM_InOutLine_ID(get_ID());
+		if (getC_OrderLine_ID() != 0)
+			iLine.setC_OrderLine_ID(getC_OrderLine_ID());
+		iLine.saveEx();
+		//	Create Shipment - Invoice Link
+		if (iLine.getM_Product_ID() != 0)
+		{
+			MMatchInv match = new MMatchInv (iLine, null, qty);
+			match.setM_InOutLine_ID(get_ID());
+			match.saveEx();
+			success = true;
+			if (MClient.isClientAccountingImmediate()) {
+				String ignoreError = DocumentEngine.postImmediate(match.getCtx(), match.getAD_Client_ID(), match.get_Table_ID(), match.get_ID(), true, match.get_TrxName());						
+				if (ignoreError != null) {
+					log.warning(ignoreError);
+				}
+			}
+		}
+		else
+			success = true;
+		//	Create PO - Invoice Link = corrects PO
+		if (iLine.getM_Product_ID() != 0)
+		{
+			BigDecimal matchedQty = DB.getSQLValueBD(iLine.get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=?" , iLine.getC_InvoiceLine_ID());
+			if (matchedQty.add(qty).compareTo(iLine.getQtyInvoiced()) <= 0) 
+			{
+				MMatchPO matchPO = MMatchPO.create(iLine, this, null, qty);
+				if (matchPO != null)
+				{
+					matchPO.saveEx();
+					if (MClient.isClientAccountingImmediate()) {
+						String ignoreError = DocumentEngine.postImmediate(matchPO.getCtx(), matchPO.getAD_Client_ID(), matchPO.get_Table_ID(), matchPO.get_ID(), true, matchPO.get_TrxName());						
+						if (ignoreError != null)
+							log.warning(ignoreError);
+					}
+				}
+			}
+		}
+		return success;
+	}
+	
+	/**
+	 * Match this material receipt line with order line
+	 * @param C_OrderLine_ID
+	 * @param qty
+	 * @return true if matching is ok
+	 */
+	public boolean matchToOrderLine(int C_OrderLine_ID, BigDecimal qty) {
+		boolean success = false;
+		// Update Order Line
+		MOrderLine oLine = new MOrderLine(Env.getCtx(), C_OrderLine_ID, get_TrxName());
+		BigDecimal storageReservationToUpdate = null;
+		if (oLine.get_ID() != 0)	//	other in MInOut.completeIt
+		{
+			storageReservationToUpdate = oLine.getQtyReserved();
+			oLine.setQtyReserved(oLine.getQtyReserved().subtract(qty));
+			if (oLine.getQtyReserved().signum() == -1)
+				oLine.setQtyReserved(Env.ZERO);
+			else if (oLine.getQtyDelivered().compareTo(oLine.getQtyOrdered()) > 0)
+				oLine.setQtyReserved(Env.ZERO);
+			oLine.saveEx();
+			storageReservationToUpdate = storageReservationToUpdate.subtract(oLine.getQtyReserved());
+		}
+
+		// Update Shipment Line
+		BigDecimal toDeliver = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
+		if (toDeliver.signum() < 0)
+			toDeliver = Env.ZERO;
+		if (getMovementQty().compareTo(toDeliver) <= 0)
+		{
+			setC_OrderLine_ID(C_OrderLine_ID);
+			saveEx();
+		}
+		else if (getC_OrderLine_ID() != 0)
+		{ 
+			setC_OrderLine_ID(0);
+			saveEx();
+		}
+
+		//	Create PO - Shipment Link
+		if (getM_Product_ID() != 0)
+		{
+			MMatchPO match = MMatchPO.getOrCreate(C_OrderLine_ID, qty, this, get_TrxName());
+			match.setC_OrderLine_ID(C_OrderLine_ID);
+			if (!match.save())
+			{
+				String msg = "PO Match not created: " + match;
+				ValueNamePair error = CLogger.retrieveError();
+				if (error != null)
+				{
+					msg = msg + ". " + error.getName();
+				}
+				throw new AdempiereException(msg);
+			}	
+			else
+			{
+				success = true;
+				//	Correct Ordered Qty for Stocked Products (see MOrder.reserveStock / MInOut.processIt)
+				if (oLine.get_ID() > 0 && oLine.getM_Product_ID() > 0 && oLine.getProduct().isStocked() && storageReservationToUpdate != null) {
+					IReservationTracer tracer = null;
+					IReservationTracerFactory factory = Core.getReservationTracerFactory();
+					if (factory != null) {
+						tracer = factory.newTracer(getParent().getC_DocType_ID(), getParent().getDocumentNo(), getLine(), 
+								get_Table_ID(), get_ID(), oLine.getM_Warehouse_ID(), 
+								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
+								get_TrxName());
+					}
+					success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
+						oLine.getM_Product_ID(),
+						oLine.getM_AttributeSetInstance_ID(),
+						storageReservationToUpdate.negate(), oLine.getParent().isSOTrx(), get_TrxName(), tracer);
+				}
+			}
+		}
+		else
+			success = true;
+		
+		return success;
+	}
 }	//	MInOutLine
