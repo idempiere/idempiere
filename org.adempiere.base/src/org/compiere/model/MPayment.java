@@ -29,12 +29,14 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.PaymentUtil;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.process.ICreditManager;
 import org.compiere.process.IDocsPostProcess;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
@@ -1985,24 +1987,12 @@ public class MPayment extends X_C_Payment
 			return DocAction.STATUS_Invalid;
 		}
 
-		//	Do not pay when Credit Stop/Hold
-		if (!isReceipt())
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
 		{
-			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-			if (X_C_BPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
-			{
-				m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" 
-					+ bp.getTotalOpenBalance()
-					+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+			m_processMsg = creditManager.creditCheck(DOCACTION_Prepare);
+			if (m_processMsg != null)
 				return DocAction.STATUS_Invalid;
-			}
-			if (X_C_BPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
-			{
-				m_processMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@=" 
-					+ bp.getTotalOpenBalance()
-					+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-				return DocAction.STATUS_Invalid;
-			}
 		}
 		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
@@ -2066,54 +2056,19 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 
 		//	Charge Handling
-		boolean createdAllocationRecords = false;
 		if (getC_Charge_ID() != 0)
 		{
 			setIsAllocated(true);
 		}
-		else
+
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
 		{
-			createdAllocationRecords = allocateIt();	//	Create Allocation Records
-			testAllocation();
+			m_processMsg = creditManager.creditCheck(DOCACTION_Complete);
+			if (m_processMsg != null)
+				return DocAction.STATUS_Invalid;
 		}
-
-		//	Update BP for Prepayments
-		if (getC_BPartner_ID() != 0 && getC_Invoice_ID() == 0 && getC_Charge_ID() == 0 && MPaymentAllocate.get(this).length == 0 && !createdAllocationRecords)
-		{
-			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-			DB.getDatabase().forUpdate(bp, 0);
-			//	Update total balance to include this payment
-			BigDecimal payAmt = null;
-			int baseCurrencyId = Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID);
-			if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate()) 
-			{
-				payAmt = getConvertedAmt();
-			}
-			else
-			{
-				payAmt = MConversionRate.convertBase(getCtx(), getPayAmt(), 
-					getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
-				if (payAmt == null)
-				{
-					m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
-							getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
-					return DocAction.STATUS_Invalid;
-				}
-			}
-			//	Total Balance
-			BigDecimal newBalance = bp.getTotalOpenBalance();
-			if (newBalance == null)
-				newBalance = Env.ZERO;
-			if (isReceipt())
-				newBalance = newBalance.subtract(payAmt);
-			else
-				newBalance = newBalance.add(payAmt);
-				
-			bp.setTotalOpenBalance(newBalance);
-			bp.setSOCreditStatus();
-			bp.saveEx();
-		}		
-
+		
 		//	Counter Doc
 		MPayment counter = createCounterDoc();
 		if (counter != null)
@@ -2832,13 +2787,10 @@ public class MPayment extends X_C_Payment
 		//			
 		info.append(" - @C_AllocationHdr_ID@: ").append(alloc.getDocumentNo());
 		
+		ICreditManager creditManager = Core.getCreditManager(this);
 		//	Update BPartner
-		if (getC_BPartner_ID() != 0)
-		{
-			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-			bp.setTotalOpenBalance();
-			bp.saveEx(get_TrxName());
-		}
+		if (creditManager != null)
+			creditManager.creditCheck(accrual ? DOCACTION_Reverse_Accrual : DOCACTION_Reverse_Correct);
 		
 		return info;
 	}
