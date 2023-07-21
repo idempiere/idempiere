@@ -14,13 +14,12 @@ package org.compiere.model.credit;
 
 import java.math.BigDecimal;
 
+import org.adempiere.base.ICreditManager;
 import org.compiere.model.I_C_Order;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.PO;
-import org.compiere.process.ICreditManager;
 import org.compiere.util.Env;
 
 /**
@@ -33,9 +32,14 @@ public class CreditManagerInOut implements ICreditManager
 {
 	private MInOut mInOut;
 
-	public CreditManagerInOut(PO po)
+	/**
+	 * InOut Credit Manager Load Constructor
+	 * 
+	 * @param po MInOut
+	 */
+	public CreditManagerInOut(MInOut po)
 	{
-		this.mInOut = (MInOut) po;
+		this.mInOut = po;
 	}
 
 	@Override

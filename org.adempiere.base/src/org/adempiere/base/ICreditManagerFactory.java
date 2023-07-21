@@ -13,7 +13,6 @@
 package org.adempiere.base;
 
 import org.compiere.model.PO;
-import org.compiere.process.ICreditManager;
 
 /**
  * Interface for Credit Manager Factory
@@ -23,5 +22,11 @@ import org.compiere.process.ICreditManager;
  */
 public interface ICreditManagerFactory
 {
+	/**
+	 * get Credit Manager
+	 * 
+	 * @param  po Model class
+	 * @return    instance of the ICreditManager
+	 */
 	public ICreditManager getCreditManager(PO po);
 }

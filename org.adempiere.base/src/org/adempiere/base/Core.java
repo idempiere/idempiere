@@ -52,7 +52,6 @@ import org.compiere.model.PO;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
-import org.compiere.process.ICreditManager;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;

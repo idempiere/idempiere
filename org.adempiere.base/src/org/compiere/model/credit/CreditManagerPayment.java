@@ -15,14 +15,13 @@ package org.compiere.model.credit;
 import java.math.BigDecimal;
 import java.util.Properties;
 
+import org.adempiere.base.ICreditManager;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MConversionRateUtil;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentAllocate;
-import org.compiere.model.PO;
-import org.compiere.process.ICreditManager;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -36,9 +35,14 @@ public class CreditManagerPayment implements ICreditManager
 {
 	private MPayment payment;
 
-	public CreditManagerPayment(PO po)
+	/**
+	 * Payment Credit Manager Load Constructor
+	 * 
+	 * @param po MPayment
+	 */
+	public CreditManagerPayment(MPayment po)
 	{
-		this.payment = (MPayment) po;
+		this.payment = po;
 	}
 
 	@Override

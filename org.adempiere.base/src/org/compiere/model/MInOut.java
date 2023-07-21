@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
@@ -40,7 +41,6 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
-import org.compiere.process.ICreditManager;
 import org.compiere.process.IDocsPostProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;

@@ -21,7 +21,6 @@ import org.compiere.model.credit.CreditManagerInOut;
 import org.compiere.model.credit.CreditManagerInvoice;
 import org.compiere.model.credit.CreditManagerOrder;
 import org.compiere.model.credit.CreditManagerPayment;
-import org.compiere.process.ICreditManager;
 
 /**
  * Default Credit Manager Factory
@@ -35,14 +34,14 @@ public class DefaultCreditManagerFactory implements ICreditManagerFactory
 	@Override
 	public ICreditManager getCreditManager(PO po)
 	{
-		if (MOrder.Table_Name.equalsIgnoreCase(po.get_TableName()))
-			return new CreditManagerOrder(po);
-		else if (MInvoice.Table_Name.equalsIgnoreCase(po.get_TableName()))
-			return new CreditManagerInvoice(po);
-		else if (MPayment.Table_Name.equalsIgnoreCase(po.get_TableName()))
-			return new CreditManagerPayment(po);
-		else if (MInOut.Table_Name.equalsIgnoreCase(po.get_TableName()))
-			return new CreditManagerInOut(po);
+		if (po instanceof MOrder)
+			return new CreditManagerOrder((MOrder) po);
+		else if (po instanceof MInvoice)
+			return new CreditManagerInvoice((MInvoice) po);
+		else if (po instanceof MPayment)
+			return new CreditManagerPayment((MPayment) po);
+		else if (po instanceof MInOut)
+			return new CreditManagerInOut((MInOut) po);
 		return null;
 	}
 

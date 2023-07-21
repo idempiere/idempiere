@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.logging.Level;
 
+import org.adempiere.base.ICreditManager;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
@@ -23,8 +24,6 @@ import org.compiere.model.MConversionRateUtil;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
-import org.compiere.model.PO;
-import org.compiere.process.ICreditManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -42,9 +41,14 @@ public class CreditManagerInvoice implements ICreditManager
 
 	private MInvoice			mInvoice;
 
-	public CreditManagerInvoice(PO po)
+	/**
+	 * Invoice Credit Manager Load Constructor
+	 * 
+	 * @param po MInvoice
+	 */
+	public CreditManagerInvoice(MInvoice po)
 	{
-		this.mInvoice = (MInvoice) po;
+		this.mInvoice = po;
 	}
 
 	@Override

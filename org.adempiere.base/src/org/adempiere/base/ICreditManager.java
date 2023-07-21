@@ -10,7 +10,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.compiere.process;
+package org.adempiere.base;
 
 /**
  * Interface for Credit Manager implementor
@@ -20,5 +20,11 @@ package org.compiere.process;
  */
 public interface ICreditManager
 {
+	/**
+	 * Check credit status as per document action
+	 * 
+	 * @param  docAction Document Action
+	 * @return           Error message
+	 */
 	public String creditCheck(String docAction);
 }
