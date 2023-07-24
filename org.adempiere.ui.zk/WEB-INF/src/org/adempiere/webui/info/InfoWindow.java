@@ -166,7 +166,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private static final long serialVersionUID = 4004251745919433247L;
 
 	private static final String ON_QUERY_AFTER_CHANGE = "onQueryAfterChange";
-//	private static final Constraint ZK_INPUT_NOT_EMPTY_CONSTRAINT = new SimpleConstraint(SimpleConstraint.NO_EMPTY, );
 	
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -3396,9 +3395,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	/**
-	 * That method will search at all Editors to set a
-	 * {@link InputElement#setConstraint(org.zkoss.zul.Constraint)} (equivalent to
-	 * "required" HTML attribute) for mandatory parameters.
+	 * That method will search at all Editors to validate if it is mandatory and has
+	 * to be provided by user.
 	 */
 	private void setMandatoryFieldsConstraint() {
 
