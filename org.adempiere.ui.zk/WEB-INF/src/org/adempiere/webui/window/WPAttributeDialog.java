@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -69,8 +68,6 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import org.compiere.model.MWindowAccess;
-import org.compiere.model.Query;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1266,22 +1263,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 * there is no Window Access for Attribute Set Instance window).
 	 */
 	private void validadeRoleAccess() {
-		List<MWindowAccess> windowAccesses = new Query(Env.getCtx(), MWindowAccess.Table_Name, "AD_Role_ID = ? AND AD_Window_ID = ?", null)
-				.setParameters(Env.getAD_Role_ID(Env.getCtx()), ATTRIBUTE_SET_INSTANCE_AD_Window_ID)
-				.setClient_ID()
-				.setOnlyActiveRecords(true)
-				.list();
-
-		if (windowAccesses.size() == 0)
+		Boolean hasAccess = MRole.getDefault().getWindowAccess(ATTRIBUTE_SET_INSTANCE_AD_Window_ID);
+		if (hasAccess == null)
 			throw new AdempiereException(Msg.translate(Env.getCtx(), "AccessTableNoView"));
 
-		for (MWindowAccess access : windowAccesses) {
-
-			if (access.isReadWrite()) {
-				isAllowedToCreate = true;
-				break;
-			}
-		}
+		isAllowedToCreate = hasAccess;
 	}
 
 } //	WPAttributeDialog
