@@ -52,10 +52,8 @@ import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
-import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -130,6 +128,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -139,7 +138,6 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
-import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.ListModelList;
@@ -148,7 +146,6 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
@@ -169,7 +166,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private static final long serialVersionUID = 4004251745919433247L;
 
 	private static final String ON_QUERY_AFTER_CHANGE = "onQueryAfterChange";
-	private static final Constraint ZK_INPUT_NOT_EMPTY_CONSTRAINT = new SimpleConstraint(SimpleConstraint.NO_EMPTY, Msg.getMsg(Env.getCtx(), "Missing required parameters"));
+//	private static final Constraint ZK_INPUT_NOT_EMPTY_CONSTRAINT = new SimpleConstraint(SimpleConstraint.NO_EMPTY, );
 	
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -3405,43 +3402,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	private void setMandatoryFieldsConstraint() {
 
-		InputElement inputFrom = null;
-		InputElement inputTo = null;
-		Constraint constraint = null;
-
 		int index = 0;
 		for (WEditor editorFrom : editors) {
 			WEditor editorTo = editors2.get(index++);
 
-			if (editorFrom.getComponent() instanceof InputElement) {
-				inputFrom = (InputElement) editorFrom.getComponent();
-				if (editorTo != null)
-					inputTo = (InputElement) editorTo.getComponent();
+			if (editorFrom.isMandatory() && editorFrom.getValue() == null)
+				throw new WrongValueException(editorFrom.getComponent(), Msg.getMsg(Env.getCtx(), "Missing required parameters"));
 
-			} else if (editorFrom.getComponent() instanceof NumberBox) {
-				inputFrom = ((NumberBox) editorFrom.getComponent()).getDecimalbox();
-				if (editorTo != null)
-					inputTo = ((NumberBox) editorTo.getComponent()).getDecimalbox();
-
-			} else if (editorFrom.getComponent() instanceof ComboEditorBox) {
-				inputFrom = ((ComboEditorBox) editorFrom.getComponent()).getCombobox();
-				if (editorTo != null)
-					inputTo = ((ComboEditorBox) editorTo.getComponent()).getCombobox();
-
-			} else if (editorFrom.getComponent() instanceof DatetimeBox) {
-				inputFrom = ((DatetimeBox) editorFrom.getComponent()).getDatebox();
-				if (editorTo != null)
-					inputTo = ((DatetimeBox) editorTo.getComponent()).getDatebox();
-
-			} 
-
-			if (editorFrom.isMandatory())
-				constraint = ZK_INPUT_NOT_EMPTY_CONSTRAINT;
-
-			if (inputFrom != null)
-				inputFrom.setConstraint(constraint);
-			if (inputTo != null)
-				inputTo.setConstraint(constraint);
+			if (editorTo != null && editorTo.isMandatory() && editorTo.getValue() == null)
+				throw new WrongValueException(editorTo.getComponent(), Msg.getMsg(Env.getCtx(), "Missing required parameters"));
 				
 		}
 	}
