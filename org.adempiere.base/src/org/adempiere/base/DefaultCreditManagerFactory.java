@@ -21,6 +21,7 @@ import org.compiere.model.credit.CreditManagerInOut;
 import org.compiere.model.credit.CreditManagerInvoice;
 import org.compiere.model.credit.CreditManagerOrder;
 import org.compiere.model.credit.CreditManagerPayment;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Default Credit Manager Factory
@@ -28,6 +29,7 @@ import org.compiere.model.credit.CreditManagerPayment;
  * @author Logilite Technologies
  * @since  June 25, 2023
  */
+@Component(immediate = true, service = ICreditManagerFactory.class)
 public class DefaultCreditManagerFactory implements ICreditManagerFactory
 {
 
