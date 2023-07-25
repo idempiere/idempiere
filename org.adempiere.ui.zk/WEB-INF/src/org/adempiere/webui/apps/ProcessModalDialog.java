@@ -27,6 +27,7 @@ import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MSysConfig;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -73,6 +74,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	private ITabOnCloseHandler originalOnCloseHandler;
 
 	private Tabpanel parentTabPanel;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * @param WindowNo
@@ -352,7 +355,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		cancelProcess();
 	}

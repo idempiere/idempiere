@@ -55,6 +55,7 @@ import org.compiere.model.MAccountLookup;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MQuery;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -90,6 +91,8 @@ public final class WAccountDialog extends Window
 	private static final long serialVersionUID = 3041802296879719489L;
 
 	private Callback<Integer> m_callback;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
 	 * 	Constructor
@@ -792,7 +795,8 @@ public final class WAccountDialog extends Window
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		m_changed = false;
 		dispose();

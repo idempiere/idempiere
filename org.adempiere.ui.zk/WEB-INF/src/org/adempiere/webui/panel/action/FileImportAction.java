@@ -56,6 +56,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
@@ -91,6 +92,8 @@ public class FileImportAction implements EventListener<Event>
 	private Listbox fCharset = new Listbox();
 	private WTableDirEditor fImportMode;
 	private InputStream m_file_istream = null;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
 	 * @param panel
@@ -259,7 +262,8 @@ public class FileImportAction implements EventListener<Event>
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		winImportFile.onClose();
 	}

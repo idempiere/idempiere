@@ -29,6 +29,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -84,6 +85,8 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	private Hbox confirmPanel = new Hbox();
 
 	private boolean m_cancel;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 *	Constructor.
@@ -345,7 +348,8 @@ public class WMediaDialog extends Window implements EventListener<Event>
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		m_cancel = true;
 		dispose();

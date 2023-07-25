@@ -149,6 +149,9 @@ public class WAttachment extends Window implements EventListener<Event>
 	private Progressmeter progress = new Progressmeter(0);
 
 	private static List<String> autoPreviewList;
+	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	static {
 		autoPreviewList = new ArrayList<String>();
@@ -734,7 +737,8 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	private void onCancel() {		
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 		//	Cancel
 		dispose();
 	}

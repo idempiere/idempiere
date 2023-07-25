@@ -156,6 +156,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	
 	private GridField m_GridField = null;
 	private boolean onSaveError = false;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	//END
 
 	public WLocationDialog(String title, MLocation location)
@@ -933,7 +935,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		m_change = false;
 		this.dispose();

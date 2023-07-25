@@ -41,6 +41,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardPreference;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -84,6 +85,8 @@ public class WGadgets extends Window implements  EventListener<Event>{
 	protected ArrayList<MDashboardContent> noItems =new ArrayList<MDashboardContent>();
 
 	protected Map<Integer, MDashboardPreference> dirtyList = new LinkedHashMap<Integer, MDashboardPreference>();
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
 	 * 
@@ -127,7 +130,8 @@ public class WGadgets extends Window implements  EventListener<Event>{
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		this.detach();
 	}

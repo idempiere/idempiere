@@ -137,6 +137,8 @@ public class CustomizeGridViewPanel extends Panel
 	private boolean uiCreated;
 	private boolean m_saved = false;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, true, false, false, false);
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 /**
 	 * Static Layout
@@ -335,7 +337,8 @@ public class CustomizeGridViewPanel extends Panel
 	 */
 	public void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		getParent().detach();
 	}

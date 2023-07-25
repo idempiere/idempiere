@@ -148,6 +148,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/** Login completed event */
 	private static final String ON_LOGIN_COMPLETED = "onLoginCompleted";
 	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	/**
 	 * default constructor
 	 */
@@ -250,7 +253,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     public void onCancel()
     {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+    	if(isUseEscForTabClosing)
+    		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
     }
 
     /* (non-Javadoc)

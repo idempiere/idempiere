@@ -59,6 +59,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MImportTemplate;
 import org.compiere.model.MQuery;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -93,6 +94,8 @@ public class CSVImportAction implements EventListener<Event>
 	private Listbox fTemplates = new Listbox();
 	private Listbox fImportMode = new Listbox();
 	private InputStream m_file_istream = null;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * @param panel
@@ -247,7 +250,8 @@ public class CSVImportAction implements EventListener<Event>
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 		
 		winImportFile.onClose();
 	}

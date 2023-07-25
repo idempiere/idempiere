@@ -34,6 +34,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MChat;
 import org.compiere.model.MChatEntry;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -71,6 +72,9 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	private static final String USER_LABEL_STYLE = "font-weight: bold";
 	private static final String TIME_LABEL_STYLE = "font-size:xx-small;color:gray;margin-left:20px";
+	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 *	Constructor.
@@ -385,7 +389,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
-		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
 
 		this.detach();
 	}
