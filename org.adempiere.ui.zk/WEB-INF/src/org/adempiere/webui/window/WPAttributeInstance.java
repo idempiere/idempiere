@@ -27,10 +27,12 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -133,6 +135,8 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private int					m_M_AttributeSetInstance_ID = -1;
 	private String				m_M_AttributeSetInstanceName = null;
 	private String				m_sql;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WPAttributeInstance.class);
 
@@ -323,6 +327,10 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	}	//	actionPerformed
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_M_AttributeSetInstance_ID = -1;
 		m_M_AttributeSetInstanceName = null;
 		detach();

@@ -215,6 +215,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 				form.init(adFormID, name);
 		    	form.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, form.getWindowNo());	// for closing the window with shortcut
 		    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, form);
+		    	form.addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, form);
 				return form;
     		}
     		else
@@ -234,9 +235,16 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 		}
 		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
 		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
     }
 
 	/**
@@ -286,10 +294,8 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
-			if (m_WindowNo > 0) {
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
-			}
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 }

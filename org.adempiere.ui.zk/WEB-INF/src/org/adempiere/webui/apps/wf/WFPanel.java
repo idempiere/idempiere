@@ -81,6 +81,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);	// for closing the window with shortcut
 		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+		addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 	}	//	WFPanel
 
 	/**	Window No			*/
@@ -289,9 +290,16 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		}
 		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
 		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
 	}
 
 	private void start(MWFNode wfn) {
@@ -318,10 +326,8 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
-			if (m_WindowNo > 0) {
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
-			}
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 }	//	WFPanel
