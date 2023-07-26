@@ -621,7 +621,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * Contains the indexes of selected row, maintains the selection order
 	 */
-	protected ArrayList<Integer> m_rowSelectionOrder = new ArrayList<Integer>();
+	protected ArrayList<Object> m_rowSelectionOrder = new ArrayList<Object>();
 	/**
 	 * Number of selected rows
 	 */
@@ -3254,39 +3254,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return m_useDatabasePaging;
 	}
 	
-	/**
-	 * Get the index of the first row of the page
-	 * @return int index
-	 */
-	protected int getFirstIdxOfPage() {
-		return pageSize * pageNo;
-	}
-	
-	/**
-	 * Get the index of the last row of the page
-	 * @return int index
-	 */
-	protected int getLastIdxOfPage() {
-		return pageSize + (pageSize * pageNo) - pageNo;
-	}
-	
-	/**
-	 * Get the index of the last row of the page
-	 * @return int idx
-	 */
-	protected int getLastSelectedRowIdxOfPage() {
-		int firstIdxOfPage = getFirstIdxOfPage();
-		int lastIdxOfPage = getLastIdxOfPage();
-		int currentRowIdx = -1;
-		
-		for(int i = m_rowSelectionOrder.size()-1; i >= 0; i--) {
-			currentRowIdx = m_rowSelectionOrder.get(i);
-			if(currentRowIdx <= lastIdxOfPage && currentRowIdx >= firstIdxOfPage)
-				return pageNo == 0 ? currentRowIdx -1 : currentRowIdx % pageSize;
-		}
-		return -1;
-	}
-	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
@@ -3398,25 +3365,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Update row selection order
 	 */
 	protected void updateRowSelectionOrder() {
-    	if(m_selectedCount == m_count) {
-			for(int rowIdx = 0; rowIdx < m_count; rowIdx++) {
-				if(!m_rowSelectionOrder.contains(rowIdx))
-					m_rowSelectionOrder.add((Integer)rowIdx);
-			}
-		}
-		else if(m_selectedCount == 0) {
-			m_rowSelectionOrder.clear();
+		m_rowSelectionOrder.clear();
+    	// update selection
+		if(!p_multipleSelection && m_lastSelectedIndex >= 0) {
+			@SuppressWarnings("unchecked")
+			List<Object> lastSelectedRecord = (List<Object>)contentPanel.getModel().get(m_lastSelectedIndex);
+			Object key = lastSelectedRecord.get(0);
+			if(key instanceof IDColumn)
+				key = ((IDColumn)key).getRecord_ID();
+			m_rowSelectionOrder.add(key);
 		}
 		else {
-			if(!p_multipleSelection) {
-				m_rowSelectionOrder.clear();
-				m_rowSelectionOrder.add(m_lastSelectedIndex);
-			}
-			else {
-	    		if(m_rowSelectionOrder.contains(m_lastSelectedIndex))
-	    			m_rowSelectionOrder.remove((Integer)m_lastSelectedIndex);
-	    		else
-	    			m_rowSelectionOrder.add(m_lastSelectedIndex);
+			for (Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
+				List<Object> candidateRecord = entry.getValue();
+				// get row key
+				Object key = candidateRecord.get(0);
+				if(key instanceof IDColumn)
+					key = ((IDColumn)key).getRecord_ID();
+				//
+				m_rowSelectionOrder.add(key);
 			}
 		}
 	} // updateRowSelectionOrder
@@ -3481,10 +3448,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected String getSelectedIDsForCtx() {
 		String returnVal = null;
 		
-		for(int idx : m_rowSelectionOrder) {
-			if(idx % pageSize > contentPanel.getRowCount() - 1)
-				break;
-			String selectedID = Objects.toString(getRowKeyAt(idx % pageSize));
+		for(Object key : m_rowSelectionOrder) {
+			String selectedID = Objects.toString(key);
 			if(returnVal == null)
 				returnVal = selectedID;
 			else
@@ -3498,18 +3463,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return List
 	 */
 	protected List<Object> getLastSelectedRow() {
-		Map<Object, List<Object>> rowInfo = getSelectedRowInfo();
 		int index = m_rowSelectionOrder.size() - 1;
 		
-		// search for selection on current page
-		if(index >= pageSize)
-			index = getLastSelectedRowIdxOfPage();
-		
-		// no selection found on current page
-		if(index == -1)
-			return null;
-		
-		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? rowInfo.get(getRowKeyAt(m_rowSelectionOrder.get(index))) : null;
+		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? getSelectedRowInfo().get(m_rowSelectionOrder.get(index)) : null;
 		return lastSelectedRow;
 	}
 }	//	Info
