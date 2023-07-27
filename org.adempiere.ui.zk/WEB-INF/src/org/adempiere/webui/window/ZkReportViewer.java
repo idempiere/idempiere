@@ -1567,6 +1567,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
 		pi.setLanguageID(m_reportEngine.getLanguageID());
 		pi.setReportType(m_reportEngine.getReportType());
+		pi.setSerializableObject(m_reportEngine.getPrintFormat());
 		pi.setReplaceTabContent();
 		if(!Util.isEmpty(showHelp))
 			pi.setShowHelp(showHelp);
