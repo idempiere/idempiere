@@ -619,7 +619,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
-	 * Contains the indexes of selected row, maintains the selection order
+	 * Contains the keys of the selected rows in the order of selection
 	 */
 	protected ArrayList<Object> m_rowSelectionOrder = new ArrayList<Object>();
 	/**
