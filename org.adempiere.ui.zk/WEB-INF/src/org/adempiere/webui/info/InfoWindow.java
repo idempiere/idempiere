@@ -128,6 +128,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -2274,7 +2275,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			// reset value of WInfoPAttributeEditor to null when change M_AttributeSet_ID
 			if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
 				((WInfoPAttributeEditor)otherEditor).clearWhereClause();
-			
+
+			if (otherEditor.getGridField() != null)
+				otherEditor.setMandatory(otherEditor.getGridField().isMandatory(true));
+
 			otherEditor.dynamicDisplay();
 		}
 	}
@@ -2342,6 +2346,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     			super.onEvent(event);
     		}
     		
+    	} else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH))) {
+    		setMandatoryFieldsConstraint();
+    		super.onEvent(event);
     	}
     	else
     	{
@@ -3385,5 +3392,25 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		{
 			return true;
 		}	
-	}	
+	}
+
+	/**
+	 * That method will search at all Editors to validate if it is mandatory and has
+	 * to be provided by user.
+	 */
+	private void setMandatoryFieldsConstraint() {
+
+		int index = 0;
+		for (WEditor editorFrom : editors) {
+			WEditor editorTo = editors2.get(index++);
+
+			if (editorFrom.isMandatory() && editorFrom.getValue() == null)
+				throw new WrongValueException(editorFrom.getComponent(), Msg.getMsg(Env.getCtx(), "Missing required parameters"));
+
+			if (editorTo != null && editorTo.isMandatory() && editorTo.getValue() == null)
+				throw new WrongValueException(editorTo.getComponent(), Msg.getMsg(Env.getCtx(), "Missing required parameters"));
+				
+		}
+	}
+
 }
