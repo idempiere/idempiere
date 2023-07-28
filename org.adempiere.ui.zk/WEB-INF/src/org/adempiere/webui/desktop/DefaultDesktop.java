@@ -948,12 +948,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				@Override
 				public void onEvent(Event event) throws Exception {
 					BroadCastMsg msg = (BroadCastMsg) event.getData();
-					
+					MBroadcastMessage mbMessage = MBroadcastMessage.get(Env.getCtx(), msg.getIntData());
+
+					if (mbMessage == null)
+						return;
 
 					switch (msg.getEventId()) {
 					case BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE:
-						MBroadcastMessage mbMessage = MBroadcastMessage.get(
-								Env.getCtx(), msg.getIntData());
 						String currSession = Integer
 								.toString(Env.getContextAsInt(Env.getCtx(),
 										"AD_Session_ID"));
@@ -966,8 +967,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 						}
 						break;
 					case BroadCastUtil.EVENT_BROADCAST_MESSAGE:
-						mbMessage = MBroadcastMessage.get(
-								Env.getCtx(), msg.getIntData());
 						if (mbMessage.isValidUserforMessage()) {
 							
 							BroadcastMessageWindow messageWindow = new BroadcastMessageWindow(
