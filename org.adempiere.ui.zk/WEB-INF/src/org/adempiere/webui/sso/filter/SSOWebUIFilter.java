@@ -73,7 +73,6 @@ public class SSOWebUIFilter implements Filter
 				return;
 			}
 
-			boolean isRedirectToLoginOnError = false;
 			boolean isAdminResRequest = false;
 			if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
 				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
@@ -115,19 +114,12 @@ public class SSOWebUIFilter implements Filter
 			}
 			catch (Throwable exc)
 			{
-				log.log(Level.SEVERE, "Exception while authenticating: ",exc);
+				log.log(Level.SEVERE, "Exception while authenticating: ", exc);
 				if (m_SSOPrincipal != null)
 					m_SSOPrincipal.removePrincipalFromSession(httpRequest);
-				if(isRedirectToLoginOnError)
-				{
-					httpResponse.sendRedirect("webui/index.zul");
-				}
-				else
-				{
-					httpResponse.setStatus(500);
-                    response.setContentType("text/html");
-                    response.getWriter().append(SSOUtils.getCreateErrorResponce(exc.getLocalizedMessage()));
-				}
+				httpResponse.setStatus(500);
+				response.setContentType("text/html");
+				response.getWriter().append(SSOUtils.getCreateErrorResponce(exc.getLocalizedMessage()));
 				return;
 			}
 		}

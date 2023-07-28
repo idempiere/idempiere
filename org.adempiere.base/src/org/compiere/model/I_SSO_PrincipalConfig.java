@@ -143,19 +143,6 @@ public interface I_SSO_PrincipalConfig
 	  */
 	public String getSSO_ApplicationDiscoveryURI();
 
-    /** Column name SSO_ApplicationDomain */
-    public static final String COLUMNNAME_SSO_ApplicationDomain = "SSO_ApplicationDomain";
-
-	/** Set Application Domain.
-	  * SSO Application Domain
-	  */
-	public void setSSO_ApplicationDomain (String SSO_ApplicationDomain);
-
-	/** Get Application Domain.
-	  * SSO Application Domain
-	  */
-	public String getSSO_ApplicationDomain();
-
     /** Column name SSO_ApplicationLogoutURL */
     public static final String COLUMNNAME_SSO_ApplicationLogoutURL = "SSO_ApplicationLogoutURL";
 
