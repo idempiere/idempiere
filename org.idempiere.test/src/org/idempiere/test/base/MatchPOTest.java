@@ -955,6 +955,9 @@ public class MatchPOTest extends AbstractTestCase {
 		assertTrue(selectedRow >= 0, "Can't find not matched Material Receipt line");
 		
 		receiptLine.load(getTrxName());
-		assertEquals(0, receiptLine.getC_OrderLine_ID(), "Material receipt line: order line not clear after void of purchase order");		
+		assertEquals(0, receiptLine.getC_OrderLine_ID(), "Material receipt line: order line not clear after void of purchase order");
+		
+		receipt.load(getTrxName());
+		assertEquals(0, receipt.getC_Order_ID(), "Material receipt: order not clear after void of purchase order");
 	}
 }
