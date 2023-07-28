@@ -126,7 +126,7 @@ public class Activator implements BundleActivator {
 					hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 					MapConfig mc = config.getMapConfig("default");
 					if (mc != null) {
-						logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						logger.info("Hazelcast Max Size Config: "+mc.getEvictionConfig().getMaxSizePolicy() + " " + mc.getEvictionConfig().getSize());
 					}
 					return;
 				} catch (FileNotFoundException e) {}
@@ -142,7 +142,7 @@ public class Activator implements BundleActivator {
 					hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 					MapConfig mc = config.getMapConfig("default");
 					if (mc != null) {
-						logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						logger.info("Hazelcast Max Size Config: "+mc.getEvictionConfig().getMaxSizePolicy() + " " + mc.getEvictionConfig().getSize());
 					}
 					return;
 				} catch (IOException e) {}
@@ -154,7 +154,7 @@ public class Activator implements BundleActivator {
 			logger.warning("Starting hazelcast with default configuration");
 			MapConfig mc = config.getMapConfig("default");
 			if (mc != null) {
-				logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+				logger.info("Hazelcast Max Size Config: "+mc.getEvictionConfig().getMaxSizePolicy() + " " + mc.getEvictionConfig().getSize());
 			}
 	}
 
