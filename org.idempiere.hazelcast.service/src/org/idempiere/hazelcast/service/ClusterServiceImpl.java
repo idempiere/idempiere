@@ -75,7 +75,7 @@ public class ClusterServiceImpl implements IClusterService {
 		if (instance != null) {
 			Set<Member> members = instance.getCluster().getMembers();
 			for(Member member : members) {
-				if (member.getUuid().equals(clusterMember.getId())) {
+				if (member.getUuid().toString().equals(clusterMember.getId())) {
 					IExecutorService service = Activator.getHazelcastInstance().getExecutorService("default");
 					return service.submitToMember(task, member);
 				}
