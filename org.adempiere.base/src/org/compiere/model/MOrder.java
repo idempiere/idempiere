@@ -2866,6 +2866,14 @@ public class MOrder extends X_C_Order implements DocAction
 					m_processMsg = "Could not Reverse " + matchPO;
 					return false;
 				}
+				if (matchPO.getM_InOutLine_ID() > 0) {
+					MInOutLine iol = new MInOutLine(Env.getCtx(), matchPO.getM_InOutLine_ID(), get_TrxName());
+					MInOut io = new MInOut(Env.getCtx(), iol.getM_InOut_ID(), get_TrxName());
+					if (io.getC_Order_ID() == this.getC_Order_ID()) {
+						io.setC_Order_ID(0);
+						io.saveEx();
+					}
+				}
 			}
 		}
 		return true;
