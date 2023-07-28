@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.I_AD_CtxHelpMsg;
 import org.compiere.model.MCtxHelp;
 import org.compiere.model.MCtxHelpMsg;
@@ -15,6 +16,7 @@ import org.compiere.model.MCtxHelpSuggestion;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MTask;
@@ -62,6 +64,8 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	private String baseContent;
 	
 	private String translatedContent;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * default constructor
@@ -172,6 +176,10 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.detach();
 	}
 

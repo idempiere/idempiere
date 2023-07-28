@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -77,6 +78,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -412,6 +414,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				init();
 				dynInit();
 				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+				addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			}
 			catch(Exception e)
 			{
@@ -427,6 +430,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 		cleanUp();
 	}
@@ -533,7 +537,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				{
 					toolBar.appendChild(wLanguage.getComponent());
 				}
-				wLanguage.setValue(m_reportEngine.getLanguageID());
+				// Init Language from Printformat
+				int languageID = 0;
+				if(m_reportEngine.getPrintFormat() != null && m_reportEngine.getPrintFormat().getLanguage() != null) {
+					MLanguage language = MLanguage.get(m_ctx, m_reportEngine.getPrintFormat().getLanguage());
+					if(language != null)
+						languageID = language.getAD_Language_ID();
+				}
+				if(m_reportEngine.getLanguageID() > 0)
+					languageID = m_reportEngine.getLanguageID();
+				wLanguage.setValue(languageID);
 				wLanguage.getComponent().addEventListener(Events.ON_SELECT, this);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage());
@@ -1162,21 +1175,28 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			onRenderReportEvent();
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
-		if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
-		{
-			hideBusyMask();
-			ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
-			if (dialog.isCancel())
+			if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
 			{
-				if (getDesktop() != null)
-					clearTabOnCloseHandler();
+				hideBusyMask();
+				ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+				if (dialog.isCancel())
+				{
+					if (getDesktop() != null)
+						clearTabOnCloseHandler();
+				}
 			}
-		}
+        }
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
         }
 	}
 
@@ -1233,7 +1253,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		else if (e.getTarget() == bWizard)
 			cmd_Wizard();
 		else if (e.getTarget() == bRefresh)
-			cmd_report();
+			cmd_refresh();
 		else if (e.getTarget() == bReRun)
 			cmd_reRun();
 		//
@@ -1519,14 +1539,38 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_report
 
 	/**
+	 * Refresh with same parameters
+	 */
+	private void cmd_refresh() {
+		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		if(AD_Process_ID <= 0)
+			this.cmd_report();
+		else
+			this.cmd_reRun(MProcess.SHOWHELP_RunSilently_TakeDefaults);
+	}
+	
+	/**
 	 * Refresh With Parameters
 	 */
 	private void cmd_reRun() {
+		this.cmd_reRun(null);
+	}
+	
+	/**
+	 * Refresh With Parameters
+	 * @param showHelp
+	 */
+	private void cmd_reRun(String showHelp) {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		if(AD_Process_ID <= 0)
 			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
+		pi.setLanguageID(m_reportEngine.getLanguageID());
+		pi.setReportType(m_reportEngine.getReportType());
+		pi.setSerializableObject(m_reportEngine.getPrintFormat());
 		pi.setReplaceTabContent();
+		if(!Util.isEmpty(showHelp))
+			pi.setShowHelp(showHelp);
 		setTabOnCloseHandler();
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
@@ -1553,9 +1597,22 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	protected void setPreviewType() {
+		String type = Objects.toString(previewType.getValue());
+		
+		// get default from SysConfig
+		if(type == null) {
+			type = m_reportEngine.getPrintFormat().isForm()
+				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
+				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
+		}
+		m_reportEngine.setReportType(type);
+	}
+	
 	private void postRenderReportEvent() {
 		showBusyDialog();
 		setLanguage();
+		setPreviewType();
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
 		updateRowCount();
 	}

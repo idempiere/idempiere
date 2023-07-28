@@ -39,6 +39,8 @@ public interface IDesktop extends UIPart {
 	/** {@link EventQueue} name for activities (workflow activities, request, notice and unprocessed documents) */
 	public static final String ACTIVITIES_EVENT_QUEUE = "ActivitiesEventQueue";
 	public static final String ON_ACTIVITIES_CHANGED_EVENT = "onActivitiesChanged";
+	/** Event when closing window/tab with shortcut */
+    public static final String ON_CLOSE_WINDOW_SHORTCUT_EVENT = "onCloseWindowShortcut";
 
 	/**
 	 *
@@ -279,4 +281,16 @@ public interface IDesktop extends UIPart {
 	 * render home tab
 	 */
 	public void renderHomeTab();
+	
+	/**
+	 * Is closing tab with shortcut allowed
+	 * @return true if allowed
+	 */
+	public boolean isCloseTabWithShortcut();
+	
+	/**
+	 * Set if closing tab with shortcut is allowed
+	 * @param isCloseTabWithShortcutAllowed
+	 */
+	public void setCloseTabWithShortcut(boolean isCloseTabWithShortcut);
 }
