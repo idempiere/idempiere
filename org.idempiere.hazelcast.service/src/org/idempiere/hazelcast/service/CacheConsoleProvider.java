@@ -6,13 +6,13 @@ import java.util.Set;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
+import com.hazelcast.cluster.Cluster;
+import com.hazelcast.cluster.Member;
+import com.hazelcast.collection.ISet;
 import com.hazelcast.collection.impl.set.SetService;
-import com.hazelcast.core.Cluster;
 import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.ISet;
-import com.hazelcast.core.Member;
+import com.hazelcast.map.IMap;
 import com.hazelcast.map.impl.MapService;
 
 public class CacheConsoleProvider implements CommandProvider {
