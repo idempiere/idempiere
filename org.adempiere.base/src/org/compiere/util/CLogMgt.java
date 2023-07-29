@@ -643,7 +643,7 @@ public class CLogMgt
 		//  Context
 		String[] context = Env.getEntireContext(ctx);
 		sb.append(NL)
-			.append("=== Context (%s) ===".formatted(context.length)).append(NL);		
+			.append("=== Context (").append(context.length).append(") ===").append(NL);
 		Arrays.sort(context);
 		for (int i = 0; i < context.length; i++)
 			sb.append(context[i]).append(NL);
