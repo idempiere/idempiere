@@ -133,7 +133,7 @@ public class Activator implements BundleActivator {
 			}
 			
 			Enumeration<URL> entries = getContext().getBundle().findEntries("/", "hazelcast.xml", false);
-			URL url = entries.hasMoreElements() ? entries.nextElement() : null;
+			URL url = (entries != null && entries.hasMoreElements()) ? entries.nextElement() : null;
 			if (url != null) {
 				try {
 					Config config = new UrlXmlConfig(url);
