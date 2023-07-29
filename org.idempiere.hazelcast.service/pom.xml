@@ -28,11 +28,6 @@
 									<artifactId>hazelcast</artifactId>
 									<version>5.3.1</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>com.hazelcast</groupId>
-									<artifactId>hazelcast-aws</artifactId>
-									<version>3.4</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
