@@ -34,6 +34,7 @@ import java.sql.Timestamp;
 import java.util.Vector;
 
 import org.compiere.grid.CreateFromStatement;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MBankStatement;
@@ -50,7 +51,6 @@ import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**

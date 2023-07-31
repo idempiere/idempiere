@@ -22,7 +22,7 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.test.ui;
+package org.compiere.minigrid;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -34,15 +34,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.compiere.minigrid.ColumnInfo;
-import org.compiere.minigrid.IDColumn;
-import org.compiere.minigrid.IMiniTable;
+import org.compiere.apps.form.Match;
 import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.KeyNamePair;
 
 /**
  * 
+ * Headless implmentation of {@link IMiniTable}.<br/>
+ * This support the use/test of some UI API (for e.g {@link Match} in headless environment (for e.g unit test).
  * @author hengsin
  *
  */
@@ -60,6 +60,13 @@ public class MiniTableImpl implements IMiniTable {
 	private int m_selectedRow = -1;
 	
 	public MiniTableImpl() {
+	}
+
+	/**
+	 * @param layout
+	 */
+	public MiniTableImpl(ColumnInfo[] layout) {
+		prepareTable(layout, null, null, false, null);
 	}
 
 	@Override

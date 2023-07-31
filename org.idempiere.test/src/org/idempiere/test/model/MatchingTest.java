@@ -22,20 +22,19 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.test.form;
+package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
-import org.compiere.apps.form.Match;
-import org.compiere.minigrid.ColumnInfo;
-import org.compiere.minigrid.IDColumn;
-import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
+import org.compiere.model.MInOut.MatchingRecord;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
@@ -54,9 +53,16 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
-public class MatchFormTest extends AbstractTestCase {
+/**
+ * Test matching api
+ * @author hengsin
+ */
+public class MatchingTest extends AbstractTestCase {
 
-	public MatchFormTest() {
+	/**
+	 * default constructor
+	 */
+	public MatchingTest() {
 	}
 
 	@Test
@@ -111,53 +117,19 @@ public class MatchFormTest extends AbstractTestCase {
 		assertEquals(1, orderLine.getQtyReserved().intValue(), "Unexpected order line qty ordered value");
 		assertEquals(0, orderLine.getQtyDelivered().intValue(), "Unexpected order line qty delivered value");
 		
-		Match match = new Match();
-		match.setTrxName(getTrxName());
-		ColumnInfo[] columnLayout = match.getColumnLayout();
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
-		fromTable.prepareTable(columnLayout, null, null, false, null);
-		toTable.prepareTable(columnLayout, null, null, false, null);
-		
-		//load not matched shipments
-		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
-		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
-		int selectedRow = -1;
-		for(int i = 0; i < fromTable.getRowCount(); i++) {
-			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
-			if (receipt.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
-				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
-				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue();
-				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
-				selectedRow = i;
-				break;
-			}
-		}
-		assertTrue(selectedRow >= 0, "Can't find not matched Material Receipt line");
-		fromTable.setSelectedRow(selectedRow);
-		
-		//load not matched orders
-		match.cmd_searchTo(fromTable, toTable, match.getMatchTypeText(Match.MATCH_ORDER), Match.MATCH_SHIPMENT, true, true, true, false);
-		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched Order Line: " + fromTable.getRowCount());
-		int selectedOrderRow = -1;
-		for(int i = 0; i < toTable.getRowCount(); i++) {
-			String docNo = (String)toTable.getValueAt(i, Match.I_DocumentNo);
-			if (order.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)toTable.getValueAt(i, Match.I_MATCHED)).intValue();
-				assertEquals(0, matched, "Unexpected matched qty for PO line");
-				int qty = ((Number)toTable.getValueAt(i, Match.I_QTY)).intValue();
-				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for PO line");
-				selectedOrderRow = i;
-				break;
-			}
-		}
-		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
-		
-		//select and process matching
-		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, Match.I_ID);
-		idColumn.setSelected(true);
-		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), new BigDecimal(1));
+		List<MatchingRecord> notMatchList = MInOut.getNotFullyMatchedToOrder(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchList.size() > 0, "Fail to retrieve receipts not fully matched to order");
+		Optional<MInOut.MatchingRecord> optionalReceipt = notMatchList.stream().filter(m -> receipt.getDocumentNo().equals(m.documentNo())).findFirst();
+		assertTrue(optionalReceipt.isPresent(), "Can't find not matched Material Receipt line");
+
+		List<MOrder.MatchingRecord> notMatchOrders = MOrder.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchOrders.size() > 0, "Fail to retrieve orders not fully matched to material receipt");
+		Optional<MOrder.MatchingRecord> optionalOrder = notMatchOrders.stream().filter(m -> order.getDocumentNo().equals(m.documentNo())).findFirst();
+		assertTrue(optionalOrder.isPresent(), "Can't find not matched PO line");
+				
+		//process matching
+		boolean ok = receiptLine.matchToOrderLine(orderLine.get_ID(), orderLine.getQtyOrdered());
+		assertTrue(ok, "Failed to match receipt line to order line");
 		
 		orderLine.load(getTrxName());
 		assertEquals(0, orderLine.getQtyReserved().intValue(), "Unexpected order line qty ordered value");
@@ -248,52 +220,22 @@ public class MatchFormTest extends AbstractTestCase {
 		}
 		invoice.load(getTrxName());
 		assertTrue(invoice.isPosted());
-		
-		Match match = new Match();
-		match.setTrxName(getTrxName());
-		ColumnInfo[] columnLayout = match.getColumnLayout();
-		MiniTableImpl fromTable = new MiniTableImpl(columnLayout);
-		MiniTableImpl toTable = new MiniTableImpl(columnLayout);
-		
+				
 		//load not match invoice
-		match.cmd_search(fromTable, Match.MATCH_INVOICE, match.getMatchTypeText(Match.MATCH_SHIPMENT), product.get_ID(), bpartner.get_ID(), null, null, false);
-		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched vendor invoice: " + fromTable.getRowCount());
-		int selectedRow = -1;
-		for(int i = 0; i < fromTable.getRowCount(); i++) {
-			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
-			if (invoice.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
-				assertEquals(0, matched, "Unexpected matched qty for purchase order line");
-				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue() ;
-				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for vendor invoice line");
-				selectedRow = i;
-				break;
-			}
-		}
-		assertTrue(selectedRow >= 0, "Can't find not matched vendor invoice line");
-		fromTable.setSelectedRow(selectedRow);
+		List<MInvoice.MatchingRecord> notMatchInvoices = MInvoice.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.getM_Product_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchInvoices.size() > 0, "Unexpected number of records for not matched vendor invoice");
+		Optional<MInvoice.MatchingRecord> optionalInvoice = notMatchInvoices.stream().filter(nmi -> invoice.getDocumentNo().equals(nmi.documentNo())).findFirst();
+		assertTrue(optionalInvoice.isPresent(), "Can't find not matched vendor invoice line");
 		
 		//load not matched receipt
-		match.cmd_searchTo(fromTable, toTable, match.getMatchTypeText(Match.MATCH_SHIPMENT), Match.MATCH_INVOICE, true, true, true, false);
-		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched material receipt Line: " + fromTable.getRowCount());
-		int selectedReceiptRow = -1;
-		for(int i = 0; i < toTable.getRowCount(); i++) {
-			String docNo = (String)toTable.getValueAt(i, Match.I_DocumentNo);
-			if (receipt.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)toTable.getValueAt(i, Match.I_MATCHED)).intValue();
-				assertEquals(0, matched, "Unexpected matched qty for material receipt line");
-				int qty = ((Number)toTable.getValueAt(i, Match.I_QTY)).intValue();
-				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for material receipt line");
-				selectedReceiptRow = i;
-				break;
-			}
-		}
-		assertTrue(selectedReceiptRow >= 0, "Can't find not matched material receipt line");
+		List<MInOut.MatchingRecord> notMatchReceipts = MInOut.getNotFullyMatchedToInvoice(bpartner.getC_BPartner_ID(), product.getM_Product_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchReceipts.size()>0, "Unexpected number of records for not matched material receipt Line");
+		Optional<MInOut.MatchingRecord> optionalReceipt = notMatchReceipts.stream().filter(nmr -> receipt.getDocumentNo().equals(nmr.documentNo())).findFirst();
+		assertTrue(optionalReceipt.isPresent(), "Can't find not matched material receipt line");
 		
 		//select and process matching
-		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedReceiptRow, Match.I_ID);
-		idColumn.setSelected(true);
-		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_INVOICE, match.getMatchTypeText(Match.MATCH_SHIPMENT), new BigDecimal(1));
+		boolean ok = receiptLine.matchToInvoiceLine(invoiceLine.getC_InvoiceLine_ID(), qtyInvoiced);
+		assertTrue(ok, "Failed to match receipt line to invoice line");
 		
 		orderLine.load(getTrxName());
 		assertEquals(1, orderLine.getQtyInvoiced().intValue(), "Unexpected order line qty invoiced value");
@@ -388,51 +330,21 @@ public class MatchFormTest extends AbstractTestCase {
 		invoice.load(getTrxName());
 		assertTrue(invoice.isPosted());
 		
-		Match match = new Match();
-		match.setTrxName(getTrxName());
-		ColumnInfo[] columnLayout = match.getColumnLayout();
-		MiniTableImpl fromTable = new MiniTableImpl(columnLayout);
-		MiniTableImpl toTable = new MiniTableImpl(columnLayout);
-		
 		//load not match receipt
-		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_INVOICE), product.get_ID(), bpartner.get_ID(), null, null, false);
-		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched material receipt: " + fromTable.getRowCount());
-		int selectedRow = -1;
-		for(int i = 0; i < fromTable.getRowCount(); i++) {
-			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
-			if (receipt.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
-				assertEquals(0, matched, "Unexpected matched qty for material receipt line");
-				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue() ;
-				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for material receipt line");
-				selectedRow = i;
-				break;
-			}
-		}
-		assertTrue(selectedRow >= 0, "Can't find not matched material receipt line");
-		fromTable.setSelectedRow(selectedRow);
+		List<MInOut.MatchingRecord> notMatchReceipts = MInOut.getNotFullyMatchedToInvoice(bpartner.getC_BPartner_ID(), product.getM_Product_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchReceipts.size()>0, "Unexpected number of records for not matched material receipt");
+		Optional<MInOut.MatchingRecord> optionalReceipt = notMatchReceipts.stream().filter(nmr -> receipt.getDocumentNo().equals(nmr.documentNo())).findFirst();
+		assertTrue(optionalReceipt.isPresent(), "Can't find not matched material receipt line");
 		
 		//load not matched vendor invoice
-		match.cmd_searchTo(fromTable, toTable, match.getMatchTypeText(Match.MATCH_INVOICE), Match.MATCH_SHIPMENT, true, true, true, false);
-		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched vendor invoice Line: " + fromTable.getRowCount());
-		int selectedInvoiceRow = -1;
-		for(int i = 0; i < toTable.getRowCount(); i++) {
-			String docNo = (String)toTable.getValueAt(i, Match.I_DocumentNo);
-			if (invoice.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)toTable.getValueAt(i, Match.I_MATCHED)).intValue();
-				assertEquals(0, matched, "Unexpected matched qty for vendor invoice line");
-				int qty = ((Number)toTable.getValueAt(i, Match.I_QTY)).intValue();
-				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for vendor invoice line");
-				selectedInvoiceRow = i;
-				break;
-			}
-		}
-		assertTrue(selectedInvoiceRow >= 0, "Can't find not matched vendor invoice line");
+		List<MInvoice.MatchingRecord> notMatchInvoices = MInvoice.getNotFullyMatchedToReceipt(bpartner.getC_BPartner_ID(), product.getM_Product_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchInvoices.size()>0, "Unexpected number of records for not matched vendor invoice Line");
+		Optional<MInvoice.MatchingRecord> optionalInvoice = notMatchInvoices.stream().filter(nmi -> invoice.getDocumentNo().equals(nmi.documentNo())).findFirst();
+		assertTrue(optionalInvoice.isPresent(), "Can't find not matched vendor invoice line");
 		
 		//select and process matching
-		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedInvoiceRow, Match.I_ID);
-		idColumn.setSelected(true);
-		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_INVOICE), new BigDecimal(1));
+		boolean ok = receiptLine.matchToInvoiceLine(invoiceLine.getC_InvoiceLine_ID(), qtyInvoiced);
+		assertTrue(ok, "Failed to match receipt line to invoice line");
 		
 		orderLine.load(getTrxName());
 		assertEquals(1, orderLine.getQtyInvoiced().intValue(), "Unexpected order line qty invoiced value");
