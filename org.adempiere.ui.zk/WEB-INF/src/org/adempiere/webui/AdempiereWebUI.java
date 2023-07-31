@@ -715,12 +715,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, SessionContextListener.SERVLET_SESSION_ID, httpRequest.getSession().getId());
 		if (Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER) != null)
 			properties.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER));
-
+		
 		//desktop cleanup
 		IDesktop appDesktop = getAppDeskop();
 		HttpSession session = httpRequest.getSession();
 		if (appDesktop != null)
-			appDesktop.logout(T -> {if (T) asyncChangeRole(session, locale, properties);});
+			appDesktop.logout(T -> {if (T) asyncChangeRole(session, locale, properties, desktop);});						
 	}
 	
 	/**
@@ -728,8 +728,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 * @param httpSession
 	 * @param locale
 	 * @param properties
+	 * @param desktop 
 	 */
-	private void asyncChangeRole(HttpSession httpSession, Locale locale, Properties properties) {
+	private void asyncChangeRole(HttpSession httpSession, Locale locale, Properties properties, Desktop desktop) {
 		//stop key listener
 		if (keyListener != null) {
 			keyListener.detach();
@@ -761,6 +762,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
     	//show change role window and set new context for env and session
 		onChangeRole(locale, properties);
+		
+		Executions.schedule(desktop, e -> DesktopWatchDog.removeOtherDesktopsInSession(desktop), new Event("onRemoveOtherDesktops"));
 	}
 	
 	@Override
