@@ -48,8 +48,7 @@ import org.junit.jupiter.api.Test;
 public class MTestTest extends AbstractTestCase {
 
 	private static final String TestInGardenWorld = "6846b9eb-aff1-47c8-8b50-e9632b39c0c7";
-	private static final String TestInSystem = "d08e9de9-39e5-485c-ad50-e8bc7ee0f575"
-			+ "";
+	private static final String TestInSystem = "d08e9de9-39e5-485c-ad50-e8bc7ee0f575";
 
 	public MTestTest() {
 	}

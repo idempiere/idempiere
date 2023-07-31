@@ -3377,7 +3377,7 @@ public abstract class PO
 			{
 				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
 				//	Change Log	- Only
-				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
 				if (   session != null
 					&& p_info.isAllowLogging(ki)		//	logging allowed
 					&& !p_info.isEncrypted(ki)		//	not encrypted
@@ -3652,7 +3652,7 @@ public abstract class PO
 			if (session != null && (!withValues || Env.isUseCentralizedId(p_info.getTableName())))
 			{
 				//	Change Log	- Only
-				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
 				if (!generateScriptOnly && session != null
 					&& p_info.isAllowLogging(i)		//	logging allowed
 					&& !p_info.isEncrypted(i)		//	not encrypted

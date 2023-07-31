@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.idempiere.distributed.ICacheService;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 
 /**
  * @author hengsin

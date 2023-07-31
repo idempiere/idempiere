@@ -69,6 +69,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
 import org.compiere.model.SystemIDs;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -215,6 +216,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
 	protected String m_columnName = null;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	protected boolean isAllowedToCreateAndUpdate = false;
 
@@ -847,6 +850,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	}	//	actionPerformed
 
 	protected void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_changed = false;
 		m_M_AttributeSetInstance_ID = 0;
 		m_M_Locator_ID = 0;

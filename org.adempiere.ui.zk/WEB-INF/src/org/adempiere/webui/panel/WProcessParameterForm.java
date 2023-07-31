@@ -26,12 +26,14 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MScheduler;
+import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -70,6 +72,9 @@ public class WProcessParameterForm extends ADForm
 
 	private ProcessParameterPanel parameterPanel;
 	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	private final static CLogger log = CLogger.getCLogger(WProcessParameterForm.class);
 
 	public WProcessParameterForm(WProcessParameter wpp) {
@@ -106,6 +111,10 @@ public class WProcessParameterForm extends ADForm
 	}
 	
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.dispose();
 	}
 

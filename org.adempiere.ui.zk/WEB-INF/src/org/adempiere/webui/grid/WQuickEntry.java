@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -132,7 +133,8 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_TAB, parent_TabNo);
 		initPOs();
-		log.info("R/O=" + isReadOnly());
+		if (log.isLoggable(Level.INFO))
+			log.info("R/O=" + isReadOnly());
 
 	}	//	WQuickEntry
 	
@@ -399,15 +401,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		log.config("");
 		boolean anyChange = false;
 		for (int idxf = 0; idxf < quickEditors.size(); idxf++) {
-			WEditor editor = quickEditors.get(idxf);
-			Object value = editor.getValue();
-			Object initialValue = initialValues.get(idxf);
-
-			boolean changed = (value != null && initialValue == null)
-					|| (value == null && initialValue != null)
-					|| (value != null && initialValue != null && ! value.equals(initialValue));
-
-			if (changed) {
+			if (isChanged(idxf)) {
 				anyChange = true;
 			}
 		}
@@ -444,11 +438,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 				WEditor editor = quickEditors.get(idxf);
 				Object value = editor.getValue();
-				Object initialValue = initialValues.get(idxf);
 
-				boolean changed = (value != null && initialValue == null)
-						|| (value == null && initialValue != null)
-						|| (value != null && initialValue != null && !value.equals(initialValue));
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {
 					if (value == null || value.toString().length() == 0) {
@@ -461,7 +451,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 				}
 
 				po.set_ValueOfColumn(field.getColumnName(), value);
-				if (changed && ! thisMandatoryError) {
+				if (isChanged(idxf) && ! thisMandatoryError) {
 					savePO = true;
 				}
 			}
@@ -501,6 +491,22 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 		return true;
 	}	//	actionSave
+	
+	/**
+	 * 
+	 * @param index of field
+	 * @return true if changed
+	 */
+	private boolean isChanged(int index)
+	{
+		WEditor editor = quickEditors.get(index);
+		Object value = editor.getValue();
+		Object initialValue = initialValues.get(index);
+		
+		return (value != null && initialValue == null)
+				|| (value == null && initialValue != null)
+				|| (value != null && initialValue != null);
+	}
 
 	/**
 	 *	Returns Record_ID
@@ -537,8 +543,13 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	@Override
 	public void detach() {
 		super.detach();
+		IDesktop desktop = SessionManager.getAppDesktop();
+		
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		desktop.setCloseTabWithShortcut(false);
+		
 		if(m_WindowNo!=0)
-			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+			desktop.unregisterWindow(m_WindowNo);
 	}
 	
 	public void valueChange(ValueChangeEvent evt)

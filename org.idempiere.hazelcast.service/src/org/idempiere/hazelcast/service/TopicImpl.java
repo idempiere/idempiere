@@ -17,12 +17,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
 
-import com.hazelcast.core.Message;
-import com.hazelcast.core.MessageListener;
+import com.hazelcast.topic.Message;
+import com.hazelcast.topic.MessageListener;
 
 /**
  * @author hengsin
@@ -30,7 +31,7 @@ import com.hazelcast.core.MessageListener;
  */
 public class TopicImpl<E> implements ITopic<E> {
 
-	private com.hazelcast.core.ITopic<E> topic;
+	private com.hazelcast.topic.ITopic<E> topic;
 	
 	private List<TopicSubscriberAdapter<E>> adapters;
 	private Map<TopicSubscriberAdapter<E>, String> registrationMap;
@@ -38,7 +39,7 @@ public class TopicImpl<E> implements ITopic<E> {
 	/**
 	 * 
 	 */
-	public TopicImpl(com.hazelcast.core.ITopic<E> topic) {
+	public TopicImpl(com.hazelcast.topic.ITopic<E> topic) {
 		this.topic = topic;
 		adapters = new ArrayList<TopicSubscriberAdapter<E>>();
 		registrationMap = new HashMap<>();
@@ -52,7 +53,7 @@ public class TopicImpl<E> implements ITopic<E> {
 	@Override
 	public void subscribe(final ITopicSubscriber<E> subscriber) {
 		TopicSubscriberAdapter<E> adapter = new TopicSubscriberAdapter<E>(subscriber);
-		String registrationId = topic.addMessageListener(adapter);
+		String registrationId = topic.addMessageListener(adapter).toString();
 		adapters.add(adapter);
 		registrationMap.put(adapter, registrationId);
 	}
@@ -64,7 +65,7 @@ public class TopicImpl<E> implements ITopic<E> {
 			if (adapter.subscriber == subscriber) {
 				found = adapter;
 				String registrationId = registrationMap.get(adapter);
-				if (topic.removeMessageListener(registrationId))
+				if (topic.removeMessageListener(UUID.fromString(registrationId)))
 					registrationMap.remove(adapter);
 				break;
 			}
