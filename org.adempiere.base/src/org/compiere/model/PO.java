@@ -2693,6 +2693,7 @@ public abstract class PO
 		if (!newRecord)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_UUID());
 		if (CacheMgt.get().hasCache(p_info.getTableName())) {
+			boolean cacheResetScheduled = false;
 			if (get_TrxName() != null) {
 				Trx trx = Trx.get(get_TrxName(), false);
 				if (trx != null) {
@@ -2714,8 +2715,10 @@ public abstract class PO
 						public void afterClose(Trx trx) {
 						}
 					});
+					cacheResetScheduled = true;
 				}
-			} else {
+			}
+			if (!cacheResetScheduled) {
 				if (!newRecord)
 					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
 				else if (get_ID() > 0)
