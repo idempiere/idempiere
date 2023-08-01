@@ -376,7 +376,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				PO.clearCrossTenantSafe();
 			}
 		}
-		Env.setContext(m_ctx, "#MFA_Registration_ID", registrationId);
+		Env.setContext(m_ctx, Env.MFA_Registration_ID, registrationId);
 
 		if (m_isClientDefined) {
 			wndLogin.showRolePanel(m_userName, m_showRolePanel, m_clientsKNPairs, m_isClientDefined, true);

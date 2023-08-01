@@ -43,7 +43,7 @@ public class SessionManager
         String adRoleId = Env.getContext(ctx, Env.AD_ROLE_ID);
         String adClientId = Env.getContext(ctx, Env.AD_CLIENT_ID);
         String adOrgId = Env.getContext(ctx, Env.AD_ORG_ID);
-        String mfaId = Env.getContext(ctx, "#MFA_Registration_ID");
+        String mfaId = Env.getContext(ctx, Env.MFA_Registration_ID);
 
         return (   !"".equals(mfaId)
         		&& !"".equals(adOrgId)
