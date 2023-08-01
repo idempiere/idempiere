@@ -118,8 +118,7 @@ public class PrintInfo
 	 */
 	public boolean isReport()
 	{
-		return m_AD_Process_ID != 0	//	Menu Report
-			|| m_C_BPartner_ID == 0;
+		return m_Record_ID <= 0 && Util.isEmpty(m_Record_UU);
 	}	//	isReport
 	
 	/**
