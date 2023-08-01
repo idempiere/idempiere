@@ -708,6 +708,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.CLIENT_INFO_ORIENTATION, clientInfo.orientation);
 		Env.setContext(properties, Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
 		Env.setContext(properties, Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
+		Env.setContext(properties, Env.MFA_Registration_ID, Env.getContext(Env.getCtx(), Env.MFA_Registration_ID));
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
