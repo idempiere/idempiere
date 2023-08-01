@@ -2693,26 +2693,33 @@ public abstract class PO
 		if (!newRecord)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_UUID());
 		if (CacheMgt.get().hasCache(p_info.getTableName())) {
-			Trx trx = Trx.get(get_TrxName(), false);
-			if (trx != null) {
-				trx.addTrxEventListener(new TrxEventListener() {
-					@Override
-					public void afterRollback(Trx trx, boolean success) {
-						trx.removeTrxEventListener(this);
-					}
-					@Override
-					public void afterCommit(Trx sav, boolean success) {
-						if (success)
-							if (!newRecord)
-								Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
-							else if (get_ID() > 0)
-								Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
-						trx.removeTrxEventListener(this);
-					}
-					@Override
-					public void afterClose(Trx trx) {
-					}
-				});
+			if (get_TrxName() != null) {
+				Trx trx = Trx.get(get_TrxName(), false);
+				if (trx != null) {
+					trx.addTrxEventListener(new TrxEventListener() {
+						@Override
+						public void afterRollback(Trx trx, boolean success) {
+							trx.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterCommit(Trx sav, boolean success) {
+							if (success)
+								if (!newRecord)
+									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+								else if (get_ID() > 0)
+									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+							trx.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterClose(Trx trx) {
+						}
+					});
+				}
+			} else {
+				if (!newRecord)
+					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+				else if (get_ID() > 0)
+					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
 			}
 		}
 		
