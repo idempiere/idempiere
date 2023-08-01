@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import org.compiere.grid.CreateFromShipment;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MBPartner;
@@ -59,7 +60,6 @@ import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -258,7 +258,7 @@
         <setEntry value="org.eclipse.equinox.servletbridge@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
-        <setEntry value="org.eclipse.jdt.core.compiler.batch*3.33.0.v20230218-1114@default:default"/>
+        <setEntry value="org.eclipse.jdt.core.compiler.batch@default:default"/>
         <setEntry value="org.eclipse.jdt.core@default:default"/>
         <setEntry value="org.eclipse.jetty.alpn.client@default:default"/>
         <setEntry value="org.eclipse.jetty.annotations@default:true"/>
