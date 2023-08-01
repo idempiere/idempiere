@@ -178,7 +178,7 @@ public class Archive {
 			sql.append(" AND ((AD_Table_ID=").append(m_AD_Table_ID);
 			if (m_Record_ID > 0)
 				sql.append(" AND Record_ID=").append(m_Record_ID);
-			if (!Util.isEmpty(m_Record_UU))
+			else if (!Util.isEmpty(m_Record_UU))
 				sql.append(" AND Record_UU=").append(DB.TO_STRING(m_Record_UU));
 			sql.append(")");
 			if (m_AD_Table_ID == MBPartner.Table_ID && m_Record_ID > 0)
