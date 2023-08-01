@@ -312,6 +312,7 @@ public class ReportCtl
 		}
 		re.setLanguageID(pi.getLanguageID());
 		re.setIsReplaceTabContent(pi.isReplaceTabContent());
+		re.setProcessInfo(pi);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startStandardReport

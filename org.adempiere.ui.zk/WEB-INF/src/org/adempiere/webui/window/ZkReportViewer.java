@@ -44,6 +44,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
@@ -52,6 +53,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
+import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -92,6 +94,7 @@ import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1038,7 +1041,24 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
 		revalidate();
+		
+		if (Window.REPLACE.equals(getAttribute(Window.INSERT_POSITION_KEY))) {
+			if (m_reportEngine != null && m_reportEngine.getProcessInfo() != null) {
+				ProcessInfo pi = m_reportEngine.getProcessInfo();
+				checkProcessInfo(pi);
+			}
+		}
 	}	//	dynInit
+
+	private void checkProcessInfo(ProcessInfo pi) {
+		ProcessInfoUtil.setLogFromDB(pi);
+		if (pi.isError() || (pi.getLogs() != null && pi.getLogs().length > 0)) {
+			ProcessInfoDialog dialog = new ProcessInfoDialog(pi, false);
+			dialog.setAutoCloseAfterZoom(true);
+			dialog.setPage(this.getPage());
+			dialog.doHighlighted();
+		}
+	}
 	
 	/**
 	 * 	Fill ComboBox comboReport (report options)
@@ -1189,6 +1209,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					if (getDesktop() != null)
 						clearTabOnCloseHandler();
 				}
+				ProcessInfo pi = dialog.getProcessInfo();
+				if (pi != null) 
+					checkProcessInfo(pi);
 			}
         }
         else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
@@ -1571,7 +1594,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		pi.setReplaceTabContent();
 		if(!Util.isEmpty(showHelp))
 			pi.setShowHelp(showHelp);
-		setTabOnCloseHandler();
+		setTabOnCloseHandler();	
+		String predefined = (String) getAttribute(ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES);
+		if (!Util.isEmpty(predefined, true)) {
+			Env.setContext(Env.getCtx(), m_WindowNo, ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES, predefined);
+			Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefined);
+		}
+		if (getAttribute("IsSOTrx") != null) {
+			Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", getAttribute("IsSOTrx").toString());
+		}
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
@@ -1782,6 +1813,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	private boolean ToolBarMenuRestictionLoaded = false;
+
 	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;

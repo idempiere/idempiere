@@ -2855,4 +2855,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			element.setStyle(styleBuilder.toString());
 		//
 	}
+
+	private ProcessInfo m_pi = null;
+	
+	/**
+	 * @param pi
+	 */
+	public void setProcessInfo(ProcessInfo pi) {
+		m_pi = pi;
+	}
+	
+	/**
+	 * @return ProcessInfo
+	 */
+	public ProcessInfo getProcessInfo() {
+		return m_pi;
+	}
 }	//	ReportEngine
