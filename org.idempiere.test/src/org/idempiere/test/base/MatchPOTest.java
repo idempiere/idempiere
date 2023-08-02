@@ -960,4 +960,92 @@ public class MatchPOTest extends AbstractTestCase {
 		receipt.load(getTrxName());
 		assertEquals(0, receipt.getC_Order_ID(), "Material receipt: order not clear after void of purchase order");
 	}
+	
+	@Test
+	public void testReverseReceiptAfterClosePO() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id);
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id);
+		
+		//Create PO of 4 
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(bpartner);
+		order.setIsSOTrx(false);
+		order.setC_DocTypeTarget_ID();
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+		
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(new BigDecimal("4"));
+		orderLine.saveEx();
+		
+		BigDecimal qtyOrdered = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		BigDecimal qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(4, qtyOrdered1.subtract(qtyOrdered).intValue(), "QtyOrdered not increase as expected");
+		
+		//Create MR
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
+		receipt.saveEx();
+		
+		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+		
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setOrderLine(orderLine, M_Locator_ID, new BigDecimal("2"));
+		receiptLine.setLine(10);
+		receiptLine.setQty(new BigDecimal("2"));
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(qtyOrdered.intValue()+2, qtyOrdered1.intValue(), "QtyOrdered not release as expected");
+		
+		orderLine.load(getTrxName());
+		assertEquals(2, orderLine.getQtyDelivered().intValue(), "Unexpected QtyDelivered");
+		assertEquals(2, orderLine.getQtyReserved().intValue(), "Unexpected QtyReserved");
+		
+		//Close PO
+		order.load(getTrxName());
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
+		orderLine.load(getTrxName());
+		assertEquals(4, orderLine.getQtyEntered().intValue(), "Unexpected QtyEntered");
+		assertEquals(2, orderLine.getQtyDelivered().intValue(), "Unexpected QtyDelivered");
+		assertEquals(2, orderLine.getQtyOrdered().intValue(), "Unexpected QtyOrdered");
+		assertEquals(2, orderLine.getQtyLostSales().intValue(), "Unexpected QtyLostSales");
+		assertEquals(0, orderLine.getQtyReserved().intValue(), "Unexpected QtyReserved");
+		
+		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(qtyOrdered.intValue(), qtyOrdered1.intValue(), "Unexpected change in QtyOrdered");
+		
+		//Reverse MR
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Reverse_Accrual);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus());
+		
+		orderLine.load(getTrxName());
+		assertEquals(4, orderLine.getQtyEntered().intValue(), "Unexpected QtyEntered");
+		assertEquals(0, orderLine.getQtyDelivered().intValue(), "Unexpected QtyDelivered");
+		assertEquals(0, orderLine.getQtyOrdered().intValue(), "Unexpected QtyOrdered");
+		assertEquals(4, orderLine.getQtyLostSales().intValue(), "Unexpected QtyLostSales");
+		assertEquals(0, orderLine.getQtyReserved().intValue(), "Unexpected QtyReserved");
+		
+		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(qtyOrdered.intValue(), qtyOrdered1.intValue(), "Unexpected change in QtyOrdered");
+	}
 }

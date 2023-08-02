@@ -29,6 +29,7 @@ import org.adempiere.base.IProductPricing;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.ProductNotOnPriceListException;
 import org.adempiere.model.ITaxProvider;
+import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -894,6 +895,20 @@ public class MOrderLine extends X_C_OrderLine
 			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceEntered().signum() != 0 || getQtyEntered().signum() != 0)) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 				return false;
+			}
+		}
+		
+		//sync qtyordered and qtylostsales for closed order
+		if (!newRecord && DocAction.STATUS_Closed.equals(getParent().getDocStatus()) && is_ValueChanged(COLUMNNAME_QtyDelivered)
+			&& !getParent().is_ValueChanged(MOrder.COLUMNNAME_DocStatus)) {
+			if (getQtyOrdered().compareTo(getQtyDelivered()) > 0)
+			{
+				setQtyLostSales(getQtyLostSales().add(getQtyOrdered().subtract(getQtyDelivered())));
+				setQtyOrdered(getQtyDelivered());
+			}
+			else
+			{
+				setQtyLostSales(Env.ZERO);
 			}
 		}
 		
