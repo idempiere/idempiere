@@ -58,6 +58,7 @@ import org.compiere.model.MLanguage;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRefTable;
 import org.compiere.model.MReference;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
@@ -445,6 +446,7 @@ public final class AEnv
         //
         MQuery zoomQuery = new MQuery();   //  ColumnName might be changed in MTab.validateQuery
 		String column = lookup.getColumnName();
+		int windowId = 0;
 		//	Check if it is a List Reference
 		if (lookup instanceof MLookup)
 		{
@@ -456,6 +458,8 @@ public final class AEnv
 				{
 					column = "AD_Ref_List_ID";
 					value = DB.getSQLValue(null, "SELECT AD_Ref_List_ID FROM AD_Ref_List WHERE AD_Reference_ID=? AND Value=?", AD_Reference_ID, value);
+				}else if (reference.getValidationType().equals(MReference.VALIDATIONTYPE_TableValidation)) {
+					windowId = MRefTable.get(AD_Reference_ID).getAD_Window_ID();
 				}
 			}
 		}
@@ -477,7 +481,7 @@ public final class AEnv
 		zoomQuery.setZoomValue(value);
 		zoomQuery.addRestriction(column, MQuery.EQUAL, value);
 		zoomQuery.setRecordCount(1);    //  guess
-		int windowId = lookup.getZoom(zoomQuery);
+		
 		if (windowId > 0) {
 			zoom(windowId, zoomQuery, lookup.getWindowNo());
 		} else {
