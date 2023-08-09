@@ -1054,7 +1054,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		ProcessInfoUtil.setLogFromDB(pi);
 		if (pi.isError() || (pi.getLogs() != null && pi.getLogs().length > 0)) {
 			ProcessInfoDialog dialog = new ProcessInfoDialog(pi, false);
-			dialog.setAutoCloseAfterZoom(true);
+			dialog.setAutoCloseAfterZoom(false);
 			dialog.setPage(this.getPage());
 			dialog.doHighlighted();
 		}
