@@ -177,6 +177,7 @@ public class CreateWindowFromTable extends SvrProcess
 			}
 
 			MTab tab = new MTab(window);
+			tab.setEntityType(entityType);
 			tab.setSeqNo(tabSeqNo);
 			tab.setName(table.getName());
 			tab.setAD_Table_ID(p_AD_Table_ID);
