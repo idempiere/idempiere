@@ -1643,8 +1643,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
 						+ ", Delivered=" + oLine.getQtyDelivered());
 				}
-	
-	
+				boolean orderClosed = oLine != null && DocAction.STATUS_Closed.equals(oLine.getParent().getDocStatus());
+				
 	            // Load RMA Line
 	            MRMALine rmaLine = null;
 	
@@ -1726,7 +1726,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 									return status;
 							}
 							
-							//	Update Storage - see also VMatch.createMatchRecord
+							//	Update Storage - see also Match.createMatchRecord
 							if (!MStorageOnHand.add(getCtx(),
 								sLine.getM_Locator_ID(),
 								sLine.getM_Product_ID(),
@@ -1760,8 +1760,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 									return status;
 							}
 						}
-						
-						if (oLine!=null && mtrx!=null && 
+												
+						if (oLine!=null && mtrx!=null && !orderClosed && 
 						   ((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))
 						{					
 							if (sLine.getC_OrderLine_ID() != 0 && oLine.getM_Product_ID() > 0)
@@ -1847,7 +1847,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 						if (dateMPolicy == null)
 							dateMPolicy = getMovementDate();
 
-						//	Fallback: Update Storage - see also VMatch.createMatchRecord
+						//	Fallback: Update Storage - see also Match.createMatchRecord
 						if (pendingQty.signum() != 0 &&
 							!MStorageOnHand.add(getCtx(), 
 							sLine.getM_Locator_ID(),
@@ -1859,7 +1859,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (oLine!=null && oLine.getM_Product_ID() > 0 &&
+						if (oLine!=null && oLine.getM_Product_ID() > 0 && !orderClosed &&
 							((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))  
 						{
 							IReservationTracer tracer = null;
@@ -1903,7 +1903,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				}	//	stock movement
 	
 				//	Correct Order Line
-				if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
+				if (product != null && oLine != null && !orderClosed)		//	other in Match.createMatchRecord
 				{
 					if (oLine.getQtyOrdered().signum() >= 0)
 					{

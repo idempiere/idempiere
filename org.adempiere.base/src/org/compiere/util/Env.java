@@ -127,6 +127,8 @@ public final class Env
 	public static final String M_PRICELIST_ID = "#M_PriceList_ID";
 	public static final String M_PRODUCT_CATEGORY_ID = "#M_Product_Category_ID";
 	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";	
+	/** Context for multi factor authentication */
+	public static final String MFA_Registration_ID = "#MFA_Registration_ID";
 	/** Context for POS ID */
 	public static final String POS_ID = "#POS_ID";
 	public static final String R_STATUSCATEGORY_ID = "#R_StatusCategory_ID";
