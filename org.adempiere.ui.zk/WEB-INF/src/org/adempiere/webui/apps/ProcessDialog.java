@@ -93,6 +93,8 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext, ITabOnCloseHandler
 {
+	public static final String SAVED_PREDEFINED_CONTEXT_VARIABLES = "__PredefinedContextVariables__";
+
 	/**
 	 * generated serial id
 	 */
@@ -152,6 +154,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		//save for rerun of report
+		if (predefinedContextVariables != null && MProcess.get(AD_Process_ID).isReport())
+		{
+			Env.setContext(Env.getCtx(), m_WindowNo, SAVED_PREDEFINED_CONTEXT_VARIABLES, predefinedContextVariables);
+		}
 		Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefinedContextVariables);
 		try
 		{
