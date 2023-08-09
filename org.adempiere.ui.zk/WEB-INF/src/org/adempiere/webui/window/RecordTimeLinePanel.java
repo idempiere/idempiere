@@ -99,6 +99,7 @@ public class RecordTimeLinePanel extends Vlayout {
 				return;
 			}
 			int recordId = gridTab.getRecord_ID();
+			String recordUU = gridTab.getRecord_UU();
 			int tableId = gridTab.getAD_Table_ID();
 			ArrayList<String> docActionValues = new ArrayList<String>();
 			ArrayList<String> docActionNames = new ArrayList<String>();
@@ -117,7 +118,7 @@ public class RecordTimeLinePanel extends Vlayout {
 					.append("JOIN AD_Column c ON l.ad_column_id=c.ad_column_id ")
 					.append("JOIN AD_User u ON l.createdby=u.ad_user_id ")
 					.append("WHERE l.AD_Table_ID=? ")
-					.append("AND l.Record_ID=? ")
+					.append("AND (l.Record_ID=? OR l.Record_UU=?) ")
 					.append("ORDER BY l.created desc, l.trxName ");
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
@@ -125,6 +126,7 @@ public class RecordTimeLinePanel extends Vlayout {
 				stmt = DB.prepareStatement(sql.toString(), (String)null);
 				stmt.setInt(1, tableId);
 				stmt.setInt(2, recordId);
+				stmt.setString(3, recordUU);
 				rs = stmt.executeQuery();
 				List<String> columns = null;
 				List<Integer> columnIds = null;
