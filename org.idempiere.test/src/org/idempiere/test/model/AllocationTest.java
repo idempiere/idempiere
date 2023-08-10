@@ -43,6 +43,7 @@ import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBankAccount;
+import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
@@ -488,6 +489,60 @@ public class AllocationTest extends AbstractTestCase {
 	@Test
 	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5757
+	 */
+	public void testPaymentReverseImmediatePosting() {
+		try {
+			boolean isImmediate = MClient.isClientAccountingImmediate();
+			if (!isImmediate)
+				return;
+			
+			MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
+			
+			Timestamp date = TimeUtil.getDay(null);
+			MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+			
+			int payterm = DictionaryIDs.C_PaymentTerm.IMMEDIATE.id; // Immediate
+			int taxid = DictionaryIDs.C_Tax.EXEMPT.id; // Exempt
+			
+			MInvoice invoice = createInvoice(false, false, date,  date, bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
+			completeDocument(invoice);
+			assertTrue(invoice.isPosted(), "Invoice not posted");
+			
+			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
+			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
+					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
+					.setOrderBy("IsDefault DESC")
+					.first();
+			assertTrue(ba != null, "@NoAccountOrgCurrency@");
+			
+			MPayment payment = createPayment(bpartner.getC_BPartner_ID(), ba.getC_BankAccount_ID(), date, usd.getC_Currency_ID(), 0, Env.ONEHUNDRED);
+			payment.setC_Invoice_ID(invoice.getC_Invoice_ID());
+			payment.saveEx();
+			completeDocument(payment);
+			assertTrue(payment.isPosted(), "Payment not posted");
+			
+			MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
+			for (MAllocationHdr allocation : allocations) {
+				assertTrue(allocation.isPosted(), "Allocation not posted");
+			}
+			
+			reverseCorrectDocument(payment);
+			MPayment reversalPayment = new MPayment(Env.getCtx(), payment.getReversal_ID(), getTrxName());
+			assertTrue(reversalPayment.isPosted(), "Reversal payment not posted");
+			
+			allocations = MAllocationHdr.getOfPayment(Env.getCtx(), reversalPayment.getC_Payment_ID(), getTrxName());
+			for (MAllocationHdr allocation : allocations) {
+				assertTrue(allocation.isPosted(), "Allocation not posted");
+			}
+		} finally {
+			rollback();
+		}
+	}
+	
+	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
+	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5591
 	 */
 	public void testInvoiceReversePostingWithDiffCurrency() {
@@ -733,6 +788,14 @@ public class AllocationTest extends AbstractTestCase {
 	
 	private void reverseAccrualDocument(PO po) {
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(po, DocAction.ACTION_Reverse_Accrual);
+		po.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		String docStatus = (String) po.get_Value("DocStatus");
+		assertEquals(DocAction.STATUS_Reversed, docStatus, DocAction.STATUS_Reversed + " != " + docStatus);
+	}
+	
+	private void reverseCorrectDocument(PO po) {
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(po, DocAction.ACTION_Reverse_Correct);
 		po.load(getTrxName());
 		assertFalse(info.isError(), info.getSummary());
 		String docStatus = (String) po.get_Value("DocStatus");

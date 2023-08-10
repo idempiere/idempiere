@@ -1452,4 +1452,22 @@ public class MMatchPO extends X_M_MatchPO
 		}
 		return false;
 	}
+	
+	/**
+	 * @param C_OrderLine_ID
+	 * @param qty
+	 * @param sLine
+	 * @param trxName
+	 * @return new or existing MMatchPO record
+	 */
+	public static MMatchPO getOrCreate(int C_OrderLine_ID, BigDecimal qty, MInOutLine sLine, String trxName) {
+		Query query = new Query(Env.getCtx(), MMatchPO.Table_Name, "C_OrderLine_ID=? AND Qty=? AND Posted IN (?,?) AND M_InOutLine_ID IS NULL", trxName);
+		MMatchPO matchPO = query.setParameters(C_OrderLine_ID, qty, Doc.STATUS_NotPosted, Doc.STATUS_Deferred).first();
+		if (matchPO != null) {
+			matchPO.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
+			return matchPO;
+		} else {
+			return new MMatchPO (sLine, null, qty);
+		}
+	}
 }	//	MMatchPO

@@ -24,11 +24,11 @@ import java.util.concurrent.Future;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
+import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
-import com.hazelcast.core.Member;
-import com.hazelcast.instance.HazelcastInstanceImpl;
-import com.hazelcast.instance.HazelcastInstanceProxy;
+import com.hazelcast.instance.impl.HazelcastInstanceImpl;
+import com.hazelcast.instance.impl.HazelcastInstanceProxy;
 
 /**
  * @author hengsin
@@ -75,7 +75,7 @@ public class ClusterServiceImpl implements IClusterService {
 		if (instance != null) {
 			Set<Member> members = instance.getCluster().getMembers();
 			for(Member member : members) {
-				if (member.getUuid().equals(clusterMember.getId())) {
+				if (member.getUuid().toString().equals(clusterMember.getId())) {
 					IExecutorService service = Activator.getHazelcastInstance().getExecutorService("default");
 					return service.submitToMember(task, member);
 				}
@@ -99,7 +99,7 @@ public class ClusterServiceImpl implements IClusterService {
 			Set<Member> members = instance.getCluster().getMembers();
 			Set<Member> selectedMembers = new HashSet<Member>();
 			for(Member member : members) {
-				if (selectedIds.contains(member.getUuid())) {
+				if (selectedIds.contains(member.getUuid().toString())) {
 					selectedMembers.add(member);
 				}
 			}

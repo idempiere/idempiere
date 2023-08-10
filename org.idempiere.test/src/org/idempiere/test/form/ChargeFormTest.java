@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Vector;
 
 import org.compiere.apps.form.Charge;
+import org.compiere.minigrid.MiniTableImpl;
 import org.idempiere.test.AbstractTestCase;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -132,7 +133,8 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_TAB, parent_TabNo);
 		initPOs();
-		log.info("R/O=" + isReadOnly());
+		if (log.isLoggable(Level.INFO))
+			log.info("R/O=" + isReadOnly());
 
 	}	//	WQuickEntry
 	
@@ -541,8 +543,13 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	@Override
 	public void detach() {
 		super.detach();
+		IDesktop desktop = SessionManager.getAppDesktop();
+		
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		desktop.setCloseTabWithShortcut(false);
+		
 		if(m_WindowNo!=0)
-			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+			desktop.unregisterWindow(m_WindowNo);
 	}
 	
 	public void valueChange(ValueChangeEvent evt)

@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import org.compiere.apps.form.Allocation;
 import org.compiere.minigrid.IMiniTable;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBankAccount;
@@ -53,7 +54,6 @@ import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**

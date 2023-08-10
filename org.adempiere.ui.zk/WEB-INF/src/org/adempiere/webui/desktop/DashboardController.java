@@ -117,7 +117,6 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbar;
@@ -434,32 +433,18 @@ public class DashboardController implements EventListener<Event> {
 	 * @param text
 	 */
 	private void renderHelpButton(Caption caption, String text) {
-		A help = new A();
-		help.setSclass("dashboard-content-help-icon");
-		help.setVisible(false);
+		A icon = new A();
+		icon.setSclass("dashboard-content-help-icon");
 		if (ThemeManager.isUseFontIconForImage())
-			help.setIconSclass("z-icon-Help");
+			icon.setIconSclass("z-icon-Help");
 		else
-			help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
-		caption.appendChild(help);
-		Popup popup = new Popup();
-		popup.setPopup(popup);
+			icon.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		caption.appendChild(icon);
+		Div popup = new Div();
 		Text t = new Text(text);
-		popup.setSclass("dashboard-content-help");
+		popup.setSclass("dashboard-content-help-popup");
 		popup.appendChild(t);
-		help.setTooltip(popup);
-		help.addEventListener(Events.ON_MOUSE_OVER, (Event event) -> {
-			popup.setPage(help.getPage());
-			popup.open(help, "after_start");
-			LayoutUtils.autoDetachOnClose(popup);
-		});
-		caption.addEventListener(Events.ON_MOUSE_OVER, (Event event) -> {
-			help.setVisible(true);
-		});
-		caption.addEventListener(Events.ON_MOUSE_OUT, (Event event) -> {
-			popup.detach();
-			help.setVisible(false);
-		});
+		caption.appendChild(popup);
 	}
 
 	/**
@@ -1142,6 +1127,13 @@ public class DashboardController implements EventListener<Event> {
 	    		//following 2 line needed for restore to size the panel correctly
 				ZKUpdateUtil.setHflex(panel, (String)panel.getAttribute(FLEX_GROW_ATTRIBUTE));
 				ZKUpdateUtil.setHeight(panel, "100%");
+				
+				//notify panel content component
+				if (panel.getPanelchildren() != null) {
+					panel.getPanelchildren().getChildren().forEach(child -> {
+						Executions.schedule(dashboardLayout.getDesktop(), e -> Events.postEvent(child, event), new Event("onPostRestore"));
+					});
+				}
 	    	}
 		}
 		else if(eventName.equals(Events.ON_CLICK))
@@ -1250,6 +1242,13 @@ public class DashboardController implements EventListener<Event> {
     						logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
     				} finally {
     					PO.clearCrossTenantSafe();
+    				}
+    			}
+    			
+    			//notify panel content component
+    			if (panel.getPanelchildren() != null) {
+    				for(Component c : panel.getPanelchildren().getChildren()) {
+    					Events.postEvent(c, event);
     				}
     			}
     		}

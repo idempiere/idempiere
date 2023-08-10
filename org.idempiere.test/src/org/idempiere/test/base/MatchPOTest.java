@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
@@ -55,7 +56,6 @@ import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -571,11 +571,9 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		Match match = new Match();
 		match.setTrxName(getTrxName());
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
 		ColumnInfo[] layout = match.getColumnLayout();
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);		
+		MiniTableImpl fromTable = new MiniTableImpl(layout);
+		MiniTableImpl toTable = new MiniTableImpl(layout);		
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
@@ -759,11 +757,9 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		Match match = new Match();
 		match.setTrxName(getTrxName());		
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
 		ColumnInfo[] layout = match.getColumnLayout();
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);		
+		MiniTableImpl fromTable = new MiniTableImpl(layout);
+		MiniTableImpl toTable = new MiniTableImpl(layout);		
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
@@ -865,5 +861,191 @@ public class MatchPOTest extends AbstractTestCase {
 		assertEquals(initialOnOrdered+1, newOnOrdered, "Unexpected qty on ordered value");
 		newOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
 		assertEquals(initialOnHand+1, newOnHand, "Unexpected qty on hand value");
+	}
+	
+	@Test
+	public void testVoidMatchOrder() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
+
+		int initialOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
+		int initialOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
+		
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(bpartner);
+		order.setIsSOTrx(false);
+		order.setC_DocTypeTarget_ID();
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+		
+		BigDecimal orderQty = new BigDecimal("1");
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(orderQty);
+		orderLine.saveEx();
+		
+		//complete order
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		orderLine.load(getTrxName());
+		assertEquals(1, orderLine.getQtyReserved().intValue(), "Unexpected order line qty ordered value");
+		int newOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
+		assertEquals(initialOnOrdered+1, newOnOrdered, "Unexpected qty on ordered value");
+		
+		//create and complete material receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
+		receipt.saveEx();
+		
+		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+		
+		BigDecimal receiptQty = new BigDecimal("1");
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setOrderLine(orderLine, M_Locator_ID, receiptQty);
+		receiptLine.setLine(10);
+		receiptLine.setQty(receiptQty);
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		orderLine.load(getTrxName());
+		assertEquals(0, orderLine.getQtyReserved().intValue(), "Unexpected order line qty ordered value");
+		assertEquals(1, orderLine.getQtyDelivered().intValue(), "Unexpected order line qty delivered value");
+		newOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
+		assertEquals(initialOnOrdered, newOnOrdered, "Unexpected qty on ordered value");
+		int newOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
+		assertEquals(initialOnHand+1, newOnHand, "Unexpected qty on hand value");
+		
+		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(1, matchPOs.length, "Unexpected number of MatchPO for order line");
+		
+		//void order
+		order.setDocAction(DocAction.ACTION_Void);
+		order.saveEx();
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Void);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Voided, order.getDocStatus());
+
+		//check material receipt line is available for matching in Matching form
+		Match match = new Match();
+		match.setTrxName(getTrxName());
+		ColumnInfo[] layout = match.getColumnLayout();
+		MiniTableImpl fromTable = new MiniTableImpl(layout);
+		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
+		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
+		int selectedRow = -1;
+		for(int i = 0; i < fromTable.getRowCount(); i++) {
+			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
+			if (receipt.getDocumentNo().equals(docNo)) {
+				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
+				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
+				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue();
+				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
+				selectedRow = i;
+				break;
+			}
+		}
+		assertTrue(selectedRow >= 0, "Can't find not matched Material Receipt line");
+		
+		receiptLine.load(getTrxName());
+		assertEquals(0, receiptLine.getC_OrderLine_ID(), "Material receipt line: order line not clear after void of purchase order");
+		
+		receipt.load(getTrxName());
+		assertEquals(0, receipt.getC_Order_ID(), "Material receipt: order not clear after void of purchase order");
+	}
+	
+	@Test
+	public void testReverseReceiptAfterClosePO() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id);
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id);
+		
+		//Create PO of 4 
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(bpartner);
+		order.setIsSOTrx(false);
+		order.setC_DocTypeTarget_ID();
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+		
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(new BigDecimal("4"));
+		orderLine.saveEx();
+		
+		BigDecimal qtyOrdered = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		BigDecimal qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(4, qtyOrdered1.subtract(qtyOrdered).intValue(), "QtyOrdered not increase as expected");
+		
+		//Create MR
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
+		receipt.saveEx();
+		
+		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+		
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setOrderLine(orderLine, M_Locator_ID, new BigDecimal("2"));
+		receiptLine.setLine(10);
+		receiptLine.setQty(new BigDecimal("2"));
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(qtyOrdered.intValue()+2, qtyOrdered1.intValue(), "QtyOrdered not release as expected");
+		
+		orderLine.load(getTrxName());
+		assertEquals(2, orderLine.getQtyDelivered().intValue(), "Unexpected QtyDelivered");
+		assertEquals(2, orderLine.getQtyReserved().intValue(), "Unexpected QtyReserved");
+		
+		//Close PO
+		order.load(getTrxName());
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
+		orderLine.load(getTrxName());
+		assertEquals(4, orderLine.getQtyEntered().intValue(), "Unexpected QtyEntered");
+		assertEquals(2, orderLine.getQtyDelivered().intValue(), "Unexpected QtyDelivered");
+		assertEquals(2, orderLine.getQtyOrdered().intValue(), "Unexpected QtyOrdered");
+		assertEquals(2, orderLine.getQtyLostSales().intValue(), "Unexpected QtyLostSales");
+		assertEquals(0, orderLine.getQtyReserved().intValue(), "Unexpected QtyReserved");
+		
+		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(qtyOrdered.intValue(), qtyOrdered1.intValue(), "Unexpected change in QtyOrdered");
+		
+		//Reverse MR
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Reverse_Accrual);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus());
+		
+		orderLine.load(getTrxName());
+		assertEquals(4, orderLine.getQtyEntered().intValue(), "Unexpected QtyEntered");
+		assertEquals(0, orderLine.getQtyDelivered().intValue(), "Unexpected QtyDelivered");
+		assertEquals(0, orderLine.getQtyOrdered().intValue(), "Unexpected QtyOrdered");
+		assertEquals(4, orderLine.getQtyLostSales().intValue(), "Unexpected QtyLostSales");
+		assertEquals(0, orderLine.getQtyReserved().intValue(), "Unexpected QtyReserved");
+		
+		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
+		assertEquals(qtyOrdered.intValue(), qtyOrdered1.intValue(), "Unexpected change in QtyOrdered");
 	}
 }

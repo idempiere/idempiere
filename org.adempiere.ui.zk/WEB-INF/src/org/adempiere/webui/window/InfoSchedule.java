@@ -178,6 +178,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
     	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+    	addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 
 	}	//	InfoSchedule
 
@@ -501,13 +502,24 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			displayCalendar();
 		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
-			this.onCtrlKeyEvent(keyEvent);
+			if (LayoutUtils.isReallyVisible(this))
+				this.onCtrlKeyEvent(keyEvent);
 		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_windowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_windowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
 		//
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_cancel = true;
 		dispose();
 	}
@@ -692,10 +704,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
-			if (m_windowNo > 0) {
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_windowNo);
-			}
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 }	//	InfoSchedule

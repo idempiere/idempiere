@@ -53,6 +53,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
@@ -61,6 +62,7 @@ import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MMailText;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.model.PrintInfo;
@@ -270,6 +272,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private Button bAddDefaultMailText;
 	private Div attachmentBox;
 	private Checkbox isAcknowledgmentReceipt = new Checkbox();
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
@@ -646,6 +650,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		onClose();
 	}
 	

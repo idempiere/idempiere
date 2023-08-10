@@ -101,7 +101,8 @@ public class CommissionCalc extends SvrProcess
 		m_com.saveEx();
 		StringBuilder msgreturn = new StringBuilder("@C_CommissionRun_ID@ = ").append(comRun.getDocumentNo()) 
 				.append(" - ").append(comRun.getDescription());
-		return msgreturn.toString();
+		addLog(comRun.getC_CommissionRun_ID(), null, null, msgreturn.toString(), MCommissionRun.Table_ID, comRun.getC_CommissionRun_ID());
+		return "@OK@";
 	}	//	doIt
 	
 	/**
@@ -262,9 +263,9 @@ public class CommissionCalc extends SvrProcess
 		{
 			sql.append("SELECT h.C_Currency_ID, l.LineNetAmt, l.QtyInvoiced, ")
 				.append("NULL, l.C_InvoiceLine_ID, h.DocumentNo,")
-				.append(" COALESCE(prd.Value,l.Description),h.DateInvoiced ")
-				.append("FROM C_Invoice h")
-				.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID)")
+				.append(" COALESCE(prd.Value,l.C_InvoiceLine_Description),h.DateInvoiced ")
+				.append("FROM RV_C_Invoice h")
+				.append(" INNER JOIN RV_C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID)")
 				.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
 				.append("WHERE h.DocStatus IN ('CL','CO','RE')")
 				.append(" AND h.IsSOTrx='Y'")
@@ -276,8 +277,8 @@ public class CommissionCalc extends SvrProcess
 			sql.append("SELECT h.C_Currency_ID, SUM(l.LineNetAmt) AS Amt,")
 				.append(" SUM(l.QtyInvoiced) AS Qty, ")
 				.append("NULL, NULL, NULL, NULL, MAX(h.DateInvoiced) ")
-				.append("FROM C_Invoice h")
-				.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
+				.append("FROM RV_C_Invoice h")
+				.append(" INNER JOIN RV_C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
 				.append("WHERE h.DocStatus IN ('CL','CO','RE')")
 				.append(" AND h.IsSOTrx='Y'")
 				.append(" AND h.AD_Client_ID = ?")

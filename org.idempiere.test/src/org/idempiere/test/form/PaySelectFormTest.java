@@ -43,6 +43,7 @@ import org.compiere.apps.form.PayPrint;
 import org.compiere.apps.form.PaySelect;
 import org.compiere.apps.form.PaySelect.BankInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MBPartner;
@@ -69,7 +70,6 @@ import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 public class PaySelectFormTest extends AbstractTestCase {

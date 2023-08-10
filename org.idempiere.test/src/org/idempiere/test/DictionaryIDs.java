@@ -122,6 +122,7 @@ public final class DictionaryIDs {
 		TREE_FARM(114,"5c557ed6-c443-4b99-ae77-546ccd46bc1f"),
 		C_AND_W(117,"037972d8-b74c-462d-b407-4a9b60e66ca8"),
 		JOE_BLOCK(118,"bead5eef-774d-45f5-9634-0210b4122340"),
+		GARDEN_USER(119,"61a84a1b-37a0-4dda-80a2-3ee218522b32"),
 		SEED_FARM(120,"f6efd81a-abe6-4bca-86fe-810d4355d572"),
 		PATIO(121,"39e85feb-94a2-4e41-ae45-e7d49d7be077"),
 		WOOD_INC(50000,"9944d7a8-76bd-4d57-8ceb-2c0327e58bda"),

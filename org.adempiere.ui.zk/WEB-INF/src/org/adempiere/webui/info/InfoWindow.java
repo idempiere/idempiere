@@ -128,6 +128,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -1904,10 +1905,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
         mField.addPropertyChangeListener(editor);
         mField.setValue(mField.getDefaultForPanel(), true);
+        editor.fireValueChange(new ValueChangeEvent(editor, mField.getColumnName(), mField.getOldValue(), mField.getValue()));
         
         if(infoColumn.isRange()) {
         	mField2.addPropertyChangeListener(editor2);
         	mField2.setValue(mField2.getDefaultForPanel(), true);
+        	editor2.fireValueChange(new ValueChangeEvent(editor2, mField2.getColumnName(), mField2.getOldValue(), mField2.getValue()));
         }
 
     }   // addSelectionColumn
@@ -2199,15 +2202,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             if (evt.getNewValue() == null) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), "");
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), "");
+            	paraCtxValues.put(editor.getColumnName(), "");
             } else if (evt.getNewValue() instanceof Boolean) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), (Boolean)evt.getNewValue());
+            	paraCtxValues.put(editor.getColumnName(), (Boolean)evt.getNewValue());
             } else if (evt.getNewValue() instanceof Timestamp) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO+"|"+editor.getColumnName(), (Timestamp)evt.getNewValue());
+            	paraCtxValues.put(editor.getColumnName(), (Timestamp)evt.getNewValue());
             } else {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), evt.getNewValue().toString());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
+            	paraCtxValues.put(editor.getColumnName(), evt.getNewValue().toString());
             }
             dynamicDisplay(editor);
             
@@ -2268,7 +2275,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			// reset value of WInfoPAttributeEditor to null when change M_AttributeSet_ID
 			if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
 				((WInfoPAttributeEditor)otherEditor).clearWhereClause();
-			
+
+			if (otherEditor.getGridField() != null)
+				otherEditor.setMandatory(otherEditor.getGridField().isMandatory(true));
+
 			otherEditor.dynamicDisplay();
 		}
 	}
@@ -2336,6 +2346,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     			super.onEvent(event);
     		}
     		
+    	} else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH))) {
+    		setMandatoryFieldsConstraint();
+    		super.onEvent(event);
     	}
     	else
     	{
@@ -2686,10 +2699,20 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		boolean hasNew = getADWindowID () > 0;
 		if (hasNew && vqe == null && hasRightQuickEntry){
-			GridWindow gridwindow = GridWindow.get(Env.getCtx(), 0, getADWindowID());
+			GridWindow gridwindow = GridWindow.get(Env.getCtx(), -1, getADWindowID());
 			hasRightQuickEntry = gridwindow != null;
-			if (hasRightQuickEntry)
-				vqe = Extensions.getQuickEntry(0, 0, getADWindowID());
+			if (hasRightQuickEntry) {
+				vqe = Extensions.getQuickEntry(p_WindowNo, 0, getADWindowID());
+				if (vqe != null) {
+					int windowNo = SessionManager.getAppDesktop().findWindowNo(vqe);
+					if (windowNo > 0 && windowNo != p_WindowNo) {
+						SessionManager.getAppDesktop().unregisterWindow(windowNo);
+					}
+				}
+			}
+			//clear gridWindow context
+			if (gridwindow != null)
+				Env.clearWinContext(-1);
 		}
 			
 		return hasNew && vqe != null && vqe.isAvailableQuickEdit();
@@ -3369,5 +3392,25 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		{
 			return true;
 		}	
-	}	
+	}
+
+	/**
+	 * That method will search at all Editors to validate if it is mandatory and has
+	 * to be provided by user.
+	 */
+	private void setMandatoryFieldsConstraint() {
+
+		int index = 0;
+		for (WEditor editorFrom : editors) {
+			WEditor editorTo = editors2.get(index++);
+
+			if (editorFrom.isMandatory() && editorFrom.getValue() == null)
+				throw new WrongValueException(editorFrom.getComponent(), Msg.getMsg(Env.getCtx(), "Missing required parameters"));
+
+			if (editorTo != null && editorTo.isMandatory() && editorTo.getValue() == null)
+				throw new WrongValueException(editorTo.getComponent(), Msg.getMsg(Env.getCtx(), "Missing required parameters"));
+				
+		}
+	}
+
 }
