@@ -452,7 +452,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			}
 		} else {
 			desktop = new WeakReference<Desktop>(getDesktop());
-			desktop.get().addListener(listener);
+			if (desktop.get() != null)
+				desktop.get().addListener(listener);
 		}
 		
 	}
