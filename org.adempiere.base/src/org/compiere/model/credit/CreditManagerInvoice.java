@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.logging.Level;
 
+import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
@@ -27,6 +28,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Credit Manager for Invoice
@@ -52,8 +54,9 @@ public class CreditManagerInvoice implements ICreditManager
 	}
 
 	@Override
-	public String creditCheck(String docAction)
+	public CreditStatus checkCreditStatus(String docAction)
 	{
+		String errorMsg = null;
 		if (MInvoice.DOCACTION_Prepare.equals(docAction) && mInvoice.isSOTrx())
 		{
 			MDocType doc = (MDocType) mInvoice.getC_DocTypeTarget();
@@ -61,10 +64,10 @@ public class CreditManagerInvoice implements ICreditManager
 			if ((doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARCreditMemo) && mInvoice.getGrandTotal().signum() < 0)
 				|| (doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARInvoice) && mInvoice.getGrandTotal().signum() > 0))
 			{
-				MBPartner bp = new MBPartner(mInvoice.getCtx(), mInvoice.getC_BPartner_ID(), null);
+				MBPartner bp = new MBPartner(mInvoice.getCtx(), mInvoice.getC_BPartner_ID(), mInvoice.get_TrxName());
 				if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
 				{
-					return "@BPartnerCreditStop@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
+					errorMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
 							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 				}
 			}
@@ -103,7 +106,7 @@ public class CreditManagerInvoice implements ICreditManager
 			}
 			if (invAmt == null)
 			{
-				return MConversionRateUtil.getErrorMessage(	mInvoice.getCtx(),
+				errorMsg = MConversionRateUtil.getErrorMessage(	mInvoice.getCtx(),
 															"ErrorConvertingCurrencyToBaseCurrency",
 															mInvoice.getC_Currency_ID(),
 															MClient.get(mInvoice.getCtx()).getC_Currency_ID(),
@@ -157,9 +160,9 @@ public class CreditManagerInvoice implements ICreditManager
 			bp.setSOCreditStatus();
 			if (!bp.save(mInvoice.get_TrxName()))
 			{
-				return "Could not update Business Partner";
+				errorMsg = "Could not update Business Partner";
 			}
 		}
-		return null;
+		return new CreditStatus(errorMsg, !Util.isEmpty(errorMsg));
 	} // creditCheck
 }

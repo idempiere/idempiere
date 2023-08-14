@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
@@ -1621,9 +1622,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 		{
-			m_processMsg = creditManager.creditCheck(DOCACTION_Prepare);
-			if (m_processMsg != null)
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
 				return DocAction.STATUS_Invalid;
+			}
 		}
 
 		//	Landed Costs
@@ -2017,9 +2021,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 		{
-			m_processMsg = creditManager.creditCheck(DOCACTION_Complete);
-			if (m_processMsg != null)
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Complete);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
 				return DocAction.STATUS_Invalid;
+			}
 		}
 
 		//	User - Last Result/Contact

@@ -30,6 +30,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -1990,9 +1991,12 @@ public class MPayment extends X_C_Payment
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 		{
-			m_processMsg = creditManager.creditCheck(DOCACTION_Prepare);
-			if (m_processMsg != null)
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
 				return DocAction.STATUS_Invalid;
+			}
 		}
 		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
@@ -2064,9 +2068,12 @@ public class MPayment extends X_C_Payment
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 		{
-			m_processMsg = creditManager.creditCheck(DOCACTION_Complete);
-			if (m_processMsg != null)
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Complete);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
 				return DocAction.STATUS_Invalid;
+			}
 		}
 		
 		//	Counter Doc
@@ -2790,7 +2797,7 @@ public class MPayment extends X_C_Payment
 		ICreditManager creditManager = Core.getCreditManager(this);
 		//	Update BPartner
 		if (creditManager != null)
-			creditManager.creditCheck(accrual ? DOCACTION_Reverse_Accrual : DOCACTION_Reverse_Correct);
+			creditManager.checkCreditStatus(accrual ? DOCACTION_Reverse_Accrual : DOCACTION_Reverse_Correct);
 		
 		return info;
 	}

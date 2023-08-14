@@ -13,18 +13,46 @@
 package org.adempiere.base;
 
 /**
- * Interface for Credit Manager implementor
+ * POJO for Credit Status
  * 
  * @author Logilite Technologies
- * @since  June 25, 2023
+ * @since  August 04, 2023
  */
-public interface ICreditManager
+public class CreditStatus
 {
+	String	errorMsg;
+	boolean	isError;
+
 	/**
-	 * Check credit status as per document action
+	 * Credit Status Load Constructor
 	 * 
-	 * @param  docAction Document Action
-	 * @return           Credit Status POJO
+	 * @param errorMsg
+	 * @param isError
 	 */
-	public CreditStatus checkCreditStatus(String docAction);
+	public CreditStatus(String errorMsg, boolean isError)
+	{
+		super();
+		this.errorMsg = errorMsg;
+		this.isError = isError;
+	}
+
+	public String getErrorMsg()
+	{
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg)
+	{
+		this.errorMsg = errorMsg;
+	}
+
+	public boolean isError()
+	{
+		return isError;
+	}
+
+	public void setError(boolean isError)
+	{
+		this.isError = isError;
+	}
 }

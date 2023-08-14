@@ -15,12 +15,14 @@ package org.compiere.model.credit;
 import java.math.BigDecimal;
 import java.util.Properties;
 
+import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MOrder;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.Util;
 
 /**
  * Credit Manager for Order
@@ -44,8 +46,9 @@ public class CreditManagerOrder implements ICreditManager
 	}
 
 	@Override
-	public String creditCheck(String docAction)
+	public CreditStatus checkCreditStatus(String docAction)
 	{
+		String errorMsg = null;
 		if (MOrder.DOCACTION_Prepare.equals(docAction) && order.isSOTrx())
 		{
 			Properties ctx = order.getCtx();
@@ -70,12 +73,12 @@ public class CreditManagerOrder implements ICreditManager
 				{
 					if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
 					{
-						return "@BPartnerCreditStop@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
+						errorMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
 								+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					}
 					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
 					{
-						return "@BPartnerCreditHold@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
+						errorMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
 								+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					}
 
@@ -84,13 +87,13 @@ public class CreditManagerOrder implements ICreditManager
 																		order.getAD_Client_ID(), order.getAD_Org_ID());
 					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(grandTotal)))
 					{
-						return "@BPartnerOverOCreditHold@ - @TotalOpenBalance@="	+ bp.getTotalOpenBalance()
+						errorMsg = "@BPartnerOverOCreditHold@ - @TotalOpenBalance@="	+ bp.getTotalOpenBalance()
 								+ ", @GrandTotal@=" + grandTotal
 								+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					}
 				}
 			}
 		}
-		return null;
+		return new CreditStatus(errorMsg, !Util.isEmpty(errorMsg));
 	} // creditCheck
 }

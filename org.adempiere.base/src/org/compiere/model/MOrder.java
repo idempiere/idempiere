@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
@@ -1441,9 +1442,12 @@ public class MOrder extends X_C_Order implements DocAction
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 		{
-			m_processMsg = creditManager.creditCheck(DOCACTION_Prepare);
-			if (m_processMsg != null)
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
 				return DocAction.STATUS_Invalid;
+			}
 		}
 		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);

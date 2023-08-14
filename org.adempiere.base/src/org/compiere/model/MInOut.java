@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
@@ -1222,9 +1223,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 		{
-			m_processMsg = creditManager.creditCheck(DOCACTION_Prepare);
-			if (m_processMsg != null)
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
 				return DocAction.STATUS_Invalid;
+			}
 		}
 
 		//	Lines
