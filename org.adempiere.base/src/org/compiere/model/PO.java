@@ -5757,9 +5757,7 @@ public abstract class PO
 				} else {
 					fkval = Integer.valueOf(get_ValueAsInt(index));
 				}
-				if (fkval != null
-					&& (   (fkval instanceof Integer && ((Integer)fkval).intValue() > 0)
-						|| (fkval instanceof String && ((String)fkval).length() > 0) )) {
+				if (fkval != null) {
 					MTable ft = MTable.get(getCtx(), fktab);
 					boolean systemAccess = false;
 					String accessLevel = ft.getAccessLevel();
