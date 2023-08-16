@@ -97,8 +97,8 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	}
 	
 	public static MPasswordRule getRules(Properties ctx, String trxName) {
-		 MClient system = MClient.get(ctx, 0);
-		 int pwdruleID = system.getAD_PasswordRule_ID();
+		 MClient client = MClient.get(ctx, Env.getAD_Client_ID(ctx));
+		 int pwdruleID = client.getAD_PasswordRule_ID();
 		 MPasswordRule pass = null;
 		 if (pwdruleID > 0)
 			 pass = new MPasswordRule(ctx, pwdruleID, trxName);
