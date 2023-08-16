@@ -546,8 +546,8 @@ public class InOutTest extends AbstractTestCase {
 
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
 			receipt.load(getTrxName());
-			assertTrue(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_InProgress, receipt.getDocStatus());
 
 			bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
 			bpartner.saveEx();

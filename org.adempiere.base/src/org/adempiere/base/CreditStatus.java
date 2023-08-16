@@ -20,8 +20,8 @@ package org.adempiere.base;
  */
 public class CreditStatus
 {
-	String	errorMsg;
-	boolean	isError;
+	protected String	errorMsg;
+	protected boolean	isError;
 
 	/**
 	 * Credit Status Load Constructor
