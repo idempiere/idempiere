@@ -38,8 +38,6 @@ public class SSOWebUIFilter implements Filter
 {
 	/** Logger */
 	protected static CLogger		log				= CLogger.getCLogger(SSOWebUIFilter.class);
-	// TODO as this is static, will not work on multi tenant environment
-	private static ISSOPrincipalService	m_SSOPrincipal	= null;
 
 	/**
 	 * SSOWebUIFilter
@@ -90,12 +88,10 @@ public class SSOWebUIFilter implements Filter
 				return;
 			 }
 			
+			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
-				if (m_SSOPrincipal == null)
-				{
-					m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
-				}
+				m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
 
 				if (m_SSOPrincipal != null && !isAdminResRequest)
 				{
@@ -143,8 +139,4 @@ public class SSOWebUIFilter implements Filter
 	{
 	}
 	
-	public static ISSOPrincipalService getSSOPrincipal()
-	{
-		return m_SSOPrincipal;
-	}
 } // AdempiereMonitorFilter

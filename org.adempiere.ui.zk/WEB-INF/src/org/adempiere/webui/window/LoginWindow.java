@@ -44,7 +44,6 @@ import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZkSSOUtils;
@@ -135,7 +134,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 		String errorMessage = null;
 		try
 		{
-			ISSOPrincipalService ssoPrincipal = SSOWebUIFilter.getSSOPrincipal();
+			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
 			String username = ssoPrincipal.getUserName(token);
 			Language language = ssoPrincipal.getLanguage(token);
 			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);

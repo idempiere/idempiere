@@ -63,8 +63,6 @@ public class AdempiereMonitorFilter implements Filter
 	/** Authorization Marker */
 	private Long					m_authorization	= null;
 
-	private static ISSOPrincipalService	m_SSOPrincipal	= null;
-	
 	/**
 	 * 	Init
 	 *	@param config configuration
@@ -97,15 +95,15 @@ public class AdempiereMonitorFilter implements Filter
 				return;
 			}
 
-			boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+			boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO_IDEMPIERE_MONITOR, false);
 			HttpServletRequest req = (HttpServletRequest)request;
 			HttpServletResponse resp = (HttpServletResponse)response;
 			boolean isRedirectToLoginOnError = false;
+			ISSOPrincipalService m_SSOPrincipal = null;
 			if (isSSOEnable) {
 				try {
-					if (m_SSOPrincipal == null) {
-						m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
-					}
+
+					m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
 
 					if (m_SSOPrincipal != null) {
 						if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
@@ -117,7 +115,7 @@ public class AdempiereMonitorFilter implements Filter
 							return;
 						}
 						// validate the user
-						if (checkSSOAuthorization(req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)))
+						if (checkSSOAuthorization(m_SSOPrincipal, req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)))
 						{
 							chain.doFilter(request, response);
 							return;
@@ -167,13 +165,13 @@ public class AdempiereMonitorFilter implements Filter
 		request.getRequestDispatcher(errorPage).forward(request, response);
 	}	//	doFilter
 
-	private boolean checkSSOAuthorization(Object token)
+	private boolean checkSSOAuthorization(ISSOPrincipalService principalService, Object token)
 	{
 		if (token == null)
 			return false;
 		try
 		{
-			String username = m_SSOPrincipal.getUserName(token);
+			String username = principalService.getUserName(token);
 			return validateUser(username, null, true);
 		}
 		catch (Exception e)

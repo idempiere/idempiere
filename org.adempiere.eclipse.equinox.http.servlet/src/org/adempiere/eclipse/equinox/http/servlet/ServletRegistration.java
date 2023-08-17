@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -74,7 +75,7 @@ public class ServletRegistration extends Registration {
 		ClassLoader original = Thread.currentThread().getContextClassLoader();
 		try {
 			Thread.currentThread().setContextClassLoader(registeredContextClassLoader);
-			if (BridgeFilter.getSSOPrincipal() != null)
+			if (SSOUtils.getSSOPrincipalService() != null)
 			{
 				Object token = req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
 				if (checkSSOAuthorization(token))
@@ -114,7 +115,7 @@ public class ServletRegistration extends Registration {
 			return false;
 		try
 		{
-			String username = BridgeFilter.getSSOPrincipal().getUserName(token);
+			String username = SSOUtils.getSSOPrincipalService().getUserName(token);
 			return validateUser(username, null, true);
 		}
 		catch (Exception e)

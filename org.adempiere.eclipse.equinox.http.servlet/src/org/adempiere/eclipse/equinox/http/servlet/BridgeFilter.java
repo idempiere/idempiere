@@ -56,8 +56,6 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 	protected static CLogger		log					= CLogger.getCLogger(BridgeFilter.class);
 	private ServletConfigAdaptor	servletConfig;
 	
-	private static ISSOPrincipalService	m_SSOPrincipal		= null;
-
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.servletConfig = new ServletConfigAdaptor(filterConfig);
 		super.init();
@@ -75,12 +73,12 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 		}
 
 		boolean isRedirectToLoginOnError = false;
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO_OSGI_CONSOLE, false);
 		if (isSSOEnable) {
-			try {
-				if (m_SSOPrincipal == null) {
-					m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
-				}
+			ISSOPrincipalService m_SSOPrincipal = null;
+			try
+			{
+				m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
 
 				if (m_SSOPrincipal != null) {
 					if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
@@ -114,11 +112,6 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 		return servletConfig;
 	}
 	
-	public static ISSOPrincipalService getSSOPrincipal()
-	{
-		return m_SSOPrincipal;
-	}
-
 	/**
 	 * 
 	 * Class which adapt {@link FilterConfig} to a {@link ServletConfig}.

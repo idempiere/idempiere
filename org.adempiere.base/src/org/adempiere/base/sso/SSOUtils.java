@@ -21,23 +21,27 @@ import javax.servlet.http.HttpServletRequest;
 import org.adempiere.base.Service;
 import org.compiere.model.I_SSO_PrincipalConfig;
 import org.compiere.model.MSSOPrincipalConfig;
+import org.compiere.util.CCache;
 
 /**
  * @author Logilite Technologies
  */
 public class SSOUtils
 {
-	public static final String			ERROR_VALIDATION_URL	= "/error.zul";
+	private static final CCache<Integer, ISSOPrincipalService>	s_SSOPrincipalServicecache	= new CCache<Integer, ISSOPrincipalService>(SSOUtils.class.getSimpleName(), 40, 0);
 
-	public static final String			SSO_MODE_OSGI			= "SSO_MODE_OSGI";
-	public static final String			SSO_MODE_WEBUI			= "SSO_MODE_WEBUI";
-	public static final String			SSO_MODE_MONITOR		= "SSO_MODE_MONITOR";
+	public static final String									ERROR_VALIDATION_URL		= "/error.zul";
 
-	public static final String			ISCHANGEROLE_REQUEST	= "ISCHANGEROLE_REQUEST";
+	public static final String									SSO_MODE_OSGI				= "SSO_MODE_OSGI";
+	public static final String									SSO_MODE_WEBUI				= "SSO_MODE_WEBUI";
+	public static final String									SSO_MODE_MONITOR			= "SSO_MODE_MONITOR";
 
-	public static final String			EVENT_ON_AFTER_SSOLOGIN	= "onAfterSSOLogin";
+	public static final String									ISCHANGEROLE_REQUEST		= "ISCHANGEROLE_REQUEST";
 
-	private static ArrayList<String>	ignoreResourceURL		= null; //List of url patterns ignored for validating token
+	public static final String									EVENT_ON_AFTER_SSOLOGIN		= "onAfterSSOLogin";
+
+	// List of url patterns ignored for validating token
+	private static ArrayList<String>							ignoreResourceURL			= null;
 
 	static
 	{
@@ -54,12 +58,19 @@ public class SSOUtils
 		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig();
 		if (config == null)
 			return null;
+
+		if (s_SSOPrincipalServicecache.containsKey(config.getSSO_PrincipalConfig_ID()))
+			return s_SSOPrincipalServicecache.get(config.getSSO_PrincipalConfig_ID());
+
 		List<ISSOPrincipalFactory> factories = Service.locator().list(ISSOPrincipalFactory.class).getServices();
 		for (ISSOPrincipalFactory factory : factories)
 		{
 			principal = factory.getSSOPrincipalService(config);
 			if (principal != null)
+			{
+				s_SSOPrincipalServicecache.put(config.getSSO_PrincipalConfig_ID(), principal);
 				break;
+			}
 		}
 		return principal;
 	}
