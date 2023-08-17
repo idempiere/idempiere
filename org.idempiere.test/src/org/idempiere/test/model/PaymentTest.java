@@ -79,46 +79,37 @@ public class PaymentTest extends AbstractTestCase {
 	@Test
 	public void testCreditCheckPayment()
 	{
-		try
-		{
-			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-			// Joe Block
-			MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
-			bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
-			bp.saveEx();
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		// Joe Block
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bp.saveEx();
 
-			MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
-			payment.setC_BPartner_ID(bp.getC_BPartner_ID());
-			payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
-			payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
-			payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
-			payment.setC_DocType_ID(false);
-			payment.setDocStatus(DocAction.STATUS_Drafted);
-			payment.setDocAction(DocAction.ACTION_Prepare);
-			payment.setDateTrx(today);
-			payment.setPayAmt(new BigDecimal(1000));
-			payment.setDateAcct(today);
-			payment.saveEx();
+		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_BPartner_ID(bp.getC_BPartner_ID());
+		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
+		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		payment.setC_DocType_ID(false);
+		payment.setDateTrx(today);
+		payment.setPayAmt(new BigDecimal(1000));
+		payment.setDateAcct(today);
+		payment.saveEx();
 
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
-			payment.load(getTrxName());
-			assertTrue(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Invalid, payment.getDocStatus());
+		payment.load(getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, payment.getDocStatus());
 
-			bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
-			bp.saveEx();
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
+		bp.saveEx();
 
-			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-			assertFalse(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 
-			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Accrual);
-			assertFalse(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
-		}
-		finally
-		{
-			rollback();
-		}
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Accrual);
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
 	}
 }

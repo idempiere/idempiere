@@ -1628,8 +1628,8 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.setDatePromised(today);
 		line1.saveEx();
 
-		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
 		order.load(getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
 		assertTrue(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
 		
@@ -1639,7 +1639,5 @@ public class SalesOrderTest extends AbstractTestCase {
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
 		assertTrue(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
-
-		rollback();
 	}
 }

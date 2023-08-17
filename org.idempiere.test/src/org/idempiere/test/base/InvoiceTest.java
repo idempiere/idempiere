@@ -51,51 +51,41 @@ public class InvoiceTest extends AbstractTestCase
 	@Test
 	public void testCreditCheckInvoice()
 	{
-		try
-		{
-			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-			// Joe Block
-			MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
-			bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
-			bp.saveEx();
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		// Joe Block
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bp.saveEx();
 
-			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
-			invoice.setBPartner(bp);
-			invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
-			invoice.setC_DocTypeTarget_ID(MInvoice.DOCBASETYPE_ARInvoice);
-			invoice.setDocStatus(DocAction.STATUS_Drafted);
-			invoice.setDocAction(DocAction.ACTION_Prepare);
-			invoice.setDateInvoiced(today);
-			invoice.setDateAcct(today);
-			invoice.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
-			invoice.setPaymentRule(MInvoice.PAYMENTRULE_OnCredit);
-			invoice.saveEx();
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setBPartner(bp);
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(MInvoice.DOCBASETYPE_ARInvoice);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_OnCredit);
+		invoice.saveEx();
 
-			MInvoiceLine invoiceLine = new MInvoiceLine(Env.getCtx(), 0, getTrxName());
-			invoiceLine.setInvoice(invoice);
-			invoiceLine.setC_Invoice_ID(invoice.getC_Invoice_ID());
-			invoiceLine.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
-			invoiceLine.setLine(10);
-			invoiceLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id));
-			invoiceLine.setQty(new BigDecimal("1"));
-			invoiceLine.saveEx();
+		MInvoiceLine invoiceLine = new MInvoiceLine(Env.getCtx(), 0, getTrxName());
+		invoiceLine.setInvoice(invoice);
+		invoiceLine.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		invoiceLine.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id));
+		invoiceLine.setQty(new BigDecimal("1"));
+		invoiceLine.saveEx();
 
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Prepare);
-			invoice.load(getTrxName());
-			assertTrue(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Invalid, invoice.getDocStatus());
+		invoice.load(getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, invoice.getDocStatus());
 
-			bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
-			bp.saveEx();
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
+		bp.saveEx();
 
-			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-			assertFalse(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
-
-		}
-		finally
-		{
-			rollback();
-		}
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 	}
 }

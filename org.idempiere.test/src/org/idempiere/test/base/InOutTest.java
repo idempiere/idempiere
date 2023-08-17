@@ -534,39 +534,32 @@ public class InOutTest extends AbstractTestCase {
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id);
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
-		try
-		{
-			MOrder order = createSalseOrder(bpartner, currentDate, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.COMPANY.id);
-			MOrderLine orderLine = createOrderLine(order, 10, product, new BigDecimal(500), new BigDecimal(23.32));
-			completeDocument(order);
+		MOrder order = createSalseOrder(bpartner, currentDate, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.COMPANY.id);
+		MOrderLine orderLine = createOrderLine(order, 10, product, new BigDecimal(500), new BigDecimal(23.32));
+		completeDocument(order);
 
-			MInOut receipt = createShipment(order, currentDate);
-			BigDecimal qtyDelivered = new BigDecimal(500);
-			createInOutLine(receipt, orderLine, qtyDelivered);
+		MInOut receipt = createShipment(order, currentDate);
+		BigDecimal qtyDelivered = new BigDecimal(500);
+		createInOutLine(receipt, orderLine, qtyDelivered);
 
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
-			receipt.load(getTrxName());
-			assertFalse(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_InProgress, receipt.getDocStatus());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
+		receipt.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_InProgress, receipt.getDocStatus());
 
-			bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
-			bpartner.saveEx();
+		bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bpartner.saveEx();
 
-			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
-			receipt.load(getTrxName());
-			assertTrue(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
+		receipt.load(getTrxName());
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
 
-			bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditHold);
-			bpartner.saveEx();
+		bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditHold);
+		bpartner.saveEx();
 
-			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
-			assertTrue(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
-		}
-		finally
-		{
-			rollback();
-		}
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
 	}
 }
