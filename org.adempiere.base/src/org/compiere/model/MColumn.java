@@ -54,7 +54,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4379933682905553553L;
+	private static final long serialVersionUID = 6236717143679541915L;
 
 	/**
 	 * 	Get MColumn from Cache (immutable)
@@ -765,6 +765,36 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
         	return false;
 	}
 
+	/**
+	 * Get the foreign table name that relates to this column when the column is multi selection
+	 * @return
+	 */
+	public String getMultiReferenceTableName() {
+		String foreignTable = null;
+		int refid = getAD_Reference_ID();
+		if (DisplayType.ChosenMultipleSelectionTable == refid || DisplayType.ChosenMultipleSelectionSearch == refid) {
+			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
+			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
+				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
+				if (cnt == 1) {
+					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
+					if (rt != null) {
+						MTable table = MTable.get(getCtx(), rt.getAD_Table_ID(), get_TrxName());
+						if (table == null) {
+							throw new AdempiereException("Table " + rt.getAD_Table_ID() + " not found");
+						}
+						foreignTable = table.getTableName();
+					}
+				}
+			}
+		}
+		return foreignTable;
+	}
+
+	/**
+	 * Get the foreign table name that relates to this column
+	 * @return
+	 */
 	public String getReferenceTableName() {
 		String foreignTable = null;
 		int refid = getAD_Reference_ID();
