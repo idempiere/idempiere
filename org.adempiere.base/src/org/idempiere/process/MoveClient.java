@@ -1063,10 +1063,8 @@ public class MoveClient extends SvrProcess {
 								String uuidCol = PO.getUUIDColumnName(tableName);
 								if (columnName.equals(uuidCol)) {
 									String oldUUID = (String) parameters[i];
-									String newUUID = null;
-									if (table.isUUIDKeyTable()) {
-										newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID);
-									}
+									// it is possible that the UUID has been resolved before because of a foreign key Record_UU, so search in T_MoveClient first
+									String newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID);
 									if (newUUID == null) {
 										newUUID = UUID.randomUUID().toString();
 									}
