@@ -124,6 +124,7 @@ public class MigraID extends SvrProcess {
 				// migrateRecordUU();
 				// migrateAD_PreferenceUU(idCol);
 				// migrateTreesUU(tableName);
+				// TODO: implement migration for SingleSelectionGrid, MultipleSelectionGrid, ChosenMultipleSelectionTable, ChosenMultipleSelectionSearch
 			}
 		} else {
 			boolean seqCheck = false;
@@ -156,7 +157,7 @@ public class MigraID extends SvrProcess {
 					// special preference C_DocTypeTarget_ID
 					migrateAD_Preference("C_DocTypeTarget_ID");
 				}
-				// TODO: implement migration for SingleSelectionGrid and MultipleSelectionGrid
+				// TODO: implement migration for SingleSelectionGrid, MultipleSelectionGrid, ChosenMultipleSelectionTable, ChosenMultipleSelectionSearch
 
 				if (seqCheck) {
 					MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());

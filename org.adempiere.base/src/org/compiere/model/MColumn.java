@@ -30,7 +30,6 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
@@ -54,7 +53,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6236717143679541915L;
+	private static final long serialVersionUID = -971225879649586290L;
 
 	/**
 	 * 	Get MColumn from Cache (immutable)
@@ -765,56 +764,55 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
         	return false;
 	}
 
+	final private static String sqlTableNameReference = ""
+			+ "SELECT tb.TableName "
+			+ "FROM   AD_Column c "
+			+ "       JOIN AD_Ref_Table rt ON ( rt.AD_Reference_ID = c.AD_Reference_Value_ID ) "
+			+ "       JOIN AD_Table tb ON ( tb.AD_Table_ID = rt.AD_Table_ID ) "
+			+ "WHERE  c.AD_Column_ID = ? "
+			+ "       AND rt.IsActive = 'Y' "
+			+ "       AND tb.IsActive = 'Y'";
+
+	final private static String sqlTableNameSelectionGrid = ""
+			+ "SELECT tb.TableName "
+			+ "FROM   AD_Column c "
+			+ "       JOIN AD_Field f ON ( f.AD_Column_ID = c.AD_Column_ID ) "
+			+ "       JOIN AD_Tab t ON ( t.AD_Tab_ID = f.Included_Tab_ID ) "
+			+ "       JOIN AD_Table tb ON ( tb.AD_Table_ID = t.AD_Table_ID ) "
+			+ "WHERE  c.AD_Column_ID = ? "
+			+ "       AND t.IsActive = 'Y' "
+			+ "       AND tb.IsActive = 'Y' "
+			+ "       AND f.IsActive = 'Y'";
+	private String foreignTableMulti = null;
 	/**
 	 * Get the foreign table name that relates to this column when the column is multi selection
 	 * @return
 	 */
 	public String getMultiReferenceTableName() {
-		String foreignTable = null;
+		if (foreignTableMulti != null)
+			return foreignTableMulti;
 		int refid = getAD_Reference_ID();
 		if (DisplayType.ChosenMultipleSelectionTable == refid || DisplayType.ChosenMultipleSelectionSearch == refid) {
-			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
-				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
-				if (cnt == 1) {
-					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-					if (rt != null) {
-						MTable table = MTable.get(getCtx(), rt.getAD_Table_ID(), get_TrxName());
-						if (table == null) {
-							throw new AdempiereException("Table " + rt.getAD_Table_ID() + " not found");
-						}
-						foreignTable = table.getTableName();
-					}
-				}
-			}
+			foreignTableMulti = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
+		} else if (DisplayType.SingleSelectionGrid == refid || DisplayType.MultipleSelectionGrid == refid) {
+			foreignTableMulti = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameSelectionGrid, getAD_Column_ID());
 		}
-		return foreignTable;
+		return foreignTableMulti;
 	}
 
+	private String foreignTable = null;
 	/**
 	 * Get the foreign table name that relates to this column
 	 * @return
 	 */
 	public String getReferenceTableName() {
-		String foreignTable = null;
+		if (foreignTable != null)
+			return foreignTable;
 		int refid = getAD_Reference_ID();
 		if (DisplayType.TableDir == refid || DisplayType.TableDirUU == refid || ((DisplayType.Search == refid || DisplayType.SearchUU == refid) && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
 		} else if (DisplayType.Table == refid || DisplayType.TableUU == refid || DisplayType.Search == refid || DisplayType.SearchUU == refid) {
-			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
-				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
-				if (cnt == 1) {
-					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-					if (rt != null) {
-						MTable table = MTable.get(getCtx(), rt.getAD_Table_ID(), get_TrxName());
-						if (table == null) {
-							throw new AdempiereException("Table " + rt.getAD_Table_ID() + " not found");
-						}
-						foreignTable = table.getTableName();
-					}
-				}
-			}
+			foreignTable = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
 		} else if (DisplayType.Button == refid) {
 			// C_BPartner.AD_OrgBP_ID and C_Project.C_ProjectType_ID are defined as buttons
 			if ("AD_OrgBP_ID".equalsIgnoreCase(getColumnName()))

@@ -114,8 +114,8 @@ public class MoveClient extends SvrProcess {
 	/** skip some validations to make the process faster */
 	private boolean p_IsSkipSomeValidations;
 
-	final static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key) VALUES (?, ?, ?, ?)";
-	final static String queryT_MoveClient = "SELECT Target_Key FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_Key=?";
+	final private static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key) VALUES (?, ?, ?, ?)";
+	final private static String queryT_MoveClient = "SELECT Target_Key FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_Key=?";
 
 	private Connection externalConn;
 	private StringBuffer p_excludeTablesWhere = new StringBuffer();
@@ -550,15 +550,9 @@ public class MoveClient extends SvrProcess {
 
 		// when the column is a foreign key
 		String foreignTableName = localColumn.getReferenceTableName();
-		if (foreignTableName != null 
-				&& (foreignTableName.equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName))) {
+		if (   foreignTableName != null 
+			&& (foreignTableName.equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName))) {
 			foreignTableName = "";
-		} else if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
-			// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
-			foreignTableName = "AD_Org";
-		} else if ("C_Project".equalsIgnoreCase(tableName) && "C_ProjectType_ID".equalsIgnoreCase(columnName)) {
-			// Special case for C_Project.C_ProjectType_ID defined as Button in dictionary
-			foreignTableName = "C_ProjectType";
 		}
 		if (! Util.isEmpty(foreignTableName)) {
 			// verify all foreign keys pointing to a different client
@@ -674,13 +668,6 @@ public class MoveClient extends SvrProcess {
 				continue;
 			}
 			String foreignTableName = column.getReferenceTableName();
-			if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
-				// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
-				foreignTableName = "AD_Org";
-			} else if ("C_Project".equalsIgnoreCase(tableName) && "C_ProjectType_ID".equalsIgnoreCase(columnName)) {
-				// Special case for C_Project.C_ProjectType_ID defined as Button in dictionary
-				foreignTableName = "C_ProjectType";
-			}
 			if (! Util.isEmpty(foreignTableName) && ! "AD_Ref_List".equalsIgnoreCase(foreignTableName)) {
 				MTable tableFK = MTable.get(getCtx(), foreignTableName);
 				if (tableFK == null || MTable.ACCESSLEVEL_SystemOnly.equals(tableFK.getAccessLevel())) {
@@ -916,14 +903,11 @@ public class MoveClient extends SvrProcess {
 						String convertTable = column.getReferenceTableName();
 						if ((tableName + "_ID").equalsIgnoreCase(columnName)) {
 							convertTable = tableName;
-						} else if (column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable || column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch) {
+						} else if (   column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable
+								   || column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch
+								   || column.getAD_Reference_ID() == DisplayType.SingleSelectionGrid
+								   || column.getAD_Reference_ID() == DisplayType.MultipleSelectionGrid) {
 							convertTable = column.getMultiReferenceTableName();
-						} else if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
-							// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
-							convertTable = "AD_Org";
-						} else if ("C_Project".equalsIgnoreCase(tableName) && "C_ProjectType_ID".equalsIgnoreCase(columnName)) {
-							// Special case for C_Project.C_ProjectType_ID defined as Button in dictionary
-							convertTable = "C_ProjectType";
 						} else if (convertTable != null
 								&& ("AD_Ref_List".equalsIgnoreCase(convertTable)
 										|| "AD_Language".equalsIgnoreCase(columnName)
@@ -1019,7 +1003,10 @@ public class MoveClient extends SvrProcess {
 								if (   ! (key instanceof Number && ((Number)key).intValue() == 0 && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)))  // Parent_ID/Node_ID=0 is valid
 									&& (key instanceof String || (key instanceof Number && ((Number)key).intValue() >= MTable.MAX_OFFICIAL_ID) || p_IsCopyClient)) {
 									Object convertedId = null;
-									if (column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch || column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable) {
+									if (   column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch
+										|| column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable
+										|| column.getAD_Reference_ID() == DisplayType.SingleSelectionGrid
+										|| column.getAD_Reference_ID() == DisplayType.MultipleSelectionGrid) {
 										// multiple IDs or UUIDs separated by commas
 										String[] multiKeys = ((String)key).split(",");
 										for (String multiKey : multiKeys) {
