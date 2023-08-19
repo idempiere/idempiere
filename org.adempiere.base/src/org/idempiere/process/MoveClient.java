@@ -657,7 +657,6 @@ public class MoveClient extends SvrProcess {
 	 * @param tableName
 	 */
 	private void validateOrphan(String tableName) {
-		// most of tables don't have a foreign key for AD_Org, so better validate here for potential orphan records not enforced in DB
 		MTable table = MTable.get(getCtx(), tableName);
 		for (MColumn column : table.getColumns(false)) {
 			if (!column.isActive() || column.getColumnSQL() != null) {
@@ -673,6 +672,7 @@ public class MoveClient extends SvrProcess {
 				if (tableFK == null || MTable.ACCESSLEVEL_SystemOnly.equals(tableFK.getAccessLevel())) {
 					continue;
 				}
+				// validate if the table has columns where the constraint is not created in database, like most AD_Org_ID for example
 				StringBuilder sqlVerifFKSB = new StringBuilder()
 						.append("SELECT COUNT(*) ")
 						.append("FROM   AD_Table t ")
@@ -685,18 +685,22 @@ public class MoveClient extends SvrProcess {
 				if (cntFk > 0) {
 					statusUpdate("Validating orphans for " + table.getTableName() + "." + columnName);
 					// target database has not defined a foreign key, validate orphans
-					StringBuilder sqlExternalOrgOrphanSB = new StringBuilder()
-							.append("SELECT COUNT(*) FROM ").append(tableName);
+					MTable foreignTable = MTable.get(getCtx(), foreignTableName);
+					StringBuilder sqlExternalOrgOrphanSB = new StringBuilder("SELECT COUNT(*) FROM ").append(tableName);
 					if (! "AD_Client".equalsIgnoreCase(tableName)) {
 						sqlExternalOrgOrphanSB.append(" JOIN AD_Client ON (").append(tableName).append(".AD_Client_ID=AD_Client.AD_Client_ID)");
 					}
-					sqlExternalOrgOrphanSB.append(" WHERE ").append(tableName).append(".").append(columnName).append(">0 AND ")
-					.append(" ").append(tableName).append(".").append(columnName).append(" NOT IN (")
-					.append(" SELECT ").append(foreignTableName).append(".").append(foreignTableName).append("_ID")
-					.append(" FROM ").append(foreignTableName)
-					.append(" WHERE ").append(foreignTableName).append(".AD_Client_ID IN (0,").append(tableName).append(".AD_Client_ID)")
-					.append(")")
-					.append(" AND ").append(p_whereClient);
+					sqlExternalOrgOrphanSB.append(" WHERE ").append(tableName).append(".").append(columnName);
+					if (foreignTable.isUUIDKeyTable())
+						sqlExternalOrgOrphanSB.append(" IS NOT NULL AND ");
+					else
+						sqlExternalOrgOrphanSB.append(">0 AND ");
+					sqlExternalOrgOrphanSB.append(" ").append(tableName).append(".").append(columnName).append(" NOT IN (")
+						.append(" SELECT ").append(foreignTableName).append(".").append(foreignTable.getKeyColumns()[0])
+						.append(" FROM ").append(foreignTableName)
+						.append(" WHERE ").append(foreignTableName).append(".AD_Client_ID IN (0,").append(tableName).append(".AD_Client_ID)")
+						.append(")")
+						.append(" AND ").append(p_whereClient);
 					int cntOr = countInExternal(sqlExternalOrgOrphanSB.toString());
 					if (cntOr > 0) {
 						p_errorList.add("Column " + tableName + "." + columnName +  " has orphan records in table " + foreignTableName);
