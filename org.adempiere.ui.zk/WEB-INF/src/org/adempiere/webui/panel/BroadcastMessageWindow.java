@@ -22,15 +22,12 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MNote;
-import org.compiere.model.MQuery;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -41,7 +38,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
@@ -124,7 +120,6 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		Env.setContext(Env.getCtx(), MBroadcastMessage.CLIENTINFO_BROADCAST_COMPONENT_ID, pnlHead.getUuid());
 		setTitle(mbMessages.get(0));
 		textMsgContent.setContent(mbMessages.get(0).get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
-		pnlHead.addEventListener(ZoomEvent.EVENT_NAME, this);
 		htmlDiv.setFocus(true);
 		htmlDiv.setStyle("display: table-cell; vertical-align: middle; text-align: center;");
 		Div divAlign = new Div();
@@ -243,13 +238,6 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
         	}else if(comp == acknowledged){
        			hashMessages.put(mbMessages.get(currMsg).get_ID(), acknowledged.isChecked());
         	}
-		}
-		else if(event.getName().equals(ZoomEvent.EVENT_NAME)) {
-			Clients.clearBusy();
-			ZoomEvent ze = (ZoomEvent) event;
-			if (ze.getData() != null && ze.getData() instanceof MQuery) {
-				AEnv.zoom((MQuery) ze.getData());
-			}
 		}
 	}
 	

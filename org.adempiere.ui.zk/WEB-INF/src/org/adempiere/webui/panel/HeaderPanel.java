@@ -19,13 +19,16 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.GlobalSearch;
 import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
+import org.compiere.model.MQuery;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -36,6 +39,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.impl.LabelImageElement;
@@ -62,7 +66,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     public HeaderPanel()
     {
         super();
-        addEventListener(Events.ON_CREATE, this);              
+        addEventListener(Events.ON_CREATE, this);
+        addEventListener(ZoomEvent.EVENT_NAME, this);
     }
 
     protected void onCreate()
@@ -140,6 +145,12 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			}else if (ke.getKeyCode() == 27) {
 				popMenu.close();
 			} 
+		} else if(event.getName().equals(ZoomEvent.EVENT_NAME)) {
+			Clients.clearBusy();
+			ZoomEvent ze = (ZoomEvent) event;
+			if (ze.getData() != null && ze.getData() instanceof MQuery) {
+				AEnv.zoom((MQuery) ze.getData());
+			}
 		}
 	}
 
