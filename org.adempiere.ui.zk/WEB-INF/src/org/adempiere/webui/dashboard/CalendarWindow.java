@@ -164,6 +164,10 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		
 		btnSwitchTimeZone = (Button) component.getFellow("btnSwitchTimeZone");
 		btnSwitchTimeZone.addEventListener(Events.ON_CLICK, this);
+		String alternateTimeZone = MSysConfig.getValue(MSysConfig.CALENDAR_ALTERNATE_TIMEZONE, "Pacific Time=PST", Env.getAD_Client_ID(Env.getCtx()));
+		if (Util.isEmpty(alternateTimeZone, true))
+			btnSwitchTimeZone.setVisible(false);
+
 		
 		lblDate = (Label) component.getFellow("lblDate");
 		lblDate.addEventListener(Events.ON_CREATE, this);
