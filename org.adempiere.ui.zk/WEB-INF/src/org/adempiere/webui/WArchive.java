@@ -163,9 +163,9 @@ public class WArchive implements EventListener<Event>
 			WArchiveViewer av = (WArchiveViewer) form.getICustomForm();
 			av.setShowQuery(false);
 			if (e.getTarget() == m_documents)
-				av.query(false, m_AD_Table_ID, m_Record_ID);
+				av.query(false, m_AD_Table_ID, m_Record_ID, m_Record_UU);
 			else if (e.getTarget() == m_reports)
-				av.query(true, m_AD_Table_ID, m_Record_ID);
+				av.query(true, m_AD_Table_ID, m_Record_ID, m_Record_UU);
 			else	//	all Reports
 				av.query(true, m_AD_Table_ID, 0);
 			
