@@ -25,12 +25,21 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import org.compiere.model.MBPartner;
 import org.compiere.model.MPayment;
+import org.compiere.process.DocAction;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -62,5 +71,45 @@ public class PaymentTest extends AbstractTestCase {
 		payment.setTenderType(MPayment.TENDERTYPE_Check);
 		payment.saveEx();
 		assertTrue(Util.isEmpty(payment.getCreditCardVV()), "Credit card verification code not clear after change of tender type: "+payment.getCreditCardVV());
+	}
+	
+	/**
+	 * Test cases for Credit Check
+	 */
+	@Test
+	public void testCreditCheckPayment()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		// Joe Block
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bp.saveEx();
+
+		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_BPartner_ID(bp.getC_BPartner_ID());
+		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
+		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		payment.setC_DocType_ID(false);
+		payment.setDateTrx(today);
+		payment.setPayAmt(new BigDecimal(1000));
+		payment.setDateAcct(today);
+		payment.saveEx();
+
+		payment.load(getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, payment.getDocStatus());
+
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
+		bp.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Accrual);
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
 	}
 }
