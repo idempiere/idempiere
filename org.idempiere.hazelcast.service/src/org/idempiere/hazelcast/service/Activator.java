@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import org.compiere.Adempiere;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
@@ -76,7 +77,7 @@ public class Activator implements BundleActivator {
 	private static synchronized void createHazelCastInstance() {
 			File file = null;
 			//try idempiere home
-			String dataArea = System.getProperty("IDEMPIERE_HOME");
+			String dataArea = SystemProperties.getIdempiereHome();
 			if (dataArea != null && dataArea.trim().length() > 0) {
 				try {
 					file = new File(dataArea, "hazelcast.xml");

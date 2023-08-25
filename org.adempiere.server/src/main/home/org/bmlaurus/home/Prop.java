@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 import org.compiere.util.SecureEngine;
@@ -245,8 +246,8 @@ public final class Prop implements Serializable {
 	
 	public static String getFileName (boolean tryUserHome)
 	{
-		if (System.getProperty("PropertyHomeFile") != null)
-			return System.getProperty("PropertyHomeFile");
+		if (SystemProperties.getPropertyHomeFile() != null)
+			return SystemProperties.getPropertyHomeFile();
 		String base = null;
 		if (tryUserHome && Ini.isClient())
 			base = System.getProperty("user.home");

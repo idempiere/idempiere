@@ -33,6 +33,7 @@ import org.adempiere.install.IDatabaseConfig;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.install.ConfigurationData;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 
 /**
@@ -453,7 +454,7 @@ public class ConfigOracle implements IDatabaseConfig
 			log.info("OK: Database SQL Connection");
 
 		//	OCI Test
-		if (System.getProperty("TestOCI", "N").equals("Y"))
+		if (SystemProperties.isTestOCI())
 		{
 			url = "jdbc:oracle:oci8:@" + databaseName;
 			pass = testJDBC(url, p_db.getSystemUser(), systemPassword);
