@@ -548,7 +548,9 @@ public final class DisplayType
 			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
-			|| displayType == ChosenMultipleSelectionList)
+			|| displayType == ChosenMultipleSelectionList
+			|| displayType == SingleSelectionGrid
+			|| displayType == MultipleSelectionGrid)
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -638,11 +640,22 @@ public final class DisplayType
 	 */
 	public static boolean isChosenMultipleSelection(int displayType)
 	{
-		if (displayType == ChosenMultipleSelectionList || displayType == ChosenMultipleSelectionSearch
-				|| displayType == ChosenMultipleSelectionTable)
-			return true;
-		else
-			return false;
+		return (   displayType == ChosenMultipleSelectionList
+				|| displayType == ChosenMultipleSelectionSearch
+				|| displayType == ChosenMultipleSelectionTable);
+	}
+	
+	/**
+	 * 
+	 * @param displayType
+	 * @return true if displayType is a multi ID string separated by commas
+	 */
+	public static boolean isMultiID(int displayType)
+	{
+		return (   displayType == ChosenMultipleSelectionSearch
+				|| displayType == ChosenMultipleSelectionTable
+				|| displayType == SingleSelectionGrid
+				|| displayType == MultipleSelectionGrid);
 	}
 	
 	/**************************************************************************

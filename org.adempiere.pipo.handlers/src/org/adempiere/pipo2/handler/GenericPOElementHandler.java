@@ -173,7 +173,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 				if (createElement) {
 					// 
-					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && po.get_ID() > 0
+					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && (po.get_ID() > 0 || po.get_UUID() != null)
 						&& ! IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER.equals(ctx.packOut.getCurrentPackoutItem().getType())) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
 						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
@@ -220,13 +220,22 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 	private void exportDetail(PIPOContext ctx, TransformerHandler document, GenericPO parent, String[] tables) {
 		String mainTable = tables[0];
 		AttributesImpl atts = new AttributesImpl();
-		String sql = "SELECT * FROM " + mainTable + " WHERE " + parent.get_TableName() + "_ID = ?";
+		String keyColumn;
+		MTable table = MTable.get(ctx.ctx, parent.get_TableName());
+		if (table.isUUIDKeyTable())
+			keyColumn = PO.getUUIDColumnName(parent.get_TableName());
+		else
+			keyColumn = parent.get_TableName() + "_ID";
+		String sql = "SELECT * FROM " + mainTable + " WHERE " + keyColumn + " = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			sql = MRole.getDefault().addAccessSQL(sql, mainTable, true, true);
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, parent.get_ID());
+			if (table.isUUIDKeyTable())
+				pstmt.setString(1, parent.get_UUID());
+			else
+				pstmt.setInt(1, parent.get_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				GenericPO po = new GenericPO(mainTable, ctx.ctx, rs, getTrxName(ctx));

@@ -907,10 +907,7 @@ public class MoveClient extends SvrProcess {
 						String convertTable = column.getReferenceTableName();
 						if ((tableName + "_ID").equalsIgnoreCase(columnName)) {
 							convertTable = tableName;
-						} else if (   column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable
-								   || column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch
-								   || column.getAD_Reference_ID() == DisplayType.SingleSelectionGrid
-								   || column.getAD_Reference_ID() == DisplayType.MultipleSelectionGrid) {
+						} else if (DisplayType.isMultiID(column.getAD_Reference_ID())) {
 							convertTable = column.getMultiReferenceTableName();
 						} else if (convertTable != null
 								&& ("AD_Ref_List".equalsIgnoreCase(convertTable)
