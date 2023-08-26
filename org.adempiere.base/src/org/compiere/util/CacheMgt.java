@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.compiere.Adempiere;
+import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
@@ -81,7 +82,7 @@ public class CacheMgt
 	{
 		try 
 		{
-			String maxSize = System.getProperty("Cache.MaxSize");
+			String maxSize = SystemProperties.getCacheMaxSize();
 			if (maxSize != null && maxSize.trim().length() > 0)
 			{
 				int max = 0;

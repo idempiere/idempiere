@@ -77,7 +77,7 @@ public class ClassResourceLoader {
 			String localResourceName = toLocalName(resourceName);
 			String localAbsolutePathName = destinationFolder + localResourceName;
 			reportFile = new File(localAbsolutePathName);
-			String localPathName = localAbsolutePathName.substring(0, localAbsolutePathName.lastIndexOf(System.getProperty("file.separator"))+1);
+			String localPathName = localAbsolutePathName.substring(0, localAbsolutePathName.lastIndexOf(File.separator)+1);
 			Path localAbsolutePath = Path.of(localPathName);
 			try {
 				if (!Files.exists(localAbsolutePath))
@@ -85,7 +85,7 @@ public class ClassResourceLoader {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			String localFileName = localAbsolutePathName.substring(localAbsolutePathName.lastIndexOf(System.getProperty("file.separator"))+1);
+			String localFileName = localAbsolutePathName.substring(localAbsolutePathName.lastIndexOf(File.separator)+1);
 			String extension = localFileName.substring(localFileName.lastIndexOf("."));
 			File tmpOutputFile = null;
 			
@@ -155,7 +155,7 @@ public class ClassResourceLoader {
 			String path = localName.substring(0, localName.lastIndexOf("/"));
 			localName = localName.substring(localName.lastIndexOf("/")+1);
 			path = path.replace('/', '_');
-			localName = path + System.getProperty("file.separator") + localName;
+			localName = path + File.separator + localName;
 		}
 		return localName;
 	}

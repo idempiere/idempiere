@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -71,7 +72,7 @@ public final class ThemeManager {
 	 * @return name of active theme
 	 */
 	public static String getTheme() {
-		String theme = System.getProperty(MSysConfig.ZK_THEME);
+		String theme = SystemProperties.getZkTheme();
 		if (Util.isEmpty(theme))
 			theme = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
 		if (theme.equals(m_brokenTheme)) {

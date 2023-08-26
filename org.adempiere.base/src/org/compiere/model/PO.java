@@ -121,10 +121,6 @@ public abstract class PO
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
-	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
-	
-	private static final String USE_OPTIMISTIC_LOCKING = "org.idempiere.po.useOptimisticLocking";
-
 	/** default timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
 
@@ -3248,7 +3244,7 @@ public abstract class PO
 		if (m_useOptimisticLocking != null)
 			return m_useOptimisticLocking;
 		else
-			return "true".equalsIgnoreCase(System.getProperty(USE_OPTIMISTIC_LOCKING, "false"));
+			return SystemProperties.isOptimisticLocking();
 	}
 	
 	/**
@@ -3277,7 +3273,7 @@ public abstract class PO
 	}
 	
 	private boolean isUseTimeoutForUpdate() {
-		return "true".equalsIgnoreCase(System.getProperty(USE_TIMEOUT_FOR_UPDATE, "false"))
+		return SystemProperties.isUseTimeoutForUpdate()
 			&& DB.getDatabase().isQueryTimeoutSupported();
 	}
 

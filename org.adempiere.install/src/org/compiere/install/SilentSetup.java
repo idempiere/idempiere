@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
@@ -37,7 +38,7 @@ public class SilentSetup {
 	public SilentSetup()
 	{
 		//Load C:\idempiere\idempiereEnv.properties
-		String adempiereHome = System.getProperty(ConfigurationData.IDEMPIERE_HOME);
+		String adempiereHome = SystemProperties.getIdempiereHome();
 		if (adempiereHome == null || adempiereHome.length() == 0)
 			adempiereHome = System.getProperty("user.dir");
 
