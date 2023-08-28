@@ -8,6 +8,9 @@ when detect side effect, fix to only apply for parameter window*/
 .main-parameter-layout {
 	height: 100%;
 }
+.process-modal-dialog {
+	width: 600px;
+}
 .process-modal-dialog .main-parameter-layout{
 	height: auto;
 	flex-basis: auto;
@@ -80,6 +83,9 @@ when detect side effect, fix to only apply for parameter window*/
 	.popup-dialog.z-window.z-window-overlapped.z-window-shadow,
 	.popup-dialog.z-window.z-window-noborder.z-window-highlighted.z-window-shadow{
 		width:100%;
+	}	
+	.process-modal-dialog {
+		width: 100%;
 	}
 }
 
