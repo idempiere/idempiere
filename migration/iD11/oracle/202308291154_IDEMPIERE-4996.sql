@@ -1,0 +1,9 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Aug 29, 2023, 11:54:59 AM WIB
+UPDATE AD_Tab SET WhereClause='AD_Preference.AD_Client_ID = @#AD_Client_ID@ OR @#AD_Client_ID@ = 0',Updated=TO_TIMESTAMP('2023-08-29 11:54:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=156
+;
+
+-- IDEMPIERE-4996
+SELECT register_migration_script('202308291154_IDEMPIERE-4996.sql') FROM dual;
