@@ -49,8 +49,8 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Vbox;
 
 /**
+ * Dialog to export and download report
  * @author hengsin
- *
  */
 public class WReportExportDialog extends Window implements EventListener<Event> {
 
@@ -68,7 +68,6 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 	private static final CLogger log = CLogger.getCLogger(WReportExportDialog.class);
 	
 	/**
-	 * 
 	 * @param viewer
 	 */
 	public WReportExportDialog(IReportViewerExportSource viewer) {
@@ -135,6 +134,9 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 			exportFile();
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -143,6 +145,9 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 		onClose();
 	}
 
+	/**
+	 * Export report as file for download by user
+	 */
 	private void exportFile()
 	{
 		try

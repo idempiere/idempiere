@@ -45,7 +45,7 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
- *
+ * Header panel of desktop
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Mar 2, 2007
@@ -55,14 +55,21 @@ import org.zkoss.zul.impl.LabelImageElement;
 
 public class HeaderPanel extends Panel implements EventListener<Event>
 {
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = -2351317624519209484L;
 
+	/** Logo */
 	protected Image image;
 	protected LabelImageElement btnMenu;
 	protected Popup popMenu;
 
 	private MenuTreePanel menuTreePanel;
 
+	/**
+	 * Default constructor
+	 */
     public HeaderPanel()
     {
         super();
@@ -70,6 +77,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
         addEventListener(ZoomEvent.EVENT_NAME, this);
     }
 
+    /**
+     * Layout panel
+     */
     protected void onCreate()
     {
     	image = (Image) getFellow("logo");
@@ -92,6 +102,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
     }
 
+    /**
+     * Create pop up menu tree
+     */
 	protected void createPopupMenu() {
 		popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
@@ -107,6 +120,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 		popMenu.setAttribute(popMenu.getUuid(), System.currentTimeMillis());
 	}
 
+	/**
+	 * Create global search box
+	 */
 	protected void createSearchPanel() {
 		GlobalSearch globalSearch = new GlobalSearch(new MenuSearchController(menuTreePanel.getMenuTree()));
     	Component stub = getFellow("menuLookup");
@@ -115,6 +131,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	globalSearch.setId("menuLookup");
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName())) {
 			if(event.getTarget() == image)
@@ -174,16 +191,25 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			popMenu.setPage(null);
 	}
 	
+	/**
+	 * @return logo image
+	 */
 	public Image getLogo() {
 		return image;
 	}
 	
+	/**
+	 * Close popup for global search
+	 */
 	public void closeSearchPopup() {
 		Component c = getFellow("menuLookup");
 		if (c != null && c instanceof GlobalSearch)
 			((GlobalSearch)c).closePopup();
 	}
 	
+	/**
+	 * Handle onClientInfo event
+	 */
 	protected void onClientInfo() {
 		ZKUpdateUtil.setWindowWidthX(popMenu, 600);
 		Component c = getFellow("menuLookup");

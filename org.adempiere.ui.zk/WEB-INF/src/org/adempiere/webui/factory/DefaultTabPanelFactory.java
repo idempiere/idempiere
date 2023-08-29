@@ -19,6 +19,7 @@ import org.adempiere.webui.adwindow.IADTabpanel;
 import org.compiere.model.MTab;
 
 /**
+ * Default implementation of {@link IADTabPanelFactory}
  * @author Logilite Technologies
  */
 public class DefaultTabPanelFactory implements IADTabPanelFactory

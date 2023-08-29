@@ -49,6 +49,7 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Vlayout;
 
 /**
+ * Dialog to provide option to upload or view media
  * @author hengsin
  *
  */
@@ -60,7 +61,6 @@ public class WMediaOptions extends Window {
 	private static final long serialVersionUID = 1642315087176748005L;
 
 	/**
-	 * 
 	 * @param media
 	 * @param preview
 	 * @param uploadServicesMap
@@ -121,6 +121,13 @@ public class WMediaOptions extends Window {
 		}
 	}
 	
+	/**
+	 * Upload media via handler
+	 * @param media
+	 * @param account
+	 * @param handler
+	 * @param page
+	 */
 	private void uploadMedia(AMedia media, MAuthorizationAccount account, IUploadHandler handler, Page page) {
 		UploadResponse response = handler.uploadMedia(new UploadMedia(media.getName(), media.getContentType(),
 				media.isBinary() ? media.getStreamData() : new ReaderInputStream(media.getReaderData(), StandardCharsets.UTF_8.name()), 

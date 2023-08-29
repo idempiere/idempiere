@@ -71,29 +71,33 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
 /**
+ * Info window for M_Product
  * @author hengsin
  *
  */
 public class InfoProductWindow extends InfoWindow {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -640644572459126094L;
 
 	protected Tabbox tabbedPane;
+	/** Storage by warehouse */
 	protected WListbox warehouseTbl;
 	protected String m_sqlWarehouse;
+	/** Substitute products */
 	protected WListbox substituteTbl;
 	protected String m_sqlSubstitute;
+	/** Related products */
 	protected WListbox relatedTbl;
 	protected String m_sqlRelated;
-    //Available to Promise Tab
+    /** Available to Promise Tab */
 	protected WListbox m_tableAtp;
 	
-	// Group atp by warehouse or non
+	/** true to sum ATP quantities by product attributes, warehouse and locator */
 	protected Checkbox chbShowDetailAtp;
 
-	//IDEMPIERE-337
+	/** Product price */
 	protected WListbox productpriceTbl;
 	protected String m_sqlProductprice;
     
@@ -104,7 +108,7 @@ public class InfoProductWindow extends InfoWindow {
 
 	protected Borderlayout contentBorderLayout;
 	
-	/** Instance Button				*/
+	/** Product Attribute Set Instance Button */
 	protected Button	m_PAttributeButton;
 
 	protected int m_M_Locator_ID;
@@ -168,6 +172,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
+	 * @param field
 	 * @param predefinedContextVariables
 	 */
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
@@ -222,6 +227,7 @@ public class InfoProductWindow extends InfoWindow {
 
 	@Override
 	protected void renderContentPane(Center center) {
+		//storage by warehouse
 		ColumnInfo[] s_layoutWarehouse = new ColumnInfo[]{
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "Warehouse", String.class, true, "Warehouse"),
         		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "sum(QtyAvailable)", Double.class, true, "QtyAvailable"),
@@ -238,6 +244,7 @@ public class InfoProductWindow extends InfoWindow {
 		warehouseTbl.setShowTotals(true);
 		warehouseTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() +"|stock");
 
+		//substitute products
         ColumnInfo[] s_layoutSubstitute = new ColumnInfo[]{
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class, true, "orgname"),
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Value"),
@@ -255,6 +262,7 @@ public class InfoProductWindow extends InfoWindow {
         substituteTbl.setMultiSelection(false);
         substituteTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|substitute");
 
+        //related products
         ColumnInfo[] s_layoutRelated = new ColumnInfo[]{
            		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class, true, "orgname"),
         		new ColumnInfo(
@@ -272,9 +280,8 @@ public class InfoProductWindow extends InfoWindow {
         m_sqlRelated = relatedTbl.prepareTable(s_layoutRelated, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");
         relatedTbl.setMultiSelection(false);
         relatedTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|related");
+        
         //Available to Promise Tab
-
-        //	Header
         ColumnInfo[] s_LayoutAtp =   new ColumnInfo[]{ 
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Date"), "Date", String.class, true, "Date"),
         		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class, true, "QtyOnHand"),
@@ -291,7 +298,7 @@ public class InfoProductWindow extends InfoWindow {
         m_tableAtp.prepareTable(s_LayoutAtp, "M_Storage", null , false, "M_Storage");
 		m_tableAtp.setwListBoxName("AD_InfoWindow_UU|" + infoWindow.getAD_InfoWindow_UU() +"|ATP");
 		
-        //IDEMPIERE-337
+        //Product prices
         ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
         list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceListVersion"), "plv.Name", String.class, true, "PriceListVersion"));
         list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "ValidFrom"), "plv.ValidFrom", Timestamp.class, true, "ValidFrom"));
@@ -450,7 +457,7 @@ public class InfoProductWindow extends InfoWindow {
 		productpriceTbl.repaint();
 		m_tableAtp.repaint();
 
-		// add related info windows
+		// add other related info windows (AD_InfoRelated)
 		if (embeddedWinList.size() > 0) {
 			for (EmbedWinInfo embeddedWin : embeddedWinList) {
 				if (embeddedWin.getInfoTbl() instanceof WListbox) {
@@ -786,7 +793,6 @@ public class InfoProductWindow extends InfoWindow {
 		}
 	}	//	refresh
 	
-	// Elaine 2008/11/26
 	/**
 	 * Query Avaiable to promise (ATP)
 	 * @param m_M_Warehouse_ID
@@ -951,7 +957,8 @@ public class InfoProductWindow extends InfoWindow {
 
 	@Override
 	protected void showHistory() {
-		log.info("");
+		if (log.isLoggable(Level.INFO))
+			log.info("");
 		Integer M_Product_ID = getIntSelectedRowKey(MProduct.Table_ID);
 		if (M_Product_ID == null)
 			return;

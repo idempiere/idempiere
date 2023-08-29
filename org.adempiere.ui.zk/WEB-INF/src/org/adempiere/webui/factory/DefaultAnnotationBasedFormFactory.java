@@ -27,13 +27,16 @@ package org.adempiere.webui.factory;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * 
+ * Core implementation of {@link AnnotationBasedFormFactory}
  * @author hengsin
  *
  */
 @Component(immediate = true, service = IFormFactory.class, property = {"service.ranking:Integer=0"})
 public final class DefaultAnnotationBasedFormFactory extends AnnotationBasedFormFactory {
 
+	/**
+	 * Default constructor
+	 */
 	public DefaultAnnotationBasedFormFactory() {
 	}
 

@@ -57,14 +57,14 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 
 /**
- * Change Password Panel
+ * Change Password dialog
  * @author Elaine
  * @date August 30, 2012
  */
 public class ChangePasswordPanel extends Window implements EventListener<Event>
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4117126419866788951L;
 
@@ -93,6 +93,14 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     protected Textbox txtRetypeNewPassword;
     protected Textbox txtAnswer;
 
+    /**
+     * @param ctx
+     * @param loginWindow
+     * @param userName
+     * @param userPassword
+     * @param show
+     * @param clientsKNPairs
+     */
     public ChangePasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs) 
     {
     	this.wndLogin = loginWindow;
@@ -113,6 +121,9 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	createUI();
     }
 
+    /**
+     * Layout dialog
+     */
 	protected void createUI() {
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
@@ -211,6 +222,9 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         this.appendChild(div);
 	}
 
+	/**
+	 * Create components
+	 */
     private void initComponents()
     {
     	lblOldPassword = new Label();
@@ -265,13 +279,13 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         
     	txtAnswer = new Textbox();
     	txtAnswer.setId("txtAnswer");
-//        txtAnswer.setType("password");
         txtAnswer.setCols(25);
         ZKUpdateUtil.setWidth(txtAnswer, "220px");
    }
 
-    public void onEvent(Event event)
-    {
+   @Override
+   public void onEvent(Event event)
+   {
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
         {
 			validateChangePassword();
@@ -279,7 +293,6 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
         	SessionManager.logoutSession();
-            //wndLogin.loginCancelled();
         }
         else if (event.getTarget() == txtNewPassword) {
         	MPasswordRule pwdrule = MPasswordRule.getRules(Env.getCtx(), null);
@@ -298,6 +311,9 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         }
     }
     
+    /**
+     * Validate new password
+     */
     public void validateChangePassword()
     {
     	Clients.clearBusy();

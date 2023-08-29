@@ -65,29 +65,23 @@ import org.zkoss.zul.Vbox;
 
 
 /**
- *	Schedule - Resource availability and assigment.
+ *	Schedule - Resource availability and assignment.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: InfoSchedule.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  * 
  *  Zk Port
  *  @author Low Heng Sin
- *  
- *  Zk Port
  *  @author		Elaine
  *  @version	InfoSchedule.java Adempiere Swing UI 3.4.1 
  */
 public class InfoSchedule extends Window implements EventListener<Event>
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3349721592479638482L;
 
-	/**
-	 *  @param mAssignment optional assignment
-	 *  @param createNew if true, allows to create new assignments
-	 */
 	private Callback<MResourceAssignment> m_callback;
 	private Component m_parent;
 	/** Window No */
@@ -108,6 +102,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		this(mAssignment, createNew, (Callback<MResourceAssignment>)null);
 	}
 	
+	/**
+	 * @param mAssignment
+	 * @param createNew
+	 * @param callback
+	 */
 	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Callback<MResourceAssignment> callback)
 	{
 		this(mAssignment, createNew, (Component)null, callback);
@@ -183,7 +182,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	}	//	InfoSchedule
 
 	/**
-	 * 	IDE Constructor
+	 * Default Constructor
 	 */
 	public InfoSchedule()
 	{
@@ -216,8 +215,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	private Mask mask;
 
 	/**
-	 * 	Static Layout
-	 * 	@throws Exception
+	 * Layout dialog
+	 * @throws Exception
 	 */
 	private void init() throws Exception
 	{
@@ -262,8 +261,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	}	//	jbInit
 
 	/**
-	 * 	Dynamic Init
-	 *  @param createNew if true, allows to create new assignments
+	 * Load resource and resource type
+	 * @param createNew if true, allows to create new assignments
 	 */
 	private void dynInit (boolean createNew) 
 	{
@@ -439,15 +438,13 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		invalidate();
 	}	//	displayCalendar
 
-	/**************************************************************************
-	 * 	Dispose.
+	/**
+	 * Close dialog
 	 */
 	public void dispose()
 	{
 		this.detach();
 	}	//	dispose
-
-	/*************************************************************************/
 
 	/**
 	 * 	Callback.
@@ -480,6 +477,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		return m_mAssignment;
 	}	//	getMResourceAssignment
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (m_loading)
 			return;
@@ -515,6 +513,9 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		//
 	}
 
+	/**
+	 * onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -524,6 +525,10 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		dispose();
 	}
 	
+	/**
+	 * Edit or create calendar event (for S_ResourceAssignment)
+	 * @param event
+	 */
 	private void doEdit(CalendarsEvent event) {
 		ListItem listItem = fieldResource.getSelectedItem();
 		if (listItem == null)
@@ -656,6 +661,9 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * @return true if create new assignment is enable
+	 */
 	public boolean isCreateNew() {
 		return m_createNew;
 	}
@@ -680,6 +688,9 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * @return busy mask
+	 */
 	private Div getMask() {
 		if (mask == null) {
 			mask = new Mask();
@@ -687,10 +698,16 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		return mask;
 	}
 	
+	/**
+	 * Show busy mask
+	 */
 	protected void showBusyMask() {
 		appendChild(getMask());
 	}
 	
+	/**
+	 * Hide busy mask
+	 */
 	protected void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();

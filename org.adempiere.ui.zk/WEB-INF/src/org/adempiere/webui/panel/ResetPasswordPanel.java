@@ -65,7 +65,7 @@ import org.zkoss.zul.Image;
 public class ResetPasswordPanel extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -657724758165769510L;
 
@@ -98,6 +98,12 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     protected Textbox txtUserId;
     protected Textbox txtEmail;
     
+    /**
+     * @param ctx
+     * @param loginWindow
+     * @param userName
+     * @param noSecurityQuestion
+     */
     public ResetPasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, boolean noSecurityQuestion) 
     {
     	this.wndLogin = loginWindow;
@@ -114,11 +120,17 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         loadData();
     }
 
+    /**
+     * Layout panel
+     */
     private void init()
     {
     	createUI();
     }
 
+    /**
+     * Layout panel
+     */
 	protected void createUI() {
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
@@ -216,6 +228,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         this.appendChild(div);
 	}
 
+	/**
+	 * Create components
+	 */
     private void initComponents()
     {
     	lblEmail = new Label();
@@ -260,7 +275,6 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtAnswer = new Textbox();
 	    	txtAnswer.setType("password");
 	    	txtAnswer.setId("txtAnswer");
-	//        txtAnswer.setType("password");
 	        txtAnswer.setCols(25);
 	        ZKUpdateUtil.setWidth(txtAnswer, "220px");
 	        txtAnswer.setReadonly(true);
@@ -278,6 +292,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	}
     }
     
+    /**
+     * Load security question from AD_User
+     */
     protected void loadSecurityQuestion()
     {
     	String email = txtEmail.getValue();
@@ -313,6 +330,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         txtAnswer.setVisible(true);
     }
 
+    @Override
     public void onEvent(Event event)
     {
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
@@ -322,10 +340,12 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
         	SessionManager.logoutSession();
-            //wndLogin.loginCancelled();
         }
     }
     
+    /**
+     * Validate fields
+     */
     public void validate (){
     	Clients.clearBusy();
     	
@@ -335,6 +355,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     		validateResetPassword();
     }
     
+    /**
+     * validate user name and email
+     */
     protected void validateEmail()
     {
     	String email = txtEmail.getValue();
@@ -365,6 +388,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 		loadSecurityQuestion();
     }
     
+    /**
+     * validate fields and reset password
+     */
     protected void validateResetPassword()
     {
     	String email = txtEmail.getValue();
@@ -493,13 +519,18 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 				@Override
 				public void onCallback(Integer result) {
 		        	SessionManager.logoutSession();
-		        	//wndLogin.loginCancelled();
 				}
 				
 			});
     	}    	
     }
     
+    /**
+     * Send reset password email to user
+     * @param to
+     * @param newPassword
+     * @return true if email successfully sent
+     */
     protected boolean sendEmail(MUser to, String newPassword)
     {
     	MClient client = MClient.get(m_ctx, 0);//change by: IDEMPIERE-1267 Temp password from "Forgot My Password" does not work

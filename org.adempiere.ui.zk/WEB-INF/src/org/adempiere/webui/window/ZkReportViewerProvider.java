@@ -28,7 +28,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Executions;
 
 /**
- * 
+ * Report viewer provider
  * @author Low Heng Sin
  *
  */
@@ -50,6 +50,10 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		}
 	}
 
+	/**
+	 * Open report viewer
+	 * @param report
+	 */
 	protected void openReportViewWindow (ReportEngine report) {
 		ZkReportViewer viewer = new ZkReportViewer(report, report.getName());
 

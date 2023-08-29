@@ -45,9 +45,6 @@ import org.zkoss.zul.West;
 import org.zkoss.zul.Borderlayout;
 
 /**
- * This class is based on org.compiere.apps.StatusBar written by Jorg Janke.
- * @author Jorg Janke
- *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
  * @version $Revision: 0.10 $
@@ -55,7 +52,7 @@ import org.zkoss.zul.Borderlayout;
 public class StatusBarPanel extends Panel implements EventListener<Event>, IStatusBar
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1217160210065925924L;
 
@@ -82,12 +79,18 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 	private Div popupContent;
 	private String popupStyle;
 
+	/**
+	 * Default constructor
+	 */
 	public StatusBarPanel()
 	{
         super();
         init();
     }
 
+	/**
+	 * Layout panel
+	 */
     private void init()
     {
     	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
@@ -239,6 +242,9 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
    		return statusLine.getValue();
    	}
 
+    /**
+     * Create popup for status line
+     */
 	private void createPopup() {
 		popupContent = new Div();
 
@@ -250,11 +256,15 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         popup.setStyle("position: absolute; display: none");
 	}
 
+	/**
+	 * Show status line popup
+	 */
 	private void showPopup() {
 		popup.setVisible(true);
 		popup.setStyle(popupStyle);
 		if (getRoot() == null || !getRoot().isVisible() ) return;
 
+		//client side script to position popup
 		String script = "(function(){let d = zk.Widget.$('" + popup.getUuid() + "').$n();";
 		script += "d.style.display='block';d.style.visibility='hidden';";
 		script += "let dhs = document.defaultView.getComputedStyle(d, null).getPropertyValue('height');";
@@ -297,6 +307,9 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         invalidate();
 	}	//	setInfo
 
+	/**
+	 * @param rowNum
+	 */
 	public void setSelectedRowNumber (String rowNum){
 		selectedLine.setVisible(rowNum != null);
 		if (rowNum != null){
@@ -305,6 +318,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         invalidate();
 	}
 	
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == statusDB)
 		{

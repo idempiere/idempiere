@@ -54,7 +54,7 @@ import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
 
 /**
- *
+ * Default implementation of {@link IEditorFactory}
  * @author hengsin
  *
  */

@@ -26,7 +26,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.ext.TreeOpenableModel;
 
 /**
- * 
+ * Helper methods for working with tree nodes
  * @author hengsin
  *
  */
@@ -137,6 +137,10 @@ public class TreeUtils {
 		}
 	}
 	
+	/**
+	 * @param tree
+	 * @return true if onInitRender event have been posted
+	 */
 	public static boolean isOnInitRenderPosted(Tree tree) {
 		if (tree.getAttribute(ATTR_ON_INIT_RENDER_POSTED) != null) {
 			return ((Boolean)tree.getAttribute(ATTR_ON_INIT_RENDER_POSTED)).booleanValue();
@@ -146,7 +150,7 @@ public class TreeUtils {
 
 	/**
 	 * travel all node of tree, at selected node, call callback function
-	 * @param treeObject
+	 * @param treeObject Tree or parent of Tree
 	 * @param isOpen
 	 */
 	static public void collapseTree (Component treeObject, boolean isOpen){
@@ -171,26 +175,33 @@ public class TreeUtils {
 		}
 	}
 
+	/**
+	 * Collapse or expand tree nodes
+	 * @param <T>
+	 * @param treeModelOpenable
+	 * @param isOpen true to expand, false to collapse
+	 * @param treeNode node to expand from, null to expand from root node
+	 */
 	static protected <T> void collapseTreeModel (TreeOpenableModel treeModelOpenable, boolean isOpen, T treeNode){
 		if (!isOpen){
 			treeModelOpenable.clearOpen();
 			return;//done, easy to close all node
 		}else{
 			if (!(treeModelOpenable instanceof TreeModel<?>)){
-				return;//model have to be a instance of TreeModel. because it provide method to add open object
+				return;//model have to be an instance of TreeModel. because it provide method to add open path
 			}
 
 			if (treeNode != null && !(treeNode instanceof TreeNode<?>)){
-				return; //don't support, at least it's TreeNode to travel child node
+				return; //don't support
 			}
 
 			@SuppressWarnings("unchecked")
 			TreeModel<T> treeModel = (TreeModel<T>)treeModelOpenable;
 
-			if (treeNode == null){// get from model
+			if (treeNode == null){// use root node from model
 				Object rootNode = treeModel.getRoot();
 				if (!(rootNode instanceof TreeNode<?>)){
-					return;//don't support, at least it's TreeNode to travel child node 
+					return;//don't support 
 				}
 
 				@SuppressWarnings("unchecked")

@@ -35,7 +35,7 @@ import org.compiere.util.Util;
  */
 public final class UserPreference implements Serializable {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2619860653017483658L;
 
@@ -178,8 +178,8 @@ public final class UserPreference implements Serializable {
 		}
 	}
 
-	/***************************************************************************
-	 * Set Property
+	/**
+	 * Set value for user preference property
 	 *
 	 * @param key
 	 *            Key
@@ -196,7 +196,7 @@ public final class UserPreference implements Serializable {
 	} // setProperty
 
 	/**
-	 * Set Property
+	 * Set value for user preference property
 	 *
 	 * @param key
 	 *            Key
@@ -208,7 +208,7 @@ public final class UserPreference implements Serializable {
 	} // setProperty
 
 	/**
-	 * Set Property
+	 * Set value for user preference property
 	 *
 	 * @param key
 	 *            Key
@@ -220,7 +220,7 @@ public final class UserPreference implements Serializable {
 	} // setProperty
 
 	/**
-	 * Get Propery
+	 * Get user preference property value
 	 *
 	 * @param key
 	 *            Key
@@ -237,7 +237,7 @@ public final class UserPreference implements Serializable {
 	} // getProperty
 
 	/**
-	 * Get Propery as Boolean
+	 * Get Property as Boolean (Y/N)
 	 *
 	 * @param key
 	 *            Key
