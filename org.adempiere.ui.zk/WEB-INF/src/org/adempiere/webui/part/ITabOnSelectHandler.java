@@ -14,7 +14,7 @@
 package org.adempiere.webui.part;
 
 /**
- * 
+ * Interface to handle onSelect event for tab
  * @author hengsin
  *
  */

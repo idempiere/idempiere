@@ -32,6 +32,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTabVO;
 import org.compiere.model.GridWindow;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -43,7 +44,8 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.ext.Selectable;
 
 /**
- * 
+ * Default editor for {@link DisplayType#MultipleSelectionGrid}.
+ * Implemented with {@link GridTabSelectionListView} component.
  * @author hengsin
  *
  */
@@ -51,10 +53,12 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_SELECT};
 
+	/** comma separated list of selected row indices */
     private Object oldValue;
 
 	private GridTab listViewGridTab = null;
 
+	/** current value of link column */
 	private String currentLinkValue = null;
 
 	private boolean readWrite;
@@ -107,6 +111,9 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 		this.readWrite = readWrite; 
 	}
 
+	/**
+	 * Initialize component and context menu
+	 */
 	private void init()
     {
 		if (tableEditor)
@@ -147,6 +154,7 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 		}
     }
 
+	@Override
 	public void onEvent(Event event)
     {
     	if (Events.ON_SELECT.equals(event.getName()))
@@ -225,6 +233,9 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
     		((Textbox)getComponent()).setValue(oldValue != null ? oldValue.toString() : "");
     }
 
+    /**
+     * Update selected row from {@link #oldValue}
+     */
 	private void updateSlectedIndices() {
 		GridTabSelectionListView listView = (GridTabSelectionListView) getComponent();
 		if (!Util.isEmpty((String)oldValue))
@@ -259,6 +270,7 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
         return LISTENER_EVENTS;
     }
 
+    @Override
     public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))

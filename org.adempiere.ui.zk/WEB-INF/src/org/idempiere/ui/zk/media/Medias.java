@@ -27,7 +27,7 @@ package org.idempiere.ui.zk.media;
 import com.google.common.net.MediaType;
 
 /**
- * 
+ * Constants for media mime type and file extension
  * @author hengsin
  *
  */

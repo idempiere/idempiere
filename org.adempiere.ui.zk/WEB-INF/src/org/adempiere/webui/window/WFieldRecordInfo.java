@@ -60,13 +60,13 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.South;
 
 /**
- * Change History for field
+ * Dialog to view field change log history
  * @author Low Heng Sin
  */
 public class WFieldRecordInfo extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 439310027130417727L;
 
@@ -78,7 +78,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
-	 *	Record Info
+	 *	Field Info
 	 *	@param title title
 	 *	@param AD_Table_ID
 	 *  @param AD_Column_ID
@@ -123,13 +123,13 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		AEnv.showCenterScreen(this);
 	}	//	WFieldRecordInfo
 
-
+	/** table for change log history */
 	private Listbox table = new Listbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel (false);
 
 	/**	Logger			*/
 	private static final CLogger	log = CLogger.getCLogger(WFieldRecordInfo.class);
-	/** The Data		*/
+	/** Data for {@link #table}		*/
 	private Vector<Vector<String>>	m_data = new Vector<Vector<String>>();
 
 	/** Date Time Format		*/
@@ -149,12 +149,11 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		(DisplayType.Integer, Env.getLanguage(Env.getCtx()));
 
 	/**
-	 * 	Static Layout
+	 * 	Layout dialog
 	 *	@throws Exception
 	 */
 	private void init (boolean showTable) throws Exception
 	{
-
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
 		ZKUpdateUtil.setWidth(layout, "100%");
@@ -178,12 +177,11 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
 		setSclass("field-record-info-dialog");
 	}	//	init
-	
-	
+		
 	/**
-	 * 	Dynamic Init
+	 * 	Init components and variables
 	 *	@param title title
-	 *	@return true if table initialized
+	 *	@return true if initialized ok
 	 */
 	private boolean dynInit(String title)
 	{
@@ -256,7 +254,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	}	//	dynInit
 	
 	/**
-	 * 	Add Line
+	 * 	Add new line to {@link #m_data}
 	 *	@param AD_Column_ID column
 	 *	@param Updated updated
 	 *	@param UpdatedBy user
@@ -375,11 +373,14 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	/**
 	 * @param event
 	 */
+	@Override
 	public void onEvent(Event event) throws Exception {
 		onCancel();
 	}
 
-
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -387,7 +388,6 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 
 		this.detach();
 	}
-
 
 	/**
 	 * Open field record info dialog

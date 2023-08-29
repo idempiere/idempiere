@@ -58,7 +58,7 @@ import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 	Application Chat
+ * 	Chat dialog (CM_Chat)
  *
  *  @author Jorg Janke
  *  @version $Id: AChat.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
@@ -66,7 +66,7 @@ import org.zkoss.zul.Vlayout;
 public class WChat extends Window implements EventListener<Event>, DialogEvents
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8839053486411714175L;
 
@@ -78,7 +78,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	/**
 	 *	Constructor.
-	 *	loads Chat, if ID &lt;&gt; 0
+	 *	loads Chat, if CM_Chat_ID &gt; 0
 	 *  @param WindowNo window no
 	 *  @param CM_Chat_ID chat
 	 *  @param AD_Table_ID table
@@ -138,7 +138,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	private String orientation;
 
 	/**
-	 * 	Static Init.
+	 * 	Layout dialog
 	 *	@throws Exception
 	 */
 	private void staticInit () throws Exception
@@ -148,8 +148,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "chat");
 		this.appendChild(mainPanel);
 		mainPanel.setStyle("border: none; background-color: white;");
-		//
-		
+		//		
 		Center center = new Center();
 		center.setSclass("dialog-content");
 		Vlayout content = new Vlayout();
@@ -200,6 +199,9 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
+	/**
+	 * Handle onClientInfo event
+	 */
 	protected void onClientInfo()
 	{		
 		if (getPage() != null)
@@ -216,7 +218,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	}
 	
 	/**
-	 * 	Load Chat
+	 * 	Load chat entries (CM_ChatEntry)
 	 */
 	private void loadChat()
 	{
@@ -235,6 +237,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		}
 	}	//	loadChat
 
+	/**
+	 * Add entry to UI and {@link #entryMap}
+	 * @param entry
+	 */
 	protected void addEntry(MChatEntry entry) {
 		if (entry.getCM_ChatEntryParent_ID() == 0) {
 			Treechildren treeChildren = messageTree.getTreechildren();
@@ -297,6 +303,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		}
 	}
 
+	/**
+	 * @param entry
+	 * @return time stamp label
+	 */
 	protected Label createTimestampLabel(MChatEntry entry) {
 		Timestamp created = entry.getCreated();
 		if (m_format == null)
@@ -306,6 +316,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		return timeLabel;
 	}
 
+	/**
+	 * @param entry
+	 * @return user name label
+	 */
 	protected Label createUserNameLabel(MChatEntry entry) {
 		Label userLabel;
 		MUser user = MUser.get(Env.getCtx(), entry.getCreatedBy());
@@ -322,9 +336,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		return button;
 	}
 
-
 	/**
-	 * 	Action Performed
+	 * 	Handle event
 	 *	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -383,10 +396,14 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		
 	}	//	actionPerformed
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		actionPerformed(event);
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)

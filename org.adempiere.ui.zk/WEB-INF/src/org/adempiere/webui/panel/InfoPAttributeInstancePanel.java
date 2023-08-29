@@ -41,15 +41,14 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 
 /**
- * Display Product Attribute Instance Info
- * This class is based on org.compiere.apps.search.PAttributeInstance written by Jorg Janke
+ * Display Product Attribute Set Instance Info
  * @author Elaine
  *
  */
 public class InfoPAttributeInstancePanel extends Window implements EventListener<Event>, WTableModelListener
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2883260173499157121L;
 
@@ -87,9 +86,10 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	 */
 	private void init (int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)
 	{
-		log.info("M_Warehouse_ID=" + M_Warehouse_ID 
-			+ ", M_Locator_ID=" + M_Locator_ID
-			+ ", M_Product_ID=" + M_Product_ID);
+		if (log.isLoggable(Level.INFO))
+			log.info("M_Warehouse_ID=" + M_Warehouse_ID 
+				+ ", M_Locator_ID=" + M_Locator_ID
+				+ ", M_Product_ID=" + M_Product_ID);
 		m_M_Warehouse_ID = M_Warehouse_ID;
 		m_M_Locator_ID = M_Locator_ID;
 		m_M_Product_ID = M_Product_ID;
@@ -120,7 +120,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	private static final CLogger log = CLogger.getCLogger(InfoPAttributeInstancePanel.class);
 
 	/**
-	 * 	Static Init
+	 * 	layout window
 	 * 	@throws Exception
 	 */
 	private void jbInit() throws Exception
@@ -156,7 +156,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 		confirmPanel.addActionListener(this);		
 	}	//	jbInit
 
-	/**	Table Column Layout Info			*/
+	/**	Column Layout Info			*/
 	private static ColumnInfo[] s_layout = new ColumnInfo[] 
 	{
 		new ColumnInfo(" ", "s.M_AttributeSetInstance_ID", IDColumn.class),
@@ -249,7 +249,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	}	//	dynInit
 
 	/**
-	 * 	Refresh Query
+	 * Execute Query
 	 */
 	private void refresh()
 	{
@@ -288,9 +288,10 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	}	//	refresh
 
 	/**
-	 * 	Action Listener
+	 * 	Handle events
 	 *	@param e event 
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
@@ -315,6 +316,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	 * 	Table selection changed
 	 *	@param e event
 	 */
+	@Override
 	public void tableChanged(WTableModelEvent e) 
 	{
 		enableButtons();

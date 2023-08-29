@@ -67,6 +67,7 @@ import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
+ * Action for Report toolbar button
  * @author Elaine
  * @date September 6, 2012
  */
@@ -86,12 +87,18 @@ public class ReportAction implements EventListener<Event>
 	
 	private List<KeyNamePair>	printFormatList = new ArrayList<KeyNamePair>();
 
+	/**
+	 * @param panel
+	 */
 	public ReportAction(AbstractADWindowContent panel)
 	{
 		this.panel = panel;		
 		getPrintFormats(panel.getActiveGridTab().getAD_Table_ID(), panel.getActiveGridTab().getAD_Window_ID());
 	}
 	
+	/**
+	 * Show report (print format) selection popup
+	 */
 	public void show() 
 	{
 		int AD_Table_ID=panel.getActiveGridTab().getAD_Table_ID();

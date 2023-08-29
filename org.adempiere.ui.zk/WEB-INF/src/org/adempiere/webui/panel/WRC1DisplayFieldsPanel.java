@@ -35,33 +35,47 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 
-
+/**
+ * Panel to select printed print format items 
+ */
 public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4595966853507636969L;
 
 	private static final int RENDER_IN_COLUMNS=4;
 	private MPrintFormat m_printFormat;
-	Checkbox m_chkboxes[]=null;
-	Textbox m_textBoxes[]=null;
-	String m_oldLabel[]=null;
+	protected Checkbox m_chkboxes[]=null;
+	protected Textbox m_textBoxes[]=null;
+	protected String m_oldLabel[]=null;
 
+	/**
+	 * Default constructor
+	 */
 	public WRC1DisplayFieldsPanel() {
 		super();
 	}
 	
+	/**
+	 * @param pf
+	 */
 	public WRC1DisplayFieldsPanel(MPrintFormat pf){
 		super();
 		m_printFormat=pf;
 	}
 
+	/**
+	 * @return print format
+	 */
 	public MPrintFormat getM_printFormat() {
 		return m_printFormat;
 	}
 
+	/**
+	 * Layout panel
+	 */
 	public void init() {
 
 		m_chkboxes = new Checkbox[m_pfi.size()];
@@ -138,6 +152,9 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 		}
 	}
 	
+	/**
+	 * Save changes
+	 */
 	public void save(){
 		 int i=0;
 		 for (MPrintFormatItem item : m_pfi){
@@ -148,6 +165,10 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 		 }
 	}
 	
+	/**
+	 * Get selected print format items
+	 * @return [AD_PrintFormatItem_ID, Name]
+	 */
 	public KeyNamePair[] getChecked(){
 		KeyNamePair [] listcheck=new KeyNamePair[m_pfi.size()];
 		for(int i=0;i<m_chkboxes.length;i++){
@@ -182,6 +203,10 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 		}
 	}
 	
+	/**
+	 * Update IsPrinted with value
+	 * @param value
+	 */
 	public void updatePrinted(boolean value){
 		for(int j=0 ; j< m_pfi.size() ; j++){
 			m_pfi.get(j).setIsPrinted(value);

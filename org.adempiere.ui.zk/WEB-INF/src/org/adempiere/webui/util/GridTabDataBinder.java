@@ -51,12 +51,11 @@ public class GridTabDataBinder implements ValueChangeListener {
 	 */
 	public void valueChange(ValueChangeEvent e)
     {
-        if (gridTab.isProcessed())       //  only active records
+        if (gridTab.isProcessed())       //  only editable records
         {
             Object source = e.getSource();
             if (source instanceof WEditor)
             {
-            	// Elaine 2009/05/06
             	WEditor editor = (WEditor) source;
             	GridField gridField = editor.getGridField();
             	
@@ -92,12 +91,11 @@ public class GridTabDataBinder implements ValueChangeListener {
         //
         if (e.getNewValue() == null && e.getOldValue() != null 
             && e.getOldValue().toString().length() > 0)     //  some editors return "" instead of null
-//        	  this is the original code from GridController, don't know what it does there but it breaks ignore button for web ui        
-//            mTable.setChanged (true);  
-        	mTable.setValueAt (e.getNewValue(), row, col);
-        else
         {
-        	
+        	mTable.setValueAt (e.getNewValue(), row, col);
+        }
+        else
+        {        	
         	Object newValue = e.getNewValue();
 			Integer newValues[] = null;
 			

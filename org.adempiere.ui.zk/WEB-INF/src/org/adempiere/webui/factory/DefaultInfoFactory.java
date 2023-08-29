@@ -42,7 +42,7 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.util.Env;
 
 /**
- *
+ * Default implementation of {@link IInfoFactory}
  * @author hengsin
  *
  */
@@ -64,6 +64,19 @@ public class DefaultInfoFactory implements IInfoFactory {
 				value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, null, field);
 	}
 
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param value
+	 * @param multiSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param predefinedContextVariables
+	 * @param field
+	 * @return InfoPanel
+	 */
 	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
 				String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables, GridField field) {
 		InfoPanel info = null;
@@ -228,6 +241,10 @@ public class DefaultInfoFactory implements IInfoFactory {
 			return null;
 	}
 
+	/**
+	 * Set IsSOTrx context variable base on C_DocType_ID context value.
+	 * @param WindowNo
+	 */
 	private void setSOTrxBasedOnDocType(int WindowNo) {
 		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "C_DocType_ID");
 		if (C_DocType_ID != 0) {

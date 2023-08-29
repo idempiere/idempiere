@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
- * class to manage browser token for auto authentication
+ * Class to manage browser token (store using local storage) for authentication
  * @author hengsin
  *
  */
@@ -61,7 +61,7 @@ public final class BrowserToken {
 	}
 
 	/**
-	 * remove client side token for auto login
+	 * remove client side token for login
 	 */
 	public static void remove() {
 		try {
@@ -75,7 +75,7 @@ public final class BrowserToken {
 	}
 
 	/**
-	 * load stored client side token for auto login
+	 * load stored client side token for login
 	 * @param component
 	 */
 	public static void load(Component component) {
@@ -113,6 +113,10 @@ public final class BrowserToken {
 		return false;
 	}
 
+	/**
+	 * @return Base 64 encoded iDempiere home path
+	 * @throws UnsupportedEncodingException
+	 */
 	private static String getHomeToken() throws UnsupportedEncodingException {
 		String home = Adempiere.getAdempiereHome();
 		Base64 encoder = new Base64();
@@ -121,6 +125,13 @@ public final class BrowserToken {
 		return home;
 	}
 
+	/**
+	 * @param session
+	 * @param user
+	 * @return hashed user password (base 64 encoded)
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
+	 */
 	private static String getPasswordHash(MSession session, MUser user) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 		MessageDigest digest = MessageDigest.getInstance("SHA-512");
 		Base64 encoder = new Base64();
