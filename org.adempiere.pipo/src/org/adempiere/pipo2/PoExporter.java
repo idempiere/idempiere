@@ -292,7 +292,7 @@ public class PoExporter {
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
-			} else if (DisplayType.isLookup(displayType)) {
+			} else if (DisplayType.isLookup(displayType) || DisplayType.isMultiID(displayType)) {
 				String tableName = null;
 				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
 					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");

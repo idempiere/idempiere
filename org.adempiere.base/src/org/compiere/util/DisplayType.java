@@ -535,7 +535,8 @@ public final class DisplayType
 
 	/**
 	 *	Returns true if DisplayType is a VLookup (List, Table, TableDir, Search).
-	 *  (stored as Integer)
+	 *  (stored as Integer or multi-ID string separated by commas)
+	 *  The column must have the lookup defined in AD_Reference_Value_ID
 	 *  @param displayType Display Type
 	 *  @return true if Lookup
 	 */
@@ -548,9 +549,7 @@ public final class DisplayType
 			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
-			|| displayType == ChosenMultipleSelectionList
-			|| displayType == SingleSelectionGrid
-			|| displayType == MultipleSelectionGrid)
+			|| displayType == ChosenMultipleSelectionList)
 			return true;
 		
 		//not custom type, don't have to check factory
