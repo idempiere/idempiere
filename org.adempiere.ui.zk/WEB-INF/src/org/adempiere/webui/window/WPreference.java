@@ -15,6 +15,7 @@ package org.adempiere.webui.window;
 
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -100,6 +101,9 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		preferences = MUserPreference.getUserPreference(Env.getAD_User_ID(Env.getCtx()), Env.getAD_Client_ID(Env.getCtx()));
 		recordId = preferences.get_ID();
 
+		if(quickPOs.size() == 0)
+			throw new AdempiereException("No QuickEntry Field Set on User Preference");
+			
 		loadRecord(recordId);
 	} //loadPreferences
 
