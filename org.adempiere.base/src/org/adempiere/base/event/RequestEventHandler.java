@@ -64,9 +64,11 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 			if (!eventData.getClient().sendEMail(eventData.getFrom(), eventData.getTo(), eventData.getSubject(), eventData.getMessage(), eventData.getAttachment()))
 			{
 				int AD_Message_ID = MESSAGE_REQUESTUPDATE;
+				MRequest request = new MRequest(Env.getCtx(), eventData.getRequestID(), null);
 				MNote note = new MNote(Env.getCtx(), AD_Message_ID, eventData.getTo().getAD_User_ID(),
 						X_R_Request.Table_ID, eventData.getRequestID(), 
 						eventData.getSubject(), eventData.getMessage(), null);
+				note.setClientOrg(request.getAD_Client_ID(), request.getAD_Org_ID());
 				note.saveEx();
 			}
 		}
