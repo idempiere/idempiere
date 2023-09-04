@@ -31,7 +31,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230824L;
+	private static final long serialVersionUID = 20230904L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -338,14 +338,14 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 
 	/** AllowMultipleExecution AD_Reference_ID=200158 */
 	public static final int ALLOWMULTIPLEEXECUTION_AD_Reference_ID=200158;
-	/** Disallow multiple executions by same user = N */
-	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsBySameUser = "N";
-	/** Disallow multiple executions any user = NA */
-	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsAnyUser = "NA";
-	/** Disallow multiple executions with the same parameters &amp; user = P */
-	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParametersUser = "P";
-	/** Disallow multiple execution with the same parameter any user = PA */
-	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionWithTheSameParameterAnyUser = "PA";
+	/** Prevent concurrent executions by same user = N */
+	public static final String ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsBySameUser = "N";
+	/** Prevent concurrent executions by any user = NA */
+	public static final String ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsByAnyUser = "NA";
+	/** Disallow concurrent executions with identical parameters by same user = P */
+	public static final String ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersBySameUser = "P";
+	/** Disallow concurrent executions with identical parameters from any user = PA */
+	public static final String ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersFromAnyUser = "PA";
 	/** Set Multiple Execution.
 		@param AllowMultipleExecution Allow or disallow executing a process/report multiple times.
 	*/

@@ -1040,8 +1040,8 @@ public class ProcessInfo implements Serializable
 				"AD_Process_ID=? AND IsProcessing='Y' AND record_ID = ? AND Created > ?");
 		List<Object> queryParams = new ArrayList<>(Arrays.asList(getAD_Process_ID(), getRecord_ID(), lastRebootDate));
 
-		if (MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsBySameUser.equals(multipleExecutions)
-				|| MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParametersUser
+		if (MProcess.ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsBySameUser.equals(multipleExecutions)
+				|| MProcess.ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersBySameUser
 						.equals(multipleExecutions)) {
 			whereClause.append(" AND AD_User_ID = ? ");
 			queryParams.add(getAD_User_ID());
@@ -1054,15 +1054,15 @@ public class ProcessInfo implements Serializable
 			return false;
 
 		// Never allow multiple executions
-		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsAnyUser)
-				|| multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsBySameUser))
+		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsBySameUser)
+				|| multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsByAnyUser))
 			return true;
 
 		// Disallow multiple executions with the same params
 		if (multipleExecutions
-				.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParametersUser)
+				.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersBySameUser)
 				|| multipleExecutions
-						.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionWithTheSameParameterAnyUser)) {
+						.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersFromAnyUser)) {
 			for (MPInstance instance : processInstanceList) {
 				if (instance.equalParameters(params))
 					return true;
