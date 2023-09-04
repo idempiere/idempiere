@@ -319,8 +319,6 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 
 	/** PreferenceFor AD_Reference_ID=200084 */
 	public static final int PREFERENCEFOR_AD_Reference_ID=200084;
-	/** Info = I */
-	public static final String PREFERENCEFOR_Info = "I";
 	/** Process = P */
 	public static final String PREFERENCEFOR_Process = "P";
 	/** Window = W */
