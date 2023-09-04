@@ -26,10 +26,6 @@ ALTER TABLE AD_Preference ADD CONSTRAINT ADForm_ADPreference FOREIGN KEY (AD_For
 ;
 
 -- Aug 10, 2023, 1:32:45 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207714,'Info Window','Info and search/select Window','The Info window is used to search and select records as well as display information relevant to the selection.',156,211766,'Y',10,100,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-08-10 13:32:45','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2023-08-10 13:32:45','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','621b4e27-5931-45c2-9b1a-8adef6bedb46','Y',110,2)
-;
-
--- Aug 10, 2023, 1:32:45 PM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207715,'Special Form','Special Form','The Special Form field identifies a unique Special Form in the system.',156,215907,'Y',22,110,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-08-10 13:32:45','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2023-08-10 13:32:45','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','422d46ed-8239-46cf-91f7-2394ea86c8e7','Y',120,2)
 ;
 
