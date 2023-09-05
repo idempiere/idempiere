@@ -530,10 +530,7 @@ public class MSystem extends X_AD_System
 	public static boolean isSecureProps() {
 		if (Env.isWindows() || Ini.isClient())
 			return false;
-		String secureProps = System.getProperty("IDEMPIERE_SECURE_PROPERTIES");
-		if (secureProps != null && secureProps.equals("false"))
-			return false;
-		return true;
+		return SystemProperties.isSecureProperties();
 	}
 
 	/**

@@ -160,8 +160,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private static final String HISTORY_DAY_YEAR = "Year";
 	private static final String HISTORY_DAY_MONTH = "Month";
 	private static final String HISTORY_DAY_WEEK = "Week";
-	private static final String HISTORY_DAY_DAY = "Day";
-	ValueNamePair[] historyItems = new ValueNamePair[] {
+	private static final String HISTORY_DAY_DAY = "Day";	
+	protected ValueNamePair[] historyItems = new ValueNamePair[] {
 			new ValueNamePair("",                " "),
 			new ValueNamePair(HISTORY_DAY_ALL,   Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),
 			new ValueNamePair(HISTORY_DAY_YEAR,  Msg.getMsg(Env.getCtx(), HISTORY_DAY_YEAR)),

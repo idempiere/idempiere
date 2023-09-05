@@ -141,7 +141,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	public void backupRecord(PIPOContext ctx, int AD_Package_Imp_Detail_ID, String tableName,PO from){
 
     	// Create new record
-		MTable mTable = MTable.get(ctx.ctx, tableName);
+		MTable mTable = MTable.get(ctx.ctx, tableName, getTrxName(ctx));
     	int tableID = mTable.getAD_Table_ID();    			
 		POInfo poInfo = POInfo.getPOInfo(ctx.ctx, tableID);
 

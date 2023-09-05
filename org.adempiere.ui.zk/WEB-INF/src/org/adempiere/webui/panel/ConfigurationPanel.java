@@ -25,10 +25,11 @@ import org.adempiere.webui.component.Panel;
  * @date    Mar 2, 2007
  * @version $Revision: 0.10 $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class ConfigurationPanel extends Panel
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7604294587769974845L;
 

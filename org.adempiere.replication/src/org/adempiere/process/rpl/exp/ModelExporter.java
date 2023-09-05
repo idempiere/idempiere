@@ -99,9 +99,9 @@ public class ModelExporter extends SvrProcess {
 		{
 			// Load XML file and parse it
 			String fileNameOr = org.compiere.util.Ini.findAdempiereHome()
-			+ System.getProperty("file.separator")  
+			+ File.separator  
 			+ "data"
-			+ System.getProperty("file.separator")
+			+ File.separator
 			+ "ExportFile.xml";
 			p_FileName = fileNameOr;
 		}		

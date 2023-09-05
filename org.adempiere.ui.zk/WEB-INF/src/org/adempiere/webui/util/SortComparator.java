@@ -26,13 +26,13 @@ import org.compiere.util.Language;
 import org.compiere.util.NamePair;
 
 /**
- * Default comparator, adapted from MSort
+ * Default sort comparator, adapted from MSort
  * @author hengsin
  */
 public final class SortComparator implements Comparator<Object>, Serializable
 {
 	/**
-	 * generated
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1265701980018071753L;
 
@@ -72,7 +72,7 @@ public final class SortComparator implements Comparator<Object>, Serializable
 	}	//	setSortAsc
 
 	
-	/**************************************************************************
+	/**
 	 *	Compare Data of two entities
 	 *  @param o1 object
 	 *  @param o2 object

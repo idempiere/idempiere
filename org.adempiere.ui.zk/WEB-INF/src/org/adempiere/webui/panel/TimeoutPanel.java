@@ -32,15 +32,18 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
+
 /**
- * 
+ * session timeout counter window
  * @author Deepak Pansheriya
  *
  */
 public class TimeoutPanel extends Window implements
 		org.zkoss.zk.ui.event.EventListener<Event> {
 	
-	
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = -2734157789771800337L;
 	private Timer timer = null;
 	private int count = 0;
@@ -48,11 +51,14 @@ public class TimeoutPanel extends Window implements
 	private Label ltime = null;
 	private Timer timerJS = null;
 	
+	/**
+	 * @param pnlHead
+	 * @param timeInSecond
+	 */
 	public TimeoutPanel(HeaderPanel pnlHead, int timeInSecond) {
 		count = timeInSecond;
 		pnlHead.appendChild(this);
 		
-
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
 
@@ -79,17 +85,14 @@ public class TimeoutPanel extends Window implements
 		
 		Vlayout centerVlayout = new Vlayout();
 		centerVlayout.setParent(center);
-		centerVlayout.setStyle("height:100%; text-align: center;");
-		
+		centerVlayout.setStyle("height:100%; text-align: center;");		
 		
 		South south = new South();
-		south.setParent(layout);
-		
+		south.setParent(layout);		
 		
 		Div divSouth = new Div();
 		divSouth.setParent(south);
-		divSouth.setStyle("height:100%; text-align: center;");
-		
+		divSouth.setStyle("height:100%; text-align: center;");		
 		
 		timer = new Timer();
 		timer.setDelay((count * 1000));
@@ -97,7 +100,6 @@ public class TimeoutPanel extends Window implements
 		timer.setRepeats(true);
 		timer.start();
 		centerVlayout.appendChild(timer);
-
 		
 		Script jScript = new Script("var countJS = "+count+";");
 		jScript.setDynamicProperty("defer","true");
@@ -120,17 +122,14 @@ public class TimeoutPanel extends Window implements
 		ltime = new Label(minConverted +" : "+secConverted);
 		ltime.setParent(centerVlayout);
 		ltime.setStyle("text-align: center; font-size: 40px; color:red;");
-
 		
 		Html txtLbl = new Html(Msg.getMsg(Env.getCtx(),"Minutes")+"&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;"+Msg.getMsg(Env.getCtx(),"Seconds"));
 		txtLbl.setParent(centerVlayout);
 		txtLbl.setStyle("font-size: 12px;");
-
 		
 		Vlayout vLayout = new Vlayout();
 		vLayout.setParent(divSouth);
-		
-		
+				
 		Label saveLbl = new Label(Msg.getMsg(Env.getCtx(),"killsession.saveWorkMessage"));
 		saveLbl.setParent(vLayout);
 		saveLbl.setStyle("font-size: 20px;");

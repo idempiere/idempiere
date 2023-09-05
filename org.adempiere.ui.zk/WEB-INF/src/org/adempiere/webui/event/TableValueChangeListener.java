@@ -18,17 +18,15 @@
 package org.adempiere.webui.event;
 
 /**
- * Interface specifying the functions
- * that must be implemented to listen for a TableValueChangeEvent event
+ * Listener interface for {@link TableValueChangeEvent}.
  * 
  * @author Andrew Kimball
  */
 public interface TableValueChangeListener
 {
 	/**
-	 * Respond to a TableValueChangeEvent event
-	 * Notifies this listener that an event has occurred.
-	 * To get the event, you have to register it first by use of 
+	 * Respond to a TableValueChangeEvent event.<br/>
+	 * To listen to the event, you have to register it first by calling 
 	 * {@link org.adempiere.webui.component.WListItemRenderer#addTableValueChangeListener(TableValueChangeListener)}
 	 * 
 	 * @param event	The event that has occurred

@@ -28,19 +28,23 @@ import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * 
+ * Simple dialog to show PDF document
  * @author Low Heng Sin
  *
  */
 public class SimplePDFViewer extends Window {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6417954023873414350L;
 	private AMedia media;
 	private int mediaVersion = 0;
 
+	/**
+	 * @param title
+	 * @param pdfInput
+	 */
 	public SimplePDFViewer(String title, InputStream pdfInput) {
 		Iframe iframe = new Iframe();
 		iframe.setId("reportFrame");
@@ -83,6 +87,10 @@ public class SimplePDFViewer extends Window {
 		ZKUpdateUtil.setWidth(this, width + "px");
 	}
 
+	/**
+	 * Show pdf using viewer for mobile client
+	 * @param iframe
+	 */
 	protected void showMobileViewer(Iframe iframe) {
 		mediaVersion++;
 		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	

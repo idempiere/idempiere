@@ -121,12 +121,12 @@ public class InOutTest extends AbstractTestCase {
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Company_ConversionType_ID);			
 			BigDecimal qtyOrdered = new BigDecimal(500);
-			MOrderLine orderLine = createPurchaseOrderLine(order, 10, product, qtyOrdered, priceInAud);
+			MOrderLine orderLine = createOrderLine(order, 10, product, qtyOrdered, priceInAud);
 			completeDocument(order);
 			
 			MInOut receipt = createMMReceipt(order, currentDate);			
 			BigDecimal qtyDelivered = new BigDecimal(500);
-			MInOutLine receiptLine = createMMReceiptLine(receipt, orderLine, qtyDelivered);
+			MInOutLine receiptLine = createInOutLine(receipt, orderLine, qtyDelivered);
 			completeDocument(receipt);
 			postDocument(receipt);
 			
@@ -162,11 +162,11 @@ public class InOutTest extends AbstractTestCase {
 			}
 			
 			order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Spot_ConversionType_ID);
-			orderLine = createPurchaseOrderLine(order, 10, product, qtyOrdered, priceInAud);
+			orderLine = createOrderLine(order, 10, product, qtyOrdered, priceInAud);
 			completeDocument(order);
 			
 			receipt = createMMReceipt(order, currentDate);
-			receiptLine = createMMReceiptLine(receipt, orderLine, qtyDelivered);
+			receiptLine = createInOutLine(receipt, orderLine, qtyDelivered);
 			completeDocument(receipt);
 			postDocument(receipt);
 			
@@ -251,12 +251,12 @@ public class InOutTest extends AbstractTestCase {
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Company_ConversionType_ID);			
 			BigDecimal qtyOrdered = BigDecimal.TEN;
-			MOrderLine orderLine = createPurchaseOrderLine(order, 10, product, qtyOrdered, priceInAud);
+			MOrderLine orderLine = createOrderLine(order, 10, product, qtyOrdered, priceInAud);
 			completeDocument(order);
 			
 			MInOut receipt = createMMReceipt(order, currentDate);			
 			BigDecimal qtyDelivered = BigDecimal.TEN;
-			MInOutLine receiptLine = createMMReceiptLine(receipt, orderLine, qtyDelivered);
+			MInOutLine receiptLine = createInOutLine(receipt, orderLine, qtyDelivered);
 			completeDocument(receipt);
 			postDocument(receipt);
 			
@@ -384,22 +384,35 @@ public class InOutTest extends AbstractTestCase {
 		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
-	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {
+	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID)
+	{
+		 return createOrder(bpartner, date, M_PriceList_ID, C_ConversionType_ID, false);
+	}
+	
+	private MOrder createSalseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID)
+	{
+		return createOrder(bpartner, date, M_PriceList_ID, C_ConversionType_ID, true);
+	}
+
+	private MOrder createOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID, boolean isSOTrx)
+	{
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
 		order.setBPartner(bpartner);
-		order.setIsSOTrx(false);
+		order.setIsSOTrx(isSOTrx);
 		order.setC_DocTypeTarget_ID();
 		order.setDateOrdered(date);
 		order.setDateAcct(date);
 		order.setM_PriceList_ID(M_PriceList_ID);
 		order.setC_ConversionType_ID(C_ConversionType_ID);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
 		order.saveEx();
 		return order;
 	}
 	
-	private MOrderLine createPurchaseOrderLine(MOrder order, int line, MProduct product, BigDecimal qty, BigDecimal price) {
+	private MOrderLine createOrderLine(MOrder order, int line, MProduct product, BigDecimal qty, BigDecimal price) {
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(line);
 		orderLine.setProduct(product);
@@ -415,13 +428,20 @@ public class InOutTest extends AbstractTestCase {
 		return receipt;
 	}
 	
-	private MInOutLine createMMReceiptLine(MInOut receipt, MOrderLine orderLine, BigDecimal qty) {
-		MInOutLine receiptLine = new MInOutLine(receipt);
+	
+	private MInOut createShipment(MOrder order, Timestamp date) {
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, date); // MM Shipment
+		receipt.saveEx();
+		return receipt;
+	}
+	
+	private MInOutLine createInOutLine(MInOut mInOut, MOrderLine orderLine, BigDecimal qty) {
+		MInOutLine receiptLine = new MInOutLine(mInOut);
 		receiptLine.setC_OrderLine_ID(orderLine.get_ID());
 		receiptLine.setLine(orderLine.getLine());
 		receiptLine.setProduct(orderLine.getProduct());
 		receiptLine.setQty(qty);
-		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+		MWarehouse wh = MWarehouse.get(Env.getCtx(), mInOut.getM_Warehouse_ID());
 		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
 		receiptLine.setM_Locator_ID(M_Locator_ID);
 		receiptLine.saveEx();
@@ -499,5 +519,47 @@ public class InOutTest extends AbstractTestCase {
 		
 		assertEquals(shipperAccount, inout.getShipperAccount(), "Unexpected shipper account");
 		assertEquals(MInOut.FREIGHTCHARGES_Collect, inout.getFreightCharges(), "Unexpected freight charges rule");
+	}
+	
+	/**
+	 * Test cases for Credit Check
+	 */
+	@Test
+	public void testCreditCheckInOut()
+	{
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id, getTrxName());
+		bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
+		bpartner.saveEx();
+
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id);
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+
+		MOrder order = createSalseOrder(bpartner, currentDate, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.COMPANY.id);
+		MOrderLine orderLine = createOrderLine(order, 10, product, new BigDecimal(500), new BigDecimal(23.32));
+		completeDocument(order);
+
+		MInOut receipt = createShipment(order, currentDate);
+		BigDecimal qtyDelivered = new BigDecimal(500);
+		createInOutLine(receipt, orderLine, qtyDelivered);
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
+		receipt.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_InProgress, receipt.getDocStatus());
+
+		bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bpartner.saveEx();
+
+		receipt.load(getTrxName());
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
+
+		bpartner.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditHold);
+		bpartner.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
 	}
 }

@@ -86,7 +86,7 @@ public final class WAccountDialog extends Window
 	implements EventListener<Event>, DataStatusListener, ValueChangeListener
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3041802296879719489L;
 
@@ -99,6 +99,7 @@ public final class WAccountDialog extends Window
 	 *  @param title title
 	 *  @param mAccount account info
 	 *  @param C_AcctSchema_ID as
+	 *  @param callback
 	 */
 	public WAccountDialog (String title,
 		MAccountLookup mAccount, int C_AcctSchema_ID, Callback<Integer> callback)
@@ -201,7 +202,7 @@ public final class WAccountDialog extends Window
 
 
 	/**
-	 *	Static component init.
+	 *	Create components and layout dialog
 	 *  <pre>
 	 *  - north
 	 *    - parameterPanel
@@ -214,7 +215,7 @@ public final class WAccountDialog extends Window
 	 *  </pre>
 	 *  @throws Exception
 	 */
-	void init() throws Exception
+	protected void init() throws Exception
 	{
 		//
 		Caption caption = new Caption(Msg.getMsg(Env.getCtx(),"Parameter"));
@@ -313,12 +314,10 @@ public final class WAccountDialog extends Window
 		}
 		
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
-	}	//	jbInit
+	}	//	init
 
 	/**
-	 *	Dyanmic Init.
-	 *  When a row is selected, the editor values are set
-	 *  (editors do not change grid)
+	 *  Load account (valid combination) details
 	 *  @return true if initialized
 	 */
 	private boolean initAccount()
@@ -375,8 +374,6 @@ public final class WAccountDialog extends Window
 		//	Finish
 		m_query = new MQuery();
 		m_query.addRestriction("C_AcctSchema_ID", MQuery.EQUAL, m_C_AcctSchema_ID);
-		//action_save doesn't filter by IsFullyQualified
-//		m_query.addRestriction("IsFullyQualified", MQuery.EQUAL, "Y");
 		if (m_mAccount.C_ValidCombination_ID == 0)
 			m_mTab.setQuery(MQuery.getEqualQuery("1", "2"));
 		else
@@ -407,10 +404,12 @@ public final class WAccountDialog extends Window
 			}
 		}
 
-		log.config("fini");
 		return true;
 	}	//	initAccount
 
+	/**
+	 * Layout parameter panel
+	 */
 	protected void layoutParameters() {
 		m_smallWidth = ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1);
 		
@@ -560,8 +559,8 @@ public final class WAccountDialog extends Window
 	}
 
 	/**
-	 *	Add Editor to parameterPanel alernative right/left depending on m_newRow.
-	 *  Field Value changes update Editors
+	 *	Add Editor to parameterPanel alternate right/left depending on m_newRow.<br/>
+	 *  Editor will listen to value change event of field.
 	 *  @param field field
 	 *  @param editor editor
 	 *  @param mandatory mandatory
@@ -727,6 +726,7 @@ public final class WAccountDialog extends Window
 		}
 	}	//	saveSelection
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event.getTarget().getId().equals("Ok"))
 		{
@@ -793,6 +793,9 @@ public final class WAccountDialog extends Window
 			action_Find (true);
 	}
 
+	/**
+	 * onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -802,7 +805,12 @@ public final class WAccountDialog extends Window
 		dispose();
 	}
 
-	boolean needConfirm(WEditor editor, MAccount combiOrg)
+	/**
+	 * @param editor
+	 * @param combiOrg
+	 * @return true if value has change
+	 */
+	protected boolean needConfirm(WEditor editor, MAccount combiOrg)
 	{
 		if (editor != null ) {
 			String columnName = editor.getColumnName();
@@ -822,6 +830,7 @@ public final class WAccountDialog extends Window
 	 *	Status Change Listener
 	 *  @param e event
 	 */
+	@Override
 	public void dataStatusChanged (DataStatusEvent e)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(e.toString());
@@ -832,15 +841,13 @@ public final class WAccountDialog extends Window
 
 
 	/**
-	 *	Action Find.
-	 *	- create where clause
+	 *	Action Find.<br/>
+	 *	- create where clause<br/>
 	 *	- query database
 	 *  @param includeAliasCombination include alias combination
 	 */
 	private void action_Find (boolean includeAliasCombination)
 	{
-		log.info("");
-
 		//	Create where Clause
 		MQuery query = null;
 		if (m_query != null)
@@ -918,7 +925,6 @@ public final class WAccountDialog extends Window
 	 */
 	private boolean action_Save()
 	{
-		log.info("");
 		/**
 		 *	Check completeness (mandatory fields) ... and for duplicates
 		 */
@@ -1084,7 +1090,6 @@ public final class WAccountDialog extends Window
 			return false;
 		}
 
-
 		/**
 		 *	Check if already exists
 		 */
@@ -1160,7 +1165,8 @@ public final class WAccountDialog extends Window
 			return true;
 		}
 
-		log.config("New");
+		if (log.isLoggable(Level.CONFIG))
+			log.config("New");
 		Alias = null;
 		if (f_Alias != null)
 			Alias = f_Alias.getValue().toString();
@@ -1230,6 +1236,10 @@ public final class WAccountDialog extends Window
 		return true;
 	}	//	action_Save
 
+	/**
+	 * @param value
+	 * @return true if value is null or empty string
+	 */
 	private boolean isEmpty(Object value) {
 		if (value == null)
 			return true;
@@ -1242,7 +1252,7 @@ public final class WAccountDialog extends Window
 
 
 	/**
-	 *	Ignore
+	 * Ignore changes
 	 */
 	private void action_Ignore()
 	{
@@ -1295,7 +1305,7 @@ public final class WAccountDialog extends Window
 
 	/**
 	 *	Get selected account
-	 *  @return account
+	 *  @return account (C_ValidCombination_ID)
 	 */
 	public Integer getValue()
 	{
@@ -1309,6 +1319,7 @@ public final class WAccountDialog extends Window
 	 * 	valueChange - Account Changed
 	 *	@param evt event
 	 */
+	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		Object newValue = evt.getNewValue();
 		if (newValue instanceof Integer) {
@@ -1321,6 +1332,9 @@ public final class WAccountDialog extends Window
 		}
 	}
 		
+	/**
+	 * onClientInfo event
+	 */
 	protected void onClientInfo() {
 		if (parameterLayout != null && parameterLayout.getRows() != null) {
 			boolean smallWidth = ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1);

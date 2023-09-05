@@ -43,14 +43,14 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
- *  Record Access Dialog
+ *  Record Access Dialog (AD_Record_Access)
  *  @author <a href="mailto:elaine.tan@idalica.com">Elaine</a>
  *  @date December 9, 2008
  */
 public class WRecordAccessDialog extends Window implements EventListener<Event> 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3591753244744022795L;
 
@@ -68,7 +68,8 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		setBorder("normal");		
 		setSizable(true);
 		
-		log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.INFO))
+			log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
 		try
@@ -80,7 +81,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "", e);
 		}		
-	}	//	RecordAccessDialog
+	}	//	WRecordAccessDialog
 
 	private int				m_AD_Table_ID;
 	private int				m_Record_ID;
@@ -105,7 +106,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 
 	/**
-	 * 	Dynamic Init
+	 * 	Load role and record access (AD_Record_Access) details
 	 */
 	private void dynInit()
 	{
@@ -146,7 +147,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	}	//	dynInit
 
 	/**
-	 * 	Static Init
+	 * 	Layout dialog
 	 *	@throws Exception
 	 */
 	private void jbInit() throws Exception
@@ -233,8 +234,8 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 
 	/**
 	 * 	Set Line
-	 *	@param rowDelta delta to current row
-	 *	@param newRecord new
+	 *	@param rowDelta offset to current row
+	 *	@param newRecord true for new record, false otherwise
 	 */
 	private void setLine (int rowDelta, boolean newRecord)
 	{
@@ -279,7 +280,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	}	//	setLine
 
 	/**
-	 * 	Set Selection
+	 * 	Set selected role and current MRecordAccess record
 	 *	@param ra record access
 	 */
 	private void setLine (MRecordAccess ra)
@@ -325,9 +326,10 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	}	//	setLine
 
 	/**
-	 * 	Action Listener
+	 * 	Event Listener
 	 *	@param e event
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		if (e.getTarget() == bUp)
@@ -350,7 +352,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	}
 
 	/**
-	 * 	Save Command
+	 * 	Save changes for MRecordAccess
 	 *	@return true if saved
 	 */
 	private boolean cmd_save()
@@ -382,7 +384,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	}	//	cmd_save
 
 	/**
-	 * 	Delete Command
+	 * 	Delete current MRecordAccess record
 	 *	@return true if deleted
 	 */
 	private boolean cmd_delete()

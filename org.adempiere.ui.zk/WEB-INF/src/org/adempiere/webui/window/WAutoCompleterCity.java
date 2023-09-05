@@ -31,16 +31,14 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Timer;
 
-
-
 /**
+ * Auto complete for city
  * @author Cristina Ghita - www.arhipac.ro
- *
  */
 public class WAutoCompleterCity extends AutoComplete implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -5130826429569842714L;
 
@@ -60,6 +58,9 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 
 	private final int m_windowNo;
 
+	/**
+	 * @param m_windowNo
+	 */
 	public WAutoCompleterCity(int m_windowNo)
 	{ 
 		super();
@@ -81,6 +82,10 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		super.onChanging(evt);
 	}
 
+	/**
+	 * Filter list by val (case insensitive starts with)
+	 * @param val
+	 */
 	public void refreshData(String val) 
 	{
 		String search = val;
@@ -143,6 +148,9 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		this.setDescription(cityDesc);
 	}
 
+	/**
+	 * Load records from C_City
+	 */
 	public void fillList()
 	{
 		// Carlos Ruiz - globalqss - improve to avoid going to the database on every keystroke
@@ -198,28 +206,47 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		refreshData("");
 	}
 
+	/**
+	 * @param vo
+	 */
 	private void setCity(CityVO vo)
 	{
 		m_city = vo;
 	}
+	
+	/**
+	 * @return C_City_ID
+	 */
 	public int getC_City_ID()
 	{
 		return m_city != null ? m_city.C_City_ID : -1;
 	}
+	
+	/**
+	 * @return AD_Client_ID of current session
+	 */
 	public int getAD_Client_ID()
 	{
 		return Env.getAD_Client_ID(Env.getCtx());
 	}
+	
+	/**
+	 * @return C_Country_ID from window context
+	 */
 	public int getC_Country_ID()
 	{
 		return Env.getContextAsInt(Env.getCtx(), m_windowNo, Env.TAB_INFO, "C_Country_ID");
 	}
+	
+	/**
+	 * @return C_Region_ID from window context
+	 */
 	public int getC_Region_ID()
 	{
 		return Env.getContextAsInt(Env.getCtx(), m_windowNo, Env.TAB_INFO, "C_Region_ID");
 	}
 
-
+	@Override
 	public void onEvent(Event event) throws Exception 
 	{
 		int index = this.getSelectedIndex();
@@ -238,5 +265,4 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 			this.setText(city.CityName);
 		}
 	}
-
 }

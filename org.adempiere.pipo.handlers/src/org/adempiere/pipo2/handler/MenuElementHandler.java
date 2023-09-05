@@ -103,7 +103,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		Element parentElement = element.properties.get("Parent_ID");
 		int parentId = 0;
 		if (parentElement != null) {
-			parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
+			parentId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, parentElement, getTrxName(ctx));
 		}
 
 			String strSeqNo = getStringValue(element, "SeqNo");

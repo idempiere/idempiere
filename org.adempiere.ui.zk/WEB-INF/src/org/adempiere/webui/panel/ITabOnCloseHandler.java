@@ -16,12 +16,15 @@ package org.adempiere.webui.panel;
 import org.adempiere.webui.component.Tabpanel;
 
 /**
- * 
+ * Interface to handle the closing of a Tab.
  * @author hengsin
  *
  */
 public interface ITabOnCloseHandler {
 	
-	/* NOTE onClose method must implement the actual closing of the tab */
+	/**
+	 * NOTE onClose method must implement the actual closing of the tab
+	 * @param tabPanel 
+	 */
 	public void onClose(Tabpanel tabPanel);
 }

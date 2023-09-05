@@ -30,23 +30,32 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
-
+/**
+ * Panel to edit grouping of print format
+ */
 public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3142169077710161360L;
 
 	private static final int RENDER_IN_COLUMNS=2;
-	Checkbox m_chkboxes[]=null;
-	String m_oldLabel[]=null;
-	ArrayList<MPrintFormatItem> orderfield=new ArrayList<MPrintFormatItem>();
-	Grid grid = new Grid();
+	protected Checkbox m_chkboxes[]=null;
+	protected String m_oldLabel[]=null;
+	/** print format items with IsOrderBy=Y */
+	protected ArrayList<MPrintFormatItem> orderfield=new ArrayList<MPrintFormatItem>();
+	protected Grid grid = new Grid();
 	
+	/**
+	 * Default constructor
+	 */
 	public WRC4GroupingCriteriaPanel() {
 		super();
 	}
 
+	/**
+	 * Add order by print format items to {@link #orderfield}
+	 */
 	@Override
 	public void refresh() {
 		orderfield = new ArrayList<MPrintFormatItem>();
@@ -58,6 +67,9 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 		dynamicInit();
 	}
 
+	/**
+	 * Update IsGroupBy of print format items
+	 */
 	@Override
 	public void updatePFI() {
 		for(int i=0 ; i<orderfield.size() ; i++){
@@ -73,6 +85,9 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 		}
 	}
 	
+	/**
+	 * Layout panel
+	 */
 	public void init(){
 		
 		Window wind=new Window();
@@ -105,6 +120,9 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 		wind.appendChild(grid);
 	}
 	
+	/**
+	 * Add {@link #orderfield} to {@link #grid}
+	 */
 	public void dynamicInit()
 	{
 

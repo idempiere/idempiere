@@ -38,9 +38,9 @@ import org.zkoss.image.AImage;
 import org.zkoss.image.Image;
 
 /**
- * Normal image can come from inside system or from outside system.
- * with image from outside for performance we will cache it.
- * this class for manage image cache and provide help function relate
+ * Images can come from inside system or from outside system. <br/>
+ * For images from outside, we will cache it for better performance. <br/>
+ * This class is for management of image cache and provide related helper function.
  * @author hieplq
  *
  */
@@ -48,16 +48,15 @@ public class ManageImageCache {
 	
 	protected static final CLogger	log = CLogger.getCLogger (ManageImageCache.class);
 	/**
-	 * this cache is don't expire, if must restart cache when has update image.
-	 * better use a timer, example reset cache after 10 minute has update. it help user can change a batch of image and reset one time.
+	 * This cache don't expire, you must reset cache when there are update of images.
 	 */
 	private final CCache<String, Image> imageCache = new CCache<String, Image>(null, "WindowImageCache", 50, 0, false);
 	
 	private static ManageImageCache instance;
 	
 	/**
-	 * get instance
-	 * @return
+	 * Get singleton instance
+	 * @return ManageImageCache instance
 	 */
 	public static ManageImageCache instance(){
 		if (instance == null){
@@ -71,9 +70,9 @@ public class ManageImageCache {
 	}
 	
 	/**
-	 * investigate image path of MImage, if path is a internal return internal url other return null
+	 * 	nvestigate path of MImage, if path is internal return internal url, otherwise return null.
 	 * @param image
-	 * @return
+	 * @return URL of image or null
 	 */
 	public static URL getImageInternalUrl (MImage image){
 		if (image == null)
@@ -82,9 +81,9 @@ public class ManageImageCache {
 	}
 	
 	/**
-	 * investigate image path, if path is a internal return internal url other return null
+	 * Investigate image path, if path is internal return internal url, otherwise return null.
 	 * @param url
-	 * @return
+	 * @return URL of image or null
 	 */
 	public static URL getImageInternalUrl (String url){
 		if (url == null || url.trim().length() == 0 || url.indexOf("://") > 0)
@@ -97,7 +96,7 @@ public class ManageImageCache {
 	/**
 	 * Load image from url
 	 * @param imagePath
-	 * @return
+	 * @return image data
 	 */
 	protected static byte [] loadImageData (String imagePath){
 		byte [] data = null;
@@ -125,9 +124,9 @@ public class ManageImageCache {
 	}
 	
 	/**
-	 * if image is don't in cache, load it (imagePath can id of MImage)
+	 * If image is not in cache, load it (imagePath can be id of MImage).
 	 * @param imagePath
-	 * @return image load from path. null when has any exception
+	 * @return image from cache or loaded from path. null if there is exception in loading.
 	 */
 	public Image getImage(String imagePath){
 		if (imagePath == null || imagePath.trim().length() == 0)
@@ -157,7 +156,7 @@ public class ManageImageCache {
 	}
 	
 	/**
-	 * 
+	 * Get image from URL or cache.
 	 * @param url
 	 * @return {@link Image}
 	 */
@@ -188,7 +187,7 @@ public class ManageImageCache {
 	}
 	
 	/**
-	 * if MImage contain extend image or binary image data, load it into cache and return key
+	 * If MImage has image URL or binary image data, load it into cache and return key (id or url).
 	 * other return null
 	 * @param mImage
 	 * @return
@@ -232,13 +231,13 @@ public class ManageImageCache {
 	}
 
 	/**
-	 * load extend image into cache
+	 * load external image into cache
 	 * @param imagePath
 	 */
 	protected void loadExtend (String imagePath){
 		byte[] data = loadImageData(imagePath);
 		AImage aImage = null;
-		// when can't load image (by incorrect url or disconnect or any exception, just set image as null
+		// when can't load image (due to incorrect url or disconnect or any exception), just set image as null
 		if (data != null)
 			try {
 				aImage = new AImage(imagePath, data);

@@ -32,6 +32,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
+import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.DBException;
@@ -1737,23 +1739,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		}
 
 		//	Credit Status
-		if (isSOTrx())
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
 		{
-			MDocType doc = (MDocType) getC_DocTypeTarget();
-			// IDEMPIERE-365 - just check credit if is going to increase the debt
-			if ( (doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARCreditMemo) && getGrandTotal().signum() < 0 ) ||
-				(doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARInvoice) && getGrandTotal().signum() > 0 )
-			   )
-			{	
-				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), null);
-				if ( MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()) )
-				{
-					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
-							+ bp.getTotalOpenBalance()
-							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-			}  
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
+				return DocAction.STATUS_Invalid;
+			}
 		}
 
 		//	Landed Costs
@@ -2144,76 +2138,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (matchPO > 0)
 			info.append(" @M_MatchPO_ID@#").append(matchPO).append(" ");
 
-
-
-		//	Update BP Statistics
-		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-		DB.getDatabase().forUpdate(bp, 0);
-		//	Update total revenue and balance / credit limit (reversed on AllocationLine.processIt)
-		BigDecimal invAmt = null;
-		int baseCurrencyId = Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID);
-		if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate())
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
 		{
-			invAmt = getGrandTotal(true).multiply(getCurrencyRate());
-			int stdPrecision = MCurrency.getStdPrecision(getCtx(), baseCurrencyId);
-			if (invAmt.scale() > stdPrecision)
-				invAmt = invAmt.setScale(stdPrecision, RoundingMode.HALF_UP);
-		}
-		else
-		{
-			invAmt = MConversionRate.convertBase(getCtx(), getGrandTotal(true),	//	CM adjusted
-				getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
-		}
-		if (invAmt == null)
-		{
-			m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
-					getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
-			return DocAction.STATUS_Invalid;
-		}
-		//	Total Balance
-		BigDecimal newBalance = bp.getTotalOpenBalance();
-		if (newBalance == null)
-			newBalance = Env.ZERO;
-		if (isSOTrx())
-		{
-			newBalance = newBalance.add(invAmt);
-			//
-			if (bp.getFirstSale() == null)
-				bp.setFirstSale(getDateInvoiced());
-			BigDecimal newLifeAmt = bp.getActualLifeTimeValue();
-			if (newLifeAmt == null)
-				newLifeAmt = invAmt;
-			else
-				newLifeAmt = newLifeAmt.add(invAmt);
-			BigDecimal newCreditAmt = bp.getSO_CreditUsed();
-			if (newCreditAmt == null)
-				newCreditAmt = invAmt;
-			else
-				newCreditAmt = newCreditAmt.add(invAmt);
-			//
-			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
-				+ ") BP Life=" + bp.getActualLifeTimeValue() + "->" + newLifeAmt
-				+ ", Credit=" + bp.getSO_CreditUsed() + "->" + newCreditAmt
-				+ ", Balance=" + bp.getTotalOpenBalance() + " -> " + newBalance);
-			bp.setActualLifeTimeValue(newLifeAmt);
-			bp.setSO_CreditUsed(newCreditAmt);
-		}	//	SO
-		else
-		{
-			newBalance = newBalance.subtract(invAmt);
-			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
-				+ ") Balance=" + bp.getTotalOpenBalance() + " -> " + newBalance);
-		}
-		// the payment just created already updated the open balance
-		if ( ! (PAYMENTRULE_Cash.equals(getPaymentRule()) && !fromPOS ) )
-		{
-			bp.setTotalOpenBalance(newBalance);
-		}
-		bp.setSOCreditStatus();
-		if (!bp.save(get_TrxName()))
-		{
-			m_processMsg = "Could not update Business Partner";
-			return DocAction.STATUS_Invalid;
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Complete);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
+				return DocAction.STATUS_Invalid;
+			}
 		}
 
 		//	User - Last Result/Contact

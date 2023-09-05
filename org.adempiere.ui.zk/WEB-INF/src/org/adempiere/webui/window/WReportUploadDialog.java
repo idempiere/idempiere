@@ -59,7 +59,6 @@ import org.zkoss.zul.Vlayout;
 
 /**
  * @author hengsin
- *
  */
 public class WReportUploadDialog extends Window implements EventListener<Event> {
 
@@ -78,7 +77,6 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 	private static final CLogger log = CLogger.getCLogger(WReportUploadDialog.class);
 	
 	/**
-	 * 
 	 * @param viewer
 	 */
 	public WReportUploadDialog(IReportViewerExportSource viewer) {
@@ -171,6 +169,9 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		}
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -179,6 +180,9 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		onClose();
 	}
 
+	/**
+	 * Handle output type selection change (from {@link #cboActions})
+	 */
 	private void onOutputTypeSelectionChanged() {
 		Listitem li = cboType.getSelectedItem();
 		String ext = li.getValue().toString();
@@ -205,6 +209,10 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		}
 	}
 	
+	/**
+	 * @param ext file extension
+	 * @return mime type for file extension
+	 */
 	private String toContentType(String ext) {
 		if (ext.equals(IReportViewerExportSource.PDF_FILE_EXT))
 		{
@@ -246,6 +254,9 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		return null;
 	}
 
+	/**
+	 * Export file and upload to destination via selected upload handler ({@link #cboActions})
+	 */
 	private void uploadFile()
 	{
 		try
