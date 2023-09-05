@@ -11,9 +11,9 @@ public class MPasswordHistory extends X_AD_Password_History {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -571685945938727000L;
+    private static final long serialVersionUID = -5199700193821111847L;
 
-    /**
+	/**
     * UUID based Constructor
     * @param ctx  Context
     * @param AD_Password_History_UU  UUID key
@@ -58,20 +58,5 @@ public class MPasswordHistory extends X_AD_Password_History {
 		
 		return query.list();
 	}
-
-	/** Set User/Contact.
-        @param AD_User_ID
-        User within the system - Internal or Business Partner Contact
-        Overridden to allow saving System record (zero ID)
-        http://wiki.idempiere.org/en/System_user
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == 0) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
 
 }
