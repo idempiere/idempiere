@@ -2532,7 +2532,7 @@ public abstract class PO
 		{
 			//post osgi event
 			String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
-			Event event = EventManager.newEvent(topic, this);
+			Event event = EventManager.newEvent(topic, this, true);
 			EventManager.getInstance().postEvent(event);
 
 			if (s_docWFMgr == null)
@@ -3995,7 +3995,7 @@ public abstract class PO
 				}
 
 				//osgi event handler
-				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
+				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
 				EventManager.getInstance().postEvent(event);
 	
 				m_idOld = 0;

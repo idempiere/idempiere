@@ -20,9 +20,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.adempiere.base.BaseActivator;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
@@ -88,6 +90,16 @@ public class EventManager implements IEventManager {
 	@Override
 	public boolean postEvent(Event event) {
 		if (eventAdmin != null) {
+			//copy current session context for restoration in asynchronous event thread
+			if (!event.containsProperty(EVENT_CONTEXT)) {
+				Map<String, Object> properties = new HashMap<>();
+				for (String key : event.getPropertyNames()) {
+					properties.put(key, event.getProperty(key));
+				}
+				properties.put(EVENT_CONTEXT, getCurrentSessionContext());
+				event = newEvent(event.getTopic(), properties, true);
+			}
+			
 			eventAdmin.postEvent(event);
 			return true;
 		}
@@ -176,20 +188,35 @@ public class EventManager implements IEventManager {
 	/**
 	 * @param topic
 	 * @param data
-	 * @return
+	 * @return new Event instance
+	 */
+	public static Event newEvent(String topic, Object data) {
+		return newEvent(topic, data, false);
+	}
+	
+	/**
+	 * Create new event instance. If copySessionContext is true, a copy of current session context is added as EVENT_CONTEXT property to event data.
+	 * @param topic
+	 * @param data
+	 * @param copySessionContext true to copy current session context (usually for postEvent).
+	 * @return new Event instance
 	 */
 	@SuppressWarnings("unchecked")
-	public static Event newEvent(String topic, Object data) {
+	public static Event newEvent(String topic, Object data, boolean copySessionContext) {
 		Event event = null;
 		if (data instanceof Dictionary<?,?>) {
 			Dictionary<String,Object>dict = (Dictionary<String,Object>)data;
 			if (dict.get(EVENT_ERROR_MESSAGES) == null)
 				dict.put(EVENT_ERROR_MESSAGES, new ArrayList<String>());
+			if (copySessionContext)
+				dict.put(EVENT_CONTEXT, getCurrentSessionContext());
 			event = new Event(topic, dict);
 		} else if (data instanceof Map<?, ?>) {
 			Map<String, Object> map = (Map<String, Object>)data;
 			if (!map.containsKey(EVENT_ERROR_MESSAGES))
 				map.put(EVENT_ERROR_MESSAGES, new ArrayList<String>());
+			if (copySessionContext)
+				map.put(EVENT_CONTEXT, getCurrentSessionContext());
 			event = new Event(topic, map);
 		} else {
 			Map<String, Object> map = new HashMap<String, Object>(3);
@@ -197,9 +224,25 @@ public class EventManager implements IEventManager {
 			if (data != null)
 				map.put(EVENT_DATA, data);
 			map.put(EVENT_ERROR_MESSAGES, new ArrayList<String>());
+			if (copySessionContext)
+				map.put(EVENT_CONTEXT, getCurrentSessionContext());
 			event = new Event(topic, map);
 		}
 		return event;
+	}
+
+	/**
+	 * @return copy of current session context
+	 */
+	private static Properties getCurrentSessionContext() {
+		Properties context = new Properties();
+		Env.setContext(context, Env.AD_CLIENT_ID, Env.getAD_Client_ID(Env.getCtx()));
+		Env.setContext(context, Env.AD_ORG_ID, Env.getAD_Org_ID(Env.getCtx()));
+		Env.setContext(context, Env.AD_USER_ID, Env.getAD_User_ID(Env.getCtx()));
+		Env.setContext(context, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
+		Env.setContext(context, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
+		Env.setContext(context, Env.LANGUAGE, Env.getContext(Env.getCtx(), Env.LANGUAGE));
+		return context;
 	}
 
 	/**
