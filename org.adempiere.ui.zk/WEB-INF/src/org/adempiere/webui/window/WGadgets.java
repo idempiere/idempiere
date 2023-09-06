@@ -427,7 +427,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 					pre = new MDashboardPreference(Env.getCtx(), 0, null);
 					pre.setAD_Org_ID(0);
 					pre.setAD_Role_ID(AD_Role_ID);
-					pre.setAD_User_ID(AD_User_ID); // allow System
+					pre.setAD_User_ID(AD_User_ID);
 					pre.setColumnNo(content.getColumnNo());
 					pre.setIsCollapsedByDefault(content.isCollapsedByDefault());
 					pre.setIsShowInDashboard(content.isShowInDashboard());
@@ -442,7 +442,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 					pre = new MDashboardPreference(Env.getCtx(), 0, null);
 					pre.setAD_Org_ID(0);
 					pre.setAD_Role_ID(AD_Role_ID);
-					pre.setAD_User_ID(AD_User_ID); // allow System
+					pre.setAD_User_ID(AD_User_ID);
 					pre.setColumnNo(content.getColumnNo());
 					pre.setIsCollapsedByDefault(content.isCollapsedByDefault());
 					pre.setIsShowInDashboard(content.isShowInDashboard());
