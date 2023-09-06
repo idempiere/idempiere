@@ -105,7 +105,7 @@ public final class UserPreference implements Serializable {
 	 * save user preference
 	 */
 	public void savePreference() {
-		if (m_AD_User_ID >= 0) {
+		if (m_AD_User_ID > 0) {
 			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];

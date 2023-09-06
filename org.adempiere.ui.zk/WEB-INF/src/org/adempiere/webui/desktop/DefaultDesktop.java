@@ -507,7 +507,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	
         	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {        		
         		preference = new MPreference(Env.getCtx(), 0, null);
-        		preference.setAD_User_ID(userId); // allow System
+        		preference.setAD_User_ID(userId);
         		preference.setAttribute(SIDE_CONTROLLER_WIDTH_PREFERENCE);
         	}
         	preference.setValue(width);
@@ -555,7 +555,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	
         	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {        		
         		preference = new MPreference(Env.getCtx(), 0, null);
-        		preference.setAD_User_ID(userId); // allow System
+        		preference.setAD_User_ID(userId);
         		preference.setAttribute(HELP_CONTROLLER_WIDTH_PREFERENCE);
         	}
         	preference.setValue(width);

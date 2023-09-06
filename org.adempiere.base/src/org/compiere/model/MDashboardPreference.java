@@ -31,7 +31,7 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3887344231734476767L;
+	private static final long serialVersionUID = -8779298936108629638L;
 
 	/**
 	 *
@@ -170,19 +170,5 @@ public class MDashboardPreference extends X_PA_DashboardPreference
     {
       super (ctx, rs, trxName);
     }
-
-	/** Set User/Contact.
-        @param AD_User_ID
-        User within the system - Internal or Business Partner Contact
-        Overridden to allow saving System record (zero ID)
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
 
 }

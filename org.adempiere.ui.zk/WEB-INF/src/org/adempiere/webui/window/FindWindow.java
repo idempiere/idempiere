@@ -2539,7 +2539,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq = new MUserQuery (Env.getCtx(), 0, null);
 						uq.setName (name);
 						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
-						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx())); // allow System
+						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 					}
 					if (shareAllUsers)
 						uq.setAD_User_ID(-1); // set to null
