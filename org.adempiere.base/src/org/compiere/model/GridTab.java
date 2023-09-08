@@ -490,6 +490,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		return m_vo.DisplayLogic;
 	}	//	getDisplayLogic
+	
+	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
 
 	/**
 	 *  Get TableModel.
@@ -1154,6 +1163,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		for (int i = 0; i < getFieldCount(); i++)
 			processCallout(getField(i));
 		m_mTable.setChanged(false);		
+		
+		if(getField("EntityType") != null && Env.getCtx().getProperty("EntityType") != null){
+			setValue("EntityType", new MEntityType(Env.getCtx(),Integer.parseInt(Env.getCtx().getProperty("EntityType")), null).get_Value("EntityType"));
+		}
 
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_NEW));
 		return retValue;

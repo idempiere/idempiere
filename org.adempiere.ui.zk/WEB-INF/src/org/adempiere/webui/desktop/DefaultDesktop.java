@@ -1059,8 +1059,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	@Override
-	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent) {		
-		helpController.renderToolTip(hdr, desc, help, otherContent);
+	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent,String entityType) {		
+		helpController.renderToolTip(hdr, desc, help, otherContent,entityType);
 	}
 
 	@Override

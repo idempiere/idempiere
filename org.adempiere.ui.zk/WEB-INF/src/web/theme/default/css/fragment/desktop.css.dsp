@@ -266,6 +266,10 @@
 	padding: 8px;
 }
 
+.help-entitytype {
+	padding-top: 5px;
+}
+
 .dashboard-content-help .z-popup-content {
 	background: black;
 	color: white;
