@@ -217,6 +217,12 @@ public class DrillReportCtl {
 	 */
 	public void initDrillTableMap() {
 
+		MRole defaultRole = MRole.getDefault();
+
+		StringBuilder rolesId = new StringBuilder();
+		rolesId.append(defaultRole.get_ID());
+		defaultRole.getIncludedRoles(true).forEach(role -> rolesId.append(",").append(role.get_ID()));
+
 		ArrayList<KeyNamePair> drillTableList = new ArrayList<>();
 		String sql = "SELECT t.AD_Table_ID, t.TableName, e.PrintName, NULLIF(e.PO_PrintName,e.PrintName) "
 				+ "FROM AD_Column c "
@@ -226,7 +232,7 @@ public class DrillReportCtl {
 				+ " INNER JOIN AD_Window_Access w ON (tab.AD_Window_ID = w.AD_Window_ID AND w.isActive = 'Y') "
 				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
-				+ "WHERE c.AD_Table_ID=? AND w.AD_Role_ID = ? AND c.IsKey='Y' "
+				+ "WHERE c.AD_Table_ID=? AND w.AD_Role_ID IN (" + rolesId.toString() + ") AND c.IsKey='Y' "
 				+ "GROUP BY 1, 2, 3, 4 ORDER BY 3 ";
 			boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 			if (trl)
@@ -239,18 +245,18 @@ public class DrillReportCtl {
 					+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 					+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
 					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
-					+ "WHERE c.AD_Table_ID=? AND w.AD_Role_ID = ? AND c.IsKey='Y' "
+					+ "WHERE c.AD_Table_ID=? AND w.AD_Role_ID IN (" + rolesId.toString() + " AND c.IsKey='Y' "
 					+ " AND et.AD_Language=? "
 					+ "GROUP BY 1, 2, 3, 4 ORDER BY 3 ";
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Table_ID);
-			pstmt.setInt(2, MRole.getDefault().get_ID());
 			if (trl)
-				pstmt.setString(3, Env.getAD_Language(Env.getCtx()));
+				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
