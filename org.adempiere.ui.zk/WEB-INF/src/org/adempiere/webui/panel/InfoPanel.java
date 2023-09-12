@@ -104,6 +104,7 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -1018,6 +1019,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         restoreSelectedInPage();
         updateStatusBar (m_count);
         setStatusSelected ();
+        setFocusPanel();
         addDoubleClickListener();
         
         if (paging != null && paging.getParent() == null)
@@ -1844,7 +1846,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			@SuppressWarnings("unchecked")
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
 					
-			if (contentPanel.getModel().isSelected(candidateRecord)){
+			if (contentPanel.getModel().isSelected(candidateRecord) || containsKey(contentPanel.getSelectedIndices(),rowIndex)){
 				recordSelectedData.put(keyCandidate, candidateRecord);// add or update selected record info				
 			}else{
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
@@ -1874,6 +1876,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 			
 		}		    
+	}
+	
+	/**
+	 * Does 'arr' contain 'targetValue'
+	 * @param arr
+	 * @param targetValue
+	 * @return boolean - true if contains
+	 */
+	public static boolean containsKey(int[] arr, int targetValue) {	
+		for(int i: arr){	
+			if(i==targetValue)	
+				return true;	
+		}	
+		return false;	
 	}
 	
 	/**
@@ -2268,6 +2284,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
         	enableButtons();
+        	setFocusPanel();
         }
         else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
         {
@@ -3504,4 +3521,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return returnVal;
 	}
 	
+	/**
+	 * Set Focus on Content Panel
+	 */
+	private void setFocusPanel() {
+        if(contentPanel.getRowCount() > 0) {
+        	if(p_multipleSelection) {
+
+        		((HtmlBasedComponent)contentPanel.getItems().get(0)).focus();
+        	}
+        	else {
+        		if(contentPanel.getSelectedItem() == null) 
+        			contentPanel.setSelectedIndex(0);              		
+
+            	((HtmlBasedComponent)contentPanel.getSelectedItem()).focus();
+            	contentPanel.getSelectedItem().setSelected(true);
+        	}
+
+        	setStatusSelected ();
+        	m_lastSelectedIndex = 0;
+        }
+	}
 }	//	Info
