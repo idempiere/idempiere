@@ -26,6 +26,7 @@ import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.zkoss.util.media.Media;
@@ -171,7 +172,7 @@ public class WFilenameEditor extends WEditor
 		String fileName = null;
 		try {
 
-			File tempFile = File.createTempFile("adempiere_", "_"+file.getName());
+			File tempFile = File.createTempFile(MSysConfig.getValue("TEMP_FILENAME", "adempiere_"), "_"+file.getName());
 			fileName = tempFile.getAbsolutePath();
 
 			fos = new FileOutputStream(tempFile);
