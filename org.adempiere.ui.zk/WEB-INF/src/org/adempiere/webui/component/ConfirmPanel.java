@@ -208,10 +208,6 @@ public final class ConfirmPanel extends Div
         {
              addComponentsLeft(createButton(A_REFRESH));
         }
-        if (withResetButton)
-        {
-            addComponentsLeft(createButton(A_RESET));
-        }
         if (withCustomizeButton)
         {
             addComponentsLeft(createButton(A_CUSTOMIZE));
@@ -223,6 +219,10 @@ public final class ConfirmPanel extends Div
         if (withZoomButton)
         {
             addComponentsLeft(createButton(A_ZOOM));
+        }
+        if (withResetButton)
+        {
+            addComponentsLeft(createButton(A_RESET));
         }
     }
 
