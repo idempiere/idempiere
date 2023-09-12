@@ -3410,12 +3410,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Update row selection order
 	 */
 	protected void updateRowSelectionOrder() {
-		m_rowSelectionOrder.clear();
 		// check if any rows are found
-		if(contentPanel.getModel().size() <= 0)
+		if(contentPanel.getModel().size() <= 0) {
+			m_rowSelectionOrder.clear();
 			return;
+		}
     	// update selection
 		if(!p_multipleSelection && m_lastSelectedIndex >= 0) {
+			m_rowSelectionOrder.clear();
 			@SuppressWarnings("unchecked")
 			List<Object> lastSelectedRecord = (List<Object>)contentPanel.getModel().get(m_lastSelectedIndex);
 			Object key = lastSelectedRecord.get(0);
@@ -3424,14 +3426,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			m_rowSelectionOrder.add(key);
 		}
 		else {
-			for (Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
+			// add selected rows
+			for(Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
 				List<Object> candidateRecord = entry.getValue();
 				// get row key
 				Object key = candidateRecord.get(0);
 				if(key instanceof IDColumn)
 					key = ((IDColumn)key).getRecord_ID();
 				//
-				m_rowSelectionOrder.add(key);
+				if(!m_rowSelectionOrder.contains(key))
+					m_rowSelectionOrder.add(key);
+			}
+			// remove unselected rows
+			for(Iterator<Object> it = m_rowSelectionOrder.iterator(); it.hasNext();) {
+				if(!getSelectedRowInfo().containsKey(it.next()))
+					it.remove();
 			}
 		}
 	} // updateRowSelectionOrder
