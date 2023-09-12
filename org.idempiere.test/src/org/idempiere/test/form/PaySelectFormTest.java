@@ -164,8 +164,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 			
 			//create pay selection check
 			int AD_Process_ID = SystemIDs.PROCESS_C_PAYSELECTION_CREATEPAYMENT;
-			MPInstance mpi = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
-			mpi.setRecord_ID(paySelection.get_ID());
+			MPInstance mpi = new MPInstance(Env.getCtx(), AD_Process_ID, MPaySelection.Table_ID, paySelection.get_ID(), paySelection.getC_PaySelection_UU());
 			mpi.saveEx();
 			MPInstancePara para = new MPInstancePara(mpi, 10);
 			para.setParameter(MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice, false);

@@ -561,7 +561,7 @@ public class Translation implements IApplication
 			ProcessInfo pi = new ProcessInfo("Synchronize Terminology", 172);
 			pi.setAD_Client_ID(0);
 			pi.setAD_User_ID(100);
-			MPInstance instance = new MPInstance(Env.getCtx(), 172, 0);
+			MPInstance instance = new MPInstance(Env.getCtx(), 172, -1, 0, null);
 			instance.saveEx();
 			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 			/*
