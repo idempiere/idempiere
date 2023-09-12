@@ -3411,6 +3411,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected void updateRowSelectionOrder() {
 		m_rowSelectionOrder.clear();
+		// check if any rows are found
+		if(contentPanel.getModel().size() <= 0)
+			return;
     	// update selection
 		if(!p_multipleSelection && m_lastSelectedIndex >= 0) {
 			@SuppressWarnings("unchecked")
