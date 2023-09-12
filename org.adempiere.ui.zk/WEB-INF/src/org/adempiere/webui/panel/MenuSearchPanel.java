@@ -25,33 +25,45 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Toolbar;
 
 /**
- * Menu Search Panel
+ * Panel with {@link MenuTreeSearchPanel}. 
  * @author Elaine
  * @date July 31, 2012
  */
 public class MenuSearchPanel extends AbstractMenuPanel
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5308522340852904168L;
 	
 	protected MenuTreeSearchPanel pnlSearch;
 
+	/** Listener for MENU_TREE_FILTER_CHECKED_QUEUE desktop event queue */
 	private EventListener<Event> listener;
     
+	/**
+	 * @param parent
+	 */
     public MenuSearchPanel(Component parent)
     {
     	super(parent);
     	this.setSclass("menu-search-panel-container");
     }
 
+    /**
+     * Layout panel
+     */
+    @Override
 	protected void init() 
 	{
 		super.init();
         pnlSearch.initialise();                       
 	}
     
+	/**
+	 * Create components
+	 */
+    @Override
     protected void initComponents()
     {
     	super.initComponents();

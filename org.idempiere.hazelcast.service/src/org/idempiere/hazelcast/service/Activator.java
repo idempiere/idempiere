@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import org.compiere.Adempiere;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
@@ -76,7 +77,7 @@ public class Activator implements BundleActivator {
 	private static synchronized void createHazelCastInstance() {
 			File file = null;
 			//try idempiere home
-			String dataArea = System.getProperty("IDEMPIERE_HOME");
+			String dataArea = SystemProperties.getIdempiereHome();
 			if (dataArea != null && dataArea.trim().length() > 0) {
 				try {
 					file = new File(dataArea, "hazelcast.xml");
@@ -126,14 +127,14 @@ public class Activator implements BundleActivator {
 					hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 					MapConfig mc = config.getMapConfig("default");
 					if (mc != null) {
-						logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						logger.info("Hazelcast Max Size Config: "+mc.getEvictionConfig().getMaxSizePolicy() + " " + mc.getEvictionConfig().getSize());
 					}
 					return;
 				} catch (FileNotFoundException e) {}
 			}
 			
 			Enumeration<URL> entries = getContext().getBundle().findEntries("/", "hazelcast.xml", false);
-			URL url = entries.hasMoreElements() ? entries.nextElement() : null;
+			URL url = (entries != null && entries.hasMoreElements()) ? entries.nextElement() : null;
 			if (url != null) {
 				try {
 					Config config = new UrlXmlConfig(url);
@@ -142,7 +143,7 @@ public class Activator implements BundleActivator {
 					hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 					MapConfig mc = config.getMapConfig("default");
 					if (mc != null) {
-						logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						logger.info("Hazelcast Max Size Config: "+mc.getEvictionConfig().getMaxSizePolicy() + " " + mc.getEvictionConfig().getSize());
 					}
 					return;
 				} catch (IOException e) {}
@@ -154,7 +155,7 @@ public class Activator implements BundleActivator {
 			logger.warning("Starting hazelcast with default configuration");
 			MapConfig mc = config.getMapConfig("default");
 			if (mc != null) {
-				logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+				logger.info("Hazelcast Max Size Config: "+mc.getEvictionConfig().getMaxSizePolicy() + " " + mc.getEvictionConfig().getSize());
 			}
 	}
 

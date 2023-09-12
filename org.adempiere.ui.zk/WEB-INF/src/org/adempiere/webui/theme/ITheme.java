@@ -14,7 +14,7 @@
 package org.adempiere.webui.theme;
 
 /**
- * Interface to hold global theme constant
+ * Interface to hold web client theme constant
  * @author hengsin
  *
  */

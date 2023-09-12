@@ -1152,7 +1152,7 @@ public class GridField
 			}
 			if (allValid)
 				return true;
-		} else if (getDisplayType() == DisplayType.ChosenMultipleSelectionTable || getDisplayType() == DisplayType.ChosenMultipleSelectionSearch) {
+		} else if (DisplayType.isMultiID(getDisplayType())) {
 			boolean allValid = true;
 			for (String vals : ((String)m_value).split(",")) {
 				Integer vali = Integer.valueOf(vals);

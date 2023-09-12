@@ -80,6 +80,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.part.MultiTabPart;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
@@ -159,8 +160,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private static final String HISTORY_DAY_YEAR = "Year";
 	private static final String HISTORY_DAY_MONTH = "Month";
 	private static final String HISTORY_DAY_WEEK = "Week";
-	private static final String HISTORY_DAY_DAY = "Day";
-	ValueNamePair[] historyItems = new ValueNamePair[] {
+	private static final String HISTORY_DAY_DAY = "Day";	
+	protected ValueNamePair[] historyItems = new ValueNamePair[] {
 			new ValueNamePair("",                " "),
 			new ValueNamePair(HISTORY_DAY_ALL,   Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),
 			new ValueNamePair(HISTORY_DAY_YEAR,  Msg.getMsg(Env.getCtx(), HISTORY_DAY_YEAR)),
@@ -296,6 +297,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	/** Column name attribute set instance */
 	private static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
     /**
      * FindWindow Constructor
@@ -1965,6 +1969,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * user cancellation, close dialog
      */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_isCancel = true;
 		dispose();
 	}
@@ -2547,7 +2555,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq = new MUserQuery (Env.getCtx(), 0, null);
 						uq.setName (name);
 						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
-						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx())); // allow System
+						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 					}
 					if (shareAllUsers)
 						uq.setAD_User_ID(-1); // set to null

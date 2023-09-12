@@ -45,6 +45,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 
 	private String predefinedContextVariables;
 	private boolean menuIsSOTrx;
+	private boolean isCloseTabWithShortcut = true;
 
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(AbstractDesktop.class);
@@ -401,5 +402,15 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 */
 	protected boolean isMenuSOTrx() {
 		return this.menuIsSOTrx;
+	}
+	
+	@Override
+	public boolean isCloseTabWithShortcut() {
+		return this.isCloseTabWithShortcut;
+	}
+	
+	@Override
+	public void setCloseTabWithShortcut(boolean isCloseTabWithShortcut) {
+		this.isCloseTabWithShortcut = isCloseTabWithShortcut;
 	}
 }

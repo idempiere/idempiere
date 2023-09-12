@@ -71,6 +71,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trace;
 import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.osgi.service.event.Event;
@@ -119,10 +120,6 @@ public abstract class PO
 	public static final String UUID_NEW_RECORD = "";
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
-
-	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
-	
-	private static final String USE_OPTIMISTIC_LOCKING = "org.idempiere.po.useOptimisticLocking";
 
 	/** default timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
@@ -2658,7 +2655,7 @@ public abstract class PO
 		{
 			//post osgi event
 			String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
-			Event event = EventManager.newEvent(topic, this);
+			Event event = EventManager.newEvent(topic, this, true);
 			EventManager.getInstance().postEvent(event);
 
 			if (s_docWFMgr == null)
@@ -2692,10 +2689,37 @@ public abstract class PO
 		if (!newRecord)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_UUID());
 		if (CacheMgt.get().hasCache(p_info.getTableName())) {
-			if (!newRecord)
-				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
-			else if (get_ID() > 0 && success)
-				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+			boolean cacheResetScheduled = false;
+			if (get_TrxName() != null) {
+				Trx trx = Trx.get(get_TrxName(), false);
+				if (trx != null) {
+					trx.addTrxEventListener(new TrxEventListener() {
+						@Override
+						public void afterRollback(Trx trx, boolean success) {
+							trx.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterCommit(Trx sav, boolean success) {
+							if (success)
+								if (!newRecord)
+									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+								else if (get_ID() > 0)
+									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+							trx.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterClose(Trx trx) {
+						}
+					});
+					cacheResetScheduled = true;
+				}
+			}
+			if (!cacheResetScheduled) {
+				if (!newRecord)
+					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+				else if (get_ID() > 0)
+					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+			}
 		}
 		
 		return success;
@@ -3220,7 +3244,7 @@ public abstract class PO
 		if (m_useOptimisticLocking != null)
 			return m_useOptimisticLocking;
 		else
-			return "true".equalsIgnoreCase(System.getProperty(USE_OPTIMISTIC_LOCKING, "false"));
+			return SystemProperties.isOptimisticLocking();
 	}
 	
 	/**
@@ -3249,7 +3273,7 @@ public abstract class PO
 	}
 	
 	private boolean isUseTimeoutForUpdate() {
-		return "true".equalsIgnoreCase(System.getProperty(USE_TIMEOUT_FOR_UPDATE, "false"))
+		return SystemProperties.isUseTimeoutForUpdate()
 			&& DB.getDatabase().isQueryTimeoutSupported();
 	}
 
@@ -4169,6 +4193,26 @@ public abstract class PO
 			}
 			else
 			{
+				if (CacheMgt.get().hasCache(p_info.getTableName())) {
+					Trx trxdel = Trx.get(get_TrxName(), false);
+					if (trxdel != null) {
+						trxdel.addTrxEventListener(new TrxEventListener() {
+							@Override
+							public void afterRollback(Trx trxdel, boolean success) {
+								trxdel.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterCommit(Trx trxdel, boolean success) {
+								if (success)
+									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), Record_ID));
+								trxdel.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterClose(Trx trxdel) {
+							}
+						});
+					}
+				}
 				if (localTrx != null)
 				{
 					try {
@@ -4189,14 +4233,13 @@ public abstract class PO
 				}
 
 				//osgi event handler
-				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
+				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
 				EventManager.getInstance().postEvent(event);
 	
 				m_idOld = 0;
 				int size = p_info.getColumnCount();
 				m_oldValues = new Object[size];
 				m_newValues = new Object[size];
-				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), Record_ID));
 			}
 		}
 		finally
@@ -5710,9 +5753,7 @@ public abstract class PO
 				} else {
 					fkval = Integer.valueOf(get_ValueAsInt(index));
 				}
-				if (fkval != null
-					&& (   (fkval instanceof Integer && ((Integer)fkval).intValue() > 0)
-						|| (fkval instanceof String && ((String)fkval).length() > 0) )) {
+				if (fkval != null) {
 					MTable ft = MTable.get(getCtx(), fktab);
 					boolean systemAccess = false;
 					String accessLevel = ft.getAccessLevel();

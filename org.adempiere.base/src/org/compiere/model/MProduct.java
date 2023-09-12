@@ -327,6 +327,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		setCustomsTariffNumber(impP.getCustomsTariffNumber());
 		setGroup1(impP.getGroup1());
 		setGroup2(impP.getGroup2());
+		setM_AttributeSet_ID(impP.getM_AttributeSet_ID());
 	}	//	MProduct
 	
 	/**

@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 
 /**
+ * Dialog for web link.
  * @author hengsin
  *
  */

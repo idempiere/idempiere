@@ -24,21 +24,21 @@ public class Keylistener extends HtmlBasedComponent {
 	private boolean _autoBlur = true;
 
 	/**
-	 * Auto generated serial UID
+	 * generated serial UID
 	 */
 	private static final long serialVersionUID = 4611014738053691844L;
 
 	/**
 	 * Is auto blur active
 	 *
-	 * @return the autoBlur
+	 * @return true if autoBlur is enable, false otherwise
 	 */
 	public boolean isAutoBlur() {
 		return _autoBlur;
 	}
 
 	/**
-	 * Set auto blur. If auto blur is set focus will be moved to keylistener
+	 * Set auto blur. If auto blur is set, focus will be moved to keylistener
 	 * component before onCtrlKey event is triggered. This is used to force any
 	 * pending onChange events to be triggered first.
 	 *

@@ -1596,4 +1596,48 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertFalse(pi.isError(), pi.getSummary());
 	}
 
+	/**
+	 * Test cases for Credit Check
+	 */
+	@Test
+	public void testCreditCheckOrder()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		// Joe Block
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditHold);
+		bp.saveEx();
+		
+		// test 2 - credit Check
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setM_Warehouse_ID(DictionaryIDs.AD_Org.HQ.id);
+		order.setBPartner(bp);
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_Availability);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Prepare);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		// Azalea Bush
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		order.load(getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
+		
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bp.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
+	}
 }

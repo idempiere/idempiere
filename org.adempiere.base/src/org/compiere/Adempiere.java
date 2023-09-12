@@ -37,6 +37,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -109,7 +110,10 @@ public final class Adempiere
 	private static CLogger		log = null;
 	
 	/** Thread pool **/
-	private static ScheduledThreadPoolExecutor threadPoolExecutor = null;
+	private final static ScheduledThreadPoolExecutor threadPoolExecutor = createThreadPool();
+	static {
+		Trx.startTrxMonitor();
+	}
 	
 	 /** A list of event listeners for this component.	*/
     private static EventListenerList m_listenerList = new EventListenerList();
@@ -584,26 +588,22 @@ public final class Adempiere
 		}
 	}
 
-	private static synchronized void createThreadPool() {
-		if (threadPoolExecutor == null) {
-			int max = Runtime.getRuntime().availableProcessors() * 20;
-			int defaultMax = max;
-			Properties properties = Ini.getProperties();
-			String maxSize = properties.getProperty("MaxThreadPoolSize");
-			if (maxSize != null) {
-				try {
-					max = Integer.parseInt(maxSize);
-				} catch (Exception e) {}
-			}
-			if (max <= 0) {
-				max = defaultMax;
-			}
-			
-			// start thread pool
-			threadPoolExecutor = new ScheduledThreadPoolExecutor(max);		
-			
-			Trx.startTrxMonitor();
+	private static ScheduledThreadPoolExecutor createThreadPool() {
+		int max = Runtime.getRuntime().availableProcessors() * 20;
+		int defaultMax = max;
+		Properties properties = Ini.getProperties();
+		String maxSize = properties.getProperty("MaxThreadPoolSize");
+		if (maxSize != null) {
+			try {
+				max = Integer.parseInt(maxSize);
+			} catch (Exception e) {}
 		}
+		if (max <= 0) {
+			max = defaultMax;
+		}
+		
+		// start thread pool
+		return new ScheduledThreadPoolExecutor(max);								
 	}
 
 	/**
@@ -642,7 +642,7 @@ public final class Adempiere
 			String className = system.getEncryptionKey();
 			if (className == null || className.length() == 0)
 			{
-				className = System.getProperty(SecureInterface.ADEMPIERE_SECURE);
+				className = SystemProperties.getAdempiereSecure();
 				if (className != null && className.length() > 0
 					&& !className.equals(SecureInterface.ADEMPIERE_SECURE_DEFAULT))
 				{
@@ -690,10 +690,7 @@ public final class Adempiere
 	}
 	
 	public static synchronized void stop() {
-		if (threadPoolExecutor != null) {
-			threadPoolExecutor.shutdown();
-			threadPoolExecutor = null;
-		}
+		threadPoolExecutor.shutdown();
 		log = null;
 	}
 	
@@ -701,9 +698,7 @@ public final class Adempiere
 	 * 
 	 * @return {@link ScheduledThreadPoolExecutor}
 	 */
-	public static synchronized ScheduledThreadPoolExecutor getThreadPoolExecutor() {
-		if (threadPoolExecutor == null)
-			createThreadPool();
+	public static ScheduledThreadPoolExecutor getThreadPoolExecutor() {
 		return threadPoolExecutor;
 	}
 	

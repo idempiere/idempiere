@@ -33,6 +33,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -127,6 +128,9 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	/** Contains no symbols. */
 	public static final String NONE = null;
+	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * Default constructor
@@ -560,6 +564,10 @@ public class Messagebox extends Window implements EventListener<Event>
 	 */
 	private void close() {
 		try {
+			// do not allow to close tab for Events.ON_CTRL_KEY event
+			if(isUseEscForTabClosing)
+				SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+			
 			this.detach();
 		} catch (NullPointerException npe) {
 			if (! (SessionManager.getSessionApplication() == null)) // IDEMPIERE-1937 - ignore when session was closed

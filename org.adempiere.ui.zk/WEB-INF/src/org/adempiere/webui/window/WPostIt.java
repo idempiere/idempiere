@@ -26,7 +26,9 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MPostIt;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.zkforge.ckez.CKeditor;
@@ -36,13 +38,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Separator;
 
 /**
- * bas� sur WTextEditorDialog
+ * Dialog for post it note
  * @author Nico
  *
  */
 public class WPostIt extends Window implements EventListener<Event>{
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -9092535255629718710L;
 
@@ -58,6 +60,8 @@ public class WPostIt extends Window implements EventListener<Event>{
 	private String created;
 	private String updated;
 	private MPostIt m_postIt;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * @param title
@@ -90,6 +94,9 @@ public class WPostIt extends Window implements EventListener<Event>{
 		init();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void init() {
 		setBorder("normal");
 		setMaximizable(true);
@@ -178,6 +185,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 	/**
 	 * @param event
 	 */
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
 			onCancel();
@@ -207,10 +215,21 @@ public class WPostIt extends Window implements EventListener<Event>{
 		}		
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		detach();
 	}
 
+	/**
+	 * Update status text (for length)
+	 * @param newLength
+	 */
 	private void updateStatus(int newLength) {
 		if (status != null && maxSize > 0) {
 			StringBuffer msg = new StringBuffer();
@@ -227,6 +246,9 @@ public class WPostIt extends Window implements EventListener<Event>{
 		}
 	}
 
+	/**
+	 * On opening of dialog. 
+	 */
 	public void showWindow() 
 	{		
 		textBox.focus();

@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -26,7 +27,7 @@ import org.compiere.util.Util;
 import org.zkoss.image.AImage;
 
 /**
- *
+ * Static methods for web client theme.
  * @author hengsin
  *
  */
@@ -71,7 +72,7 @@ public final class ThemeManager {
 	 * @return name of active theme
 	 */
 	public static String getTheme() {
-		String theme = System.getProperty(MSysConfig.ZK_THEME);
+		String theme = SystemProperties.getZkTheme();
 		if (Util.isEmpty(theme))
 			theme = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
 		if (theme.equals(m_brokenTheme)) {
@@ -124,7 +125,7 @@ public final class ThemeManager {
 	}
 	
 	/**
-	 * @return title text for the browser window
+	 * @return title text for browser tab
 	 */
 	public static String getBrowserTitle() {		
 		return AEnv.getDesktop().getWebApp().getAppName();
@@ -164,36 +165,17 @@ public final class ThemeManager {
 			if (mImage.getData() != null)
 				return new AImage(mImage.getName(), mImage.getData());
 			else
-				return null;
-	    	
-			/* Using different approach: ImageEncoder supports only PNG and JPEG
-			Image image = mImage.getImage();
-			if (image instanceof RenderedImage) {
-				RenderedImage rImage = (RenderedImage)image;
-				return Images.encode(mImage.getName(), rImage);
-			} else {
-				BufferedImage bImage = new BufferedImage(image.getWidth(null),
-	                    image.getHeight(null),
-	                    BufferedImage.TYPE_INT_ARGB);
-				Graphics2D bImageGraphics = bImage.createGraphics();
-				bImageGraphics.drawImage(image, null, null);
-				RenderedImage rImage = (RenderedImage)bImage;
-				String name = mImage.getName();
-				if (name.endsWith("jpg")) {
-					name = name.replace("jpg", "jpeg");
-				}
-				return Images.encode(name, rImage);
-			}
-			*/			
+				return null;	    	
 		} else {
 			return null;
 		}
 	}
 
+	/** Theme Name:Boolean */
 	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, -1, false);
 
 	/**
-	 * @return true if custom css exists
+	 * @return true if custom css ({theme}/css/fragment/custom.css.dsp) exists
 	 */
 	public static Boolean isThemeHasCustomCSSFragment() {
 		String theme = getTheme();
@@ -210,10 +192,16 @@ public final class ThemeManager {
 		return flag;
 	}
 
+	/**
+	 * @return true if css is use to define size of dialog
+	 */
 	public static boolean isUseCSSForWindowSize() {
 		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 	}	
 	
+	/**
+	 * @return true if use font icon instead of image 
+	 */
 	public static boolean isUseFontIconForImage() {
 		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE));
 	}
@@ -232,6 +220,11 @@ public final class ThemeManager {
 		return ZK_PREFIX_FOR_CLASSPATH_RESOURCE+zkResourceURL.substring(2);
 	}
 	
+	/**
+	 * Translate image name to font icon name
+	 * @param imagePath
+	 * @return font icon css class name
+	 */
 	public static String getIconSclass(String imagePath) {
 		String iconSclass = null;
 		if (!Util.isEmpty(imagePath, true)) {

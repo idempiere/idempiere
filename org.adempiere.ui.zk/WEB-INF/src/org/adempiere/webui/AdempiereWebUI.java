@@ -148,6 +148,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/** Login completed event */
 	private static final String ON_LOGIN_COMPLETED = "onLoginCompleted";
 	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	/**
 	 * default constructor
 	 */
@@ -249,6 +252,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      */
     public void onCancel()
     {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+    	if(isUseEscForTabClosing)
+    		SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
     }
 
     /* (non-Javadoc)
@@ -702,6 +708,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.CLIENT_INFO_ORIENTATION, clientInfo.orientation);
 		Env.setContext(properties, Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
 		Env.setContext(properties, Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
+		Env.setContext(properties, Env.MFA_Registration_ID, Env.getContext(Env.getCtx(), Env.MFA_Registration_ID));
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
@@ -709,12 +716,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, SessionContextListener.SERVLET_SESSION_ID, httpRequest.getSession().getId());
 		if (Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER) != null)
 			properties.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER));
-
+		
 		//desktop cleanup
 		IDesktop appDesktop = getAppDeskop();
 		HttpSession session = httpRequest.getSession();
 		if (appDesktop != null)
-			appDesktop.logout(T -> {if (T) asyncChangeRole(session, locale, properties);});
+			appDesktop.logout(T -> {if (T) asyncChangeRole(session, locale, properties, desktop);});						
 	}
 	
 	/**
@@ -722,8 +729,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 * @param httpSession
 	 * @param locale
 	 * @param properties
+	 * @param desktop 
 	 */
-	private void asyncChangeRole(HttpSession httpSession, Locale locale, Properties properties) {
+	private void asyncChangeRole(HttpSession httpSession, Locale locale, Properties properties, Desktop desktop) {
 		//stop key listener
 		if (keyListener != null) {
 			keyListener.detach();
@@ -755,6 +763,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
     	//show change role window and set new context for env and session
 		onChangeRole(locale, properties);
+		
+		Executions.schedule(desktop, e -> DesktopWatchDog.removeOtherDesktopsInSession(desktop), new Event("onRemoveOtherDesktops"));
 	}
 	
 	@Override

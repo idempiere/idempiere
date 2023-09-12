@@ -244,6 +244,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
 	    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+	    	addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			AEnv.showWindow(this);
 		}
 		catch(Exception e)
@@ -802,9 +803,16 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		}
 		else if (e.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) e;
-		if (LayoutUtils.isReallyVisible(this))
-			this.onCtrlKeyEvent(keyEvent);
+			if (LayoutUtils.isReallyVisible(this))
+				this.onCtrlKeyEvent(keyEvent);
 		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(e.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_windowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_windowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
 	} // onEvent
 
 	/**
@@ -1416,10 +1424,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
-			if (m_windowNo > 0) {
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_windowNo);
-			}
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 }

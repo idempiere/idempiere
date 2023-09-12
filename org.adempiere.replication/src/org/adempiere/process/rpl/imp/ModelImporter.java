@@ -28,6 +28,7 @@
  **********************************************************************/
 package org.adempiere.process.rpl.imp;
 
+import java.io.File;
 import java.util.logging.Level;
 
 import org.adempiere.process.rpl.XMLHelper;
@@ -98,9 +99,9 @@ public class ModelImporter extends SvrProcess {
 		{
 			// Load XML file and parse it
 			String fileNameOr = org.compiere.util.Ini.findAdempiereHome()
-			+ System.getProperty("file.separator")  
+			+ File.separator  
 			+ "data"
-			+ System.getProperty("file.separator")
+			+ File.separator
 			+ "ExportFile.xml";
 			p_FileName = fileNameOr;
 		}		
@@ -119,9 +120,9 @@ public class ModelImporter extends SvrProcess {
 		
 		// Load XML file and parse it
 		/*String fileNameOr = org.compiere.util.Ini.findAdempiereHome()
-		+ System.getProperty("file.separator")  
+		+ File.separator  
 		+ "data"
-		+ System.getProperty("file.separator");
+		+ File.separator;
 		
 		String pathToXmlFile = fileNameOr+"XmlExport-test.xml";
 		Document documentToBeImported = XMLHelper.createDocumentFromFile(pathToXmlFile);*/

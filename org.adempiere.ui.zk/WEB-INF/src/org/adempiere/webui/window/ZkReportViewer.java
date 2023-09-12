@@ -44,6 +44,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
@@ -52,6 +53,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
+import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -92,6 +94,7 @@ import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -134,7 +137,7 @@ import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *	Print View Frame
+ *	Report Viewer.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Viewer.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
@@ -152,7 +155,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class ZkReportViewer extends Window implements EventListener<Event>, IReportViewerExportSource {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3732290698059632847L;
 
@@ -197,6 +200,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private Listbox comboReport = new Listbox();
 	private Listitem previousSelected = new Listitem();
 	private WTableDirEditor wLanguage;
+	/** List box for preview type (pdf, html, etc) */
 	protected Listbox previewType = new Listbox();
 	
 	private ToolBarButton bRefresh = new ToolBarButton();
@@ -247,8 +251,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
-	 * 	Static Layout
-	 * 	@throws Exception
+	 * @param re
+	 * @param title
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
@@ -277,10 +281,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		initMediaSuppliers();
 	}
 
+	/**
+	 * @param contentType
+	 * @param fileExtension
+	 * @return contentType + ; + fileExtension
+	 */
 	private String toMediaType(String contentType, String fileExtension) {
 		return contentType + ";" + fileExtension;
 	}
 	
+	/**
+	 * Create media supplier for supported format (pdf, html, etc)
+	 */
 	private void initMediaSuppliers() {
 		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
 			try {
@@ -414,6 +426,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				init();
 				dynInit();
 				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+				addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			}
 			catch(Exception e)
 			{
@@ -429,10 +442,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 		cleanUp();
 	}
 
+	/**
+	 * Layout viewer
+	 */
 	private void init() {
 		Borderlayout layout = new Borderlayout();
 		layout.setWidth("100%");
@@ -866,6 +883,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		setTabOnCloseHandler();
 	}
 
+	/**
+	 * Set dummy onCloseHandler for parent tab
+	 */
 	private void setTabOnCloseHandler() {
 		Component parent = this.getParent();
 		while (parent != null) {
@@ -895,6 +915,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		return AD_Tab_ID;
 	}
 
+	/**
+	 * Render report
+	 */
 	private void renderReport() {
 		media = null;
 		Listitem selected = previewType.getSelectedItem();
@@ -911,6 +934,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}		
 	}
 	
+	/**
+	 * Call from renderer runnable to show report output
+	 */
 	private void onPreviewReport() {
 		if(media == null)
 			return;
@@ -1001,10 +1027,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Remove iframe
+	 */
 	private void detachIFrame() {
 		center.getChildren().clear();
 	}
 
+	/**
+	 * Add iframe to center
+	 */
 	private void attachIFrame() {
 		if (iframe != null && iframe.getPage() == null) {
 			center.getChildren().clear();
@@ -1012,6 +1044,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Create file name prefix from name
+	 * @param name
+	 * @return file name prefix from name
+	 */
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
@@ -1036,10 +1073,31 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
 		revalidate();
+		
+		if (Window.REPLACE.equals(getAttribute(Window.INSERT_POSITION_KEY))) {
+			if (m_reportEngine != null && m_reportEngine.getProcessInfo() != null) {
+				ProcessInfo pi = m_reportEngine.getProcessInfo();
+				checkProcessInfo(pi);
+			}
+		}
 	}	//	dynInit
+
+	/**
+	 * Open {@link ProcessInfoDialog} if pi has error or logs
+	 * @param pi
+	 */
+	private void checkProcessInfo(ProcessInfo pi) {
+		ProcessInfoUtil.setLogFromDB(pi);
+		if (pi.isError() || (pi.getLogs() != null && pi.getLogs().length > 0)) {
+			ProcessInfoDialog dialog = new ProcessInfoDialog(pi, false);
+			dialog.setAutoCloseAfterZoom(false);
+			dialog.setPage(this.getPage());
+			dialog.doHighlighted();
+		}
+	}
 	
 	/**
-	 * 	Fill ComboBox comboReport (report options)
+	 * 	Fill ComboBox comboReport with print formats available and option to create new print format.
 	 *  @param AD_PrintFormat_ID item to be selected
 	 */
 	private void fillComboReport(int AD_PrintFormat_ID)
@@ -1120,7 +1178,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	fillComboReport
 
 	/**
-	 * 	Revalidate settings after change of environment
+	 * Update title, status text and state of {@link #bWizard}
 	 */
 	private void revalidate()
 	{
@@ -1142,7 +1200,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	revalidate
 
 	/**
-	 * 	Dispose
+	 * Close viewer
 	 */
 	public void onClose()
 	{
@@ -1160,6 +1218,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	@Override
 	public void onEvent(Event event) throws Exception {				
 		if(event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT)) 
 			actionPerformed(event);
@@ -1173,24 +1232,37 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			onRenderReportEvent();
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-		if (LayoutUtils.isReallyVisible(this))
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
-		if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
-		{
-			hideBusyMask();
-			ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
-			if (dialog.isCancel())
+			if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
 			{
-				if (getDesktop() != null)
-					clearTabOnCloseHandler();
+				hideBusyMask();
+				ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+				if (dialog.isCancel())
+				{
+					if (getDesktop() != null)
+						clearTabOnCloseHandler();
+				}
+				ProcessInfo pi = dialog.getProcessInfo();
+				if (pi != null) 
+					checkProcessInfo(pi);
 			}
-		}
+        }
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
         }
 	}
 
+	/**
+	 * Open {@link WReportUploadDialog} to upload report to external destination
+	 */
 	private void cmd_upload() {
 		if (media == null)
 			return;
@@ -1201,6 +1273,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		AEnv.showWindow(winUploadFile);
 	}
 
+	/**
+	 * Handle key event
+	 * @param keyEvent
+	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
@@ -1211,12 +1287,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Handle onRenderReportEvent
+	 */
 	private void onRenderReportEvent() {
     	renderReport();
 	}
 
-	/**************************************************************************
-	 * 	Action Listener
+	/**
+	 * 	Handle event
 	 * 	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -1256,6 +1335,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			cmd_upload();
 	}	//	actionPerformed
 	
+	/**
+	 * Handle onSelect event from {@link #previewType}
+	 */
 	private void cmd_render() {
 		postRenderReportEvent();		
 	}
@@ -1281,7 +1363,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	executeDrill
 
 	/**
-	 * 	Open Window
+	 * 	Zoom to window
 	 *	@param query query
 	 */
 	private void cmd_window (MQuery query)
@@ -1365,11 +1447,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_attachment
 
 	/**
-	 * 	Export
+	 * Open {@link WReportExportDialog} to export report
 	 */
 	private void cmd_export()
 	{		
-		log.config("");
 		if (!m_isCanExport)
 		{
 			Dialog.error(m_WindowNo, "AccessCannotExport", getTitle());
@@ -1541,15 +1622,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	/**
-	 * Refresh With Parameters
+	 * Rerun report
 	 */
 	private void cmd_reRun() {
 		this.cmd_reRun(null);
 	}
 	
 	/**
-	 * Refresh With Parameters
-	 * @param showHelp
+	 * Rerun report
+	 * @param showHelp if SHOWHELP_RunSilently_TakeDefaults, re-run with same parameter (i.e just refresh)
 	 */
 	private void cmd_reRun(String showHelp) {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
@@ -1558,10 +1639,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
 		pi.setLanguageID(m_reportEngine.getLanguageID());
 		pi.setReportType(m_reportEngine.getReportType());
+		pi.setSerializableObject(m_reportEngine.getPrintFormat());
 		pi.setReplaceTabContent();
 		if(!Util.isEmpty(showHelp))
 			pi.setShowHelp(showHelp);
-		setTabOnCloseHandler();
+		setTabOnCloseHandler();	
+		String predefined = (String) getAttribute(ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES);
+		if (!Util.isEmpty(predefined, true)) {
+			Env.setContext(Env.getCtx(), m_WindowNo, ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES, predefined);
+			Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefined);
+		}
+		if (getAttribute("IsSOTrx") != null) {
+			Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", getAttribute("IsSOTrx").toString());
+		}
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
@@ -1575,8 +1665,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			LayoutUtils.openOverlappedWindow(this, processModalDialog, "middle_center");
 		}
 		processModalDialog.focus();
-}	// cmd_reRun
+	}	// cmd_reRun
 	
+	/**
+	 * Set language to {@link #m_reportEngine}
+	 */
 	protected void setLanguage (){
 		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage != null && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
@@ -1587,6 +1680,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	/**
+	 * Set preview type to {@link #m_reportEngine}
+	 */
 	protected void setPreviewType() {
 		String type = Objects.toString(previewType.getValue());
 		
@@ -1598,7 +1694,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 		m_reportEngine.setReportType(type);
 	}
-	
+
+	/**
+	 * Echo {@link #ON_RENDER_REPORT_EVENT} event
+	 */
 	private void postRenderReportEvent() {
 		showBusyDialog();
 		setLanguage();
@@ -1606,8 +1705,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
 		updateRowCount();
 	}
-
-
 
 	/**
 	 * 	Query Report
@@ -1725,7 +1822,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_find
 
 	/**
-	 * 	Call Customize
+	 * Open print format window
 	 */
 	private void cmd_customize()
 	{
@@ -1734,7 +1831,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		AEnv.zoom(pfAD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 	}	//	cmd_customize
 	
-	/*IDEMPIERE -379*/
+	/**
+	 * IDEMPIERE-379 Report customization wizard
+	 */
 	private void cmd_Wizard()
 	{
 	    ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
@@ -1772,6 +1871,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	private boolean ToolBarMenuRestictionLoaded = false;
+
+	/**
+	 * Hide not accessible toolbar
+	 * @param AD_Window_ID
+	 * @param AD_Process_ID
+	 */
 	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;

@@ -23,7 +23,7 @@
  * - hengsin                         								   *
  **********************************************************************/
 
-package org.idempiere.test.ui;
+package org.compiere.minigrid;
 
 /**
  * 

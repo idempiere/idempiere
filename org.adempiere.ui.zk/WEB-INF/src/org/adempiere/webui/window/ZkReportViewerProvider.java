@@ -17,15 +17,18 @@
 package org.adempiere.webui.window;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.print.ReportEngine;
 import org.compiere.print.ReportViewerProvider;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Executions;
 
 /**
- * 
+ * Report viewer provider
  * @author Low Heng Sin
  *
  */
@@ -47,6 +50,10 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		}
 	}
 
+	/**
+	 * Open report viewer
+	 * @param report
+	 */
 	protected void openReportViewWindow (ReportEngine report) {
 		ZkReportViewer viewer = new ZkReportViewer(report, report.getName());
 
@@ -55,6 +62,11 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		if(report.isReplaceTabContent()) {
 			viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.REPLACE);
 			viewer.setAttribute(WindowContainer.REPLACE_WINDOW_NO, report.getWindowNo());
+			String predefined = Env.getContext(Env.getCtx(), report.getWindowNo(), ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES);
+			if (!Util.isEmpty(predefined, true)) {
+				viewer.setAttribute(ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES, predefined);
+			}
+			viewer.setAttribute("IsSOTrx", Env.getContext(Env.getCtx(), report.getWindowNo(), "IsSOTrx"));
 		}
 		viewer.setAttribute(WindowContainer.DEFER_SET_SELECTED_TAB, Boolean.TRUE);
 		SessionManager.getAppDesktop().showWindow(viewer);
