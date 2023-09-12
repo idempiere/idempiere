@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -1523,6 +1524,58 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		//Check if Order is Valid - load all C_Order_ID into HashSet and replace/remove C_Order_ID if not valid
+		if(getC_Order_ID() > 0) {			
+			
+			HashSet<Integer> temp_C_Order_ID = new HashSet<Integer>(); // Load C_Order_IDs into Hash Set
+			
+			for(MInOutLine line : getLines())	{
+				
+				if(line.getC_OrderLine_ID() == 0) {
+					temp_C_Order_ID.add(0); // Add zero C_Order_ID
+				}
+				else {
+					temp_C_Order_ID.add(line.getC_OrderLine().getC_Order_ID());
+				}			
+			}	
+			
+			if(temp_C_Order_ID.size() == 1) {	//try to replace C_Order_ID in Parent
+				for(Integer C_Order_ID : temp_C_Order_ID) {		
+					if(getC_Order_ID() != C_Order_ID)
+						setC_Order_ID(C_Order_ID);					
+				}
+			}
+			else {	//Set C_Order_ID to null
+				setC_Order_ID(0);				
+			}			
+		}
+		
+		//Check if RMA is Valid - load all M_RMA_ID into HashSet and replace/remove M_RMA_ID if not valid
+		if(getM_RMA_ID() > 0) {			
+			
+			HashSet<Integer> temp_M_RMA_ID = new HashSet<Integer>(); // Load M_RMA_IDs into Hash Set
+			
+			for(MInOutLine line : getLines())	{
+				
+				if(line.getM_RMALine_ID() == 0) {
+					temp_M_RMA_ID.add(0); // Add zero M_RMA_ID
+				}
+				else {
+					temp_M_RMA_ID.add(line.getM_RMALine().getM_RMA_ID());
+				}			
+			}	
+			
+			if(temp_M_RMA_ID.size() == 1) {	//try to replace M_RMA_ID in Parent
+				for(Integer M_RMA_ID : temp_M_RMA_ID) {		
+					if(getM_RMA_ID() != M_RMA_ID)
+						setM_RMA_ID(M_RMA_ID);					
+				}
+			}
+			else {	//Set M_RMA_ID to null
+				setM_RMA_ID(0);				
+			}			
+		}
+		
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))
 			setDocAction(DOCACTION_Complete);
