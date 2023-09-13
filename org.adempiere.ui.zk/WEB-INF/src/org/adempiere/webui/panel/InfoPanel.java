@@ -628,9 +628,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
-	 * Contains the indexes of selected row, maintains the selection order
+	 * Contains the keys of the selected rows in the order of selection
 	 */
-	protected ArrayList<Integer> m_rowSelectionOrder = new ArrayList<Integer>();
+	protected ArrayList<Object> m_rowSelectionOrder = new ArrayList<Object>();
 	/**
 	 * Number of selected rows
 	 */
@@ -3410,25 +3410,37 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Update row selection order
 	 */
 	protected void updateRowSelectionOrder() {
-    	if(m_selectedCount == m_count) {
-			for(int rowIdx = 0; rowIdx < m_count; rowIdx++) {
-				if(!m_rowSelectionOrder.contains(rowIdx))
-					m_rowSelectionOrder.add((Integer)rowIdx);
-			}
-		}
-		else if(m_selectedCount == 0) {
+		// check if any rows are found
+		if(contentPanel.getModel().size() <= 0) {
 			m_rowSelectionOrder.clear();
+			return;
+		}
+    	// update selection
+		if(!p_multipleSelection && m_lastSelectedIndex >= 0) {
+			m_rowSelectionOrder.clear();
+			@SuppressWarnings("unchecked")
+			List<Object> lastSelectedRecord = (List<Object>)contentPanel.getModel().get(m_lastSelectedIndex);
+			Object key = lastSelectedRecord.get(0);
+			if(key instanceof IDColumn)
+				key = ((IDColumn)key).getRecord_ID();
+			m_rowSelectionOrder.add(key);
 		}
 		else {
-			if(!p_multipleSelection) {
-				m_rowSelectionOrder.clear();
-				m_rowSelectionOrder.add(m_lastSelectedIndex);
+			// add selected rows
+			for(Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
+				List<Object> candidateRecord = entry.getValue();
+				// get row key
+				Object key = candidateRecord.get(0);
+				if(key instanceof IDColumn)
+					key = ((IDColumn)key).getRecord_ID();
+				//
+				if(!m_rowSelectionOrder.contains(key))
+					m_rowSelectionOrder.add(key);
 			}
-			else {
-	    		if(m_rowSelectionOrder.contains(m_lastSelectedIndex))
-	    			m_rowSelectionOrder.remove((Integer)m_lastSelectedIndex);
-	    		else
-	    			m_rowSelectionOrder.add(m_lastSelectedIndex);
+			// remove unselected rows
+			for(Iterator<Object> it = m_rowSelectionOrder.iterator(); it.hasNext();) {
+				if(!getSelectedRowInfo().containsKey(it.next()))
+					it.remove();
 			}
 		}
 	} // updateRowSelectionOrder
@@ -3437,8 +3449,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Put values from the selected row into the context
 	 */
 	protected void updateContext(boolean checkQueryCriteria) {
-		Map<Object, List<Object>> rowInfo = getSelectedRowInfo();
-		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? rowInfo.get(getRowKeyAt(m_rowSelectionOrder.get(m_rowSelectionOrder.size() - 1))) : null;
+		List<Object> lastSelectedRow = getLastSelectedRow();
 		
 		if(checkQueryCriteria) {
 			// put parameter values into the context
@@ -3494,8 +3505,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected String getSelectedIDsForCtx() {
 		String returnVal = null;
 		
-		for(int idx : m_rowSelectionOrder) {
-			String selectedID = Objects.toString(getRowKeyAt(idx));
+		for(Object key : m_rowSelectionOrder) {
+			String selectedID = Objects.toString(key);
 			if(returnVal == null)
 				returnVal = selectedID;
 			else
@@ -3504,4 +3515,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return returnVal;
 	}
 	
+	/**
+	 * Get last selected row
+	 * @return List
+	 */
+	protected List<Object> getLastSelectedRow() {
+		int index = m_rowSelectionOrder.size() - 1;
+		
+		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? getSelectedRowInfo().get(m_rowSelectionOrder.get(index)) : null;
+		return lastSelectedRow;
+	}
 }	//	Info
