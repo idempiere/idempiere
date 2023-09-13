@@ -1,4 +1,4 @@
-- IDEMPIERE-5567 Support of UUID as Key (FHCA-4195)
+-- IDEMPIERE-5567 Support of UUID as Key (FHCA-4195)
 SELECT register_migration_script('202309111844_IDEMPIERE-5567_ADPInstance.sql') FROM dual;
 
 -- Sep 11, 2023, 6:44:35 PM CEST
