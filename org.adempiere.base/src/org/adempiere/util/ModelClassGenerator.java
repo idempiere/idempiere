@@ -194,33 +194,34 @@ public class ModelClassGenerator
 			 .append(String.format("%1$tY%1$tm%1$td", new Timestamp(System.currentTimeMillis())))
 		 	 .append("L;").append(NL);
 
-		 if (tableHasIds) {
-			//	Standard ID Constructor
-			 start.append(NL)
-			 .append("    /** Standard Constructor */").append(NL)
-			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName)").append(NL)
-			 .append("    {").append(NL)
-			 .append("      super (ctx, ").append(keyColumn).append(", trxName);").append(NL)
-			 .append("      /** if (").append(keyColumn).append(" == 0)").append(NL)
-			 .append("        {").append(NL)
-			 .append(mandatory) 
-			 .append("        } */").append(NL)
-			 .append("    }").append(NL)
-			//	Constructor End
+		 String suffix = "";
+		 if (! tableHasIds)
+			 suffix = "_ignored";
+		 //	Standard ID Constructor
+		 start.append(NL)
+		 .append("    /** Standard Constructor */").append(NL)
+		 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn+suffix).append(", String trxName)").append(NL)
+		 .append("    {").append(NL)
+		 .append("      super (ctx, ").append(keyColumn+suffix).append(", trxName);").append(NL)
+		 .append("      /** if (").append(keyColumn+suffix).append(" == 0)").append(NL)
+		 .append("        {").append(NL)
+		 .append(mandatory) 
+		 .append("        } */").append(NL)
+		 .append("    }").append(NL)
+		 //	Constructor End
 
-			//	Standard ID Constructor + Virtual Columns
-			 .append(NL)
-			 .append("    /** Standard Constructor */").append(NL)
-			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName, String ... virtualColumns)").append(NL)
-			 .append("    {").append(NL)
-			 .append("      super (ctx, ").append(keyColumn).append(", trxName, virtualColumns);").append(NL)
-			 .append("      /** if (").append(keyColumn).append(" == 0)").append(NL)
-			 .append("        {").append(NL)
-			 .append(mandatory)
-			 .append("        } */").append(NL)
-			 .append("    }").append(NL);
-			//	Constructor End
-		 }
+		 //	Standard ID Constructor + Virtual Columns
+		 .append(NL)
+		 .append("    /** Standard Constructor */").append(NL)
+		 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn+suffix).append(", String trxName, String ... virtualColumns)").append(NL)
+		 .append("    {").append(NL)
+		 .append("      super (ctx, ").append(keyColumn+suffix).append(", trxName, virtualColumns);").append(NL)
+		 .append("      /** if (").append(keyColumn+suffix).append(" == 0)").append(NL)
+		 .append("        {").append(NL)
+		 .append(mandatory)
+		 .append("        } */").append(NL)
+		 .append("    }").append(NL);
+		 //	Constructor End
 
 				//	Standard UUID Constructor
 		 start.append(NL)
