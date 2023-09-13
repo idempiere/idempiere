@@ -5794,6 +5794,12 @@ public abstract class PO
 	private void checkRecordIDCrossTenant() {
 		if (isSafeCrossTenant.get())
 			return;
+		
+		//ad_table_id+record_id validation will fail for ad_pinstance due to ad_pinstance is 
+		//being saved and updated outside of server process transaction.
+		if (I_AD_PInstance.Table_Name.equals(p_info.getTableName()))
+			return;
+		
 		int idxRecordId = p_info.getColumnIndex("Record_ID");
 		if (idxRecordId < 0)
 			return;
