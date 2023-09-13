@@ -147,7 +147,7 @@ public class CommissionRunTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus(), "Credit Memo document status is not completed: " + creditMemo.getDocStatus());
 
 		MProcess process = MProcess.get(PROCESS_GENERATE_COMMISSION);
-		MPInstance pinstance = new MPInstance(process, 0);
+		MPInstance pinstance = new MPInstance(process, 0, 0, null);
 		MPInstancePara[] paras = pinstance.getParameters();
 		for (MPInstancePara para : paras) {
 			if (para.getParameterName().equals("StartDate")) {

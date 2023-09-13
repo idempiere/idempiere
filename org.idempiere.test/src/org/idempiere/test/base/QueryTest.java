@@ -366,7 +366,7 @@ public class QueryTest extends AbstractTestCase {
 		int count = DB.getSQLValueEx(null, "SELECT Count(AD_PInstance_ID) FROM AD_PInstance");
 		if (count == 0) {
 			//Generate Shipments (manual)
-			new MPInstance(MProcess.get(Env.getCtx(), 199), 0);
+			new MPInstance(MProcess.get(Env.getCtx(), 199), 0, 0, null);
 		}
 		
 		// Get one AD_PInstance_ID

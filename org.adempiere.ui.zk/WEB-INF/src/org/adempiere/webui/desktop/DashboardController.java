@@ -1602,10 +1602,7 @@ public class DashboardController implements EventListener<Event> {
 			 throw new IllegalArgumentException("Not a Report AD_Process_ID=" + process.getAD_Process_ID()
 				+ " - " + process.getName());
 		//	Process
-		int AD_Table_ID = 0;
-		int Record_ID = 0;
-		//
-		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, Record_ID);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		if(AD_PrintFormat_ID > 0)
 			pInstance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
 		pInstance.setIsProcessing(true);
@@ -1614,8 +1611,7 @@ public class DashboardController implements EventListener<Event> {
 			if(!fillParameter(pInstance, parameters))
 				return null;
 			//
-			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
-				AD_Table_ID, Record_ID);
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
 			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		

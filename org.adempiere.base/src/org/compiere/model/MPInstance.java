@@ -110,12 +110,27 @@ public class MPInstance extends X_AD_PInstance
 	 * 	Create Process Instance from Process and create parameters
 	 *	@param process process
 	 *	@param Record_ID Record
+	 *  @deprecated Please use {@link #MPInstance(MProcess, int, int, String)}
 	 */
 	public MPInstance (MProcess process, int Record_ID)
 	{
+		this(process, -1, Record_ID, null);
+	}
+
+	/**
+	 * 	Create Process Instance from Process and create parameters
+	 *	@param process process
+	 *  @param Table_ID
+	 *	@param Record_ID Record
+	 *  @param Record_UU
+	 */
+	public MPInstance (MProcess process, int Table_ID, int Record_ID, String Record_UU)
+	{
 		this (process.getCtx(), 0, null);
 		setAD_Process_ID (process.getAD_Process_ID());
+		setAD_Table_ID(Table_ID);
 		setRecord_ID (Record_ID);
+		setRecord_UU(Record_UU);
 		setAD_User_ID(Env.getAD_User_ID(process.getCtx()));
 		if (!save())		//	need to save for parameters
 			throw new IllegalArgumentException ("Cannot Save");
@@ -135,12 +150,26 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param ctx context
 	 *	@param AD_Process_ID Process ID
 	 *	@param Record_ID record
+	 *  @deprecated Please use {@link #MPInstance(Properties, int, int, int, String)}
 	 */
 	public MPInstance (Properties ctx, int AD_Process_ID, int Record_ID)
 	{
+		this(ctx, AD_Process_ID, -1, Record_ID, null);
+	}
+
+	/**
+	 * 	New Constructor
+	 *	@param ctx context
+	 *	@param AD_Process_ID Process ID
+	 *	@param Record_ID record
+	 */
+	public MPInstance (Properties ctx, int AD_Process_ID, int Table_ID, int Record_ID, String Record_UU)
+	{
 		this(ctx, 0, null);
 		setAD_Process_ID (AD_Process_ID);
+		setAD_Table_ID(Table_ID);
 		setRecord_ID (Record_ID);
+		setRecord_UU(Record_UU);
 		setAD_User_ID(Env.getAD_User_ID(ctx));
 		setIsProcessing (false);
 	}	//	MPInstance

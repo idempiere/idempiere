@@ -854,7 +854,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			MPInstance instance = null;
 			try {
 				instance = new MPInstance(Env.getCtx(),
-						getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
+						getProcessInfo().getAD_Process_ID(), getProcessInfo().getTable_ID(), getProcessInfo().getRecord_ID(), getProcessInfo().getRecord_UU());
 				instance.setName(saveName);
 				saveReportOptionToInstance(instance);
 				instance.saveEx();
@@ -1089,7 +1089,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_IN_SYSTEM, 20))
 				throw new IllegalStateException(Msg.getMsg(m_ctx, "BackgroundJobExceedMaxInSystem"));
 			
-			instance = new MPInstance(m_ctx, m_pi.getAD_Process_ID(), m_pi.getRecord_ID());
+			instance = new MPInstance(m_ctx, m_pi.getAD_Process_ID(), m_pi.getTable_ID(), m_pi.getRecord_ID(), m_pi.getRecord_UU());
 			instance.setIsRunAsJob(true);
 			instance.setIsProcessing(true);
 			instance.setNotificationType(getNotificationType());

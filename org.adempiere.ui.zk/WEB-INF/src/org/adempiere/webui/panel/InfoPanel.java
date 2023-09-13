@@ -2579,7 +2579,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		m_pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 
-		MPInstance instance = new MPInstance(Env.getCtx(), processId, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), processId, 0, 0, null);
 		instance.saveEx();
 		final int pInstanceID = instance.getAD_PInstance_ID();
 		// devCoffee - enable use of special forms from process related with info windows
