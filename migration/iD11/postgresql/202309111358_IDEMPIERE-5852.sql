@@ -17,3 +17,7 @@ UPDATE AD_Column SET FieldLength=0, AD_Reference_ID=36, FKConstraintType=NULL,Up
 INSERT INTO t_alter_column values('ad_broadcastmessage_trl','BroadcastMessage','TEXT',null,null)
 ;
 
+-- 14/09/2023, 12:52:20 p. m. GMT+02:00
+UPDATE AD_Column SET IsAlwaysUpdateable='Y', IsToolbarButton='N',Updated=TO_TIMESTAMP('2023-09-14 12:52:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200979
+;
+
