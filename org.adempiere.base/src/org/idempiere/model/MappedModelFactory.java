@@ -105,10 +105,12 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 	public void addMapping(String tableName, Supplier<Class<?>> classSupplier, BiFunction<Integer, String, ? extends PO> recordIdFunction, 
 			BiFunction<String, String, ? extends PO> recordUUIDFunction, BiFunction<ResultSet, String, ? extends PO> resultSetFunction) {
 		classMap.put(tableName, classSupplier);
-		recordIdMap.put(tableName, recordIdFunction);
+		if (recordIdFunction != null)
+			recordIdMap.put(tableName, recordIdFunction);
 		if (recordUUIDFunction != null)
 			recordUUIDMap.put(tableName, recordUUIDFunction);
-		resultSetMap.put(tableName, resultSetFunction);
+		if (resultSetFunction != null)
+			resultSetMap.put(tableName, resultSetFunction);
 	}
 	
 	@Override
@@ -149,11 +151,26 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 		        try {
 			        final Class<?> clazz = classLoader.loadClass(className);
 			        Supplier<Class<?>> classSupplier = () -> { return clazz; };
-			        Constructor<?> idConstructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class});
-			        RecordIdFunction recordIdFunction = new RecordIdFunction(idConstructor);
-			        Constructor<?> rsConstructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, ResultSet.class, String.class});
-			        ResultSetFunction resultSetFunction = new ResultSetFunction(rsConstructor);			        
-			        addMapping(tableName, classSupplier, recordIdFunction, resultSetFunction);
+			        RecordIdFunction recordIdFunction = null;
+					try {
+						Constructor<?> idConstructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class});
+						recordIdFunction = new RecordIdFunction(idConstructor);
+					} catch (Exception e) {}
+			        RecordUUIDFunction recordUUIDFunction = null;
+					try {
+						Constructor<?> uuidConstructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, String.class, String.class});
+						recordUUIDFunction = new RecordUUIDFunction(uuidConstructor);
+					} catch (Exception e) {}
+			        ResultSetFunction resultSetFunction = null;
+					try {
+						Constructor<?> rsConstructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, ResultSet.class, String.class});
+						resultSetFunction = new ResultSetFunction(rsConstructor);
+					} catch (Exception e) {}
+					if (recordIdFunction == null && recordUUIDFunction == null)
+						s_log.warning("Model class " + clazz.getName() + " for table " + tableName + " doesn't have ID neither UUID constructor");
+					if (resultSetFunction == null)
+						s_log.warning("Model class " + clazz.getName() + " for table " + tableName + " doesn't have ResultSet constructor");
+			        addMapping(tableName, classSupplier, recordIdFunction, recordUUIDFunction, resultSetFunction);
 		        } catch (Exception e) {
 		        	if (s_log.isLoggable(Level.INFO))
 		        		s_log.log(Level.INFO, e.getMessage(), e);
@@ -183,7 +200,29 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 			return null;
 		}		
 	}
-	
+
+	private static final class RecordUUIDFunction implements BiFunction<String, String, PO> {
+		private Constructor<?> constructor;
+
+		private RecordUUIDFunction(Constructor<?> constructor) {
+			this.constructor = constructor;
+		}
+
+		@Override
+		public PO apply(String uuid, String trxName) {
+			if (constructor != null) {
+				try {
+					return (PO) constructor.newInstance(Env.getCtx(), uuid, trxName);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					constructor = null;
+					throw new RuntimeException(e);
+				}
+			}
+			return null;
+		}
+	}
+
 	private static final class ResultSetFunction implements BiFunction<ResultSet, String, PO> {
 		private Constructor<?> constructor;
 		
