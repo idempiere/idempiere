@@ -301,6 +301,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@param trx transaction
 	 *	@return Process Instance
 	 */
+	@Deprecated
 	public MPInstance processIt (int Record_ID, Trx trx)
 	{
 		return processIt(Record_ID, trx, true);
@@ -312,6 +313,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@param trx transaction
 	 *	@return Process Instance
 	 */
+	@Deprecated
 	public MPInstance processIt (int Record_ID, Trx trx, boolean managedTrx)
 	{
 		MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), Record_ID);
@@ -357,7 +359,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	{
 		if (pi.getAD_PInstance_ID() == 0)
 		{
-			MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), pi.getRecord_ID());
+			MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU());
 			//	Lock
 			pInstance.setIsProcessing(true);
 			pInstance.saveEx();

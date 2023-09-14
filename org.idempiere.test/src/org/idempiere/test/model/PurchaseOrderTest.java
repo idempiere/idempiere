@@ -648,7 +648,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 		
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATERMA_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";

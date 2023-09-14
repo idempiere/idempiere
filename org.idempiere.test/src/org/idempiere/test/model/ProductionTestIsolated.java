@@ -385,7 +385,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			mulchX.setIsVerified(true);
 			mulchX.saveEx();
 			
-			MPInstance instance = new MPInstance(Env.getCtx(), rollUpProcessId, 0);
+			MPInstance instance = new MPInstance(Env.getCtx(), rollUpProcessId, 0, 0, null);
 			instance.saveEx();
 			MPInstancePara para = new MPInstancePara(instance, 10);
 			para.setParameterName("M_Product_ID");

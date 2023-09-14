@@ -54,7 +54,7 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -795798319865809959L;
+	private static final long serialVersionUID = 8134286335553869253L;
 
 	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
@@ -161,6 +161,9 @@ public class ProcessInfo implements Serializable
 	
 	/**	Record IDs				*/
 	private List <Integer>		m_Record_IDs = null;
+
+	/**	Record UUs				*/
+	private List <String>		m_Record_UUs = null;
 
 	/** Export					*/
 	private boolean				m_export = false;
@@ -991,6 +994,16 @@ public class ProcessInfo implements Serializable
 	public void setRecord_IDs(List<Integer> Record_IDs)
 	{
 		m_Record_IDs = Record_IDs;
+	}
+
+	public List<String> getRecord_UUs()
+	{
+		return m_Record_UUs;
+	}
+
+	public void setRecord_UUs(List<String> Record_UUs)
+	{
+		m_Record_UUs = Record_UUs;
 	}
 
 	public void setRowCount(int rowCount) {
