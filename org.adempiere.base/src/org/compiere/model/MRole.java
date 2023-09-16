@@ -88,6 +88,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public static MRole getDefault (Properties ctx, boolean reload)
 	{
+		if (Env.getContext(ctx, Env.AD_ROLE_ID) == null || Env.getContext(ctx, Env.AD_USER_ID) == null)
+			throw new AdempiereException (Msg.getMsg(Env.getCtx(), "RoleNotExistsByIncompleteLogin"));
+		
 		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
 		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 
