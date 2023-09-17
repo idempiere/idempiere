@@ -29,6 +29,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -172,7 +173,7 @@ public class WFilenameEditor extends WEditor
 		String fileName = null;
 		try {
 
-			File tempFile = File.createTempFile(MSysConfig.getValue("TEMP_FILENAME", "adempiere_"), "_"+file.getName());
+			File tempFile = File.createTempFile(MSysConfig.getValue(MSysConfig.UPLOAD_TEMP_FILENAME_PREFIX, Env.getAD_Client_ID(Env.getCtx())), "_"+file.getName());
 			fileName = tempFile.getAbsolutePath();
 
 			fos = new FileOutputStream(tempFile);
