@@ -746,7 +746,10 @@ public class MOrder extends X_C_Order implements DocAction
 		ss = bp.getInvoiceRule();
 		if (ss != null)
 			setInvoiceRule(ss);
-		ss = bp.getPaymentRule();
+		if (isSOTrx())
+			ss = bp.getPaymentRule();
+		else
+			ss = bp.getPaymentRulePO();
 		if (ss != null)
 			setPaymentRule(ss);
 		//	Sales Rep
