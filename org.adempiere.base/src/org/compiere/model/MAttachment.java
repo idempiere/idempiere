@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1447398065894212273L;
+	private static final long serialVersionUID = 5615231734722570658L;
 
 	/**
 	 * 
@@ -66,10 +67,11 @@ public class MAttachment extends X_AD_Attachment
 	 * @param AD_Table_ID
 	 * @param Record_ID
 	 * @return attachment or null
+	 * @deprecated Use {@link #get(Properties, int, int, String, String)}
 	 */
 	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID)
 	{
-		return get(ctx, AD_Table_ID, Record_ID, (String)null);
+		return get(ctx, AD_Table_ID, Record_ID, (String)null, (String)null);
 	}
 	
 	/**
@@ -79,13 +81,42 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param Record_ID record
 	 *  @param trxName
 	 *	@return attachment or null
+	 * @deprecated Use {@link #get(Properties, int, int, String, String)}
 	 */
 	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
-		final String whereClause = I_AD_Attachment.COLUMNNAME_AD_Table_ID+"=? AND "+I_AD_Attachment.COLUMNNAME_Record_ID+"=?";
-		MAttachment retValue = new Query(ctx,I_AD_Attachment.Table_Name,whereClause, trxName)
-		.setParameters(AD_Table_ID, Record_ID)
-		.first();
+		return get(ctx, AD_Table_ID, Record_ID, (String)null, trxName);
+	}	//	get
+	
+	/**
+	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
+	 *	@param ctx context
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *  @param trxName
+	 *	@return attachment or null
+	 */
+	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
+	{
+		StringBuilder whereClause = new StringBuilder("AD_Table_ID=?");
+		List<Object> params = new ArrayList<Object>();
+		params.add(AD_Table_ID);
+		if (Record_ID > 0) {
+			whereClause.append(" AND Record_ID=?");
+			params.add(Record_ID);
+		}
+		if (!Util.isEmpty(Record_UU)) {
+			whereClause.append(" AND Record_UU=?");
+			params.add(Record_UU);
+		}
+		if (params.size() == 1) {
+			s_log.warning("Wrong call, no Record_ID neither Record_UU for AD_Table_ID=" + AD_Table_ID + " TrxName=" + trxName);
+			return null;
+		}
+		MAttachment retValue = new Query(ctx, Table_Name, whereClause.toString(), trxName)
+				.setParameters(params)
+				.first();
 		return retValue;
 	}	//	get
 	
