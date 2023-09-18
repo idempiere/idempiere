@@ -173,7 +173,7 @@ public class WFilenameEditor extends WEditor
 		String fileName = null;
 		try {
 
-			File tempFile = File.createTempFile(MSysConfig.getValue(MSysConfig.UPLOAD_TEMP_FILENAME_PREFIX, Env.getAD_Client_ID(Env.getCtx())), "_"+file.getName());
+			File tempFile = File.createTempFile(MSysConfig.getValue(MSysConfig.UPLOAD_TEMP_FILENAME_PREFIX, "idempiere", Env.getAD_Client_ID(Env.getCtx())), "_"+file.getName());
 			fileName = tempFile.getAbsolutePath();
 
 			fos = new FileOutputStream(tempFile);
