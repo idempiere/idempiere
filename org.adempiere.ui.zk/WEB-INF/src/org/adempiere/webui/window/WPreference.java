@@ -95,7 +95,8 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		preferences = MUserPreference.getUserPreference(Env.getAD_User_ID(Env.getCtx()), Env.getAD_Client_ID(Env.getCtx()));
 		recordId = preferences.get_ID();
 
-		loadRecord(recordId);
+		if(getQuickFields()>0)
+			loadRecord(recordId);
 	} //loadPreferences
 
 	protected void jbInit() throws Exception
