@@ -82,7 +82,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 1298245367836653594L;
+	private static final long serialVersionUID = 9095740800513665542L;
 
 	private static final String BASE_MATCHING_SQL =
 			"""
