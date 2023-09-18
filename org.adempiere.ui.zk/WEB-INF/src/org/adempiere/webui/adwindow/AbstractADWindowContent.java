@@ -112,6 +112,7 @@ import org.compiere.model.MUserPreference;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.StateChangeEvent;
+import org.compiere.model.SystemProperties;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -3390,15 +3391,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		if (toolbar.getEvent() != null)
 		{
-			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
-				return;
-
 			int C_BPartner_ID = 0;
 			Object bpartner = adTabbox.getSelectedGridTab().getValue("C_BPartner_ID");
 			if(bpartner != null)
 				C_BPartner_ID = Integer.valueOf(bpartner.toString());
 
-			new WRequest(toolbar.getToolbarItem("Requests"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID(), C_BPartner_ID);
+			new WRequest(toolbar.getToolbarItem("Requests"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), C_BPartner_ID);
 		}
 	}
 	
@@ -3613,6 +3611,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		//	Record_ID
 
 		int record_ID = adtabPanel.getGridTab().getRecord_ID();
+		String record_UU = adtabPanel.getGridTab().getRecord_UU();
 
 		//	Record_ID - Language Handling
 
@@ -3699,7 +3698,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if(cf.isInitOK())
 				{					
 					final WCreateFromWindow window = (WCreateFromWindow) cf.getWindow();
-					window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
+					if (SystemProperties.isZkUnitTest())
+						window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
 					window.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
@@ -3806,6 +3806,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}   //  Posted
 
 		final int finalRecordId = record_ID;
+		final String finalRecordUU = record_UU;
 		final Callback<Boolean> postCallback = new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
@@ -3819,7 +3820,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					executeButtonProcess(wButton, startWOasking, table_ID, finalRecordId, isProcessMandatory, postCallback);
+					executeButtonProcess(wButton, startWOasking, table_ID, finalRecordId, finalRecordUU, isProcessMandatory, postCallback);
 				}
 			}
 		};
@@ -3926,11 +3927,28 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
 			boolean isProcessMandatory, Callback<Boolean> callback) {
+		executeButtonProcess(wButton, startWOasking, table_ID, record_ID, null, isProcessMandatory, callback);
+	}
+
+	/**
+	 * Show process, form or info window dialog for button.
+	 * Delegate to {@link #executeButtonProcess0(IProcessButton, boolean, int, int)} or {@link #executionButtonInfoWindow0(IProcessButton)}.
+	 * @param wButton
+	 * @param startWOasking
+	 * @param table_ID
+	 * @param record_ID
+	 * @param record_UU
+	 * @param isProcessMandatory
+	 * @param callback 
+	 */
+	public void executeButtonProcess(final IProcessButton wButton,
+			final boolean startWOasking, final int table_ID, final int record_ID, final String record_UU,
+			boolean isProcessMandatory, Callback<Boolean> callback) {
 		/**
 		 *  Start Process ----
 		 */
 
-		if (logger.isLoggable(Level.CONFIG)) logger.config("Process_ID=" + wButton.getProcess_ID() + ", InfoWindow_ID=" + wButton.getInfoWindow_ID() + ", Record_ID=" + record_ID);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("Process_ID=" + wButton.getProcess_ID() + ", InfoWindow_ID=" + wButton.getInfoWindow_ID() + ", Record_ID=" + record_ID + ", Record_UU=" + record_UU);
 
 		if (wButton.getProcess_ID() == 0 && wButton.getInfoWindow_ID() == 0)
 		{
@@ -3963,7 +3981,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (wButton.getInfoWindow_ID() > 0)
 				executionButtonInfoWindow0(wButton);
 			else
-				executeButtonProcess0(wButton, startWOasking, table_ID, record_ID, callback);
+				executeButtonProcess0(wButton, startWOasking, table_ID, record_ID, record_UU, callback);
 		}
 	}
 
@@ -3977,6 +3995,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
 	private void executeButtonProcess0(final IProcessButton wButton,
 			boolean startWOasking, int table_ID, int record_ID, Callback<Boolean> callback) {
+		executeButtonProcess0(wButton, startWOasking, table_ID, record_ID, null, callback);	
+	}
+
+	/**
+	 * Show {@link ADForm} or {@link ProcessModalDialog}.
+	 * @param wButton
+	 * @param startWOasking
+	 * @param table_ID
+	 * @param record_ID
+	 * @param record_UU
+	 * @param callback 
+	 */
+	private void executeButtonProcess0(final IProcessButton wButton,
+			boolean startWOasking, int table_ID, int record_ID, String record_UU, Callback<Boolean> callback) {
 		// call form
 		MProcess pr = new MProcess(ctx, wButton.getProcess_ID(), null);
 		int adFormID = pr.getAD_Form_ID();
@@ -3985,7 +4017,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			String title = wButton.getDescription();
 			if (title == null || title.length() == 0)
 				title = wButton.getDisplay();							
-			ProcessInfo pi = new ProcessInfo (title, wButton.getProcess_ID(), table_ID, record_ID);
+			ProcessInfo pi = new ProcessInfo (title, wButton.getProcess_ID(), table_ID, record_ID, record_UU);
 			pi.setAD_User_ID (Env.getAD_User_ID(ctx));
 			pi.setAD_Client_ID (Env.getAD_Client_ID(ctx));
 			IADTabpanel adtabPanel = null;
@@ -4030,22 +4062,32 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			else
 				adtabPanel = findADTabpanel(wButton);
 
-			ProcessInfo pi = new ProcessInfo("", wButton.getProcess_ID(), table_ID, record_ID);
+			ProcessInfo pi = new ProcessInfo("", wButton.getProcess_ID(), table_ID, record_ID, record_UU);
 			if (adtabPanel != null && adtabPanel.isGridView() && adtabPanel.getGridTab() != null)
 			{
 				int[] indices = adtabPanel.getGridTab().getSelection();
 				if (indices.length > 0)
 				{
-					List<Integer> records = new ArrayList<Integer>();
-					for (int i = 0; i < indices.length; i++)
-					{
-						int keyID = adtabPanel.getGridTab().getKeyID(indices[i]);
-						if (keyID > 0)
-							records.add(keyID);
+					MTable table = MTable.get(adtabPanel.getGridTab().getAD_Table_ID());
+					if (table.isUUIDKeyTable()) {
+						List<String> records = new ArrayList<String>();
+						for (int i = 0; i < indices.length; i++) {
+							String keyUUID = adtabPanel.getGridTab().getKeyUUID(indices[i]);
+							if (!Util.isEmpty(keyUUID))
+								records.add(keyUUID);
+						}
+						pi.setRecord_UUs(records);
+					} else {
+						List<Integer> records = new ArrayList<Integer>();
+						for (int i = 0; i < indices.length; i++) {
+							int keyID = adtabPanel.getGridTab().getKeyID(indices[i]);
+							if (keyID > 0)
+								records.add(keyID);
+						}
+						// IDEMPIERE-3998 Set multiple selected grid records into process info
+						pi.setRecord_IDs(records);
 					}
 
-					// IDEMPIERE-3998 Set multiple selected grid records into process info
-					pi.setRecord_IDs(records);
 				}
 			}
 
@@ -4132,8 +4174,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		ZKUpdateUtil.setHeight(infoWindow, height + "px");
 		}
 		infoWindow.setContentStyle("overflow: auto");
-		
-		infoWindow.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
+
+		if (SystemProperties.isZkUnitTest())
+			infoWindow.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
 		infoWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {

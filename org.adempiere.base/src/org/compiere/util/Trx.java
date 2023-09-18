@@ -21,14 +21,13 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -108,7 +107,7 @@ public class Trx
 	
 	private static final Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
 	
-	private List<TrxEventListener> listeners = new ArrayList<TrxEventListener>();
+	private ConcurrentLinkedQueue<TrxEventListener> listeners = new ConcurrentLinkedQueue<TrxEventListener>();
 	
 	protected Exception trace;
 	
@@ -347,8 +346,7 @@ public class Trx
 	}	//	rollback
 	
 	private void fireAfterRollbackEvent(boolean success) {
-		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
-		for(TrxEventListener l : copies) {
+		for(TrxEventListener l : listeners) {
 			l.afterRollback(this, success);
 		}
 	}
@@ -433,8 +431,7 @@ public class Trx
 	}	//	commit
 	
 	private void fireAfterCommitEvent(boolean success) {
-		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
-		for(TrxEventListener l : copies) {
+		for(TrxEventListener l : listeners) {
 			l.afterCommit(this, success);
 		}
 	}
@@ -541,8 +538,7 @@ public class Trx
 	}	//	close
 	
 	private void fireAfterCloseEvent() {
-		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
-		for(TrxEventListener l : copies) {
+		for(TrxEventListener l : listeners) {
 			l.afterClose(this);
 		}
 	}
@@ -735,15 +731,11 @@ public class Trx
 	 * @param listener
 	 */
 	public void addTrxEventListener(TrxEventListener listener) {
-		synchronized (listeners) {
-			listeners.add(listener);
-		}		
+		listeners.add(listener);
 	}
 	
 	public boolean removeTrxEventListener(TrxEventListener listener) {
-		synchronized (listeners) {
-			return listeners.remove(listener);
-		}
+		return listeners.remove(listener);
 	}
 	
 	public String getStrackTrace()

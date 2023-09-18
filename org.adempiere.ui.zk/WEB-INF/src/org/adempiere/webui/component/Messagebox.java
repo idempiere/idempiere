@@ -33,6 +33,8 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -126,6 +128,9 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	/** Contains no symbols. */
 	public static final String NONE = null;
+	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * Default constructor
@@ -376,20 +381,22 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setSizable(true);
 
 		this.setVisible(true);
-		String id = "MessageBox_"+AdempiereIdGenerator.escapeId(title);
-		//make sure id is unique
-		Page page = AEnv.getDesktop().getFirstPage();
-		Component fellow = page.getFellowIfAny(id);
-		if (fellow != null) {
-			int count = 0;
-			String newId = null;
-			while (fellow != null) {
-				newId = id + "_" + ++count;
-				fellow = page.getFellowIfAny(newId);				
+		if (SystemProperties.isZkUnitTest()) {
+			String id = "MessageBox_"+AdempiereIdGenerator.escapeId(title);
+			//make sure id is unique
+			Page page = AEnv.getDesktop().getFirstPage();
+			Component fellow = page.getFellowIfAny(id);
+			if (fellow != null) {
+				int count = 0;
+				String newId = null;
+				while (fellow != null) {
+					newId = id + "_" + ++count;
+					fellow = page.getFellowIfAny(newId);				
+				}
+				id = newId;
 			}
-			id = newId;
+			this.setId(id);
 		}
-		this.setId(id);
 		AEnv.showCenterScreen(this);
 
 		return returnValue;
@@ -557,6 +564,10 @@ public class Messagebox extends Window implements EventListener<Event>
 	 */
 	private void close() {
 		try {
+			// do not allow to close tab for Events.ON_CTRL_KEY event
+			if(isUseEscForTabClosing)
+				SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+			
 			this.detach();
 		} catch (NullPointerException npe) {
 			if (! (SessionManager.getSessionApplication() == null)) // IDEMPIERE-1937 - ignore when session was closed

@@ -19,8 +19,8 @@ import org.zkoss.zul.Grid;
 
 /**
  * @author hengsin
- *
  */
+@Deprecated(forRemoval = true, since = "11")
 public class TouchEventHelper {
 
 	private static final String TABLET_SCROLLING_FIX_INIT = "tablet.scrolling.fix.init";

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
+import org.compiere.model.SystemProperties;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
@@ -112,9 +113,11 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     public Comboitem appendItem(String label) 
     {
         ComboItem item = new ComboItem(label);
-        String id = AdempiereIdGenerator.escapeId(label);
-        if (getFellowIfAny(id) == null )
-        	item.setId(id);
+        if (SystemProperties.isZkUnitTest()) {
+        	String id = AdempiereIdGenerator.escapeId(label);
+        	if (getFellowIfAny(id) == null )
+        		item.setId(id);
+        }
         item.setParent(this);
         return item;
     }
@@ -143,9 +146,11 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	 */
 	public void appendItem(String name, Object value) {
 		ComboItem item = new ComboItem(name, value);
-		String id = AdempiereIdGenerator.escapeId(name);
-		if (getFellowIfAny(id) == null)
-			item.setId(id);
+		if (SystemProperties.isZkUnitTest()) {
+			String id = AdempiereIdGenerator.escapeId(name);
+			if (getFellowIfAny(id) == null)
+				item.setId(id);
+		}
 		this.appendChild(item);
 	}
 	

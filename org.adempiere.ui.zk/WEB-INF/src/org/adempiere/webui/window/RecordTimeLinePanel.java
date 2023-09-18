@@ -56,6 +56,7 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
 /**
+ * Panel to present record change log in time line format.
  * @author hengsin
  *
  */
@@ -83,135 +84,155 @@ public class RecordTimeLinePanel extends Vlayout {
 		(DisplayType.Integer, Env.getLanguage(Env.getCtx()));
 	
 	/**
-	 * 
+	 * default constructor
 	 */
 	public RecordTimeLinePanel() {
 		setStyle("height:100%;width:100%;overflow:auto");
 	}
 
+	/**
+	 * Render change log time line for current record of gridTab.
+	 * @param gridTab
+	 */
 	public void render(GridTab gridTab) {
 		getChildren().clear();
 		if (gridTab == null) {			
 			return;
 		}
 		
-			if (gridTab.getRowCount() == 0 || gridTab.isNew()) {
-				return;
-			}
-			int recordId = gridTab.getRecord_ID();
-			int tableId = gridTab.getAD_Table_ID();
-			ArrayList<String> docActionValues = new ArrayList<String>();
-			ArrayList<String> docActionNames = new ArrayList<String>();
-			DocumentEngine.readReferenceList(docActionValues, docActionNames, new ArrayList<String>());
-			
-			ArrayList<String> docStatusValues = new ArrayList<String>();
-			ArrayList<String> docStatusNames = new ArrayList<String>();
-			DocumentEngine.readStatusReferenceList(docStatusValues, docStatusNames, new ArrayList<String>());
-			String reversedStatusName = null;
-			for(int i = 0; i < docStatusValues.size(); i++) {
-				if (DocAction.STATUS_Reversed.equals(docStatusValues.get(i)))
-					reversedStatusName = docStatusNames.get(i);
-			}
-			StringBuilder sql = new StringBuilder("SELECT u.AD_User_ID, l.created, c.columnName, l.oldValue, l.newValue, l.trxname, l.AD_Column_ID ") 
-					.append("FROM AD_ChangeLog l ")
-					.append("JOIN AD_Column c ON l.ad_column_id=c.ad_column_id ")
-					.append("JOIN AD_User u ON l.createdby=u.ad_user_id ")
-					.append("WHERE l.AD_Table_ID=? ")
-					.append("AND l.Record_ID=? ")
-					.append("ORDER BY l.created desc, l.trxName ");
-			PreparedStatement stmt = null;
-			ResultSet rs = null;
-			try {
-				stmt = DB.prepareStatement(sql.toString(), (String)null);
-				stmt.setInt(1, tableId);
-				stmt.setInt(2, recordId);
-				rs = stmt.executeQuery();
-				List<String> columns = null;
-				List<Integer> columnIds = null;
-				List<Pair<String, String>> changes = null;
-				String currentTrx = null;
-				String currentDocStatusOld = null;
-				String currentDocStatusNew = null;
-				Timestamp updated = null;
-				int userId = -1;
-				while (rs.next()) {					
-					String columnName = rs.getString(3);
-					String trxName = rs.getString(6);
-					String oldValue = rs.getString(4);
-					String newValue = rs.getString(5);
-					int AD_Column_ID = rs.getInt(7);
-					if (columns == null) {
-						columns = new ArrayList<String>();
-						changes = new ArrayList<>();
-						columnIds = new ArrayList<>();
-					}
-					if (currentTrx == null || currentTrx.equals(trxName)) {
-						if (currentTrx == null)
-							currentTrx = trxName;
-						if (columnName.equals("DocAction")) {
-							continue;
-						} else if (columnName.equals("DocStatus")) {							
-							if (currentDocStatusNew == null)
-								currentDocStatusNew = newValue;
-							currentDocStatusOld = oldValue;
-						} else {
-							GridField field = gridTab.getField(columnName);
-							if (field != null && field.isDisplayed(true)) {
-								columns.add(field.getHeader());
-								changes.add(new Pair<String, String>(oldValue, newValue));
-								columnIds.add(AD_Column_ID);
-							}
-						}
-					} else {						
-						buildChangeLogMessage(gridTab, docActionValues,
-								docActionNames, reversedStatusName, columns,
-								currentDocStatusOld, currentDocStatusNew,
-								updated, userId, changes, columnIds);												
-						currentTrx = trxName;						
-						currentDocStatusOld = null;
-						currentDocStatusNew = null;
-						columns = new ArrayList<String>();
-						changes = new ArrayList<>();
-						columnIds = new ArrayList<>();
-						if (columnName.equals("DocAction")) {
-							continue;
-						} else if (columnName.equals("DocStatus")) {
-							if (currentDocStatusOld == null)
-								currentDocStatusOld = oldValue;
+		if (gridTab.getRowCount() == 0 || gridTab.isNew()) {
+			return;
+		}
+		int recordId = gridTab.getRecord_ID();
+		String recordUU = gridTab.getRecord_UU();
+		int tableId = gridTab.getAD_Table_ID();
+		ArrayList<String> docActionValues = new ArrayList<String>();
+		ArrayList<String> docActionNames = new ArrayList<String>();
+		DocumentEngine.readReferenceList(docActionValues, docActionNames, new ArrayList<String>());
+		
+		ArrayList<String> docStatusValues = new ArrayList<String>();
+		ArrayList<String> docStatusNames = new ArrayList<String>();
+		DocumentEngine.readStatusReferenceList(docStatusValues, docStatusNames, new ArrayList<String>());
+		String reversedStatusName = null;
+		for(int i = 0; i < docStatusValues.size(); i++) {
+			if (DocAction.STATUS_Reversed.equals(docStatusValues.get(i)))
+				reversedStatusName = docStatusNames.get(i);
+		}
+		StringBuilder sql = new StringBuilder("SELECT u.AD_User_ID, l.created, c.columnName, l.oldValue, l.newValue, l.trxname, l.AD_Column_ID ") 
+				.append("FROM AD_ChangeLog l ")
+				.append("JOIN AD_Column c ON l.ad_column_id=c.ad_column_id ")
+				.append("JOIN AD_User u ON l.createdby=u.ad_user_id ")
+				.append("WHERE l.AD_Table_ID=? ")
+				.append("AND (l.Record_ID=? OR l.Record_UU=?) ")
+				.append("ORDER BY l.created desc, l.trxName ");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = DB.prepareStatement(sql.toString(), (String)null);
+			stmt.setInt(1, tableId);
+			stmt.setInt(2, recordId);
+			stmt.setString(3, recordUU);
+			rs = stmt.executeQuery();
+			List<String> columns = null;
+			List<Integer> columnIds = null;
+			List<Pair<String, String>> changes = null;
+			String currentTrx = null;
+			String currentDocStatusOld = null;
+			String currentDocStatusNew = null;
+			Timestamp updated = null;
+			int userId = -1;
+			while (rs.next()) {					
+				String columnName = rs.getString(3);
+				String trxName = rs.getString(6);
+				String oldValue = rs.getString(4);
+				String newValue = rs.getString(5);
+				int AD_Column_ID = rs.getInt(7);
+				if (columns == null) {
+					columns = new ArrayList<String>();
+					changes = new ArrayList<>();
+					columnIds = new ArrayList<>();
+				}
+				if (currentTrx == null || currentTrx.equals(trxName)) {
+					if (currentTrx == null)
+						currentTrx = trxName;
+					if (columnName.equals("DocAction")) {
+						continue;
+					} else if (columnName.equals("DocStatus")) {							
+						if (currentDocStatusNew == null)
 							currentDocStatusNew = newValue;
-						} else {
-							GridField field = gridTab.getField(columnName);
-							if (field != null && field.isDisplayed(true)) {
-								columns.add(field.getHeader());
-								changes.add(new Pair<String, String>(oldValue, newValue));
-								columnIds.add(AD_Column_ID);
-							}
+						currentDocStatusOld = oldValue;
+					} else {
+						GridField field = gridTab.getField(columnName);
+						if (field != null && field.isDisplayed(true)) {
+							columns.add(field.getHeader());
+							changes.add(new Pair<String, String>(oldValue, newValue));
+							columnIds.add(AD_Column_ID);
 						}
 					}
-					userId = rs.getInt(1);
-					updated = rs.getTimestamp(2);
-				}
-				buildChangeLogMessage(gridTab, docActionValues, docActionNames,
-						reversedStatusName, columns, currentDocStatusOld,
-						currentDocStatusNew, updated, userId, changes, columnIds);
-				if (gridTab != null && gridTab.getValue("CreatedBy") != null) {
-					MUser createdBy = MUser.get(Env.getCtx(), (int) gridTab.getValue("CreatedBy"));
-					StringBuilder sb = new StringBuilder(" ")
-							.append(Msg.getMsg(Env.getCtx(), "Created")).append(" ");
-					if (gridTab.getTabNo() == 0) {
-						sb.append(Env.getContext(Env.getCtx(), gridTab.getWindowNo(), "_WinInfo_WindowName", true));
+				} else {						
+					buildChangeLogMessage(gridTab, docActionValues,
+							docActionNames, reversedStatusName, columns,
+							currentDocStatusOld, currentDocStatusNew,
+							updated, userId, changes, columnIds);												
+					currentTrx = trxName;						
+					currentDocStatusOld = null;
+					currentDocStatusNew = null;
+					columns = new ArrayList<String>();
+					changes = new ArrayList<>();
+					columnIds = new ArrayList<>();
+					if (columnName.equals("DocAction")) {
+						continue;
+					} else if (columnName.equals("DocStatus")) {
+						if (currentDocStatusOld == null)
+							currentDocStatusOld = oldValue;
+						currentDocStatusNew = newValue;
 					} else {
-						sb.append(gridTab.getName());
+						GridField field = gridTab.getField(columnName);
+						if (field != null && field.isDisplayed(true)) {
+							columns.add(field.getHeader());
+							changes.add(new Pair<String, String>(oldValue, newValue));
+							columnIds.add(AD_Column_ID);
+						}
 					}
-					buildActivityMessage((Timestamp) gridTab.getValue("Created"), sb.toString(), createdBy);
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				DB.close(rs, stmt);
+				userId = rs.getInt(1);
+				updated = rs.getTimestamp(2);
 			}
+			buildChangeLogMessage(gridTab, docActionValues, docActionNames,
+					reversedStatusName, columns, currentDocStatusOld,
+					currentDocStatusNew, updated, userId, changes, columnIds);
+			if (gridTab != null && gridTab.getValue("CreatedBy") != null) {
+				MUser createdBy = MUser.get(Env.getCtx(), (int) gridTab.getValue("CreatedBy"));
+				StringBuilder sb = new StringBuilder(" ")
+						.append(Msg.getMsg(Env.getCtx(), "Created")).append(" ");
+				if (gridTab.getTabNo() == 0) {
+					sb.append(Env.getContext(Env.getCtx(), gridTab.getWindowNo(), "_WinInfo_WindowName", true));
+				} else {
+					sb.append(gridTab.getName());
+				}
+				buildActivityMessage((Timestamp) gridTab.getValue("Created"), sb.toString(), createdBy);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs, stmt);
+		}
 	}
 
+	/**
+	 * Add change log message
+	 * @param gridTab
+	 * @param docActionValues
+	 * @param docActionNames
+	 * @param reversedStatusName
+	 * @param columns
+	 * @param currentDocStatusOld
+	 * @param currentDocStatusNew
+	 * @param updated
+	 * @param userId
+	 * @param changes
+	 * @param columnIds
+	 */
 	public void buildChangeLogMessage(GridTab gridTab,
 			ArrayList<String> docActionValues,
 			ArrayList<String> docActionNames, String reversedStatusName,
@@ -340,6 +361,17 @@ public class RecordTimeLinePanel extends Vlayout {
 		}
 	}
 
+	/**
+	 * Add document action message
+	 * @param docActionValues
+	 * @param docActionNames
+	 * @param reversedStatusName
+	 * @param updated
+	 * @param user
+	 * @param fromStatus
+	 * @param toStatus
+	 * @param windowNo
+	 */
 	private void buildDocActionMessage(ArrayList<String> docActionValues,
 			ArrayList<String> docActionNames, String reversedStatusName, Timestamp updated,
 			MUser user, String fromStatus, String toStatus, int windowNo) {
@@ -385,6 +417,12 @@ public class RecordTimeLinePanel extends Vlayout {
 		buildActivityMessage(updated, sb.toString(), user);
 	}
 
+	/**
+	 * Add message from change log or document action
+	 * @param activityDate
+	 * @param activityMessage
+	 * @param user
+	 */
 	private void buildActivityMessage(Timestamp activityDate, String activityMessage, MUser user) {		
 		StringBuilder sb = new StringBuilder();		
 		sb.append("<div class=\"help-content\">\n");		

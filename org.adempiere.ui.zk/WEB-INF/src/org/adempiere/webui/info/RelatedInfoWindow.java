@@ -83,10 +83,12 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 	private ColumnInfo[] columnsLayout;
 
 	/**
+	 * @param info
 	 * @param infoWindow
 	 * @param embeddedPaging
+	 * @param infoSqlCount
 	 * @param layoutEmbedded 
-	 *
+	 * @param editorMap
 	 */
 	public RelatedInfoWindow(EmbedWinInfo info, InfoWindow infoWindow, Paging embeddedPaging, String infoSqlCount, ColumnInfo[] layoutEmbedded, Map<String, WEditor> editorMap) {
 		this.editorMap = editorMap;
@@ -98,6 +100,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 		columnsLayout = layoutEmbedded;
 	}
 
+	/**
+	 * @param id
+	 */
 	public void refresh(Object id) {
 		parentId = id;
 
@@ -225,26 +230,32 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 	}
 
 	/**
-	 * @return the cacheStart
+	 * @return the cacheStart index
 	 */
 	protected int getCacheStart() {
 		return cacheStart;
 	}
 
 	/**
-	 * @param cacheStart the cacheStart to set
+	 * @param cacheStart set cacheStart index
 	 */
 	private void setCacheStart(int cacheStart) {
 		this.cacheStart = cacheStart;
 	}
 
 	/**
-	 * @return the cacheEnd
+	 * @return the cacheEnd index
 	 */
 	protected int getCacheEnd() {
 		return cacheEnd;
 	}
 
+	/**
+	 * @param fromIndex
+	 * @param toIndex
+	 * @param line
+	 * @return sublist from line
+	 */
 	private List<Object> getSubList (int fromIndex, int toIndex, List<Object> line){
     	if (toIndex > line.size())
     		toIndex = line.size();
@@ -260,17 +271,17 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
     }
 
 	/**
-     * when calculator value at bound, sometime value is overflow by data type
-     * this function calculator at high type for avoid it
+     * When calculate value at bound, sometime value is overflow by data type. <br/>
+     * This function calculate using higher type to workaround it.
      * @param overValue
-     * @return
+     * @return int value
      */
     private int getOverIntValue (long overValue){
     	return getOverIntValue (overValue, 0);
     }
 
     /**
-     * see {@link #getOverIntValue(long)}. when value over max_value set it near max_value.
+     * see {@link #getOverIntValue(long)}. when value over max_value set it to nearest max_value.
      * @param overValue
      * @param extra
      * @return
@@ -282,6 +293,12 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
     	return (int)overValue;
     }
 
+    /**
+     * Loading of data from DB
+     * @param start
+     * @param end
+     * @return list of values read
+     */
 	private List<Object> readLine(int start, int end) {
 		int pageSize = parentInfoWindow.getPageSize();
 
@@ -572,9 +589,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 	}
 
 	/**
-     * after query from database, process validate.
-     * if end page include in cache, process calculate total record
-     * if current page is out of page (no record is query) process query count to detect end page
+     * After query from database, validate paging. <br/>
+     * If end page included in cache, calculate record total. <br/>
+     * If current page is out of cache (no record is query), process query count to detect end page
      */
     protected void validateEndPage (){
     	if (paging == null || info.getInfowin().isLoadPageNum())

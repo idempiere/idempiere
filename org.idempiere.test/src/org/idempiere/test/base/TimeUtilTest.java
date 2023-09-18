@@ -265,8 +265,10 @@ public class TimeUtilTest extends AbstractTestCase {
 		//get business days
 		to = expected;
 		assertEquals(2, TimeUtil.getBusinessDaysBetween(from, to, getAD_Client_ID(), getTrxName()));
+		assertEquals(3, TimeUtil.getBusinessDaysBetween(from, to, getAD_Client_ID(), true, getTrxName()));
 		nbd.deleteEx(true);
 		assertEquals(3, TimeUtil.getBusinessDaysBetween(from, to, getAD_Client_ID(), getTrxName()));
+		assertEquals(4, TimeUtil.getBusinessDaysBetween(from, to, getAD_Client_ID(), true, getTrxName()));
 	}
 }
 

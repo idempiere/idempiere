@@ -32,6 +32,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -46,7 +47,7 @@ public class IDFinder {
 
 	private static final CLogger log = CLogger.getCLogger(IDFinder.class);
 
-	private static Map<String, Integer>idCache = new ConcurrentHashMap<String, Integer>(); 
+	private static Map<String, Object>idCache = new ConcurrentHashMap<String, Object>(); 
 
 	/**
 	 * Get ID from column value for a table.
@@ -58,11 +59,9 @@ public class IDFinder {
 	 * @param trxName
 	 * @return
 	 */
-	public static int findIdByColumn (String tableName, String columnName, Object value, int AD_Client_ID, boolean ignorecase, String trxName) {
+	public static Object findIdByColumn (String tableName, String columnName, Object value, int AD_Client_ID, boolean ignorecase, String trxName) {
 		if (value == null)
-			return 0;
-
-		int id = -1;
+			return null;
 
 		//construct cache key
 		StringBuilder key = new StringBuilder();
@@ -77,9 +76,18 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
+		Object id = null;
+
+		MTable table = MTable.get(Env.getCtx(), tableName, trxName);
+		String keycol;
+		if (table.isUUIDKeyTable())
+			keycol = PO.getUUIDColumnName(tableName);
+		else
+			keycol = tableName + "_ID";
+
 		StringBuilder sqlB = new StringBuilder ("SELECT ")
-		 	.append(tableName)
-		 	.append("_ID FROM ")
+		 	.append(keycol)
+		 	.append(" FROM ")
 		 	.append(tableName)
 		 	.append(" WHERE ")
 		 	.append(" AD_Client_ID IN (0, ?) AND ");
@@ -124,11 +132,9 @@ public class IDFinder {
 			columns = new String[]{columnName};
 		}
 
-		sqlB.append(" Order By AD_Client_ID Desc, ")
-			.append(tableName)
-			.append("_ID");
+		sqlB.append(" ORDER BY AD_Client_ID DESC, ")
+			.append(keycol);
 
-		MTable table = MTable.get(Env.getCtx(), tableName);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -159,8 +165,12 @@ public class IDFinder {
 			}
 
 			rs = pstmt.executeQuery();
-			if (rs.next())
-				id = rs.getInt(1);
+			if (rs.next()) {
+				if (table.isUUIDKeyTable())
+					id = rs.getString(1);
+				else
+					id = rs.getInt(1);
+			}
 		}
 		catch (Exception e) {
 			throw new DatabaseAccessException(e);
@@ -169,13 +179,13 @@ public class IDFinder {
 		}
 
 		//update cache
-		if (id >= 0)
+		if (id != null)
 			idCache.put(key.toString(), id);
 
 		return id;
 	}
 
-	public static int findIdByColumn(String tableName, String columnName, Object value, int clientId, String trxName) {
+	public static Object findIdByColumn(String tableName, String columnName, Object value, int clientId, String trxName) {
 		return findIdByColumn(tableName, columnName, value, clientId, false, trxName);
 	}
 	
@@ -188,8 +198,7 @@ public class IDFinder {
 	 * @param nameMaster
 	 * @param trxName
 	 */
-	public static int findIdByNameAndParentName (String tableName, String name, String tableNameMaster, String nameMaster, int AD_Client_ID, String trxName) {
-		int id = 0;
+	public static Object findIdByNameAndParentName (String tableName, String name, String tableNameMaster, String nameMaster, int AD_Client_ID, String trxName) {
 		//construct cache key
 		StringBuilder key = new StringBuilder();
 		key.append(tableName)
@@ -204,22 +213,35 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
+		Object id = null;
+		MTable tableMaster = MTable.get(Env.getCtx(), tableNameMaster, trxName);
+		String keycolMaster;
+		if (tableMaster.isUUIDKeyTable())
+			keycolMaster = PO.getUUIDColumnName(tableNameMaster);
+		else
+			keycolMaster = tableNameMaster + "_ID";
 		StringBuilder parentSql = new StringBuilder("SELECT ")
-				.append(tableNameMaster)
-				.append("_ID FROM ")
+				.append(keycolMaster)
+				.append(" FROM ")
 				.append(tableNameMaster)
 				.append(" WHERE Name = ? AND AD_Client_ID IN (0, ?) ")
 				.append("ORDER BY AD_Client_ID  Desc");
-		int parentId = DB.getSQLValue(trxName, parentSql.toString(), name, Env.getAD_Client_ID(Env.getCtx()));
+		Object parentId = DB.getSQLValueEx(trxName, parentSql.toString(), name, Env.getAD_Client_ID(Env.getCtx()));
 
-		if (parentId > 0) {
+		if (parentId != null) {
+			MTable table = MTable.get(Env.getCtx(), tableName, trxName);
+			String keycol;
+			if (table.isUUIDKeyTable())
+				keycol = PO.getUUIDColumnName(tableName);
+			else
+				keycol = tableNameMaster + "_ID";
 			StringBuilder sqlB = new StringBuilder ("SELECT ")
-				.append(tableName)
-				.append("_ID FROM ")
+				.append(keycol)
+				.append(" FROM ")
 				.append(tableName)
 				.append(" WHERE Name = ? AND ")
-				.append(tableNameMaster)
-				.append("_ID = ?");
+				.append(keycol)
+				.append(" = ?");
 
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -227,7 +249,10 @@ public class IDFinder {
 				pstmt = DB.prepareStatement(sqlB.toString(), trxName);
 				pstmt.setString(1, name);
 				pstmt.setString(2, nameMaster);
-				pstmt.setInt(3, parentId);
+				if (table.isUUIDKeyTable())
+					pstmt.setString(3, (String)parentId);
+				else
+					pstmt.setInt(3, ((Number)parentId).intValue());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					id = rs.getInt(1);
@@ -239,7 +264,7 @@ public class IDFinder {
 		}
 
 		//update cache
-		if (id > 0)
+		if (id != null)
 			idCache.put(key.toString(), id);
 
 		return id;
@@ -257,7 +282,7 @@ public class IDFinder {
 	 * @param trxName
 	 * @return
 	 */
-	public static int findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, int masterID, int AD_Client_ID, String trxName) {
+	public static Object findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, Object masterID, int AD_Client_ID, String trxName) {
 		return findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, AD_Client_ID, false, trxName);
 	}
 	
@@ -271,29 +296,41 @@ public class IDFinder {
      * @param trxName
      */
 
-	public static int findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, int masterID, int AD_Client_ID, boolean ignoreCase, String trxName) {
-		int id = 0;
-
+	public static Object findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, Object masterID, int AD_Client_ID, boolean ignoreCase, String trxName) {
 		//check cache
 		String key = tableName + "." + columnName + "=" + name + tableNameMaster + "=" + masterID;
 
 		if (idCache.containsKey(key))
 			return idCache.get(key);
 
+		Object id = null;
+
+		MTable table = MTable.get(Env.getCtx(), tableName, trxName);
+		String keycol;
+		if (table.isUUIDKeyTable())
+			keycol = PO.getUUIDColumnName(tableName);
+		else
+			keycol = tableName + "_ID";
+		MTable tableMaster = MTable.get(Env.getCtx(), tableNameMaster, trxName);
+		String keycolMaster;
+		if (tableMaster.isUUIDKeyTable())
+			keycolMaster = PO.getUUIDColumnName(tableNameMaster);
+		else
+			keycolMaster = tableNameMaster + "_ID";
 		StringBuilder sqlB = new StringBuilder ("SELECT ")
-			.append(tableName)
-			.append("_ID FROM ")
+			.append(keycol)
+			.append(" FROM ")
 			.append(tableName)
 			.append(" WHERE ");
 		if (ignoreCase) {
-			sqlB.append("Upper(")
+			sqlB.append("UPPER(")
 				.append(columnName)
-				.append(") = ? and ");
+				.append(") = ? AND ");
 		} else {
 			sqlB.append(columnName)
-				.append(" = ? and ");
+				.append(" = ? AND ");
 		}
-		sqlB.append(tableNameMaster+"_ID = ? AND AD_Client_ID IN (0, ?) ")
+		sqlB.append(keycolMaster+" = ? AND AD_Client_ID IN (0, ?) ")
 			.append("ORDER BY AD_Client_ID Desc ");
 
 		if (log.isLoggable(Level.INFO)) log.info(sqlB.toString());
@@ -308,12 +345,15 @@ public class IDFinder {
 			} else {
 				pstmt.setString(1, name);
 			}
-			pstmt.setInt(2, masterID);
+			if (tableMaster.isUUIDKeyTable())
+				pstmt.setString(2, (String)masterID);
+			else
+				pstmt.setInt(2, ((Number)masterID).intValue());
 			pstmt.setInt(3, AD_Client_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				id = rs.getInt(1);
+				id = rs.getObject(1);
 			}
 		}
 		catch (Exception e) {
@@ -323,7 +363,7 @@ public class IDFinder {
 		}
 
 		//update cache
-		if (id > 0)
+		if (id != null)
 			idCache.put(key, id);
 
 		return id;
@@ -338,9 +378,7 @@ public class IDFinder {
 	 * @param masterID
 	 * @param trxName
 	 */
-	public static int findIdByNameAndParentId (String tableName, String name, String tableNameMaster, int masterID, int AD_Client_ID, String trxName) {
-		int id = 0;
-
+	public static Object findIdByNameAndParentId (String tableName, String name, String tableNameMaster, Object masterID, int AD_Client_ID, String trxName) {
 		//construct cache key
 		StringBuilder key = new StringBuilder();
 		key.append(tableName)
@@ -357,25 +395,41 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
+		Object id = null;
+		MTable table = MTable.get(Env.getCtx(), tableName, trxName);
+		String keycol;
+		if (table.isUUIDKeyTable())
+			keycol = PO.getUUIDColumnName(tableName);
+		else
+			keycol = tableName + "_ID";
+		MTable tableMaster = MTable.get(Env.getCtx(), tableNameMaster, trxName);
+		String keycolMaster;
+		if (tableMaster.isUUIDKeyTable())
+			keycolMaster = PO.getUUIDColumnName(tableNameMaster);
+		else
+			keycolMaster = tableNameMaster + "_ID";
 		StringBuilder sqlB = new StringBuilder ("SELECT ")
-			.append(tableName)
-			.append("_ID FROM ")
+			.append(keycol)
+			.append(" FROM ")
 			.append(tableName)
 			.append(" WHERE Name=? AND ")
-			.append(tableNameMaster)
-			.append("_ID=? AND AD_Client_ID IN (0, ?) ")
-			.append("ORDER BY AD_Client_ID Desc");
+			.append(keycolMaster)
+			.append("=? AND AD_Client_ID IN (0, ?) ")
+			.append("ORDER BY AD_Client_ID DESC");
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sqlB.toString(), trxName);
 			pstmt.setString(1, name);
-			pstmt.setInt(2, masterID);
+			if (tableMaster.isUUIDKeyTable())
+				pstmt.setString(2, (String)masterID);
+			else
+				pstmt.setInt(2, ((Number)masterID).intValue());
 			pstmt.setInt(3, AD_Client_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
-				id = rs.getInt(1);
+				id = rs.getObject(1);
 		}
 		catch (Exception e) {
 			throw new DatabaseAccessException(e);
@@ -384,7 +438,7 @@ public class IDFinder {
 		}
 
 		//update cache
-		if (id > 0)
+		if (id != null)
 			idCache.put(key.toString(), id);
 
 		return id;
@@ -398,9 +452,7 @@ public class IDFinder {
 	 * @param AD_Client_ID
 	 * @param trxName
 	 */
-	public static int findIdByName (String tableName, String name, int AD_Client_ID, String trxName) {
-		int id = 0;
-
+	public static Object findIdByName (String tableName, String name, int AD_Client_ID, String trxName) {
 		//construct cache key
 		StringBuilder key = new StringBuilder();
 		key.append(tableName)
@@ -413,13 +465,19 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
+		Object id = null;
+		MTable table = MTable.get(Env.getCtx(), tableName, trxName);
+		String keycol;
+		if (table.isUUIDKeyTable())
+			keycol = PO.getUUIDColumnName(tableName);
+		else
+			keycol = tableName + "_ID";
+
 		StringBuilder sql = new StringBuilder("SELECT ")
+			.append(keycol)
+			.append(" FROM ")
 			.append(tableName)
-			.append("_ID ")
-			.append("FROM ")
-			.append(tableName)
-			.append(" ")
-			.append("WHERE Name=? ")
+			.append(" WHERE Name=? ")
 			.append(" AND AD_Client_ID IN (0, ?) ")
 			.append(" ORDER BY AD_Client_ID Desc");
 
@@ -431,7 +489,7 @@ public class IDFinder {
 			pstmt.setInt(2, AD_Client_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
-				id = rs.getInt(1);
+				id = rs.getObject(1);
 		}
 		catch (Exception e) {
 			throw new DatabaseAccessException(e);
@@ -440,7 +498,7 @@ public class IDFinder {
 		}
 
 		//update cache
-		if (id > 0)
+		if (id != null)
 			idCache.put(key.toString(), id);
 
 		return id;

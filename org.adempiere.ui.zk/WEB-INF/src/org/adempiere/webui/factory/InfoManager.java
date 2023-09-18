@@ -27,7 +27,7 @@ import org.compiere.util.CCache;
 import org.osgi.framework.Constants;
 
 /**
- *
+ * Static methods for instantiation of {@link InfoPanel}/{@link InfoWindow}
  * @author hengsin
  *
  */

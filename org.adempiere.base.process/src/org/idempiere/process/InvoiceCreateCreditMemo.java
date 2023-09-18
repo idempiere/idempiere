@@ -161,6 +161,7 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 			rLine.setPriceLimit(oLine.getPriceLimit());
 			rLine.setPriceEntered(oLine.getPriceEntered());
 			rLine.setC_UOM_ID(oLine.getC_UOM_ID());
+			rLine.setM_AttributeSetInstance_ID(oLine.getM_AttributeSetInstance_ID());
 			if (!rLine.save(get_TrxName())) {
 				throw new AdempiereException("Could not create credit memo line");
 			}

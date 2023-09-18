@@ -26,12 +26,7 @@
 								<artifactItem>
 									<groupId>com.hazelcast</groupId>
 									<artifactId>hazelcast</artifactId>
-									<version>3.12.12</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.hazelcast</groupId>
-									<artifactId>hazelcast-aws</artifactId>
-									<version>2.4</version>
+									<version>5.3.1</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

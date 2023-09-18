@@ -26,8 +26,10 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -47,14 +49,14 @@ import org.zkoss.zul.Iframe;
 
 
 /**
- * 
+ * Dialog to view, upload new, remove or download media 
  * @author Low Heng Sin
  *
  */
 public class WMediaDialog extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -329919930778203892L;
 
@@ -83,13 +85,14 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	private Hbox confirmPanel = new Hbox();
 
 	private boolean m_cancel;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 *	Constructor.
 	 *  @param title
 	 *  @param data
-	 */
-	
+	 */	
 	public WMediaDialog(String title, Object data)
 	{
 		super();
@@ -108,7 +111,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	} // WMediaDialog
 
 	/**
-	 *	Static setup.
+	 *	Layout dialog.
 	 *  <pre>
 	 *  - northPanel
 	 *      - toolBar
@@ -123,7 +126,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	 *  @throws Exception
 	 */
 	
-	void staticInit() throws Exception
+	protected void staticInit() throws Exception
 	{
 		if (!ThemeManager.isUseCSSForWindowSize())
 		{
@@ -142,8 +145,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		this.appendChild(mainPanel);
 		ZKUpdateUtil.setHeight(mainPanel, "100%");
 		ZKUpdateUtil.setWidth(mainPanel, "100%");
-		
-		
+				
 		North northPanel = new North();
 		northPanel.setCollapsible(false);
 		northPanel.setSplittable(false);
@@ -155,7 +157,6 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		mainPanel.appendChild(northPanel);
 		northPanel.appendChild(toolBar);
 		
-
 		bSave.setEnabled(false);
 		if (ThemeManager.isUseFontIconForImage())
 			bSave.setIconSclass("z-icon-Export");
@@ -216,14 +217,12 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	
 	private void  afterPageAttached() {
 		ZKUpdateUtil.setCSSHeight(this);
-		ZKUpdateUtil.setCSSWidth(this);
-		
+		ZKUpdateUtil.setCSSWidth(this);		
 	}
 
 	/**
-	 * 	Dispose
-	 */
-	
+	 * Close dialog
+	 */	
 	public void dispose ()
 	{
 		preview = null;
@@ -231,10 +230,8 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	} // dispose
 	
 	/**
-	 *  Display gif or jpg in gifPanel
-	 * 	@param index index
-	 */
-	
+	 *  Display media
+	 */	
 	private void displayData ()
 	{
 		//	Reset UI		
@@ -264,6 +261,11 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		}		
 	}   //  displayData
 
+	/**
+	 * Create media from {@link #m_data}
+	 * @return media
+	 * @throws SQLException
+	 */
 	private AMedia createMedia() throws SQLException {
 		AMedia media;
 		String contentType = null;
@@ -299,29 +301,25 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	}
 	
 	/**
-	 *	Action Listener
+	 *	Handle event
 	 *  @param e event
 	 */
-	
+	@Override
 	public void onEvent(Event e)
 	{
-		//	log.config(e.getActionCommand());
-		//	Save and Close
-		
+		//	Close		
 		if (e.getTarget() == bOk)
 		{
 			dispose();
 		}
 	
-		//	Cancel
-		
+		//	Cancel		
 		else if (e.getTarget() == bCancel)
 		{
 			onCancel();
 		}
 		
-		//	clear data
-		
+		//	Clear data		
 		else if (e.getTarget() == bDelete)
 		{
 			m_data = null;
@@ -329,12 +327,13 @@ public class WMediaDialog extends Window implements EventListener<Event>
 			displayData();
 		}
 		
-		//	Open Attachment
-		
+		//	Download		
 		else if (e.getTarget() == bSave)
 		{
 			save();
 		}
+		
+		// Upload new media
 		else if (e instanceof UploadEvent)
 		{
 			UploadEvent ue = (UploadEvent) e;
@@ -342,17 +341,29 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		}
 	}	//	onEvent
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_cancel = true;
 		dispose();
 	}
 	
+	/**
+	 * Process uploaded media
+	 * @param media
+	 */
 	private void processUploadMedia(Media media) {
 		if (media == null)
 			return;
 	
-		String fileName = media.getName(); 
-		log.config(fileName);
+		String fileName = media.getName();
+		if (log.isLoggable(Level.CONFIG))
+			log.config(fileName);
 		//update		
 		m_change = true;
 		m_data = media.getByteData();
@@ -360,9 +371,8 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	}
 
 	/**
-	 *	download
-	 */
-	
+	 * download media
+	 */	
 	private void save()
 	{
 		if (m_data == null)
@@ -377,16 +387,25 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "Failed to export content.", e);
 		}
-	}	//	saveAttachmentToFile
+	}
 	
+	/**
+	 * @return true if cancel by user
+	 */
 	public boolean isCancel() {
 		return m_cancel;
 	}
 	
+	/**
+	 * @return true if there's changes
+	 */
 	public boolean isChange() {
 		return m_change;
 	}
 	
+	/**
+	 * @return data
+	 */
 	public Object getData() {
 		return m_data;
 	}

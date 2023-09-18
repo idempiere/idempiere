@@ -31,12 +31,12 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 public class MUserPreference extends X_AD_UserPreference {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -5816348717625872665L;
+	private static final long serialVersionUID = 4313636387666521703L;
 
-    /**
+	/**
     * UUID based Constructor
     * @param ctx  Context
     * @param AD_UserPreference_UU  UUID key
@@ -55,20 +55,6 @@ public class MUserPreference extends X_AD_UserPreference {
 	{
 		super(ctx, rs, trxName);
 	} //MUserPreference
-
-	/** Set User/Contact.
-	    @param AD_User_ID
-	    User within the system - Internal or Business Partner Contact
-	    Overridden to allow saving System record (zero ID)
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
 
 	private static MUserPreference createUserPreferences(int AD_User_ID, int AD_Client_ID, String trxName){
 		MUserPreference preferences = new MUserPreference(Env.getCtx(), 0, trxName);

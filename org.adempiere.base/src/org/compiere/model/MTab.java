@@ -232,6 +232,11 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (! newRecord && is_ValueChanged(COLUMNNAME_AD_Table_ID) && getFields(false, get_TrxName()).length > 0) {
+			log.saveError("Error", "Cannot change table if there are related fields");
+			return false;
+		}
+
 		if (isReadOnly() && isInsertRecord())
 			setIsInsertRecord(false);
 		if (is_new() || is_ValueChanged(COLUMNNAME_AD_TabType))

@@ -80,7 +80,7 @@ import org.zkoss.zk.ui.util.Clients;
 public class LoginWindow extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8570332386555237381L;
 	protected static final CLogger log = CLogger.getCLogger(LoginWindow.class);
@@ -97,6 +97,10 @@ public class LoginWindow extends Window implements EventListener<Event>
 
     public LoginWindow() {}
 
+    /**
+     * Layout window
+     * @param app
+     */
     public void init(IWebClient app)
     {
     	this.ctx = Env.getCtx();
@@ -111,6 +115,9 @@ public class LoginWindow extends Window implements EventListener<Event>
         setWidgetListener("onOK", "zAu.cmd0.showBusy(null)");
     }
 
+    /**
+     * Create login panel
+     */
 	private void initComponents()
 	{
 		Object token = getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
@@ -179,10 +186,19 @@ public class LoginWindow extends Window implements EventListener<Event>
 		}
 	}
 
+    /**
+     * Create login panel
+     */
 	protected void createLoginPanel() {
 		pnlLogin = new LoginPanel(ctx, this);
 	}
 
+	/**
+	 * After verification of user name and password. 
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 */
 	public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
 	{
 		loginOk(userName, show, clientsKNPairs, false);
@@ -222,6 +238,14 @@ public class LoginWindow extends Window implements EventListener<Event>
     	}
 	}
 
+    /**
+     * Show role selection panel
+     * @param userName
+     * @param show
+     * @param clientsKNPairs
+     * @param isClientDefined
+     * @param isMFAValidated
+     */
 	public void showRolePanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined, boolean isMFAValidated) {
         this.getChildren().clear();
         if (pnlRole.show()) {
@@ -237,6 +261,13 @@ public class LoginWindow extends Window implements EventListener<Event>
         }
 	}
     
+	/**
+	 * Show change password panel
+	 * @param userName
+	 * @param userPassword
+	 * @param show
+	 * @param clientsKNPairs
+	 */
     public void changePassword(String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs)
     {
     	Clients.clearBusy();
@@ -245,11 +276,23 @@ public class LoginWindow extends Window implements EventListener<Event>
         this.appendChild(pnlChangePassword);
     }
 
+    /**
+     * Create change password panel
+     * @param userName
+     * @param userPassword
+     * @param show
+     * @param clientsKNPairs
+     */
 	protected void createChangePasswordPanel(String userName,
 			String userPassword, boolean show, KeyNamePair[] clientsKNPairs) {
 		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
 	}
     
+	/**
+	 * Show reset password panel
+	 * @param userName
+	 * @param noSecurityQuestion
+	 */
     public void resetPassword(String userName, boolean noSecurityQuestion)
     {
     	createResetPasswordPanel(userName, noSecurityQuestion);
@@ -257,16 +300,37 @@ public class LoginWindow extends Window implements EventListener<Event>
         this.appendChild(pnlResetPassword);
     }
 
+    /**
+     * Create reset password panel
+     * @param userName
+     * @param noSecurityQuestion
+     */
 	protected void createResetPasswordPanel(String userName,
 			boolean noSecurityQuestion) {
 		pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
 	}
 
+	/**
+	 * Show MFA panel
+	 * @param orgKNPair
+	 * @param isClientDefined
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 */
 	public void validateMFA(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
     	Clients.clearBusy();
 		createValidateMFAPanel(orgKNPair, isClientDefined, userName, show, clientsKNPairs);
 	}
 
+	/**
+	 * Create and show MFA panel
+	 * @param orgKNPair
+	 * @param isClientDefined
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 */
 	private void createValidateMFAPanel(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
 		if (pnlValidateMFA == null)
 			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair, isClientDefined, userName, show, clientsKNPairs);
@@ -276,6 +340,12 @@ public class LoginWindow extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Complete login process
+	 * @param login
+	 * @param m_orgKNPair
+	 * @param component
+	 */
 	public void loginCompleted(Login login, KeyNamePair m_orgKNPair, Window component)
     {
 		Session currSess = Executions.getCurrent().getDesktop().getSession();
@@ -314,13 +384,17 @@ public class LoginWindow extends Window implements EventListener<Event>
         app.loginCompleted();
     }
 
+	/**
+	 * Login cancel by user. Show login panel again.
+	 */
     public void loginCancelled()
     {
         createLoginPanel();
         this.getChildren().clear();
         this.appendChild(pnlLogin);
     }
-
+    
+    @Override
     public void onEvent(Event event)
     {
        // check that 'ENTER' key is pressed

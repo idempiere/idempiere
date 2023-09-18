@@ -23,7 +23,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zul.Borderlayout;
 
 /**
- * 
+ * Abstract base class for UI block controller
  * @author Low Heng Sin
  *
  */
@@ -33,6 +33,10 @@ public abstract class AbstractUIPart implements UIPart, ISupportMask {
 	
 	protected ShowMaskWrapper showMaskWrapper = new ShowMaskWrapper(this);
 	
+	/**
+	 * Create UI block hosted by parent
+	 * @param parent Component or Page
+	 */
 	public Component createPart(Object parent) {
 		if (parent == null)
 			throw new IllegalArgumentException("Null parent.");
@@ -50,6 +54,11 @@ public abstract class AbstractUIPart implements UIPart, ISupportMask {
 		return doCreatePart(component);
 	}
 	
+	/**
+	 * Sub class override this to create root UI block or child UI block
+	 * @param parent parent Component or null for root UI block
+	 * @return Component
+	 */
 	protected abstract Component doCreatePart(Component parent);
 
 	/**

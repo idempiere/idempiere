@@ -58,7 +58,7 @@ public class ViewColumnElementHandler extends AbstractElementHandler {
 					parentId = getParentId(element, MViewComponent.Table_Name);
 				} else {
 					Element pfElement = element.properties.get(MViewColumn.COLUMNNAME_AD_ViewComponent_ID);
-					parentId = ReferenceUtils.resolveReference(ctx.ctx, pfElement, getTrxName(ctx));
+					parentId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, pfElement, getTrxName(ctx));
 				}
 				if (parentId <= 0) {
 					element.defer = true;

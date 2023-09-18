@@ -55,6 +55,7 @@ import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -74,9 +75,12 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Image;
 
+/**
+ * Multi factor authentication panel
+ */
 public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4777197666886479162L;
 
@@ -112,6 +116,15 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
 
+	/**
+	 * @param ctx
+	 * @param loginWindow
+	 * @param orgKNPair
+	 * @param isClientDefined
+	 * @param userName
+	 * @param showRolePanel
+	 * @param clientsKNPairs
+	 */
 	public ValidateMFAPanel(Properties ctx, LoginWindow loginWindow, KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs) {
 		this.wndLogin = loginWindow;
 		m_ctx = ctx;
@@ -145,6 +158,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 	}
 
+	/**
+	 * Layout panel
+	 */
 	private void init() {
 		Div div = new Div();
 		div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
@@ -243,6 +259,10 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		this.appendChild(div);
 	}
 
+	/**
+	 * Create components
+	 * @param hasCookie
+	 */
 	private void initComponents(boolean hasCookie) {
 		lblMFAMechanism = new Label();
 		lblMFAMechanism.setId("lblMFAMechanism");
@@ -267,9 +287,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				m_autoCall = true;
 			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
-			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-			if (lstMFAMechanism.getFellowIfAny(id) == null)
-				ci.setId(id);
+    		if (SystemProperties.isZkUnitTest()) {
+    			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+    			if (lstMFAMechanism.getFellowIfAny(id) == null)
+    				ci.setId(id);
+    		}
 			lstMFAMechanism.appendChild(ci);
 		}
 		lstMFAMechanism.setSelectedIndex(0);
@@ -295,6 +317,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		txtValidationCode.setDisabled(true);
 	}
 
+	@Override
 	public void onEvent(Event event) {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			validateMFAComplete(true);
@@ -303,6 +326,10 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		}
 	}
 
+	/**
+	 * Validate completion of multi factor authentication
+	 * @param required
+	 */
 	public void validateMFAComplete(boolean required) {
 		Clients.clearBusy();
 
@@ -373,7 +400,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				PO.clearCrossTenantSafe();
 			}
 		}
-		Env.setContext(m_ctx, "#MFA_Registration_ID", registrationId);
+		Env.setContext(m_ctx, Env.MFA_Registration_ID, registrationId);
 
 		if (m_isClientDefined) {
 			wndLogin.showRolePanel(m_userName, m_showRolePanel, m_clientsKNPairs, m_isClientDefined, true);
@@ -423,6 +450,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		return null;
 	}
 
+	/**
+	 * @return true if panel is shown to user
+	 */
 	public boolean show() {
 		return m_showMFAPanel;
 	}

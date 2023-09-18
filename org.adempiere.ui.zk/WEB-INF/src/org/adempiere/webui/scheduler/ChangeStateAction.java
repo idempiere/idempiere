@@ -54,6 +54,7 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
+ * Toolbar action to modify state of scheduler (AD_Scheduler) process.
  * @author hengsin
  *
  */

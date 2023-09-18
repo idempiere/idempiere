@@ -19,9 +19,8 @@ import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 
 /**
- *
+ * Factory interface for {@link InfoPanel} ({@link InfoWindow})
  * @author hengsin
- *
  */
 public interface IInfoFactory {
 

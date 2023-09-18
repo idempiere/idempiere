@@ -97,9 +97,10 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			categoryAcct.saveEx();
 		}
 		
-		try {
-			int mulchId = DictionaryIDs.M_Product.MULCH.id;  // Mulch product
-			MProduct mulch = new MProduct(Env.getCtx(), mulchId, getTrxName());
+		int mulchId = DictionaryIDs.M_Product.MULCH.id;  // Mulch product
+		MProduct mulch = new MProduct(Env.getCtx(), mulchId, null);
+		int mulchCategoryId = mulch.getM_Product_Category_ID();
+		try {						
 			mulch.setM_Product_Category_ID(category.get_ID());
 			mulch.saveEx();
 			
@@ -257,6 +258,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			}
 		} finally {
 			getTrx().rollback();
+			mulch.setM_Product_Category_ID(mulchCategoryId);
+			mulch.saveEx();
 			category.deleteEx(true);
 		}
 	}

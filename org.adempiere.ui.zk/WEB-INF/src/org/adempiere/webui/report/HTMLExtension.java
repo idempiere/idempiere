@@ -59,6 +59,7 @@ public class HTMLExtension implements IHTMLExtension {
 	 * @param contextPath
 	 * @param classPrefix
 	 * @param componentId
+	 * @param processID
 	 */
 	public HTMLExtension(String contextPath, String classPrefix, String componentId, String processID) {
 

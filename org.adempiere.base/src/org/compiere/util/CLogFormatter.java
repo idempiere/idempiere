@@ -25,6 +25,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.compiere.model.SystemProperties;
+
 
 /**
  *	idempiere Log Formatter
@@ -329,14 +331,14 @@ public class CLogFormatter extends Formatter
 		String prefix = null;
 		try
 		{
-			prefix = System.getProperty("org.idempiere.FileLogPrefix");
+			prefix = SystemProperties.getFileLogPrefix();
 			if (!Util.isEmpty(prefix))
 				return Env.parseContext(Env.getCtx(), 0, prefix, false);
 		}
 		catch (Exception ex)
 		{
 			System.out.println("Parsing error in org.idempiere.FileLogPrefix - setting back to empty from " + prefix);
-			System.setProperty("org.idempiere.FileLogPrefix", "");
+			SystemProperties.setFileLogPrefix("");
 		}
 		return "";
 	}

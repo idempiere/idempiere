@@ -21,7 +21,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 
 /**
- * 
+ * Default {@link IDashboardGadgetFactory} implementation for ZUL based dashboard gadget
  * @author Antonio Cañaveral
  * @author hengsin
  *

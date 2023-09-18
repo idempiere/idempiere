@@ -15,7 +15,11 @@ on:
     - cron: '0 7 * * 4'
 
 env:
-    java: 11
+    java: 17
+    # use temurin because of this one https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Hosted-Tool-Cache
+    java_distribution: 'temurin'
+    # to build cache key for maven per branch
+    branch_name: ${{ github.ref_name }}
 
 jobs:
   analyze_java_sonar:
@@ -29,25 +33,35 @@ jobs:
 
     steps:
 
-    # Install Java 14
+    # Install Java
     - name: Setup Java
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
         java-version: '${{ env.java }}'
+        distribution: ${{ env.java_distribution }}
 
     # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         # fetch all commit so sornar can know who change a line, it's resolved Warning:  Shallow clone detected, no blame information will be provided. You can convert to non-shallow with 'git fetch --unshallow'.
         fetch-depth: 0
 
-    - name: Cache material
-      uses: actions/cache@v2
+    - name: Cache sonar material restore
+      id: cache-sonar-material-restore
+      uses: actions/cache/restore@v3
       with:
         path: |
           ~/.sonar/cache
-        key: ${{ runner.os }}-sonar-master
+        key: ${{ runner.os }}-sonar-${{ env.branch_name }}
+
+    - name: Cache maven material restore
+      id: cache-maven-material-restore
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          ~/.m2
+        key: ${{ runner.os }}-maven-${{ env.branch_name }}
 
     # run sonar on master only because sonar for PR come from other repository isn't support at moment (already on develop) 
     # https://stackoverflow.com/a/39720346
@@ -64,6 +78,20 @@ jobs:
         codeql="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true"
         mvn -B -V -e $codeql $sonar $sonarProject $sonarExclusions package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
+    - name: Cache sonar material save
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          ~/.sonar/cache
+        key: ${{ steps.cache-sonar-material-restore.outputs.cache-primary-key }}
+
+    - name: Cache maven material save
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          ~/.m2
+        key: ${{ steps.cache-maven-material-restore.outputs.cache-primary-key }}
+
   analyze_java_codeQL:
     name: Analyze java by code QL
     runs-on: ubuntu-latest
@@ -73,26 +101,28 @@ jobs:
 
     steps:
 
-    # Install Java 14
+    # Install Java
     - name: Setup Java
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
         java-version: '${{ env.java }}'
+        distribution: ${{ env.java_distribution }}
 
     # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Cache material
-      uses: actions/cache@v2
+      uses: actions/checkout@v3
+          
+    - name: Cache maven material restore
+      id: cache-maven-material-restore
+      uses: actions/cache/restore@v3
       with:
         path: |
           ~/.m2
-        key: ${{ runner.os }}-maven-master
+        key: ${{ runner.os }}-maven-${{ env.branch_name }}
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         languages: java
         # If you wish to specify custom queries, you can do so here or in a config file.
@@ -101,10 +131,17 @@ jobs:
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+      uses: github/codeql-action/autobuild@v2
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
+
+    - name: Cache maven material save
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          ~/.m2
+        key: ${{ steps.cache-maven-material-restore.outputs.cache-primary-key }}
 
 
   analyze_javascript_codeQL:
@@ -118,12 +155,12 @@ jobs:
 
     # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         languages: javascript
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2

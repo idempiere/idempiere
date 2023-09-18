@@ -51,7 +51,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Style;
 
 /**
- * Controller for open desktop windows. <br/>
+ * Controller for multiple desktop windows. <br/>
  * Implemented using {@link Tabbox}. 
  * @author Low Heng Sin
  */
@@ -86,7 +86,6 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
-     * 
      * @param tb
      * @return WindowContainer
      */
@@ -98,6 +97,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     	return wc;
     }
 
+    @Override
     protected Component doCreatePart(Component parent)
     {
     	if (isDesktopAutoShrinkTabTitle())
@@ -243,6 +243,10 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         return tabbox;
     }
     
+    /**
+     * Handle ON_CTRL_KEY event
+     * @param e
+     */
     private void onCtrlKey(KeyEvent e) {
     	//alt+w
 		if (e.isAltKey() && !e.isCtrlKey() && !e.isShiftKey()) {
@@ -253,26 +257,44 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 		}
 	}
 
+    /**
+     * @return true if home button should be visible
+     */
 	private boolean isShowHomeButton() {
 		return isMobile() || isDesktopShowHomeButton();
 	}
 
+	/**
+	 * @return true to show home button for desktop browser
+	 */
 	private boolean isDesktopShowHomeButton() {
 		return MSysConfig.getBooleanValue(MSysConfig.ZK_DESKTOP_SHOW_HOME_BUTTON, true, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
+	/**
+	 * @return true to show tabs drop down list
+	 */
 	private boolean isShowTabList() {
 		return isMobile() || isDesktopAutoShrinkTabTitle() || isDesktopShowTabList();
 	}
 
+	/**
+	 * @return true to show tabs drop down list for desktop browser
+	 */
 	private boolean isDesktopShowTabList() {
 		return MSysConfig.getBooleanValue(MSysConfig.ZK_DESKTOP_SHOW_TAB_LIST_BUTTON, true, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
+	/**
+	 * @return true to auto shrink title of tab to fit in more tabs without scrolling
+	 */
 	private boolean isDesktopAutoShrinkTabTitle() {
 		return MSysConfig.getBooleanValue(MSysConfig.ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT, false, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
+	/**
+	 * Show tabs drop down list
+	 */
 	private void showTabList() {
 		org.zkoss.zul.Tabs tabs = tabbox.getTabs();
 		List<Component> list = tabs.getChildren();
@@ -304,6 +326,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @param closeable
      * @return
      */
+	@Deprecated(forRemoval = true, since = "11")
     public Tab addWindow(Component comp, String title, boolean closeable){
     	return addWindow(comp, title, closeable, true, null);
     }
@@ -316,6 +339,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @param enable
      * @return
      */
+	@Deprecated(forRemoval = true, since = "11")
     public Tab addWindow(Component comp, String title, boolean closeable, boolean enable) {
     	return addWindow(comp, title, closeable, true, null);
     }
@@ -329,6 +353,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @param enable
      * @return
      */
+    @Deprecated(forRemoval = true, since = "11")
     public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable){
     	return insertBefore(refTab, comp, title, closeable, enable, null);
     }
@@ -342,14 +367,18 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @param enable
      * @return
      */
+    @Deprecated(forRemoval = true,since = "11")
     public Tab insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable){
     	return insertAfter(refTab, comp, title, closeable, enable, null);
     }
+    
     /**
-     * 
+     * Add comp as new tab
      * @param comp
      * @param title
      * @param closeable
+     * @param decorateInfo
+     * @return new tab
      */
     public Tab addWindow(Component comp, String title, boolean closeable, DecorateInfo decorateInfo)
     {
@@ -357,11 +386,13 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
-     * 
+     * Add comp as new tab
      * @param comp
      * @param title
      * @param closeable
      * @param enable
+     * @param decorateInfo
+     * @return new tab
      */
     public Tab addWindow(Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo) 
     {
@@ -369,19 +400,21 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
-     * 
+     * Insert comp as new tab before refTab
      * @param refTab
      * @param comp
      * @param title
      * @param closeable
      * @param enable
+     * @param decorateInfo
+     * @return new tab
      */
     public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo)
     {
         final Menupopup popupClose = new Menupopup();
         final Tab tab = new Tab() {
         	/**
-			 * 
+			 * generated serial id
 			 */
 			private static final long serialVersionUID = 2387473442130217806L;
 
@@ -458,7 +491,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         ZKUpdateUtil.setVflex(tabpanel, "1");
         ZKUpdateUtil.setHflex(tabpanel, "1");
         tabpanel.setSclass("desktop-tabpanel");
-        
+
         if (refTab == null)  
         {
         	tabbox.getTabs().appendChild(tab);
@@ -551,6 +584,13 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         return tab;
     }
 
+    /**
+     * Close tabs from start to end, set focus to focus index parameter.
+     * @param tab
+     * @param start
+     * @param end
+     * @param focus
+     */
     protected void closeTabs(Tab tab, int start, int end, int focus) {
     	List<Component> tabs = tabbox.getTabs().getChildren();
     	if (end == -1) {
@@ -564,6 +604,9 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     	Events.postEvent(ON_AFTER_TAB_CLOSE, tabbox, null);
     }
 
+    /**
+     * Update label and visibility of tabs drop down list button.
+     */
 	private void updateTabListButton() {
 		if (isShowTabList() && tabListBtn != null) {
 			int cnt = tabbox.getTabs().getChildren().size()-1;
@@ -577,12 +620,17 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 		}
 	}
 
+	/**
+	 * Set tab title by windowNo
+	 * @param title
+	 * @param windowNo
+	 */
 	public void setTabTitle(String title, int windowNo) {
 		setTabTitle(title, getTab(windowNo));
 	}
 
 	/**
-	 * IDEMPIERE-2333 / getTab - get the tab based on the windowNo
+	 * IDEMPIERE-2333 / getTab - get tab by windowNo
 	 * @param windowNo
 	 * @return org.zkoss.zul.Tab
 	 */
@@ -606,6 +654,11 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 		return null;
 	}
 
+	/**
+	 * Set title of tab 
+	 * @param title
+	 * @param tab
+	 */
 	public void setTabTitle(String title, org.zkoss.zul.Tab tab) {
 		if (tab == null)
 			return;
@@ -622,17 +675,22 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 		}
 	}
     
+	/**
+	 * @return max length of tab title
+	 */
     private int getMaxTitleLength() {
 		return MSysConfig.getIntValue(MSysConfig.ZK_DESKTOP_TAB_MAX_TITLE_LENGTH, DEFAULT_MAX_TITLE_LENGTH, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	/**
-     * 
+     * Insert comp as new tab after refTab.
      * @param refTab
      * @param comp
      * @param title
      * @param closeable
      * @param enable
+     * @param decorateInfo
+     * @return new tab
      */
     public Tab insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo)
     {
@@ -643,11 +701,12 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
     /**
-     * IDEMPIERE-5275 - Tabular Report Re-Run button/close parameter window
+     * IDEMPIERE-5275 - Tabular Report Re-Run button/close parameter window. <br/>
+     * Replace content of refTab with comp.
      * @param refTab 
      * @param comp
      * @param title
-     * @return
+     * @return org.zkoss.zul.Tab
      */
     public org.zkoss.zul.Tab replace(org.zkoss.zul.Tab refTab, Window comp, String title) {
     	 
@@ -680,8 +739,9 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
          }
         return refTab;
     }
+    
     /**
-     * 
+     * Set tab as selected tab.
      * @param tab
      */
     public void setSelectedTab(org.zkoss.zul.Tab tab)
@@ -691,6 +751,10 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     	tabbox.setSelectedTab(tab); 
     }
 
+    /**
+     * Set tab to visible, other tabs to invisible.
+     * @param tab  new selected tab to be set as visible 
+     */
 	private void updateMobileTabState(org.zkoss.zul.Tab tab) {
 		if (isMobile() && tabListBtn != null)
     	{
@@ -708,12 +772,15 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     	}
 	}
 
+	/**
+	 * @return true if browser client is visible
+	 */
     private boolean isMobile() {
 		return ClientInfo.isMobile();
 	}
 
 	/**
-     * 
+     * Close current active window (tab)
      * @return true if successfully close the active window
      */
     public boolean closeActiveWindow()
@@ -727,14 +794,13 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
-     * 
+     * Get current selected tab
      * @return Tab
      */
     public Tab getSelectedTab() {
     	return (Tab) tabbox.getSelectedTab();
     }
     
-    // Elaine 2008/07/21
     /**
      * @param tabNo
      * @param title
@@ -753,7 +819,6 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     		tab.setTooltiptext(tooltip);
     	}
     }
-    //
 
 	/**
 	 * @return Tabbox

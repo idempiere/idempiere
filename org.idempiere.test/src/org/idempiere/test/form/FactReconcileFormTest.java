@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.compiere.apps.form.FactReconcile;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MClientInfo;
@@ -52,7 +53,6 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**

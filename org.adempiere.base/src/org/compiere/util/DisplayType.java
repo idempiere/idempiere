@@ -535,7 +535,8 @@ public final class DisplayType
 
 	/**
 	 *	Returns true if DisplayType is a VLookup (List, Table, TableDir, Search).
-	 *  (stored as Integer)
+	 *  (stored as Integer or multi-ID string separated by commas)
+	 *  The column must have the lookup defined in AD_Reference_Value_ID
 	 *  @param displayType Display Type
 	 *  @return true if Lookup
 	 */
@@ -638,11 +639,22 @@ public final class DisplayType
 	 */
 	public static boolean isChosenMultipleSelection(int displayType)
 	{
-		if (displayType == ChosenMultipleSelectionList || displayType == ChosenMultipleSelectionSearch
-				|| displayType == ChosenMultipleSelectionTable)
-			return true;
-		else
-			return false;
+		return (   displayType == ChosenMultipleSelectionList
+				|| displayType == ChosenMultipleSelectionSearch
+				|| displayType == ChosenMultipleSelectionTable);
+	}
+	
+	/**
+	 * 
+	 * @param displayType
+	 * @return true if displayType is a multi ID string separated by commas
+	 */
+	public static boolean isMultiID(int displayType)
+	{
+		return (   displayType == ChosenMultipleSelectionSearch
+				|| displayType == ChosenMultipleSelectionTable
+				|| displayType == SingleSelectionGrid
+				|| displayType == MultipleSelectionGrid);
 	}
 	
 	/**************************************************************************

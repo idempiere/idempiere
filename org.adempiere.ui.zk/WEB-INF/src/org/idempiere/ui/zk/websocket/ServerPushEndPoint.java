@@ -39,8 +39,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Util;
 
 /**
+ * web socket end point for server push
  * @author hengsin
- *
  */
 @ServerEndpoint(value="/serverpush/{dtid}")
 public class ServerPushEndPoint {
@@ -49,11 +49,10 @@ public class ServerPushEndPoint {
 	private String dtid;
 
 	/**
-	 * 
+	 * default constructor
 	 */
 	public ServerPushEndPoint() {
 	}
-
 	
 	@OnClose
 	public void onClose(Session sess) throws IOException {
@@ -62,7 +61,6 @@ public class ServerPushEndPoint {
 			WebSocketServerPush.unregisterEndPoint(dtid);
 		}
 	}
-
 
 	@OnOpen
 	public void onOpen(Session sess, @PathParam("dtid") String dtid) throws IOException {
@@ -73,13 +71,16 @@ public class ServerPushEndPoint {
 		}
 	}
 
-
 	@OnError
 	public void onError(Session sess, Throwable throwable) {
 		CLogger.getCLogger(getClass()).log(Level.WARNING, throwable.getMessage(), throwable);	
 	}
 
-
+	/**
+	 * Handle ping from client
+	 * @param session
+	 * @param message
+	 */
 	@OnMessage
 	public void onMessage(Session session, String message) { 
 		if (session == this.session && !Util.isEmpty(message)) {

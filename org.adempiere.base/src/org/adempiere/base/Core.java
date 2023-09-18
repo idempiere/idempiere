@@ -48,6 +48,7 @@ import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTaxProvider;
 import org.compiere.model.ModelValidator;
+import org.compiere.model.PO;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
@@ -1087,4 +1088,42 @@ public class Core {
 		}
 		return null;
 	}
+
+	/**
+	 * get Credit Manager
+	 * 
+	 * @param  PO
+	 * @return    instance of the ICreditManager
+	 */
+	public static ICreditManager getCreditManager(PO po)
+	{
+		if (po == null)
+		{
+			s_log.log(Level.SEVERE, "Invalid PO");
+			return null;
+		}
+
+		ICreditManager myCreditManager = null;
+
+		List<ICreditManagerFactory> factoryList = Service.locator().list(ICreditManagerFactory.class).getServices();
+		if (factoryList != null)
+		{
+			for (ICreditManagerFactory factory : factoryList)
+			{
+				myCreditManager = factory.getCreditManager(po);
+				if (myCreditManager != null)
+				{
+					break;
+				}
+			}
+		}
+
+		if (myCreditManager == null)
+		{
+			s_log.log(Level.CONFIG, "For " + po.get_TableName() + " not found any service/extension registry.");
+			return null;
+		}
+
+		return myCreditManager;
+	} // getCreditManager
 }

@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1700160594551368619L;
+	private static final long serialVersionUID = -2055659961699848343L;
 
     public static final String AD_CHANGELOG_SAVE_UUID = "AD_CHANGELOG_SAVE_UUID";
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
@@ -140,6 +140,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
+    public static final String MAIL_SMTP_TIMEOUT = "MAIL_SMTP_TIMEOUT";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_ROWS_IN_TABLE_COMBOLIST = "MAX_ROWS_IN_TABLE_COMBOLIST";
@@ -185,7 +186,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String TRX_AUTOSET_DISPLAY_NAME = "TRX_AUTOSET_DISPLAY_NAME";
     public static final String TWOPACK_COMMIT_DDL = "2PACK_COMMIT_DDL";
     public static final String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
+    public static final String UPLOAD_TEMP_FILENAME_PREFIX = "UPLOAD_TEMP_FILENAME_PREFIX";
     public static final String USE_EMAIL_FOR_LOGIN = "USE_EMAIL_FOR_LOGIN";
+    public static final String USE_ESC_FOR_TAB_CLOSING = "USE_ESC_FOR_TAB_CLOSING";
     public static final String USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES = "USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES";
     public static final String USER_LOCKING_MAX_INACTIVE_PERIOD_DAY = "USER_LOCKING_MAX_INACTIVE_PERIOD_DAY";
     public static final String USER_LOCKING_MAX_LOGIN_ATTEMPT = "USER_LOCKING_MAX_LOGIN_ATTEMPT";

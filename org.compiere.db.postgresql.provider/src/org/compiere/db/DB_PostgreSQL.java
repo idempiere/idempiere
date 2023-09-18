@@ -51,6 +51,7 @@ import org.compiere.dbPort.Convert_PostgreSQL;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -86,7 +87,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	static
 	{
-		String property = System.getProperty(P_POSTGRE_SQL_NATIVE);
+		String property = SystemProperties.getPostgreSQLNative();
 		if (!Util.isEmpty(property, true) ) 
 		{
 			sysNative = "Y".equalsIgnoreCase(property);
@@ -205,7 +206,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			.append("/").append(connection.getDbName())
 			.append("?encoding=UNICODE&ApplicationName=iDempiere");
 
-		String urlParameters = System.getProperty("org.idempiere.postgresql.URLParameters");
+		String urlParameters = SystemProperties.getPostgresqlURLParameters();
 	    if (!Util.isEmpty(urlParameters)) {
    			sb.append("&").append(urlParameters);  
 	    }
@@ -229,7 +230,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			.append(":").append(dbPort)
 			.append("/").append(dbName);
 
-		String urlParameters = System.getProperty("org.idempiere.postgresql.URLParameters") ;
+		String urlParameters = SystemProperties.getPostgresqlURLParameters();
 	    if (!Util.isEmpty(urlParameters)) {
 			sb.append("?").append(urlParameters);  
 		}
@@ -351,8 +352,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			String cache = convertCache.get(oraStatement);
 			if (cache != null) {
 				Convert.logMigrationScript(oraStatement, cache);
-				if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
-					String filterPgDebug = System.getProperty("org.idempiere.db.debug.filter");
+				if (SystemProperties.isDBDebug()) {
+					String filterPgDebug = SystemProperties.getDBDebugFilter();
 					boolean print = true;
 					if (filterPgDebug != null)
 						print = cache.matches(filterPgDebug);
@@ -407,7 +408,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String getSystemUser()
 	{
-    	String systemUser = System.getProperty("ADEMPIERE_DB_SYSTEM_USER");
+    	String systemUser = SystemProperties.getAdempiereDBSystemUser();
     	if (systemUser == null)
     		systemUser = "postgres";
         return systemUser;

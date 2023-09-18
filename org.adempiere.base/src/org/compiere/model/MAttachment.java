@@ -131,11 +131,7 @@ public class MAttachment extends X_AD_Attachment
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		this(ctx, AD_Table_ID, Record_ID, null, trxName);
-		if (Record_ID > 0) {
-			MTable table = MTable.get(AD_Table_ID);
-			PO po = table.getPO(Record_ID, trxName);
-			setRecord_UU(po.get_UUID());
-		}
+		// Record_UU will be set in beforeSave
 	}
 
 	/**
@@ -552,10 +548,11 @@ public class MAttachment extends X_AD_Attachment
 	{
 		if (Util.isEmpty(getTitle()))
 			setTitle(NONE);
-		if (getRecord_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());
-			setRecord_UU(po.get_UUID());
+			if (po != null)
+				setRecord_UU(po.get_UUID());
 		}
 		return saveLOBData();		//	save in BinaryData
 	}	//	beforeSave

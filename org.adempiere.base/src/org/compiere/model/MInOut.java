@@ -29,6 +29,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
+import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
@@ -77,10 +79,246 @@ import org.compiere.wf.MWorkflow;
 public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8699990804131725782L;
 
+	private static final String BASE_MATCHING_SQL = 
+			"""
+				SELECT hdr.M_InOut_ID, hdr.DocumentNo, hdr.MovementDate, bp.Name, hdr.C_BPartner_ID,
+				lin.Line, lin.M_InOutLine_ID, p.Name, lin.M_Product_ID,
+				CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END,
+				%s, org.Name, hdr.AD_Org_ID 
+				 FROM M_InOut hdr 
+				 INNER JOIN AD_Org org ON (hdr.AD_Org_ID=org.AD_Org_ID)
+				 INNER JOIN C_BPartner bp ON (hdr.C_BPartner_ID=bp.C_BPartner_ID)
+				 INNER JOIN M_InOutLine lin ON (hdr.M_InOut_ID=lin.M_InOut_ID)
+				 INNER JOIN M_Product p ON (lin.M_Product_ID=p.M_Product_ID)
+				 INNER JOIN C_DocType dt ON (hdr.C_DocType_ID = dt.C_DocType_ID AND (dt.DocBaseType='MMR' OR (dt.DocBaseType='MMS' AND hdr.isSOTrx ='N')))
+				 FULL JOIN %s m ON (lin.M_InOutLine_ID=m.M_InOutLine_ID) 
+				 WHERE hdr.DocStatus IN ('CO','CL')				  
+			""";
+	
+	private static final String BASE_MATCHING_GROUP_BY_SQL =
+			"""
+				GROUP BY hdr.M_InOut_ID,hdr.DocumentNo,hdr.MovementDate,bp.Name,hdr.C_BPartner_ID,
+				  lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID, dt.DocBaseType, hdr.IsSOTrx
+				HAVING %s <> %s
+			""";
+	
+	public static final String NOT_FULLY_MATCHED_TO_ORDER = BASE_MATCHING_SQL.formatted(
+			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)", 
+			"M_MatchPO");
+	
+	public static final String NOT_FULLY_MATCHED_TO_ORDER_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
+			"CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END",
+			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)"); 
+			
+	public static final String FULL_OR_PARTIALLY_MATCHED_TO_ORDER = BASE_MATCHING_SQL.formatted(
+			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)", 
+			"M_MatchPO");
+	
+	public static final String FULL_OR_PARTIALLY_MATCHED_TO_ORDER_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
+			"0",
+			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)");
+	
+	public static final String NOT_FULLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL.formatted("SUM(COALESCE(m.Qty,0))", 
+			"M_MatchInv");
+	
+	public static final String NOT_FULLY_MATCHED_TO_INVOICE_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
+			"CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END",
+			"SUM(COALESCE(m.Qty,0))");
+	
+	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE = BASE_MATCHING_GROUP_BY_SQL.formatted(
+			"SUM(COALESCE(m.Qty,0))", 
+			"M_MatchInv");
+	
+	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
+			"0",
+			"SUM(COALESCE(m.Qty,0))");
+	
+	/**
+	 * @param C_BPartner_ID
+	 * @param M_Product_ID
+	 * @param C_OrderLine_ID
+	 * @param from
+	 * @param to
+	 * @param trxName
+	 * @return list of material receipts not fully matched to order
+	 */
+	public static List<MatchingRecord> getNotFullyMatchedToOrder(int C_BPartner_ID, int M_Product_ID, int C_OrderLine_ID, Timestamp from, Timestamp to, String trxName) {
+		StringBuilder builder = new StringBuilder(NOT_FULLY_MATCHED_TO_ORDER);
+		if (C_OrderLine_ID > 0) {
+			builder.append(" AND m.C_OrderLine_ID=").append(C_OrderLine_ID);
+		}
+		if (M_Product_ID > 0) {
+			builder.append(" AND lin.M_Product_ID=").append(M_Product_ID);
+		}
+		if (C_BPartner_ID > 0) {
+			builder.append(" AND hdr.C_BPartner_ID=").append(C_BPartner_ID);
+		}
+		if (from != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" >= ").append(DB.TO_DATE(from));
+		}
+		if (to != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" <= ").append(DB.TO_DATE(to));
+		}
+		String sql = MRole.getDefault().addAccessSQL(
+				builder.toString(), "hdr", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
+				+ NOT_FULLY_MATCHED_TO_ORDER_GROUP_BY;
+		
+		List<MatchingRecord> records = new ArrayList<>();
+		try (PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				MatchingRecord matchingRecord = new MatchingRecord(rs.getInt(1), rs.getString(2), rs.getTimestamp(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7), 
+						rs.getString(8), rs.getInt(9), rs.getBigDecimal(10), rs.getBigDecimal(11), rs.getString(12), rs.getInt(13));
+				records.add(matchingRecord);
+			}
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage(), e);
+		}
+		return records;
+	}
+	
+	/**
+	 * @param C_BPartner_ID
+	 * @param M_Product_ID
+	 * @param C_OrderLine_ID
+	 * @param from
+	 * @param to
+	 * @param trxName
+	 * @return list of material receipts full or partially match to order 
+	 */
+	public static List<MatchingRecord> getFullOrPartiallyMatchedToOrder(int C_BPartner_ID, int M_Product_ID, int C_OrderLine_ID, Timestamp from, Timestamp to, String trxName) {
+		StringBuilder builder = new StringBuilder(FULL_OR_PARTIALLY_MATCHED_TO_ORDER);
+		if (C_OrderLine_ID > 0) {
+			builder.append(" AND m.C_OrderLine_ID=").append(C_OrderLine_ID);
+		}
+		if (M_Product_ID > 0) {
+			builder.append(" AND lin.M_Product_ID=").append(M_Product_ID);
+		}
+		if (C_BPartner_ID > 0) {
+			builder.append(" AND hdr.C_BPartner_ID=").append(C_BPartner_ID);
+		}
+		if (from != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" >= ").append(DB.TO_DATE(from));
+		}
+		if (to != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" <= ").append(DB.TO_DATE(to));
+		}
+		String sql = MRole.getDefault().addAccessSQL(
+				builder.toString(), "hdr", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
+				+ FULL_OR_PARTIALLY_MATCHED_TO_ORDER_GROUP_BY;
+		
+		List<MatchingRecord> records = new ArrayList<>();
+		try (PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				MatchingRecord matchingRecord = new MatchingRecord(rs.getInt(1), rs.getString(2), rs.getTimestamp(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7), 
+						rs.getString(8), rs.getInt(9), rs.getBigDecimal(10), rs.getBigDecimal(11), rs.getString(12), rs.getInt(13));
+				records.add(matchingRecord);
+			}
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage(), e);
+		}
+		return records;
+	}
+	
+	/**
+	 * @param C_BPartner_ID
+	 * @param M_Product_ID
+	 * @param C_InvoiceLine_ID
+	 * @param from
+	 * @param to
+	 * @param trxName
+	 * @return list of material receipts not fully match to invoice
+	 */
+	public static List<MatchingRecord> getNotFullyMatchedToInvoice(int C_BPartner_ID, int M_Product_ID, int C_InvoiceLine_ID, Timestamp from, Timestamp to, String trxName) {
+		StringBuilder builder = new StringBuilder(NOT_FULLY_MATCHED_TO_INVOICE);
+		if (C_InvoiceLine_ID > 0) {
+			builder.append(" AND m.C_InvoiceLine_ID=").append(C_InvoiceLine_ID);
+		}
+		if (M_Product_ID > 0) {
+			builder.append(" AND lin.M_Product_ID=").append(M_Product_ID);
+		}
+		if (C_BPartner_ID > 0) {
+			builder.append(" AND hdr.C_BPartner_ID=").append(C_BPartner_ID);
+		}
+		if (from != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" >= ").append(DB.TO_DATE(from));
+		}
+		if (to != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" <= ").append(DB.TO_DATE(to));
+		}
+		String sql = MRole.getDefault().addAccessSQL(
+				builder.toString(), "hdr", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
+				+ NOT_FULLY_MATCHED_TO_INVOICE_GROUP_BY;
+		
+		List<MatchingRecord> records = new ArrayList<>();
+		try (PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				MatchingRecord matchingRecord = new MatchingRecord(rs.getInt(1), rs.getString(2), rs.getTimestamp(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7), 
+						rs.getString(8), rs.getInt(9), rs.getBigDecimal(10), rs.getBigDecimal(11), rs.getString(12), rs.getInt(13));
+				records.add(matchingRecord);
+			}
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage(), e);
+		}
+		return records;
+	}
+	
+	/**
+	 * @param C_BPartner_ID
+	 * @param M_Product_ID
+	 * @param C_InvoiceLine_ID
+	 * @param from
+	 * @param to
+	 * @param trxName
+	 * @return list of material receipts full or partially match to invoice 
+	 */
+	public static List<MatchingRecord> getFullOrPartiallyMatchedToInvoice(int C_BPartner_ID, int M_Product_ID, int C_InvoiceLine_ID, Timestamp from, Timestamp to, String trxName) {
+		StringBuilder builder = new StringBuilder(FULL_OR_PARTIALLY_MATCHED_TO_INVOICE);
+		if (C_InvoiceLine_ID > 0) {
+			builder.append(" AND m.C_InvoiceLine_ID=").append(C_InvoiceLine_ID);
+		}
+		if (M_Product_ID > 0) {
+			builder.append(" AND lin.M_Product_ID=").append(M_Product_ID);
+		}
+		if (C_BPartner_ID > 0) {
+			builder.append(" AND hdr.C_BPartner_ID=").append(C_BPartner_ID);
+		}
+		if (from != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" >= ").append(DB.TO_DATE(from));
+		}
+		if (to != null) {
+			builder.append(" AND ").append("hdr.MovementDate").append(" <= ").append(DB.TO_DATE(to));
+		}
+		String sql = MRole.getDefault().addAccessSQL(
+				builder.toString(), "hdr", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
+				+ FULL_OR_PARTIALLY_MATCHED_TO_INVOICE_GROUP_BY;
+		
+		List<MatchingRecord> records = new ArrayList<>();
+		try (PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				MatchingRecord matchingRecord = new MatchingRecord(rs.getInt(1), rs.getString(2), rs.getTimestamp(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7), 
+						rs.getString(8), rs.getInt(9), rs.getBigDecimal(10), rs.getBigDecimal(11), rs.getString(12), rs.getInt(13));
+				records.add(matchingRecord);
+			}
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage(), e);
+		}
+		return records;
+	}
+	
+	/**
+	 * record for matchings
+	 */
+	public static record MatchingRecord(int M_InOut_ID, String documentNo, Timestamp documentDate, String businessPartnerName, int C_BPartner_ID, int line, int M_InOutLine_ID,
+			String productName, int M_Product_ID, BigDecimal movementQty, BigDecimal matchedQty, String organizationName, int AD_Org_ID) {}
+	
 	/**
 	 * 	Create Shipment From Order
 	 *	@param order order
@@ -1218,40 +1456,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		}
 				
 		//	Credit Check
-		if (isSOTrx() && !isReversal() && !isCustomerReturn())
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
 		{
-			I_C_Order order = getC_Order();
-			if (order != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(order.getC_DocType().getDocSubTypeSO())
-					&& !MSysConfig.getBooleanValue(MSysConfig.CHECK_CREDIT_ON_PREPAY_ORDER, true, getAD_Client_ID(), getAD_Org_ID())) {
-				// ignore -- don't validate Prepay Orders depending on sysconfig parameter
-			} else {
-				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-				if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
-				{
-					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
-						+ bp.getTotalOpenBalance()
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
-				{
-					m_processMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@="
-						+ bp.getTotalOpenBalance()
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-				if (!MBPartner.SOCREDITSTATUS_NoCreditCheck.equals(bp.getSOCreditStatus())
-						&& Env.ZERO.compareTo(bp.getSO_CreditLimit()) != 0)
-				{
-					BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
-					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
-					{
-						m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
-							+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
-							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-						return DocAction.STATUS_Invalid;
-					}
-				}
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
+				return DocAction.STATUS_Invalid;
 			}
 		}
 
@@ -1321,7 +1533,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * Check if Document is Customer Return.
 	 * @return True if Document is Customer Return
 	 */
-	private boolean isCustomerReturn() {
+	public boolean isCustomerReturn() {
 		MDocType doctype = MDocType.get(getC_DocType_ID());
 		if(isSOTrx() && doctype.getDocBaseType().equals("MMR") && doctype.isSOTrx())
 			return true;
@@ -1407,8 +1619,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
 						+ ", Delivered=" + oLine.getQtyDelivered());
 				}
-	
-	
+				boolean orderClosed = oLine != null && DocAction.STATUS_Closed.equals(oLine.getParent().getDocStatus());
+				
 	            // Load RMA Line
 	            MRMALine rmaLine = null;
 	
@@ -1490,7 +1702,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 									return status;
 							}
 							
-							//	Update Storage - see also VMatch.createMatchRecord
+							//	Update Storage - see also Match.createMatchRecord
 							if (!MStorageOnHand.add(getCtx(),
 								sLine.getM_Locator_ID(),
 								sLine.getM_Product_ID(),
@@ -1524,8 +1736,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 									return status;
 							}
 						}
-						
-						if (oLine!=null && mtrx!=null && 
+												
+						if (oLine!=null && mtrx!=null && !orderClosed && 
 						   ((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))
 						{					
 							if (sLine.getC_OrderLine_ID() != 0 && oLine.getM_Product_ID() > 0)
@@ -1611,7 +1823,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 						if (dateMPolicy == null)
 							dateMPolicy = getMovementDate();
 
-						//	Fallback: Update Storage - see also VMatch.createMatchRecord
+						//	Fallback: Update Storage - see also Match.createMatchRecord
 						if (pendingQty.signum() != 0 &&
 							!MStorageOnHand.add(getCtx(), 
 							sLine.getM_Locator_ID(),
@@ -1623,7 +1835,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (oLine!=null && oLine.getM_Product_ID() > 0 &&
+						if (oLine!=null && oLine.getM_Product_ID() > 0 && !orderClosed &&
 							((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))  
 						{
 							IReservationTracer tracer = null;
@@ -1667,7 +1879,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				}	//	stock movement
 	
 				//	Correct Order Line
-				if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
+				if (product != null && oLine != null && !orderClosed)		//	other in Match.createMatchRecord
 				{
 					if (oLine.getQtyOrdered().signum() >= 0)
 					{

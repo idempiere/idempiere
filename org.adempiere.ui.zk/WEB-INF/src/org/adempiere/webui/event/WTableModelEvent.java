@@ -17,12 +17,13 @@
 
 package org.adempiere.webui.event;
 
+import org.adempiere.webui.component.ListModelTable;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.event.ListDataEvent;
 
 /**
+ * Change event for {@link ListModelTable} 
  * @author andy
- *
  */
 public class WTableModelEvent extends ListDataEvent
 {
@@ -42,11 +43,9 @@ public class WTableModelEvent extends ListDataEvent
 	/**
 	 * All row data in the table has changed, listeners should discard any state
 	 * that was based on the rows and requery the <code>TableModel</code> to
-	 * get the new row count and all the appropriate values. The
-	 * <code>WListbox</code> will repaint the entire visible region on receiving
-	 * this event, querying the model for the cell values that are visible. The
-	 * structure of the table ie, the column names, types and order have not
-	 * changed.
+	 * get the new row count and all the appropriate values.<br/> 
+	 * The <code>WListbox</code> will initiate repaint on receiving this event, 
+	 * querying the model for the cell values that are visible.<br/> 
 	 *
 	 * @param source	The list model that has changed
 	 */
@@ -60,7 +59,7 @@ public class WTableModelEvent extends ListDataEvent
 	/**
 	 * This row of data has been updated. To denote the arrival of a completely
 	 * new table with a different structure use <code>HEADER_ROW</code> as the
-	 * value for the <code>row</code>.
+	 * value for the <code>row</code> argument.
 	 *
 	 * @param source	The list model that has changed
 	 * @param row		Index of the affected row

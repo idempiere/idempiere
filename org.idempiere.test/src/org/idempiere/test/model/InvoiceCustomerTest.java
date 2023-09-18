@@ -222,7 +222,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(0, line1.getQtyInvoiced().intValue());
 
 		int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order.getC_Order_ID()}, null);
@@ -338,7 +338,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 
 		int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATERMA_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), rma.get_ID()}, null);
@@ -434,7 +434,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(0, line2.getQtyInvoiced().intValue());
 
 		int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATE;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 
 		//call process

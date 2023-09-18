@@ -323,6 +323,8 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 
 	@Override
 	public void onEvent(Event event) throws Exception {
+		super.onEvent(event);
+
 		if (Events.ON_SELECT.equals(event.getName()) && event.getTarget() == pluginsTable)
 			refreshActionList();
 		else if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == pluginProcess)

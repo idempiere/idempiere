@@ -71,6 +71,9 @@ public class HelpController
 	private Panel pnlToolTip, pnlContextHelp, pnlQuickInfo;
 	private Html htmlToolTip, htmlContextHelp, htmlQuickInfo;
 	
+	/**
+	 * Default constructor
+	 */
 	public HelpController()
     {
 		dashboardLayout = new Anchorlayout();
@@ -79,6 +82,11 @@ public class HelpController
         ZKUpdateUtil.setHflex(dashboardLayout, "1");
     }
 
+	/**
+	 * Render tooltips, context help and quick info.
+	 * @param parent
+	 * @param desktopImpl
+	 */
 	public void render(Component parent, IDesktop desktopImpl)
     {
     	Style style = new Style();
@@ -160,6 +168,9 @@ public class HelpController
         renderQuickInfo(null);
     }
 
+	/**
+	 * Setup client side script for field tooltip
+	 */
 	public void setupFieldTooltip() {
 		Clients.response("helpControllerFieldTooltip", 
 				new AuScript(htmlToolTip, "(function(){let w=zk.Widget.$('#"+htmlToolTip.getUuid()
@@ -167,7 +178,7 @@ public class HelpController
 	}
     
 	/**
-	 * Make tooltip content for a field 
+	 * Render tooltip content for a field 
 	 * @param field
 	 */
     public void renderToolTip(GridField field)
@@ -198,7 +209,7 @@ public class HelpController
     }
     
     /**
-     * Make tooltip content, when  hdr == null, show otherContent
+     * Render tooltip content, when hdr == null, show otherContent
      * @param hdr
      * @param desc
      * @param help
@@ -219,9 +230,9 @@ public class HelpController
     			otherContent = Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField");
     		}
     		
-    			sb.append("<i>(");
-    			sb.append (otherContent);
-    			sb.append (")</i>");
+			sb.append("<i>(");
+			sb.append (otherContent);
+			sb.append (")</i>");
     	}else{
     		sb.append("<b>");
     		sb.append(hdr);
@@ -244,6 +255,11 @@ public class HelpController
     	htmlToolTip.setContent(sb.toString());
     }
     
+    /**
+     * Render context help (AD_CtxHelpMsg)
+     * @param ctxType
+     * @param recordId
+     */
     public void renderCtxHelp(String ctxType, int recordId)
     {
     	if (ctxType != X_AD_CtxHelp.CTXTYPE_Home && ctxType != X_AD_CtxHelp.CTXTYPE_Tab && 
@@ -653,6 +669,12 @@ public class HelpController
     	htmlContextHelp.setContent(sb.toString());
     }
 
+    /**
+     * Add context help suggestion popup menu
+     * @param po
+     * @param baseContent
+     * @param translatedContent
+     */
     private void addContextHelpMenupopup(PO po, StringBuilder baseContent, StringBuilder translatedContent) {
     	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
     		ContextHelpMenupopup popup = new ContextHelpMenupopup(po, baseContent.toString(), translatedContent.toString());
@@ -662,11 +684,26 @@ public class HelpController
     	}
     }
 
-    public void renderQuickInfo(GridTab gridTab) {
-    	if (gridTab == null) {
+    /**
+     * Render quick info (AD_StatusLine)
+     * @param obj
+     */
+    public void renderQuickInfo(Object obj) {
+    	if (obj == null) {
         	pnlQuickInfo.setVisible(false);
     	} else {
-    		String widget = gridTab.getStatusLinesWidget();
+    		String widget = "";
+    		if(obj instanceof GridTab) {
+    			widget = ((GridTab)obj).getStatusLinesWidget();
+    		}
+    		else if(obj instanceof InfoPanel) {
+    			widget = ((InfoPanel)obj).getStatusLinesWidget();
+    		}
+    		else {
+    			pnlQuickInfo.setVisible(false);
+    			return;
+    		}
+    		
     		if (widget == null) {
             	pnlQuickInfo.setVisible(false);
     		} else {
@@ -680,6 +717,11 @@ public class HelpController
     	}
 	}
 
+    /**
+     * @param htmlString
+     * @param all
+     * @return text after strip of html tag
+     */
     private String stripHtml(String htmlString, boolean all) 
     {
 		htmlString = htmlString
@@ -697,6 +739,11 @@ public class HelpController
 		return htmlString;
 	}
 
+    /**
+     * @param ctxType
+     * @param recordId
+     * @return MCtxHelpMsg
+     */
     private MCtxHelpMsg getCtxHelpMsg(String ctxType, int recordId)
     {
     	MCtxHelpMsg retValue = MCtxHelpMsg.get(ctxType, recordId);
@@ -705,7 +752,7 @@ public class HelpController
 
     /**
 	 * @param content content
-	 * @return masked content or empty string if the <code>content</code> is null
+	 * @return masked content or empty string if <code>content</code> is null
 	 */
 	public static String escapeJavascriptContent(String content)
 	{

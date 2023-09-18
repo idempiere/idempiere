@@ -51,6 +51,7 @@ import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
@@ -80,7 +81,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Image;
 
 /**
- *
+ * Select role panel
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -90,7 +91,7 @@ import org.zkoss.zul.Image;
 public class RolePanel extends Window implements EventListener<Event>, Deferrable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1159253307008488232L;
 
@@ -135,6 +136,14 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
 
+	/**
+	 * @param ctx
+	 * @param loginWindow
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 * @param isClientDefined
+	 */
 	public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined) {
     	this.wndLogin = loginWindow;
     	m_ctx = ctx;
@@ -151,7 +160,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         	m_userpreference.loadPreference(user.get_ID());        	
         }
     	
-
         initComponents();
         init();
         this.setId("rolePanel");
@@ -178,12 +186,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
     }
 
+	/**
+	 * Layout panel
+	 */
     private void init()
     {
     	Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
     	createUI();
     }
 
+    /**
+     * Layout panel
+     */
 	protected void createUI() {
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
@@ -320,6 +334,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         	languageChanged(validLstLanguage);
 	}
 
+	/**
+	 * Create components
+	 */
     private void initComponents()
     {
     	Language language = Env.getLanguage(m_ctx);
@@ -400,9 +417,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             for(int i = 0; i < m_clientKNPairs.length; i++)
             {
             	ComboItem ci = new ComboItem(m_clientKNPairs[i].getName(), m_clientKNPairs[i].getID());
-            	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-            	if (lstClient.getFellowIfAny(id) == null)
-            		ci.setId(id);
+        		if (SystemProperties.isZkUnitTest()) {
+                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                	if (lstClient.getFellowIfAny(id) == null)
+                		ci.setId(id);
+        		}
             	lstClient.appendChild(ci);
                 if (m_clientKNPairs[i].getID().equals(initDefault))
                 	lstClient.setSelectedItem(ci);
@@ -465,6 +484,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	component.addEventListener(ON_DEFER_LOGOUT, this);
     }
 
+    /**
+     * Update roles available for selection (after selection of tenant)
+     */
     private void updateRoleList()
     {
 		lstRole.getItems().clear();
@@ -487,9 +509,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for (int i = 0; i < roleKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
-                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	if (lstRole.getFellowIfAny(id) == null)
-                		ci.setId(id);
+            		if (SystemProperties.isZkUnitTest()) {
+                    	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                    	if (lstRole.getFellowIfAny(id) == null)
+                    		ci.setId(id);
+            		}
                 	lstRole.appendChild(ci);
                     if (roleKNPairs[i].getID().equals(initDefault))
                     	lstRole.setSelectedItem(ci);
@@ -583,6 +607,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		return language;
 	}
 
+    /**
+     * After organizations available for selection (after selection of role)
+     */
     private void updateOrganisationList()
     {
         lstOrganisation.getItems().clear();
@@ -604,9 +631,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for(int i = 0; i < orgKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(orgKNPairs[i].getName(), orgKNPairs[i].getID());
-                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	if (lstOrganisation.getFellowIfAny(id) == null)
-                		ci.setId(id);
+            		if (SystemProperties.isZkUnitTest()) {
+                    	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                    	if (lstOrganisation.getFellowIfAny(id) == null)
+                    		ci.setId(id);
+            		}
                 	lstOrganisation.appendChild(ci);
                     if(orgKNPairs[i].getID().equals(initDefault))
                     	lstOrganisation.setSelectedItem(ci);
@@ -631,6 +660,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         updateWarehouseList();
     }
 
+    /**
+     * Update list of warehouse available for selection (after selection of organization)
+     */
     private void updateWarehouseList()
     {
         lstWarehouse.getItems().clear();
@@ -666,6 +698,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
     }
 
+    @Override
     public void onEvent(Event event)
     {
         String eventCompId = event.getTarget().getId();
@@ -740,6 +773,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		}
 	}
 
+	/**
+	 * Set user id to environment context
+	 */
     private void setUserID() {
     	if (lstClient.getSelectedItem() != null) {
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) lstClient.getSelectedItem().getValue());
@@ -775,10 +811,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     }
 
     /**
-     *  validate Roles
+     * Validate fields
      * @param isMFAValidated
      *
-    **/
+     */
     public void validateRoles(boolean isMFAValidated)
     {
     	Clients.clearBusy();
@@ -870,10 +906,14 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		desktop.getSession().setAttribute(SSOUtils.ISCHANGEROLE_REQUEST, false);
     }
 
+    @Override
 	public boolean isDeferrable() {
 		return false;
 	}
 
+    /**
+     * @return true if role selection panel will be shown to user
+     */
 	public boolean show() {
 		return m_showRolePanel;
 	}

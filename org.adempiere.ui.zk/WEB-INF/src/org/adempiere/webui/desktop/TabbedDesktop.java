@@ -37,6 +37,7 @@ import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.zkoss.util.media.AMedia;
@@ -155,10 +156,12 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback) {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
-		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
-		String id = AdempiereIdGenerator.escapeId(adWindow.getTitle());
+		final DesktopTabpanel tabPanel = new DesktopTabpanel();
 		int windowNo = adWindow.getADWindowContent().getWindowNo();
-		tabPanel.setId(id+"_"+windowNo);
+		if (SystemProperties.isZkUnitTest()) {
+			String id = AdempiereIdGenerator.escapeId(adWindow.getTitle());
+			tabPanel.setId(id+"_"+windowNo);
+		}
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true, DecorateInfo.get(adWindow));
 
 		tab.setClosable(false);		

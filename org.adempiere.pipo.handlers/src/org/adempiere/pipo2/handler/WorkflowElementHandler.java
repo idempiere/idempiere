@@ -116,7 +116,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			if (value != null && value.trim().length() > 0) {
 				MWorkflow m_Workflow = new MWorkflow(ctx.ctx, element.recordId, getTrxName(ctx));
 				PoFiller filler = new PoFiller(ctx, m_Workflow, element, this);
-				int id = filler.setTableReference("AD_WF_Node_ID");
+				int id = ((Number)filler.setTableReference("AD_WF_Node_ID")).intValue();
 				if (id <= 0) {
 					log.warning("Failed to resolve start node reference for workflow element. Workflow="
 							+ m_Workflow.getName() + " StartNode=" + value);

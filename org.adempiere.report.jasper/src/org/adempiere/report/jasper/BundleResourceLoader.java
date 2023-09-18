@@ -90,7 +90,7 @@ public class BundleResourceLoader {
 					if (inputStream != null) {
 						String localResourceName = toLocalName(resourceName);
 						String localAbsoluteFileName = destinationFolder + localResourceName;
-						String localAbsolutePathName = localAbsoluteFileName.substring(0, localAbsoluteFileName.lastIndexOf(System.getProperty("file.separator"))+1);
+						String localAbsolutePathName = localAbsoluteFileName.substring(0, localAbsoluteFileName.lastIndexOf(File.separator)+1);
 						Path localPath = Path.of(localAbsolutePathName);
 						try {
 							if (!Files.exists(localPath))
@@ -98,7 +98,7 @@ public class BundleResourceLoader {
 						} catch (IOException e) {
 							throw new RuntimeException(e);
 						}
-						String localFileName = localAbsoluteFileName.substring(localAbsoluteFileName.lastIndexOf(System.getProperty("file.separator"))+1);
+						String localFileName = localAbsoluteFileName.substring(localAbsoluteFileName.lastIndexOf(File.separator)+1);
 						String extension = localFileName.substring(localFileName.lastIndexOf("."));
 						reportFile = new File(localAbsoluteFileName);						
 						if (!reportFile.exists()) {
@@ -162,7 +162,7 @@ public class BundleResourceLoader {
 			String path = localName.substring(0, localName.lastIndexOf("/"));
 			localName = localName.substring(localName.lastIndexOf("/")+1);
 			path = path.replace('/', '_');
-			localName = path + System.getProperty("file.separator") + localName;
+			localName = path + File.separator + localName;
 		}
 		return localName;
 	}
