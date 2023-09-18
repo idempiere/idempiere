@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -75,7 +76,8 @@ public class ServletRegistration extends Registration {
 		ClassLoader original = Thread.currentThread().getContextClassLoader();
 		try {
 			Thread.currentThread().setContextClassLoader(registeredContextClassLoader);
-			if (SSOUtils.getSSOPrincipalService() != null)
+			boolean isSSOEnable  = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO_OSGI_CONSOLE, false);
+			if (isSSOEnable && SSOUtils.getSSOPrincipalService() != null)
 			{
 				Object token = req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
 				if (checkSSOAuthorization(token))

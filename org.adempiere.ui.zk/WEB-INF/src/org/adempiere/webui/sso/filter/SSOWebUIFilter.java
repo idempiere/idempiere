@@ -28,6 +28,7 @@ import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 
 /**
  * Request filter class for the SSO authentication
@@ -98,10 +99,19 @@ public class SSOWebUIFilter implements Filter
 					if (m_SSOPrincipal.hasAuthenticationCode(httpRequest, httpResponse))
 					{
 						// Use authentication code get get token
+						String currentUri = httpRequest.getRequestURL().toString();
 						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
+
+						// Redirect to default request URL after authentication and handle zoom. 
+						Object zoomPara = httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ZOOM_PARAM);
+						if (zoomPara != null && !Util.isEmpty((String) zoomPara))
+							currentUri += "?" + (String) zoomPara;
+						httpResponse.sendRedirect(currentUri);
+						httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_ZOOM_PARAM);
 					}
 					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
+						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_ZOOM_PARAM, httpRequest.getQueryString());
 						// Redirect to SSO sing in page for authentication
 						m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 						return;

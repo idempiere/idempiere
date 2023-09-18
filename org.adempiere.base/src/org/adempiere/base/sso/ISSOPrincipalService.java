@@ -27,6 +27,7 @@ public interface ISSOPrincipalService
 {
 	public static final String	SSO_PRINCIPAL_SESSION_TOKEN	= "sso.principal.token";
 
+	public static final String	SSO_ZOOM_PARAM				= "sso.zoom.param";
 	public static final String	SSO_ADMIN_LOGIN				= "sso.admin.login";
 
 	/**

@@ -73,6 +73,7 @@ public class Login
 {
 	private String loginErrMsg;
 	private boolean isPasswordExpired;
+	private boolean isSSOLogin = false;
 
 	public String getLoginErrMsg() {
 		return loginErrMsg;
@@ -1291,7 +1292,6 @@ public class Login
 
 		//	Authentication
 		boolean authenticated = false;
-		boolean isSSOLogin = false;
 		try
 		{
 			isSSOLogin = token != null && SSOUtils.getSSOPrincipalService() != null && SSOUtils.getSSOPrincipalService().getUserName(token).equalsIgnoreCase(app_user);
@@ -1755,7 +1755,7 @@ public class Login
 		
 		loginErrMsg = null;
 		isPasswordExpired = false;
-		
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		int AD_User_ID = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
@@ -1766,7 +1766,9 @@ public class Login
                          .append(" WHERE ur.IsActive='Y'")
                          .append(" AND cli.IsActive='Y'")
                          .append(" AND u.IsActive='Y'")
-                         .append(" AND u.AD_User_ID=? ORDER BY cli.Name");
+                         .append(" AND u.AD_User_ID=? ")
+						 .append(" AND cli.AuthenticationType IN ").append((isSSOEnable && SSOUtils.getSSOPrincipalService() != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
+						 .append(" ORDER BY cli.Name");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {

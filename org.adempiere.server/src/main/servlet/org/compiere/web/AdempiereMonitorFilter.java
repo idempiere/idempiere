@@ -108,7 +108,9 @@ public class AdempiereMonitorFilter implements Filter
 					if (m_SSOPrincipal != null) {
 						if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
 							// Use authentication code get get token
+							String currentUri = req.getRequestURL().toString();
 							m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
+							resp.sendRedirect(currentUri);
 						} else if (!m_SSOPrincipal.isAuthenticated(req, resp)) {
 							// Redirect to SSO sing in page for authentication
 							m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
