@@ -394,16 +394,11 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		
 		try {
 			if (user.getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) != 0)
-				PO.setCrossTenantSafe();
-			user.saveEx();
-		}
-		catch(AdempiereException e)
-		{
+				user.saveCrossTenantSafeEx();
+			else
+				user.saveEx();
+		} catch(AdempiereException e) {
 			throw e;
-		}
-		finally
-		{
-			PO.clearCrossTenantSafe();
 		}
 		clearForm();
 		Dialog.info(form.getWindowNo(), "RecordSaved");
