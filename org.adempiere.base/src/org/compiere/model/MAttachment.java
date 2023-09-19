@@ -67,7 +67,6 @@ public class MAttachment extends X_AD_Attachment
 	 * @param AD_Table_ID
 	 * @param Record_ID
 	 * @return attachment or null
-	 * @deprecated Use {@link #get(Properties, int, int, String, String)}
 	 */
 	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID)
 	{
@@ -81,7 +80,6 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param Record_ID record
 	 *  @param trxName
 	 *	@return attachment or null
-	 * @deprecated Use {@link #get(Properties, int, int, String, String)}
 	 */
 	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
@@ -105,8 +103,7 @@ public class MAttachment extends X_AD_Attachment
 		if (Record_ID > 0) {
 			whereClause.append(" AND Record_ID=?");
 			params.add(Record_ID);
-		}
-		if (!Util.isEmpty(Record_UU)) {
+		} else if (!Util.isEmpty(Record_UU)) {
 			whereClause.append(" AND Record_UU=?");
 			params.add(Record_UU);
 		}
@@ -121,7 +118,6 @@ public class MAttachment extends X_AD_Attachment
 	}	//	get
 	
 	/**	Static Logger	*/
-	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MAttachment.class);
 	
 	private MStorageProvider provider;
