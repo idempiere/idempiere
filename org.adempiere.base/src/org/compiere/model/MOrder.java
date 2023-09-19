@@ -79,7 +79,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1298245367836653594L;
+	private static final long serialVersionUID = 9095740800513665542L;
 
 	/**
 	 * 	Create new Order by copying
@@ -481,7 +481,10 @@ public class MOrder extends X_C_Order implements DocAction
 		ss = bp.getInvoiceRule();
 		if (ss != null)
 			setInvoiceRule(ss);
-		ss = bp.getPaymentRule();
+		if (isSOTrx())
+			ss = bp.getPaymentRule();
+		else
+			ss = !Util.isEmpty(bp.getPaymentRulePO()) ? bp.getPaymentRulePO() : bp.getPaymentRule();
 		if (ss != null)
 			setPaymentRule(ss);
 		//	Sales Rep
