@@ -82,7 +82,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 1298245367836653594L;
+	private static final long serialVersionUID = 9095740800513665542L;
 
 	private static final String BASE_MATCHING_SQL =
 			"""
@@ -746,7 +746,10 @@ public class MOrder extends X_C_Order implements DocAction
 		ss = bp.getInvoiceRule();
 		if (ss != null)
 			setInvoiceRule(ss);
-		ss = bp.getPaymentRule();
+		if (isSOTrx())
+			ss = bp.getPaymentRule();
+		else
+			ss = !Util.isEmpty(bp.getPaymentRulePO()) ? bp.getPaymentRulePO() : bp.getPaymentRule();
 		if (ss != null)
 			setPaymentRule(ss);
 		//	Sales Rep
