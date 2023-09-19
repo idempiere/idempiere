@@ -1154,7 +1154,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
     	String recordUU = adTabbox.getSelectedGridTab().getRecord_UU();
-		if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + record_ID);
+		if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + record_ID + ", Record_UU=" + recordUU);
 
 		if (record_ID== -1 && Util.isEmpty(recordUU))	//	No Key
 		{

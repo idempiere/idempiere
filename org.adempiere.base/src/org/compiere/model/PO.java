@@ -5029,7 +5029,7 @@ public abstract class PO
 	public MAttachment getAttachment (boolean requery)
 	{
 		if (m_attachment == null || requery)
-			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID());
+			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), null);
 		return m_attachment;
 	}	//	getAttachment
 
