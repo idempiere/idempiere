@@ -42,6 +42,7 @@ import org.compiere.model.MPasswordHistory;
 import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -392,10 +393,11 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			user.setIsExpired(true);
 		
 		try {
-			user.saveEx();
-		}
-		catch(AdempiereException e)
-		{
+			if (user.getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) != 0)
+				user.saveCrossTenantSafeEx();
+			else
+				user.saveEx();
+		} catch(AdempiereException e) {
 			throw e;
 		}
 		clearForm();
