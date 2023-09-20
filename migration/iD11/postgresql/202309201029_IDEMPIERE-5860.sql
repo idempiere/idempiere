@@ -1,0 +1,7 @@
+-- IDEMPIERE-5860 Recent Item of Window Customization is usually empty
+SELECT register_migration_script('202309201029_IDEMPIERE-5860.sql') FROM dual;
+
+-- Sep 20, 2023, 10:29:54 AM CEST
+UPDATE AD_Window SET TitleLogic='@AD_Window_ID<Name>@',Updated=TO_TIMESTAMP('2023-09-20 10:29:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=229
+;
+
