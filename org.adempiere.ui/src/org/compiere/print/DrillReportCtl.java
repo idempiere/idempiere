@@ -217,27 +217,38 @@ public class DrillReportCtl {
 	 */
 	public void initDrillTableMap() {
 
+		MRole defaultRole = MRole.getDefault();
+
+		StringBuilder rolesId = new StringBuilder();
+		rolesId.append(defaultRole.get_ID());
+		defaultRole.getIncludedRoles(true).forEach(role -> rolesId.append(",").append(role.get_ID()));
+
 		ArrayList<KeyNamePair> drillTableList = new ArrayList<>();
-		String sql = "SELECT t.AD_Table_ID, t.TableName, e.PrintName, NULLIF(e.PO_PrintName,e.PrintName) "
+		String sql = "SELECT DISTINCT t.AD_Table_ID, t.TableName, e.PrintName, NULLIF(e.PO_PrintName,e.PrintName) "
 				+ "FROM AD_Column c "
 				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
 				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
+				+ " INNER JOIN AD_Tab tab ON (t.AD_Table_ID = tab.AD_Table_ID AND tab.isActive = 'Y') "
+				+ " INNER JOIN AD_Window_Access w ON (tab.AD_Window_ID = w.AD_Window_ID AND w.isActive = 'Y') "
 				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
-				+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
+				+ "WHERE c.AD_Table_ID=? AND w.AD_Role_ID IN (" + rolesId.toString() + ") AND c.IsKey='Y' "
 				+ "ORDER BY 3 ";
 			boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 			if (trl)
-				sql = "SELECT t.AD_Table_ID, t.TableName, et.PrintName, NULLIF(et.PO_PrintName,et.PrintName) "
+				sql = "SELECT DISTINCT t.AD_Table_ID, t.TableName, et.PrintName, NULLIF(et.PO_PrintName,et.PrintName) "
 					+ "FROM AD_Column c"
 					+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
 					+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
+					+ " INNER JOIN AD_Tab tab ON (t.AD_Table_ID = tab.AD_Table_ID AND tab.isActive = 'Y') "
+					+ " INNER JOIN AD_Window_Access w ON (tab.AD_Window_ID = w.AD_Window_ID AND w.isActive = 'Y') "
 					+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 					+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
 					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
-					+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y'"
+					+ "WHERE c.AD_Table_ID=? AND w.AD_Role_ID IN (" + rolesId.toString() + ") AND c.IsKey='Y' "
 					+ " AND et.AD_Language=? "
 					+ "ORDER BY 3 ";
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
