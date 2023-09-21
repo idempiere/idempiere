@@ -21,11 +21,11 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,
 ;
 
 -- Mar 28, 2023, 3:14:19 PM IST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200633,'Application Only',200239,'FBK',0,0,'Y',TO_TIMESTAMP('2023-03-28 15:14:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-28 15:14:18','YYYY-MM-DD HH24:MI:SS'),100,'D','32f2269c-8c71-40f1-a128-d6f805030a69')
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200633,'Application Only',200239,'APO',0,0,'Y',TO_TIMESTAMP('2023-03-28 15:14:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-28 15:14:18','YYYY-MM-DD HH24:MI:SS'),100,'D','32f2269c-8c71-40f1-a128-d6f805030a69')
 ;
 
 -- Mar 28, 2023, 3:16:08 PM IST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200634,'Application and SSO',200239,'APO',0,0,'Y',TO_TIMESTAMP('2023-03-28 15:16:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-28 15:16:08','YYYY-MM-DD HH24:MI:SS'),100,'D','7cd3af94-1e49-4d9f-9e33-dbdc0dfce7bb')
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200634,'Application and SSO',200239,'AAS',0,0,'Y',TO_TIMESTAMP('2023-03-28 15:16:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-28 15:16:08','YYYY-MM-DD HH24:MI:SS'),100,'D','7cd3af94-1e49-4d9f-9e33-dbdc0dfce7bb')
 ;
 
 -- Mar 28, 2023, 3:16:21 PM IST
@@ -55,3 +55,4 @@ INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,Displa
 -- May 22, 2023, 2:49:38 PM IST
 UPDATE AD_Field SET SeqNo=240, XPosition=1,Updated=TO_TIMESTAMP('2023-05-22 14:49:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207626
 ;
+
