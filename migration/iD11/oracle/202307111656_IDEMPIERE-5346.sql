@@ -62,6 +62,6 @@ ALTER TABLE sso_principalconfig RENAME CONSTRAINT sso_principleconfig_key TO sso
 
 ALTER TABLE sso_principalconfig RENAME CONSTRAINT sso_principleconfig_uu_idx TO sso_principalconfig_uu_idx;
 
-ALTER TABLE sso_principalconfig RENAME CONSTRAINT sso_principleconfig_isactive_check TO sso_principalconfig_isactive_check;
-
-ALTER TABLE sso_principalconfig RENAME CONSTRAINT sso_principleconfig_isdefault_check TO sso_principalconfig_isdefault_check;
+-- constraint names have random name in oracle
+-- ALTER TABLE sso_principalconfig RENAME CONSTRAINT sso_principleconfig_isactive_check TO sso_principalconfig_isactive_check;
+-- ALTER TABLE sso_principalconfig RENAME CONSTRAINT sso_principleconfig_isdefault_check TO sso_principalconfig_isdefault_check;
