@@ -102,16 +102,19 @@ public class SSOWebUIFilter implements Filter
 						String currentUri = httpRequest.getRequestURL().toString();
 						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 
-						// Redirect to default request URL after authentication and handle zoom. 
-						Object zoomPara = httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ZOOM_PARAM);
-						if (zoomPara != null && !Util.isEmpty((String) zoomPara))
-							currentUri += "?" + (String) zoomPara;
-						httpResponse.sendRedirect(currentUri);
-						httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_ZOOM_PARAM);
+						if (!httpResponse.isCommitted())
+						{
+							// Redirect to default request URL after authentication and handle query string. 
+							Object queryString = httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
+								currentUri += "?" + (String) queryString;
+							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);						
+							httpResponse.sendRedirect(currentUri);
+						}
 					}
 					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
-						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_ZOOM_PARAM, httpRequest.getQueryString());
+						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
 						// Redirect to SSO sing in page for authentication
 						m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 						return;

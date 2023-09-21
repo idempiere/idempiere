@@ -1362,10 +1362,10 @@ public class Login
 		ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
 		where.append("	AND EXISTS (SELECT * FROM AD_User u ")
 						.append("	INNER JOIN	AD_Client c ON (u.AD_Client_ID = c.AD_Client_ID)	")
-						.append("	WHERE	COALESCE(u.AuthenticationType, c.AuthenticationType) IN ");
+						.append("	WHERE (COALESCE(u.AuthenticationType, c.AuthenticationType) IN ");
 		//If Enable_SSO=N then don't allow SSO only users. 
 		where.append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
-		where.append("	OR COALESCE(u.AuthenticationType, c.AuthenticationType) IS NULL AND u.AD_User_ID = AD_User.AD_User_ID) ");
+		where.append("	OR COALESCE(u.AuthenticationType, c.AuthenticationType) IS NULL) AND u.AD_User_ID = AD_User.AD_User_ID) ");
 
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		where.append(" AND")
