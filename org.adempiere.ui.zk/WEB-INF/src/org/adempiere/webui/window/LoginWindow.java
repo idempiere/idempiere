@@ -26,9 +26,13 @@ package org.adempiere.webui.window;
 import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
@@ -41,14 +45,19 @@ import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.util.ZkSSOUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
@@ -74,6 +83,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8570332386555237381L;
+	protected static final CLogger log = CLogger.getCLogger(LoginWindow.class);
 
 	protected IWebClient app;
     protected Properties ctx;
@@ -96,7 +106,8 @@ public class LoginWindow extends Window implements EventListener<Event>
     	this.ctx = Env.getCtx();
         this.app = app;
         initComponents();
-        this.appendChild(pnlLogin);
+		if (pnlLogin != null)
+			this.appendChild(pnlLogin);
         this.setStyle("background-color: transparent");
         // add listener on 'ENTER' key for the login window
         addEventListener(Events.ON_OK,this);
@@ -107,10 +118,73 @@ public class LoginWindow extends Window implements EventListener<Event>
     /**
      * Create login panel
      */
-    private void initComponents()
-    {
-        createLoginPanel();
-    }
+	private void initComponents()
+	{
+		Object token = getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+		if (token == null)
+		{
+			createLoginPanel();
+		}
+		else
+		{
+			ssoLogin(token);
+		}
+	}
+
+	/**
+	 * Show role panel after SSO authentication.
+	 * 
+	 * @param Session token for retrieving user and language.
+	 */
+	private void ssoLogin(Object token)
+	{
+		String errorMessage = null;
+		try
+		{
+			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
+			String username = ssoPrincipal.getUserName(token);
+			Language language = ssoPrincipal.getLanguage(token);
+			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+			if (Util.isEmpty(username))
+				throw new AdempiereException("No Apps " + (isEmailLogin ? "Email" : "User"));
+			if (language == null)
+				language = Language.getBaseLanguage();
+
+			Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName());
+			Locale locale = language.getLocale();
+			getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
+
+			Login login = new Login(ctx);
+			boolean isShowRolePanel = MSysConfig.getBooleanValue(MSysConfig.SSO_SELECT_ROLE, true);
+			
+			// show role panel when change role 
+			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
+				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
+			
+			KeyNamePair[] clients = login.getClients(username, null, null, token);
+			if (clients != null)
+				loginOk(username, isShowRolePanel, clients, true);
+			else
+			{
+				log.log(Level.WARNING,"No Client found for user:" + username);
+				ValueNamePair error = CLogger.retrieveError();
+				if (error == null)
+					error = CLogger.retrieveWarning();
+				errorMessage = Msg.getMsg(language, error.getValue(), new Object[] { error.getName() });
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, e.getMessage(), e);
+			errorMessage = e.getLocalizedMessage();
+		}
+
+		if (!Util.isEmpty(errorMessage))
+		{
+			ZkSSOUtils.setErrorMessageText(errorMessage);
+			Executions.sendRedirect(SSOUtils.ERROR_VALIDATION_URL);
+		}
+	}
 
     /**
      * Create login panel
@@ -125,19 +199,44 @@ public class LoginWindow extends Window implements EventListener<Event>
 	 * @param show
 	 * @param clientsKNPairs
 	 */
-    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
-    {
-    	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
+	public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
+	{
+		loginOk(userName, show, clientsKNPairs, false);
+	}
+
+    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
+	{
+		boolean isClientDefined = (clientsKNPairs.length == 1 || !Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
-    	if (isClientDefined) {
+		if (isSSOLogin)
+		{
+			this.addEventListener(SSOUtils.EVENT_ON_AFTER_SSOLOGIN, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception
+				{
+					validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
+				}
+			});
+			Events.echoEvent(SSOUtils.EVENT_ON_AFTER_SSOLOGIN, this, null);
+		}
+		else
+		{
+			validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
+		}
+	}
+
+	private void validateMFPanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined)
+	{
+		if (isClientDefined) {
     		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	} else {
             showRolePanel(userName, show, clientsKNPairs, isClientDefined, false);
-            if (! pnlRole.show())
+			if (!pnlRole.show())
             	createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	}
-    }
+	}
 
     /**
      * Show role selection panel
