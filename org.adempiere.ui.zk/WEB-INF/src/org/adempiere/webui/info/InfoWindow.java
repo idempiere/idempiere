@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -102,6 +103,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MProcess;
@@ -646,11 +648,55 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if (m_count <= 0) {			
 				String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 				String[] values = queryValue.split("[" + separator.trim()+"]");
-				if (values.length == 2) {
+				if (values.length > 0) {
 					splitValue = true;
-					for(int i = 0; i < values.length && i < identifiers.size(); i++) {
-						WEditor editor = identifiers.get(i);
-						editor.setValue(values[i].trim());
+					
+					// store identifiers on info window already sort follow identify on m_table
+					List<WEditor> fillIdentifiers = new ArrayList<>();
+					// store query value already ignore value for identify not exists on info window
+					// this list is sync with fillIdentifiers (size and order)
+					List<String> fillValues = new ArrayList<>();
+					
+					List<String> tableIdentifiers = null;
+					if (m_gridfield != null && m_gridfield.getLookup() != null 
+							&& m_gridfield.getLookup() instanceof MLookup) {
+						
+						MLookup mLookup = (MLookup)m_gridfield.getLookup();
+						if (mLookup.getLookupInfo().lookupDisplayColumnNames.size() > 0)
+							tableIdentifiers = mLookup.getLookupInfo().lookupDisplayColumnNames;
+					}
+					
+					if (tableIdentifiers != null) {
+						for (int i = 0; i < tableIdentifiers.size(); i++) {
+							// final local variable to access inside lambda expression
+							int indexFinal = i;
+							List<String> tableIdentifiersFinal = tableIdentifiers;
+							
+							// sort identify of info window follow m_table
+							// ignore identifiers exists on m_table but not exists on info window
+							identifiers.forEach((Consumer<WEditor>)(identifierEditor) -> {
+								if (identifierEditor.getColumnName().equals(tableIdentifiersFinal.get(indexFinal))) {
+									fillIdentifiers.add(identifierEditor);
+									fillValues.add(values[indexFinal]);
+								}
+							});
+						}
+					}
+					
+					// case not exists mLookup.getLookupInfo().lookupDisplayColumnNames
+					// or non identify on info window exists on m_table 
+					// fail back to old logic just set values to parameter
+					if (fillIdentifiers.size() == 0) {
+						for(int i = 0; i < values.length && i < identifiers.size(); i++) {
+							fillIdentifiers.add(identifiers.get(i));
+							fillValues.add(values[i]);
+						}
+					}
+					
+					// do fill value to editor (both case correct order and non-correct order by fail back)
+					for(int i = 0; i < fillIdentifiers.size(); i++) {
+						WEditor editor = fillIdentifiers.get(i);
+						editor.setValue(fillValues.get(i).trim());
 					}
 					testCount(false);
 				} 
