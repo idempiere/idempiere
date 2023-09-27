@@ -605,6 +605,8 @@ public class MLookupFactory
 		retValue.lookupDisplayColumns = lookupDisplayColumns;
 		if(list != null) {
 			retValue.lookupDisplayColumnNames = new ArrayList<>();
+			if (isValueDisplayed)
+				retValue.lookupDisplayColumnNames.add("Value");
 			for (LookupDisplayColumn ldc : list) {
 				retValue.lookupDisplayColumnNames.add(ldc.ColumnName);
 			}
