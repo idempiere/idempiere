@@ -624,16 +624,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (isAutoComplete) {
 			testQueryForAutoComplete();
 		}else {
-			testQueryForEachIdentify();
-			
-			if (m_count <= 0) {			
-				String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-				String[] values = queryValue.split("[" + separator.trim()+"]");
-				if (values.length > 0) {
-					splitValue = true;
-					
-					testQueryForSplit(values);
-				} 
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+			String[] values = queryValue.split("[" + separator.trim()+"]");
+
+			if (values.length > 1) {
+				splitValue = true;
+				testQueryForSplit(values);
+			} 
+
+			if (m_count <= 0) {
+				testQueryForEachIdentify();
 			}
 		}
 		
