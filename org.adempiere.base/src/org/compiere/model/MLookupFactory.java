@@ -856,6 +856,12 @@ public class MLookupFactory
 			lookupDisplayColumns.add(ldc.ColumnName);
 		}
 		lInfo.lookupDisplayColumns = lookupDisplayColumns;
+		if(list != null) {
+			lInfo.lookupDisplayColumnNames = new ArrayList<>();
+			for (LookupDisplayColumn ldc : list) {
+				lInfo.lookupDisplayColumnNames.add(ldc.ColumnName);
+			}
+		}
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
