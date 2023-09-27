@@ -651,9 +651,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if (values.length > 0) {
 					splitValue = true;
 					
-					// store identifiers on info window already sort follow identify on m_table
+					// store identifiers on info window, sort to follow identifier on m_table
 					List<WEditor> fillIdentifiers = new ArrayList<>();
-					// store query value already ignore value for identify not exists on info window
+					// store query value, ignore value for identifier not exists on info window
 					// this list is sync with fillIdentifiers (size and order)
 					List<String> fillValues = new ArrayList<>();
 					
@@ -672,7 +672,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							int indexFinal = i;
 							List<String> tableIdentifiersFinal = tableIdentifiers;
 							
-							// sort identify of info window follow m_table
+							// sort identifiers of info window to follow m_table
 							// ignore identifiers exists on m_table but not exists on info window
 							identifiers.forEach((Consumer<WEditor>)(identifierEditor) -> {
 								if (identifierEditor.getColumnName().equals(tableIdentifiersFinal.get(indexFinal))) {
@@ -684,7 +684,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					}
 					
 					// case not exists mLookup.getLookupInfo().lookupDisplayColumnNames
-					// or non identify on info window exists on m_table 
+					// or no identifiers on info window exists on m_table
 					// fail back to old logic just set values to parameter
 					if (fillIdentifiers.size() == 0) {
 						for(int i = 0; i < values.length && i < identifiers.size(); i++) {
