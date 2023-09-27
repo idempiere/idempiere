@@ -619,32 +619,52 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected void processQueryValue() {
 		isQueryByUser = true;
-		for (int i = 0; i < identifiers.size(); i++) {
-			WEditor editor = identifiers.get(i);
-			if (isAutoComplete) {
-				if (!Util.isEmpty(autoCompleteSearchColumn)) {
-					if (!editor.getColumnName().equals(autoCompleteSearchColumn))
-						continue;
-				}
-			}
-			try{
-				editor.setValue(queryValue);
-			}catch(Exception ex){
-				log.log(Level.SEVERE, "error", ex.getCause());
+		boolean splitValue = false;
+		
+		if (isAutoComplete) {
+			WEditor autocompleteEditor = null;
+			
+			if (Util.isEmpty(autoCompleteSearchColumn) && identifiers.size() > 0) {
+				autocompleteEditor = identifiers.get(0);
+			}else if (!Util.isEmpty(autoCompleteSearchColumn) && identifiers.size() > 0) {
+				autocompleteEditor = identifiers.stream()
+						.filter(editor -> editor.getColumnName().equals(autoCompleteSearchColumn))
+						.findFirst().orElse(null);
 			}
 			
-			testCount(false);
-			if (isAutoComplete)
-				break;
-			if (m_count > 0) {
-				break;
-			} else {
-				editor.setValue(null);
+			
+			if (autocompleteEditor != null) {
+				try{
+					autocompleteEditor.setValue(queryValue);
+					testCount(false);
+				}catch(Exception ex){
+					// => don't run test in case not success set value
+					log.log(Level.SEVERE, "error", ex.getCause());
+				}
+			}else {
+				// => don't run test in case not found auto complete column
+				log.log(Level.SEVERE, String.format("can't found column for autocomplete query for field %s - field id %s. first identify column on m_table need to exists on identifies of info window", 
+						m_gridfield.getColumnName(), m_gridfield.getAD_Column_ID()));
 			}
-		}
-		
-		boolean splitValue = false;
-		if (!isAutoComplete) {
+		}else {
+			for (int i = 0; i < identifiers.size(); i++) {
+				WEditor editor = identifiers.get(i);
+
+				try{
+					editor.setValue(queryValue);
+				}catch(Exception ex){
+					log.log(Level.SEVERE, "error", ex.getCause());
+				}
+				
+				testCount(false);
+				
+				if (m_count > 0) {
+					break;
+				} else {
+					editor.setValue(null);
+				}
+			}
+			
 			if (m_count <= 0) {			
 				String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 				String[] values = queryValue.split("[" + separator.trim()+"]");
