@@ -112,7 +112,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			cost.load(getTrxName());
 			
 			//Validate that averagePO costing method should not be created in the cost for the expense type product
-			validateCostingForAveragePO(product.get_ID());
+			assertNoAveragePOCost(product.get_ID());
 
 		
 			// Testing cost and stock of the product after completing MR
@@ -122,7 +122,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0,storages.length);
+			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 			
 			// Testing Accounting For MR
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, rLine.getM_InOut_ID(), getTrxName());
@@ -189,7 +189,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 
 			createPOAndMRForProduct(product);
 			cost.load(getTrxName());
-			validateCostingForAveragePO(product.get_ID());
+			assertNoAveragePOCost(product.get_ID());
 			
 			createSOAndShipmentForProduct(product);
 			cost.load(getTrxName());
@@ -200,7 +200,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0,storages.length);
+			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 		}
 		finally
 		{
@@ -226,7 +226,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 
 			createPOAndMRForProduct(product);
 			cost.load(getTrxName());
-			validateCostingForAveragePO(product.get_ID());
+			assertNoAveragePOCost(product.get_ID());
 
 
 			// Create SO And Shipment
@@ -316,7 +316,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0,storages.length);
+			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 
 		}
 		finally
@@ -343,7 +343,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Create PO And MR
 			MInOutLine rLine = createPOAndMRForProduct(product);
 			cost.load(getTrxName());
-			validateCostingForAveragePO(product.get_ID());
+			assertNoAveragePOCost(product.get_ID());
 
 			// Create Invoice from the MR
 			MInOut mInOut = (MInOut) rLine.getM_InOut();
@@ -466,7 +466,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// create PO And MR for the expense type product
 			createPOAndMRForProduct(product);
 			cost.load(getTrxName());
-			validateCostingForAveragePO(product.get_ID());
+			assertNoAveragePOCost(product.get_ID());
 
 			// Create Product in which isBOM Flag true
 			fgProdcut = new MProduct(Env.getCtx(), 0, null);
@@ -541,7 +541,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0,storages.length);
+			assertEquals(0,storages.length,"No stocked should be used for expense type product Usage in Poroduction");
 
 
 			// test Stock and cost of the Product in which BOM is created
@@ -574,7 +574,6 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 	private MProduct createProduct(int category_ID)
 	{
 		MProduct product = new MProduct(Env.getCtx(), 0, null);
-		product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 		product.setName("testStandardCosting");
 		product.setValue("testStandardCosting");
 		product.setProductType(MProduct.PRODUCTTYPE_ExpenseType);
@@ -757,14 +756,14 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 		return category;
 	}
 
-	private void validateCostingForAveragePO(int productID)
+	private void assertNoAveragePOCost(int productID)
 	{
 		List<MCost> costs = new Query(Env.getCtx(), MCost.Table_Name, " M_Product_ID = ? ", null)
 						.setParameters(productID)
 						.list();
 		for (MCost cost : costs)
 		{
-			assertFalse(DictionaryIDs.M_CostElement.AVERAGE_PO.id == cost.getM_CostElement_ID());
+			assertFalse(DictionaryIDs.M_CostElement.AVERAGE_PO.id == cost.getM_CostElement_ID(),"Average PO cost should not be created for Expense type product");
 		}
 
 	}

@@ -117,7 +117,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0,storages.length);
+			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 			
 			// Test Acc. For MR
 			// get NotInvoicedReceipts Of the created MR
@@ -199,7 +199,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0,storages.length);
+			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 
 		}
 		finally
@@ -314,7 +314,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll(	Env.getCtx(), product.get_ID(),
 																DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0, storages.length);
+			assertEquals(0, storages.length,"No storage records should be created for expense type product");
 
 		}
 		finally
@@ -515,7 +515,6 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			bomLine.setQtyBOM(BD_2);
 			bomLine.saveEx();
 
-			Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 			// create production for the BOM Product
 			MProduction production = new MProduction(Env.getCtx(), 0, getTrxName());
 			production.setM_Product_ID(fgProdcut.get_ID());
@@ -560,14 +559,14 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// Test to check that storage should nor created for the expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll(	Env.getCtx(), product.get_ID(),
 																DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
-			assertEquals(0, storages.length);
+			assertEquals(0, storages.length,"No storage records should be created for expense type product");
 
 			// test Stock and cost of the Product in which BOM is created
 			assertEquals(BD_2, fgCost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "");
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), fgCost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "");
 			// Test The OnHand Qty for the Expense Type Product
 			BigDecimal onHand = MStorageOnHand.getQtyOnHand(fgProdcut.get_ID(),DictionaryIDs.M_Warehouse.HQ.id, 0, getTrxName());
-			assertEquals(BD_2, onHand.setScale(2, RoundingMode.HALF_UP), "Storge for the Expense Type Product Should not be Created");
+			assertEquals(BD_2, onHand.setScale(2, RoundingMode.HALF_UP), "Storge for the Item Type Product Should not be Created");
 
 		}
 		finally
@@ -591,7 +590,6 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 	private MProduct createProduct(int category_ID)
 	{
 		MProduct product = new MProduct(Env.getCtx(), 0, null);
-		product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 		product.setName("testStandardCosting");
 		product.setValue("testStandardCosting");
 		product.setProductType(MProduct.PRODUCTTYPE_ExpenseType);
