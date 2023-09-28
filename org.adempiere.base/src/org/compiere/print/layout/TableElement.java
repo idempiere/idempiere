@@ -1692,11 +1692,14 @@ public class TableElement extends PrintElement
 			}
 
 			// Maintain financial report detail and column section Y position
-			if ((int) (rowYstart + rowHeight) > curY)
+			int rowYheight = (int) (rowYstart + rowHeight);
+			if (m_finReportSumRows != null && !m_finReportSumRows.isEmpty())
+				rowYheight = (int) (rowYstart + rowHeight - m_tFormat.getLineStroke().floatValue());
+			if (rowYheight > curY)
 			{
-				curY = (int) (rowYstart + rowHeight);
+				curY = rowYheight;
 			}
-
+			
             //  X end line
             if (row == m_data.getRowCount()-1)         //  last Line
             {
