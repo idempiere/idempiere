@@ -633,7 +633,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			} 
 
 			if (m_count <= 0) {
-				testQueryForEachIdentify();
+				testQueryForEachIdentifier();
 			}
 		}
 		
@@ -662,18 +662,22 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			try{
 				autocompleteEditor.setValue(queryValue);
 				testCount(false);
+
 			}catch(Exception ex){
 				// => don't run test in case not success set value
 				log.log(Level.SEVERE, "error", ex.getCause());
 			}
 		}else {
 			// => don't run test in case not found auto complete column
-			log.log(Level.SEVERE, String.format("can't found column for autocomplete query for field %s - field id %s. first identify column on m_table need to exists on identifies of info window", 
-					m_gridfield.getColumnName(), m_gridfield.getAD_Column_ID()));
+			if(!Util.isEmpty(autoCompleteSearchColumn))
+				log.log(Level.SEVERE, String.format("Auto complete search column (%s) not found for field %s (field id %s). ",
+						autoCompleteSearchColumn, m_gridfield.getColumnName(), m_gridfield.getAD_Column_ID()));
+			else if (identifiers.size() == 0)
+				log.log(Level.SEVERE, String.format("Info window (%s) has no identifier columns", this.infoWindow.getName()));
 		}
 	}
 	
-	protected void testQueryForEachIdentify() {
+	protected void testQueryForEachIdentifier() {
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
 
@@ -684,7 +688,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			
 			testCount(false);
-			
+
 			if (m_count > 0) {
 				break;
 			} else {
@@ -728,7 +732,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		// case not exists mLookup.getLookupInfo().lookupDisplayColumnNames
 		// or no identifiers on info window exists on m_table
-		// fail back to old logic just set values to parameter
+		// fall back to old logic and just set values to identifiers
 		if (fillIdentifiers.size() == 0) {
 			for(int i = 0; i < values.length && i < identifiers.size(); i++) {
 				fillIdentifiers.add(identifiers.get(i));
@@ -736,12 +740,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 		
-		// do fill value to editor (both case correct order and non-correct order by fail back)
+
+
+		// do fill value to editor (for both corrected order and fall back)
 		for(int i = 0; i < fillIdentifiers.size(); i++) {
 			WEditor editor = fillIdentifiers.get(i);
 			editor.setValue(fillValues.get(i).trim());
 		}
 		testCount(false);
+
 	}
 	
 	@Override
