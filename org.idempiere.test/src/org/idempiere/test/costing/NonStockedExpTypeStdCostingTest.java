@@ -114,7 +114,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// testing cost and stock of the product after completing MR
 			assertEquals(BD_2, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			assertEquals(BigDecimal.TEN.setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current Qty");
-			// Test to check that storage should nor created for the expense type product
+			// Assert no storage records created for expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
 			assertEquals(0,storages.length,"No storage records should be created for expense type product");
@@ -196,7 +196,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// testing cost and stock of the product after completing Shipment
 			assertEquals(BD_2, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			assertEquals(BD_5, cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current Qty");
-			// Test to check that storage should nor created for the expense type product
+			// Assert no storage records created for expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll( Env.getCtx(), product.get_ID(),
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
 			assertEquals(0,storages.length,"No storage records should be created for expense type product");
@@ -311,7 +311,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// Complete the MInOutConfirm to complete the delivery
 			assertEquals(BD_2, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			assertEquals(new BigDecimal("8.00"), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost Qty");
-			// Test to check that storage should nor created for the expense type product
+			// Assert no storage records created for expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll(	Env.getCtx(), product.get_ID(),
 																DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
 			assertEquals(0, storages.length,"No storage records should be created for expense type product");
@@ -556,7 +556,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// Test the Cost and stock for the Expense type's Product
 			assertEquals(new BigDecimal("6.00"), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "");
 			assertEquals(BD_2, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "");
-			// Test to check that storage should nor created for the expense type product
+			// Assert no storage records created for expense type product
 			MStorageOnHand[] storages = MStorageOnHand.getAll(	Env.getCtx(), product.get_ID(),
 																DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
 			assertEquals(0, storages.length,"No storage records should be created for expense type product");
@@ -564,7 +564,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// test Stock and cost of the Product in which BOM is created
 			assertEquals(BD_2, fgCost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "");
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), fgCost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "");
-			// Test The OnHand Qty for the Expense Type Product
+			// Assert that OnHand Qty for the item type finished good Product created
 			BigDecimal onHand = MStorageOnHand.getQtyOnHand(fgProdcut.get_ID(),DictionaryIDs.M_Warehouse.HQ.id, 0, getTrxName());
 			assertEquals(BD_2, onHand.setScale(2, RoundingMode.HALF_UP), "Storge for the Item Type Product Should not be Created");
 
