@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.model.I_C_AllocationHdr;
 import org.compiere.model.I_C_Cash;
 import org.compiere.model.I_C_ProjectIssue;
@@ -312,6 +313,9 @@ public abstract class Doc
 		catch (Throwable t)
 		{
 			trx.rollback();
+			if(t instanceof SQLException sqlEx) {
+				return Msg.getMsg(Env.getCtx(), DBException.getDefaultDBExceptionMessage(sqlEx));
+			}
 			return "@Error@ " + t.getLocalizedMessage();
 		}
 		finally
