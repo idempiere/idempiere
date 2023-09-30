@@ -1209,7 +1209,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 								+ ": input column " + field.getColumn() + " does not exist");
 					} else {
 						try {
-							if(!fieldInput.getAD_Column().isAlwaysUpdateable() && isProcessed)
+							if(!MColumn.get(fieldInput.getAD_Column_ID()).isAlwaysUpdateable() && isProcessed)
 								throw new IdempiereServiceFault("Document Processed", new QName("ProcessedDocument"));
 								
 							setValueAccordingToClass(po, poinfo, field, idxcol,fieldInput);
