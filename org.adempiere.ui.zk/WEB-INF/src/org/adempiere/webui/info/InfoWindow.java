@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -100,6 +101,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MProcess;
@@ -604,43 +606,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected void processQueryValue() {
 		isQueryByUser = true;
-		for (int i = 0; i < identifiers.size(); i++) {
-			WEditor editor = identifiers.get(i);
-			if (isAutoComplete) {
-				if (!Util.isEmpty(autoCompleteSearchColumn)) {
-					if (!editor.getColumnName().equals(autoCompleteSearchColumn))
-						continue;
-				}
-			}
-			try{
-				editor.setValue(queryValue);
-			}catch(Exception ex){
-				log.log(Level.SEVERE, "error", ex.getCause());
-			}
-			
-			testCount(false);
-			if (isAutoComplete)
-				break;
-			if (m_count > 0) {
-				break;
-			} else {
-				editor.setValue(null);
-			}
-		}
-		
 		boolean splitValue = false;
-		if (!isAutoComplete) {
-			if (m_count <= 0) {			
-				String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-				String[] values = queryValue.split("[" + separator.trim()+"]");
-				if (values.length == 2) {
-					splitValue = true;
-					for(int i = 0; i < values.length && i < identifiers.size(); i++) {
-						WEditor editor = identifiers.get(i);
-						editor.setValue(values[i].trim());
-					}
-					testCount(false);
-				} 
+		
+		if (isAutoComplete) {
+			testQueryForAutoComplete();
+		}else {
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+			String[] values = queryValue.split("[" + separator.trim()+"]");
+
+			if (values.length > 1) {
+				splitValue = true;
+				testQueryForSplit(values);
+			} 
+
+			if (m_count <= 0) {
+				testQueryForEachIdentifier();
 			}
 		}
 		
@@ -653,6 +633,111 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = false;
 	}
 
+	protected void testQueryForAutoComplete() {
+		WEditor autocompleteEditor = null;
+		
+		if (Util.isEmpty(autoCompleteSearchColumn) && identifiers.size() > 0) {
+			autocompleteEditor = identifiers.get(0);
+		}else if (!Util.isEmpty(autoCompleteSearchColumn) && identifiers.size() > 0) {
+			autocompleteEditor = identifiers.stream()
+					.filter(editor -> editor.getColumnName().equals(autoCompleteSearchColumn))
+					.findFirst().orElse(null);
+		}
+		
+		
+		if (autocompleteEditor != null) {
+			try{
+				autocompleteEditor.setValue(queryValue);
+				testCount(false);
+
+			}catch(Exception ex){
+				// => don't run test in case not success set value
+				log.log(Level.SEVERE, "error", ex.getCause());
+			}
+		}else {
+			// => don't run test in case not found auto complete column
+			if(!Util.isEmpty(autoCompleteSearchColumn))
+				log.log(Level.SEVERE, String.format("Auto complete search column (%s) not found for field %s (field id %s). ",
+						autoCompleteSearchColumn, m_gridfield.getColumnName(), m_gridfield.getAD_Column_ID()));
+			else if (identifiers.size() == 0)
+				log.log(Level.SEVERE, String.format("Info window (%s) has no identifier columns", this.infoWindow.getName()));
+		}
+	}
+	
+	protected void testQueryForEachIdentifier() {
+		for (int i = 0; i < identifiers.size(); i++) {
+			WEditor editor = identifiers.get(i);
+
+			try{
+				editor.setValue(queryValue);
+			}catch(Exception ex){
+				log.log(Level.SEVERE, "error", ex.getCause());
+			}
+			
+			testCount(false);
+
+			if (m_count > 0) {
+				break;
+			} else {
+				editor.setValue(null);
+			}
+		}
+	}
+	
+	protected void testQueryForSplit(String [] values) {
+		// store identifiers on info window, sort to follow identifier on m_table
+		List<WEditor> fillIdentifiers = new ArrayList<>();
+		// store query value, ignore value for identifier not exists on info window
+		// this list is sync with fillIdentifiers (size and order)
+		List<String> fillValues = new ArrayList<>();
+		
+		List<String> tableIdentifiers = null;
+		if (m_gridfield != null && m_gridfield.getLookup() != null 
+				&& m_gridfield.getLookup() instanceof MLookup) {
+			
+			MLookup mLookup = (MLookup)m_gridfield.getLookup();
+			if (mLookup.getLookupInfo().lookupDisplayColumnNames.size() > 0)
+				tableIdentifiers = mLookup.getLookupInfo().lookupDisplayColumnNames;
+		}
+		
+		if (tableIdentifiers != null) {
+			for (int i = 0; i < tableIdentifiers.size(); i++) {
+				// final local variable to access inside lambda expression
+				int indexFinal = i;
+				List<String> tableIdentifiersFinal = tableIdentifiers;
+				
+				// sort identifiers of info window to follow m_table
+				// ignore identifiers exists on m_table but not exists on info window
+				identifiers.forEach((Consumer<WEditor>)(identifierEditor) -> {
+					if (identifierEditor.getColumnName().equals(tableIdentifiersFinal.get(indexFinal))) {
+						fillIdentifiers.add(identifierEditor);
+						fillValues.add(values[indexFinal]);
+					}
+				});
+			}
+		}
+		
+		// case not exists mLookup.getLookupInfo().lookupDisplayColumnNames
+		// or no identifiers on info window exists on m_table
+		// fall back to old logic and just set values to identifiers
+		if (fillIdentifiers.size() == 0) {
+			for(int i = 0; i < values.length && i < identifiers.size(); i++) {
+				fillIdentifiers.add(identifiers.get(i));
+				fillValues.add(values[i]);
+			}
+		}
+		
+
+
+		// do fill value to editor (for both corrected order and fall back)
+		for(int i = 0; i < fillIdentifiers.size(); i++) {
+			WEditor editor = fillIdentifiers.get(i);
+			editor.setValue(fillValues.get(i).trim());
+		}
+		testCount(false);
+
+	}
+	
 	@Override
 	protected void loadInfoWindowData (){
 		if (m_infoWindowID > 0) {
