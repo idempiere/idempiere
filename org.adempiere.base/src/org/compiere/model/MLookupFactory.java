@@ -604,6 +604,8 @@ public class MLookupFactory
 		retValue.lookupDisplayColumns = lookupDisplayColumns;
 		if(list != null) {
 			retValue.lookupDisplayColumnNames = new ArrayList<>();
+			if (isValueDisplayed)
+				retValue.lookupDisplayColumnNames.add("Value");
 			for (LookupDisplayColumn ldc : list) {
 				retValue.lookupDisplayColumnNames.add(ldc.ColumnName);
 			}
@@ -855,6 +857,12 @@ public class MLookupFactory
 			lookupDisplayColumns.add(ldc.ColumnName);
 		}
 		lInfo.lookupDisplayColumns = lookupDisplayColumns;
+		if(list != null) {
+			lInfo.lookupDisplayColumnNames = new ArrayList<>();
+			for (LookupDisplayColumn ldc : list) {
+				lInfo.lookupDisplayColumnNames.add(ldc.ColumnName);
+			}
+		}
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
