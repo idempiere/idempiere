@@ -205,7 +205,7 @@ public class MDistribution extends X_GL_Distribution
 	public static MDistribution[] get (int Account_ID)
 	{
 		Properties ctx = Env.getCtx();
-		Integer key = Integer.valueOf(Account_ID);
+		String key = Env.getAD_Client_ID(ctx) + "_" + Account_ID;
 		MDistribution[] retValue = (MDistribution[])s_accounts.get(key);
 		if (retValue != null)
 			return retValue;
@@ -251,8 +251,8 @@ public class MDistribution extends X_GL_Distribution
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MDistribution.class);
 	/**	Distributions by Account			*/
-	private static CCache<Integer,MDistribution[]> s_accounts 
-		= new CCache<Integer,MDistribution[]>(Table_Name, 100);
+	private static CCache<String,MDistribution[]> s_accounts 
+		= new CCache<String,MDistribution[]>(Table_Name, 100);
 	
 	
     /**
