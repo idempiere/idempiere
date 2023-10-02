@@ -136,10 +136,15 @@ public class Doc_Movement extends Doc
 		{
 			DocLine line = p_lines[i];
 			BigDecimal costs = null;
-			
+			MProduct product = (MProduct) line.getProduct();
+
+            //If expense type stocked product, no accounting impacted
+            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+                continue;
+            }
+
 			if (!isReversal(line))
 			{
-				MProduct product = (MProduct) line.getProduct();
 				String costingLevel = product.getCostingLevel(as);
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) )
 				{

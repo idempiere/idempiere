@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
@@ -375,9 +376,11 @@ public class Doc_Production extends Doc
 				
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
 				{
+					MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+					if (product.isService())
+						assets = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 					//post roll-up  
-					fl = fact.createLine(line, 
-							line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
+					fl = fact.createLine(line, assets,
 							as.getC_Currency_ID(), bomCost.negate().setScale(stdPrecision, RoundingMode.HALF_UP));
 					if (fl == null) 
 					{ 
@@ -415,8 +418,10 @@ public class Doc_Production extends Doc
 				{
 					factLineAmt = bomCost.negate();
 				}
-				fl = fact.createLine(line,
-					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
+				MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				if (product.isService())
+					assets = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+				fl = fact.createLine(line, assets,
 					as.getC_Currency_ID(), factLineAmt.setScale(stdPrecision, RoundingMode.HALF_UP));
 				if (fl == null)
 				{

@@ -245,6 +245,11 @@ public class Doc_Inventory extends Doc
 			}
 			else 
 			{
+				//if product type expense and stocked, then no needs to do posting
+                if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+                    continue;
+                }
+                
 				if (!isReversal(line))
 				{
 					product = line.getProduct();
