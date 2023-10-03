@@ -72,10 +72,6 @@
 		<copy file="utils/RUN_WinEnvTemplate.bat"
 			tofile="utils/RUN_WinEnv.bat" filtering="yes" overwrite="yes" />
 
-		<delete>
-			<fileset dir="." includes="**/*.sh" />
-		</delete>
-
 	</target>
 
 
