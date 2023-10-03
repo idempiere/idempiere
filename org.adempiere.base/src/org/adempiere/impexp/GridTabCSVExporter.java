@@ -79,6 +79,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 		Map<GridTab,GridField[]> tabMapDetails = new HashMap<GridTab, GridField[]>();
 		MTable table= null;
 		MTable tableDetail = null;
+		
+		// keep current selection
+		int currentRow = gridTab.getCurrentRow();
+
 		try {
 			FileOutputStream fileOut = new FileOutputStream (file); 			
 			OutputStreamWriter oStrW = new OutputStreamWriter(fileOut, Ini.getCharset());
@@ -301,6 +305,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 		} catch (IOException e) {
 			throw new AdempiereException(e);
 		} finally {
+			gridTab.dataRefresh(currentRow);
+			
 			if (mapWriter != null) {
 				try {
 					mapWriter.close();
