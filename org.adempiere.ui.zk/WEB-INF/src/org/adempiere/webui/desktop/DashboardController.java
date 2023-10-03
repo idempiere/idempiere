@@ -1604,7 +1604,7 @@ public class DashboardController implements EventListener<Event> {
 	 */
 	private ReportEngine runReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters) {
    		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
-		if (!process.isReport())
+		if (!process.isReport() || process.getAD_ReportView_ID() == 0)
 			 throw new IllegalArgumentException("Not a Report AD_Process_ID=" + process.getAD_Process_ID()
 				+ " - " + process.getName());
 		//	Process
@@ -1618,10 +1618,6 @@ public class DashboardController implements EventListener<Event> {
 				return null;
 			//
 			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
-			if(process.getJasperReport() != null) {
-				pi.setExport(true);
-				pi.setExportFileExtension("html");
-			}
 			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
@@ -1629,9 +1625,6 @@ public class DashboardController implements EventListener<Event> {
 				throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
 		
 			//	Report
-			if(process.getJasperReport() != null) {
-				ServerProcessCtl.process(pi, null);
-			}
 			ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
 			if (re == null)
 				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
@@ -1680,21 +1673,18 @@ public class DashboardController implements EventListener<Event> {
 			if(!fillParameter(pInstance, parameters))
 				return null;
 			//
+			if(process.getJasperReport() == null)
+				throw new RuntimeException("no Jasper Report File provided. Process "+process.getName());
+				
 			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
-			if(process.getJasperReport() != null) {
-				pi.setExport(true);
-				pi.setExportFileExtension("html");
-			}
+			pi.setExport(true);
+			pi.setExportFileExtension("html");
 			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
-			if (!process.processIt(pi, null) && pi.getClassName() != null) 
-				throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		
 			//	Report
-			if(process.getJasperReport() != null) {
-				ServerProcessCtl.process(pi, null);
-			}
+			ServerProcessCtl.process(pi, null);
 			
 			return pi.getExportFile();
 		}catch(Exception ex) {
