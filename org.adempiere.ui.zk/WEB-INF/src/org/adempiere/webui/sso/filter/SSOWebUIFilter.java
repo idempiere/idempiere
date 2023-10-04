@@ -65,6 +65,14 @@ public class SSOWebUIFilter implements Filter
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+			//handle ping request
+			String ping = httpRequest.getHeader("X-PING");
+			if (!Util.isEmpty(ping, true))
+			{
+				chain.doFilter(request, response);
+				return;
+			}
+			
 			// Ignore the resource request	
 			if (SSOUtils.isResourceRequest(httpRequest, true))
 			{
