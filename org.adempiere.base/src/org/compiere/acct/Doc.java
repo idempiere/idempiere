@@ -314,7 +314,9 @@ public abstract class Doc
 		{
 			trx.rollback();
 			if(t instanceof SQLException sqlEx) {
-				return Msg.getMsg(Env.getCtx(), DBException.getDefaultDBExceptionMessage(sqlEx));
+				String messageError = DBException.getDefaultDBExceptionMessage(sqlEx);
+				   if (messageError != null) 
+				      return Msg.getMsg(Env.getCtx(), messageError);
 			}
 			return "@Error@ " + t.getLocalizedMessage();
 		}
