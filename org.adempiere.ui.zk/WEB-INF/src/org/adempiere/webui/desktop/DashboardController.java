@@ -1673,8 +1673,6 @@ public class DashboardController implements EventListener<Event> {
 			if(!fillParameter(pInstance, parameters))
 				return null;
 			//
-			if(process.getJasperReport() == null)
-				throw new RuntimeException("no Jasper Report File provided. Process "+process.getName());
 				
 			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
 			pi.setExport(true);
