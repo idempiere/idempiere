@@ -83,6 +83,17 @@ public class GridTabCSVExporter implements IGridTabExporter
 		// keep current selection
 		int currentRow = gridTab.getCurrentRow();
 
+		int currentRowDetailTab = -1;
+		GridTab selectedDetailTab = null;
+		for (int i = 0; i < childs.size(); i++) {
+			GridTab detailTab = childs.get(i);
+			if (detailTab.getTabNo() == indxDetailSelected) {
+				selectedDetailTab = detailTab;
+				currentRowDetailTab = selectedDetailTab.getCurrentRow();
+				break;
+			}
+		}
+		
 		try {
 			FileOutputStream fileOut = new FileOutputStream (file); 			
 			OutputStreamWriter oStrW = new OutputStreamWriter(fileOut, Ini.getCharset());
@@ -305,7 +316,18 @@ public class GridTabCSVExporter implements IGridTabExporter
 		} catch (IOException e) {
 			throw new AdempiereException(e);
 		} finally {
-			gridTab.dataRefresh(currentRow);
+			gridTab.setCurrentRow(currentRow);
+			
+			// reload/query for all child tab to avoid any side effect
+			for (GridTab childTab:childs){
+				if (!childTab.isLoadComplete()){
+					childTab.initTab(false);
+				}
+				childTab.query(false, 0, 0);
+			}
+			
+			if (selectedDetailTab != null && currentRowDetailTab > -1)
+				selectedDetailTab.setCurrentRow(currentRowDetailTab, true);
 			
 			if (mapWriter != null) {
 				try {
