@@ -470,7 +470,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("D", null);
 		for (MToolBarButton toolbarButton : officialButtons) {
 			if ( !toolbarButton.isActive() ) {
-				buttons.remove(toolbarButton.getComponentName());
+				ADWindowToolbar.removeButton(buttons, toolbarButton.getComponentName());
 			} else {
 				if ( toolbarButton.isCustomization() ) {
 					String actionId = toolbarButton.getActionClassName();
