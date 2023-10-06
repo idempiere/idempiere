@@ -33,6 +33,7 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
 import org.compiere.model.MUserDefInfo;
@@ -139,7 +140,8 @@ public class HelpController
         		"if (typeof header == 'undefined') {s=s+'<i>'+this.defaultMessage+'</i>';} " +
         		"else {s=s+'<b>'+header+'</b>';" +
         		"if (typeof description=='string' && description.length > 0) {s=s+'<br><br><i>'+description+'</i>';}" +
-        		"if (typeof help=='string' && help.length > 0) {s=s+'<br><br>'+help;}}" +
+        		"if (typeof help=='string' && help.length > 0) {s=s+'<br><br>'+help;}" +
+        		"if (typeof entityType=='string' && entityType.length > 0) {s=s+'<p class=\"help-entitytype\">[ '+entityType+' ]</p>';}}" +
         		"s=s+'</div></body></html>';this.setContent(s);}");
         setupFieldTooltip();
         
@@ -176,6 +178,7 @@ public class HelpController
     	String desc = null;
     	String help = null;
     	String otherContent = null;
+    	String entityType = null;
     	
     	if (field != null)
     	{
@@ -187,6 +190,10 @@ public class HelpController
 				
 				if (field.getHelp().length() != 0)
 					help = field.getHelp();
+				
+				if (MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx()))
+						&& field.getEntityType().length() != 0)
+					entityType = field.getEntityType();
 			}
     	}
     	else
@@ -194,7 +201,7 @@ public class HelpController
     		otherContent = Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField");
     	}
     	
-    	renderToolTip(hdr, desc, help, otherContent);
+    	renderToolTip(hdr, desc, help, otherContent, entityType);
     }
     
     /**
@@ -204,7 +211,7 @@ public class HelpController
      * @param help
      * @param otherContent
      */
-    public void renderToolTip(String hdr, String  desc, String help, String otherContent)
+    public void renderToolTip(String hdr, String  desc, String help, String otherContent,String entityType)
     {
     	if (Util.isEmpty(hdr) && Util.isEmpty(otherContent))
     		pnlToolTip.setVisible(false);
@@ -236,6 +243,16 @@ public class HelpController
     		if (help != null && help.trim().length() > 0){
     			sb.append("<br><br>\n");
     			sb.append(help);
+    		}
+    		
+    		if (MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx())))
+    		{
+	    		if (entityType != null && entityType.trim().length() > 0){
+	    			sb.append("<p class=\"help-entitytype\">[ ");
+	    			sb.append(entityType);
+	    			sb.append(" ]</p>");
+
+	    		}
     		}
     		
     	}    	
@@ -304,6 +321,8 @@ public class HelpController
 					
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, tab.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}
@@ -324,6 +343,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, tab.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -352,6 +373,8 @@ public class HelpController
 					
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, process.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}
@@ -372,6 +395,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, process.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -400,6 +425,8 @@ public class HelpController
 
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, form.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}
@@ -419,6 +446,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, form.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -458,6 +487,8 @@ public class HelpController
 					
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, info.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}
@@ -489,6 +520,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, info.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -516,6 +549,8 @@ public class HelpController
 					
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, workflow.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}
@@ -535,6 +570,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, workflow.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -564,6 +601,8 @@ public class HelpController
 					
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, task.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}					
@@ -583,6 +622,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, task.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -611,6 +652,8 @@ public class HelpController
 					
 					if (translatedContent.length() > 0)
 					{
+						appendEntityType(translatedContent, node.getEntityType());
+						
 						translatedContent.insert(0, "<p>\n");
 						translatedContent.append("</p>");
 					}
@@ -630,6 +673,8 @@ public class HelpController
 				
 				if (baseContent.length() > 0)
 				{
+					appendEntityType(baseContent, node.getEntityType());
+					
 					baseContent.insert(0, "<p>\n");
 					baseContent.append("</p>");
 				}
@@ -661,6 +706,23 @@ public class HelpController
     		popup.setPage(pnlContextHelp.getPage());
     	}
     }
+    
+    /**
+	 * Append Entity Type information on a given string
+	 *
+	 * @param string
+	 * @param entityType
+	 */
+	private void appendEntityType(StringBuilder string, String entityType) {
+
+		if (!MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx())))
+				return;
+
+		if (string == null)
+			string = new StringBuilder();
+
+		string.append("<p class=\"help-entitytype\">[ ").append(entityType).append(" ]</p>");
+	}
 
     public void renderQuickInfo(Object obj) {
     	if (obj == null) {

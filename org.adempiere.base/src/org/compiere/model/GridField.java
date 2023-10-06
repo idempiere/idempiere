@@ -1482,6 +1482,16 @@ public class GridField
 	{
 		return m_vo.Header;
 	}
+	
+	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
+	
 	/**
 	 * 	Get Display Type
 	 *	@return dt

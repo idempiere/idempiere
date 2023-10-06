@@ -407,6 +407,15 @@ public class GridWindow implements Serializable
 	{
 		return m_vo.WindowType;
 	}	//	getWindowType
+	
+	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
 
 	/**
 	 *	Is Transaction Window

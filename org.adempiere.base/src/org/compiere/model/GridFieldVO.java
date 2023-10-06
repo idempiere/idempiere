@@ -119,6 +119,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		MUserDefField userDef = MUserDefField.get(vo.ctx,vo.AD_Field_ID, vo.AD_Tab_ID, vo.AD_Window_ID);
 		if (userDef != null)
 		{
+			vo.EntityType = vo.EntityType + "**U**";
 			if (userDef.getName() != null)
 				vo.Header = userDef.getName();
 			if (userDef.getDescription() != null)
@@ -307,6 +308,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.PA_DashboardContent_ID = rs.getInt ("PA_DashboardContent_ID");
 			vo.Placeholder = rs.getString("Placeholder");
 			vo.IsHtml = "Y".equals(rs.getString("IsHtml"));
+			vo.EntityType = rs.getString(MField.COLUMNNAME_EntityType);
 			
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -388,6 +390,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.FieldGroupType = rs.getString("FieldGroupType");
 			vo.IsCollapsedByDefault = "Y".equals(rs.getString("IsCollapsedByDefault"));
 			vo.IsShowNegateButton = "Y".equals(rs.getString("IsShowNegateButton"));
+			vo.EntityType = rs.getString("EntityType");
 		}
 		catch (SQLException e)
 		{
@@ -484,6 +487,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		voT.ValueMax = voF.ValueMax;
 		voT.isRange = voF.isRange;
 		voT.dateRangeOption = voF.dateRangeOption;
+		voT.EntityType = voF.EntityType;
 		//
 		// Genied: For a range parameter the second field 
 		// lookup behaviour should match the first one.
@@ -499,6 +503,15 @@ public class GridFieldVO implements Serializable, Cloneable
 		
 		return voT;
 	}   //  createParameter
+	
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
+			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID,
+			boolean IsMandatory, boolean IsEncrypted,String Placeholder)
+	{
+		return createParameter (ctx, WindowNo,  WindowIDOfPanel, infoWindowID,
+				AD_Column_ID, ColumnName,  Name,  AD_Reference_ID,  AD_Reference_Value_ID,
+				 IsMandatory,  IsEncrypted, Placeholder, null);
+	}
 
 	/**
 	 * Create parameter for infoWindow
@@ -518,7 +531,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	 */
 	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
 			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
-			boolean IsMandatory, boolean IsEncrypted, String Placeholder)
+			boolean IsMandatory, boolean IsEncrypted, String Placeholder,String EntityType)
 	{
 		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
 		vo.isProcess = true;
@@ -536,6 +549,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		vo.AD_InfoWindow_ID_Of_Panel = infoWindowID;
 		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
 		vo.Placeholder = Placeholder;
+		vo.EntityType = EntityType;
 		//
 		vo.initFinish();
 		return vo;
@@ -729,6 +743,9 @@ public class GridFieldVO implements Serializable, Cloneable
 	/** Lookup Value Object     */
 	public MLookupInfo  lookupInfo = null;
 	
+	/** EntityType **/
+	public String EntityType = null;
+	
 	/** Field ID 				*/
 	public int AD_Field_ID = 0;
 	
@@ -813,6 +830,8 @@ public class GridFieldVO implements Serializable, Cloneable
 			MandatoryLogic = "";
 		if (Placeholder == null)
 			Placeholder = "";
+		if (EntityType == null)
+			EntityType = "";
 
 
 		//  Create Lookup, if not ID
