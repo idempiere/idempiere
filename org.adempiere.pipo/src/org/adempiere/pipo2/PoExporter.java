@@ -261,6 +261,10 @@ public class PoExporter {
 					continue;
 			}
 			
+			// Skip AD_Org_ID except Table AD_Org
+			if (columnName.equals("AD_Org_ID") && !(I_AD_Org.Table_Name.equals(po.get_TableName())))
+				continue;
+			
 			//only export official id
 			if (columnName.equalsIgnoreCase(info.getTableName()+"_ID")) {
 				int id = po.get_ID();
