@@ -1580,7 +1580,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
         MTabCustomization tabcust = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), getAD_Tab_ID(), null);
         if (tabcust != null && tabcust.getIsDisplayedGrid() != null)
         	return "N".equals(tabcust.getIsDisplayedGrid());
-		return m_vo.IsSingleRow;
+		return MTab.get(getAD_Tab_ID()).getAttributeAsBoolean("IsSingleRow");// m_vo.IsSingleRow;
 	}   //  isSingleRow;
 
 	/**
@@ -3486,7 +3486,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public int getMaxQueryRecords() {
 		// minimum between AD_Tab.MaxQueryRecords and AD_Role.MaxQueryRecords
 		int roleMaxQueryRecords = MRole.getDefault().getMaxQueryRecords();
-		int tabMaxQueryRecords = m_vo.MaxQueryRecords;
+		int tabMaxQueryRecords = MTab.get(getAD_Tab_ID()).getAttributeAsInt("MaxQueryRecords");//m_vo.MaxQueryRecords;
 		if (roleMaxQueryRecords > 0 && (roleMaxQueryRecords < tabMaxQueryRecords || tabMaxQueryRecords == 0))
 			tabMaxQueryRecords = roleMaxQueryRecords;
 		return tabMaxQueryRecords;

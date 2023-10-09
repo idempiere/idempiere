@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -123,6 +124,18 @@ public abstract class PO
 
 	/** default timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
+	
+	
+	/** Get value of the attribute for Table ID and Record ID  **/
+	private static final String	TABLE_ATTRIBUTE_VALUE_SQL = "SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, ta.Value, ta.ValueDate, ta.ValueNumber, av.Value "
+																		+ "	FROM AD_TableAttribute ta "
+																		+ "	INNER JOIN M_Attribute a ON (a.M_Attribute_ID = ta.M_Attribute_ID) "
+																		+ "	LEFT JOIN M_AttributeValue av ON (av.M_AttributeValue_ID = ta.M_AttributeValue_ID) "
+																		+ "	WHERE ta.AD_Table_ID = ? AND Record_ID = ? AND a.IsActive = 'Y' ";
+	/** Get Default value of the attribute **/
+	private static final String	TABLE_ATTRIBUTE_DEFAULTVALUE_SQL = "SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, a.DefaultValue FROM M_Attribute a WHERE a.Name = ? AND a.IsActive = 'Y'";
+
+	private static CCache<String, Object> s_tableAttributeDefault = new CCache<String, Object>("AD_TableAttribute_Default", 30);	
 
 	/**
 	 * 	Set Document Value Workflow Manager
@@ -388,6 +401,9 @@ public abstract class PO
 
 	/** Indices of virtual columns that were already resolved */
 	private Set<Integer> loadedVirtualColumns = new HashSet<>();
+	
+	/* Record Attribute and Value Map */
+	private Map<String, Object> attributeMap = new HashMap<String, Object>();
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -5940,5 +5956,138 @@ public abstract class PO
 	public boolean columnExists(String columnName) {
 		return columnExists(columnName, false);
 	}
+	
+	public boolean getAttributeAsBoolean(String attributeName)
+	{
+		Object value = getAttribute(attributeName);
+		return value != null ? "Y".equals((String) value) : false;
+	} // getAttributeAsBoolean
+	
+	public int getAttributeAsInt(String attributeName)
+	{
+		Object value = getAttribute(attributeName);
+		return value != null ? (int) value : 0;
+	} // getAttributeAsInt
 
+	/**
+	 * Return attribute value for table and record.
+	 * Load All attribute first time, then only query attribute that are not in map.
+	 * TODO can write different method to get directly cast value like getAttributeAsString,
+	 * getAttributeAsInt, getAttributeAsDate etc..
+	 * 
+	 * @param  attributeName
+	 * @param  table_ID
+	 * @param  record_ID
+	 * @return
+	 */
+	public Object getAttribute(String attributeName)
+	{
+		if (attributeMap.isEmpty() || !attributeMap.containsKey(attributeName))
+		{
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				String where = attributeMap.isEmpty() ? "" : " AND a.Name = ? ";
+				// 4 - String, 5 - data, 6 - number, 7 - attribute value
+				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, null);
+				pstmt.setInt(1, get_Table_ID());
+				pstmt.setInt(2, get_ID());
+				if (!attributeMap.isEmpty())
+					pstmt.setString(3, attributeName);
+
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					Object value = null;
+					String attName = rs.getString(1);
+					String attType = rs.getString(2);
+					int reference_ID = rs.getInt(3);
+					if (MAttribute.ATTRIBUTEVALUETYPE_Number.equalsIgnoreCase(attType))
+						value = rs.getInt(6);
+					else if (MAttribute.ATTRIBUTEVALUETYPE_StringMax40.equalsIgnoreCase(attType)
+								|| (MAttribute.ATTRIBUTEVALUETYPE_Reference.equalsIgnoreCase(attType) && DisplayType.YesNo == reference_ID))
+						value = rs.getString(4);
+					else
+					{
+						/* TODO other reference implementation */
+					}
+
+					if (value != null)
+						attributeMap.put(attName, value);
+				}
+			}
+			catch (Exception e)
+			{
+				CLogger.get().log(Level.SEVERE, "Failed: Get Attribute = " + attributeName, e);
+				return null;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
+
+		if (attributeMap.containsKey(attributeName))
+			return attributeMap.get(attributeName);
+
+		return getAttributeDefaultValue(attributeName);
+	} // getAttribute
+
+	/**
+	 * Return attribute default value for table.
+	 *  
+	 * @param  attributeName
+	 * @param  table_ID
+	 * @return
+	 */
+	private static Object getAttributeDefaultValue(String attributeName)
+	{
+		if (!s_tableAttributeDefault.containsKey(attributeName))
+		{
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			Object value = null;
+			try
+			{
+				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_DEFAULTVALUE_SQL, null);
+				pstmt.setString(1, attributeName);
+				rs = pstmt.executeQuery();
+				if(rs.next())
+				{
+					String attName = rs.getString(1);
+					String attType = rs.getString(2);
+					String DefaultValue = rs.getString(4);
+					if (MAttribute.ATTRIBUTEVALUETYPE_Number.equalsIgnoreCase(attType) && DefaultValue != null)
+					{
+						value = Integer.valueOf(DefaultValue);
+						/* TODO have to add logic to parsing the value, value format validation */
+					}
+					else
+					{
+						/* TODO other reference implementation */
+					}
+					s_tableAttributeDefault.put(attName, value);
+				}
+			}
+			catch (Exception e)
+			{
+				CLogger.get().log(Level.SEVERE, "Failed: Get Attribute = " + attributeName, e);
+				return null;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
+
+		if (s_tableAttributeDefault.containsKey(attributeName))
+			return s_tableAttributeDefault.get(attributeName);
+
+		return null;
+	} // getAttributeDefaultValue
 }   //  PO
