@@ -211,15 +211,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
 		if (isSSOLogin)
 		{
-			this.addEventListener(SSOUtils.EVENT_ON_AFTER_SSOLOGIN, new EventListener<Event>() {
-
-				@Override
-				public void onEvent(Event arg0) throws Exception
-				{
-					validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
-				}
-			});
-			Events.echoEvent(SSOUtils.EVENT_ON_AFTER_SSOLOGIN, this, null);
+			Executions.schedule(getDesktop(), e -> validateMFPanel(userName, show, clientsKNPairs, isClientDefined), new Event(SSOUtils.EVENT_ON_AFTER_SSOLOGIN));
 		}
 		else
 		{

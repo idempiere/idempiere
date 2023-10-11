@@ -16,12 +16,12 @@ fi
 find . -name '*.sh' -exec chmod u+x '{}' \;
 
 # Setup idempiere.properties and idempiereEnv.properties
-$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.silent-application $@
+"$JAVA" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.silent-application $@
 
 if [ -s idempiere.properties ]
 then
     # Setup Jetty
-    $JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
+    "$JAVA" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
 fi
 
 echo .
