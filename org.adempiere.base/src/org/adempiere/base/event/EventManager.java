@@ -92,7 +92,7 @@ public class EventManager implements IEventManager {
 						s = s.trim();
 						s = s.replaceAll(" ", "");
 						if (s.endsWith("[*]")) {
-							blackListEventHandlers.add(s.trim());
+							blackListEventHandlers.add(s.substring(0, s.length()-3));
 						} else {
 							int topicStart = s.indexOf("[");
 							if (topicStart <= 0)
