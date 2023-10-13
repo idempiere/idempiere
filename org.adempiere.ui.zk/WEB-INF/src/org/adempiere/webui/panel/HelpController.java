@@ -135,7 +135,7 @@ public class HelpController
         pnlToolTip.appendChild(content);
         content.appendChild(htmlToolTip = new Html());
         htmlToolTip.setWidgetOverride("defaultMessage", "'"+Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField")+"'");
-        htmlToolTip.setWidgetOverride("onFieldTooltip", "function(origin,opts,header,description,help)" +
+        htmlToolTip.setWidgetOverride("onFieldTooltip", "function(origin,opts,header,description,help,entityType)" +
         		"{let s='<html><body><div class=\"help-content\">';" +
         		"if (typeof header == 'undefined') {s=s+'<i>'+this.defaultMessage+'</i>';} " +
         		"else {s=s+'<b>'+header+'</b>';" +
