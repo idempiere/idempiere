@@ -170,18 +170,20 @@ public class HelpWindow extends Window {
 			td.addElement(WebDoc.NBSP);
 		}
 		
-		// window entity type information
+		//window entity type information
+		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
 			tr = new tr();
 			table.addElement(tr);
 			td = new td();
 			td.setClass("help-window-entitytype-help");
 			tr.addElement(td);
 
-			title = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ").append(MEntityType.get(Env.getCtx(), gridWindow.getEntityType()).getName());
+			title = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ")
+					.append(MEntityType.get(Env.getCtx(), gridWindow.getEntityType()).getName());
 			title.append(" [ ").append(gridWindow.getEntityType()).append(" ]");
 			p p = new p().addElement(title.toString());
 			td.addElement(p);
-
+		}
 
 			tr = new tr();
 			table.addElement(tr);
@@ -370,6 +372,7 @@ public class HelpWindow extends Window {
 		}
 		
 		// tab entity type information
+		if(Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
 			tr = new tr();
 			table.addElement(tr);
 			td = new td();
@@ -380,6 +383,7 @@ public class HelpWindow extends Window {
 			entityType.append(" [").append(tab.getEntityType()).append(" ]");
 			p p = new p().addElement(entityType.toString());
 			td.addElement(p);
+		}
 
 			tr = new tr();
 			table.addElement(tr);
@@ -523,20 +527,22 @@ public class HelpWindow extends Window {
 		}
 		
 		// field entity type information
-		String eType = field.getEntityType();
+		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
+			String eType = field.getEntityType();
 
-		MEntityType et = MEntityType.get(Env.getCtx(), eType.replace("**U**", ""));
-		if (et != null) {
-			tr = new tr();
-			table.addElement(tr);
-			td = new td();
-			td.setClass("help-window-field-entitytype-help");
-			tr.addElement(td);
-			StringBuilder entityType = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ")
-					.append(et.getName());
-			entityType.append(" [ ").append(eType).append(" ]");
-			p p = new p().addElement(entityType.toString());
-			td.addElement(p);
+			MEntityType et = MEntityType.get(Env.getCtx(), eType.replace("**U**", ""));
+			if (et != null) {
+				tr = new tr();
+				table.addElement(tr);
+				td = new td();
+				td.setClass("help-window-field-entitytype-help");
+				tr.addElement(td);
+				StringBuilder entityType = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ")
+						.append(et.getName());
+				entityType.append(" [ ").append(eType).append(" ]");
+				p p = new p().addElement(entityType.toString());
+				td.addElement(p);
+			}
 		}
 
 			tr = new tr();

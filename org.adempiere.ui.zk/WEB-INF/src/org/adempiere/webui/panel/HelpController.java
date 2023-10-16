@@ -33,7 +33,6 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
 import org.compiere.model.MUserDefInfo;
@@ -191,7 +190,7 @@ public class HelpController
 				if (field.getHelp().length() != 0)
 					help = field.getHelp();
 				
-				if (MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx()))
+				if (Env.IsShowTechnicalInfOnHelp(Env.getCtx())
 						&& field.getEntityType().length() != 0)
 					entityType = field.getEntityType();
 			}
@@ -245,7 +244,7 @@ public class HelpController
     			sb.append(help);
     		}
     		
-    		if (MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx())))
+    		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
     		{
 	    		if (entityType != null && entityType.trim().length() > 0){
 	    			sb.append("<p class=\"help-entitytype\">[ ");
@@ -715,7 +714,7 @@ public class HelpController
 	 */
 	private void appendEntityType(StringBuilder string, String entityType) {
 
-		if (!MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx())))
+		if (!Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
 				return;
 
 		if (string == null)

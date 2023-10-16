@@ -172,7 +172,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		StringBuffer label = new StringBuffer();
 		label.append(column.getAD_Table().getTableName()).append(".").append(column.getColumnName()).append("='").append(value).append("'");
 
-		if (MSysConfig.getBooleanValue(MSysConfig.ZK_DISPLAY_ENTITYTYPE_INFORMATION, true, Env.getAD_Client_ID(Env.getCtx())))
+		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
 		{
 			label.append("\n");
 			MEntityType entityType = MEntityType.get(Env.getCtx(), column.getEntityType());

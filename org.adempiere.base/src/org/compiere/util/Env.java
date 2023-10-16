@@ -836,7 +836,26 @@ public final class Env
 		}
 		return isAutoCommit(ctx);
 	}	//	isAutoCommit
-
+	
+	
+	/**
+	 * Is Show Technical Information 
+	 * @param ctx context
+	 * @return true if IsShowTechnicalInfOnHelp on User Preference
+	 */
+	public static boolean IsShowTechnicalInfOnHelp(Properties ctx)
+	{
+		if (ctx == null)
+			throw new IllegalArgumentException ("Require Context");
+		String s = getContext(Env.getCtx(), "P|IsShowTechnicalInfOnHelp");
+		if (s != null)
+		{
+			if (s.equals("Y"))
+				return true;
+		}
+		return false;
+	}	//	IsShowTechnicalInfOnHelp
+	
 
 	/**
 	 *	Is Auto New Record

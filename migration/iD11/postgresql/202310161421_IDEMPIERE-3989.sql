@@ -1,0 +1,7 @@
+-- IDEMPIERE-3989
+SELECT register_migration_script('202310161421_IDEMPIERE-3989.sql') FROM dual;
+
+-- Oct 16, 2023, 2:21:08 PM BRT
+DELETE FROM AD_SysConfig WHERE AD_SysConfig_UU='8057c94a-1c55-460c-9722-f231a5bb550a'
+;
+
