@@ -85,6 +85,8 @@ Enhancement suggestions are tracked as [JIRA issues](https://idempiere.atlassian
 
 ### **Do you want to contribute code by fixing a bug or adding an enhancement?**
 
+Before integrating any code change, please read the [Contributing to iDempiere's core](https://wiki.idempiere.org/en/Contributing_to_Trunk) guide to know more about coding conventions, guidelines and benchmarks.
+
 iDempiere uses a forking workflow for code contributions. To have a detailed explanation of how to create a pull request, please read [the Fork and Branch Git Workflow page](https://wiki.idempiere.org/en/Fork_and_Branch_Git_Workflow).
 
 In summary, here are the steps to follow:
@@ -99,6 +101,7 @@ In summary, here are the steps to follow:
 * Push your commit to your own fork.
 * Navigate to GitHub in the web browser.
 * Create a Pull request.
+* If the change is big and adds new functionality, please document the modifications and new features and add this documentation to [the new features wiki](https://wiki.idempiere.org/en/Category:New_Features).
 
 ### **Did you write a plugin that is valuable for the community?**
 
