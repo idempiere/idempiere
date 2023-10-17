@@ -2271,8 +2271,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					}
 				}
 	            // Left brackets
-	            Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
-	            String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
+	            String lBrackets = getLeftBracket(row);
 				if (lBrackets != null) {
 					openBrackets += lBrackets.length();
 					if (isExists && !lBrackets.isEmpty()) {
@@ -2283,8 +2282,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					lBrackets = "";
 				}
 				// Right brackets
-	            Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
-	            String rBrackets = listRightBracket.getSelectedItem().getValue().toString();
+	            String rBrackets = getRightBracket(row);
 				if (rBrackets != null) {
 					openBrackets -= rBrackets.length();
 					if(isCompositeExists && !rBrackets.isEmpty())				
@@ -2489,6 +2487,28 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		}
 
 	}	//	cmd_saveAdvanced
+    
+    /**
+     * Returns the value selected for the left bracket list item
+     * in the current row 
+     * @param row
+     * @return empty, (, (( or (((
+     */
+    private String getLeftBracket(ListItem row) {
+    	Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
+        return listLeftBracket.getSelectedItem().getValue().toString();
+    }
+    
+    /**
+     * Returns the value selected for the right bracket list item
+     * in the current row 
+     * @param row
+     * @return empty, ), )) or )))
+     */
+    private String getRightBracket(ListItem row) {
+        Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
+        return listRightBracket.getSelectedItem().getValue().toString();
+    }
 
     /**
      * Append values to code
