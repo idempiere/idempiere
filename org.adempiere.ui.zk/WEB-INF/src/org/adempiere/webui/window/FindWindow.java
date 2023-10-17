@@ -2264,7 +2264,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 								exists.append(PO.getUUIDColumnName(m_tableName));
 							else
 								exists.append(m_tableName).append("_ID ");
-							ColumnSQL = exists.toString() + " AND " + ColumnSQL;
+							
+							exists.append(" AND ")
+								.append(getLeftBracketValue(row))
+								.append(ColumnSQL);
+							ColumnSQL = exists.toString();
 						}         
 
 						isExists = true;
@@ -2466,6 +2470,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	                	if(!isCompositeExists)
 							where += ")";
+	                	
+	                	where += getRightBracketValue(row);
 
 						m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
 					} else {
