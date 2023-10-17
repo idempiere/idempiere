@@ -892,7 +892,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if (builder.length() > 0) {
 					builder.append(" AND ");
 				}
+				builder.append("(");
 				builder.append(infoWhereClause);
+				builder.append(")");
 				p_whereClause = builder.toString();
 			}
 			
