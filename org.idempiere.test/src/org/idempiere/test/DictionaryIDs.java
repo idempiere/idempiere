@@ -284,7 +284,8 @@ public final class DictionaryIDs {
 	}
 	
 	public enum C_PaymentTerm {
-		NET_30(107),
+		NET_30(100),
+		NET_30_DAYS(107),
 		IMMEDIATE(105),
 		TWO_PERCENT_10_NET_30(106), //2%10 Net 30
 		FIFTY_IMMEDIATE_FIFTY_30DAYS(108); //50% Immediate - 50% in 30 days

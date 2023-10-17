@@ -91,7 +91,7 @@ public class DunningRunTest extends AbstractTestCase {
 		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
 		invoice.setDateInvoiced(TimeUtil.addDays(today, -30)); // date 30 days ago
 		invoice.setDateAcct(TimeUtil.addDays(today, -30));
-		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.NET_30.id); // payment term 30 days, so the invoice is due exactly today
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.NET_30_DAYS.id); // payment term 30 days, so the invoice is due exactly today
 		invoice.setDocStatus(DocAction.STATUS_Drafted);
 		invoice.setDocAction(DocAction.ACTION_Complete);
 		invoice.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_USER.id);
