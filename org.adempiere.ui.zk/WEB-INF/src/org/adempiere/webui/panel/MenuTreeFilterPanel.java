@@ -221,12 +221,14 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 						else
 						{
 							Treeitem parent = treeItem.getParentItem();
-							Treeitem sibling = (Treeitem) treeItem.getAttribute(ORIGINAL_SIBLING);
-							if (sibling != null)
-							{
-								reattachSibling(parent.getTreechildren(), sibling);
+							if (parent != null) {
+								Treeitem sibling = (Treeitem) treeItem.getAttribute(ORIGINAL_SIBLING);
+								if (sibling != null)
+								{
+									reattachSibling(parent.getTreechildren(), sibling);
+								}
+								parent.getTreechildren().insertBefore(treeItem, sibling);
 							}
-							parent.getTreechildren().insertBefore(treeItem, sibling);
 						}
 					}
 				}
