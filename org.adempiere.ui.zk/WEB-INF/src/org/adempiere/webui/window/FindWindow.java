@@ -2271,7 +2271,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					}
 				}
 	            // Left brackets
-	            String lBrackets = getLeftBracket(row);
+	            String lBrackets = getLeftBracketValue(row);
 				if (lBrackets != null) {
 					openBrackets += lBrackets.length();
 					if (isExists && !lBrackets.isEmpty()) {
@@ -2282,7 +2282,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					lBrackets = "";
 				}
 				// Right brackets
-	            String rBrackets = getRightBracket(row);
+	            String rBrackets = getRightBracketValue(row);
 				if (rBrackets != null) {
 					openBrackets -= rBrackets.length();
 					if(isCompositeExists && !rBrackets.isEmpty())				
@@ -2494,7 +2494,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param row
      * @return empty, (, (( or (((
      */
-    private String getLeftBracket(ListItem row) {
+    private String getLeftBracketValue(ListItem row) {
     	Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
         return listLeftBracket.getSelectedItem().getValue().toString();
     }
@@ -2505,7 +2505,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param row
      * @return empty, ), )) or )))
      */
-    private String getRightBracket(ListItem row) {
+    private String getRightBracketValue(ListItem row) {
         Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
         return listRightBracket.getSelectedItem().getValue().toString();
     }
