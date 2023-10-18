@@ -19,3 +19,27 @@ JOIN c_paymentterm p ON i.c_paymentterm_id = p.c_paymentterm_id WHERE i.ispaid='
 JOIN c_invoicepayschedule ips ON i.c_invoice_id = ips.c_invoice_id WHERE i.ispaid='N' AND invoiceopen(i.c_invoice_id, ips.c_invoicepayschedule_id) <> 0 AND i.ispayschedulevalid = 'Y' AND (i.docstatus IN ('CO', 'CL')) AND ips.isvalid = 'Y'
 ;
 
+-- Oct 18, 2023, 2:26:19 PM CEST
+UPDATE AD_Element SET Description='The document is fully paid',Updated=TO_TIMESTAMP('2023-10-18 14:26:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=1402
+;
+
+-- Oct 18, 2023, 2:26:19 PM CEST
+UPDATE AD_Column SET ColumnName='IsPaid', Name='Paid', Description='The document is fully paid', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=1402
+;
+
+-- Oct 18, 2023, 2:26:19 PM CEST
+UPDATE AD_Process_Para SET ColumnName='IsPaid', Name='Paid', Description='The document is fully paid', Help=NULL, AD_Element_ID=1402 WHERE UPPER(ColumnName)='ISPAID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Oct 18, 2023, 2:26:19 PM CEST
+UPDATE AD_Process_Para SET ColumnName='IsPaid', Name='Paid', Description='The document is fully paid', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=1402 AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 18, 2023, 2:26:19 PM CEST
+UPDATE AD_InfoColumn SET ColumnName='IsPaid', Name='Paid', Description='The document is fully paid', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=1402 AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 18, 2023, 2:26:19 PM CEST
+UPDATE AD_Field SET Name='Paid', Description='The document is fully paid', Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=1402) AND IsCentrallyMaintained='Y'
+;
+
