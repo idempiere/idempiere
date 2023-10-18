@@ -55,6 +55,7 @@ public final class DictionaryIDs {
 	}
 
 	public enum AD_Org {
+		GLOBAL(0),
 		HQ(11),
 		STORE_CENTRAL(12),
 		FURNITURE(50000),
@@ -251,7 +252,27 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum C_Dunning {
+		DEFAULT(100);
+		
+		public final int id;
+		
+		private C_Dunning(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum C_DunningLevel {
+		DUN_ALL_DUE_INVOICES(101);
+		
+		public final int id;
+		
+		private C_DunningLevel(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_ElementValue {
 		CHECKING_IN_TRANSFER(509);
 		
@@ -264,6 +285,7 @@ public final class DictionaryIDs {
 	
 	public enum C_PaymentTerm {
 		NET_30(100),
+		NET_30_DAYS(107),
 		IMMEDIATE(105),
 		TWO_PERCENT_10_NET_30(106), //2%10 Net 30
 		FIFTY_IMMEDIATE_FIFTY_30DAYS(108); //50% Immediate - 50% in 30 days
