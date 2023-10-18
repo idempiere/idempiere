@@ -2248,15 +2248,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					{       
 						if (!isCompositeExists) {
 							exists ="SELECT 1 FROM "+m_gridTab.getTableName()+" WHERE "+m_gridTab.getTableName()+"."+m_gridTab.getLinkColumnName()+" = "+m_tableName+"."+m_tableName+"_ID ";//  "+tab.getTableName()+".";
-							ColumnSQL = exists+" AND " + ColumnSQL;
+							ColumnSQL = exists + " AND " + getLeftBracketValue(row) + ColumnSQL;
 						}         
 
 						isExists = true;
 					}
 				}
 	            // Left brackets
-	            Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
-	            String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
+	            String lBrackets = getLeftBracketValue(row);
 				if (lBrackets != null) {
 					openBrackets += lBrackets.length();
 					if (isExists && !lBrackets.isEmpty()) {
@@ -2267,8 +2266,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					lBrackets = "";
 				}
 				// Right brackets
-	            Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
-	            String rBrackets = listRightBracket.getSelectedItem().getValue().toString();
+	            String rBrackets = getRightBracketValue(row);
 				if (rBrackets != null) {
 					openBrackets -= rBrackets.length();
 					if(isCompositeExists && !rBrackets.isEmpty())				
@@ -2452,6 +2450,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	                	if(!isCompositeExists)
 							where += ")";
+	                	
+	                	where += getRightBracketValue(row);
 
 						m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
 					} else {
@@ -2473,6 +2473,28 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		}
 
 	}	//	cmd_saveAdvanced
+    
+    /**
+     * Returns the value selected for the left bracket list item
+     * in the current row 
+     * @param row
+     * @return empty, (, (( or (((
+     */
+    private String getLeftBracketValue(ListItem row) {
+    	Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
+        return listLeftBracket.getSelectedItem().getValue().toString();
+    }
+    
+    /**
+     * Returns the value selected for the right bracket list item
+     * in the current row 
+     * @param row
+     * @return empty, ), )) or )))
+     */
+    private String getRightBracketValue(ListItem row) {
+        Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
+        return listRightBracket.getSelectedItem().getValue().toString();
+    }
 
     /**
      * Append values to code
