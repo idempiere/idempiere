@@ -35,6 +35,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
+import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
@@ -205,7 +206,12 @@ public class CreateWindowFromTable extends SvrProcess
 			ProcessInfo processInfo = new ProcessInfo("", SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, MTab.Table_ID, tab.getAD_Tab_ID(), tab.getAD_Tab_UU());
 
 			MPInstance instance = new MPInstance(getCtx(), SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, MTab.Table_ID, tab.getAD_Tab_ID(), tab.getAD_Tab_UU());
-			instance.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				instance.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 			processInfo.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 
 			TabCreateFields createFields = new TabCreateFields();
