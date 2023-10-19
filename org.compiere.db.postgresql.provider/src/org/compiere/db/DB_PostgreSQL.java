@@ -1036,6 +1036,27 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
+	public String getNameOfChildRecordFoundError(Exception e) {
+		String info = e.getMessage();
+		final int constraintEnd = 4; // ending quote of the constraint name is the 4th quote in the error message
+		String name = "";
+		
+		for(int i=0; i<constraintEnd; i++) {
+			int idx = info.indexOf("\"");
+			if (idx == -1)
+				idx = info.indexOf("\u00ab"); // quote for Spanish PostgreSQL message
+			if(idx == -1)
+				return info;
+			
+			if(i < constraintEnd-1) // reach the opening quote of the constraint name
+				info = info.substring(idx+1);
+			else
+				name = info.substring(0, idx);
+		}
+		return name;
+	}
+	
+	@Override
 	public String subsetClauseForCSV(String columnName, String csv) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("string_to_array(")

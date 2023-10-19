@@ -4218,8 +4218,31 @@ public abstract class PO
 					try {
 						localTrx.commit(true);
 					} catch (SQLException e) {
-						String msg = DBException.getDefaultDBExceptionMessage(e);
-						log.saveError(msg != null ? msg : "Error", e);
+						String msg = "";
+						if(DBException.isChildRecordFoundError(e)) {
+							// get constraint name from error message
+							String constraint = DB.getDatabase().getNameOfChildRecordFoundError(e);
+							
+							if(!Util.isEmpty(constraint)) {
+								// find the column with the constraint
+								MColumn col = new Query(getCtx(), MColumn.Table_Name, " UPPER(FKConstraintName) = UPPER(?) ", get_TrxName())
+												.setParameters(constraint)
+												.first();
+								if(col != null) {
+									// get the message
+									int msgID = col.getFKConstraintMsg_ID();
+									if(msgID > 0) {
+										MMessage msgObj = new MMessage(getCtx(), msgID, get_TrxName());
+										msg = Msg.getMsg(getCtx(), msgObj.getValue());
+									}
+								}
+							}
+						}
+						
+						if(Util.isEmpty(msg))
+							msg = DBException.getDefaultDBExceptionMessage(e);
+						
+						log.saveError("DeleteError", msg);
 						success = false;
 					}
 				}

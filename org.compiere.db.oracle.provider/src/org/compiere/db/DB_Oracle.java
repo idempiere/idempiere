@@ -951,6 +951,15 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
+	public String getNameOfChildRecordFoundError(Exception e) {
+		String info = e.getMessage();
+		
+		// TODO - to be implemented...
+		
+		return info;
+	}
+	
+	@Override
 	public String subsetClauseForCSV(String columnName, String csv) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("toTableOfVarchar2(")
