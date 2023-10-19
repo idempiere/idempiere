@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
@@ -78,7 +79,8 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 	private static final CLogger log = CLogger.getCLogger(FeedbackRequestWindow.class);
 	
 	/** Fields for {@link MRequest} **/
-	protected WTableDirEditor requestTypeField, priorityField, salesRepField;
+	protected WTableDirEditor requestTypeField, priorityField;
+	protected WSearchEditor salesRepField;
 	protected Textbox txtSummary;
 	protected ConfirmPanel confirmPanel;
 	
@@ -143,12 +145,12 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 				priorityField.setValue(priorityField.getComponent().getItemAtIndex(1).getValue());
 		
 		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_SalesRep_ID);
-		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.TableDir);
-		salesRepField = new WTableDirEditor("SalesRep_ID", true, false, true, lookup);
-		salesRepField.setValue(Env.getContextAsInt(Env.getCtx(), "SalesRep_ID"));
-		if(salesRepField.getValue() == null || salesRepField.getValue().equals("0"))
-			if(salesRepField.getComponent().getItemCount() > 1)
-				salesRepField.setValue(salesRepField.getComponent().getItemAtIndex(1).getValue());
+		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.Search);
+		salesRepField = new WSearchEditor(lookup, Msg.translate(Env.getCtx(), "SalesRep_ID"), "", false, false, true); 
+				
+		int salesRep_ID = Env.getContextAsInt(Env.getCtx(), "SalesRep_ID");
+		if(salesRep_ID>0)
+		salesRepField.setValue(salesRep_ID);
 		
 		txtSummary = new Textbox();
 		txtSummary.setRows(10);
