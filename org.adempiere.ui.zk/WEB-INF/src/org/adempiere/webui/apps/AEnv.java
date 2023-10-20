@@ -192,6 +192,7 @@ public final class AEnv
 		MQuery query = MQuery.getEqualQuery(uuColName, Record_UU);
 		query.setZoomTableName(table.getTableName());
 		query.setZoomColumnName(uuColName);
+		// TODO for Oracle: WHERE Test_UU = HEXTORAW(REPLACE( Record_UU ,'-',''))
 		query.setZoomValue(Record_UU);
 		zoom(AD_Window_ID, query);
 	}	//	zoom

@@ -1161,7 +1161,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getTimestampWithTimezoneDataType() {
 		return "TIMESTAMP WITH TIME ZONE";
 	}
-	
+	@Override
+	public String getUUIDDataType() {
+		return "UUID";
+	}
+
 	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())

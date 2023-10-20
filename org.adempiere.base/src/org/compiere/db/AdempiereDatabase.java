@@ -420,6 +420,12 @@ public interface AdempiereDatabase
 	 * @return timestamp with time zone type name
 	 */
 	public String getTimestampWithTimezoneDataType();
+
+	/**
+	 * @return UUID data type name
+	 */
+	public String getUUIDDataType();
+
 	/**
 	 * Get SQL Create
 	 * @param table

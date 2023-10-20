@@ -1909,8 +1909,11 @@ public class GridTable extends AbstractTableModel
 			}
 			else
 			{
-				singleRowUUWHERE = new StringBuilder(tableName).append(".").append(PO.getUUIDColumnName(tableName))
-						.append ("=").append (DB.TO_STRING(value.toString()));
+				singleRowUUWHERE = new StringBuilder(tableName).append(".").append(PO.getUUIDColumnName(tableName)).append("=");
+				if (DB.isOracle() && tableName.startsWith("Test"))
+					singleRowUUWHERE.append("HEXTORAW(UPPER(REPLACE(").append(DB.TO_STRING(value.toString())).append(",'-','')))");
+				else
+					singleRowUUWHERE.append (DB.TO_STRING(value.toString()));
 			}
 		}
 		if (singleRowUUWHERE != null)
@@ -2752,6 +2755,11 @@ public class GridTable extends AbstractTableModel
 						rowData[j] = value;
 					else if (value instanceof byte[])
 						rowData[j] = value;
+				}
+				//	UUID
+				else if (DB.isOracle() && DisplayType.isUUID(displayType) && columnName.startsWith("Test"))
+				{
+					rowData[j] = Util.byteArrayToUUID(rs.getBytes(j+1)).toString();
 				}
 				//	String
 				else

@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -787,5 +788,36 @@ public class Util
 	public static boolean isDeveloperMode() {
 		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
 	}
+
+    /**
+     * Convert a UUID to a byte array
+     * @param uuid
+     * @return
+     */
+    public static byte[] UUIDtoByteArray(UUID uuid) {
+        long mostSigBits = uuid.getMostSignificantBits();
+        long leastSigBits = uuid.getLeastSignificantBits();
+        byte[] byteArray = new byte[16];
+        for (int i = 0; i < 8; i++) {
+            byteArray[i] = (byte) (mostSigBits >>> 8 * (7 - i));
+            byteArray[8 + i] = (byte) (leastSigBits >>> 8 * (7 - i));
+        }
+        return byteArray;
+    }
+
+    /**
+     * Convert a byte array to a UUID
+     * @param byteArray
+     * @return
+     */
+    public static UUID byteArrayToUUID(byte[] byteArray) {
+        long mostSigBits = 0;
+        long leastSigBits = 0;
+        for (int i = 0; i < 8; i++) {
+            mostSigBits = (mostSigBits << 8) | (byteArray[i] & 0xff);
+            leastSigBits = (leastSigBits << 8) | (byteArray[8 + i] & 0xff);
+        }
+        return new UUID(mostSigBits, leastSigBits);
+    }
 
 }   //  Util

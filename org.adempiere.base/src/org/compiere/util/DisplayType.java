@@ -1015,6 +1015,8 @@ public final class DisplayType
 				return getDatabase().getVarcharDataType()+"(" + fieldLength + getDatabase().getVarcharLengthSuffix() + ")";
 		}
 		//
+		if (DisplayType.isUUID(displayType) && columnName.startsWith("Test"))
+			return getDatabase().getUUIDDataType();
 		if (displayType == DisplayType.Integer)
 			return getDatabase().getNumericDataType()+"(10)";
 		if (DisplayType.isTimestampWithTimeZone(displayType))

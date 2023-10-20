@@ -1564,7 +1564,14 @@ public abstract class PO
 			pstmt = DB.prepareStatement(sql.toString(), m_trxName);	//	local trx only
 			if (!Util.isEmpty(uuID, true))
 			{
-				pstmt.setString(1, uuID);
+				if (get_TableName().startsWith("Test")) {
+					if (DB.isOracle())
+						pstmt.setBytes(1, Util.UUIDtoByteArray(UUID.fromString(uuID)));
+					else
+						pstmt.setObject(1, UUID.fromString(uuID));
+				} else {
+					pstmt.setString(1, uuID);
+				}
 			}
 			else
 			{
@@ -1577,6 +1584,12 @@ public abstract class PO
 						pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
 					else if (oo instanceof Timestamp)
 						pstmt.setTimestamp(i+1, (Timestamp)m_IDs[i]);
+					else if (get_TableName().startsWith("Test")) {
+						if (DB.isOracle())
+							pstmt.setBytes(i+1, Util.UUIDtoByteArray(UUID.fromString(m_IDs[i].toString())));
+						else
+							pstmt.setObject(i+1, UUID.fromString(m_IDs[i].toString()));
+					}
 					else
 						pstmt.setString(i+1, m_IDs[i].toString());
 				}
@@ -1673,12 +1686,18 @@ public abstract class PO
 				String value = (String)decrypt(index, rs.getString(columnName));
 				if (value != null)
 				{
-					if (get_Table_ID() == I_AD_Column.Table_ID || get_Table_ID() == I_AD_Element.Table_ID
-						|| get_Table_ID() == I_AD_Field.Table_ID)
-					{
-						if ("Description".equals(columnName) || "Help".equals(columnName))
+					if (DisplayType.isUUID(dt) && get_TableName().startsWith("Test")) {
+						value = value.toLowerCase();
+						value = value.replaceAll("(.{8})(.{4})(.{4})(.{4})(.{12})", "$1-$2-$3-$4-$5");
+					} else {
+						if (   get_Table_ID() == I_AD_Column.Table_ID
+							|| get_Table_ID() == I_AD_Element.Table_ID
+							|| get_Table_ID() == I_AD_Field.Table_ID)
 						{
-							value = value.intern();
+							if ("Description".equals(columnName) || "Help".equals(columnName))
+							{
+								value = value.intern();
+							}
 						}
 					}
 				}
@@ -3643,6 +3662,10 @@ public abstract class PO
 						params.add(null);
 					}
 				}
+				else if (DisplayType.isUUID(dt) && get_TableName().startsWith("Test"))
+				{
+					params.add(UUID.fromString(value.toString()));
+				}
 				else if (value == null || value.equals (Null.NULL))
 				{
 					params.add(null);
@@ -3784,8 +3807,12 @@ public abstract class PO
 		if (!Util.isEmpty(uuID, true))
 		{
 			sb.append(getUUIDColumnName()).append("=");
-			if (withValues)
-				sb.append(DB.TO_STRING(uuID));
+			if (withValues) {
+				if (DB.isOracle())
+					sb.append("HEXTORAW(REPLACE(").append(DB.TO_STRING(uuID)).append(",'-',''))");
+				else
+					sb.append(DB.TO_STRING(uuID));
+			}
 			else
 				sb.append("?");
 
