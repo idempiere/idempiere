@@ -35,7 +35,6 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
-import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
