@@ -37,7 +37,6 @@ import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -249,12 +248,7 @@ public class TOTPMechanism implements IMFAMechanism {
 	 * @param reg
 	 */
 	private void saveRegistration(MMFARegistration reg) {
-		try {
-			PO.setCrossTenantSafe();
-			reg.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		reg.saveCrossTenantSafeEx();
 	}
 
 }

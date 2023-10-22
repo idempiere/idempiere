@@ -51,7 +51,6 @@ import javax.print.attribute.DocAttributeSet;
 import org.adempiere.base.Core;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.CPaper;
@@ -1671,13 +1670,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						if (item.is_Immutable())
 							item = new MPrintFormatItem(item);
 						item.setIsSuppressNull(true);	//	display size will be set to 0 in TableElement
-						try {
-							//this can be tenant or system print format
-							PO.setCrossTenantSafe();
-							item.saveEx();
-						} finally {
-							PO.clearCrossTenantSafe();
-						}
+						//this can be tenant or system print format
+						item.saveCrossTenantSafeEx();
 						CacheMgt.get().reset(MPrintFormat.Table_Name, format.get_ID());
 					}
 				}
