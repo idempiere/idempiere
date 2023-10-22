@@ -2592,11 +2592,14 @@ public abstract class PO
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx() {
+		boolean crossTenantSet = isSafeCrossTenant.get();
 		try {
-			PO.setCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
 			saveEx();
 		} finally {
-			PO.clearCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
 		}
 	}
 
@@ -2751,11 +2754,14 @@ public abstract class PO
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx(String trxName) {
+		boolean crossTenantSet = isSafeCrossTenant.get();
 		try {
-			PO.setCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
 			saveEx(trxName);
 		} finally {
-			PO.clearCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
 		}
 	}
 
