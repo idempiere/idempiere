@@ -5848,6 +5848,12 @@ public abstract class PO
 	private void checkRecordUUCrossTenant() {
 		if (isSafeCrossTenant.get())
 			return;
+
+		//ad_table_id+record_uu validation will fail for ad_pinstance due to ad_pinstance is 
+		//being saved and updated outside of server process transaction.
+		if (I_AD_PInstance.Table_Name.equals(p_info.getTableName()))
+			return;
+
 		int idxRecordUU = p_info.getColumnIndex("Record_UU");
 		if (idxRecordUU < 0)
 			return;
