@@ -36,7 +36,6 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MSchedule;
 import org.compiere.model.MScheduler;
-import org.compiere.model.PO;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -69,12 +68,7 @@ public class MSchedulerTest extends AbstractTestCase {
 			schedule.setScheduleType(MSchedule.SCHEDULETYPE_CronSchedulingPattern);
 			schedule.setIsSystemSchedule(false);
 			schedule.setCronPattern("0 17 * * *");
-			try {
-				PO.setCrossTenantSafe();
-				schedule.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			schedule.saveCrossTenantSafeEx();
 			
 			//get jvm timezone
 			//this test assume jvm and db server is using the same default time zone

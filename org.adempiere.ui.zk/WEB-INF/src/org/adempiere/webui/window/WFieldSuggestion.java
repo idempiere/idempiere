@@ -16,7 +16,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MField;
 import org.compiere.model.MFieldSuggestion;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -174,12 +173,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		suggestion.setIsApproved(false);
 		suggestion.setIsUpdateBaseLanguage(false);
 		suggestion.setProcessed(false);
-		try {
-			PO.setCrossTenantSafe();
-			suggestion.saveEx();
-		}finally {
-			PO.clearCrossTenantSafe();
-		}
+		suggestion.saveCrossTenantSafeEx();
 		Dialog.info(0, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 		this.detach();
 	}

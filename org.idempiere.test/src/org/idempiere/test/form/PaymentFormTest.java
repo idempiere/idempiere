@@ -49,7 +49,6 @@ import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
-import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -312,12 +311,7 @@ public class PaymentFormTest extends AbstractTestCase {
 		try {
 			payProcessorClass = mpp.getPayProcessorClass();
 			mpp.setPayProcessorClass("org.compiere.model.PP_Dummy");
-			try {
-				PO.setCrossTenantSafe();
-				mpp.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			mpp.saveCrossTenantSafeEx();
 			boolean ok = form.saveChangesInTrx(getTrxName());
 			assertTrue(ok, "Save failed: " + form.getProcessMessage());
 			assertNotNull(form.getPayment(), "Payment not created");
@@ -325,12 +319,7 @@ public class PaymentFormTest extends AbstractTestCase {
 			assertEquals(order.getGrandTotal().setScale(2, RoundingMode.HALF_EVEN), form.getPayment().getPayAmt().setScale(2, RoundingMode.HALF_EVEN), "Wrong Payment Document Amount");
 		} finally {
 			mpp.setPayProcessorClass(payProcessorClass);
-			try {
-				PO.setCrossTenantSafe();
-				mpp.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			mpp.saveCrossTenantSafeEx();
 		}
 	}
 	
