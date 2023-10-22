@@ -206,12 +206,7 @@ public class CreateWindowFromTable extends SvrProcess
 			ProcessInfo processInfo = new ProcessInfo("", SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, MTab.Table_ID, tab.getAD_Tab_ID(), tab.getAD_Tab_UU());
 
 			MPInstance instance = new MPInstance(getCtx(), SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, MTab.Table_ID, tab.getAD_Tab_ID(), tab.getAD_Tab_UU());
-			try {
-				PO.setCrossTenantSafe();
-				instance.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			instance.saveCrossTenantSafeEx();
 			processInfo.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 
 			TabCreateFields createFields = new TabCreateFields();
