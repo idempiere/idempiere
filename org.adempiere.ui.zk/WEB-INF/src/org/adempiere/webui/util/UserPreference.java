@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MPreference;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
@@ -114,13 +115,12 @@ public final class UserPreference implements Serializable {
 				if (!Util.isEmpty(value)) {
 					MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
 					if (preference == null) {
-						preference = new MUserPreference(Env.getCtx(), 0, null);
+						preference = new MPreference(Env.getCtx(), 0, null);
+						MUser user = MUser.get(m_AD_User_ID);
+						preference.set_ValueNoCheck("AD_Client_ID", user.getAD_Client_ID());
+						preference.setAD_Org_ID(0);
 						preference.setAD_User_ID(m_AD_User_ID);
 						preference.setAttribute(attribute);
-					} else {
-						if (preference.getAD_Client_ID() > 0 || preference.getAD_Org_ID() > 0) {
-							preference = new MUserPreference(Env.getCtx(), preference.getAD_Preference_ID(), null);
-						}
 					}
 
 					try {
