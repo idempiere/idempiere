@@ -85,6 +85,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 	private static Boolean sysNative = null;
 	
+	/** Quote character used in Foreign Constraint Error message */
+	private static final String FK_CONSTRAINT_ERR_QUOTE = "\"";
+	/** Quote character used in the Spanish Foreign Constraint Error message */
+	private static final String FK_CONSTRAINT_ERR_QUOTE_esp = "\u00ab";
+	
 	static
 	{
 		String property = SystemProperties.getPostgreSQLNative();
@@ -1022,29 +1027,29 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	@Override
 	public String getNameOfUniqueConstraintError(Exception e) {
 		String info = e.getMessage();
-		int fromIndex = info.indexOf("\"");
+		int fromIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE);
 		if (fromIndex == -1)
-			fromIndex = info.indexOf("\u00ab"); // quote for spanish postgresql message
+			fromIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE_esp); // quote for Spanish PostgreSQL message
 		if (fromIndex == -1)
 			return info;
-		int toIndex = info.indexOf("\"", fromIndex + 1);
+		int toIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE, fromIndex + 1);
 		if (toIndex == -1)
-			toIndex = info.indexOf("\u00bb", fromIndex + 1);
+			toIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE_esp, fromIndex + 1);
 		if (toIndex == -1)
 			return info;
 		return info.substring(fromIndex + 1, toIndex);
 	}
 
 	@Override
-	public String getNameOfChildRecordFoundError(Exception e) {
+	public String getForeignKeyConstraint(Exception e) {
 		String info = e.getMessage();
 		final int constraintEnd = 4; // ending quote of the constraint name is the 4th quote in the error message
 		String name = "";
 		
 		for(int i=0; i<constraintEnd; i++) {
-			int idx = info.indexOf("\"");
+			int idx = info.indexOf(FK_CONSTRAINT_ERR_QUOTE);
 			if (idx == -1)
-				idx = info.indexOf("\u00ab"); // quote for Spanish PostgreSQL message
+				idx = info.indexOf(FK_CONSTRAINT_ERR_QUOTE_esp); // quote for Spanish PostgreSQL message
 			if(idx == -1)
 				return info;
 			

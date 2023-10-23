@@ -4221,7 +4221,7 @@ public abstract class PO
 						String msg = "";
 						if(DBException.isChildRecordFoundError(e)) {
 							// get constraint name from error message
-							String constraint = DB.getDatabase().getNameOfChildRecordFoundError(e);
+							String constraint = DB.getDatabase().getForeignKeyConstraint(e);
 							
 							if(!Util.isEmpty(constraint)) {
 								// find the column with the constraint

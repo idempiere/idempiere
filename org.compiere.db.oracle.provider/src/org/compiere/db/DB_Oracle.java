@@ -951,12 +951,9 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
-	public String getNameOfChildRecordFoundError(Exception e) {
-		String info = e.getMessage();
-		
+	public String getForeignKeyConstraint(Exception e) {
 		// TODO - to be implemented...
-		
-		return info;
+		return null;
 	}
 	
 	@Override

@@ -337,7 +337,7 @@ public interface AdempiereDatabase
 	/**
      * <p>
      * The "child record found error" contains the 
-     * unique constraint name after the second occurrence
+     * foreign key constraint name after the second occurrence
      * of the opening double quote: ["].
      * </p>
      * 
@@ -352,7 +352,7 @@ public interface AdempiereDatabase
      * @param e
      * @return constraint name
      */
-	public String getNameOfChildRecordFoundError(Exception e);
+	public String getForeignKeyConstraint(Exception e);
 
 	/**
 	 * @param columnName
