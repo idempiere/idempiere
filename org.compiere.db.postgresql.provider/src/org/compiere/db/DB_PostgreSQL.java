@@ -84,12 +84,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	private static final String POOL_PROPERTIES = "hikaricp.properties";
 
 	private static Boolean sysNative = null;
-	
-	/** Quote character used in Foreign Constraint Error message */
-	private static final String FK_CONSTRAINT_ERR_QUOTE = "\"";
-	/** Quote character used in the Spanish Foreign Constraint Error message */
-	private static final String FK_CONSTRAINT_ERR_QUOTE_esp = "\u00ab";
-	
+
+    final static char DOUBLE_QUOTE = '"';
+    final static char ANGLED_QUOTE_LEFT = '\u00ab';   // «
+    final static char ANGLED_QUOTE_RIGHT = '\u00bb';  // »
+
 	static
 	{
 		String property = SystemProperties.getPostgreSQLNative();
@@ -1024,43 +1023,76 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return false;
 	}
 	
+	/**
+	 * Get the name of the unique constraint name based on a postgresql message
+	 * This method works for English, Spanish and German
+	 * The foreign key constraint name is expected to be found in the second quoted string
+	 *   English quotes -> "constraint"
+	 *   Spanish quotes -> «constraint»
+	 *   German  quotes -> »constraint«
+	 */
 	@Override
 	public String getNameOfUniqueConstraintError(Exception e) {
 		String info = e.getMessage();
-		int fromIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE);
-		if (fromIndex == -1)
-			fromIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE_esp); // quote for Spanish PostgreSQL message
-		if (fromIndex == -1)
-			return info;
-		int toIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE, fromIndex + 1);
-		if (toIndex == -1)
-			toIndex = info.indexOf(FK_CONSTRAINT_ERR_QUOTE_esp, fromIndex + 1);
-		if (toIndex == -1)
-			return info;
-		return info.substring(fromIndex + 1, toIndex);
+		int start = -1;
+		int end = -1;
+		boolean open = false;
+		for (int idx = 0; idx < info.length(); idx++) {
+			if (   info.charAt(idx) == DOUBLE_QUOTE
+				|| info.charAt(idx) == ANGLED_QUOTE_LEFT
+				|| info.charAt(idx) == ANGLED_QUOTE_RIGHT) {
+				open = !open;
+				if (open) {
+					start = idx;
+				} else {
+					end = idx;
+					break;
+				}
+			}
+		}
+		if (end != -1)
+			return info.substring(start+1, end);
+		return null;
 	}
 
+	/**
+	 * Get the foreign key constraint name based on a postgresql message
+	 * This method works for English, Spanish and German
+	 * The foreign key constraint name is expected to be found in the second quoted string
+	 *   English quotes -> "constraint"
+	 *   Spanish quotes -> «constraint»
+	 *   German  quotes -> »constraint«
+	 */
 	@Override
 	public String getForeignKeyConstraint(Exception e) {
 		String info = e.getMessage();
-		final int constraintEnd = 4; // ending quote of the constraint name is the 4th quote in the error message
-		String name = "";
-		
-		for(int i=0; i<constraintEnd; i++) {
-			int idx = info.indexOf(FK_CONSTRAINT_ERR_QUOTE);
-			if (idx == -1)
-				idx = info.indexOf(FK_CONSTRAINT_ERR_QUOTE_esp); // quote for Spanish PostgreSQL message
-			if(idx == -1)
-				return info;
-			
-			if(i < constraintEnd-1) // reach the opening quote of the constraint name
-				info = info.substring(idx+1);
-			else
-				name = info.substring(0, idx);
+		int start = -1;
+		int end = -1;
+		int cntword = 0;
+		boolean open = false;
+		for (int idx = 0; idx < info.length(); idx++) {
+			if (   info.charAt(idx) == DOUBLE_QUOTE
+				|| info.charAt(idx) == ANGLED_QUOTE_LEFT
+				|| info.charAt(idx) == ANGLED_QUOTE_RIGHT) {
+				open = !open;
+				if (open) {
+					cntword++;
+				}
+				if (cntword == 2) {
+					if (open) {
+						start = idx;
+					} else {
+						end = idx;
+						break;
+					}
+				}
+			}
 		}
-		return name;
+		if (end != -1)
+			return info.substring(start+1, end);
+		return null;
 	}
-	
+
 	@Override
 	public String subsetClauseForCSV(String columnName, String csv) {
 		StringBuilder builder = new StringBuilder();

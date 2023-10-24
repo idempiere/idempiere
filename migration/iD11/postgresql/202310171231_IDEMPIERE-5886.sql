@@ -149,3 +149,7 @@ UPDATE AD_Field SET SeqNo=520,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-M
 UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=19 | @AD_Reference_ID@=30 | @AD_Reference_ID@=18 | @AD_Reference_ID@=21 | @AD_Reference_ID@=25 | @AD_Reference_ID@=31 | @AD_Reference_ID@=35 | @AD_Reference_ID@=33 | @AD_Reference_ID@=32 | @AD_Reference_ID@=53370 | @AD_Reference_ID@=200233 | @AD_Reference_ID@=200234 | @AD_Reference_ID@=200235', SeqNo=330,Updated=TO_TIMESTAMP('2023-10-17 12:42:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207775
 ;
 
+-- Oct 24, 2023, 1:22:19 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Record not deleted - there are dependent records in the table {0} for the column {1}',0,0,'Y',TO_TIMESTAMP('2023-10-24 13:22:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-24 13:22:19','YYYY-MM-DD HH24:MI:SS'),100,200838,'DeleteErrorDependentInfo','D','76cab20f-d155-45e9-b6e0-fd663312b180')
+;
+

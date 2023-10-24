@@ -4218,31 +4218,11 @@ public abstract class PO
 					try {
 						localTrx.commit(true);
 					} catch (SQLException e) {
-						String msg = "";
-						if(DBException.isChildRecordFoundError(e)) {
-							// get constraint name from error message
-							String constraint = DB.getDatabase().getForeignKeyConstraint(e);
-							
-							if(!Util.isEmpty(constraint)) {
-								// find the column with the constraint
-								MColumn col = new Query(getCtx(), MColumn.Table_Name, " UPPER(FKConstraintName) = UPPER(?) ", get_TrxName())
-												.setParameters(constraint)
-												.first();
-								if(col != null) {
-									// get the message
-									int msgID = col.getFKConstraintMsg_ID();
-									if(msgID > 0) {
-										MMessage msgObj = new MMessage(getCtx(), msgID, get_TrxName());
-										msg = Msg.getMsg(getCtx(), msgObj.getValue());
-									}
-								}
-							}
-						}
-						
-						if(Util.isEmpty(msg))
-							msg = DBException.getDefaultDBExceptionMessage(e);
-						
-						log.saveError("DeleteError", msg);
+						String msg = DBException.getDefaultDBExceptionMessage(e);
+						if (msg != null)
+							log.saveError(msg, msg, e, false);
+						else
+							log.saveError("Error", e, false);
 						success = false;
 					}
 				}
@@ -5676,21 +5656,16 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex[] indexes = MTableIndex.get(MTable.get(getCtx(), get_Table_ID()));
-				for (MTableIndex index : indexes)
+				MTableIndex index = new Query(getCtx(), MTableIndex.Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
+						.setParameters(get_Table_ID(), dbIndexName)
+						.setOnlyActiveRecords(true)
+						.first();
+				if (index != null && index.getAD_Message_ID() > 0)
 				{
-					if (dbIndexName.equalsIgnoreCase(index.getName()))
-					{
-						if (index.getAD_Message_ID() > 0)
-						{
-							MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
-							log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
-							found = true;
-						}
-						break;
-					}
+					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
+					log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
+					found = true;
 				}
-				
 				if (!found)
 					log.saveError(msg, info);
 			}

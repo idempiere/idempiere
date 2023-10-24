@@ -333,7 +333,7 @@ public interface AdempiereDatabase
 	public boolean forUpdate(PO po, int timeout);
 	
 	public String getNameOfUniqueConstraintError(Exception e);
-	
+
 	/**
      * <p>
      * The "child record found error" contains the 
