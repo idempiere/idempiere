@@ -1408,24 +1408,28 @@ public class MOrder extends X_C_Order implements DocAction
 			return success;
 
 		// Propagate changes to not-completed/reversed/closed invoices
-		if (   is_ValueChanged(COLUMNNAME_Description)
-			|| is_ValueChanged(COLUMNNAME_POReference)
-			|| is_ValueChanged(COLUMNNAME_PaymentRule)
-			|| is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID)
-			|| is_ValueChanged(COLUMNNAME_DateAcct)) {
+		String[] propagateCols = new String[] {
+				COLUMNNAME_Description,	
+				COLUMNNAME_POReference,
+				COLUMNNAME_PaymentRule,
+				COLUMNNAME_C_PaymentTerm_ID,
+				COLUMNNAME_DateAcct};
+		boolean propagateColChanged = false;
+		for (String propagateCol : propagateCols) {
+			if (is_ValueChanged(propagateCol)) {
+				propagateColChanged = true;
+				break;
+			}
+		}
+		if (propagateColChanged) {
 			List<MInvoice> relatedInvoices = new Query(getCtx(), MInvoice.Table_Name,
 					"C_Order_ID=? AND Processed='N' AND DocStatus NOT IN ('CO','RE','CL')", get_TrxName())
 					.setParameters(getC_Order_ID())
 					.list();
 			if (relatedInvoices.size() > 0) {
-				for (String propagateCol : new String[] {
-						COLUMNNAME_Description,	
-						COLUMNNAME_POReference,
-						COLUMNNAME_PaymentRule,
-						COLUMNNAME_C_PaymentTerm_ID,
-						COLUMNNAME_DateAcct}) {
+				for (String propagateCol : propagateCols) {
 					if (is_ValueChanged(propagateCol)) {
-						String newValue = get_ValueAsString(propagateCol);
+						Object newValue = get_Value(propagateCol);
 						for (MInvoice relatedInvoice : relatedInvoices) {
 							relatedInvoice.set_Value(propagateCol, newValue);
 						}
