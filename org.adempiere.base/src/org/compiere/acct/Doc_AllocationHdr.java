@@ -31,6 +31,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
@@ -680,7 +681,9 @@ public class Doc_AllocationHdr extends Doc
 		//	or Doc.ACCTTYPE_PaymentSelect (AP) or V_Prepayment
 		int accountType = Doc.ACCTTYPE_UnallocatedCash;
 		//
-		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment "
+		int C_Charge_ID = 0;
+		
+		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment, p.C_Charge_ID "
 				+ "FROM C_Payment p INNER JOIN C_DocType d ON (p.C_DocType_ID=d.C_DocType_ID) "
 				+ "WHERE C_Payment_ID=?";
 		PreparedStatement pstmt = null;
@@ -693,6 +696,7 @@ public class Doc_AllocationHdr extends Doc
 			if (rs.next ())
 			{
 				setC_BankAccount_ID(rs.getInt(1));
+				C_Charge_ID = rs.getInt(5);				// Charge
 				if (DOCTYPE_APPayment.equals(rs.getString(2)))
 					accountType = Doc.ACCTTYPE_PaymentSelect;
 				//	Prepayment
@@ -721,6 +725,9 @@ public class Doc_AllocationHdr extends Doc
 			log.log(Level.SEVERE, "NONE for C_Payment_ID=" + C_Payment_ID);
 			return null;
 		}
+		
+		if (C_Charge_ID != 0)
+			return MCharge.getAccount(C_Charge_ID, as);
 		return getAccount (accountType, as);
 	}	//	getPaymentAcct
 
