@@ -4225,7 +4225,10 @@ public abstract class PO
 						localTrx.commit(true);
 					} catch (SQLException e) {
 						String msg = DBException.getDefaultDBExceptionMessage(e);
-						log.saveError(msg != null ? msg : "Error", e);
+						if (msg != null)
+							log.saveError(msg, msg, e, false);
+						else
+							log.saveError("Error", e, false);
 						success = false;
 					}
 				}
@@ -5659,21 +5662,16 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex[] indexes = MTableIndex.get(MTable.get(getCtx(), get_Table_ID()));
-				for (MTableIndex index : indexes)
+				MTableIndex index = new Query(getCtx(), MTableIndex.Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
+						.setParameters(get_Table_ID(), dbIndexName)
+						.setOnlyActiveRecords(true)
+						.first();
+				if (index != null && index.getAD_Message_ID() > 0)
 				{
-					if (dbIndexName.equalsIgnoreCase(index.getName()))
-					{
-						if (index.getAD_Message_ID() > 0)
-						{
-							MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
-							log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
-							found = true;
-						}
-						break;
-					}
+					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
+					log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
+					found = true;
 				}
-				
 				if (!found)
 					log.saveError(msg, info);
 			}

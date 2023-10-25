@@ -33,7 +33,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230505L;
+	private static final long serialVersionUID = 20231019L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -640,6 +640,33 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public int getFieldLength()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_FieldLength);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Message getFKConstraintMsg() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
+			.getPO(getFKConstraintMsg_ID(), get_TrxName());
+	}
+
+	/** Set Constraint Message.
+		@param FKConstraintMsg_ID Constraint Message
+	*/
+	public void setFKConstraintMsg_ID (int FKConstraintMsg_ID)
+	{
+		if (FKConstraintMsg_ID < 1)
+			set_Value (COLUMNNAME_FKConstraintMsg_ID, null);
+		else
+			set_Value (COLUMNNAME_FKConstraintMsg_ID, Integer.valueOf(FKConstraintMsg_ID));
+	}
+
+	/** Get Constraint Message.
+		@return Constraint Message	  */
+	public int getFKConstraintMsg_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_FKConstraintMsg_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
