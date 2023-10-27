@@ -1408,35 +1408,36 @@ public class MOrder extends X_C_Order implements DocAction
 			return success;
 
 		// Propagate changes to not-completed/reversed/closed invoices
-		String[] propagateCols = new String[] {
-				COLUMNNAME_Description,	
-				COLUMNNAME_POReference,
-				COLUMNNAME_PaymentRule,
-				COLUMNNAME_C_PaymentTerm_ID,
-				COLUMNNAME_DateAcct};
-		boolean propagateColChanged = false;
-		for (String propagateCol : propagateCols) {
-			if (is_ValueChanged(propagateCol)) {
-				propagateColChanged = true;
-				break;
+		String propagateColsSysCfg = MSysConfig.getValue(MSysConfig.ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES,
+				"Description,POReference,PaymentRule,C_PaymentTerm_ID,DateAcct", getAD_Client_ID(), getAD_Org_ID());
+		if (!Util.isEmpty(propagateColsSysCfg, true)) {
+			String[] propagateCols = propagateColsSysCfg.split(",");
+			boolean propagateColChanged = false;
+			for (String propagateCol : propagateCols) {
+				String trimmedCol = propagateCol.trim();
+				if (get_ColumnIndex(trimmedCol) >= 0 && is_ValueChanged(trimmedCol)) {
+					propagateColChanged = true;
+					break;
+				}
 			}
-		}
-		if (propagateColChanged) {
-			List<MInvoice> relatedInvoices = new Query(getCtx(), MInvoice.Table_Name,
-					"C_Order_ID=? AND Processed='N' AND DocStatus NOT IN ('CO','RE','CL')", get_TrxName())
-					.setParameters(getC_Order_ID())
-					.list();
-			if (relatedInvoices.size() > 0) {
-				for (String propagateCol : propagateCols) {
-					if (is_ValueChanged(propagateCol)) {
-						Object newValue = get_Value(propagateCol);
-						for (MInvoice relatedInvoice : relatedInvoices) {
-							relatedInvoice.set_Value(propagateCol, newValue);
+			if (propagateColChanged) {
+				List<MInvoice> relatedInvoices = new Query(getCtx(), MInvoice.Table_Name,
+						"C_Order_ID=? AND Processed='N' AND DocStatus NOT IN ('CO','RE','CL')", get_TrxName())
+						.setParameters(getC_Order_ID())
+						.list();
+				if (relatedInvoices.size() > 0) {
+					for (String propagateCol : propagateCols) {
+						String trimmedCol = propagateCol.trim();
+						if (get_ColumnIndex(trimmedCol) >= 0 && is_ValueChanged(trimmedCol)) {
+							Object newValue = get_Value(trimmedCol);
+							for (MInvoice relatedInvoice : relatedInvoices) {
+								relatedInvoice.set_Value(trimmedCol, newValue);
+							}
 						}
 					}
-				}
-				for (MInvoice relatedInvoice : relatedInvoices) {
-					relatedInvoice.saveEx();
+					for (MInvoice relatedInvoice : relatedInvoices) {
+						relatedInvoice.saveEx();
+					}
 				}
 			}
 		}
