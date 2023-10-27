@@ -1141,49 +1141,42 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		if (!success || newRecord)
 			return success;
-		
-		// TODO: The changes here with UPDATE are not being saved on change log - audit problem  
-		
-		//	Propagate Description changes
-		if (is_ValueChanged("Description") || is_ValueChanged("POReference"))
-		{
-			String sql = "UPDATE C_Invoice i"
-				+ " SET (Description,POReference)="
-					+ "(SELECT Description,POReference "
-					+ "FROM C_Order o WHERE i.C_Order_ID=o.C_Order_ID) "
-				+ "WHERE DocStatus NOT IN ('RE','CL') AND C_Order_ID=" + getC_Order_ID();
-			int no = DB.executeUpdateEx(sql, get_TrxName());
-			if (log.isLoggable(Level.FINE)) log.fine("Description -> #" + no);
+
+		// Propagate changes to not-completed/reversed/closed invoices
+		String propagateColsSysCfg = MSysConfig.getValue(MSysConfig.ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES,
+				"Description,POReference,PaymentRule,C_PaymentTerm_ID,DateAcct", getAD_Client_ID(), getAD_Org_ID());
+		if (!Util.isEmpty(propagateColsSysCfg, true)) {
+			String[] propagateCols = propagateColsSysCfg.split(",");
+			boolean propagateColChanged = false;
+			for (String propagateCol : propagateCols) {
+				String trimmedCol = propagateCol.trim();
+				if (get_ColumnIndex(trimmedCol) >= 0 && is_ValueChanged(trimmedCol)) {
+					propagateColChanged = true;
+					break;
+				}
+			}
+			if (propagateColChanged) {
+				List<MInvoice> relatedInvoices = new Query(getCtx(), MInvoice.Table_Name,
+						"C_Order_ID=? AND Processed='N' AND DocStatus NOT IN ('CO','RE','CL')", get_TrxName())
+						.setParameters(getC_Order_ID())
+						.list();
+				if (relatedInvoices.size() > 0) {
+					for (String propagateCol : propagateCols) {
+						String trimmedCol = propagateCol.trim();
+						if (get_ColumnIndex(trimmedCol) >= 0 && is_ValueChanged(trimmedCol)) {
+							Object newValue = get_Value(trimmedCol);
+							for (MInvoice relatedInvoice : relatedInvoices) {
+								relatedInvoice.set_Value(trimmedCol, newValue);
+							}
+						}
+					}
+					for (MInvoice relatedInvoice : relatedInvoices) {
+						relatedInvoice.saveEx();
+					}
+				}
+			}
 		}
 
-		//	Propagate Changes of Payment Info to existing (not reversed/closed) invoices
-		if (is_ValueChanged("PaymentRule") || is_ValueChanged("C_PaymentTerm_ID")
-			|| is_ValueChanged("C_Payment_ID")
-			|| is_ValueChanged("C_CashLine_ID"))
-		{
-			String sql = "UPDATE C_Invoice i "
-				+ "SET (PaymentRule,C_PaymentTerm_ID,C_Payment_ID,C_CashLine_ID)="
-					+ "(SELECT PaymentRule,C_PaymentTerm_ID,C_Payment_ID,C_CashLine_ID "
-					+ "FROM C_Order o WHERE i.C_Order_ID=o.C_Order_ID)"
-				+ "WHERE DocStatus NOT IN ('RE','CL') AND C_Order_ID=" + getC_Order_ID();
-			//	Don't touch Closed/Reversed entries
-			int no = DB.executeUpdate(sql, get_TrxName());
-			if (log.isLoggable(Level.FINE)) log.fine("Payment -> #" + no);
-		}
-	      
-		//	Propagate Changes of Date Account to existing (not completed/reversed/closed) invoices
-		if (is_ValueChanged("DateAcct"))
-		{
-			String sql = "UPDATE C_Invoice i "
-				+ "SET (DateAcct)="
-					+ "(SELECT DateAcct "
-					+ "FROM C_Order o WHERE i.C_Order_ID=o.C_Order_ID)"
-				+ "WHERE DocStatus NOT IN ('CO','RE','CL') AND Processed='N' AND C_Order_ID=" + getC_Order_ID();
-			//	Don't touch Completed/Closed/Reversed entries
-			int no = DB.executeUpdate(sql, get_TrxName());
-			if (log.isLoggable(Level.FINE)) log.fine("DateAcct -> #" + no);
-		}
-	      
 		//	Sync Lines
 		if (   is_ValueChanged("AD_Org_ID")
 		    || is_ValueChanged(MOrder.COLUMNNAME_C_BPartner_ID)
