@@ -518,12 +518,12 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					+ "		(f.IsEncrypted='N' AND f.ObscureType IS NULL))");
 		} else {
 			sqlc.append(" AND (c.IsKey='Y' "
-					+ "			OR IsIdentifier='Y' "
-					+ "			OR IsParent='Y' "
-					+ "			OR IsSelectionColumn='Y' "
-					+ "			OR Upper(ColumnName) IN ('NAME','VALUE','DESCRIPTION','DOCUMENTNO') "
-					+ "			OR Upper(ColumnName) Like '%_NAME' "
-					+ "			OR Upper(ColumnName) Like '%_Value') ");
+					+ "			OR c.IsIdentifier='Y' "
+					+ "			OR c.IsParent='Y' "
+					+ "			OR c.IsSelectionColumn='Y' "
+					+ "			OR Upper(c.ColumnName) IN ('NAME','VALUE','DESCRIPTION','DOCUMENTNO') "
+					+ "			OR Upper(c.ColumnName) Like '%_NAME' "
+					+ "			OR Upper(c.ColumnName) Like '%_Value') ");
 		}
 		sqlc.append(" AND c.IsActive = 'Y' "
 			+ "ORDER BY ");
