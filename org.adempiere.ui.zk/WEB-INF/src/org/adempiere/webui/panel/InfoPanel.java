@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1019,7 +1020,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         restoreSelectedInPage();
         updateStatusBar (m_count);
         setStatusSelected ();
-        setFocusPanel();
+        setFocusToContentPanel();
         addDoubleClickListener();
         
         if (paging != null && paging.getParent() == null)
@@ -1845,8 +1846,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			
 			@SuppressWarnings("unchecked")
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
-					
-			if (contentPanel.getModel().isSelected(candidateRecord) || containsKey(contentPanel.getSelectedIndices(),rowIndex)){
+			
+			int ri = rowIndex;
+			if (contentPanel.getModel().isSelected(candidateRecord) || Arrays.stream(contentPanel.getSelectedIndices()).anyMatch(si -> si==ri)){
 				recordSelectedData.put(keyCandidate, candidateRecord);// add or update selected record info				
 			}else{
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
@@ -1876,20 +1878,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 			
 		}		    
-	}
-	
-	/**
-	 * Does 'arr' contain 'targetValue'
-	 * @param arr
-	 * @param targetValue
-	 * @return boolean - true if contains
-	 */
-	public static boolean containsKey(int[] arr, int targetValue) {	
-		for(int i: arr){	
-			if(i==targetValue)	
-				return true;	
-		}	
-		return false;	
 	}
 	
 	/**
@@ -2284,7 +2272,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
         	enableButtons();
-        	setFocusPanel();
+        	setFocusToContentPanel();
         }
         else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
         {
@@ -3544,9 +3532,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	}
 
 	/**
-	 * Set Focus on Content Panel
+	 * Set focus to {@link #contentPanel}:<br/>
+	 * - Single selection: auto select first item and set focus to it.<br/>
+	 * - Multiple selection: set focus to first item. 
 	 */
-	private void setFocusPanel() {
+	private void setFocusToContentPanel() {
         if(contentPanel.getRowCount() > 0) {
         	if(p_multipleSelection) {
 

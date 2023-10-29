@@ -259,7 +259,7 @@ ContextMenuListener, IZoomableEditor
     {
     	ZKUpdateUtil.setWidth(getComponent(), "200px"); 
         getComponent().setAutocomplete(true);
-        getComponent().setAutodrop(false);
+        getComponent().setAutodrop(true);
         getComponent().setInstantSelect(false);
     	getComponent().addEventListener(Events.ON_BLUR, this);
         if (getComponent() instanceof EditorAutoComplete) {
