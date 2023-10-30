@@ -30,7 +30,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231027L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -288,6 +288,21 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set Sql Count.
+		@param CountClause Sql Count
+	*/
+	public void setCountClause (String CountClause)
+	{
+		set_Value (COLUMNNAME_CountClause, CountClause);
+	}
+
+	/** Get Sql Count.
+		@return Sql Count	  */
+	public String getCountClause()
+	{
+		return (String)get_Value(COLUMNNAME_CountClause);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -321,6 +336,21 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+
+	/** Set Sql JOIN.
+		@param JoinClause Sql JOIN
+	*/
+	public void setJoinClause (String JoinClause)
+	{
+		set_Value (COLUMNNAME_JoinClause, JoinClause);
+	}
+
+	/** Get Sql JOIN.
+		@return Sql JOIN	  */
+	public String getJoinClause()
+	{
+		return (String)get_Value(COLUMNNAME_JoinClause);
 	}
 
 	/** Set Name.

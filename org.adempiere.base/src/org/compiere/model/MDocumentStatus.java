@@ -33,9 +33,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -173,13 +175,16 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	}	//	getDocumentStatusIndicators
 
 	public static int evaluate(MDocumentStatus documentStatus) {
-		StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
+		StringBuilder sql = new StringBuilder("SELECT COUNT(").append(getCountClause(documentStatus)).append(") FROM ");
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		sql.append(tableName);
+		String joinClause = getJoinClause(documentStatus);
+		if(!Util.isEmpty(joinClause,true))
+			sql.append(joinClause);
 		String where = getWhereClause(documentStatus);
 		if (where != null && where.trim().length() > 0)
 			sql.append(" WHERE " ).append(where);
-		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, false, true);
+		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, true, true);
 		return DB.getSQLValue(null, sqlS);
 	}
 
@@ -200,6 +205,13 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 			where.append(" AND ( ").append(extra).append(" ) ");
 		}
 		return Env.parseContext(Env.getCtx(), 0, where.toString(), false);
+	}
+
+	public static String getJoinClause(MDocumentStatus documentStatus) {
+		StringBuilder joinClause = new StringBuilder(" ");
+		if(!Util.isEmpty(documentStatus.getJoinClause(),true))
+			joinClause.append(documentStatus.getJoinClause()).toString();
+		return Env.parseContext(Env.getCtx(), 0, joinClause.toString(), false);
 	}
 
 	@Override
@@ -246,4 +258,23 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		makeImmutable();
 		return this;
 	}
+	
+	public static List<? extends PO> getRecords(MDocumentStatus documentStatus) {
+		return new Query(Env.getCtx(),MTable.get(documentStatus.getAD_Table_ID()), getWhereClause(documentStatus),null).addJoinClause(getJoinClause(documentStatus)).list();
+	}
+	
+	public static String getInClauseRecordsIDs(MDocumentStatus documentStatus) {
+		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
+		String inClause = getRecords(documentStatus).stream().map(r->String.valueOf(r.get_ID())).collect(Collectors.joining(","));
+		if(!Util.isEmpty(inClause,true))
+			return new StringBuilder(tableName).append("_ID").append(" IN (").append(inClause).append(")").toString();
+		return "";
+	}
+	
+	public static String getCountClause(MDocumentStatus documentStatus) {
+		if(!Util.isEmpty(documentStatus.getCountClause(),true)) 
+			return documentStatus.getCountClause();
+		return "*";
+	}
+	
 }

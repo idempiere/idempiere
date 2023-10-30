@@ -41,6 +41,7 @@ import org.compiere.model.MQuery;
 import org.compiere.print.MPrintColor;
 import org.compiere.print.MPrintFont;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -159,8 +160,13 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		if (AD_Window_ID > 0)
 		{
 			MQuery query = new MQuery(m_documentStatus.getAD_Table_ID());
-			query.addRestriction(MDocumentStatus.getWhereClause(m_documentStatus));
-			AEnv.zoom(AD_Window_ID, query);
+			if (Util.isEmpty(MDocumentStatus.getJoinClause(m_documentStatus),true)) {
+				query.addRestriction(MDocumentStatus.getWhereClause(m_documentStatus));
+				AEnv.zoom(AD_Window_ID, query);
+			}else {
+				query.addRestriction(MDocumentStatus.getInClauseRecordsIDs(m_documentStatus));
+				AEnv.zoom(AD_Window_ID, query);
+			}
 		}
 		else if ( AD_Form_ID > 0 )
 		{

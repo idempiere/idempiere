@@ -152,6 +152,15 @@ public interface I_PA_DocumentStatus
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
+    /** Column name CountClause */
+    public static final String COLUMNNAME_CountClause = "CountClause";
+
+	/** Set Sql Count	  */
+	public void setCountClause (String CountClause);
+
+	/** Get Sql Count	  */
+	public String getCountClause();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -208,6 +217,15 @@ public interface I_PA_DocumentStatus
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name JoinClause */
+    public static final String COLUMNNAME_JoinClause = "JoinClause";
+
+	/** Set Sql JOIN	  */
+	public void setJoinClause (String JoinClause);
+
+	/** Get Sql JOIN	  */
+	public String getJoinClause();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
