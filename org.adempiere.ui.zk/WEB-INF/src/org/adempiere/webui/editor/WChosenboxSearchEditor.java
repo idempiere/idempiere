@@ -32,7 +32,6 @@ import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -102,7 +101,6 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	private MyListModel 		model = new MyListModel();
 	/** Model for {@link Chosenbox} */
 	private InfoListSubModel	subModel = null;
-	
 
 	private static final CLogger log = CLogger.getCLogger(WChosenboxSearchEditor.class);
 	private static final int DEFAULT_MAX_AUTO_COMPLETE_ROWS = 500;
@@ -231,18 +229,18 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			}
 		}
 		popupMenu = new WEditorPopupMenu(false, true, isShowPreference(), false, false, false, lookup);
-		
+		popupMenu.removeNewUpdateMenu();
+
 		Menuitem editor = new Menuitem();
-        		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
-    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
-    		if (ThemeManager.isUseFontIconForImage())
-    			editor.setIconSclass("z-icon-Wizard");
-    		else
-    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
-    		editor.addEventListener(Events.ON_CLICK, popupMenu);
-    		popupMenu.appendChild(editor);    			
-		
-		
+		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+		if (ThemeManager.isUseFontIconForImage())
+			editor.setIconSclass("z-icon-Wizard");
+		else
+			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+		editor.addEventListener(Events.ON_CLICK, popupMenu);
+		popupMenu.appendChild(editor);
+
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass(imageUrl);
 		else
@@ -406,43 +404,40 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			final WChosenboxSearchAssistant wdc = new WChosenboxSearchAssistant();
 			wdc.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
-					
 					Object newValue = wdc.getNewValue();
-			    	updateValue(newValue);
-			    	setValue(newValue.toString());
+					updateValue(newValue);
+					setValue(newValue.toString());
 				}
 			});
-
 			AEnv.showWindow(wdc);
-			
 		}
 	}
 
-	
 	/**
 	 * Handle ON_SELECT event
 	 * @param newValue
 	 */
-    private void updateValue(Object newValue) {
-    	try {
+	private void updateValue(Object newValue) {
+		try {
 			onselecting = true;
 
-	        if (isValueChange(newValue)) {
-	        	try {
-	        		if (gridField != null) 
-	        			gridField.setLookupEditorSettingValue(true);
-			        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), "", newValue);
-			        super.fireValueChange(changeEvent);				        
-			        this.value = newValue.toString();
-	        	} finally {
-	        		if (gridField != null) 
-	        			gridField.setLookupEditorSettingValue(false);
-	        	}
-	        }
+			if (isValueChange(newValue)) {
+				try {
+					if (gridField != null) 
+						gridField.setLookupEditorSettingValue(true);
+					ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), "", newValue);
+					super.fireValueChange(changeEvent);				        
+					this.value = newValue.toString();
+				} finally {
+					if (gridField != null) 
+						gridField.setLookupEditorSettingValue(false);
+				}
+			}
 		} finally {
 			onselecting = false;
 		}
-    }
+	}
+
 	/**
 	 * Process selected items from info panel/window
 	 * @param value
@@ -486,7 +481,6 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			{
 				if (value instanceof Object[])
 				{
-					
 					if (((Object[])value).length > 0)
 					{
 						StringBuilder builder = new StringBuilder(newValue);
@@ -494,9 +488,8 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 						{
 							if (obj != null)
 							{
-								if(newValue.contains(obj.toString()))
+								if (newValue.contains(obj.toString()))
 									continue;
-								
 								if (builder.length() > 0)
 									builder.append(",");
 								builder.append(obj.toString());
@@ -504,11 +497,10 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 						}
 						newValue = builder.toString();
 					}
-					
 				}
 				else
 				{
-					if(!newValue.contains(value.toString()))
+					if (!newValue.contains(value.toString()))
 						newValue = newValue + "," + value.toString();
 				}
 			}
@@ -715,7 +707,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		private SimpleListModel selectedModel = new SimpleListModel();
 		private Listbox selectedList = new Listbox();
 		private Hlayout hlayout;
-		private Button bOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, false, true);
+		private Button bOk, bCancel;
 		private String m_newValue = "";
 
 		public WChosenboxSearchAssistant() {
@@ -760,13 +752,13 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 
 
 			//Listener for up and down button
-			EventListener<Event> actionListener = new EventListener<Event>() {
+			EventListener<Event> actionListenerUpDown = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					migrateValueWithinSelectedList(event);
 				}
 			};
 			//Listener for up and down button
-			EventListener<Event> actionListener2 = new EventListener<Event>() {
+			EventListener<Event> actionListenerRemoveAll = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					deleteAllValuesList(event);
 				}
@@ -783,21 +775,23 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 
 			EventListener<Event> crossListMouseListener = new DragListener();
 
-			bUp = createButton("MoveUp16", actionListener);
-			bDown = createButton("MoveDown16", actionListener);
-			bRemoveAll = createButton("Delete", actionListener2);
-			bOk.addEventListener(Events.ON_CLICK, this);
-			
-			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bRemoveAll,bUp, bDown});
+			bUp = createButton("MoveUp16", actionListenerUpDown);
+			bDown = createButton("MoveDown16", actionListenerUpDown);
+
+			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
 
 			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
 
 			hlayout = createHlayoutLine(new Component[] {selectedList});
 			center.appendChild(hlayout);
 
-			Panel confirmPanel = new Panel();
-			confirmPanel.setSclass("confirm-panel-right");
-			confirmPanel.appendChild(bOk);
+			ConfirmPanel confirmPanel = new ConfirmPanel(true, false, true, false, false, false);
+			bOk = confirmPanel.getOKButton();
+			bOk.addEventListener(Events.ON_CLICK, this);
+			bCancel = confirmPanel.getButton(ConfirmPanel.A_CANCEL);
+			bCancel.addEventListener(Events.ON_CLICK, this);
+			bRemoveAll = confirmPanel.getButton(ConfirmPanel.A_RESET);
+			bRemoveAll.addEventListener(Events.ON_CLICK, actionListenerRemoveAll);
 
 			South south = new South();
 			south.setSclass("dialog-footer");
@@ -813,14 +807,14 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			ArrayList<String> listSelected = new ArrayList<String>();
 			if (values != null && !Util.isEmpty((String) values)) {
 				for (String value : ((String) values).split(",")) {
-					
+
 					String name = lookup.getDisplay(value);
 					selectedModel.addElement(new ValueNamePair(value, name));
 					listSelected.add(value);
 				}	
 			}
 		}
-	
+
 		@Override
 		public void onEvent(Event event) throws Exception {
 			if (event.getTarget() == bOk) {
@@ -837,9 +831,11 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 					value = value.deleteCharAt(value.length() - 1);
 				m_newValue = value.toString();
 				this.detach();
+			} else if (event.getTarget() == bCancel) {
+				this.detach();
 			}
 		}
-		
+
 		/**
 		 * Delete All Values from List
 		 * @param event
@@ -847,7 +843,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		private void deleteAllValuesList(Event event) {
 			selectedModel.removeAllElements();
 		}
-		
+
 		/**
 		 * Remove selected item
 		 * @param event
@@ -1052,7 +1048,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			return m_newValue;
 		}
 	}
-	
+
 	/**
 	 * {@link ListSubModel} for {@link Chosenbox} auto complete
 	 */
