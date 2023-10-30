@@ -286,17 +286,16 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
             popupMenu = new WEditorPopupMenu(false, true, isShowPreference(), false, false, false, lookup);
     		addChangeLogMenu(popupMenu);
     		
-    		if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) { // The Assistant must be shown for MultipleSelectionList only (not for MultipleSelectionTable editors)
-        		Menuitem editor = new Menuitem();
-	        		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
-        		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
-        		if (ThemeManager.isUseFontIconForImage())
-        			editor.setIconSclass("z-icon-Wizard");
-        		else
-        			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
-        		editor.addEventListener(Events.ON_CLICK, popupMenu);
-        		popupMenu.appendChild(editor);    			
-    		}
+    		Menuitem editor = new Menuitem();
+        		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+    		if (ThemeManager.isUseFontIconForImage())
+    			editor.setIconSclass("z-icon-Wizard");
+    		else
+    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+    		editor.addEventListener(Events.ON_CLICK, popupMenu);
+    		popupMenu.appendChild(editor);    			
+		
         }        
     }
 
@@ -736,7 +735,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	 */
 	private class WChosenboxListAssistant extends Window implements EventListener<Event> {
 		private static final long serialVersionUID = 1043859495570181469L;
-		private Button bAdd, bRemove, bUp, bDown;
+		private Button bAdd, bRemove, bUp, bDown,bRemoveAll;
 		private SimpleListModel availableModel = new SimpleListModel();
 		private SimpleListModel selectedModel = new SimpleListModel();
 		private Listbox availableList = new Listbox();
@@ -799,11 +798,24 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 					migrateValueWithinSelectedList(event);
 				}
 			};
+			
+			//Listener for up and down button
+			EventListener<Event> actionListener3 = new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					deleteAllValuesList(event);
+				}
+			};
+
 
 			EventListener<Event> mouseListener = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
-						migrateValueAcrossLists(event);
+						if(gridField.getDisplayType() != DisplayType.ChosenMultipleSelectionList) {
+							deleteValueList(event);
+						}else {
+							migrateValueAcrossLists(event);
+						}
+						
 					}
 				}
 			};
@@ -814,15 +826,30 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			bDown = createButton("MoveDown16", actionListener2);
 			bAdd = createButton("MoveRight16", actionListener);
 			bRemove = createButton("MoveLeft16", actionListener);
+			bRemoveAll = createButton("Delete", actionListener3);
 			bOk.addEventListener(Events.ON_CLICK, this);
 			
-			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
+			Hlayout yesButtonLayout;
+			if (gridField.getDisplayType() != DisplayType.ChosenMultipleSelectionList) {
+				yesButtonLayout = createHlayoutBtn(new Button[] {bRemoveAll,bUp, bDown});
+			}else {
+				yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
+			}
+			
 			Hlayout noButtonLayout = createHlayoutBtn(new Button[] {bRemove, bAdd});
 
 			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
-			initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
+			
+			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList)
+				initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
 
-			hlayout = createHlayoutLine(new Component[] {availableList, selectedList});
+			
+			if (gridField.getDisplayType() != DisplayType.ChosenMultipleSelectionList) {
+				hlayout = createHlayoutLine(new Component[] {selectedList});
+			}else {
+				hlayout = createHlayoutLine(new Component[] {availableList, selectedList});
+			}
+			
 			center.appendChild(hlayout);
 
 			Panel confirmPanel = new Panel();
@@ -837,35 +864,43 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 		private void load() {
 			selectedModel.removeAllElements();
-			availableModel.removeAllElements();
+			
+			if (gridField.getDisplayType() != DisplayType.ChosenMultipleSelectionList)
+				availableModel.removeAllElements();
 
 			// selected
 			Object values = getValue();
 			ArrayList<String> listSelected = new ArrayList<String>();
 			if (values != null && !Util.isEmpty((String) values)) {
 				for (String value : ((String) values).split(",")) {
-					selectedModel.addElement(new ValueNamePair (value, MRefList.getListName(Env.getCtx(), refID, value)));
+					if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+						selectedModel.addElement(new ValueNamePair (value, MRefList.getListName(Env.getCtx(), refID, value)));
+					}else {
+						String name = lookup.getDisplay(value);
+						selectedModel.addElement(new ValueNamePair(value, name));
+					}
 					listSelected.add(value);
 				}	
 			}
-
-			// available (data - available)
-			String validationCode = gridField.getVO().ValidationCode;
-			if (!Util.isEmpty(validationCode)) {
-				validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), gridField.getVO().TabNo, validationCode, false);
-				if (Util.isEmpty(validationCode, true)) {
-					//not validated, ensure list is empty
-					validationCode = "1=2";
+			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+				// available (data - available)
+				String validationCode = gridField.getVO().ValidationCode;
+				if (!Util.isEmpty(validationCode)) {
+					validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), gridField.getVO().TabNo, validationCode, false);
+					if (Util.isEmpty(validationCode, true)) {
+						//not validated, ensure list is empty
+						validationCode = "1=2";
+					}
 				}
-			}
-
-			for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
-
-				if (listSelected.contains(vnp.getValue()))
-					continue;
-
-				availableModel.addElement(new ValueNamePair (vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
-				listSelected.add(vnp.getValue());
+	
+				for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
+	
+					if (listSelected.contains(vnp.getValue()))
+						continue;
+	
+					availableModel.addElement(new ValueNamePair (vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
+					listSelected.add(vnp.getValue());
+				}
 			}
 		}
 	
@@ -885,6 +920,26 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 					value = value.deleteCharAt(value.length() - 1);
 				m_newValue = value.toString();
 				this.detach();
+			}
+		}
+		
+		/**
+		 * Delete All Values from List
+		 * @param event
+		 */
+		private void deleteAllValuesList(Event event) {
+			selectedModel.removeAllElements();
+		}
+		
+		/**
+		 * Remove selected item
+		 * @param event
+		 */
+		private void deleteValueList (Event event) {
+			Object source = event.getTarget();
+			if (source instanceof ListItem listItem) {
+				int index = listItem.getIndex();
+				selectedModel.removeElement(selectedModel.getElementAt(index));
 			}
 		}
 
