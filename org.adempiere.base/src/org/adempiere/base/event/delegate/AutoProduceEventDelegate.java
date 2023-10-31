@@ -220,7 +220,7 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 		//complete the production
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(production, "CO");
 		if (pi.isError()) {
-			return pi.getSummary();
+			return production.getProcessMsg();
 		}
 		return null;
 	}
