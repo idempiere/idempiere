@@ -54,7 +54,6 @@ import org.compiere.model.MMFARegisteredDevice;
 import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -393,12 +392,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			long daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
 			rd.setExpiration(new Timestamp(System.currentTimeMillis() + (daysExpire * 86400000L)));
 			// TODO: rd.setHelp -> add information about the browser, device and IP address (fingerprint)
-			try {
-				PO.setCrossTenantSafe();
-				rd.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			rd.saveCrossTenantSafeEx();
 		}
 		Env.setContext(m_ctx, Env.MFA_Registration_ID, registrationId);
 

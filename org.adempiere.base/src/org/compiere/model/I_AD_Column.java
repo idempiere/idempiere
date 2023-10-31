@@ -341,6 +341,17 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  */
 	public int getFieldLength();
 
+    /** Column name FKConstraintMsg_ID */
+    public static final String COLUMNNAME_FKConstraintMsg_ID = "FKConstraintMsg_ID";
+
+	/** Set Constraint Message	  */
+	public void setFKConstraintMsg_ID (int FKConstraintMsg_ID);
+
+	/** Get Constraint Message	  */
+	public int getFKConstraintMsg_ID();
+
+	public org.compiere.model.I_AD_Message getFKConstraintMsg() throws RuntimeException;
+
     /** Column name FKConstraintName */
     public static final String COLUMNNAME_FKConstraintName = "FKConstraintName";
 

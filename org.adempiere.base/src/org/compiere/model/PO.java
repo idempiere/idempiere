@@ -2592,11 +2592,14 @@ public abstract class PO
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx() {
+		boolean crossTenantSet = isSafeCrossTenant.get();
 		try {
-			PO.setCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
 			saveEx();
 		} finally {
-			PO.clearCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
 		}
 	}
 
@@ -2751,11 +2754,14 @@ public abstract class PO
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx(String trxName) {
+		boolean crossTenantSet = isSafeCrossTenant.get();
 		try {
-			PO.setCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
 			saveEx(trxName);
 		} finally {
-			PO.clearCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
 		}
 	}
 
@@ -4219,7 +4225,10 @@ public abstract class PO
 						localTrx.commit(true);
 					} catch (SQLException e) {
 						String msg = DBException.getDefaultDBExceptionMessage(e);
-						log.saveError(msg != null ? msg : "Error", e);
+						if (msg != null)
+							log.saveError(msg, msg, e, false);
+						else
+							log.saveError("Error", e, false);
 						success = false;
 					}
 				}
@@ -5653,21 +5662,16 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex[] indexes = MTableIndex.get(MTable.get(getCtx(), get_Table_ID()));
-				for (MTableIndex index : indexes)
+				MTableIndex index = new Query(getCtx(), MTableIndex.Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
+						.setParameters(get_Table_ID(), dbIndexName)
+						.setOnlyActiveRecords(true)
+						.first();
+				if (index != null && index.getAD_Message_ID() > 0)
 				{
-					if (dbIndexName.equalsIgnoreCase(index.getName()))
-					{
-						if (index.getAD_Message_ID() > 0)
-						{
-							MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
-							log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
-							found = true;
-						}
-						break;
-					}
+					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
+					log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
+					found = true;
 				}
-				
 				if (!found)
 					log.saveError(msg, info);
 			}
@@ -5848,6 +5852,12 @@ public abstract class PO
 	private void checkRecordUUCrossTenant() {
 		if (isSafeCrossTenant.get())
 			return;
+
+		//ad_table_id+record_uu validation will fail for ad_pinstance due to ad_pinstance is 
+		//being saved and updated outside of server process transaction.
+		if (I_AD_PInstance.Table_Name.equals(p_info.getTableName()))
+			return;
+
 		int idxRecordUU = p_info.getColumnIndex("Record_UU");
 		if (idxRecordUU < 0)
 			return;

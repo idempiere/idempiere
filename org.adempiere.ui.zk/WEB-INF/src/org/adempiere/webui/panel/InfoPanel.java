@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,6 +105,7 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -1018,6 +1020,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         restoreSelectedInPage();
         updateStatusBar (m_count);
         setStatusSelected ();
+        setFocusToContentPanel();
         addDoubleClickListener();
         
         if (paging != null && paging.getParent() == null)
@@ -1843,8 +1846,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			
 			@SuppressWarnings("unchecked")
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
-					
-			if (contentPanel.getModel().isSelected(candidateRecord)){
+			
+			int ri = rowIndex;
+			if (contentPanel.getModel().isSelected(candidateRecord) || Arrays.stream(contentPanel.getSelectedIndices()).anyMatch(si -> si==ri)){
 				recordSelectedData.put(keyCandidate, candidateRecord);// add or update selected record info				
 			}else{
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
@@ -2268,6 +2272,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
         	enableButtons();
+        	setFocusToContentPanel();
         }
         else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
         {
@@ -3524,5 +3529,29 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		
 		List<Object> lastSelectedRow = m_rowSelectionOrder.size() > 0 ? getSelectedRowInfo().get(m_rowSelectionOrder.get(index)) : null;
 		return lastSelectedRow;
+	}
+
+	/**
+	 * Set focus to {@link #contentPanel}:<br/>
+	 * - Single selection: auto select first item and set focus to it.<br/>
+	 * - Multiple selection: set focus to first item. 
+	 */
+	private void setFocusToContentPanel() {
+        if(contentPanel.getRowCount() > 0) {
+        	if(p_multipleSelection) {
+
+        		((HtmlBasedComponent)contentPanel.getItems().get(0)).focus();
+        	}
+        	else {
+        		if(contentPanel.getSelectedItem() == null) 
+        			contentPanel.setSelectedIndex(0);              		
+
+            	((HtmlBasedComponent)contentPanel.getSelectedItem()).focus();
+            	contentPanel.getSelectedItem().setSelected(true);
+        	}
+
+        	setStatusSelected ();
+        	m_lastSelectedIndex = 0;
+        }
 	}
 }	//	Info

@@ -217,12 +217,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			setEndWaitTime(new Timestamp(limitMS + System.currentTimeMillis()));
 		//	Responsible
 		setResponsible(process);
-		try {
-			PO.setCrossTenantSafe();
-			saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		saveCrossTenantSafeEx();
 		//
 		m_audit = new MWFEventAudit(this);
 		m_audit.setAD_Org_ID(getAD_Org_ID());//Add by Hideaki Hagiwara

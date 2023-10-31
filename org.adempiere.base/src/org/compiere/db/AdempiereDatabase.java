@@ -335,6 +335,26 @@ public interface AdempiereDatabase
 	public String getNameOfUniqueConstraintError(Exception e);
 
 	/**
+     * <p>
+     * The "child record found error" contains the 
+     * foreign key constraint name after the second occurrence
+     * of the opening double quote: ["].
+     * </p>
+     * 
+     * <h3>Example:</h3>
+     * <p>
+     * ERROR: update or delete on table "m_product_category" 
+     * violates foreign key constraint "mprodcategory_mdiscountsbreak" 
+     * on table "m_discountschemabreak" 
+     * Detail: Key (m_product_category_id)=(50000) is still referenced from table "m_discountschemabreak".
+     * </p>
+     * 
+     * @param e
+     * @return constraint name
+     */
+	public String getForeignKeyConstraint(Exception e);
+
+	/**
 	 * @param columnName
 	 * @param csv comma separated value
 	 * @return subset sql clause

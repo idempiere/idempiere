@@ -18,8 +18,15 @@ package org.adempiere.exceptions;
 
 import java.sql.SQLException;
 
+import org.compiere.model.MColumn;
+import org.compiere.model.MMessage;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -43,6 +50,7 @@ public class DBException extends AdempiereException
 
 	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
 	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
+	public static final String DELETE_ERROR_DEPENDENT_MSG_WITH_INFO = "DeleteErrorDependentInfo";
 	public static final String SAVE_ERROR_NOT_UNIQUE_MSG = "SaveErrorNotUnique";
 	private String m_sql = null;
 
@@ -137,7 +145,8 @@ public class DBException extends AdempiereException
     		return false;
     	}
     	else if (e instanceof SQLException) {
-    		return ((SQLException)e).getErrorCode() == errorCode;
+    		return ((SQLException)e).getErrorCode() == errorCode
+    			|| e.getMessage().contains("ORA-"+String.format("%05d", errorCode)+":");
     	}
     	else if (e instanceof DBException) {
     		SQLException sqlEx = ((DBException)e).getSQLException();
@@ -242,6 +251,27 @@ public class DBException extends AdempiereException
     	if (isUniqueContraintError(e)) {
     		return SAVE_ERROR_NOT_UNIQUE_MSG;
     	} else if (isChildRecordFoundError(e)) {
+			// get constraint name from error message
+			String constraint = DB.getDatabase().getForeignKeyConstraint(e);
+			if (!Util.isEmpty(constraint)) {
+				// find the column with the constraint
+				MColumn fColumn = new Query(Env.getCtx(), MColumn.Table_Name, " UPPER(FKConstraintName) = UPPER(?) ", null)
+								.setParameters(constraint)
+								.first();
+				if (fColumn != null) {
+					// get the dedicated message
+					int msgID = fColumn.getFKConstraintMsg_ID();
+					if (msgID > 0) {
+						MMessage msgObj = MMessage.get(Env.getCtx(), msgID);
+						return msgObj.getValue();
+					} else {
+						MTable fTable = MTable.get(fColumn.getAD_Table_ID());
+						String msg = Msg.getMsg(Env.getCtx(), DELETE_ERROR_DEPENDENT_MSG_WITH_INFO,
+								new Object[] {fTable.get_Translation(MTable.COLUMNNAME_Name), fColumn.get_Translation(MColumn.COLUMNNAME_Name)});
+						return msg;
+					}
+				}
+			}
     		return DELETE_ERROR_DEPENDENT_MSG;
     	} else if (isTimeout(e)) {
     		return DATABASE_OPERATION_TIMEOUT_MSG;

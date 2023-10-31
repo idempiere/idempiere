@@ -951,6 +951,12 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
+	public String getForeignKeyConstraint(Exception e) {
+		// finding the name of foreign key constraint is the same as unique constraint
+		return getNameOfUniqueConstraintError(e);
+	}
+
+	@Override
 	public String subsetClauseForCSV(String columnName, String csv) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("toTableOfVarchar2(")
