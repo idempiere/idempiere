@@ -917,7 +917,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 * @return true if preference dialog is available and accessible
 	 */
 	protected boolean isShowPreference() {
-		return MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn() && !gridField.isVirtualColumn();
+		return MRole.getDefault() != null && MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() 
+				&& !gridField.isEncryptedColumn() && !gridField.isVirtualColumn();
 	}
 
 	/**

@@ -15,7 +15,8 @@
 package org.adempiere.webui.panel;
 
 /**
- * 
+ * Marker interface for component that wants to handle the update of context help by listening to the <br/>
+ * WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT event.
  * @author Elaine
  *
  */

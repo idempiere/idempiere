@@ -35,7 +35,6 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MStyle;
 import org.compiere.model.MStyleLine;
 import org.compiere.model.MTest;
-import org.compiere.model.PO;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
@@ -62,12 +61,7 @@ public class ModelForeignKeyTest extends AbstractTestCase {
 		// set model cascade on Test.Record_ID
 		MColumn col_test_record_id = new MColumn(ctx, MColumn.getColumn_ID(MTest.Table_Name, MTest.COLUMNNAME_Record_ID), trxName);
 		col_test_record_id.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_ModelCascade);
-		try {
-			PO.setCrossTenantSafe();			
-			col_test_record_id.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		col_test_record_id.saveCrossTenantSafeEx();
 
 		MTest test1 = new MTest(ctx, 0, trxName);
 		test1.setName("Test 1");
@@ -93,12 +87,7 @@ public class ModelForeignKeyTest extends AbstractTestCase {
 		// set model cascade on Test.Record_ID
 		MColumn col_test_record_id = new MColumn(ctx, MColumn.getColumn_ID(MTest.Table_Name, MTest.COLUMNNAME_Record_ID), trxName);
 		col_test_record_id.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_ModelSetNull);
-		try {
-			PO.setCrossTenantSafe();			
-			col_test_record_id.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		col_test_record_id.saveCrossTenantSafeEx();
 		CacheMgt.get().reset();
 
 		MTest test1 = new MTest(ctx, 0, trxName);
@@ -125,12 +114,7 @@ public class ModelForeignKeyTest extends AbstractTestCase {
 		// set model cascade on Test.Record_ID
 		MColumn col_test_record_id = new MColumn(ctx, MColumn.getColumn_ID(MTest.Table_Name, MTest.COLUMNNAME_Record_ID), trxName);
 		col_test_record_id.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion);
-		try {
-			PO.setCrossTenantSafe();			
-			col_test_record_id.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		col_test_record_id.saveCrossTenantSafeEx();
 		CacheMgt.get().reset();
 
 		MTest test1 = new MTest(ctx, 0, trxName);
@@ -184,12 +168,7 @@ public class ModelForeignKeyTest extends AbstractTestCase {
 		// set model cascade on Test.Record_ID
 		MColumn col_styleline_style = new MColumn(ctx, MColumn.getColumn_ID(MStyleLine.Table_Name, MStyleLine.COLUMNNAME_AD_Style_ID), trxName);
 		col_styleline_style.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_ModelCascade);
-		try {
-			PO.setCrossTenantSafe();			
-			col_styleline_style.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		col_styleline_style.saveCrossTenantSafeEx();
 		CacheMgt.get().reset();
 
 		MStyle style = new MStyle(ctx, 0, trxName);

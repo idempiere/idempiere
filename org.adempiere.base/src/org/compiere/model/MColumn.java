@@ -792,7 +792,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (foreignTableMulti != null)
 			return foreignTableMulti;
 		int refid = getAD_Reference_ID();
-		if (DisplayType.ChosenMultipleSelectionTable == refid || DisplayType.ChosenMultipleSelectionSearch == refid) {
+		if (DisplayType.ChosenMultipleSelectionList == refid) {
+			foreignTableMulti = "AD_Ref_List";
+		} else if (DisplayType.ChosenMultipleSelectionTable == refid || DisplayType.ChosenMultipleSelectionSearch == refid) {
 			foreignTableMulti = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
 		} else if (DisplayType.SingleSelectionGrid == refid || DisplayType.MultipleSelectionGrid == refid) {
 			foreignTableMulti = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameSelectionGrid, getAD_Column_ID());

@@ -76,12 +76,7 @@ public class MSystem extends X_AD_System
 		//
 		if (!Ini.isClient() && system.setInfo())
 		{
-			try {
-				PO.setCrossTenantSafe();
-				system.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			system.saveCrossTenantSafeEx();
 		}
 		s_system.put(0, new MSystem(Env.getCtx(), system));
 		return system;
@@ -530,10 +525,7 @@ public class MSystem extends X_AD_System
 	public static boolean isSecureProps() {
 		if (Env.isWindows() || Ini.isClient())
 			return false;
-		String secureProps = System.getProperty("IDEMPIERE_SECURE_PROPERTIES");
-		if (secureProps != null && secureProps.equals("false"))
-			return false;
-		return true;
+		return SystemProperties.isSecureProperties();
 	}
 
 	/**

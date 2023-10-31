@@ -22,7 +22,7 @@ import org.idempiere.broadcast.BroadCastUtil;
 import org.idempiere.broadcast.BroadcastMsgUtil;
 
 /**
- * 
+ * Process to kill current session
  * @author Deepak Pansheriya
  *
  */

@@ -25,10 +25,11 @@ import org.adempiere.webui.component.Panel;
  * @date    Mar 3, 2007
  * @version $Revision: 0.10 $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class RequestNoticePanel extends Panel
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2530869089383947019L;
 

@@ -74,7 +74,7 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
 
 /**
- *
+ * Action to import data from uploaded file to GridTab
  * @author Carlos Ruiz
  *
  */
@@ -82,7 +82,9 @@ public class FileImportAction implements EventListener<Event>
 {
 	private AbstractADWindowContent panel;
 
+	/** File Extension:IGridTabImporter */
 	private Map<String, IGridTabImporter> importerMap = null;
+	/** File Extension:Label */
 	private Map<String, String> extensionMap = null;
 
 	private Window winImportFile = null;
@@ -104,7 +106,7 @@ public class FileImportAction implements EventListener<Event>
 	}
 
 	/**
-	 * execute import action
+	 * Execute import action
 	 */
 	public void fileImport()
 	{
@@ -288,6 +290,9 @@ public class FileImportAction implements EventListener<Event>
 		bFile.setLabel(media.getName());
 	}
 	
+	/**
+	 * Import uploaded file
+	 */
 	private void importFile() {
 		try {
 			ListItem li = cboType.getSelectedItem();

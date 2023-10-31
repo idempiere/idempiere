@@ -23,6 +23,7 @@ import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.Component;
 
 /**
+ * Default implementation of {@link IFormFactory}
  * @author hengsin
  *
  */
@@ -266,6 +267,10 @@ public class DefaultFormFactory implements IFormFactory {
 		return zkName;
 	}
 
+	/**
+	 * @param clazz
+	 * @return true if clazz is descendant of IFormController or Component
+	 */
 	private static boolean isZkFormClass(Class<?> clazz) {
 		return IFormController.class.isAssignableFrom(clazz) || Component.class.isAssignableFrom(clazz);
 	}

@@ -47,7 +47,7 @@ import org.zkoss.zk.ui.util.ExecutionCleanup;
 import org.zkoss.zk.ui.util.ExecutionInit;
 
 /**
- *
+ * Zk listener to manage environment context for execution and session
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -59,7 +59,7 @@ public class SessionContextListener implements ExecutionInit,
     public static final String SESSION_CTX = "WebUISessionContext";
 
     /**
-     * get servlet thread local context from session
+     * Get environment context from session cache or create a new one (no cache context or cache context is invalid)
      * @param exec
      */
     public static void setupExecutionContextFromSession(Execution exec) {
@@ -183,6 +183,9 @@ public class SessionContextListener implements ExecutionInit,
 		return true;
     }
 
+    /**
+     * @return true if session context is valid
+     */
 	public static boolean isContextValid() {
 		Execution exec = Executions.getCurrent();
 		Properties ctx = ServerContext.getCurrentInstance();
@@ -275,6 +278,11 @@ public class SessionContextListener implements ExecutionInit,
 		}
 	}
 
+	/**
+	 * @param list
+	 * @param session
+	 * @return true if session has no active desktop
+	 */
 	private boolean isEmpty(List<String> list, Session session) {
 		if (list.isEmpty())
 			return true;
@@ -329,6 +337,11 @@ public class SessionContextListener implements ExecutionInit,
 		} 
 	}
 	
+	/**
+	 * Add dtid to session context
+	 * @param AD_Session_ID
+	 * @param dtid desktop id
+	 */
 	public static synchronized void addDesktopId(int AD_Session_ID, String dtid)
 	{
 		String key = getSessionDesktopListKey(AD_Session_ID);

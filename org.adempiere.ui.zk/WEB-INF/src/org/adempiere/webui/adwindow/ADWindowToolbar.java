@@ -594,8 +594,11 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         	doOnClick(event);
         }
         else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(eventName)) {
-        	if (windowNo > 0)
-    			SessionManager.getAppDesktop().closeWindow(windowNo);
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (windowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(windowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
         }
     }
 

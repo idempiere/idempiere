@@ -194,7 +194,7 @@ public class Scheduler extends AdempiereServer
 		int AD_Table_ID = scheduler.getAD_Table_ID();
 		int Record_ID = scheduler.getRecord_ID();
 		//
-		MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), Record_ID);
+		MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), AD_Table_ID, Record_ID, null); // TODO: Support Schedule with Record_UU
 		pInstance.saveEx();
 		fillParameter(pInstance);
 		//

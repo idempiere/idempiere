@@ -51,4 +51,4 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED
 --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED"
 
-$JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar "$BASE"/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
+"$JAVA" ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar "$BASE"/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application

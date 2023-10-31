@@ -33,7 +33,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MMFARegisteredDevice;
 import org.compiere.model.MProcessPara;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 
@@ -89,12 +88,7 @@ public class MFARevokeDevice extends SvrProcess {
 				.list();
 		for (MMFARegisteredDevice rd : rds) {
 			rd.setIsActive(false);
-			try {
-				PO.setCrossTenantSafe();
-				rd.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			rd.saveCrossTenantSafeEx();
 		}
 
 		return "@OK@";

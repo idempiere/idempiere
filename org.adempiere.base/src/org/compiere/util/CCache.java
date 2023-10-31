@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adempiere.base.Core;
+import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 
 /**
@@ -62,7 +63,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	{
 		try 
 		{
-			String property = System.getProperty("Cache.ExpireMinute");
+			String property = SystemProperties.getCacheExpireMinute();
 			if (property != null && property.trim().length() > 0)
 			{
 				int expireMinute = 0;
@@ -87,7 +88,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	{
 		try 
 		{
-			String property = System.getProperty("Cache.MaxSize." + name);
+			String property = SystemProperties.getCacheMaxSizeTable(name);
 			if (property != null && property.trim().length() > 0)
 			{
 				int cacheMaxSize = 0;

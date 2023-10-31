@@ -369,7 +369,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 					|| X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice.equals(NotificationType))
 				{
 					RequestSendEMailEventData eventData = new RequestSendEMailEventData(client, from, to, subject, message.toString(), pdf, r.getR_Request_ID());
-					Event event = EventManager.newEvent(IEventTopics.REQUEST_SEND_EMAIL, eventData);
+					Event event = EventManager.newEvent(IEventTopics.REQUEST_SEND_EMAIL, eventData, true);
 					EventManager.getInstance().postEvent(event);
 				}
 				//	Send Note

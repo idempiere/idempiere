@@ -111,12 +111,15 @@ public class AllocationReset extends SvrProcess
 
 		if (p_C_AllocationHdr_ID != 0)
 		{
-			MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
-			if (delete(hdr))
-				count++;
-			else
-				throw new AdempiereException("Cannot delete");
-			m_trx.close();
+			try {
+				MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
+				if (delete(hdr))
+					count++;
+				else
+					throw new AdempiereException("Cannot delete");
+			} finally {
+				m_trx.close();
+			}
 			StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 			return msgreturn.toString();
 		}
@@ -176,8 +179,8 @@ public class AllocationReset extends SvrProcess
 		{
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			m_trx.close();
 		}
-		m_trx.close();
 		StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 		return msgreturn.toString();
 	}	//	doIt

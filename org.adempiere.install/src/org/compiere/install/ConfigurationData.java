@@ -52,6 +52,7 @@ import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.db.Database;
 import org.compiere.model.MSystem;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -108,7 +109,7 @@ public class ConfigurationData
 	public static final String	IDEMPIERE_ENV_FILE		= "idempiereEnv.properties";
 
 	/** Adempiere Home					*/
-	public static final String	IDEMPIERE_HOME 			= "IDEMPIERE_HOME";
+	public static final String	IDEMPIERE_HOME 			= Ini.IDEMPIERE_HOME;
 	/** 				*/
 	public static final String	JAVA_HOME 				= "JAVA_HOME";
 	/** 				*/
@@ -224,7 +225,7 @@ public class ConfigurationData
 	public boolean load()
 	{
 		//	Load idempiereEnv.properties
-		String adempiereHome = System.getProperty(IDEMPIERE_HOME);
+		String adempiereHome = SystemProperties.getIdempiereHome();
 		if (adempiereHome == null || adempiereHome.length() == 0)
 			adempiereHome = System.getProperty("user.dir");
 

@@ -95,7 +95,7 @@ public class ExportAction implements EventListener<Event>
 	}
 
 	/**
-	 * execute export action
+	 * Execute export action
 	 */
 	public void export()
 	{

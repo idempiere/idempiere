@@ -57,28 +57,35 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * Menu Panel Base
+ * Abstract base class for Menu Panel
  * @author Elaine
  * @date July 31, 2012
  */
 public abstract class AbstractMenuPanel extends Panel implements EventListener<Event> {
 
+	/** Treeitem attribute to store the type of menu item (report, window, etc) */
 	public static final String MENU_TYPE_ATTRIBUTE = "menu.type";
 	
+	/** Treeitem attribute to store the name of a menu item */
 	public static final String MENU_LABEL_ATTRIBUTE = "menu.label";
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6160708371157917922L;
 	
+	/** Event queue name */
 	public static final String MENU_ITEM_SELECTED_QUEUE = "MENU_ITEM_SELECTED_QUEUE";
 	
 	private Properties ctx;
     private Tree menuTree;
 
+    /** Listener for {@link #MENU_ITEM_SELECTED_QUEUE} event queue */
 	private EventListener<Event> listener;
     
+	/**
+	 * @param parent
+	 */
     public AbstractMenuPanel(Component parent)
     {
     	if (parent != null)
@@ -86,6 +93,9 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         init();            	
     }
     
+    /**
+     * Initialize {@link #menuTree}
+     */
     protected void init() {
 		ctx = Env.getCtx();
         int adRoleId = Env.getAD_Role_ID(ctx);
@@ -96,6 +106,9 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         initMenu(rootNode);
     }
     
+    /**
+     * Create components
+     */
     protected void initComponents()
     {
     	this.setSclass("menu-panel");
@@ -109,6 +122,10 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         menuTree.setPageSize(-1); // Due to bug in the new paging functionality
     }
     
+    /**
+     * Fill {@link #menuTree} from rootNode
+     * @param rootNode
+     */
     private void initMenu(MTreeNode rootNode)
     {
         Treecols treeCols = new Treecols();
@@ -123,6 +140,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         generateMenu(rootTreeChildren, rootNode);
     }
     
+    /**
+     * @param ctx
+     * @param adRoleId
+     * @return AD_Tree_ID for role
+     */
     private int getTreeId(Properties ctx, int adRoleId)
     {
         int AD_Tree_ID = DB.getSQLValue(null,
@@ -135,6 +157,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         return AD_Tree_ID;
     }
     
+    /**
+     * Fill treeChildren from mNode
+     * @param treeChildren
+     * @param mNode
+     */
     private void generateMenu(Treechildren treeChildren, MTreeNode mNode)
     {
         Enumeration<?> nodeEnum = mNode.children();
@@ -236,6 +263,10 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         }
     }
     
+    /**
+     * Create new record button
+     * @return Toolbarbutton
+     */
     public Toolbarbutton createNewButton()
     {
     	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
@@ -248,6 +279,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     	return newBtn;
     }
     
+    @Override
     public void onEvent(Event event)
     {
         Component comp = event.getTarget();
@@ -258,6 +290,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         }
     }
     
+    /**
+     * Handle onClick and onOk event
+     * @param comp
+     * @param eventData
+     */
     private void doOnClick(Component comp, Object eventData) {
     	boolean newRecord = false;
 		if (comp instanceof A) {
@@ -311,10 +348,16 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		    else
 		    	selectedItem.setOpen(!selectedItem.isOpen());
 		    selectedItem.setSelected(true);
+		    
+		    //publish event to sync the selection of other menu tree (if any)
 	        EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.DESKTOP, true).publish(new Event(Events.ON_SELECT, null, selectedItem));
 		}
 	}
     
+    /**
+     * Handle new record event
+     * @param selectedItem
+     */
     private void onNewRecord(Treeitem selectedItem) {
     	try
         {
@@ -351,6 +394,10 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		
 	}
 
+    /**
+     * Handle onClick event of tree item
+     * @param selectedItem
+     */
 	protected void fireMenuSelectedEvent(Treeitem selectedItem) {
     	int nodeId = Integer.parseInt((String)selectedItem.getValue());
        
@@ -367,11 +414,17 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         }		
 	}
 
+	/**
+	 * @return Tree
+	 */
 	public Tree getMenuTree() 
 	{
 		return menuTree;
 	}
 	
+	/**
+	 * @return ctx
+	 */
 	public Properties getCtx()
 	{
 		return ctx;

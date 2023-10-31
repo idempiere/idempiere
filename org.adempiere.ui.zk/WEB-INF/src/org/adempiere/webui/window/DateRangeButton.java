@@ -35,14 +35,14 @@ import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Events;
 
 /**
-*
-* @author Peter Takacs, Cloudempiere
-*
-*/
+ * Button for range date field editor. Open {@link DateRangePicker} dialog to set the from and to value.
+ * @author Peter Takacs, Cloudempiere
+ *
+ */
 public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDisplayListener {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4404182204288841866L;
 
@@ -53,6 +53,8 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 	
 	/**
 	 * Constructor
+	 * @param editor
+	 * @param editor2
 	 */
 	public DateRangeButton(WEditor editor, WEditor editor2) {
 		super();
@@ -61,6 +63,9 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 		init();
 	}
 	
+	/**
+	 * Setup component and create {@link DateRangePicker}
+	 */
 	private void init() {
 		
 		if (ThemeManager.isUseFontIconForImage())

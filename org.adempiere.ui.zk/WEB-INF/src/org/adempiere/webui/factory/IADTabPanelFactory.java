@@ -16,15 +16,14 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.adwindow.IADTabpanel;
 
 /**
- * @author Logilite Technologies This interface implements OSGI service to
- *         retrieve ADTabPanel based on tab type.
+ * This interface implements OSGI service to instantiate ADTabPanel based on tab type.
+ * @author Logilite Technologies 
  */
 public interface IADTabPanelFactory
 {
 	/**
-	 * 
-	 * @param type Tab type
-	 * @return Implementor of IADTabPanel
+	 * @param type Tab type FORM, SORT or a custom type
+	 * @return new IADTabPanel instance
 	 */
 	public IADTabpanel getInstance(String type);
 }

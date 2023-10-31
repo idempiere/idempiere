@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
+import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
@@ -70,6 +73,7 @@ public class Login
 {
 	private String loginErrMsg;
 	private boolean isPasswordExpired;
+	private boolean isSSOLogin = false;
 
 	public String getLoginErrMsg() {
 		return loginErrMsg;
@@ -1256,14 +1260,28 @@ public class Login
 	}
 
 	/**
+	 * Validate Client Login. Sets Context with login info
+	 * 
+	 * @param app_user  user id
+	 * @param app_pwd   password
+	 * @param roleTypes comma separated list of the role types allowed to login
+	 *                  (NULL can be added)
+	 * @return client array or null if in error.
+	 */
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes) {
+		return getClients(app_user, app_pwd, roleTypes, null);
+	}
+
+	/**
 	 *  Validate Client Login.
 	 *  Sets Context with login info
 	 *  @param app_user user id
 	 *  @param app_pwd password
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
+	 *  @param token validate the user with a token for SSO login.
 	 *  @return client array or null if in error.
 	 */
-	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes) {
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token) {
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
@@ -1274,11 +1292,21 @@ public class Login
 
 		//	Authentication
 		boolean authenticated = false;
+		try
+		{
+			isSSOLogin = token != null && SSOUtils.getSSOPrincipalService() != null && SSOUtils.getSSOPrincipalService().getUserName(token).equalsIgnoreCase(app_user);
+		}
+		catch (ParseException e)
+		{
+			log.warning("Parsing failed: " + e.getLocalizedMessage());
+			isSSOLogin = false;
+		}
+
 		MSystem system = MSystem.get(m_ctx);
 		if (system == null)
 			throw new IllegalStateException("No System Info");
 
-		if (app_pwd == null || app_pwd.length() == 0)
+		if (!isSSOLogin && (app_pwd == null || app_pwd.length() == 0))
 		{
 			log.warning("No Apps Password");
 			return null;
@@ -1287,7 +1315,7 @@ public class Login
 		loginErrMsg = null;
 		isPasswordExpired = false;
 
-		if (system.isLDAP())
+		if (!isSSOLogin && system.isLDAP())
 		{
 			authenticated = system.isLDAP(app_user, app_pwd);
 			if (authenticated) {
@@ -1329,6 +1357,16 @@ public class Login
 			where.append("EMail=?");
 		else
 			where.append("COALESCE(LDAPUser,Name)=?");
+
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
+		where.append("	AND EXISTS (SELECT * FROM AD_User u ")
+						.append("	INNER JOIN	AD_Client c ON (u.AD_Client_ID = c.AD_Client_ID)	")
+						.append("	WHERE (COALESCE(u.AuthenticationType, c.AuthenticationType) IN ");
+		//If Enable_SSO=N then don't allow SSO only users. 
+		where.append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
+		where.append("	OR COALESCE(u.AuthenticationType, c.AuthenticationType) IS NULL) AND u.AD_User_ID = AD_User.AD_User_ID) ");
+
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		where.append(" AND")
 				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
@@ -1356,10 +1394,11 @@ public class Login
 		}
 		
 		if (users.size() == 0) {
-			log.saveError("UserPwdError", app_user, false);
+			log.saveError(isSSOLogin ? "UserNotFoundError": "UserPwdError", app_user, false);
 			return null;
 		}
-
+		
+		log.log(Level.FINE ,users.size() + " matched user found for :" + app_user);
 		int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
 		int MAX_INACTIVE_PERIOD_DAY = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
 		int MAX_PASSWORD_AGE = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
@@ -1375,7 +1414,7 @@ public class Login
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
 			// authenticated by ldap
-			if (authenticated) {
+			if (authenticated || isSSOLogin) {
 				valid = true;
 			} else {
 				if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
@@ -1427,6 +1466,7 @@ public class Login
 				if (! Util.isEmpty(whereRoleType)) {
 					sql.append(" AND ").append(whereRoleType);
 				}
+				sql.append(" AND  cli.AuthenticationType IN ").append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
 				sql.append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
@@ -1715,7 +1755,7 @@ public class Login
 		
 		loginErrMsg = null;
 		isPasswordExpired = false;
-		
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		int AD_User_ID = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
@@ -1726,7 +1766,9 @@ public class Login
                          .append(" WHERE ur.IsActive='Y'")
                          .append(" AND cli.IsActive='Y'")
                          .append(" AND u.IsActive='Y'")
-                         .append(" AND u.AD_User_ID=? ORDER BY cli.Name");
+                         .append(" AND u.AD_User_ID=? ")
+						 .append(" AND cli.AuthenticationType IN ").append((isSSOEnable && SSOUtils.getSSOPrincipalService() != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
+						 .append(" ORDER BY cli.Name");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {

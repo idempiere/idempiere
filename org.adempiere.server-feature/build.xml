@@ -72,9 +72,16 @@
 		<copy file="utils/RUN_WinEnvTemplate.bat"
 			tofile="utils/RUN_WinEnv.bat" filtering="yes" overwrite="yes" />
 
-		<delete>
-			<fileset dir="." includes="**/*.sh" />
-		</delete>
+		<!--	Filter files No Overwrite	-->
+		<copy file="utils/myDBcopyTemplate.sh"
+			tofile="utils/myDBcopy.sh" filtering="yes" overwrite="no" />
+
+		<!--	Filter files Overwrite		-->
+		<copy file="utils/myEnvironmentTemplate.sh"
+			tofile="utils/myEnvironment.sh" filtering="yes" overwrite="yes" />
+
+		<copy file="utils/RUN_UnixEnvTemplate.sh"
+			tofile="utils/RUN_UnixEnv.sh" filtering="yes" overwrite="yes" />
 
 	</target>
 
