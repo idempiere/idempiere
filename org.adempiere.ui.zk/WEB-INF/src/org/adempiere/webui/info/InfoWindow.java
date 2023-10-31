@@ -669,10 +669,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}else {
 			// => don't run test in case not found auto complete column
-			if(!Util.isEmpty(autoCompleteSearchColumn))
-				log.log(Level.SEVERE, String.format("Auto complete search column (%s) not found for field %s (field id %s). ",
-						autoCompleteSearchColumn, m_gridfield.getColumnName(), m_gridfield.getAD_Column_ID()));
-			else if (identifiers.size() == 0)
+			if(!Util.isEmpty(autoCompleteSearchColumn)) {
+
+				if (m_gridfield != null) {
+					log.log(Level.SEVERE, String.format("Auto complete search column (%s) not found for field %s (field id %s). ",
+							autoCompleteSearchColumn, m_gridfield.getColumnName(), m_gridfield.getAD_Column_ID()));
+				} else {
+					log.log(Level.SEVERE, String.format("Auto complete search column (%s) not found for Info Window %s. ",
+							autoCompleteSearchColumn, this.infoWindow.getName()));
+				}
+				
+			} else if (identifiers.size() == 0)
 				log.log(Level.SEVERE, String.format("Info window (%s) has no identifier columns", this.infoWindow.getName()));
 		}
 	}
