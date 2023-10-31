@@ -41,6 +41,19 @@ public interface I_AD_Process
 
     /** Load Meta Data */
 
+    /** Column name AccessLevel */
+    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
+
+	/** Set Data Access Level.
+	  * Access Level required
+	  */
+	public void setAccessLevel (String AccessLevel);
+
+	/** Get Data Access Level.
+	  * Access Level required
+	  */
+	public String getAccessLevel();
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -155,29 +168,16 @@ public interface I_AD_Process
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
-    /** Column name AccessLevel */
-    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
-
-	/** Set Data Access Level.
-	  * Access Level required
-	  */
-	public void setAccessLevel (String AccessLevel);
-
-	/** Get Data Access Level.
-	  * Access Level required
-	  */
-	public String getAccessLevel();
-
     /** Column name AllowMultipleExecution */
     public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";
 
-	/** Set Multiple Execution.
-	  * Allow or disallow executing a process/report multiple times.
+	/** Set Allow Concurrent Execution.
+	  * Allow or disallow executing a process/report multiple times concurrently
 	  */
 	public void setAllowMultipleExecution (String AllowMultipleExecution);
 
-	/** Get Multiple Execution.
-	  * Allow or disallow executing a process/report multiple times.
+	/** Get Allow Concurrent Execution.
+	  * Allow or disallow executing a process/report multiple times concurrently
 	  */
 	public String getAllowMultipleExecution();
 

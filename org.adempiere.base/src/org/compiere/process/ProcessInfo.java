@@ -1050,32 +1050,31 @@ public class ProcessInfo implements Serializable
 			return false;
 		
 		StringBuilder whereClause = new StringBuilder(
-				"AD_Process_ID=? AND IsProcessing='Y' AND record_ID = ? AND Created > ?");
+				"AD_Process_ID=? AND IsProcessing='Y' AND Record_ID = ? AND Created > ?");
 		List<Object> queryParams = new ArrayList<>(Arrays.asList(getAD_Process_ID(), getRecord_ID(), lastRebootDate));
 
-		if (MProcess.ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsBySameUser.equals(multipleExecutions)
-				|| MProcess.ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersBySameUser
-						.equals(multipleExecutions)) {
+		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUser.equals(multipleExecutions)
+			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
 			whereClause.append(" AND AD_User_ID = ? ");
 			queryParams.add(getAD_User_ID());
 		}
 
-		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, whereClause.toString(),
-				null).setParameters(queryParams).setClient_ID().setOnlyActiveRecords(true).list();
+		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, whereClause.toString(), null)
+				.setParameters(queryParams)
+				.setClient_ID()
+				.setOnlyActiveRecords(true).list();
 
 		if (processInstanceList == null || processInstanceList.isEmpty())
 			return false;
 
-		// Never allow multiple executions
-		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsBySameUser)
-				|| multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_PreventConcurrentExecutionsByAnyUser))
+		// Do not allow concurrent executions
+		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUser.equals(multipleExecutions)
+			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromAnyUser.equals(multipleExecutions))
 			return true;
 
-		// Disallow multiple executions with the same params
-		if (multipleExecutions
-				.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersBySameUser)
-				|| multipleExecutions
-						.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowConcurrentExecutionsWithIdenticalParametersFromAnyUser)) {
+		// Do not allow concurrent executions with the same params
+		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromAnyUserAndSameParameters.equals(multipleExecutions)
+			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
 			for (MPInstance instance : processInstanceList) {
 				if (instance.equalParameters(params))
 					return true;
