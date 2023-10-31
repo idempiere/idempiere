@@ -36,7 +36,6 @@ import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MPayment;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -99,12 +98,7 @@ public class BankStatementTest extends AbstractTestCase {
 		MSysConfig sysConfig = query.setOrderBy("AD_Client_ID Desc").setParameters(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT, getAD_Client_ID()).first();
 		if (!sysConfig.getValue().equals("Y")) {
 			sysConfig.setValue("Y");
-			try {
-				PO.setCrossTenantSafe();
-				sysConfig.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			sysConfig.saveCrossTenantSafeEx();
 			CacheMgt.get().reset();
 		} else {
 			sysConfig = null;
@@ -165,12 +159,7 @@ public class BankStatementTest extends AbstractTestCase {
 		} finally {
 			if (sysConfig != null) {
 				sysConfig.setValue("N");
-				try {
-					PO.setCrossTenantSafe();
-					sysConfig.saveEx();
-				} finally {
-					PO.clearCrossTenantSafe();
-				}
+				sysConfig.saveCrossTenantSafeEx();
 			}
 		}
 	}
@@ -184,12 +173,7 @@ public class BankStatementTest extends AbstractTestCase {
 		MSysConfig sysConfig = query.setOrderBy("AD_Client_ID Desc").setParameters(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT, getAD_Client_ID()).first();
 		if (!sysConfig.getValue().equals("N")) {
 			sysConfig.setValue("N");
-			try {
-				PO.setCrossTenantSafe();
-				sysConfig.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			sysConfig.saveCrossTenantSafeEx();
 			CacheMgt.get().reset();
 		} else {
 			sysConfig = null;
@@ -249,12 +233,7 @@ public class BankStatementTest extends AbstractTestCase {
 		} finally {
 			if (sysConfig != null) {
 				sysConfig.setValue("Y");
-				try {
-					PO.setCrossTenantSafe();
-					sysConfig.saveEx();
-				} finally {
-					PO.clearCrossTenantSafe();
-				}
+				sysConfig.saveCrossTenantSafeEx();
 			}
 		}
 	}

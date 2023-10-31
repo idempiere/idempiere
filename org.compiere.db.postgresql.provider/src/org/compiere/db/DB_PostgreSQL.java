@@ -84,7 +84,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	private static final String POOL_PROPERTIES = "hikaricp.properties";
 
 	private static Boolean sysNative = null;
-	
+
+    final static char DOUBLE_QUOTE = '"';
+    final static char ANGLED_QUOTE_LEFT = '\u00ab';   // «
+    final static char ANGLED_QUOTE_RIGHT = '\u00bb';  // »
+
 	static
 	{
 		String property = SystemProperties.getPostgreSQLNative();
@@ -1019,20 +1023,74 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return false;
 	}
 	
+	/**
+	 * Get the name of the unique constraint name based on a postgresql message
+	 * This method works for English, Spanish and German
+	 * The foreign key constraint name is expected to be found in the second quoted string
+	 *   English quotes -> "constraint"
+	 *   Spanish quotes -> «constraint»
+	 *   German  quotes -> »constraint«
+	 */
 	@Override
 	public String getNameOfUniqueConstraintError(Exception e) {
 		String info = e.getMessage();
-		int fromIndex = info.indexOf("\"");
-		if (fromIndex == -1)
-			fromIndex = info.indexOf("\u00ab"); // quote for spanish postgresql message
-		if (fromIndex == -1)
-			return info;
-		int toIndex = info.indexOf("\"", fromIndex + 1);
-		if (toIndex == -1)
-			toIndex = info.indexOf("\u00bb", fromIndex + 1);
-		if (toIndex == -1)
-			return info;
-		return info.substring(fromIndex + 1, toIndex);
+		int start = -1;
+		int end = -1;
+		boolean open = false;
+		for (int idx = 0; idx < info.length(); idx++) {
+			if (   info.charAt(idx) == DOUBLE_QUOTE
+				|| info.charAt(idx) == ANGLED_QUOTE_LEFT
+				|| info.charAt(idx) == ANGLED_QUOTE_RIGHT) {
+				open = !open;
+				if (open) {
+					start = idx;
+				} else {
+					end = idx;
+					break;
+				}
+			}
+		}
+		if (end != -1)
+			return info.substring(start+1, end);
+		return null;
+	}
+
+	/**
+	 * Get the foreign key constraint name based on a postgresql message
+	 * This method works for English, Spanish and German
+	 * The foreign key constraint name is expected to be found in the second quoted string
+	 *   English quotes -> "constraint"
+	 *   Spanish quotes -> «constraint»
+	 *   German  quotes -> »constraint«
+	 */
+	@Override
+	public String getForeignKeyConstraint(Exception e) {
+		String info = e.getMessage();
+		int start = -1;
+		int end = -1;
+		int cntword = 0;
+		boolean open = false;
+		for (int idx = 0; idx < info.length(); idx++) {
+			if (   info.charAt(idx) == DOUBLE_QUOTE
+				|| info.charAt(idx) == ANGLED_QUOTE_LEFT
+				|| info.charAt(idx) == ANGLED_QUOTE_RIGHT) {
+				open = !open;
+				if (open) {
+					cntword++;
+				}
+				if (cntword == 2) {
+					if (open) {
+						start = idx;
+					} else {
+						end = idx;
+						break;
+					}
+				}
+			}
+		}
+		if (end != -1)
+			return info.substring(start+1, end);
+		return null;
 	}
 
 	@Override

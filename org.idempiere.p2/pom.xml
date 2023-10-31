@@ -15,21 +15,50 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
+				<artifactId>maven-clean-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>auto-clean</id>
 						<phase>validate</phase>
 						<goals>
-							<goal>run</goal>
+							<goal>clean</goal>
 						</goals>
+
 						<configuration>
-							<target>
-								<delete file="${project.basedir}/target/local-artifacts.properties" quiet="true"/>
-								<delete
-									dir="${project.basedir}/target/repository" quiet="true"/>
-							</target>
+							<skip>${skipClean}</skip>
+							<excludeDefaultDirectories>false</excludeDefaultDirectories>
+							<filesets>
+								<fileset>
+									<directory>${project.basedir}/lib</directory>
+									<includes>
+										<include>*.jar</include>
+									</includes>
+									<followSymlinks>false</followSymlinks>
+		        				</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+					<execution>
+						<id>always-clean</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+
+						<configuration>
+							<skip>false</skip>
+							<excludeDefaultDirectories>true</excludeDefaultDirectories>
+							<filesets>
+								<fileset>
+									<directory>${project.basedir}/target</directory>
+									<includes>
+								      <include>local-artifacts.properties</include>
+								      <include>repository</include>
+								      <include>repository/**</include>
+								    </includes>
+									<followSymlinks>false</followSymlinks>
+		        				</fileset>
+							</filesets>
 						</configuration>
 					</execution>
 				</executions>

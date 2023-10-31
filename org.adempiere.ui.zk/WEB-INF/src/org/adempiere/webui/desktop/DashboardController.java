@@ -84,6 +84,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -834,7 +835,7 @@ public class DashboardController implements EventListener<Event> {
 					btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 					toolbar.appendChild(btn);
 					
-					if(iframe.getContent() != null) {
+					if(iframe.getContent() != null && reportData.getRowCount() >= 0) {
 						btn = new ToolBarButton();
 						btn.setAttribute("AD_Process_ID", AD_Process_ID);
 						btn.setAttribute("ProcessParameters", processParameters);
@@ -853,15 +854,18 @@ public class DashboardController implements EventListener<Event> {
 						btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 					
 					toolbar.appendChild(btn);	
-					
+
 					Label rowCountLabel = new Label(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {reportData.getRowCount()}));
-					LayoutUtils.addSclass("rowcount-label", rowCountLabel);
-					toolbar.appendChild(rowCountLabel);
+					if(reportData.getRowCount() >= 0) {
+						LayoutUtils.addSclass("rowcount-label", rowCountLabel);
+						toolbar.appendChild(rowCountLabel);
+					}
 					
 					btn.addEventListener(Events.ON_CLICK, e -> {
 						ReportData refreshedData = generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath);
 						iframe.setContent(refreshedData.getContent());
-						rowCountLabel.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {refreshedData.getRowCount()}));
+						if(refreshedData.getRowCount() >= 0)
+							rowCountLabel.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {refreshedData.getRowCount()}));
 					});			
 				}
 				else
@@ -1589,6 +1593,8 @@ public class DashboardController implements EventListener<Event> {
 		return htmlString;
 	}
 	
+	
+	
 	/**
 	 * Run report
 	 * @param AD_Process_ID
@@ -1602,10 +1608,7 @@ public class DashboardController implements EventListener<Event> {
 			 throw new IllegalArgumentException("Not a Report AD_Process_ID=" + process.getAD_Process_ID()
 				+ " - " + process.getName());
 		//	Process
-		int AD_Table_ID = 0;
-		int Record_ID = 0;
-		//
-		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, Record_ID);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		if(AD_PrintFormat_ID > 0)
 			pInstance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
 		pInstance.setIsProcessing(true);
@@ -1614,8 +1617,7 @@ public class DashboardController implements EventListener<Event> {
 			if(!fillParameter(pInstance, parameters))
 				return null;
 			//
-			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
-				AD_Table_ID, Record_ID);
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
 			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
@@ -1647,13 +1649,46 @@ public class DashboardController implements EventListener<Event> {
 	 * @throws Exception
 	 */
 	private ReportData generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, Component component, String contextPath) throws Exception {
+		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
+		File file = null;
+		if(process.getJasperReport() != null) {
+			file = runJasperReport(process, parameters);
+			return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), -1);
+		}
+			
 		ReportEngine re = runReport(AD_Process_ID, AD_PrintFormat_ID, parameters);
 		if(re == null)
 			return null;
-		File file = FileUtil.createTempFile(re.getName(), ".html");		
+		file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
 				component.getUuid(), String.valueOf(AD_Process_ID)));
-		return new ReportData(new AMedia(re.getName(), "html", "text/html", file, false), re);
+		return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), re.getPrintData() != null ? re.getPrintData().getRowCount(false) : 0);
+	}
+
+	private File runJasperReport(MProcess process, String parameters) {
+		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), 0, 0, null);
+		pInstance.setIsProcessing(true);
+		pInstance.saveEx();
+		try {
+			if(!fillParameter(pInstance, parameters))
+				return null;
+			//
+				
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
+			pi.setExport(true);
+			pi.setExportFileExtension("html");
+			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+		
+			//	Report
+			ServerProcessCtl.process(pi, null);
+			
+			return pi.getExportFile();
+		}catch(Exception ex) {
+			throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+			+ " - " + process.getName());
+		}
 	}
 
 	/**
@@ -1952,10 +1987,9 @@ public class DashboardController implements EventListener<Event> {
 		 * @param content
 		 * @param rowCount
 		 */
-		public ReportData(AMedia content, ReportEngine reportEngine) {
+		public ReportData(AMedia content, int rowCount) {
 			this.content = content;
-			if(reportEngine.getPrintData() != null)
-				this.rowCount = reportEngine.getPrintData().getRowCount(false);
+			this.rowCount = rowCount;
 		}
 
 		/**

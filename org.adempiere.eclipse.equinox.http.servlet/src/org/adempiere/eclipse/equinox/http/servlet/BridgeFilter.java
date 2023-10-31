@@ -13,9 +13,23 @@ package org.adempiere.eclipse.equinox.http.servlet;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import javax.servlet.*;
+import java.util.logging.Level;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.CLogger;
 
 /**
  * 
@@ -38,8 +52,10 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 
 	private static final long serialVersionUID = 1309373924501049438L;
 
-	private ServletConfigAdaptor servletConfig;
-
+	/** Logger */
+	protected static CLogger		log					= CLogger.getCLogger(BridgeFilter.class);
+	private ServletConfigAdaptor	servletConfig;
+	
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.servletConfig = new ServletConfigAdaptor(filterConfig);
 		super.init();
@@ -48,6 +64,49 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
+		
+		// Ignore the resource request	
+		if (SSOUtils.isResourceRequest(req, false))
+		{
+			super.process(req, resp, chain);
+			return;
+		}
+
+		boolean isRedirectToLoginOnError = false;
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO_OSGI_CONSOLE, false);
+		if (isSSOEnable) {
+			ISSOPrincipalService m_SSOPrincipal = null;
+			try
+			{
+				m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
+
+				if (m_SSOPrincipal != null) {
+					if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
+						// Use authentication code to get token
+						String currentUri = req.getRequestURL().toString();
+						m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_OSGI);
+						if (!resp.isCommitted())
+							resp.sendRedirect(currentUri);
+					} else if (!m_SSOPrincipal.isAuthenticated(req, resp)) {
+						// Redirect to SSO sing in page for authentication
+						m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_OSGI);
+						return;
+					}
+				}
+			} catch (Throwable exc) {
+				log.log(Level.SEVERE, "Exception while authenticating: ", exc);
+				if (m_SSOPrincipal != null)
+					m_SSOPrincipal.removePrincipalFromSession(req);
+				if (isRedirectToLoginOnError) {
+					resp.sendRedirect("osgi/system/console/bundles");
+				} else {
+					resp.setStatus(500);
+					response.setContentType("text/html");
+					response.getWriter().append(SSOUtils.getCreateErrorResponce(exc.getLocalizedMessage()));
+				}
+				return;
+			}
+		}
 		// Call process class with FilterChain.
 		super.process(req, resp, chain);
 	}
@@ -55,7 +114,7 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 	public ServletConfig getServletConfig() {
 		return servletConfig;
 	}
-
+	
 	/**
 	 * 
 	 * Class which adapt {@link FilterConfig} to a {@link ServletConfig}.

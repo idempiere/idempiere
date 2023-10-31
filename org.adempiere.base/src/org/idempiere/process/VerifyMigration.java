@@ -32,7 +32,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
@@ -87,14 +91,14 @@ public class VerifyMigration extends SvrProcess {
 
 		verifyCustomizationsInChangeLog();
 
-		verifyCustomViewColumns();
+		verifyViewColumns();
 
 		addLog(getAD_PInstance_ID(), null, null, Msg.getElement(getCtx(), MPInstance.COLUMNNAME_AD_PInstance_ID) + " " + getAD_PInstance_ID(), MPInstance.Table_ID, getAD_PInstance_ID());
 		return "@Inserted@ " + m_cnt;
 	}
 
 	/**
-	 * @return number of records inserted in AD_VerifyMigration
+	 * Verify if the customizations registered in change log were modified with migration scripts
 	 */
 	private void verifyCustomizationsInChangeLog() {
 		StringBuilder sql = new StringBuilder();
@@ -180,60 +184,58 @@ public class VerifyMigration extends SvrProcess {
 	}
 
 	/**
-	 * @return number of records inserted in AD_VerifyMigration
+	 * Verify if views and columns exist in database
 	 * @throws SQLException 
 	 */
-	private void verifyCustomViewColumns() throws SQLException {
-		// custom view columns
-		List<MViewColumn> viewColumns = new Query(getCtx(), MViewColumn.Table_Name, "EntityType!='D'", get_TrxName())
+	private void verifyViewColumns() throws SQLException {
+		List<MTable> tables = new Query(getCtx(), MTable.Table_Name, "IsView='Y'", get_TrxName())
+			.setOnlyActiveRecords(true)
+			.list();
+		for (MTable table : tables) {
+
+			// Find columns in Dictionary
+			MViewComponent component = new Query(getCtx(), MViewComponent.Table_Name, "AD_Table_ID=?", get_TrxName())
 				.setOnlyActiveRecords(true)
-				.list();
-		for (MViewColumn viewColumn : viewColumns) {
-			MViewComponent viewComponent = new MViewComponent(getCtx(), viewColumn.getAD_ViewComponent_ID(), get_TrxName());
-			MTable table = MTable.get(viewComponent.getAD_Table_ID());
-			//	Find Column in Database
+				.setParameters(table.getAD_Table_ID())
+				.setOrderBy(MViewComponent.COLUMNNAME_SeqNo)
+				.first();
+			if (component == null) {
+				log.warning("View not defined in dictionary " + table.getTableName());
+				continue;
+			}
+			List<String> listDict = new ArrayList<String>();
+			Map<String, MViewColumn> mapDict = new HashMap<String, MViewColumn>();
+			for (MViewColumn vcol : component.getColumns(true)) {
+				String columnName = vcol.getColumnName();
+				if (columnName.startsWith("\"") && columnName.endsWith("\""))
+					columnName = columnName.substring(1, columnName.length()-1);
+				listDict.add(columnName.toUpperCase());
+				mapDict.put(columnName.toUpperCase(), vcol);
+			}
+
+			if (listDict.size() == 0) { // ignore, view not defined in dictionary
+				log.warning("View not defined in dictionary " + table.getTableName());
+				continue;
+			}
+
+			// Find columns in Database
 			Connection conn = null;
 			ResultSet rs = null;
+			List<String> listDB = new ArrayList<String>();
 			try {
 				conn = DB.getConnection();
 				DatabaseMetaData md = conn.getMetaData();
 				String catalog = DB.getDatabase().getCatalog();
 				String schema = DB.getDatabase().getSchema();
 				String tableName = table.getTableName();
-				if (md.storesUpperCaseIdentifiers()) {
+				if (md.storesUpperCaseIdentifiers())
 					tableName = tableName.toUpperCase();
-				} else if (md.storesLowerCaseIdentifiers()) {
+				else if (md.storesLowerCaseIdentifiers())
 					tableName = tableName.toLowerCase();
-				}
 				rs = md.getColumns(catalog, schema, tableName, null);
-				boolean found = false;
 				while (rs.next()) {
 					String columnName = rs.getString ("COLUMN_NAME");
-					if (!columnName.equalsIgnoreCase(viewColumn.getColumnName()))
-						continue;
-					found = true;
-				}
-				if (!found) {
-					if (! MVerifyMigration.isIgnored(-1, MViewColumn.Table_ID, -1, viewColumn.getAD_ViewColumn_ID(), get_TrxName())) {
-						String tabcol = table.getTableName() + "." + viewColumn.getColumnName();
-						MUser user = MUser.get(viewColumn.getCreatedBy());
-						String msg = Msg.getMsg(getCtx(), "VM_CustomViewColumnNotInDB",
-								// Column View does not exist in database.  The custom view column {0} was created on {1,date,long} by {2}
-								new Object[] {
-										tabcol,
-										viewColumn.getCreated(),
-										user.getName()
-								});
-						addVerifyMigration(
-								MViewColumn.Table_ID,
-								-1,
-								viewColumn.getAD_ViewColumn_ID(),
-								-1,
-								msg,
-								null,
-								null,
-								MVerifyMigration.PRIORITYRULE_High);
-					}
+					listDB.add(columnName.toUpperCase());
 				}
 			} finally {
 				DB.close(rs);
@@ -243,6 +245,79 @@ public class VerifyMigration extends SvrProcess {
 						conn.close();
 					} catch (Exception e) {}
 				}
+			}
+
+			if (listDB.size() == 0) { // view not in database
+				if (! MVerifyMigration.isIgnored(-1, MTable.Table_ID, -1, table.getAD_Table_ID(), get_TrxName())) {
+					MUser user = MUser.get(table.getCreatedBy());
+					String msg = Msg.getMsg(getCtx(), "VM_ViewNotInDB",
+							// View does not exist in database.  The view {0} was created on {1,date,long} by {2}
+							new Object[] {
+									table.getTableName(),
+									table.getCreated(),
+									user.getName()
+							});
+					addVerifyMigration(
+							MTable.Table_ID,
+							-1,
+							table.getAD_Table_ID(),
+							-1,
+							msg,
+							null,
+							null,
+							MVerifyMigration.PRIORITYRULE_High);
+				}
+				continue;
+			}
+
+			Collections.sort(listDB);
+			Collections.sort(listDict);
+
+			List<String> inDictNotDB = new ArrayList<>(listDict);
+			inDictNotDB.removeAll(listDB);
+			for (String colDictNotDB : inDictNotDB) {
+				MViewColumn viewColumn = mapDict.get(colDictNotDB);
+				if (! MVerifyMigration.isIgnored(-1, MViewColumn.Table_ID, -1, viewColumn.getAD_ViewColumn_ID(), get_TrxName())) {
+					String tabcol = table.getTableName() + "." + viewColumn.getColumnName();
+					MUser user = MUser.get(viewColumn.getCreatedBy());
+					String msg = Msg.getMsg(getCtx(), "VM_CustomViewColumnNotInDB",
+							// Column View does not exist in database.  The custom view column {0} was created on {1,date,long} by {2}
+							new Object[] {
+									tabcol,
+									viewColumn.getCreated(),
+									user.getName()
+							});
+					addVerifyMigration(
+							MViewColumn.Table_ID,
+							-1,
+							viewColumn.getAD_ViewColumn_ID(),
+							-1,
+							msg,
+							null,
+							null,
+							MVerifyMigration.PRIORITYRULE_High);
+				}
+			}
+
+			List<String> inDBNotInDict = new ArrayList<>(listDB);
+			inDBNotInDict.removeAll(listDict);
+			for (String colDBNotInDict : inDBNotInDict) {
+				// At this moment this cannot be ignored
+				String tabcol = table.getTableName() + "." + colDBNotInDict;
+				String msg = Msg.getMsg(getCtx(), "VM_ViewColumnNotInDict",
+						// Column View does not exist in dictionary.  The view column {0} exists in database but is not defined in dictionary
+						new Object[] {
+								tabcol
+				});
+				addVerifyMigration(
+						MViewColumn.Table_ID,
+						-1,
+						-1,
+						-1,
+						msg,
+						null,
+						null,
+						MVerifyMigration.PRIORITYRULE_High);
 			}
 		}
 	}

@@ -65,7 +65,7 @@ public class InitialClientSetupTest extends AbstractTestCase {
 		int AD_Process_ID = 53161;
 		MProcess process = MProcess.get(AD_Process_ID);
 		
-		MPInstance pinstance = new MPInstance(process, 0);
+		MPInstance pinstance = new MPInstance(process, 0, 0, null);
 		MPInstancePara[] paras = pinstance.getParameters();
 		for (MPInstancePara para : paras) {
 			if (para.getParameterName().equals("ClientName")) {

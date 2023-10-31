@@ -74,7 +74,7 @@ public class PackInFolderApplication implements IApplication {
 			ProcessInfo pi = new ProcessInfo("PackInFolder", 200099);
 			pi.setAD_Client_ID(0);
 			pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
-			MPInstance instance = new MPInstance(ctx, 200099, 0);
+			MPInstance instance = new MPInstance(ctx, 200099, 0, 0, null);
 			instance.saveEx();
 			instance.createParameter(10, "Folder", directory);
 			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());

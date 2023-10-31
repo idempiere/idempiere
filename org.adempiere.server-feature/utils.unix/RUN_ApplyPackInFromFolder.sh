@@ -29,7 +29,7 @@ cd .. || (echo "Cannot cd .."; exit 1)
 
 echo    This Procedure import packin files from directory "$DIRECTORY"
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.base.PackInFolderApplication "$DIRECTORY"
+"$JAVA" -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.base.PackInFolderApplication "$DIRECTORY"
 
 echo    Done
 echo .

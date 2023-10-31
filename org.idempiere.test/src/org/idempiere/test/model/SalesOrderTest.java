@@ -449,7 +449,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
@@ -497,7 +497,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
-		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order1.getC_Order_ID()}, null);
 		
@@ -545,7 +545,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
 		//call process with payment
-		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order1.getC_Order_ID()}, null);
 		pi = new ProcessInfo ("InOutGen", AD_Process_ID);
@@ -588,7 +588,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		//create invoice
-		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL, 0);
+		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);		
 		pi = new ProcessInfo ("InvoiceGenerateManual", AD_Process_ID);
@@ -629,7 +629,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
 		//call process with payment
-		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);
 		pi = new ProcessInfo ("InOutGen", AD_Process_ID);
@@ -732,7 +732,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		//generate shipment
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
@@ -1566,7 +1566,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";

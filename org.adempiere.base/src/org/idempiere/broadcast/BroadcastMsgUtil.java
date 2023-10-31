@@ -168,6 +168,7 @@ public class BroadcastMsgUtil
 				+ "       AND n.AD_Client_ID = ? "
 				+ "       AND ( bm.BroadcastType = 'IL' OR bm.BroadcastType = 'L' ) "
 				+ "       AND bm.isPublished = 'Y' "
+				+ "       AND bm.IsActive = 'Y' "
 				+ "       AND ( n.Processed = 'N' OR ( n.Processed = 'Y' AND bm.BroadcastFrequency = 'E' ) ) "
 				+ "       AND ( bm.Expired = 'N' AND ( bm.Expiration IS NULL OR bm.Expiration > getDate() ) ) ";
 

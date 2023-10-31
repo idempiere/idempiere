@@ -45,6 +45,7 @@ public abstract class BaseEventHandler implements EventHandler {
 	//event topic to method mapping
 	protected final Map<String, Method> eventTopicMap = new HashMap<String, Method>();
 	private String filter;
+	private Class<? extends EventDelegate> delegateClass;
 
 	/**
 	 * 
@@ -53,6 +54,7 @@ public abstract class BaseEventHandler implements EventHandler {
 	public BaseEventHandler(Class<? extends EventDelegate> delegateClass) {
 		filter = null;
 		createTopicMap(delegateClass);
+		this.delegateClass = delegateClass;
 	}
 
 	/**
@@ -154,4 +156,11 @@ public abstract class BaseEventHandler implements EventHandler {
 	 * @return {@link EventDelegate}
 	 */
 	protected abstract EventDelegate newEventDelegate(Event event);
+
+	/**
+	 * @return event delegate class
+	 */
+	public Class<? extends EventDelegate> getDelegateClass() {
+		return delegateClass;
+	}
 }
