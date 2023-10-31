@@ -67,7 +67,11 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 	@BeforeComplete
 	public void onBeforeComplete() {
 	   MInOut mInOut = getModel();
-	   if (mInOut.isSOTrx()) {
+
+	   boolean isGenerateProduction = (!MInOut.MOVEMENTTYPE_CustomerReturns.equals(mInOut.getMovementType()) 
+			   && !MInOut.MOVEMENTTYPE_VendorReturns.equals(mInOut.getMovementType()));
+
+	   if (mInOut.isSOTrx()  && isGenerateProduction) {
 		   String msg = processShipment(mInOut);
 		   if (msg != null)
 			   throw new RuntimeException (msg);
