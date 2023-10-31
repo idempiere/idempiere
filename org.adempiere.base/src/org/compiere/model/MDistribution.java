@@ -201,6 +201,8 @@ public class MDistribution extends X_GL_Distribution
 	 * 	Get Distributions for Account
 	 *	@param Account_ID id
 	 *	@return array of distributions
+	 *  @deprecated - using the method to get a specific account ID doesn't make sense because of the flag IsAnyAcct
+	 *                use method getAll() instead
 	 */
 	public static MDistribution[] get (int Account_ID)
 	{
