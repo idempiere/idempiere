@@ -709,7 +709,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				&& m_gridfield.getLookup() instanceof MLookup) {
 			
 			MLookup mLookup = (MLookup)m_gridfield.getLookup();
-			if (mLookup.getLookupInfo().lookupDisplayColumnNames.size() > 0)
+			if (mLookup.getLookupInfo().lookupDisplayColumnNames != null && mLookup.getLookupInfo().lookupDisplayColumnNames.size() > 0)
 				tableIdentifiers = mLookup.getLookupInfo().lookupDisplayColumnNames;
 		}
 		
