@@ -34,6 +34,7 @@
 		<module>org.idempiere.felix.webconsole</module>
 		<module>org.idempiere.hazelcast.service</module>
 		<module>org.idempiere.webservices</module>
+		<module>org.idempiere.webservices.helper.resoucelookup</module>
 		<module>org.idempiere.webservices-feature</module>
 		<module>org.idempiere.zk.extra</module>
 		<module>org.idempiere.keikai</module>
