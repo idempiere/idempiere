@@ -28,11 +28,6 @@
       <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="org.apache.httpcomponents.httpclient" version="4.5.13.v20210128-2225"/>
-      <unit id="org.apache.httpcomponents.httpcore" version="4.4.14.v20210128-2225"/>
-      <repository id="eclipse" location="https://download.eclipse.org/eclipse/updates/4.20"/>
-    </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.osgi" version="3.18.300.v20230220-1352"/>
       <unit id="org.osgi.annotation.bundle" version="2.0.0.202202082230"/>
       <unit id="org.osgi.annotation.versioning" version="1.1.2.202109301733"/>
@@ -1633,6 +1628,18 @@ Export-Package:        *;version="${version}";-noimport:=true
 		<groupId>org.junit.platform</groupId>
 	    <artifactId>junit-platform-suite-engine</artifactId>
 	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpcore-osgi</artifactId>
+	    <version>4.4.14</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+	 	<groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient-osgi</artifactId>
+	    <version>4.5.13</version>
 		<type>jar</type>
 	</location>
   </locations>
