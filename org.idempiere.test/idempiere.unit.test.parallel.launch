@@ -255,7 +255,7 @@
         <setEntry value="org.eclipse.equinox.servletbridge@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
-        <setEntry value="org.eclipse.jdt.core.compiler.batch*3.33.0.v20230218-1114@default:default"/>
+        <setEntry value="org.eclipse.jdt.core.compiler.batch@default:default"/>
         <setEntry value="org.eclipse.jdt.core@default:default"/>
         <setEntry value="org.eclipse.jdt.junit.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
@@ -419,6 +419,7 @@
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.test@default:default"/>
         <setEntry value="org.idempiere.webservices@default:default"/>
+        <setEntry value="org.idempiere.webservices.resources@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>

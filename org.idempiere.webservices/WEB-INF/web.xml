@@ -12,7 +12,7 @@
 	</context-param>
 	<listener>
 		<listener-class>
-			org.idempiere.webservices.helper.resoucelookup.ContextLoaderListener
+			org.idempiere.webservices.resources.ContextLoaderListener
 		</listener-class>
 	</listener>
 

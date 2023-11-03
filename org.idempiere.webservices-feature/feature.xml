@@ -347,7 +347,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.idempiere.webservices.helper.resoucelookup"
+         id="org.idempiere.webservices.resources"
          download-size="0"
          install-size="0"
          version="0.0.0"
