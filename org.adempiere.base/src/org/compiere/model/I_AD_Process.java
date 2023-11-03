@@ -171,13 +171,13 @@ public interface I_AD_Process
     /** Column name AllowMultipleExecution */
     public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";
 
-	/** Set Multiple Execution.
-	  * Allow or disallow executing a process/report multiple times.
+	/** Set Allow Concurrent Execution.
+	  * Allow or disallow executing a process/report multiple times concurrently
 	  */
 	public void setAllowMultipleExecution (String AllowMultipleExecution);
 
-	/** Get Multiple Execution.
-	  * Allow or disallow executing a process/report multiple times.
+	/** Get Allow Concurrent Execution.
+	  * Allow or disallow executing a process/report multiple times concurrently
 	  */
 	public String getAllowMultipleExecution();
 
