@@ -16,6 +16,11 @@
  *****************************************************************************/
 package org.compiere.print.layout;
 
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.MQuery;
@@ -35,28 +40,58 @@ public class ParameterElement extends GridElement
 	 */
 	private static final long serialVersionUID = 4702399095192668527L;
 
-	/**
-	 * 	Parameter Element.
-	 *  <pre>
-	 *  Parameter fromValue - toValue
-	 *  </pre>
-	 * 	@param query query
-	 *  @param ctx context
-	 *  @param tFormat Table Format
-	 */
-	public ParameterElement(MQuery query, Properties ctx, MPrintTableFormat tFormat)
+	
+	public ParameterElement(int lines,int cols)
 	{
-		super (query.getReportProcessQuery() != null ? query.getReportProcessQuery().getRestrictionCount() : query.getRestrictionCount(), 4);
-		setData (0, 0, Msg.getMsg(ctx, "Parameter") + ":", tFormat.getPageHeader_Font(), tFormat.getPageHeaderFG_Color());
+		super (lines, cols);
+	}
+	
+	
+	public static ParameterElement getParameterElement(MQuery query, Properties ctx, MPrintTableFormat tFormat,int m_maxWidth) {
+
+		String title = Msg.getMsg(ctx, "Parameter") + ":";
 		if (query.getReportProcessQuery() != null)
 			query = query.getReportProcessQuery();
+		int maxWidth = m_maxWidth; 
+		
+        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = img.getGraphics();
+        g.setFont(tFormat.getFunct_Font());
+        FontMetrics fontMetrics = g.getFontMetrics();
+        
+        maxWidth-=fontMetrics.stringWidth(title);
+        int charWidth = fontMetrics.stringWidth("W"); 
+	    int maxChars = maxWidth / charWidth;
+        
+       
+	    List<String> lines = new ArrayList<>();
+        
 		for (int r = 0; r < query.getRestrictionCount(); r++)
 		{
-			setData (r, 1, query.getInfoName(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());
-			setData (r, 2, query.getInfoOperator(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());
-			setData (r, 3, query.getInfoDisplayAll(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());
+			String valueParameter = query.getInfoName(r)+" "+query.getInfoOperator(r)+" "+query.getInfoDisplay(r);
+			lines.addAll(createLine(valueParameter,maxChars));
+			
 		}
-	}	//	ParameterElement
-
+		ParameterElement parameter = new ParameterElement(lines.size(),2);
+		parameter.setData (0, 0,title , tFormat.getPageHeader_Font(), tFormat.getPageHeaderFG_Color());
+		for(int i = 0;i<lines.size();i++) {
+			parameter.setData(i,1,lines.get(i), tFormat.getParameter_Font(), tFormat.getParameter_Color());
+		}
+		
+		return parameter;
+	}
+	
+	private static List<String> createLine(String value,int maxChars)
+	{
+		List<String> lines = new ArrayList<>();
+		int index = 0;
+		while(index < value.length()) {
+			lines.add(value.substring(index,Math.min(index+maxChars,value.length())));
+			index+=maxChars;
+		}
+		
+		return lines;
+		
+	}
 }	//	ParameterElement
 
