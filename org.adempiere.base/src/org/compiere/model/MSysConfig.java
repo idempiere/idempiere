@@ -91,6 +91,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DB_READ_REPLICA_URLS = "DB_READ_REPLICA_URLS";
     public static final String DEFAULT_COA_PATH = "DEFAULT_COA_PATH";
     public static final String DEFAULT_ENTITYTYPE = "DEFAULT_ENTITYTYPE"; // used as default in entity type columns with get_sysconfig
+    public static final String DELETE_IDEMPIERE_LOGS_PAST_DAY = "DELETE_IDEMPIERE_LOGS_PAST_DAY";
     public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
     public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";
     public static final String DICTIONARY_ID_USER = "DICTIONARY_ID_USER";
