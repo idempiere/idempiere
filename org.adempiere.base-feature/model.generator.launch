@@ -47,6 +47,7 @@
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
+        <setEntry value="com.zaxxer.HikariCP@default:default"/>
         <setEntry value="groovy@default:default"/>
         <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
@@ -113,10 +114,12 @@
         <setEntry value="org.osgi.util.tracker@default:default"/>
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
+        <setEntry value="org.postgresql.jdbc@default:default"/>
         <setEntry value="slf4j.api*1.7.30@default:default"/>
         <setEntry value="slf4j.jdk14@default:false"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.com.oracle.database.jdbc.ojdbc10@default:default"/>
         <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>
         <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
