@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -95,8 +96,10 @@ public class PrintWithinProcess extends AbstractTestCase {
 				pi.setRecord_ID(invoice.getC_Invoice_ID());
 				ProcessUtil.startJavaProcess(Env.getCtx(), pi, trx, false);
 				assertFalse(pi.isError(), pi.getSummary());
+				assertFalse(pi.getPDFReport() == null);
 				pdfList.add(pi.getPDFReport());
 			}
+			assertFalse(pdfList.isEmpty());
 		} finally {
 			rollback();
 			if (process != null) {
@@ -122,7 +125,8 @@ public class PrintWithinProcess extends AbstractTestCase {
 			File tmpOutputFile = null;
 			try (InputStream inputStream = url.openStream()) {
 				if (inputStream != null) {
-					tmpOutputFile = File.createTempFile(localFileName.substring(0, localFileName.lastIndexOf(".")), extension, null);
+					File tmpdir = Files.createTempDirectory("test_jasper_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID)).toFile();
+					tmpOutputFile = File.createTempFile(localFileName.substring(0, localFileName.lastIndexOf(".")), extension, tmpdir);
 					try (OutputStream out = new FileOutputStream(tmpOutputFile);) {
 						if (out != null) {
 							byte buf[] = new byte[1024];
