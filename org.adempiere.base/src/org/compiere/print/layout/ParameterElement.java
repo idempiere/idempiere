@@ -46,7 +46,37 @@ public class ParameterElement extends GridElement
 		super (lines, cols);
 	}
 	
+	/**
+	 * 	Parameter Element.
+	 *  <pre>
+	 *  Parameter fromValue - toValue
+	 *  </pre>
+	 * 	@param query query
+	 *  @param ctx context
+	 *  @param tFormat Table Format
+	 */
+	public ParameterElement(MQuery query, Properties ctx, MPrintTableFormat tFormat)
+	{
+		super (query.getReportProcessQuery() != null ? query.getReportProcessQuery().getRestrictionCount() : query.getRestrictionCount(), 4);
+		setData (0, 0, Msg.getMsg(ctx, "Parameter") + ":", tFormat.getPageHeader_Font(), tFormat.getPageHeaderFG_Color());
+		if (query.getReportProcessQuery() != null)
+			query = query.getReportProcessQuery();
+		for (int r = 0; r < query.getRestrictionCount(); r++)
+		{
+			setData (r, 1, query.getInfoName(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());
+			setData (r, 2, query.getInfoOperator(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());
+			setData (r, 3, query.getInfoDisplayAll(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());
+		}
+	}	//	ParameterElement
 	
+	/**
+	 * 	Get a ParameterElement considering the maximum number of characters per line
+	 * 	@param query query
+	 *  @param ctx context
+	 *  @param tFormat Table Format
+	 *  @param m_maxWidth m_maxWidth
+	 *  @return ParameterElement
+	 */
 	public static ParameterElement getParameterElement(MQuery query, Properties ctx, MPrintTableFormat tFormat,int m_maxWidth) {
 
 		String title = Msg.getMsg(ctx, "Parameter") + ":";
@@ -81,6 +111,13 @@ public class ParameterElement extends GridElement
 		return parameter;
 	}
 	
+	
+	/**
+	 *  Create a List with the provide string content divided considering the maximum number of characters
+	 * 	@param value String Content
+	 *  @param maxChars Maximum Number Of Characters Per Line
+	 *  @return Returns a list with the text divided 
+	 */
 	private static List<String> createLine(String value,int maxChars)
 	{
 		List<String> lines = new ArrayList<>();
