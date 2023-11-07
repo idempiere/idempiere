@@ -31,7 +31,6 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import org.compiere.model.MProcessPara;
-import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogFile;
@@ -40,12 +39,17 @@ import org.compiere.util.CLogFile;
 public class DeleteTraceLogs extends SvrProcess {
 
 	// Process to delete trace logs for n days last
+	
+	private int p_KeepLogDays = 0;
 
 	@Override
 	protected void prepare() {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
 			switch (name) {
+			case "KeepLogDays":
+				p_KeepLogDays = para.getParameterAsInt();
+				break;
 			default:
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
@@ -56,7 +60,7 @@ public class DeleteTraceLogs extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		int cnt = 0;
-		LocalDateTime limit = LocalDateTime.now().minusDays(MSysConfig.getIntValue(MSysConfig.DELETE_IDEMPIERE_LOGS_PAST_DAY, 7));
+		LocalDateTime limit = LocalDateTime.now().minusDays(p_KeepLogDays);
 		CLogFile fileHandler = CLogFile.get (true, null, false);
 		File logDir = fileHandler.getLogDirectory();
 		if (logDir != null && logDir.isDirectory())
