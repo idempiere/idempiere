@@ -57,7 +57,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 	}
 
 	@Test
-	public void testPrintWithinProcess() {
+	public void testPrintWithLocalFile() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 
