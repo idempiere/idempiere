@@ -364,5 +364,8 @@
 		<plugin id="org.osgi.util.pushstream"/>
 		<plugin id="org.osgi.util.tracker"/>
 		<plugin id="org.osgi.util.xml"/>
+		<plugin id="com.zaxxer.HikariCP"/>
+		<plugin id="org.postgresql.jdbc"/>
+		<plugin id="wrapped.com.oracle.database.jdbc.ojdbc10"/>
 	</includeBundles>
 </target>

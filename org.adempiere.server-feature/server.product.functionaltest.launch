@@ -119,6 +119,7 @@
         <setEntry value="com.sun.xml.stream.buffer.streambuffer@default:default"/>
         <setEntry value="com.sun.xml.ws.jaxws-rt@default:default"/>
         <setEntry value="com.sun.xml.ws.policy@default:default"/>
+        <setEntry value="com.zaxxer.HikariCP@default:default"/>
         <setEntry value="groovy-console@default:false"/>
         <setEntry value="groovy-datetime@default:false"/>
         <setEntry value="groovy-json@default:false"/>
@@ -258,7 +259,7 @@
         <setEntry value="org.eclipse.equinox.servletbridge@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
-        <setEntry value="org.eclipse.jdt.core.compiler.batch*3.33.0.v20230218-1114@default:default"/>
+        <setEntry value="org.eclipse.jdt.core.compiler.batch@default:default"/>
         <setEntry value="org.eclipse.jdt.core@default:default"/>
         <setEntry value="org.eclipse.jetty.alpn.client@default:default"/>
         <setEntry value="org.eclipse.jetty.annotations@default:true"/>
@@ -358,6 +359,7 @@
         <setEntry value="org.osgi.util.tracker@default:default"/>
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
+        <setEntry value="org.postgresql.jdbc@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
@@ -371,6 +373,7 @@
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.com.oracle.database.jdbc.ojdbc10@default:default"/>
         <setEntry value="wrapped.com.sun.net.httpserver.http@default:default"/>
         <setEntry value="wrapped.com.sun.org.apache.xml.internal.resolver@default:default"/>
         <setEntry value="wrapped.com.zaxxer.SparseBitSet@default:default"/>
