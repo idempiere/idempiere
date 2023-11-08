@@ -33,12 +33,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Language;
 import org.compiere.utils.DigestOfFile;
+import org.osgi.framework.Bundle;
 
 /**
  * 
@@ -75,12 +78,29 @@ public class BundleResourceLoader {
 		boolean empty = true;
 		String parentPath = "/";
 		String bundleFileName = resourceName;
+		String bundleName = null;
+		//check is resource name include optional bundle symbolic name (syntax -> bundle:bundleSymbolicName:jasperReportFileName)
+		if (resourceName.indexOf(":") > 0) {
+			bundleName = resourceName.substring(0, resourceName.indexOf(":"));
+			resourceName = resourceName.substring(resourceName.indexOf(":")+1);
+			bundleFileName = resourceName;
+		}
 		if (resourceName.lastIndexOf("/") > 0) {
 			parentPath = "/"+resourceName.substring(0, resourceName.lastIndexOf("/"));
 			bundleFileName = resourceName.substring(resourceName.lastIndexOf("/")+1);
 		}
 		URL url = null;
-		Enumeration<URL> entries = Activator.getBundleContext().getBundle().findEntries(parentPath, bundleFileName, false);
+		Bundle bundle = null;
+		//if resource name include optional bundle symbolic name, load from specific bundle 
+		if (bundleName == null) {
+			bundle = Activator.getBundleContext().getBundle();
+		} else {
+			String symbolicName = bundleName;
+			Optional<Bundle> optional = Arrays.stream(Activator.getBundleContext().getBundles()).filter(b -> b.getSymbolicName().equals(symbolicName)).findFirst();
+			if (optional.isPresent())
+				bundle = optional.get();
+		}
+		Enumeration<URL> entries = bundle != null ? bundle.findEntries(parentPath, bundleFileName, false) : null;
 		if (entries != null && entries.hasMoreElements())
 			url = entries.nextElement();
 		if (url != null) {
