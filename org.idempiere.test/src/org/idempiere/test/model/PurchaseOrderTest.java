@@ -804,8 +804,8 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		assertEquals(rmaLine.getQty().intValue(), rmaLine.getQtyDelivered().intValue(), "RMA Line QtyDelivered not updated by shipment for Vendor RMA");
 		
 		int M_InOut_ID = DB.getSQLValueEx(getTrxName(), "SELECT M_InOut_ID FROM M_InOut WHERE M_RMA_ID=?", rma.getM_RMA_ID());
-		MInOut creditMemo = new MInOut(Env.getCtx(), M_InOut_ID, getTrxName());
-		assertEquals(date2, creditMemo.getMovementDate());
-		assertEquals(date2, creditMemo.getDateAcct());
+		MInOut vendorReturn = new MInOut(Env.getCtx(), M_InOut_ID, getTrxName());
+		assertEquals(date2, vendorReturn.getMovementDate());
+		assertEquals(date2, vendorReturn.getDateAcct());
 	}
 }
