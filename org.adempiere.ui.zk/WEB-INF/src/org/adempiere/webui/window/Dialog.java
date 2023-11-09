@@ -591,17 +591,31 @@ public final class Dialog {
      */
     
     public static void info(int windowNo, String adMessage, String additionalMessage, String title) {
-        if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + additionalMessage);
+        info(windowNo, adMessage, additionalMessage, title, null);
+    }
 
-        if (CLogMgt.isLevelFinest()) {
-            Trace.printStack();
-        }
-        
-        String dialogTitle = getDialogTitle(title, windowNo);
+    /**
+     *  Display dialog with information icon.
+     *
+     *  @param  windowNo    Number of Window
+     *  @param  adMessage   Message to be translated
+     *  @param  additionalMessage     Additional message
+     *  @param	title		If none then one will be generated
+     *  @param  callback
+     */
+
+    public static void info(int windowNo, String adMessage, String additionalMessage, String title, Callback<Integer> callback) {
+    	if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + additionalMessage);
+
+    	if (CLogMgt.isLevelFinest()) {
+    		Trace.printStack();
+    	}
+
+    	String dialogTitle = getDialogTitle(title, windowNo);
     	String message = constructMessage(adMessage, additionalMessage);
     	message = formatDialogMessage(message);
-    	
-    	Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.INFORMATION);
+
+    	Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.INFORMATION, callback);
     }
-   
+    
 }
