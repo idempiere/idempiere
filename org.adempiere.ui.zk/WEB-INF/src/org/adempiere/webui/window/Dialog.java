@@ -601,15 +601,10 @@ public final class Dialog {
      *  @param  adMessage   Message to be translated
      *  @param  additionalMessage     Additional message
      *  @param	title		If none then one will be generated
-     *  @param  callback
+     *  @param  callback (optional)
      */
-
     public static void info(int windowNo, String adMessage, String additionalMessage, String title, Callback<Integer> callback) {
     	if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + additionalMessage);
-
-    	if (CLogMgt.isLevelFinest()) {
-    		Trace.printStack();
-    	}
 
     	String dialogTitle = getDialogTitle(title, windowNo);
     	String message = constructMessage(adMessage, additionalMessage);
