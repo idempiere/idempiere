@@ -1806,15 +1806,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//
 		String subject = null;
 		String raw = text.getMailHeader(false);
-		int first = raw != null ? raw.indexOf("@") : -1;
-		if (raw != null &&  first >= 0 && raw.indexOf("@", first) > first)
-			subject = text.getMailHeader();
+		if (raw != null && raw.contains("@_noDocInfo_@"))
+			subject = text.getMailHeader().replaceAll("@_noDocInfo_@", "");
 		else
 			subject = doc.getDocumentInfo() + ": " + text.getMailHeader();
 		String message = null;
 		raw = text.getMailText(true, false);
 		if (raw != null && (raw.contains("@=DocumentInfo") || raw.contains("@=documentInfo")
-				|| raw.contains("@=Summary") || raw.contains("@=summary")))
+				|| raw.contains("@=Summary") || raw.contains("@=summary") || raw.contains("@_noDocInfo_@")))
 			message = text.getMailText(true);
 		else
 			message = text.getMailText(true)
