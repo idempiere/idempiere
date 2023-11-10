@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -215,6 +216,8 @@ public class ADLookup {
 
 				if (displayColumnName != null)
 				{
+					if (displayColumnName.equals(m_keyColumnName))
+						displayColumnName = MTable.get(Env.getCtx(), m_tableName).getIdentifierColumns()[0];
 					sql = new StringBuffer();
 					sql.append("SELECT ").append(m_keyColumnName)
 						.append(" FROM ").append(m_tableName)
