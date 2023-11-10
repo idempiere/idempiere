@@ -661,6 +661,7 @@ public class ProcessInfo implements Serializable
 				+ "AND aup.ad_client_id = ? "
 				+ "ORDER BY columnname, aup.ad_user_id, aup.ad_role_id, aup.ad_org_id, aup.ad_client_id ";
 		PreparedStatement ps = DB.prepareStatement(sql, null);
+		ResultSet rs = null;
 		
 		try {
 			ps.setInt(1, m_AD_Process_ID);
@@ -669,7 +670,7 @@ public class ProcessInfo implements Serializable
 			ps.setInt(4, Env.getAD_Org_ID(Env.getCtx()));
 			ps.setInt(5, Env.getAD_Client_ID(Env.getCtx()));
 			
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			String lastColName = "";
 			while (rs.next()) {
 				String colName = rs.getString("columnname");
@@ -696,6 +697,8 @@ public class ProcessInfo implements Serializable
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "", e);
+		} finally {
+			DB.close(rs, ps);
 		}
 		
 		m_defaultParameters = list.toArray(new ProcessInfoParameter[list.size()]);
