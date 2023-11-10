@@ -617,7 +617,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 
 		int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATERMA_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
 		instance.saveEx();
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), rma.get_ID()}, null);
