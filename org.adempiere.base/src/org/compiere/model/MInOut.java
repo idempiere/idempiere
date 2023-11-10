@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -1524,56 +1523,30 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
-		//Check if Order is Valid - load all C_Order_ID into HashSet and replace/remove C_Order_ID if not valid
-		if(getC_Order_ID() > 0) {			
-			
-			HashSet<Integer> temp_C_Order_ID = new HashSet<Integer>(); // Load C_Order_IDs into Hash Set
-			
-			for(MInOutLine line : getLines())	{
-				
-				if(line.getC_OrderLine_ID() == 0) {
-					temp_C_Order_ID.add(0); // Add zero C_Order_ID
-				}
-				else {
-					temp_C_Order_ID.add(line.getC_OrderLine().getC_Order_ID());
-				}			
-			}	
-			
-			if(temp_C_Order_ID.size() == 1) {	//try to replace C_Order_ID in Parent
-				for(Integer C_Order_ID : temp_C_Order_ID) {		
-					if(getC_Order_ID() != C_Order_ID)
-						setC_Order_ID(C_Order_ID);					
-				}
-			}
-			else {	//Set C_Order_ID to null
-				setC_Order_ID(0);				
-			}			
+		// Check if Order is Valid - load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM M_InOutLine iol "
+		    		+ " JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE iol.M_InOut_ID=?", getM_InOut_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
 		}
 		
-		//Check if RMA is Valid - load all M_RMA_ID into HashSet and replace/remove M_RMA_ID if not valid
-		if(getM_RMA_ID() > 0) {			
-			
-			HashSet<Integer> temp_M_RMA_ID = new HashSet<Integer>(); // Load M_RMA_IDs into Hash Set
-			
-			for(MInOutLine line : getLines())	{
-				
-				if(line.getM_RMALine_ID() == 0) {
-					temp_M_RMA_ID.add(0); // Add zero M_RMA_ID
-				}
-				else {
-					temp_M_RMA_ID.add(line.getM_RMALine().getM_RMA_ID());
-				}			
-			}	
-			
-			if(temp_M_RMA_ID.size() == 1) {	//try to replace M_RMA_ID in Parent
-				for(Integer M_RMA_ID : temp_M_RMA_ID) {		
-					if(getM_RMA_ID() != M_RMA_ID)
-						setM_RMA_ID(M_RMA_ID);					
-				}
-			}
-			else {	//Set M_RMA_ID to null
-				setM_RMA_ID(0);				
-			}			
+		// Check if RMA is Valid - load all M_RMA_ID and replace/remove M_RMA_ID if not valid
+		if (getM_RMA_ID() > 0) {
+		    int[] rmaIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT rmal.M_RMA_ID "
+		    		+ " FROM M_InOutLine iol "
+		    		+ " JOIN M_RMALine rmal ON (iol.M_RMALine_ID=rmal.M_RMALine_ID) "
+		    		+ " WHERE iol.M_InOut_ID=?", getM_InOut_ID());
+		    if (rmaIds.length == 1 && rmaIds[0] != getM_RMA_ID())
+		        setM_RMA_ID(rmaIds[0]);
+		    else if (rmaIds.length > 1)
+		        setM_RMA_ID(0);
 		}
 		
 		m_justPrepared = true;

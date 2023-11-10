@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -1770,30 +1769,17 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
-		//Check if Order is Valid load all C_Order_ID into HashSet and replace/remove C_Order_ID if not valid
-		if(getC_Order_ID() > 0) {			
-			
-			HashSet<Integer> temp_C_Order_ID = new HashSet<Integer>(); // Load C_Order_IDs into Hash Set
-			
-			for(MInvoiceLine line : getLines())	{
-				
-				if(line.getC_OrderLine_ID() == 0) {
-					temp_C_Order_ID.add(0); // Add zero C_Order_ID
-				}
-				else {
-					temp_C_Order_ID.add(line.getC_OrderLine().getC_Order_ID());
-				}			
-			}	
-			
-			if(temp_C_Order_ID.size() == 1) {	//try to replace C_Order_ID in Parent
-				for(Integer C_Order_ID : temp_C_Order_ID) {		
-					if(getC_Order_ID() != C_Order_ID)
-						setC_Order_ID(C_Order_ID);					
-				}
-			}
-			else {	//Set C_Order_ID to null
-				setC_Order_ID(0);				
-			}			
+		// Check if Order is Valid load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM C_InvoiceLine il "
+		    		+ " JOIN C_OrderLine ol ON (il.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE il.C_Invoice_ID=?", getC_Invoice_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
 		}
 		
 		//	Add up Amounts
