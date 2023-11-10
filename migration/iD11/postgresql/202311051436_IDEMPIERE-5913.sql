@@ -3,7 +3,7 @@ INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Nov 5, 2023, 2:37:45 PM WIB
-INSERT INTO AD_Scheduler (AD_Client_ID,Supervisor_ID,IsActive,Processing,AD_Scheduler_ID,AD_Process_ID,CreatedBy,Updated,DateNextRun,AD_Org_ID,UpdatedBy,Created,Name,KeepLogDays,AD_Scheduler_UU,AD_Schedule_ID) VALUES (0,10,'N','N',200002,toRecordId('AD_Process','877068e7-ee18-4efb-b3ef-f6b341ce2189'),10,TO_TIMESTAMP('2023-11-05 14:37:45','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2023-11-06 14:37:45','YYYY-MM-DD HH24:MI:SS'),0,10,TO_TIMESTAMP('2023-11-05 14:37:45','YYYY-MM-DD HH24:MI:SS'),'Delete Trace Logs',7,'36f8954a-20b9-40f5-994b-62270c273117',200000)
+INSERT INTO AD_Scheduler (AD_Client_ID,Supervisor_ID,IsActive,Processing,AD_Scheduler_ID,AD_Process_ID,CreatedBy,Updated,DateNextRun,AD_Org_ID,UpdatedBy,Created,Name,KeepLogDays,AD_Scheduler_UU,AD_Schedule_ID) VALUES (0,10,'N','N',200002,200156,10,TO_TIMESTAMP('2023-11-05 14:37:45','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2023-11-06 14:37:45','YYYY-MM-DD HH24:MI:SS'),0,10,TO_TIMESTAMP('2023-11-05 14:37:45','YYYY-MM-DD HH24:MI:SS'),'Delete Trace Logs',7,'36f8954a-20b9-40f5-994b-62270c273117',200000)
 ;
 
 -- IDEMPIERE-5913
