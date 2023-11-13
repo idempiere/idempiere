@@ -709,29 +709,28 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @return org.zkoss.zul.Tab
      */
     public org.zkoss.zul.Tab replace(org.zkoss.zul.Tab refTab, Window comp, String title) {
-    	 
-         	org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
-         	Component firstChild = refpanel.getFirstChild();
-         	if(firstChild instanceof Window) {
-	     		if(firstChild instanceof ProcessDialog)
-	     			((ProcessDialog)firstChild).unlockUI(null);
-	     		else if(firstChild instanceof ZkReportViewer)
-					((ZkReportViewer)firstChild).hideBusyMask();
-				else if(firstChild instanceof AbstractADWindowContent)
-					((AbstractADWindowContent)firstChild).hideBusyMask();
-	     		((Window) firstChild).onClose();
-	     		comp.setParent(refpanel);
-         	}
-         	else {
-         		firstChild.detach();
-         		comp.setParent(refpanel);
-         	}
-
-         if (title != null) 
-         {
- 	        setTabTitle(title, refTab);
-         }
-        return refTab;
+		org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
+		Component firstChild = refpanel.getFirstChild();
+		if(firstChild instanceof Window) {
+			if(firstChild instanceof ProcessDialog)
+				((ProcessDialog)firstChild).unlockUI(null);
+			else if(firstChild instanceof ZkReportViewer)
+				((ZkReportViewer)firstChild).hideBusyMask();
+			else if(firstChild instanceof AbstractADWindowContent)
+				((AbstractADWindowContent)firstChild).hideBusyMask();
+			((Window) firstChild).onClose();
+			comp.setParent(refpanel);
+		}
+		else {
+			firstChild.detach();
+			comp.setParent(refpanel);
+		}
+		
+		if (title != null) 
+		{
+			setTabTitle(title, refTab);
+		}
+		return refTab;
     }
     
     /**
