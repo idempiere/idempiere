@@ -141,7 +141,7 @@ public class InfoManager
 			if (service != null)
 			{
 				s_infoFactoryCache.put(serviceId, serviceReference);
-				ip = service.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID);
+				ip = service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID);
 				if (ip != null)
 					break;
 			}
