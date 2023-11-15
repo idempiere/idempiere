@@ -905,9 +905,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				StringBuilder tableWrapDiv = new StringBuilder();
 				tableWrapDiv.append("<div class='").append(cssPrefix).append("-table-wrap' ");
 				if (paraWrapId != null) {
-					tableWrapDiv.append("onscroll=\"if (this.scrollTop > 0) document.getElementById('")
-						.append(paraWrapId).append("').style.display='none'; ")
-						.append("else document.getElementById('").append(paraWrapId).append("').style.display='block';\"");
+					String paraWrapGet = "document.getElementById('"+paraWrapId+"')";
+					tableWrapDiv.append("onscroll=\"setTimeout(() => {let paraHeight=").append(paraWrapGet).append(".offsetHeight;")
+						.append("if (this.scrollTop > paraHeight) ")
+						.append(paraWrapGet).append(".style.display='none'; ")
+						.append("else if (this.scrollTop == 0) ").append(paraWrapGet).append(".style.display='block';}, 100)\"");
 				}
 				tableWrapDiv.append(" >");
 				
