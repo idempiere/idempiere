@@ -1914,7 +1914,6 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//
 		ParameterElement pe = new ParameterElement(m_query, m_printCtx, m_format.getTableFormat());
 		pe.layout(0, 0, false, null);
-		pe.fitToPage((int) getPaper().getImageableWidth(true));
 		return pe;
 	}	//	layoutParameter
 	
