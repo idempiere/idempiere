@@ -287,7 +287,12 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 				int windowNo = (Integer)windowNoAttribute;
 				refTab = windowContainer.getTab(windowNo);
 			}
-			windowContainer.replace(refTab, window, title);
+
+			if (refTab == null)
+				windowContainer.addWindow(tabPanel, title, true, null);
+			else
+				windowContainer.replace(refTab, window, title);
+
 		}
 		else {
 	    	windowContainer.addWindow(tabPanel, title, true, null);
