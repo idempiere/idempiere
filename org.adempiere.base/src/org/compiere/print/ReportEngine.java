@@ -861,14 +861,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				String paraWrapId = null;
 				if (parameterTable != null) {
 					paraWrapId = cssPrefix + "-para-table-wrap";
-					w.print("<div id='" + paraWrapId + "'>");
+					w.print("<details id='" + paraWrapId + "' open=true style='cursor:pointer'>");
+					w.print("<summary style='cursor:pointer'>"+Msg.getMsg(getCtx(), "Parameter")+"</summary>");
 					w.print(compress(parameterTable.toString(), minify));
 					
 					tr tr = new tr();
 					tr.setClass("tr-parameter");
-					th th = new th();
-					tr.addElement(th);
-					th.addElement(Msg.getMsg(getCtx(), "Parameter") + ":");
 					
 					MQuery query = m_query;
 					if (m_query.getReportProcessQuery() != null)
@@ -878,9 +876,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						if (r > 0) {
 							tr = new tr();
 							tr.setClass("tr-parameter");
-							td td = new td();
-							tr.addElement(td);
-							td.addElement("&nbsp;");
 						}
 						
 						td td = new td();
@@ -899,17 +894,16 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					}
 										
 					w.print("</table>");
-					w.print("</div>");
+					w.print("</details>");
 				}
 				
 				StringBuilder tableWrapDiv = new StringBuilder();
 				tableWrapDiv.append("<div class='").append(cssPrefix).append("-table-wrap' ");
 				if (paraWrapId != null) {
-					String paraWrapGet = "document.getElementById('"+paraWrapId+"')";
-					tableWrapDiv.append("onscroll=\"setTimeout(() => {let paraHeight=").append(paraWrapGet).append(".offsetHeight;")
-						.append("if (this.scrollTop > paraHeight) ")
-						.append(paraWrapGet).append(".style.display='none'; ")
-						.append("else if (this.scrollTop == 0) ").append(paraWrapGet).append(".style.display='block';}, 100)\"");
+					String paraWrapGet = "document.getElementById(\""+paraWrapId+"\")";
+					tableWrapDiv.append("onscroll='setTimeout(() => {if (this.scrollTop > 0) ")
+						.append(" if(").append(paraWrapGet).append(".open) ")
+						.append(paraWrapGet).append(".open=false;}, 100)'");
 				}
 				tableWrapDiv.append(" >");
 				
