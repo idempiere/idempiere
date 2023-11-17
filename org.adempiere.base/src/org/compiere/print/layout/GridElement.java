@@ -70,25 +70,25 @@ public class GridElement extends PrintElement
 	}	//	GridElement
 
 	/**	Gap between Rows		*/
-	protected int			m_rowGap = 3;
+	private int			m_rowGap = 3;
 	/**	Gap between Columns		*/
-	protected int			m_colGap = 5;
+	private int			m_colGap = 5;
 
 	/** Rows				*/
-	protected int			m_rows;
+	private int			m_rows;
 	/**	Columns				*/
-	protected int			m_cols;
+	private int			m_cols;
 	/**	The Layout Data			*/
-	protected TextLayout[][] 	m_textLayout = null;
+	private TextLayout[][] 	m_textLayout = null;
 	/** Character Iterator		*/
-	protected AttributedCharacterIterator[][] m_iterator = null;	
+	private AttributedCharacterIterator[][] m_iterator = null;	
 	
 	/**	Row Height			*/
-	protected int[]		m_rowHeight = null;
+	private int[]		m_rowHeight = null;
 	/**	Column Width		*/
-	protected int[]		m_colWidth = null;
+	private int[]		m_colWidth = null;
 	/** Context				*/
-	protected FontRenderContext	m_frc = new FontRenderContext(null, true, true);
+	private FontRenderContext	m_frc = new FontRenderContext(null, true, true);
 
 	/**
 	 * 	Create TextLayout from Data and calculate size.
