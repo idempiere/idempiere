@@ -133,11 +133,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	m_isClientDefined = isClientDefined;
         m_clientKNPairs = clientsKNPairs;
         
+    	m_userpreference = SessionManager.getSessionApplication().getUserPreference();
         if( m_clientKNPairs.length == 1  &&  !m_showRolePanel ){
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
         	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
-        	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
+        } else {
+        	m_userpreference.loadPreference(-1);
         }
     	
 

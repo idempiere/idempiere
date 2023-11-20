@@ -38,7 +38,7 @@ public final class UserPreference implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2619860653017483658L;
+	private static final long serialVersionUID = -5225476997340598606L;
 
 	/** Language			*/
 	public static final String 	P_LANGUAGE = 		"Language";
@@ -96,7 +96,9 @@ public final class UserPreference implements Serializable {
 	/** Container for Properties */
 	private Properties props = new Properties();
 
-	private int m_AD_User_ID;
+	private int m_AD_User_ID = -1;
+
+	final String whereClause = "AD_User_ID=? AND Attribute=? AND AD_Window_ID IS NULL AND AD_Process_ID IS NULL AND PreferenceFor='W' AND AD_Client_ID=(SELECT AD_Client_ID FROM AD_User WHERE AD_User_ID=?)";
 
 	/** Logger */
 	@SuppressWarnings("unused")
@@ -107,13 +109,13 @@ public final class UserPreference implements Serializable {
 	 */
 	public void savePreference() {
 		if (m_AD_User_ID > 0) {
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, whereClause, null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 				String value = props.getProperty(attribute);
 
 				if (!Util.isEmpty(value)) {
-					MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
+					MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute, m_AD_User_ID}).firstOnly();
 					if (preference == null) {
 						preference = new MPreference(Env.getCtx(), 0, null);
 						MUser user = MUser.get(m_AD_User_ID);
@@ -140,17 +142,17 @@ public final class UserPreference implements Serializable {
 	 * @param AD_User_ID
 	 */
 	public void loadPreference(int AD_User_ID) {
+		m_AD_User_ID = AD_User_ID;
 		if (AD_User_ID >= 0) {
-			m_AD_User_ID = AD_User_ID;
 			props = new Properties();
 
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, whereClause, null);
 
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 				String value = VALUES[i];
 
-				MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
+				MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute, m_AD_User_ID}).firstOnly();
 				if (preference != null && preference.getValue() != null) {
 					value = preference.getValue();
 				}
@@ -166,11 +168,11 @@ public final class UserPreference implements Serializable {
 		if (m_AD_User_ID > 0) {
 			props = new Properties();
 
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "AD_User_ID = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, whereClause, null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 
-				MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
+				MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute, m_AD_User_ID}).firstOnly();
 				if (preference != null) {
 					preference.deleteEx(true);
 				}
