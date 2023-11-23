@@ -33,10 +33,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -3548,6 +3550,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
             	((HtmlBasedComponent)contentPanel.getSelectedItem()).focus();
             	contentPanel.getSelectedItem().setSelected(true);
+
+            	Set<Listitem> selectionList = new LinkedHashSet<>();
+            	selectionList.add(contentPanel.getSelectedItem());
+
+            	Events.postEvent(new SelectEvent<>(Events.ON_SELECT, contentPanel, selectionList));
         	}
 
         	setStatusSelected ();
