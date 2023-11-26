@@ -54,8 +54,8 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 			MIndexColumn mIndexColumn = findPO(ctx, element);
 			if (mIndexColumn == null) {
 				int parentId = 0;
-				if (getParentId(element, MTableIndex.Table_Name) > 0) {
-					parentId = getParentId(element, MTableIndex.Table_Name);
+				if ((Integer)getParentId(element, MTableIndex.Table_Name) > 0) {
+					parentId = (Integer)getParentId(element, MTableIndex.Table_Name);
 				} else {
 					Element pfElement = element.properties.get(MIndexColumn.COLUMNNAME_AD_TableIndex_ID);
 					parentId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, pfElement, getTrxName(ctx));
