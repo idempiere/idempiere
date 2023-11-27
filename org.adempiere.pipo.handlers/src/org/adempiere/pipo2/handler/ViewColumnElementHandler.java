@@ -54,8 +54,8 @@ public class ViewColumnElementHandler extends AbstractElementHandler {
 			MViewColumn mViewColumn = findPO(ctx, element);
 			if (mViewColumn == null) {
 				int parentId = 0;
-				if (getParentId(element, MViewComponent.Table_Name) > 0) {
-					parentId = getParentId(element, MViewComponent.Table_Name);
+				if ((Integer)getParentId(element, MViewComponent.Table_Name) > 0) {
+					parentId = (Integer)getParentId(element, MViewComponent.Table_Name);
 				} else {
 					Element pfElement = element.properties.get(MViewColumn.COLUMNNAME_AD_ViewComponent_ID);
 					parentId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, pfElement, getTrxName(ctx));
