@@ -50,7 +50,12 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6928560924056836659L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2068744950300991237L;
+
 
 	/**
 	 * 	Get MProcess from Cache (immutable)
@@ -640,6 +645,18 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		if (m_parameters != null && m_parameters.length > 0)
 			Arrays.stream(m_parameters).forEach(e -> e.markImmutable());
 		return this;
+	}
+
+	/**
+	 * 	Called before Save for Pre-Save Operation
+	 * 	@param newRecord new record
+	 *	@return true if record can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getAllowMultipleExecution() == null)
+			setAllowMultipleExecution(ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters);
+		return true;
 	}
 
 }	//	MProcess
