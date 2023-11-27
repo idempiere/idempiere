@@ -53,6 +53,8 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		MTable table = MTable.get(Env.getCtx(), tableName);
 		if (table != null && table.isUUIDKeyTable())
 		{
+			if (Record_ID == 0 && ! MTable.isZeroIDTable(tableName)) // this is the convention to create a new record
+				return getPO(clazz, tableName, "", trxName); // get new Record using UUID constructor
 			return null;
 		}
 
