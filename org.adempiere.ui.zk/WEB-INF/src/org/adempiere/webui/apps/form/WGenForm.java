@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.util.Callback;
+//import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -44,7 +44,11 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+<<<<<<< Updated upstream
 import org.adempiere.webui.window.Dialog;
+=======
+//import org.adempiere.webui.window.FDialog;
+>>>>>>> Stashed changes
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.GenForm;
 import org.compiere.minigrid.IDColumn;
@@ -408,6 +412,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		
 	}   //  generateShipments_complete
 	
+<<<<<<< Updated upstream
 	/**
 	 * Handle onAfterProcess event echo from {@link #generateComplete()}.
 	 */
@@ -428,6 +433,26 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			}
 		});
 	}
+=======
+	
+//	public void onAfterProcess()
+//	{
+//		//	OK to print
+//		FDialog.ask(getWindowNo(), this, genForm.getAskPrintMsg(), new Callback<Boolean>() {
+//			
+//			@Override
+//			public void onCallback(Boolean result) 
+//			{
+//				if (result) 
+//				{
+//					Clients.showBusy("Processing...");
+//					Clients.response(new AuEcho(WGenForm.this, "onPrint", null));
+//				}
+//				
+//			}
+//		});
+//	}
+>>>>>>> Stashed changes
 	
 	/**
 	 * Print generated documents.
