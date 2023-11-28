@@ -562,7 +562,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 		
-		if (get_ValueAsInt(COLUMNNAME_AD_Reference_ID) == 20 && (!get_ValueAsBoolean(COLUMNNAME_IsMandatory) || get_Value(COLUMNNAME_DefaultValue) == null)) {
+		if ((getAD_Reference_ID()==DisplayType.YesNo) && (!isMandatory() || Util.isEmpty(getDefaultValue(),true))) {
 			    log.saveWarning("Error: ", "It is necessary for the 'Mandatory' flag to be marked and have a default value (Y or N) ");
 			    return false;
 			}
