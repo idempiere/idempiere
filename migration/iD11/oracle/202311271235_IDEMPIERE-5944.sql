@@ -21,6 +21,7 @@ UPDATE (
         AND t.IsView = 'N'
         AND c.isMandatory = 'N'
         AND (c.DefaultValue NOT IN ('N', 'Y') OR c.DefaultValue IS NULL)
+        AND c.ad_column_id < 1000000
 ) x
 SET x.DefaultValue = x.newDefaultValue,
     x.isMandatory = 'Y';
