@@ -36,14 +36,11 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MInOut;
-import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
-import org.compiere.model.MRMALine;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
@@ -113,24 +110,8 @@ public class CreateFromInvoice extends SvrProcess
 				
 				String ColumnName = "AD_Table_ID";
 				MTable table = MTable.get(rs.getInt(ColumnName));
-				if (table.getAD_Table_ID() == MOrderLine.Table_ID)
-				{
-					ColumnName = "C_OrderLine_ID";
-					String key = ColumnName + "_" + T_Selection_ID;
-					selectionValueMap.put(key, T_Selection_ID);
-				}
-				else if (table.getAD_Table_ID() == MInOutLine.Table_ID)
-				{
-					ColumnName = "M_InOutLine_ID";
-					String key = ColumnName + "_" + T_Selection_ID;
-					selectionValueMap.put(key, T_Selection_ID);
-				}
-				else if (table.getAD_Table_ID() == MRMALine.Table_ID)
-				{
-					ColumnName = "M_RMALine_ID";
-					String key = ColumnName + "_" + T_Selection_ID;
-					selectionValueMap.put(key, T_Selection_ID);
-				}
+				String key = table.getKeyColumns()[0] + "_" + T_Selection_ID;
+				selectionValueMap.put(key, T_Selection_ID);
 			}
 		}
 		catch (Exception e)
@@ -205,42 +186,33 @@ public class CreateFromInvoice extends SvrProcess
 			String key = ColumnName + "_" + T_Selection_ID;
 			Object value = selectionValueMap.get(key);
 			int C_Order_ID = value != null ? ((Number) value).intValue() : 0;
-			if (C_Order_ID != 0 && (m_order == null || m_order.getC_Order_ID() != C_Order_ID))
+			if (C_Order_ID > 0 && (m_order == null || m_order.getC_Order_ID() != C_Order_ID))
 			{
 				m_order = new MOrder(getCtx(), C_Order_ID, get_TrxName());
-				if (m_order != null)
-				{
-					invoice.setOrder(m_order);	//	overwrite header values
-					invoice.saveEx();
-				}
+				invoice.setOrder(m_order);	//	overwrite header values
+				invoice.saveEx();
 			}
 			
 			ColumnName = "M_InOut_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
 			int M_InOut_ID = value != null ? ((Number) value).intValue() : 0;
-			if (M_InOut_ID != 0 && (m_inout == null || m_inout.getM_InOut_ID() != M_InOut_ID))
+			if (M_InOut_ID > 0 && (m_inout == null || m_inout.getM_InOut_ID() != M_InOut_ID))
 			{
 				m_inout = new MInOut(getCtx(), M_InOut_ID, get_TrxName());
-				if (m_inout != null)
-				{
-					invoice.setShipment(m_inout);
-					invoice.saveEx();
-				}
+				invoice.setShipment(m_inout);
+				invoice.saveEx();
 			}
 			
 			ColumnName = "M_RMA_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
 			int M_RMA_ID = value != null ? ((Number) value).intValue() : 0;
-			if (M_RMA_ID != 0 && (m_rma == null || m_rma.getM_RMA_ID() != M_RMA_ID))
+			if (M_RMA_ID > 0 && (m_rma == null || m_rma.getM_RMA_ID() != M_RMA_ID))
 			{
 				m_rma = new MRMA(getCtx(), M_RMA_ID, get_TrxName());
-				if (m_rma != null)
-				{
-					invoice.setM_RMA_ID(m_rma.getM_RMA_ID());
-					invoice.saveEx();
-				}
+				invoice.setM_RMA_ID(m_rma.getM_RMA_ID());
+				invoice.saveEx();
 			}
 			
 			ColumnName = "Qty";

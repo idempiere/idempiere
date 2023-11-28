@@ -37,13 +37,10 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
-import org.compiere.model.MRMALine;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
@@ -115,24 +112,8 @@ public class CreateFromInOut extends SvrProcess
 				
 				String ColumnName = "AD_Table_ID";
 				MTable table = MTable.get(rs.getInt(ColumnName));
-				if (table.getAD_Table_ID() == MOrderLine.Table_ID)
-				{
-					ColumnName = "C_OrderLine_ID";
-					String key = ColumnName + "_" + T_Selection_ID;
-					selectionValueMap.put(key, T_Selection_ID);
-				}
-				else if (table.getAD_Table_ID() == MInvoiceLine.Table_ID)
-				{
-					ColumnName = "C_InvoiceLine_ID";
-					String key = ColumnName + "_" + T_Selection_ID;
-					selectionValueMap.put(key, T_Selection_ID);
-				}
-				else if (table.getAD_Table_ID() == MRMALine.Table_ID)
-				{
-					ColumnName = "M_RMALine_ID";
-					String key = ColumnName + "_" + T_Selection_ID;
-					selectionValueMap.put(key, T_Selection_ID);
-				}
+				String key = table.getKeyColumns()[0] + "_" + T_Selection_ID;
+				selectionValueMap.put(key, T_Selection_ID);
 			}
 		}
 		catch (Exception e)
