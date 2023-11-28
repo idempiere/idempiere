@@ -37,10 +37,14 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
+import org.compiere.model.MRMALine;
+import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 
@@ -92,12 +96,9 @@ public class CreateFromInOut extends SvrProcess
 
 		// Lines
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT t.T_Selection_ID, t.ViewID, v.AD_Table_ID, v.Line, v.C_Order_ID, v.C_Invoice_ID, v.M_RMA_ID, ");
-		sql.append("v.Qty, v.C_UOM_ID, v.M_Locator_ID, v.M_Product_ID, v.C_OrderLine_ID, v.C_InvoiceLine_ID, v.M_RMALine_ID ");
-		sql.append("FROM T_Selection t, M_InOut_CreateFrom_v v ");
-		sql.append("WHERE (t.ViewID || '_' || t.T_Selection_ID)=(v.AD_Table_ID || '_' || v.M_InOut_CreateFrom_v_ID) ");
-		sql.append("AND t.AD_PInstance_ID=? ");
-		sql.append("ORDER BY v.Line, v.AD_Table_ID, t.T_Selection_ID ");
+		sql.append("SELECT t.T_Selection_ID, CAST(t.ViewID AS Integer) AS AD_Table_ID ");
+		sql.append("FROM T_Selection t ");
+		sql.append("WHERE t.AD_PInstance_ID=? ");
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -113,52 +114,25 @@ public class CreateFromInOut extends SvrProcess
 					selectionIDList.add(T_Selection_ID);
 				
 				String ColumnName = "AD_Table_ID";
-				String key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "Line";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "C_Order_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "C_Invoice_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_RMA_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "Qty";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getBigDecimal(ColumnName));
-				
-				ColumnName = "C_UOM_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_Locator_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_Product_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "C_OrderLine_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "C_InvoiceLine_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_RMALine_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
+				MTable table = MTable.get(rs.getInt(ColumnName));
+				if (table.getAD_Table_ID() == MOrderLine.Table_ID)
+				{
+					ColumnName = "C_OrderLine_ID";
+					String key = ColumnName + "_" + T_Selection_ID;
+					selectionValueMap.put(key, T_Selection_ID);
+				}
+				else if (table.getAD_Table_ID() == MInvoiceLine.Table_ID)
+				{
+					ColumnName = "C_InvoiceLine_ID";
+					String key = ColumnName + "_" + T_Selection_ID;
+					selectionValueMap.put(key, T_Selection_ID);
+				}
+				else if (table.getAD_Table_ID() == MRMALine.Table_ID)
+				{
+					ColumnName = "M_RMALine_ID";
+					String key = ColumnName + "_" + T_Selection_ID;
+					selectionValueMap.put(key, T_Selection_ID);
+				}
 			}
 		}
 		catch (Exception e)

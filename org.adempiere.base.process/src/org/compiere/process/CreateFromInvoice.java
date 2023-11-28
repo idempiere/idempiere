@@ -35,11 +35,16 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MInOut;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
+import org.compiere.model.MRMALine;
+import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 
@@ -89,12 +94,9 @@ public class CreateFromInvoice extends SvrProcess
 		if (log.isLoggable(Level.CONFIG)) log.config(invoice.toString());
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT t.T_Selection_ID, t.ViewID, v.AD_Table_ID, v.Line, v.C_Order_ID, v.M_InOut_ID, v.M_RMA_ID, ");
-		sql.append("v.Qty, v.C_UOM_ID, v.M_Product_ID, v.C_OrderLine_ID, v.M_InOutLine_ID, v.M_RMALine_ID ");
-		sql.append("FROM T_Selection t, C_Invoice_CreateFrom_v v ");
-		sql.append("WHERE (t.ViewID || '_' || t.T_Selection_ID)=(v.AD_Table_ID || '_' || v.C_Invoice_CreateFrom_v_ID) ");
-		sql.append("AND t.AD_PInstance_ID=? ");
-		sql.append("ORDER BY v.Line, v.AD_Table_ID, t.T_Selection_ID ");
+		sql.append("SELECT t.T_Selection_ID, CAST(t.ViewID AS Integer) AS AD_Table_ID ");
+		sql.append("FROM T_Selection t ");
+		sql.append("WHERE t.AD_PInstance_ID=? ");
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -110,48 +112,25 @@ public class CreateFromInvoice extends SvrProcess
 					selectionIDList.add(T_Selection_ID);
 				
 				String ColumnName = "AD_Table_ID";
-				String key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "Line";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "C_Order_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_InOut_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_RMA_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "Qty";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getBigDecimal(ColumnName));
-				
-				ColumnName = "C_UOM_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_Product_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "C_OrderLine_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_InOutLine_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
-				
-				ColumnName = "M_RMALine_ID";
-				key = ColumnName + "_" + T_Selection_ID;
-				selectionValueMap.put(key, rs.getInt(ColumnName));
+				MTable table = MTable.get(rs.getInt(ColumnName));
+				if (table.getAD_Table_ID() == MOrderLine.Table_ID)
+				{
+					ColumnName = "C_OrderLine_ID";
+					String key = ColumnName + "_" + T_Selection_ID;
+					selectionValueMap.put(key, T_Selection_ID);
+				}
+				else if (table.getAD_Table_ID() == MInOutLine.Table_ID)
+				{
+					ColumnName = "M_InOutLine_ID";
+					String key = ColumnName + "_" + T_Selection_ID;
+					selectionValueMap.put(key, T_Selection_ID);
+				}
+				else if (table.getAD_Table_ID() == MRMALine.Table_ID)
+				{
+					ColumnName = "M_RMALine_ID";
+					String key = ColumnName + "_" + T_Selection_ID;
+					selectionValueMap.put(key, T_Selection_ID);
+				}
 			}
 		}
 		catch (Exception e)
@@ -215,6 +194,7 @@ public class CreateFromInvoice extends SvrProcess
 		}	
 			
 		MOrder m_order = null;
+		MInOut m_inout = null;
 		MRMA m_rma = null;
 		
 		for (int i = 0; i < selectionIDList.size(); i++)
@@ -231,6 +211,20 @@ public class CreateFromInvoice extends SvrProcess
 				if (m_order != null)
 				{
 					invoice.setOrder(m_order);	//	overwrite header values
+					invoice.saveEx();
+				}
+			}
+			
+			ColumnName = "M_InOut_ID";
+			key = ColumnName + "_" + T_Selection_ID;
+			value = selectionValueMap.get(key);
+			int M_InOut_ID = value != null ? ((Number) value).intValue() : 0;
+			if (M_InOut_ID != 0 && (m_inout == null || m_inout.getM_InOut_ID() != M_InOut_ID))
+			{
+				m_inout = new MInOut(getCtx(), M_InOut_ID, get_TrxName());
+				if (m_inout != null)
+				{
+					invoice.setShipment(m_inout);
 					invoice.saveEx();
 				}
 			}

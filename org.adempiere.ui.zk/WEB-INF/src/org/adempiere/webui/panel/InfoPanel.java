@@ -2727,7 +2727,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				for(int col  = 0 ; col < p_layout.length; col ++)
 				{
 					// layout has same columns as selectedInfo
-					if (!p_layout[col].isReadOnly())
+					// if (!p_layout[col].isReadOnly())	// IDEMPIERE-5936 save all the column values
 						values.put(p_layout[col].getColumnName(), selectedInfo.getValue().get(col));
 				}
 				if(values.size() > 0)
