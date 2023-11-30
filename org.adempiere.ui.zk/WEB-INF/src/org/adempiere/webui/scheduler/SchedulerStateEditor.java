@@ -38,6 +38,7 @@ import org.compiere.model.StateChangeEvent;
 import org.compiere.model.StateChangeListener;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.server.IServerManager;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.distributed.IClusterService;
@@ -47,6 +48,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
+ * Field editor for state ({@link DisplayType#SchedulerState}) of scheduler (AD_Scheduler).
  * @author hengsin
  *
  */

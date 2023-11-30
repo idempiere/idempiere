@@ -229,12 +229,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			ri.setAD_Role_ID(AD_Role_ID);
 			ri.setAD_Window_ID(AD_Window_ID);
 			ri.setAD_Tab_ID(AD_Tab_ID);
-			try {
-				PO.setCrossTenantSafe();
-				ri.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			ri.saveCrossTenantSafeEx();
 		} else {
 			if (   ric.getAD_Role_ID() != AD_Role_ID
 				|| ric.getAD_Window_ID() != AD_Window_ID
@@ -243,12 +238,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 				ri.setAD_Role_ID(AD_Role_ID);
 				ri.setAD_Window_ID(AD_Window_ID);
 				ri.setAD_Tab_ID(AD_Tab_ID);
-				try {
-					PO.setCrossTenantSafe();
-					ri.saveEx();
-				} finally {
-					PO.clearCrossTenantSafe();
-				}
+				ri.saveCrossTenantSafeEx();
 			} else {
 				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ric.getAD_RecentItem_ID()}, null);
 			}
@@ -275,7 +265,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	public static void postOnChangedEvent(int AD_User_ID) {
 		Map<String, Integer> properties = new HashMap<String, Integer>();
 		properties.put("AD_User_ID", AD_User_ID);
-		Event event = new Event(ON_RECENT_ITEM_CHANGED_TOPIC, properties);
+		Event event = EventManager.newEvent(ON_RECENT_ITEM_CHANGED_TOPIC, properties, true);
 		EventManager.getInstance().postEvent(event);
 	}
 

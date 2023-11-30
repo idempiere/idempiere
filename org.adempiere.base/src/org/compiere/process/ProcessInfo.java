@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.adempiere.util.IProcessUI;
@@ -54,7 +55,7 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -795798319865809959L;
+	private static final long serialVersionUID = 8134286335553869253L;
 
 	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
@@ -161,6 +162,9 @@ public class ProcessInfo implements Serializable
 	
 	/**	Record IDs				*/
 	private List <Integer>		m_Record_IDs = null;
+
+	/**	Record UUs				*/
+	private List <String>		m_Record_UUs = null;
 
 	/** Export					*/
 	private boolean				m_export = false;
@@ -993,6 +997,16 @@ public class ProcessInfo implements Serializable
 		m_Record_IDs = Record_IDs;
 	}
 
+	public List<String> getRecord_UUs()
+	{
+		return m_Record_UUs;
+	}
+
+	public void setRecord_UUs(List<String> Record_UUs)
+	{
+		m_Record_UUs = Record_UUs;
+	}
+
 	public void setRowCount(int rowCount) {
 		m_rowCount = rowCount;
 	}
@@ -1035,21 +1049,32 @@ public class ProcessInfo implements Serializable
 		if (lastRebootDate == null)
 			return false;
 		
-		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, " AD_Process_ID=? AND AD_User_ID=? AND IsProcessing='Y' AND record_ID = ? AND Created > ? ", null)
-				.setParameters(getAD_Process_ID(), getAD_User_ID(), getRecord_ID(), lastRebootDate)
+		StringBuilder whereClause = new StringBuilder(
+				"AD_Process_ID=? AND IsProcessing='Y' AND Record_ID = ? AND Created > ?");
+		List<Object> queryParams = new ArrayList<>(Arrays.asList(getAD_Process_ID(), getRecord_ID(), lastRebootDate));
+
+		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUser.equals(multipleExecutions)
+			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
+			whereClause.append(" AND AD_User_ID = ? ");
+			queryParams.add(getAD_User_ID());
+		}
+
+		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, whereClause.toString(), null)
+				.setParameters(queryParams)
 				.setClient_ID()
-				.setOnlyActiveRecords(true)
-				.list();
-		
+				.setOnlyActiveRecords(true).list();
+
 		if (processInstanceList == null || processInstanceList.isEmpty())
 			return false;
-		
-		//Never allow multiple executions
-		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutions)) 
+
+		// Do not allow concurrent executions
+		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUser.equals(multipleExecutions)
+			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromAnyUser.equals(multipleExecutions))
 			return true;
-		
-		//Disallow multiple executions with the same params
-		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParameters)) {
+
+		// Do not allow concurrent executions with the same params
+		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromAnyUserAndSameParameters.equals(multipleExecutions)
+			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
 			for (MPInstance instance : processInstanceList) {
 				if (instance.equalParameters(params))
 					return true;

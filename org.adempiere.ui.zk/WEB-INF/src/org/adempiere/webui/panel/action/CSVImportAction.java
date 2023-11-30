@@ -76,7 +76,7 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
 
 /**
- *
+ * Action to import data from csv file to GridTab
  * @author Carlos Ruiz
  *
  */
@@ -85,6 +85,7 @@ public class CSVImportAction implements EventListener<Event>
 
 	private AbstractADWindowContent panel;
 
+	/** GridTab Importer for csv file */
 	IGridTabImporter theCSVImporter = null;
 	MImportTemplate theTemplate = null;
 
@@ -106,7 +107,7 @@ public class CSVImportAction implements EventListener<Event>
 	}
 
 	/**
-	 * execute import action
+	 * Execute import action.
 	 */
 	public void fileImport()
 	{
@@ -303,6 +304,9 @@ public class CSVImportAction implements EventListener<Event>
 		bFile.setLabel(media.getName());
 	}
 
+	/**
+	 * Import uploaded csv file
+	 */
 	private void importFile() {
 		try {
 			MQuery query = panel.getActiveGridTab().getQuery();

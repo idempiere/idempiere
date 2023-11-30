@@ -51,7 +51,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6190279880520042885L;
+	private static final long serialVersionUID = 4574171758155591250L;
 
 	/** Menu item attribute to store context menu event name (zoom, requery, etc) */
 	public static final String EVENT_ATTRIBUTE = "EVENT";
@@ -371,5 +371,15 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 			});
 			appendChild(editor);
 		}
+	}
+
+	/**
+	 * Remove the new and update items from the menu - for ChosenList
+	 */
+	public void removeNewUpdateMenu() {
+		if (newItem != null)
+			removeChild(newItem);
+		if (updateItem != null)
+			removeChild(updateItem);
 	}	
 }

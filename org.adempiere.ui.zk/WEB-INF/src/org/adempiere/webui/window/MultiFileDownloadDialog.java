@@ -26,6 +26,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Vlayout;
 
 /**
+ * Dialog to download multiple files
  * @author hengsin
  *
  */
@@ -38,6 +39,9 @@ public class MultiFileDownloadDialog extends Window {
 	private static final long serialVersionUID = -6078788264410182680L;
 	private File[] files;
 
+	/**
+	 * @param files
+	 */
 	public MultiFileDownloadDialog(File[] files) {
 		super();
 		this.files = files;
@@ -49,6 +53,9 @@ public class MultiFileDownloadDialog extends Window {
 		});
 	}
 
+	/**
+	 * Show dialog with link for each file
+	 */
 	private void show() {
 		Vlayout layout = new Vlayout();
 		layout.setStyle("padding-top: 10px; padding-bottom: 10px;");

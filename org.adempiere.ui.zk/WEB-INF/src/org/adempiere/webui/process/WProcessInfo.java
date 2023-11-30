@@ -23,7 +23,7 @@ import org.compiere.process.ProcessInfo;
 public class WProcessInfo extends ProcessInfo {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2034681838152013686L;
 
@@ -61,6 +61,11 @@ public class WProcessInfo extends ProcessInfo {
 		super.setClassName(zkName);
 	}
 
+	/**
+	 * Translate swing client class name to Zk equivalent
+	 * @param className
+	 * @return class name
+	 */
 	private String dynamicTranslate(String className) {
 		String zkName = null;
 		String tail = null;

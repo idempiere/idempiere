@@ -37,6 +37,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -641,7 +642,7 @@ public final class Adempiere
 			String className = system.getEncryptionKey();
 			if (className == null || className.length() == 0)
 			{
-				className = System.getProperty(SecureInterface.ADEMPIERE_SECURE);
+				className = SystemProperties.getAdempiereSecure();
 				if (className != null && className.length() > 0
 					&& !className.equals(SecureInterface.ADEMPIERE_SECURE_DEFAULT))
 				{

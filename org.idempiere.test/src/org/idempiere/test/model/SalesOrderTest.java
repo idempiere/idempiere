@@ -449,7 +449,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
@@ -497,7 +497,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
-		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order1.getC_Order_ID()}, null);
 		
@@ -545,7 +545,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
 		//call process with payment
-		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order1.getC_Order_ID()}, null);
 		pi = new ProcessInfo ("InOutGen", AD_Process_ID);
@@ -588,7 +588,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		//create invoice
-		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL, 0);
+		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);		
 		pi = new ProcessInfo ("InvoiceGenerateManual", AD_Process_ID);
@@ -629,7 +629,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
 		//call process with payment
-		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);
 		pi = new ProcessInfo ("InOutGen", AD_Process_ID);
@@ -732,7 +732,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		//generate shipment
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 		
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
@@ -1566,7 +1566,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
 		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
-		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		instance.saveEx();
 
 		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
@@ -1596,4 +1596,48 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertFalse(pi.isError(), pi.getSummary());
 	}
 
+	/**
+	 * Test cases for Credit Check
+	 */
+	@Test
+	public void testCreditCheckOrder()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		// Joe Block
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditHold);
+		bp.saveEx();
+		
+		// test 2 - credit Check
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setM_Warehouse_ID(DictionaryIDs.AD_Org.HQ.id);
+		order.setBPartner(bp);
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_Availability);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Prepare);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		// Azalea Bush
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		order.load(getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
+		
+		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+		bp.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertTrue(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
+	}
 }

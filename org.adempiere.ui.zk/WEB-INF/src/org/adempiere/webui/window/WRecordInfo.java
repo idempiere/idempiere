@@ -92,7 +92,7 @@ import org.zkoss.zul.Toolbarbutton;
 public class WRecordInfo extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7436682051825360216L;
 
@@ -137,14 +137,15 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		AEnv.showCenterScreen(this);
 	}	//	RecordInfo
 
-
+	/** listbox for change logs */
 	private Listbox table = new Listbox();
+	/** timeline view */
 	private RecordTimeLinePanel timeLinePanel = new RecordTimeLinePanel();
 	private ConfirmPanel confirmPanel = new ConfirmPanel (false);
 
 	/**	Logger			*/
 	private static final CLogger	log = CLogger.getCLogger(WRecordInfo.class);
-	/** The Data		*/
+	/** Change Log Data		*/
 	private Vector<Vector<String>>	m_data = new Vector<Vector<String>>();
 	/** Info			*/
 	private StringBuffer	m_info = new StringBuffer();
@@ -172,12 +173,12 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		(DisplayType.Integer, Env.getLanguage(Env.getCtx()));
 
 	/**
-	 * 	Static Layout
+	 * 	Layout dialog
+	 *  @param showTable
 	 *	@throws Exception
 	 */
 	private void init (boolean showTable) throws Exception
 	{
-
 		Div div = new Div();
 		div.setStyle("width: 100%; height: 100%");
 		Pre pre = new Pre();
@@ -263,12 +264,12 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
-	}	//	jbInit
+	}	//	init
 	
 	
 	/**
-	 * 	Dynamic Init
-	 * @param gridTab 
+	 * 	Load change logs
+	 *  @param gridTab 
 	 *	@param dse data status event
 	 *	@param title title
 	 *	@return true if table initialized
@@ -447,7 +448,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	}	//	dynInit
 	
 	/**
-	 * 	Add Line
+	 * 	Add change log line to {@link #m_data}
 	 *	@param AD_Column_ID column
 	 *	@param Updated updated
 	 *	@param UpdatedBy user
@@ -566,12 +567,14 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		m_data.add(line);
 	}	//	addLine
 	
-	
+	@Override
 	public void onEvent(Event event) throws Exception {
 		onCancel();
 	}
 
-
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)

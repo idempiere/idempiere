@@ -119,6 +119,15 @@ public interface I_AD_User
 	/** Get Answer	  */
 	public String getAnswer();
 
+    /** Column name AuthenticationType */
+    public static final String COLUMNNAME_AuthenticationType = "AuthenticationType";
+
+	/** Set Authentication Type	  */
+	public void setAuthenticationType (String AuthenticationType);
+
+	/** Get Authentication Type	  */
+	public String getAuthenticationType();
+
     /** Column name Birthday */
     public static final String COLUMNNAME_Birthday = "Birthday";
 

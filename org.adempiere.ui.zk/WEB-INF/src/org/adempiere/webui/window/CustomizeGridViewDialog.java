@@ -1,3 +1,28 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - deepak															   *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui.window;
 
 import java.util.ArrayList;
@@ -26,7 +51,7 @@ import org.zkoss.zul.Columns;
 public class CustomizeGridViewDialog extends Window {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -138153049225192685L;
 
@@ -50,6 +75,14 @@ public class CustomizeGridViewDialog extends Window {
 		initComponent(windowNo, AD_Tab_ID, AD_User_ID, columnsWidth, gridFieldIds);
 	}
 	
+	/**
+	 * Create components and layout dialog
+	 * @param windowNo
+	 * @param AD_Tab_ID
+	 * @param AD_User_ID
+	 * @param columnsWidth
+	 * @param gridFieldIds
+	 */
 	private void initComponent(int windowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth, ArrayList<Integer> gridFieldIds) {
 		if (isQuickForm)
 		{
@@ -102,6 +135,9 @@ public class CustomizeGridViewDialog extends Window {
 			return customizePanel.isSaved();
 	}
 	
+	/**
+	 * @param gridPanel
+	 */
 	public void setGridPanel(GridView gridPanel){
 		customizePanel.setGridPanel(gridPanel);
 	}
@@ -112,6 +148,7 @@ public class CustomizeGridViewDialog extends Window {
 	 * @return ignore the return value, it is not working correctly
 	 * @deprecated
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static boolean onCustomize(ADTabpanel tabPanel) {
 		onCustomize(tabPanel, null);
 		return true;
@@ -157,6 +194,7 @@ public class CustomizeGridViewDialog extends Window {
 	 * @return ignore the return value, it is not working correctly
 	 * @deprecated 
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static boolean showCustomize(int WindowNo, int AD_Tab_ID, Map <Integer, String> columnsWidth, ArrayList <Integer> gridFieldIds, GridView gridPanel,
 		QuickGridView quickGridView, boolean isQuickForm)
 	{
@@ -165,11 +203,11 @@ public class CustomizeGridViewDialog extends Window {
 	}
 	
 	/**
-	 * Show User customize (modal)
+	 * Show customize grid view dialog
 	 * @param WindowNo window no
 	 * @param AD_Tab_ID
 	 * @param columnsWidth 
-	 * @param gridFieldIds list fieldId current display in gridview
+	 * @param gridFieldIds list of fieldId currently display in gridview
 	 * @param gridPanel
 	 * @param quickGridView
 	 * @param isQuickForm

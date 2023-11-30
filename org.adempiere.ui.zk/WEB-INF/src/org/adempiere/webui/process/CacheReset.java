@@ -37,8 +37,8 @@ public class CacheReset extends SvrProcess
 
 
 	/**
-	 *  Perform process.
-	 *  @return Message to be translated
+	 *  Perform cache reset.
+	 *  @return message for number of cache entries evicted
 	 *  @throws Exception
 	 */
 	protected String doIt() throws java.lang.Exception

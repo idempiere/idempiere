@@ -31,7 +31,6 @@ import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -285,18 +284,20 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
         {
             popupMenu = new WEditorPopupMenu(false, true, isShowPreference(), false, false, false, lookup);
     		addChangeLogMenu(popupMenu);
+    		popupMenu.removeNewUpdateMenu();
     		
-    		if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) { // The Assistant must be shown for MultipleSelectionList only (not for MultipleSelectionTable editors)
-        		Menuitem editor = new Menuitem();
-	        		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
-        		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
-        		if (ThemeManager.isUseFontIconForImage())
-        			editor.setIconSclass("z-icon-Wizard");
-        		else
-        			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
-        		editor.addEventListener(Events.ON_CLICK, popupMenu);
-        		popupMenu.appendChild(editor);    			
+    		if(gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList && gridField.isEditable(true)) {
+	    		Menuitem editor = new Menuitem();
+	    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+	    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+	    		if (ThemeManager.isUseFontIconForImage())
+	    			editor.setIconSclass("z-icon-Wizard");
+	    		else
+	    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+	    		editor.addEventListener(Events.ON_CLICK, popupMenu);
+	    		popupMenu.appendChild(editor);
     		}
+
         }        
     }
 
@@ -742,7 +743,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		private Listbox availableList = new Listbox();
 		private Listbox selectedList = new Listbox();
 		private Hlayout hlayout;
-		private Button bOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, false, true);
+		private Button bOk, bCancel, bRemoveAll;
 		private int refID = 0;
 		private String m_newValue = "";
 
@@ -787,47 +788,69 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			center.setAutoscroll(true);
 
 			//Listener for add and remove button
-			EventListener<Event> actionListener = new EventListener<Event>() {
+			EventListener<Event> actionListenerAddRemove = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					migrateValueAcrossLists(event);
 				}
 			};
 
 			//Listener for up and down button
-			EventListener<Event> actionListener2 = new EventListener<Event>() {
+			EventListener<Event> actionListenerUpDown = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					migrateValueWithinSelectedList(event);
 				}
 			};
 
+			//Listener for remove all button
+			EventListener<Event> actionListenerRemoveAll = new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					deleteAllValuesList(event);
+				}
+			};
+
+
 			EventListener<Event> mouseListener = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
-						migrateValueAcrossLists(event);
+						if (gridField.getDisplayType() != DisplayType.ChosenMultipleSelectionList) {
+							deleteValueList(event);
+						}else {
+							migrateValueAcrossLists(event);
+						}
 					}
 				}
 			};
 
 			EventListener<Event> crossListMouseListener = new DragListener();
 
-			bUp = createButton("MoveUp16", actionListener2);
-			bDown = createButton("MoveDown16", actionListener2);
-			bAdd = createButton("MoveRight16", actionListener);
-			bRemove = createButton("MoveLeft16", actionListener);
-			bOk.addEventListener(Events.ON_CLICK, this);
+			bUp = createButton("MoveUp16", actionListenerUpDown);
+			bDown = createButton("MoveDown16", actionListenerUpDown);
+			bAdd = createButton("MoveRight16", actionListenerAddRemove);
+			bRemove = createButton("MoveLeft16", actionListenerAddRemove);
+
+			Hlayout yesButtonLayout;
+			yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
 			
-			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
 			Hlayout noButtonLayout = createHlayoutBtn(new Button[] {bRemove, bAdd});
 
 			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
-			initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
 
-			hlayout = createHlayoutLine(new Component[] {availableList, selectedList});
+			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+				initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
+				hlayout = createHlayoutLine(new Component[] {availableList, selectedList});
+			} else {
+				hlayout = createHlayoutLine(new Component[] {selectedList});
+			}
+
 			center.appendChild(hlayout);
 
-			Panel confirmPanel = new Panel();
-			confirmPanel.setSclass("confirm-panel-right");
-			confirmPanel.appendChild(bOk);
+			ConfirmPanel confirmPanel = new ConfirmPanel(true, false, true, false, false, false);
+			bOk = confirmPanel.getOKButton();
+			bOk.addEventListener(Events.ON_CLICK, this);
+			bCancel = confirmPanel.getButton(ConfirmPanel.A_CANCEL);
+			bCancel.addEventListener(Events.ON_CLICK, this);
+			bRemoveAll = confirmPanel.getButton(ConfirmPanel.A_RESET);
+			bRemoveAll.addEventListener(Events.ON_CLICK, actionListenerRemoveAll);
 
 			South south = new South();
 			south.setSclass("dialog-footer");
@@ -837,35 +860,42 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 		private void load() {
 			selectedModel.removeAllElements();
-			availableModel.removeAllElements();
+			if (gridField.getDisplayType() != DisplayType.ChosenMultipleSelectionList)
+				availableModel.removeAllElements();
 
 			// selected
 			Object values = getValue();
 			ArrayList<String> listSelected = new ArrayList<String>();
 			if (values != null && !Util.isEmpty((String) values)) {
 				for (String value : ((String) values).split(",")) {
-					selectedModel.addElement(new ValueNamePair (value, MRefList.getListName(Env.getCtx(), refID, value)));
+					if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+						selectedModel.addElement(new ValueNamePair (value, MRefList.getListName(Env.getCtx(), refID, value)));
+					} else {
+						String name = lookup.getDisplay(value);
+						selectedModel.addElement(new ValueNamePair(value, name));
+					}
 					listSelected.add(value);
 				}	
 			}
-
-			// available (data - available)
-			String validationCode = gridField.getVO().ValidationCode;
-			if (!Util.isEmpty(validationCode)) {
-				validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), gridField.getVO().TabNo, validationCode, false);
-				if (Util.isEmpty(validationCode, true)) {
-					//not validated, ensure list is empty
-					validationCode = "1=2";
+			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+				// available (data - available)
+				String validationCode = gridField.getVO().ValidationCode;
+				if (!Util.isEmpty(validationCode)) {
+					validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), gridField.getVO().TabNo, validationCode, false);
+					if (Util.isEmpty(validationCode, true)) {
+						//not validated, ensure list is empty
+						validationCode = "1=2";
+					}
 				}
-			}
 
-			for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
+				for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
 
-				if (listSelected.contains(vnp.getValue()))
-					continue;
+					if (listSelected.contains(vnp.getValue()))
+						continue;
 
-				availableModel.addElement(new ValueNamePair (vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
-				listSelected.add(vnp.getValue());
+					availableModel.addElement(new ValueNamePair (vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
+					listSelected.add(vnp.getValue());
+				}
 			}
 		}
 	
@@ -885,6 +915,45 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 					value = value.deleteCharAt(value.length() - 1);
 				m_newValue = value.toString();
 				this.detach();
+			} else if (event.getTarget() == bCancel) {
+				this.detach();
+			}
+
+		}
+
+		/**
+		 * Delete All Values from List
+		 * @param event
+		 */
+		private void deleteAllValuesList(Event event) {
+			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+				selectedModel.removeAllElements();
+				availableModel.removeAllElements();
+				String validationCode = gridField.getVO().ValidationCode;
+				if (!Util.isEmpty(validationCode)) {
+					validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), gridField.getVO().TabNo, validationCode, false);
+					if (Util.isEmpty(validationCode, true)) {
+						//not validated, ensure list is empty
+						validationCode = "1=2";
+					}
+				}
+				for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
+					availableModel.addElement(new ValueNamePair (vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
+				}
+			} else {
+				selectedModel.removeAllElements();
+			}
+		}
+
+		/**
+		 * Remove selected item
+		 * @param event
+		 */
+		private void deleteValueList (Event event) {
+			Object source = event.getTarget();
+			if (source instanceof ListItem listItem) {
+				int index = listItem.getIndex();
+				selectedModel.removeElement(selectedModel.getElementAt(index));
 			}
 		}
 

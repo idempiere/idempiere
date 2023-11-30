@@ -18,7 +18,7 @@
 package org.adempiere.webui.event;
 
 /**
- *
+ * Value change event for a named property.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
  * @version $Revision: 0.10 $
@@ -32,7 +32,7 @@ public class ValueChangeEvent
     protected Object source;
 
     /**
-     * name of the property that changed. May be null, if not known.
+     * name of the property that changed
      */
     private String   propertyName;
 
@@ -47,9 +47,15 @@ public class ValueChangeEvent
     private Object   oldValue;
     
 	// IDEMPIERE-1287:indicate case user just start edit field, want update status of toolbar button (like save button) 
-	// but don't want change anything (ever value of edit field)
+	// but don't want change anything (even value of edit field)
     private boolean   isInitEdit = false;
 
+    /**
+     * @param source
+     * @param propertyName
+     * @param oldValue
+     * @param newValue
+     */
     public ValueChangeEvent(Object source, String propertyName,
             Object oldValue, Object newValue)
     {
@@ -59,16 +65,25 @@ public class ValueChangeEvent
         this.oldValue = oldValue;
     }
 
+    /**
+     * @return new value
+     */
     public Object getNewValue()
     {
         return newValue;
     }
 
+    /**
+     * @return old/previous value
+     */
     public Object getOldValue()
     {
         return oldValue;
     }
 
+    /**
+     * @return property name
+     */
     public String getPropertyName()
     {
         return propertyName;

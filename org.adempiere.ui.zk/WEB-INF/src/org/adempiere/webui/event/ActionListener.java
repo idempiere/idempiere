@@ -18,13 +18,15 @@
 package org.adempiere.webui.event;
 
 /**
- * ActionListener handles events associated with no data change.
+ * Listener interface for {@link ActionEvent}
  * 
  * @author  Niraj Sohun
  * @date    Jul 25, 2007
  */
-
 public interface ActionListener 
 {
+	/**
+	 * @param event
+	 */
 	void actionPerformed(ActionEvent event);
 }

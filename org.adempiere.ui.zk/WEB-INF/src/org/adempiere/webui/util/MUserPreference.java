@@ -21,11 +21,18 @@ import org.compiere.model.MPreference;
  *
  * @author hengsin
  *
+ * @deprecated - is not required anymore, for login preferences the client is being set now as the user client
  */
+@Deprecated
 public class MUserPreference extends MPreference {
 
 	private static final long serialVersionUID = -3424015890197944847L;
 
+	/**
+	 * @param ctx
+	 * @param AD_Preference_ID
+	 * @param trxName
+	 */
 	public MUserPreference(Properties ctx, int AD_Preference_ID, String trxName) {
 		super(ctx, AD_Preference_ID, trxName);
 		setClientOrg(0, 0);

@@ -54,10 +54,10 @@ public abstract class AbstractListitemRenderer<T> implements ListitemRenderer<T>
     }
 	
 	/**
-	 * Renders the data to the specified list item.
+	 * Renders data to the specified list item.
 	 * @param item the listitem to render the result.
-	 * @param data data that is returned from {@link ListModel#getElementAt}
-	 * @param index the row/list index of the data that is currently being rendered
+	 * @param data data returned from {@link ListModel#getElementAt}
+	 * @param index the row/list index of data that is currently being rendered
 	 */
 	public abstract void renderListitem(Listitem item, T data, int index);
 	

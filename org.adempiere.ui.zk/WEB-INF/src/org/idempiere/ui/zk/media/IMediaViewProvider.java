@@ -25,16 +25,15 @@
 package org.idempiere.ui.zk.media;
 
 /**
+ * Provider interface for {@link IMediaView}
  * @author hengsin
- *
  */
 public interface IMediaViewProvider {
 	
 	/**
-	 * 
 	 * @param contentType mime type
 	 * @param extension file extension
-	 * @param mobile
+	 * @param mobile true for mobile client, false otherwise
 	 * @return {@link IMediaView} instance or null
 	 */
 	public IMediaView getMediaView(String contentType, String extension, boolean mobile);

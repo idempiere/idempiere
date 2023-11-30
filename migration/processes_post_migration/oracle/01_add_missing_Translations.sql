@@ -1,8 +1,10 @@
 DECLARE
+   suffix     VARCHAR2 (3);
    ins        VARCHAR2 (2000);
    sel        VARCHAR2 (2000);
    inssel     VARCHAR2 (4001);
    table_id   NUMBER;
+   keycol     NUMBER;
 BEGIN
    ins := RPAD (' ', 2000, ' ');
    sel := RPAD (' ', 2000, ' ');
@@ -13,19 +15,31 @@ BEGIN
                     SUBSTR (tablename, 1, LENGTH (tablename) - 4) tablename
                FROM AD_TABLE
               WHERE tablename LIKE '%_Trl' AND isactive = 'Y'
-                    AND isview = 'N')
+                    AND isview = 'N'
+              ORDER BY tablename)
    LOOP
+      BEGIN
+          SELECT 1
+              INTO keycol
+              FROM AD_Column cl
+              JOIN AD_Table tb ON (cl.AD_Table_ID=tb.AD_Table_ID)
+              WHERE tb.TableName=t.tablename AND cl.IsKey='Y' AND cl.ColumnName LIKE '%_ID';
+          suffix := '_id';
+      EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+          suffix := '_uu';
+      END;
       ins :=
             'INSERT INTO '
          || t.tablename
          || '_TRL ('
          || 'ad_language,ad_client_id,ad_org_id,created,createdby,updated,updatedby,isactive,istranslated,'
          || t.tablename
-         || '_id';
+         || suffix;
       sel :=
             'SELECT l.ad_language,t.ad_client_id,t.ad_org_id,t.created,t.createdby,t.updated,t.updatedby,t.isactive,''N'' as istranslated,'
          || t.tablename
-         || '_id';
+         || suffix;
 
       SELECT ad_table_id
         INTO table_id
@@ -53,9 +67,9 @@ BEGIN
          || t.tablename
          || '_TRL b WHERE b.'
          || t.tablename
-         || '_id=t.'
+         || suffix || '=t.'
          || t.tablename
-         || '_id AND b.AD_LANGUAGE=l.AD_LANGUAGE)';
+         || suffix || ' AND b.AD_LANGUAGE=l.AD_LANGUAGE)';
       inssel := TRIM (ins) || ' ' || TRIM (sel);
 
       DBMS_OUTPUT.PUT_LINE (inssel);

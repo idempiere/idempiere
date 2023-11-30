@@ -570,7 +570,6 @@ public class GridField
 		//  Always editable if Active
 		if (checkContext && "Y".equals(Env.getContext(ctx, m_vo.WindowNo, m_vo.TabNo, "IsActive"))
 				&& (   m_vo.ColumnName.equals("Processing")
-					|| m_vo.ColumnName.equals("PaymentRule")
 					|| m_vo.ColumnName.equals("DocAction") 
 					|| m_vo.ColumnName.equals("GenerateTo")))
 			return true;
@@ -1152,7 +1151,7 @@ public class GridField
 			}
 			if (allValid)
 				return true;
-		} else if (getDisplayType() == DisplayType.ChosenMultipleSelectionTable || getDisplayType() == DisplayType.ChosenMultipleSelectionSearch) {
+		} else if (DisplayType.isMultiID(getDisplayType())) {
 			boolean allValid = true;
 			for (String vals : ((String)m_value).split(",")) {
 				Integer vali = Integer.valueOf(vals);

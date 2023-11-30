@@ -46,9 +46,12 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 
+/**
+ * Label for a record (AD_LabelAssignment)
+ */
 public class LabelsPanel extends Div implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8776043844483214400L;
 
@@ -93,7 +96,7 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 
 	/**
 	 * Get current table id
-	 * @return id
+	 * @return AD_Table_ID
 	 */
 	public int getAD_Table_ID() {
 		return AD_Table_ID;
@@ -101,7 +104,7 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 
 	/**
 	 * Get current record id
-	 * @return
+	 * @return Record_ID
 	 */
 	public int getRecord_ID() {
 		return Record_ID;
@@ -109,7 +112,7 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 
 	/**
 	 * Get current record uuid
-	 * @return
+	 * @return Record_UU
 	 */
 	public String getRecord_UU() {
 		return Record_UU;

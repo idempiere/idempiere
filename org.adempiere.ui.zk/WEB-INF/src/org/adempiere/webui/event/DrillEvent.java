@@ -18,23 +18,30 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 
 /**
- * 
+ * Event for drill down and drill across
  * @author hengsin
- *
  */
 public class DrillEvent extends Event {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4877800961258241047L;
 	public final static String ON_DRILL_DOWN = "onDrillDown";
 	public final static String ON_DRILL_ACROSS = "onDrillAcross";
 	
+	/**
+	 * @param name
+	 * @param target
+	 * @param data
+	 */
 	public DrillEvent(String name, Component target, Object data) {
 		super(name, target, data);
 	}
 
+	/**
+	 * Data for drill event 
+	 */
 	public static class DrillData {
 
 		private MQuery query;
@@ -50,6 +57,13 @@ public class DrillEvent extends Event {
 		 */
 		private Object data;
 
+		/**
+		 * @param query
+		 * @param columnName
+		 * @param value
+		 * @param displayValue
+		 * @param data
+		 */
 		public DrillData(MQuery query, String columnName, Object value, String displayValue, Object data) {
 			this.query = query;
 			this.columnName = columnName;
@@ -58,27 +72,40 @@ public class DrillEvent extends Event {
 			this.displayValue = displayValue;
 		}
 
+		/**
+		 * @return MQuery
+		 */
 		public MQuery getQuery() {
 			return query;
 		}
 
+		/**
+		 * @return column name
+		 */
 		public String getColumnName() {
 			return columnName;
 		}
 
+		/**
+		 * @return value
+		 */
 		public Object getValue() {
 			return value;
 		}
 
+		/**
+		 * @return [columnName, displayValue, value, processID - source]
+		 */
 		public Object getData() {
 			return data;
 		}
 
+		/**
+		 * @return display text
+		 */
 		public String getDisplayValue() {
 			return displayValue;
 		}
-
-
 	}
 
 }

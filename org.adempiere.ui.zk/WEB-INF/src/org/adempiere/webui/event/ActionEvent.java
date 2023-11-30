@@ -18,7 +18,7 @@
 package org.adempiere.webui.event;
 
 /**
- * ActionEvent represents events associated with no data change.
+ * Event for UI action
  * 
  * @author  Niraj Sohun
  * @date    Jul 25, 2007
@@ -26,7 +26,7 @@ package org.adempiere.webui.event;
 
 public class ActionEvent 
 {
-	 /**
+	/**
      * The object on which the Event initially occurred.
      */
 	protected Object source;
@@ -55,7 +55,7 @@ public class ActionEvent
 	}
 
     /**
-     * returns name of property that changed
+     * @return name of property that changed
      */
 	public String getPropertyName()
     {
@@ -63,7 +63,7 @@ public class ActionEvent
     }
 
 	/**
-	 * returns source of event
+	 * @return source of event
 	 */
     public Object getSource()
     {
@@ -71,7 +71,7 @@ public class ActionEvent
     }
 
     /**
-     * returns name of event
+     * @return name of event
      */
 	public String getEventName() 
 	{

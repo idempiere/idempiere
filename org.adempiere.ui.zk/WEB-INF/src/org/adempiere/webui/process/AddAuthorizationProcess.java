@@ -36,7 +36,7 @@ import org.compiere.model.SystemIDs;
 import org.zkoss.zk.ui.Desktop;
 
 /**
- *	IDEMPIERE-3101
+ *	IDEMPIERE-3101, process to add OAuth2 authorization
  * 	@author Carlos Ruiz - globalqss
  */
 @org.adempiere.base.annotation.Process

@@ -47,20 +47,25 @@ import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
 
 /**
- * Scan, discover and regiser classes with {@link Form} annotation.
+ * Scan, discover and register classes with {@link Form} annotation.
  * @author hengsin
  *
  */
 public abstract class AnnotationBasedFormFactory extends AnnotationBasedFactory implements IFormFactory {
 
+	/** AD_Form.ClassName:Real Class Name */
 	private final Map<String, String> classCache = new HashMap<>();
 	
+	/** Real Class Name: Constructor */
 	private final Map<String, Constructor<?>[]> constructorCache = new ConcurrentHashMap<>();
 
 	private BundleContext bundleContext = null;
 	
 	private static final CLogger s_log = CLogger.getCLogger(AnnotationBasedFormFactory.class);
 	
+	/**
+	 * Default constructor
+	 */
 	public AnnotationBasedFormFactory() {
 	}
 
@@ -126,8 +131,16 @@ public abstract class AnnotationBasedFormFactory extends AnnotationBasedFactory 
 		}
 	}
 	
+	/**
+	 * @return packages to scan
+	 */
 	protected abstract String[] getPackages();
 	
+	/**
+	 * Perform scan
+	 * @param context
+	 * @throws ClassNotFoundException
+	 */
 	@Activate
 	public void activate(ComponentContext context) throws ClassNotFoundException {
 		long start = System.currentTimeMillis();

@@ -103,7 +103,7 @@ import org.zkoss.zul.Image;
 public class LoginPanel extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7859522563172088496L;
 
@@ -133,6 +133,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
     
+	/**
+	 * @param ctx
+	 * @param loginWindow
+	 */
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
         this.ctx = ctx;
@@ -149,6 +153,9 @@ public class LoginPanel extends Window implements EventListener<Event>
         this.addEventListener(ON_LOAD_TOKEN, this);
     }
 
+    /**
+     * Layout panel
+     */
     private void init()
     {
     	createUI();
@@ -238,6 +245,9 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword.removeEventListener(Events.ON_FOCUS, txtPassword);
     }
 
+    /**
+     * Layout panel
+     */
 	protected void createUI() {
 		Form form = new Form();
 
@@ -364,6 +374,9 @@ public class LoginPanel extends Window implements EventListener<Event>
         this.appendChild(form);
 	}
 
+	/**
+	 * Create components
+	 */
     private void initComponents()
     {
         lblUserId = new Label();
@@ -383,14 +396,12 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
         ZKUpdateUtil.setWidth(txtUserId, "220px");
-        //txtUserId.addEventListener(Events.ON_CHANGE, this); // Elaine 2009/02/06
         txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
         txtPassword.setCols(25);
-//        txtPassword.setMaxlength(40);
         ZKUpdateUtil.setWidth(txtPassword, "220px");
         if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
         	txtPassword.setClientAttribute("autocomplete", "current-password");
@@ -425,8 +436,9 @@ public class LoginPanel extends Window implements EventListener<Event>
         if (lstLanguage.getItems().size() > 0){
         	validLstLanguage = (String)lstLanguage.getItems().get(0).getLabel();
         }                 
-   }
+    }
 
+    @Override
     public void onEvent(Event event)
     {
         Component eventComp = event.getTarget();
@@ -455,16 +467,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         {
         	btnResetPasswordClicked();
         }
-        /* code below commented per security issue IDEMPIERE-1797 reported
-        // Elaine 2009/02/06 - initial language
-        else if (event.getName().equals(Events.ON_CHANGE))
-        {
-        	if(eventComp.getId().equals(txtUserId.getId()))
-        	{
-        		onUserIdChange(-1);
-        	}
-        }        
-        */
         else if (event.getName().equals(ON_LOAD_TOKEN)) 
         {
         	BrowserToken.load(txtUserId);
@@ -498,6 +500,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * User id from onUserToken event.
+	 * @param AD_User_ID
+	 */
 	private void onUserIdChange(int AD_User_ID) {
 		String userName = txtUserId.getValue();
 		if (userName != null && userName.length() > 0 && AD_User_ID < 0)
@@ -522,16 +528,20 @@ public class LoginPanel extends Window implements EventListener<Event>
 			for(int i = 0; i < lstLanguage.getItemCount(); i++)
 			{
 				Comboitem li = lstLanguage.getItemAtIndex(i);
-				if(li.getLabel().equals(initDefault))
+				if (li.getLabel().equals(initDefault) || li.getValue().equals(initDefault))
 				{
 					lstLanguage.setSelectedIndex(i);
-					languageChanged(li.getLabel()); // Elaine 2009/04/17 language changed
+					languageChanged(li.getLabel());
 					break;
 				}
 			}
 		}
 	}
 
+	/**
+	 * Apply language change to UI elements
+	 * @param langName
+	 */
     private void languageChanged(String langName)
     {
     	Language language = findLanguage(langName);
@@ -550,6 +560,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
     }
 
+    /**
+     * Find language by name
+     * @param langName
+     * @return Language
+     */
 	private Language findLanguage(String langName) {
 		Language tmp = Language.getLanguage(langName);
     	Language language = new Language(tmp.getName(), tmp.getAD_Language(), tmp.getLocale(), tmp.isDecimalPoint(),
@@ -559,20 +574,20 @@ public class LoginPanel extends Window implements EventListener<Event>
     	Env.setContext(ctx, AEnv.LOCALE, language.getLocale().toString());
 
     	//cph::erp added this in order to get the processing dialog in the correct language
-    	 Locale locale = language.getLocale();
-    	 try {
+    	Locale locale = language.getLocale();
+    	try {
 				Clients.reloadMessages(locale);
-			} catch (IOException e) {
-				logger.log(Level.WARNING, e.getLocalizedMessage(), e);
-			}
-         Locales.setThreadLocal(locale);
-    	// cph::erp end
+		} catch (IOException e) {
+			logger.log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
+        Locales.setThreadLocal(locale);
+    	
 		return language;
 	}
+	
     /**
-     *  validates user name and password when logging in
-     *
-    **/
+     * Validates user name and password when logging in
+     */
     public void validateLogin()
     {
         Login login = new Login(ctx);
@@ -657,12 +672,11 @@ public class LoginPanel extends Window implements EventListener<Event>
             	Clients.response("browserTimeoutScript", new AuScript(null, timeoutText));
         }
 
-		// This temporary validation code is added to check the reported bug
+		// This validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
 		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail        
         currSess.setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
-		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?
 
         /* Check DB version */
         String version = DB.getSQLValueString(null, "SELECT Version FROM AD_System");
@@ -676,6 +690,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 
     }
 
+    /**
+     * @return client side timeout script
+     */
 	private String getUpdateTimeoutTextScript() {
 		String msg = Msg.getMsg(Env.getCtx(), "SessionTimeoutText").trim();  //IDEMPIERE-847
 		String continueNsg = Msg.getMsg(Env.getCtx(), "continue").trim();   //IDEMPIERE-847
@@ -688,6 +705,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 		return s;
 	}
 	
+	/**
+	 * Handle reset password event
+	 */
 	private void btnResetPasswordClicked()
 	{
 		String userId = Login.getAppUser(txtUserId.getValue());
@@ -725,7 +745,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 		wndLogin.resetPassword(userId, users.size() == 0);
 	}
 
-	/** get default languages from the browser */
+	/**
+	 * Get default languages from the browser
+	 * @param header 
+	 */
 	private List<String> browserLanguages(String header) {
 		List<String> arrstr = new ArrayList<String>();
 		if (header == null)

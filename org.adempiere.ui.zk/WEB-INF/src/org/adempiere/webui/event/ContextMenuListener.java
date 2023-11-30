@@ -18,12 +18,15 @@
 package org.adempiere.webui.event;
 
 /**
- *
+ * Listener interface for {@link ContextMenuEvent}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
  * @version $Revision: 0.10 $
  */
 public interface ContextMenuListener
 {
+	/**
+	 * @param evt
+	 */
     public void onMenu(ContextMenuEvent evt);
 }

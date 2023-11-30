@@ -32,6 +32,9 @@ import org.compiere.model.MModelGeneratorTemplate;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
+/**
+ * Parameter listener for generate model process
+ */
 public class GenerateModelParameterListener implements IProcessParameterListener {
 
 	private static final String[] parameters = {"Folder", "PackageName", "TableLike", "TableEntityType", "ColumnEntityType"};

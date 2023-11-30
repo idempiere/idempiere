@@ -29,7 +29,7 @@ import org.zkoss.zul.Separator;
  * @date    Mar 3, 2007
  * @version $Revision: 0.10 $
  */
-
+@Deprecated(forRemoval = true, since = "11")
 public class FooterPanel extends Window
 {
     /**

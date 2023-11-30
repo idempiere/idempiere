@@ -30,7 +30,7 @@ import org.idempiere.ui.zk.annotation.Form;
 import org.osgi.framework.BundleContext;
 
 /**
- *
+ * {@link IMappedByNameFactory} interface for {@link ADForm}.
  * @author matheus.marcelino
  *
  */

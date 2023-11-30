@@ -83,7 +83,7 @@ public class ServerProcessCtl implements Runnable {
 		{
 			try 
 			{ 
-				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID()); 
+				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU()); 
 			} 
 			catch (Exception e) 
 			{ 

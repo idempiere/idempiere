@@ -34,6 +34,7 @@ import org.compiere.util.DisplayType;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * Field editor factory for {@link DisplayType#SchedulerState}
  * @author hengsin
  *
  */

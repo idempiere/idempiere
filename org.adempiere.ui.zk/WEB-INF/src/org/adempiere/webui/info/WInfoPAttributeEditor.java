@@ -147,7 +147,5 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 
 	@Override
 	public void dynamicDisplay() {
-		// int attributeSetId = Env.getContextAsInt(ctx, windowNo, Env.TAB_INFO, "M_AttributeSet_ID");
-		// setReadWrite(attributeSetId > 0);
 	}
 }

@@ -105,6 +105,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	
 	/** ADWindow instance that own this editor */
 	protected ADWindow adwindow;
+	private EventListener<InputEvent> autoCompleteListener;
+
+	protected boolean multipleSelection = false;
 
 	/**
 	 * 
@@ -132,6 +135,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		init();
 		getComponent().setAttribute(ATTRIBUTE_IS_INFO_PANEL_OPEN, false);
+		multipleSelection = true;
 	}
 
 
@@ -175,6 +179,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
         columnName = lookup.getColumnName();
 		super.setColumnName(columnName);
 		init();
+		multipleSelection = false;
 	}
 
 	/**
@@ -199,6 +204,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
         this.columnName = columnName;
 		super.setColumnName(columnName);
 		init();
+		multipleSelection = false;
 	}
 
 
@@ -252,18 +258,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			getComponent().getCombobox().setPlaceholder(gridField.getPlaceholder());
 		
 		if (gridField != null && gridField.isAutocomplete()) {
-			setTableAndKeyColumn();
-			listModel = new InfoListSubModel(lookup, gridField, m_tableName, m_keyColumnName);
-			int maxRows = MSysConfig.getIntValue(MSysConfig.ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS, DEFAULT_MAX_AUTO_COMPLETE_ROWS, Env.getAD_Client_ID(Env.getCtx()));
-			getComponent().getCombobox().setModel(listModel.getSubModel(null, maxRows));
-			
-			getComponent().getCombobox().addEventListener(Events.ON_CHANGING, (EventListener<InputEvent>)(e) -> {
-				if (!e.isChangingBySelectBack()) {
-					listModel.setWhereClause(getWhereClause());
-					String s = e.getValue();					
-					getComponent().getCombobox().setModel(listModel.getSubModel(s, maxRows));
-				}
-			});
+			enableAutoComplete();
 		} else {
 			getComponent().getCombobox().setAutodrop(false);
 		}
@@ -271,6 +266,44 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		return;
 	}
 
+	/**
+	 * Turn on auto complete for editor
+	 */
+	public void enableAutoComplete() {
+		if (autoCompleteListener != null)
+			return;
+		
+		if (m_tableName == null)
+			setTableAndKeyColumn();
+		listModel = new InfoListSubModel(lookup, gridField, m_tableName, m_keyColumnName);
+		int maxRows = MSysConfig.getIntValue(MSysConfig.ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS, DEFAULT_MAX_AUTO_COMPLETE_ROWS, Env.getAD_Client_ID(Env.getCtx()));
+		getComponent().getCombobox().setModel(listModel.getSubModel(null, maxRows));
+		
+		autoCompleteListener = e -> {
+				if (!e.isChangingBySelectBack()) {
+					listModel.setWhereClause(getWhereClause());
+					String s = e.getValue();					
+					getComponent().getCombobox().setModel(listModel.getSubModel(s, maxRows));
+				}
+		};
+		
+		getComponent().getCombobox().addEventListener(Events.ON_CHANGING, autoCompleteListener);
+		getComponent().getCombobox().setAutodrop(true);
+	}
+
+	/**
+	 * Turn off auto complete for editor
+	 */
+	public void disableAutoComplete() {
+		if (autoCompleteListener != null) {
+			getComponent().getCombobox().removeEventListener(Events.ON_CHANGING, autoCompleteListener);
+			getComponent().getCombobox().setAutodrop(false);
+			getComponent().getCombobox().setModel(null);
+			listModel = null;
+			autoCompleteListener = null;
+		}
+	}
+	
 	@Override
 	public void setValue(Object value)
 	{
@@ -484,7 +517,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			setTableAndKeyColumn();
 		
 		// process input text with infopanel/infowindow
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getWhereClause());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
 			if (ip.getFirstRowKey() instanceof Integer)
@@ -714,7 +747,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (m_tableName == null)	//	sets table name & key column
 			setTableAndKeyColumn();
 
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, multipleSelection, whereClause);
 		if (ip != null)
 			showInfoPanel(ip);
 	}
@@ -947,6 +980,20 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			}
 		}
 		return s;
+	}
+	
+	/**
+	 * @return true if info window allow multiple selection
+	 */
+	public boolean isMultipleSelection() {
+		return multipleSelection;
+	}
+	
+	/**
+	 * @param multipleSelection
+	 */
+	public void setMultipleSelection(boolean multipleSelection) {
+		this.multipleSelection = multipleSelection;
 	}
 	
 	/**

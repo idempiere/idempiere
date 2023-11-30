@@ -31,7 +31,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20230905L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
@@ -116,6 +116,34 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
+
+	/** Set Special Form.
+		@param AD_Form_ID Special Form
+	*/
+	public void setAD_Form_ID (int AD_Form_ID)
+	{
+		if (AD_Form_ID < 1)
+			set_Value (COLUMNNAME_AD_Form_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
+	}
+
+	/** Get Special Form.
+		@return Special Form
+	  */
+	public int getAD_Form_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
@@ -291,10 +319,14 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 
 	/** PreferenceFor AD_Reference_ID=200084 */
 	public static final int PREFERENCEFOR_AD_Reference_ID=200084;
+	/** Info Window = I */
+	public static final String PREFERENCEFOR_InfoWindow = "I";
 	/** Process = P */
 	public static final String PREFERENCEFOR_Process = "P";
 	/** Window = W */
 	public static final String PREFERENCEFOR_Window = "W";
+	/** Form = X */
+	public static final String PREFERENCEFOR_Form = "X";
 	/** Set Preference For.
 		@param PreferenceFor Type of preference, it can window, info window or parameter process
 	*/
