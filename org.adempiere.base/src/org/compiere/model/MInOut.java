@@ -2869,6 +2869,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		}
 		else if (il != null)
 		{
+			if (il.getC_OrderLine_ID() > 0)
+				iol.setC_OrderLine_ID(il.getC_OrderLine_ID());
 			if (il.getQtyEntered().compareTo(il.getQtyInvoiced()) != 0)
 			{
 				iol.setMovementQty(Qty
