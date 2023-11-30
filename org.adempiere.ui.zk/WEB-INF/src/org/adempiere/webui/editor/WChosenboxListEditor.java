@@ -286,15 +286,17 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     		addChangeLogMenu(popupMenu);
     		popupMenu.removeNewUpdateMenu();
     		
-    		Menuitem editor = new Menuitem();
-    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
-    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
-    		if (ThemeManager.isUseFontIconForImage())
-    			editor.setIconSclass("z-icon-Wizard");
-    		else
-    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
-    		editor.addEventListener(Events.ON_CLICK, popupMenu);
-    		popupMenu.appendChild(editor);
+    		if(gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList && gridField.isEditable(true)) {
+	    		Menuitem editor = new Menuitem();
+	    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+	    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+	    		if (ThemeManager.isUseFontIconForImage())
+	    			editor.setIconSclass("z-icon-Wizard");
+	    		else
+	    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+	    		editor.addEventListener(Events.ON_CLICK, popupMenu);
+	    		popupMenu.appendChild(editor);
+    		}
 
         }        
     }

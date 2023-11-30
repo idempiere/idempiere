@@ -21,7 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -453,48 +452,24 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	 */
 	private int addTable (String tableName)
 	{
-		String baseTable = tableName.substring(0, tableName.length()-4);
-		String sql = "SELECT c.ColumnName "
-			+ "FROM AD_Column c"
-			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-			+ "WHERE t.TableName=?"
-			+ "  AND c.IsTranslated='Y' AND c.IsActive='Y' "
-			+ "ORDER BY c.ColumnName";
-		ArrayList<String> columns = new ArrayList<String>(5);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		String baseTableName = tableName.substring(0, tableName.length()-4);
+		MTable baseTable = MTable.get(getCtx(), baseTableName);
+		StringBuilder cols = new StringBuilder();
+		for (MColumn column : baseTable.getColumns(false))
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, baseTable);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				columns.add(rs.getString(1));
-			}
-		}
-		catch (SQLException e)
-		{
-			throw new DBException(e, sql);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+			if (column.isTranslated())
+				cols.append(",").append(column.getColumnName());
 		}
 		//	Columns
-		if (columns.size() == 0)
+		if (cols.length() == 0)
 		{
-			log.log(Level.SEVERE, "No Columns found for " + baseTable);
+			log.log(Level.SEVERE, "No Columns found for " + baseTableName);
 			return 0;
 		}
-		StringBuilder cols = new StringBuilder();
-		for (int i = 0; i < columns.size(); i++)
-			cols.append(",").append(columns.get(i));
 			
 		//	Insert Statement
 		int AD_User_ID = Env.getAD_User_ID(getCtx());
-		StringBuilder keyColumn = new StringBuilder(baseTable).append("_ID");
+		String keyColumn = baseTable.getKeyColumns()[0];
 		StringBuilder insert = new StringBuilder("INSERT INTO ").append(tableName)
 							.append("(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, ")
 							.append("Createdby,UpdatedBy,Created,Updated, ")
@@ -502,7 +477,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 							.append("SELECT '").append(getAD_Language()).append("','N', AD_Client_ID,AD_Org_ID, ")
 							.append(AD_User_ID).append(",").append(AD_User_ID).append(", getDate(), getDate(), ")
 							.append(keyColumn).append(cols)
-							.append(" FROM ").append(baseTable)
+							.append(" FROM ").append(baseTableName)
 							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)
 							.append(" FROM ").append(tableName)
 							.append(" WHERE AD_Language='").append(getAD_Language()).append("')");
