@@ -2220,8 +2220,11 @@ public abstract class PO
 	{
 		//
 		// Check if columnName, AD_Language is valid or table support translation (has 1 PK) => error
-		if (columnName == null || AD_Language == null
-			|| m_IDs.length > 1 || m_IDs[0].equals(I_ZERO)
+		if (   columnName == null 
+			|| AD_Language == null
+			|| m_IDs.length > 1
+			|| (m_IDs[0] instanceof Integer && m_IDs[0].equals(I_ZERO))
+			|| (m_IDs[0] instanceof String && Util.isEmpty((String)m_IDs[0]))
 			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String))
 		{
 			throw new IllegalArgumentException("ColumnName=" + columnName
