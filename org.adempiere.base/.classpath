@@ -11,6 +11,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cron4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/avalon-framework-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/htmlcompressor.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/yuicompressor.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
