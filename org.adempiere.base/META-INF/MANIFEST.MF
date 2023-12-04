@@ -8,6 +8,7 @@ Bundle-ClassPath: .,
  lib/commons-validator.jar,
  lib/cron4j.jar,
  lib/avalon-framework-api.jar,
+ lib/json.jar,
  lib/htmlcompressor.jar,
  lib/yuicompressor.jar
 Export-Package: bsh,

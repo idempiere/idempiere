@@ -1661,7 +1661,7 @@ public class DashboardController implements EventListener<Event> {
 			return null;
 		file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
-				component.getUuid(), String.valueOf(AD_Process_ID)));
+				component.getUuid(), String.valueOf(AD_Process_ID)),"");
 		return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), re.getPrintData() != null ? re.getPrintData().getRowCount(false) : 0);
 	}
 

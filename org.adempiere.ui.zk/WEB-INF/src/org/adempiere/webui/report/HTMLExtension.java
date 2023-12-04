@@ -18,6 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
@@ -43,8 +45,19 @@ public class HTMLExtension implements IHTMLExtension {
 	private String componentId;
 	private String scriptURL;
 	private String styleURL;
+	private String theme = "";
 	private String contextPath;
 	private String processID;
+	private String contextFullPath;
+	private String Path;
+	
+	private List<String> extraStyleUrls;
+	private List<String> fullPathExtraStyleUrls;
+
+
+
+	private List<String> extraScriptUrls;
+	private List<String> fullPathExtraScriptUrls;
 
 	/**
 	 * @param contextPath
@@ -63,7 +76,7 @@ public class HTMLExtension implements IHTMLExtension {
 	 */
 	public HTMLExtension(String contextPath, String classPrefix, String componentId, String processID) {
 
-		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
+		theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 
 		if (! theme.startsWith("/") && !theme.startsWith("~./"))
 			theme = "/" + theme;
@@ -79,6 +92,30 @@ public class HTMLExtension implements IHTMLExtension {
 		} else {
 			this.styleURL = contextPath + theme + "css/report.css";
 		}
+		this.Path=Executions.encodeURL( theme);
+		extraStyleUrls = new ArrayList<String>();
+		extraStyleUrls.add( Executions.encodeURL( theme + "js/datatables/datatables.css"));
+		
+		fullPathExtraStyleUrls = new ArrayList<String>();
+		fullPathExtraStyleUrls.add( Executions.encodeURL(  theme + "js/datatables/datatables.css"));
+		extraScriptUrls = new ArrayList<String>();
+		extraScriptUrls.add(Executions.encodeURL( theme +"js/jquery.min.js"));
+		extraScriptUrls.add(Executions.encodeURL( theme +"js/jquery.floatThead.min.js"));
+		extraScriptUrls.add(Executions.encodeURL( theme + "js/datatables/datatables.js"));
+		extraScriptUrls.add( Executions.encodeURL( theme + "js/datatables/jquery.dataTables.min.js"));
+
+		extraScriptUrls.add( Executions.encodeURL( theme + "js/datatables/dataTables.rowGroup.min.js"));
+		
+
+		
+//		extraScriptUrls.add(contextPath + theme + "js/jquery.min.js");
+//		extraScriptUrls.add(contextPath + theme + "js/jquery.floatThead.min.js");
+		
+		fullPathExtraScriptUrls = new ArrayList<>();
+//		fullPathExtraScriptUrls.add( Executions.encodeURL( theme +"js/jquery.min.js"));
+//		fullPathExtraScriptUrls.add( Executions.encodeURL( theme + "js/jquery.floatThead.min.js"));
+//		fullPathExtraScriptUrls.add( Executions.encodeURL( theme + "DataTables/jquery.dataTables.min.js"));
+//		fullPathExtraScriptUrls.add(contextFullPath + theme + "DataTables/datatables.min.js");
 		this.contextPath = contextPath;
 		this.processID = processID;
 	}
@@ -242,5 +279,30 @@ public class HTMLExtension implements IHTMLExtension {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public List<String> getExtraScriptURLs(){
+		return extraScriptUrls;
+	}
+	
+	@Override
+	public List<String> getFullPathExtraScriptURLs(){
+		return fullPathExtraScriptUrls;
+	}
+	
+	@Override
+	public List<String> getExtraStyletURLs() {
+	   return extraStyleUrls;
+	}
+
+	@Override
+	public List<String> getFullPathExtraStyleURLs() {
+		return fullPathExtraStyleUrls;
+	}
+
+	@Override
+	public String getPath() {
+		return Path;
 	}
 }

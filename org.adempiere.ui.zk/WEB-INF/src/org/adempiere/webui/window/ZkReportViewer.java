@@ -321,7 +321,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = FileUtil.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
 				String contextPath = Executions.getCurrent().getContextPath();
-				m_reportEngine.createHTML(file, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", getUuid()));
+				m_reportEngine.createHTML(file, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", getUuid()),(String) this.getAttribute("HTML_STYLE"));
 				return new AMedia(file.getName(), HTML_FILE_EXT, HTML_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -469,8 +469,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if ( m_isCanExport )
 		{
 			previewType.appendItem(XLS_OUTPUT_TYPE, XLS_OUTPUT_TYPE);
+			previewType.appendItem("HTML+", "HTML+");
 			previewType.appendItem(CSV_OUTPUT_TYPE, CSV_OUTPUT_TYPE);
 			previewType.appendItem(XLSX_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
+			previewType.appendItem("Pivot", "Pivot");
+
 		}
 		
 		toolBar.appendChild(previewType);		
@@ -924,9 +927,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {
 			new PDFRendererRunnable(this).run();
 		} else if (HTML_OUTPUT_TYPE.equals(selected.getValue())) {
+			this.setAttribute("HTML_STYLE", "REGULAR");
+			new HTMLRendererRunnable(this).run();
+		} else if ("HTML+".equals(selected.getValue())) {
+			this.setAttribute("HTML_STYLE", "DATATABLES");
 			new HTMLRendererRunnable(this).run();
 		} else if (XLS_OUTPUT_TYPE.equals(selected.getValue())) {			
 			new XLSRendererRunnable(this).run();
+		} else if ("Pivot".equals(previewType.getSelectedItem().getValue())) {			
+			new PivotRendererRunnable(this).run();
 		} else if (CSV_OUTPUT_TYPE.equals(selected.getValue())) {
 			new CSVRendererRunnable(this).run();
 		} else if (XLSX_OUTPUT_TYPE.equals(selected.getValue())) {			
@@ -960,6 +969,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					attachIFrame();
 					iframe.setSrc(null);
 					iframe.setContent(media);
+				} else if ("Pivot".equals(previewType.getSelectedItem().getValue())) {
+					iframe.setSrc(null);
+					iframe.setContent(media);
+				
 				} else {
 					IMediaView view = null;
 					boolean showOptions = false;
@@ -2046,6 +2059,52 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}		
 	}
 	
+	static class PivotRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
+
+		private ZkReportViewer viewer;
+		private String contextPath;
+		
+		public PivotRendererRunnable(ZkReportViewer viewer) {
+			super();
+			this.viewer = viewer;
+			contextPath = Executions.getCurrent().getContextPath();
+		}
+
+		@Override
+		protected void doRun() {
+			try {
+				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+					log.warning("Cannot archive Document");
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".html", new File(path));
+				viewer.m_reportEngine.createPivot(file, false, viewer.m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", viewer.getUuid()),false);
+				viewer.media = new AMedia(file.getName(), "html", "text/html", file, false);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			} finally {
+				Desktop desktop = AEnv.getDesktop();
+				if (desktop != null && desktop.isAlive()) {
+					new ServerPushTemplate(desktop).executeAsync(this);
+				}
+			}
+		}
+
+		@Override
+		public void updateUI() {
+			viewer.onPreviewReport();
+
+		}
+
+	
+	}
 	static class XLSRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;

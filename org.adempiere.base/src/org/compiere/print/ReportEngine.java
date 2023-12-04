@@ -41,6 +41,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -66,6 +67,7 @@ import org.adempiere.print.export.PrintDataXLSXExporter;
 import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
+import org.apache.ecs.xhtml.link;
 import org.apache.ecs.xhtml.script;
 import org.apache.ecs.xhtml.span;
 import org.apache.ecs.xhtml.style;
@@ -78,6 +80,7 @@ import org.apache.ecs.xhtml.tr;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDunningRunEntry;
+import org.compiere.model.MElement;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
@@ -96,6 +99,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.X_AD_Element;
 import org.compiere.model.X_AD_StyleLine;
 import org.compiere.print.layout.InstanceAttributeColumn;
 import org.compiere.print.layout.InstanceAttributeData;
@@ -118,7 +122,12 @@ import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.X_PP_Order;
 
+
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *	Report Engine.
@@ -146,7 +155,9 @@ import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
  */
 public class ReportEngine implements PrintServiceAttributeListener
 {
-	
+
+	public enum FunctionTypes { SUM, COUNT, MIN, MAX, AVG, DEVIATION, VARIANCE, GROUP_BY, ORDER_BY};
+
 	/**
 	 *	Constructor
 	 * 	@param ctx context
@@ -266,10 +277,13 @@ public class ReportEngine implements PrintServiceAttributeListener
 	private int m_language_id = 0;
 	
 	private boolean m_summary = false;
-	
+	private String path = null;
+	private boolean isDataTables=false;
+
+	public static final String JS_DATA_IDENTIFIER = "JS_DataTable";
+	private boolean m_isReplaceTabContent = false;
 	private String m_name = null;
 	
-	private boolean m_isReplaceTabContent = false;
 	
 	/**
 	 * store all column has same css rule into a list
@@ -623,7 +637,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public boolean createHTML (File file, boolean onlyTable, Language language)
 	{
-		return createHTML(file, onlyTable, language, null);
+		return createHTML(file, onlyTable, language, null,null);
 	}
 	
 	/**************************************************************************
@@ -634,7 +648,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 *  @param extension optional extension for html output
 	 * 	@return true if success
 	 */
-	public boolean createHTML (File file, boolean onlyTable, Language language, IHTMLExtension extension)
+	public boolean createHTML (File file, boolean onlyTable, Language language, IHTMLExtension extension , String htmlStyle)
 	{
 		try
 		{
@@ -642,6 +656,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			if (lang == null)
 				lang = Language.getLoginLanguage();
 			Writer fw = new OutputStreamWriter(new FileOutputStream(file, false), Ini.getCharset()); // teo_sarca: save using adempiere charset [ 1658127 ]
+			if (htmlStyle.equals("DATATABLES"))
+				isDataTables=true;
+			else 
+				isDataTables=false;
 			return createHTML (new BufferedWriter(fw), onlyTable, lang, extension);
 		}
 		catch (FileNotFoundException fnfe)
@@ -693,6 +711,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	{
 		try
 		{
+			this.path=extension.getPath();
+			DataTableOptions dataTableOptions = new DataTableOptions(language.getLanguageCode());
 			//collect column to print
 			List<Object> columns = new ArrayList<>();
 			List<InstanceAttributeData> asiElements = new ArrayList<>();
@@ -752,8 +772,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			}
 			
 			table table = new table();
-			if (cssPrefix != null)
+			//FIXME JS
+			if (!isDataTables && cssPrefix != null) {
 				table.setClass(cssPrefix + "-table");
+			} 
+			else {
+				table.setClass("cell-border compact hover " + cssPrefix + "-table");
+				table.setID(JS_DATA_IDENTIFIER);
+			}
 			//
 			//
 			table.setNeedClosingTag(false);
@@ -909,6 +935,26 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				
 				w.print(compress(tableWrapDiv.toString(), minify));
 				w.print(compress(table.toString(), minify));
+				//w.print(compress(table.toString()));
+			}
+			
+			
+			if (isDataTables) {
+				w.print("<tfoot>");
+				tr tr = new tr();
+				
+				for (int col = 0; col < m_printFormat.getItemCount(); col++)
+				{
+					MPrintFormatItem item = m_printFormat.getItem(col);
+					if (item.isPrinted())
+					{
+						th th = new th();
+						tr.addElement(th);
+						th.setTagText(item.getPrintName(language));
+					}
+				}
+				tr.output(w);
+				w.print("</tfoot>");
 			}
 			
 			thead thead = new thead();
@@ -931,6 +977,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				if (row != -1)
 				{
 					m_printData.setRowIndex(row);					
+					if(isDataTables &&  m_printData.isFunctionRow())
+						continue;
 					if (extension != null && !isExport)
 					{
 						extension.extendRowElement(tr, m_printData);
@@ -989,12 +1037,53 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								suppressMap.put(printColIndex, th);
 								th.setID("report-th-"+printColIndex);
 							}
+					// Calculate DateTables Options
+							if(isDataTables && isDataTableFunctionColumn(item)) {
+								if(item.isOrderBy())
+									dataTableOptions.addColumnID(FunctionTypes.ORDER_BY, item.isDesc() ? dataTableOptions.DESC_OFFSET + printColIndex :  printColIndex);
+								if(item.isGroupBy())
+									dataTableOptions.addColumnID(FunctionTypes.GROUP_BY, printColIndex);
+								if(item.isSummarized())
+									dataTableOptions.addColumnID(FunctionTypes.SUM, printColIndex);
+								if(item.isCounted())
+									dataTableOptions.addColumnID(FunctionTypes.COUNT, printColIndex);
+								if(item.isMinCalc())
+									dataTableOptions.addColumnID(FunctionTypes.MIN, printColIndex);
+								if(item.isMaxCalc())
+									dataTableOptions.addColumnID(FunctionTypes.MAX, printColIndex);
+								if(item.isAveraged())
+									dataTableOptions.addColumnID(FunctionTypes.AVG, printColIndex);
+								if(item.isDeviationCalc())
+									dataTableOptions.addColumnID(FunctionTypes.DEVIATION, printColIndex);
+								if(item.isVarianceCalc())
+									dataTableOptions.addColumnID(FunctionTypes.VARIANCE, printColIndex);
+							}
+							
+
+								if(item.getAD_Column_ID() > 0) {
+									MColumn column = MColumn.get(item.getAD_Column_ID());
+									if(column.getAD_Element_ID() > 0) {
+										
+										X_AD_Element element=new X_AD_Element (getCtx(), column.getAD_Element_ID(),null);
+										String description =element.get_Translation(MElement.COLUMNNAME_Description,language.getAD_Language());
+												//get_Translation(MColumn.COLUMNNAME_Description, );
+										if(!Util.isEmpty(description)) {
+											span tooltip = new span();
+											tooltip.setClass("tooltiptext");
+											tooltip.addElement(description);
+											th.addElement(tooltip);
+											th.setClass("tooltip");
+										}
+									}
+								}
 						}
 						else
 						{
 							td td = new td();
 							tr.addElement(td);
 							MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
+							//set style
+
 							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 									: m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							if (obj == null || !isDisplayPFItem(item)){
@@ -1118,6 +1207,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									else
 										td.setClass(cssPrefix + "-text");
 								}											
+								
+								//just run with on record
+								if (row == 0)
+									addCssInfo(item, printColIndex);
+								
 							}
 							else if (obj instanceof PrintData)
 							{
@@ -1128,6 +1222,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						}
 					}	//	printed
 				}	//	for all columns
+				
+				dataTableOptions.setPrintColLastIndex(printColIndex);
 				
 				/* output table header */
 				if (row == -1){
@@ -1141,7 +1237,49 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				
 			}	//	for all rows
 			
-			w.print("</tbody>");
+			
+			if (onlyTable)
+				table.output(w);
+			else
+			{
+				doc = new XhtmlDocument();
+				doc.getHtml().setNeedClosingTag(false);
+				doc.getBody().setNeedClosingTag(false);
+				doc.appendHead("<meta charset=\"UTF-8\" />");
+			
+				doc.appendBody(table);
+				appendInlineCss (doc);
+				if (extension != null && extension.getStyleURL() != null)
+				{
+					// maybe cache style content with key is path
+					String pathStyleFile = extension.getFullPathStyle();					
+					appendInlineCss (doc, readResourceFile(pathStyleFile));
+				}
+				if (extension != null && extension.getScriptURL() != null && !isExport)
+				{
+					embedExtendScript(doc, extension.getScriptURL());
+				}
+				
+				//if(!Util.isEmpty(m_printFormat.getJavaScript())) {
+					appendExtraStyle(extension, isExport, doc);
+					
+					appendExtraScript (extension, isExport, doc);
+
+					//FIXME Better implementation of Javascript
+					doc.appendHead("<script type=\"text/javascript\" charset=\"utf8\" src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js\"></script>");
+					doc.appendHead("<script type=\"text/javascript\" charset=\"utf8\" src=\"//cdn.datatables.net/plug-ins/1.10.15/sorting/datetime-moment.js\"></script>");
+				//}
+				appendInlineCss (doc);
+				if (extension != null && !isExport){
+					extension.setWebAttribute(doc.getBody());
+				}
+				
+				//w.print(compress(doc.toString()));
+				w.print(doc.toString());
+				doc.output(w);
+			}
+
+//			w.println();
 			w.print("</table>");
 			if (suppressMap.size() > 0) 
 			{
@@ -1161,6 +1299,40 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			{
 				w.print("</div>");
 				w.print("</div>");
+				if (isDataTables) {
+					String dataTableOptionString = dataTableOptions.getDataTableOptions(extension.getPath());
+					if( dataTableOptionString != null ) {
+						w.print("<script type=\"text/javascript\"> ");
+						w.print(compress(" class NumberParser { "
+								+ "  constructor(locale) {"
+								+ "    const parts = new Intl.NumberFormat(locale).formatToParts(12345.6); "
+								+ "    const numerals = [...new Intl.NumberFormat(locale, {useGrouping: false}).format(9876543210)].reverse(); "
+								+ "    const index = new Map(numerals.map((d, i) => [d, i])); "
+								+ "	   let groupValue = parts.find(d => d.type === \"group\").value;"
+								+ "    this._group = new RegExp(`[${groupValue.charCodeAt(0)==160 ? '&nbsp;' : groupValue}]`, \"g\"); "
+								+ "    this._decimal = new RegExp(`[${parts.find(d => d.type === \"decimal\").value}]`); "
+								+ "    this._numeral = new RegExp(`[${numerals.join(\"\")}]`, \"g\"); "
+								+ "	"
+								+ "    this._index = d => index.get(d); } "
+								+ "  parse(string) { "
+								+ "    let retValue = (string = string.trim() "
+								+ "      .replace(this._group, \"\") "
+								+ "      .replace(this._decimal, \".\") "
+								+ "		.replace(this._numeral, this._index)) ? +string : 0; "
+								+ "		return Number.isNaN(retValue) ? 0 : retValue;"
+								+ "  } }",true));
+						String jsDataTables = "$(document).ready(function() { "
+								+ "  let t = $('#"+JS_DATA_IDENTIFIER+"').DataTable( " + dataTableOptionString + " ); "
+								+ " });"
+								+ " $('#"+JS_DATA_IDENTIFIER+" tfoot th').each(function () {\r\n"
+								+ "        var title = $(this).text();\r\n"
+								+ "        $(this).html('<input type=\"text\"   placeholder=\"Search ' + title + '\" />');\r\n" //placeholder=\"Search ' + title + '\"
+								+ "    }); " ;
+
+						w.print(jsDataTables);
+						w.print("</script>");
+					}
+				}
 				w.print("</body>");
 				w.print("</html>");
 			}
@@ -1258,6 +1430,210 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		else
 			return tableName;
 	} // addTrlSuffix
+	 /* Is PrintFormat Item Function for DataTables
+	 * @param item
+	 * @return
+	 */
+	private boolean isDataTableFunctionColumn(MPrintFormatItem item) {
+		if(item.isOrderBy()
+				|| item.isGroupBy()
+				|| item.isSummarized()
+				|| item.isCounted()
+				|| item.isMinCalc()
+				|| item.isAveraged()
+				|| item.isDeviationCalc()
+				|| item.isMaxCalc()
+				|| item.isVarianceCalc())
+			return true;
+		return false;
+	}
+
+	/**
+	 * 	Write HTML to writer
+	 * 	@param writer writer
+	 *  @param onlyTable if false create complete HTML document
+	 *  @param language optional language - if null numbers/dates are not formatted
+	 *  @param extension optional extension for html output
+	 *  @param isExport when isExport = true will don't embed resource dependent zk framework
+	 * 	@return true if success
+	 */
+	public boolean createPivot (File file, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
+	{
+		try
+		{
+			Language lang = language;
+			if (lang == null)
+				lang = Language.getLoginLanguage();
+			Writer writer = new OutputStreamWriter(new FileOutputStream(file, false), Ini.getCharset()); // teo_sarca: save using adempiere charset [ 1658127 ]
+			PrintWriter w = new PrintWriter(writer);
+			String cssPrefix = extension != null ? extension.getClassPrefix() : null;
+			if (cssPrefix != null && cssPrefix.trim().length() == 0)
+				cssPrefix = null;
+			w.println("<!DOCTYPE html>\n" + 
+					"<html>\n" + 
+					"    <head>\n" + 
+					"		<meta charset=\"utf-8\"/> " +
+					"		<link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css\">\n" + 
+					"        <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js\"></script>\n" + 
+					"        <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js\"></script>\n" + 
+					"        <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>\n" + 
+					"        <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js\"></script>\n" + 
+					"        <link rel=\"stylesheet\" type=\"text/css\" href=\""+extension.getPath()+"js/pivot/pivot.css\">\n" + 
+					"        <script type=\"text/javascript\" src=\""+extension.getPath()+"js/pivot/pivot.js\"></script>\n" + 
+					"        <script type=\"text/javascript\" src=\""+extension.getPath()+"js/pivot/c3_renderers.js\"></script>\n" + 
+					"        <style>\n" + 
+					"            body {font-family: Verdana;}\n" + 
+					"            .c3-line, .c3-focused {stroke-width: 3px !important;}\n" + 
+					"            .c3-bar {stroke: white !important; stroke-width: 1;}\n" + 
+					"            .c3 text { font-size: 12px; color: grey;}\n" + 
+					"            .tick line {stroke: white;}\n" + 
+					"            .c3-axis path {stroke: grey;}\n" + 
+					"            .c3-circle { opacity: 1 !important; }\n" + 
+					"            .c3-xgrid-focus {visibility: hidden !important;}\n" + 
+					"        </style>\n" + 
+					"        <!-- optional: mobile support with jqueryui-touch-punch -->\n" + 
+					"        <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js\"></script>\n"); 
+					//"        <script type=\"text/javascript\" src=\""+extension.getPath()+"pivot/show_code.js\"></script> ");
+			
+			// Prepare Derived Attributes
+			JSONObject derivedAttributes = new JSONObject();
+			
+			JSONArray ja = new JSONArray();
+			//	for all rows (-1 = header row)
+			for (int row = 0; row < m_printData.getRowCount(); row++)
+			{
+				JSONObject jo = new JSONObject();
+				m_printData.setRowIndex(row);
+				if (m_printData.isFunctionRow()) 
+					continue;
+			
+				//	for all columns
+				for (int col = 0; col < m_printFormat.getItemCount(); col++)
+				{
+					MPrintFormatItem item = m_printFormat.getItem(col);
+					if (item.isPrinted())
+					{
+						Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+						//
+						//item.get_Value(item.getColumnName())
+						//	header row
+							if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Text)){
+								if (item.get_Value("Text") != null)	{
+									String Value = Env.parseVariable(item.get_Value("Text").toString(), item, item.get_TrxName(), false);
+									//td.addElement(Util.maskHTML(Value));
+								}
+							} 
+							else if (obj instanceof PrintDataElement)
+							{
+								PrintDataElement pde = (PrintDataElement) obj;
+								String value = pde.getValueDisplay(language);	//	formatted
+								// Check if Item is Date
+								if(pde.isDate()) {
+									putPivotAttributes(derivedAttributes, item.getPrintName(language), language);
+									value = pde.getValueAsString();	//	unformatted Date for Parsing Fix									
+								}							
+							
+								if (DisplayType.isNumeric(pde.getDisplayType()))
+									value=value.replace("�","").replace(",",".");
+								jo.append(item.getPrintName(language), value);
+								}			
+
+					}	//	for all columns
+				
+				}
+				ja.put(jo);
+				
+			}	//	for all rows
+		
+			w.println();
+
+			w.println("<script type=\"text/javascript\">\n" + 
+					"    $(function(){\n" + 
+					"	let jsonObject = "+ja.toString()+";\n" + 
+					"        let derivers = $.pivotUtilities.derivers;\n"); 
+			// Get DateFormat Function for Dates
+			if(derivedAttributes.keys().hasNext()) {
+				w.println("        let dateFormat =       $.pivotUtilities.derivers.dateFormat;\n");				
+			}
+			w.println("        let renderers = $.extend($.pivotUtilities.renderers,\n" +			
+					"            $.pivotUtilities.c3_renderers);\n" + 
+					"			$(\"#output\").pivotUI(jsonObject, {\n"); 
+				
+			// Apply Derivates for Dates
+			if(derivedAttributes.keys().hasNext()) {
+				w.println("       derivedAttributes: { \n");
+				
+				
+				Iterator<String> keys = derivedAttributes.keys();				
+				while(keys.hasNext()) {
+					String key = keys.next();					
+					String dateFormatString = derivedAttributes.getString(key);
+					
+					w.println("       \"" + key + "\": " + dateFormatString); 	
+					if(keys.hasNext())
+						w.println(", ");
+					w.println("\n");	
+				}			
+				
+				w.println("       }, \n");	
+			}
+			
+			w.println("                renderers: renderers,\n" + 
+					"                cols: [\"\"], rows: [\"\"],\n" + 
+					"                rendererName: \"Horizontal Stacked Bar Chart\",\n" + 
+					"                rowOrder: \"value_z_to_a\", colOrder: \"value_z_to_a\",\n" + 
+					"                rendererOptions: {\n" + 
+					"                    c3: { data: {colors: {\n" + 
+					"                        Liberal: '#dc3912', Conservative: '#3366cc', NDP: '#ff9900',\n" + 
+					"                        Green:'#109618', 'Bloc Quebecois': '#990099'\n" + 
+					"                    }}}\n" + 
+					"                }\n" + 
+					"            });\n" + 
+					"        });\n" + 
+					"</script>\n" + 
+					"</head>\n" + 
+					"    <body>\n" + 
+					"        <div id=\"output\" style=\"margin: 30px;\"></div>\n" + 
+					"    </body>\n" + 
+					"</html>\n" + 
+					"");
+			
+			if (!onlyTable)
+			{
+
+			}
+			w.flush();
+			w.close();
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "(w)", e);
+		}
+		return false;
+	}	//	createPivot
+	
+	/**
+	 * Add Prepared Date Derivates
+	 * @param derivedAttributes
+	 * @param dateName
+	 * @param language
+	 */
+	private void putPivotAttributes(JSONObject derivedAttributes, String dateName, Language language) {
+	
+		// Prepare Derived Attributes
+		try {
+			derivedAttributes.put( dateName+"("+Msg.translate(language, "CalendarYear")+")", "dateFormat(\""+dateName+"\", \"%y\", true)");
+			derivedAttributes.put( dateName+"("+Msg.translate(language, "Month") +")", "dateFormat(\""+dateName+"\", \"%m-%n\", true)");
+
+//			derivedAttributes.put( Msg.translate(language, "week")+"_"+dateName, "dateFormat(\""+dateName+"\", \"%n\", true)");
+//			derivedAttributes.put( Msg.translate(language, "Quartal")+"_"+dateName, "dateFormat(\""+dateName+"\", \"%n\", true)");
+//			derivedAttributes.put( Msg.translate(language, "CalendarYearMonth")+"_"+dateName, "dateFormat(\""+dateName+"\", \"%y-%n\", true)");		
+			
+		} catch (JSONException e) {
+			log.log(Level.SEVERE, "(w)", e);
+		}
+	}
+	
 	
 	private String getCSSFontFamily(String fontFamily) {
 		if ("Dialog".equals(fontFamily) || "DialogInput".equals(fontFamily) || 	"Monospaced".equals(fontFamily))
@@ -2613,6 +2989,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	}
 	
 	/**
+/**
+	 * Clear mapCSS info 	
+	 */
+	public void clearCssInfo (){
+		mapCssInfo.clear();		
+	}
+	
+	/*
 	 * Store info for make css rule
 	 * @author hieplq
 	 *
@@ -2785,6 +3169,123 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		
 		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
 	}
+
+/**
+	 * if isExport, embed script content other embed script url
+	 * @param extension
+	 * @param isExport
+	 * @param doc
+	 * @throws IOException
+	 */
+	protected void appendExtraScript (IHTMLExtension extension, boolean isExport, XhtmlDocument doc) throws IOException{
+		// embed extend script by link
+		if (extension != null && isExport){
+			for (String extraScriptPath : extension.getFullPathExtraScriptURLs()){
+				appendInlineScriptContent (doc, readResourceFile(extraScriptPath));
+			}
+			
+			// embed extend script by content
+		}else if (extension != null && !isExport){
+			for (String extraScriptUrl : extension.getExtraScriptURLs()){
+				embedExtendScript (doc, extraScriptUrl);
+			}
+		}
+		
+		
+		if (extension != null){
+			StringBuilder embedJs = new StringBuilder();
+			embedJs.append("<script type=\"text/javascript\">");
+			embedJs.append("\n");
+			embedJs.append("$(window).on('load',function() {");
+			embedJs.append("\n");
+			//embedJs.append("$('.rp-table').floatThead();");
+			embedJs.append("\n");
+			embedJs.append("});");
+			embedJs.append("\n");
+			embedJs.append("</script>");
+			
+			doc.appendHead(embedJs.toString());
+		}
+	}
+	
+	/**
+	 * if isExport, embed style content other embed style url
+	 * @param extension
+	 * @param isExport
+	 * @param doc
+	 * @throws IOException
+	 */
+	protected void appendExtraStyle (IHTMLExtension extension, boolean isExport, XhtmlDocument doc) throws IOException{
+		// embed extend script by link
+		if (extension != null && isExport){
+			for (String extraStylePath : extension.getFullPathExtraStyleURLs()){
+				appendInlineCss(doc, readResourceFile(extraStylePath));
+			}
+			
+			// embed extend script by content
+		}else if (extension != null && !isExport){
+			for (String extraStyleUrl : extension.getExtraStyletURLs()){
+				embedExtendStyle (doc, extraStyleUrl);
+			}
+		}	
+	}
+		
+	/**
+	 * read all content from file into StringBuilder
+	 * @param pathStyleFile
+	 * @return
+	 * @throws IOException
+	 */
+	protected StringBuilder readResourceFile (String pathStyleFile) throws IOException {
+		Path path = Paths.get(pathStyleFile);
+	    List<String> styleLines = Files.readAllLines(path, Ini.getCharset());
+	    StringBuilder styleBuild = new StringBuilder();
+	    for (String styleLine : styleLines){
+	    	styleBuild.append(styleLine);
+	    	styleBuild.append("\n");
+	    }
+	    
+	    return styleBuild;
+	}
+	
+	/**
+	 * embed script url into head tag
+	 * @param doc
+	 * @param scriptUrl
+	 */
+	protected void embedExtendScript (XhtmlDocument doc, String scriptUrl){
+		script jslink = new script();
+		jslink.setLanguage("javascript");
+		jslink.setSrc(scriptUrl);
+		doc.appendHead(jslink);
+	}
+	
+	/**
+	 * embed css url into head tag
+	 * @param doc
+	 * @param scriptUrl
+	 */
+	protected void embedExtendStyle (XhtmlDocument doc, String styleUrl){
+		link csslink = new link();
+		csslink.setType("text/css");
+		csslink.setRel("stylesheet");
+		csslink.setHref(styleUrl);
+		doc.appendHead(csslink);
+	}
+	
+	/**
+	 * embed script content into head tag
+	 * @param doc
+	 * @param buildScriptContent
+	 */
+	public void appendInlineScriptContent (XhtmlDocument doc, StringBuilder buildScriptContent){
+		if (buildScriptContent.length() > 0){
+			buildScriptContent.insert(0, "<script type=\"text/javascript\">\n");
+			buildScriptContent.append("\n</script>");
+			doc.appendHead(buildScriptContent.toString());
+		}
+	}
+	
 
 	public String compress(String src, boolean minify) {
 		

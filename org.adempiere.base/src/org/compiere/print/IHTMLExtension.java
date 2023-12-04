@@ -16,6 +16,7 @@ package org.compiere.print;
 import org.apache.ecs.ConcreteElement;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.body;
+import java.util.List;
 
 /**
  * Extension interface for HTML report
@@ -69,4 +70,14 @@ public interface IHTMLExtension {
 	 * @return one or more links for web font
 	 */
 	String getWebFontLinks();
+	
+	public List<String> getExtraScriptURLs();
+	
+	public List<String> getFullPathExtraScriptURLs();
+	
+	public String getPath();
+
+	public List<String> getFullPathExtraStyleURLs();
+
+	public List<String> getExtraStyletURLs() ;
 }

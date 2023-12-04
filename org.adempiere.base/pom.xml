@@ -53,6 +53,11 @@
 								    <artifactId>yuicompressor</artifactId>
 								    <version>2.4.8</version>
 								</artifactItem>
+			<artifactItem>
+								    <groupId>org.json</groupId>
+								    <artifactId>json</artifactId>
+								    <version>20190722</version>
+    							</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
