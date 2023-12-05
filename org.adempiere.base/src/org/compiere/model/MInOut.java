@@ -1082,6 +1082,17 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
     		}
         }
 
+        if (getSalesRep_ID() == 0) {
+        	if (getC_Order_ID() > 0) {
+        		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+        		setSalesRep_ID(order.getSalesRep_ID());
+        	} else if (getM_RMA_ID() > 0) {
+        		MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
+        		MInOut originalReceipt = rma.getShipment();
+        		setSalesRep_ID(originalReceipt.getSalesRep_ID());
+        	}
+        }
+
 		return true;
 	}	//	beforeSave
 
