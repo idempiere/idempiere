@@ -561,6 +561,16 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				return false;
 			}
 		}
+		
+		if (getAD_Reference_ID() == DisplayType.YesNo) {
+ 			setIsMandatory(true);
+			if (Util.isEmpty(getDefaultValue(), true)) {
+				if (getAD_Element_ID() == SystemIDs.ELEMENT_ISACTIVE)
+					setDefaultValue("Y");
+				else
+					setDefaultValue("N");
+			}
+ 		}
 
 		return true;
 	}	//	beforeSave
