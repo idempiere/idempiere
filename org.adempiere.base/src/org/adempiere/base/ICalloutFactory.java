@@ -16,17 +16,17 @@ package org.adempiere.base;
 import org.compiere.model.Callout;
 
 /**
- * 
+ * Factory interface for {@link Callout}.<br/>
+ * For plugin that implement this as OSGi component, use <b>property = {"service.ranking:Integer=1"}</b> to set up a calling order 
+ * that prioritizes your component over core component.
  * @author a42niem
- *
  */
 public interface ICalloutFactory {
 
 	/**
-	 * 
 	 * @param className
 	 * @param methodName 
-	 * @return matching Callout
+	 * @return matching Callout instance
 	 */
 	public Callout getCallout(String className, String methodName);
 	

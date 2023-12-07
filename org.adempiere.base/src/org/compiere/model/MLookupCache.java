@@ -28,10 +28,11 @@ import org.compiere.util.CLogger;
  *  MLookup Data Cache.
  *  - not synchronized on purpose -
  *  Called from MLookup.
- *  Only caches multiple use for a single window!
  *  @author Jorg Janke
  *  @version  $Id: MLookupCache.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
+ *  @deprecated for deprecated swing client only
  */
+@Deprecated
 public class MLookupCache
 {
 	/** Static Logger					*/

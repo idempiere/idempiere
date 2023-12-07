@@ -32,18 +32,17 @@ import org.compiere.util.Util;
  */
 public class MPaySelection extends X_C_PaySelection
 {
-
     /**
-     * 
+     * generated serial id
      */
     private static final long serialVersionUID = -6521282913549455131L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_PaySelection_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaySelection_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPaySelection(Properties ctx, String C_PaySelection_UU, String trxName) {
         super(ctx, C_PaySelection_UU, trxName);
 		if (Util.isEmpty(C_PaySelection_UU))
@@ -91,8 +90,8 @@ public class MPaySelection extends X_C_PaySelection
 	
 	/**
 	 * 	Get Lines
-	 *	@param requery requery
-	 *	@return lines
+	 *	@param requery true to re-query from DB
+	 *	@return payment selection lines
 	 */
 	public MPaySelectionLine[] getLines(boolean requery)
 	{
@@ -127,12 +126,12 @@ public class MPaySelection extends X_C_PaySelection
 		}
 		return m_C_Currency_ID;
 	}	//	getC_Currency_ID
-	
-	
+		
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MPaySelection[");
@@ -140,7 +139,5 @@ public class MPaySelection extends X_C_PaySelection
 			.append("]");
 		return sb.toString();
 	}	//	toString
-
-	
-	
+		
 }	//	MPaySelection

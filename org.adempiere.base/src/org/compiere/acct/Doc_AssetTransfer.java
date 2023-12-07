@@ -13,8 +13,8 @@ import org.compiere.util.Env;
 
 
 /**
+ * Posting for {@link MAssetTransfer} document. DOCBASETYPE_GLJournal.
  * @author Anca Bradau www.arhipac.ro
- *
  */
 public class Doc_AssetTransfer extends Doc 
 {
@@ -24,23 +24,24 @@ public class Doc_AssetTransfer extends Doc
 		super(as, MAssetTransfer.class, rs, MDocType.DOCBASETYPE_GLJournal, trxName);
 	}
 
-	
+	@Override
 	protected String loadDocumentDetails()
 	{
 		return null;
 	}
 	
-	
+	@Override
 	public BigDecimal getBalance() {
     	return Env.ZERO;
 	}
+	
 	/**
-	 * Produce inregistrarea:
+	 * Produce posting:
 	 * <pre>
 	 *	20.., 21..[A_Asset_New_Acct]			=	23..[A_Asset_Acct]		
 	 * </pre>
 	 */
-	
+	@Override
 	public ArrayList<Fact> createFacts(MAcctSchema as)
 	{
 		MAssetTransfer assetTr = getAssetTransfer();
@@ -71,10 +72,17 @@ public class Doc_AssetTransfer extends Doc
 		return facts;
 	}
 
+	/**
+	 * @return MAssetTransfer
+	 */
 	private MAssetTransfer getAssetTransfer()
 	{
 		return (MAssetTransfer)getPO();
 	}
+	
+	/**
+	 * @return MDepreciationWorkfile
+	 */
 	private MDepreciationWorkfile getAssetWorkfile()
 	{
 		MAssetTransfer assetTr = getAssetTransfer();

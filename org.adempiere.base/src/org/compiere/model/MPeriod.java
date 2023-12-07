@@ -55,7 +55,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPeriod extends X_C_Period implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2625074973303489939L;
 
@@ -101,6 +101,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return active Period or null
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static MPeriod get (Properties ctx, Timestamp DateAcct)
 	{	
 		return get(ctx, DateAcct, 0, null);
@@ -146,24 +147,24 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
 	 * @param ctx
 	 * @param DateAcct
 	 * @param C_Calendar_ID
 	 * @return MPeriod
 	 * @deprecated
 	 */
+	@Deprecated
 	public static MPeriod findByCalendar(Properties ctx, Timestamp DateAcct, int C_Calendar_ID) {
 		return findByCalendar(ctx, DateAcct, C_Calendar_ID, null);
 	}
 		
 	/**
-	 * 
+	 * Find standard Period of DateAcct 
 	 * @param ctx
 	 * @param DateAcct
 	 * @param C_Calendar_ID
 	 * @param trxName
-	 * @return MPeriod
+	 * @return MPeriod or null
 	 */
 	public static MPeriod findByCalendar(Properties ctx, Timestamp DateAcct, int C_Calendar_ID, String trxName) {
 		
@@ -227,6 +228,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return C_Period_ID or 0
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static int getC_Period_ID (Properties ctx, Timestamp DateAcct)
 	{
 		MPeriod period = get (ctx, DateAcct, 0, null);
@@ -238,8 +240,8 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 	Find valid standard Period of DateAcct based on Client Calendar
 	 *	@param ctx context
-	 * @param DateAcct date
-	 * @param AD_Org_ID Organization
+	 *  @param DateAcct date
+	 *  @param AD_Org_ID Organization
 	 *	@return C_Period_ID or 0
 	 */
 	public static int getC_Period_ID (Properties ctx, Timestamp DateAcct, int AD_Org_ID)
@@ -258,6 +260,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return true if open
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType)
 	{
 		return isOpen(ctx, DateAcct,DocBaseType, 0 );
@@ -266,9 +269,9 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 	Is standard Period Open for Document Base Type
 	 *	@param ctx context
-	 * @param DateAcct date
-	 * @param DocBaseType base type
-	 * @param AD_Org_ID Organization
+	 *  @param DateAcct date
+	 *  @param DocBaseType base type (X_C_DocType.DOCBASETYPE_*)
+	 *  @param AD_Org_ID Organization
 	 *	@return true if open
 	 */
 	public static boolean isOpen(Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID)
@@ -279,10 +282,10 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 	Is standard Period Open for Document Base Type
 	 *	@param ctx context
-	 * @param DateAcct date
-	 * @param DocBaseType base type
-	 * @param AD_Org_ID Organization
-	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 *  @param DateAcct date
+	 *  @param DocBaseType base type (X_C_DocType.DOCBASETYPE_*)
+	 *  @param AD_Org_ID Organization
+	 *  @param forPosting - true to check if the period is open for posting, false is for DocAction
 	 *	@return true if open
 	 */
 	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID, boolean forPosting)
@@ -328,7 +331,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param tableID
 	 * @param recordID
 	 * @param trxName
-	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 * @param forPosting - true to check if the period is open for posting, false is for DocAction
 	 * @return true if open
 	 */
 	public static boolean isOpen (Properties ctx, int tableID, int recordID, String trxName, boolean forPosting) {
@@ -446,6 +449,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return active first Period
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static MPeriod getFirstInYear (Properties ctx, Timestamp DateAcct)
 	{
 		return getFirstInYear(ctx , DateAcct, 0);
@@ -454,8 +458,8 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 	Find first Year Period of DateAcct based on Client Calendar
 	 *	@param ctx context
-	 * @param DateAcct date
-	 * @param AD_Org_ID TODO
+	 *  @param DateAcct date
+	 *  @param AD_Org_ID organization
 	 *	@return active first Period
 	 */
 	public static MPeriod getFirstInYear (Properties ctx, Timestamp DateAcct, int AD_Org_ID)
@@ -507,21 +511,20 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	
 	/** Calendar 					   */
 	private int 					m_C_Calendar_ID = 0;
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_Period_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Period_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPeriod(Properties ctx, String C_Period_UU, String trxName) {
         super(ctx, C_Period_UU, trxName);
 		if (Util.isEmpty(C_Period_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_Period_ID id
@@ -573,7 +576,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	}	//	MPeriod
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPeriod(MPeriod copy) 
@@ -582,7 +585,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -592,7 +595,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -610,7 +613,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		
 	/**
 	 * 	Get Period Control
-	 *	@param requery requery
+	 *	@param requery true to re-query from DB
 	 *	@return period controls
 	 */
 	public MPeriodControl[] getPeriodControls (boolean requery)
@@ -650,7 +653,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	
 	/**
 	 * 	Get Period Control
-	 *	@param DocBaseType Document Base Type
+	 *	@param DocBaseType Document Base Type (X_C_DocType.DOCBASETYPE_*)
 	 *	@return period control or null
 	 */
 	public MPeriodControl getPeriodControl (String DocBaseType)
@@ -667,9 +670,9 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	}	//	getPeriodControl
 
 	/**
-	 * 	Date In Period
+	 * 	Is Date In this Period
 	 *	@param date date
-	 *	@return true if in period
+	 *	@return true if date is in this period
 	 */
 	public boolean isInPeriod (Timestamp date)
 	{
@@ -691,6 +694,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @return true if open
 	 * @deprecated since 3.3.1b; use {@link #isOpen(String, Timestamp)} instead
 	 */
+	@Deprecated
 	public boolean isOpen (String DocBaseType)
 	{
 		return isOpen(DocBaseType, null);
@@ -698,7 +702,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	
 	/**
 	 * Is Period Open for Doc Base Type
-	 * @param DocBaseType document base type
+	 * @param DocBaseType document base type (X_C_DocType.DOCBASETYPE_*)
 	 * @param dateAcct date;
 	 * 			Applies only for "Auto Period Control":
 	 * 			<li>if not null, date should be in auto period range (today - OpenHistory, today+OpenHistory)
@@ -718,7 +722,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * 			Applies only for "Auto Period Control":
 	 * 			<li>if not null, date should be in auto period range (today - OpenHistory, today+OpenHistory)
 	 * 			<li>if null, this period should be in auto period range
-	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 * @param forPosting - true to check if the period is open for posting, false is for DocAction
 	 * @return true if open
 	 */
 	public boolean isOpen (String DocBaseType, Timestamp dateAcct, boolean forPosting)
@@ -786,7 +790,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 
 	/**
 	 * 	Standard Period
-	 *	@return true if standard calendar periods
+	 *	@return true if this is of standard calendar periods type (PERIODTYPE_StandardCalendarPeriod)
 	 */
 	public boolean isStandardPeriod()
 	{
@@ -800,6 +804,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Truncate Dates
@@ -854,6 +859,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -879,12 +885,12 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		}
 		return success;
 	}	//	afterSave
-	
-	
+		
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPeriod[");
@@ -904,6 +910,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @see #isOpen(Properties, Timestamp, String)
 	 * @deprecated
 	 */
+	@Deprecated
 	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, String docBaseType)
 	throws PeriodClosedException 
 	{
@@ -916,7 +923,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * Convenient method for testing if a period is open
 	 * @param ctx
 	 * @param dateAcct
-	 * @param docBaseType
+	 * @param docBaseType X_C_DocType.DOCBASETYPE_*
 	 * @param AD_Org_ID Organization
 	 * @throws PeriodClosedException if period is closed
 	 * @see #isOpen(Properties, Timestamp, String, int)
@@ -929,7 +936,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		}
 	}
 	
-		/**
+	/**
 	 * Convenient method for testing if a period is open
 	 * @param ctx
 	 * @param dateAcct
@@ -938,6 +945,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @see {@link #isOpen(Properties, Timestamp, String)}
      * @deprecated
 	 */
+	@Deprecated
 	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, int C_DocType_ID)
 	throws PeriodClosedException
 	{
@@ -963,7 +971,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	
 	/**
 	 *  Get Calendar of Period
-	 *  @return calendar
+	 *  @return C_Calendar_ID
 	 */
 	public int getC_Calendar_ID()
 	{
@@ -982,7 +990,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * Get Calendar for Organization
 	 * @param ctx Context
 	 * @param AD_Org_ID Organization
-	 * @return
+	 * @return C_Calendar_ID
 	 */
     public static int getC_Calendar_ID(Properties ctx,int AD_Org_ID)
     {	
@@ -1015,17 +1023,17 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	}
 
     /**
-     * Has the period un-posted documents
-     * @return boolean - true if there is at least 1 un-posted document in the period
+     * Is the period has un-posted documents
+     * @return boolean - true if there is at least 1 un-posted document in this period
      */
     public boolean hasUnpostedDocs() {
     	return hasUnpostedDocs(0);
     }
     
     /**
-     * Has the period control un-posted documents
-     * @param periodControlID
-     * @return boolean - true if there is at least 1 un-posted document in the period control
+     * Is this period has un-posted documents
+     * @param periodControlID C_PeriodControl_ID. If > 0, check only documents with the period control's DocBaseType
+     * @return boolean - true if there is at least 1 un-posted document in this period
      */
     public boolean hasUnpostedDocs(int periodControlID) {
 
@@ -1051,8 +1059,8 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			pstmt.setTimestamp(idx++, getStartDate());
 			pstmt.setTimestamp(idx++, getEndDate());
 			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
-		pstmt.setInt(idx++, getC_Calendar_ID());
-		if (periodControlID > 0) {
+			pstmt.setInt(idx++, getC_Calendar_ID());
+			if (periodControlID > 0) {
 	    		MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName()); 
 	    		pstmt.setString(idx++, pc.getDocBaseType());
 	    	}

@@ -16,6 +16,7 @@ package org.adempiere.base.equinox;
 import java.util.List;
 
 /**
+ * Holder for list of Equinox extension.
  * @author hengsin
  *
  */

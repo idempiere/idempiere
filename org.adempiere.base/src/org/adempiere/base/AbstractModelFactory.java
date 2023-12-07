@@ -45,6 +45,13 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, Record_ID, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param Record_ID
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, int Record_ID, String trxName) {
 		if (clazz == null)
 		{
@@ -130,6 +137,13 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, Record_UU, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param Record_UU
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, String Record_UU, String trxName) {
 		if (clazz == null)
 		{
@@ -208,6 +222,13 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, rs, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param rs
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, ResultSet rs, String trxName) {
 		if (clazz == null)
 		{

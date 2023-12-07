@@ -13,15 +13,44 @@
  *****************************************************************************/
 package org.compiere.model;
 
+/**
+ * Store provider interface for storage of image content
+ */
 public interface IImageStore {
 	
+	/**
+	 * Load image content
+	 * @param image
+	 * @param prov
+	 * @return byte[] image content
+	 */
 	public byte[] load(MImage image, MStorageProvider prov);
 
+	/**
+	 * Save image content
+	 * @param image
+	 * @param prov
+	 * @param inflatedData image content
+	 */
 	public void save(MImage image, MStorageProvider prov, byte[] inflatedData);
 	
+	/**
+	 * Delete stored image content
+	 * @param image
+	 * @param prov
+	 * @return true if deleted successfully
+	 */
 	public boolean delete(MImage image, MStorageProvider prov);
 
+	/**
+	 * @return true if image content is being buffered and pending flush to destination storage
+	 */
 	public boolean isPendingFlush();
 	
+	/**
+	 * Flush buffer image content to destination storage
+	 * @param image
+	 * @param prov
+	 */
 	public void flush(MImage image,MStorageProvider prov);
 }

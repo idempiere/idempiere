@@ -59,7 +59,6 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  *	Translation Table Import + Export
  *
@@ -148,7 +147,8 @@ public class Translation implements IApplication
 	public String importTrl (String directory, int AD_Client_ID, String AD_Language, String Trl_Table, String trxName)
 	{
 		String fileName = directory + File.separator + Trl_Table + "_" + AD_Language + ".xml";
-		log.info(fileName);
+		if (log.isLoggable(Level.INFO))
+			log.info(fileName);
 		File in = new File (fileName);
 		if (!in.exists())
 		{
@@ -161,7 +161,6 @@ public class Translation implements IApplication
 		{
 			TranslationHandler handler = new TranslationHandler(AD_Client_ID, trxName);
 			SAXParserFactory factory = SAXParserFactory.newInstance();
-		//	factory.setValidating(true);
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(in, handler);
 			if (log.isLoggable(Level.INFO)) log.info("Updated=" + handler.getUpdateCount());
@@ -179,20 +178,21 @@ public class Translation implements IApplication
 			return e.toString();
 		}
 	}	//	importTrl
-
 	
-	/**************************************************************************
-	 * 	Import Translation
+	/**
+	 * 	Export Translation
 	 *	@param directory file directory
 	 * 	@param AD_Client_ID only certain client if id &gt;= 0
 	 * 	@param AD_Language language
 	 * 	@param Trl_Table translation table _Trl
+	 *  @param onlyCentralized
 	 * 	@return status message
 	 */
 	public String exportTrl (String directory, int AD_Client_ID, String AD_Language, String Trl_Table, boolean onlyCentralized)
 	{
 		String fileName = directory + File.separator + Trl_Table + "_" + AD_Language + ".xml";
-		log.info(fileName);
+		if (log.isLoggable(Level.INFO))
+			log.info(fileName);
 		File out = new File(fileName);
 
 		boolean isBaseLanguage = Language.isBaseLanguage(AD_Language);
@@ -217,7 +217,6 @@ public class Translation implements IApplication
 		try
 		{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			//	System.out.println(factory.getClass().getName());
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			//	<!DOCTYPE idempiereTrl SYSTEM "http://www.idempiere.org/dtd/idempiereTrl.dtd">
 			//	<!DOCTYPE idempiereTrl PUBLIC "-//ComPiere, Inc.//DTD iDempiere Translation 1.0//EN" "http://www.idempiere.com/dtd/idempiereTrl.dtd">
@@ -340,10 +339,9 @@ public class Translation implements IApplication
 
 		return "";
 	}	//	exportTrl
-
 	
 	/**
-	 * 	Get Columns for Table
+	 * 	Get Columns for translation Table (*_trl)
 	 * 	@param Base_Table table
 	 * 	@return array of translated columns
 	 */
@@ -391,7 +389,6 @@ public class Translation implements IApplication
 			while (rs.next())
 			{
 				String s = rs.getString(1);
-			//	System.out.println(s); 
 				list.add(s);
 			}
 		}
@@ -413,9 +410,11 @@ public class Translation implements IApplication
 	}	//	getTrlColumns
 
 	/**
+	 * <pre>
 	 * Validate Language.
 	 *  - Check if AD_Language record exists
 	 *  - Check Trl table records
+	 *  </pre>
 	 * 	@param p_AD_Language language
 	 * 	@return "" if validated - or error message
 	 */
@@ -423,10 +422,12 @@ public class Translation implements IApplication
 		return validateLanguage(p_AD_Language, null);
 	}
 
-	/**************************************************************************
-	 * 	Validate Language.
+	/**
+	 *  <pre>
+	 *  Validate Language.
 	 *  - Check if AD_Language record exists
 	 *  - Check Trl table records
+	 *  </pre>
 	 * 	@param AD_Language language
 	 *  @param trxName transaction
 	 * 	@return "" if validated - or error message
@@ -522,7 +523,7 @@ public class Translation implements IApplication
 		}
 	}	//	process
 
-	/**************************************************************************
+	/**
 	 * OSGi Batch Interface
 	 * 
 	 * @author tbayen - IDEMPIERE-1554

@@ -35,7 +35,7 @@ import org.compiere.util.Util;
 public class MChangeLog extends X_AD_ChangeLog
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3082084206319959526L;
 
@@ -53,6 +53,9 @@ public class MChangeLog extends X_AD_ChangeLog
 		return index >= 0;
 	}	//	trackChanges
 
+	/**
+	 * Reset logged table list cache
+	 */
 	public static synchronized void resetLoggedList() {
 		s_changeLog = null;
 	}
@@ -75,9 +78,8 @@ public class MChangeLog extends X_AD_ChangeLog
 	private static CLogger		s_log = CLogger.getCLogger(MChangeLog.class);
 	/** NULL Value				*/
 	public static String		NULL = "NULL";
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -89,11 +91,11 @@ public class MChangeLog extends X_AD_ChangeLog
 	}	//	MChangeLog
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ChangeLog_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ChangeLog_UU  UUID key
+     * @param trxName Transaction
+     */
     public MChangeLog(Properties ctx, String AD_ChangeLog_UU, String trxName) {
         super(ctx, AD_ChangeLog_UU, trxName);
     }
@@ -110,8 +112,8 @@ public class MChangeLog extends X_AD_ChangeLog
 	}	//	MChangeLog
 	
 	/**
-	 *	Preserved for backward compatibility
-	 *@deprecated
+	 * Preserved for backward compatibility
+	 * @deprecated
 	 */
 	public MChangeLog (Properties ctx, 
 			int AD_ChangeLog_ID, String TrxName, int AD_Session_ID, 
@@ -201,7 +203,6 @@ public class MChangeLog extends X_AD_ChangeLog
 		setNewValue (NewValue);
 		setEventChangeLog(event);
 	}	//	MChangeLog
-
 	
 	/**
 	 * 	Set Old Value
@@ -217,7 +218,7 @@ public class MChangeLog extends X_AD_ChangeLog
 
 	/**
 	 * 	Is Old Value Null
-	 *	@return true if null
+	 *	@return true if old value is null
 	 */
 	public boolean isOldNull()
 	{
@@ -239,7 +240,7 @@ public class MChangeLog extends X_AD_ChangeLog
 	
 	/**
 	 * 	Is New Value Null
-	 *	@return true if null
+	 *	@return true if new value is null
 	 */
 	public boolean isNewNull()
 	{

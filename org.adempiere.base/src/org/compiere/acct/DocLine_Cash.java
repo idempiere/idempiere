@@ -83,7 +83,6 @@ public class DocLine_Cash extends DocLine
 	private BigDecimal      m_DiscountAmt = Env.ZERO;
 	private BigDecimal      m_WriteOffAmt = Env.ZERO;
 
-
 	/**
 	 *  Get Cash Type
 	 *  @return cash type
@@ -95,7 +94,7 @@ public class DocLine_Cash extends DocLine
 
 	/**
 	 *  Get Bank Account
-	 *  @return Bank Account
+	 *  @return C_BankAccount_ID
 	 */
 	public int getC_BankAccount_ID()
 	{
@@ -120,7 +119,7 @@ public class DocLine_Cash extends DocLine
 		return m_Amount;
 	}
 	/**
-	 *  Get Discount
+	 *  Get Discount Amount
 	 *  @return Discount Amount
 	 */
 	public BigDecimal getDiscountAmt()
@@ -128,7 +127,7 @@ public class DocLine_Cash extends DocLine
 		return m_DiscountAmt;
 	}
 	/**
-	 *  Get WriteOff
+	 *  Get Write Off Amount
 	 *  @return Write-Off Amount
 	 */
 	public BigDecimal getWriteOffAmt()

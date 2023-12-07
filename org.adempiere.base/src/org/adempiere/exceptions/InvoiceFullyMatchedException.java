@@ -14,13 +14,13 @@
 package org.adempiere.exceptions;
 
 /**
- * Throwed when an invoice is fully matched so no more receipts can be generated.
+ * Throw when an invoice is fully matched so no more receipts can be generated.
  * @author Teo Sarca, www.arhipac.ro
  */
 public class InvoiceFullyMatchedException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7474922528576404203L;
 	

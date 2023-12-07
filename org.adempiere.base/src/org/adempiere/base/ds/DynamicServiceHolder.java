@@ -25,8 +25,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
+ * Holder for OSGI service. Implemented using {@link ServiceTracker}.
  * @author hengsin
- *
  */
 public class DynamicServiceHolder<T> implements IServiceHolder<T>, IServicesHolder<T> {
 

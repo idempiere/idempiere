@@ -23,6 +23,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
+ * Base class to help simplify implementation of OSGi {@link EventHandler}.
  * @author hengsin
  *
  */
@@ -79,13 +80,13 @@ public abstract class AbstractEventHandler implements EventHandler {
 	}
 
 	/**
-	 * override this method to handle event
+	 * Sub class should override this method to handle event.
 	 * @param event
 	 */
 	protected abstract void doHandleEvent(Event event);
 
 	/**
-	 * override this method to register event that the class want to listen to
+	 * Sub class should override this method to register event that the class want to listen to
 	 */
 	protected abstract void initialize();
 

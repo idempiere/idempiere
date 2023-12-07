@@ -16,14 +16,14 @@ package org.adempiere.base;
 import org.compiere.util.PaymentExport;
 
 /**
- * PaymentExporter factory interface.
+ * Factory interface for {@link PaymentExport}.
  * @author mbozem
  */
 public interface IPaymentExporterFactory {
 
 	/**
 	 * @param className
-	 * @return payment exporter instance
+	 * @return new PaymentExport instance
 	 */
 	public PaymentExport newPaymentExporterInstance(String className);
 }

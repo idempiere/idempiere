@@ -27,26 +27,29 @@ package org.compiere.model;
 
 import java.util.Properties;
 
+/**
+ * Interface for multi-factor authentication
+ */
 public interface IMFAMechanism {
 
 	/**
-	 * Registration mechanism for the method
+	 * Registration mechanism for the method.
 	 * Here the registration method executes the actions expected for this method, like sending an email, or an SMS, or nothing
-	 * and creates the registration record
+	 * and creates the registration record.
 	 * @param ctx
 	 * @param method
 	 * @param prm         optional, for example the email
 	 * @param trxName
-	 * @return Object[] - first object is the String with the instructions to follow
-	 *                    second object is the registration generated
+	 * @return Object[] - first object is the String with the instructions to follow.<br/>
+	 *                    second object is the registration generated.<br/>
 	 *                    third and posterior objects are optional additional information for the method
-	 *                    like QRCode image for example, or html img object, or URL, or File
+	 *                    like QRCode image for example, or html img object, or URL, or File.
 	 */
 	Object[] register(Properties ctx, MMFAMethod method, String prm, String trxName);
 
 	/**
-	 * Complete/Validate a previous registration
-	 * Here it must check for validity of the mechanism, mark the record as valid or throw exception when not
+	 * Complete/Validate a previous registration.
+	 * Here it must check for validity of the mechanism, mark the record as valid or throw exception when not valid.
 	 * @param ctx
 	 * @param reg                The registration object
 	 * @param code               The code to be validated
@@ -60,7 +63,7 @@ public interface IMFAMechanism {
 	/**
 	 * Generate a validation code (when needed depending on the method)
 	 * @param reg
-	 * @return
+	 * @return validation code
 	 */
 	String generateValidationCode(MMFARegistration reg);
 

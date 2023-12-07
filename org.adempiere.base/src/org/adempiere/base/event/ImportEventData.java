@@ -13,13 +13,13 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import org.adempiere.base.event.annotations.imp.ImportEventDelegate;
 import org.adempiere.process.ImportProcess;
 import org.compiere.model.PO;
 
 /**
- *
+ * Event data for {@link ImportEventDelegate}.
  * @author hengsin
- *
  */
 public class ImportEventData {
 	private ImportProcess importProcess;
@@ -46,14 +46,14 @@ public class ImportEventData {
 	}
 
 	/**
-	 * @return the source
+	 * @return the source PO
 	 */
 	public PO getSource() {
 		return source;
 	}
 
 	/**
-	 * @return the target
+	 * @return the target PO
 	 */
 	public PO getTarget() {
 		return target;

@@ -30,8 +30,9 @@ import java.util.Set;
 import org.adempiere.exceptions.AdempiereException;
 
 /**
+ * {@link Properties} wrapper for access to thread local server context.<br/>
+ * Delegate all method calls to {@link ServerContext#getCurrentInstance()}.
  * @author hengsin
- *
  */
 public class ServerContextPropertiesWrapper extends Properties {
 
@@ -41,7 +42,7 @@ public class ServerContextPropertiesWrapper extends Properties {
 	private static final long serialVersionUID = 4383867755398619422L;
 
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public ServerContextPropertiesWrapper() {
 	}

@@ -38,14 +38,14 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8231854734466233461L;
 
 	/**
 	 * 	Get Active Request Processors
 	 *	@param ctx context
-	 *	@return array of Request 
+	 *	@return array of MRequestProcessor 
 	 */
 	public static MRequestProcessor[] getActive (Properties ctx)
 	{
@@ -78,20 +78,19 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MRequestProcessor.class);
 
-	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param R_RequestProcessor_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_RequestProcessor_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRequestProcessor(Properties ctx, String R_RequestProcessor_UU, String trxName) {
         super(ctx, R_RequestProcessor_UU, trxName);
 		if (Util.isEmpty(R_RequestProcessor_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_RequestProcessor_ID id
@@ -138,12 +137,12 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	}	//	MRequestProcessor
 	
 	
-	/**	The Lines						*/
+	/**	The Routes						*/
 	private MRequestProcessorRoute[]	m_routes = null;
 
 	/**
 	 * 	Get Routes
-	 *	@param reload reload data
+	 *	@param reload true to reload from DB
 	 *	@return array of routes
 	 */
 	public MRequestProcessorRoute[] getRoutes (boolean reload)
@@ -231,9 +230,9 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	}	//	deleteLog
 	
 	/**
-	 * 	Get the date Next run
-	 * 	@param requery requery database
-	 * 	@return date next run
+	 * 	Get next run date
+	 * 	@param requery true to re-query database
+	 * 	@return next run date
 	 */
 	public Timestamp getDateNextRun (boolean requery)
 	{
@@ -243,8 +242,8 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	}	//	getDateNextRun
 
 	/**
-	 * 	Get Unique ID
-	 *	@return Unique ID
+	 * 	Get Unique Server ID
+	 *	@return Unique Server ID
 	 */
 	public String getServerID()
 	{

@@ -30,7 +30,6 @@ import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Resource Type Model
  *	
@@ -45,7 +44,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MResourceType extends X_S_ResourceType implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 1738229111191830237L;
 	/** Cache */
@@ -100,11 +99,11 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 	}
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param S_ResourceType_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_ResourceType_UU  UUID key
+     * @param trxName Transaction
+     */
     public MResourceType(Properties ctx, String S_ResourceType_UU, String trxName) {
         super(ctx, S_ResourceType_UU, trxName);
     }
@@ -130,7 +129,7 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 	}	//	MResourceType
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MResourceType(MResourceType copy) 
@@ -139,7 +138,7 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -149,7 +148,7 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -204,6 +203,10 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 		return success;
 	}	//	afterSave
 	
+	/**
+	 * @param date
+	 * @return day start time stamp
+	 */
 	public Timestamp getDayStart(Timestamp date)
 	{
 		if(isTimeSlot())
@@ -216,6 +219,10 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 		}
 	}
 	
+	/**
+	 * @param date
+	 * @return day end time stamp
+	 */
 	public Timestamp getDayEnd(Timestamp date)
 	{
 		if(isTimeSlot())
@@ -228,6 +235,9 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 		}
 	}
 	
+	/**
+	 * @return duration of a day in millisecond
+	 */
 	public long getDayDurationMillis()
 	{
 		if (isTimeSlot())
@@ -241,18 +251,18 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 	}
 
 	/**
-	 * Get how many hours/day a is available.
-	 * Minutes, secords and millis are discarded.  
+	 * Get how many hours/day is available.
+	 * Minutes, seconds and millisecond are discarded.  
 	 * @return available hours
 	 */
 	public int getTimeSlotHours()
 	{
 		long hours;
-		 if (isTimeSlot())                			
-			 hours = (getTimeSlotEnd().getTime() - getTimeSlotStart().getTime()) / (60 * 60 * 1000);
-		 else 
-			 hours  = 24;
-		 return (int) hours;
+		if (isTimeSlot())                			
+			hours = (getTimeSlotEnd().getTime() - getTimeSlotStart().getTime()) / (60 * 60 * 1000);
+		else 
+			hours  = 24;
+		return (int) hours;
 	}
 	
 	/**
@@ -286,6 +296,10 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 		return availableDays;
 	}
 	
+	/**
+	 * @param dateTime
+	 * @return true if given day is available
+	 */
 	public boolean isDayAvailable(Timestamp dateTime)
 	{
 		if (!isActive())
@@ -336,7 +350,7 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 
 	/**
 	 * @return true if a resource of this type is generally available
-	 * 			(i.e. active, at least 1 day available, at least 1 hour available) 
+	 * 			(active, at least 1 day available and at least 1 hour available) 
 	 */
 	public boolean isAvailable()
 	{

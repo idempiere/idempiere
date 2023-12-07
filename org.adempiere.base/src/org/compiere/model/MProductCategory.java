@@ -42,7 +42,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MProductCategory extends X_M_Product_Category implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6444388652482234582L;
 
@@ -81,7 +81,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	 * 	Is Product in Category
 	 *	@param M_Product_Category_ID category
 	 *	@param M_Product_ID product
-	 *	@return true if product has category
+	 *	@return true if product is with M_Product_Category_ID
 	 */
 	public static boolean isCategory (int M_Product_Category_ID, int M_Product_ID)
 	{
@@ -128,27 +128,26 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 		return false;
 	}	//	isCategory
 	
-	/**	Categopry Cache				*/
+	/**	Category Cache				*/
 	private static ImmutableIntPOCache<Integer,MProductCategory>	s_cache = new ImmutableIntPOCache<Integer,MProductCategory>(Table_Name, 20);
 	/**	Product Cache				*/
 	private static CCache<Integer,Integer> s_products = new CCache<Integer,Integer>(I_M_Product.Table_Name, Table_Name + "|M_Product", 100);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MProductCategory.class);
-
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_Product_Category_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Product_Category_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProductCategory(Properties ctx, String M_Product_Category_UU, String trxName) {
         super(ctx, M_Product_Category_UU, trxName);
 		if (Util.isEmpty(M_Product_Category_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param M_Product_Category_ID id
@@ -183,7 +182,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	}	//	MProductCategory
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MProductCategory(MProductCategory copy) 
@@ -192,7 +191,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -202,7 +201,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -218,6 +217,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (hasLoopInTree()) {
@@ -234,6 +234,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)
@@ -250,11 +251,10 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	{
 		return MMPOLICY_FiFo.equals(getMMPolicy());
 	}	//	isFiFo
-	
-	
+		
 	/**
 	 *	Loop detection of product category tree.
-	 *  @return boolean
+	 *  @return true if loop detected
 	 */
 	public boolean hasLoopInTree ()
 	{
@@ -287,14 +287,13 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 		return false;
 	}	//	hasLoopInTree
 	
-
 	/**
-	 * Recursive search for parent nodes - climbs the to the root.
-	 * If there is a circle there is no root but it comes back to the start node.
+	 * Recursive search for parent nodes - climbs to the root.<br/>
+	 * If there is a circle, it will comes back to the start node.
 	 * @param parentCategoryId
 	 * @param categories
 	 * @param loopIndicatorId
-	 * @return
+	 * @return true if loop detected
 	 */
 	private boolean hasLoop(int parentCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) {
 		final Iterator<SimpleTreeNode> iter = categories.iterator();
@@ -326,7 +325,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	}
 
 	/**
-	 * Simple class for tree nodes.
+	 * Value object class for tree nodes.
 	 * @author Karsten Thiemann, kthiemann@adempiere.org
 	 *
 	 */

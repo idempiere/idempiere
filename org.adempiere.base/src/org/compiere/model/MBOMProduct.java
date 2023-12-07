@@ -34,10 +34,11 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MBOMProduct.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class MBOMProduct extends X_M_BOMProduct
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3431041011059529621L;
 

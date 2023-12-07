@@ -34,7 +34,7 @@ import org.compiere.util.Util;
 public class MRMATax extends X_M_RMATax 
 {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8702466449639865049L;
 
@@ -42,9 +42,9 @@ public class MRMATax extends X_M_RMATax
 	 * 	Get Tax Line for RMA Line
 	 *	@param line RMA line
 	 *	@param precision currency precision
-	 *	@param oldTax get old tax
+	 *	@param oldTax true to use old tax (get_ValueOld("C_Tax_ID"))
 	 *	@param trxName transaction
-	 *	@return existing or new tax
+	 *	@return existing or new MRMATax record
 	 */
 	public static MRMATax get (MRMALine line, int precision, 
 		boolean oldTax, String trxName)
@@ -125,9 +125,9 @@ public class MRMATax extends X_M_RMATax
 	 * 	Get Child Tax Lines for RMA Line
 	 *	@param line RMA line
 	 *	@param precision currency precision
-	 *	@param oldTax get old tax
+	 *	@param oldTax true to use old tax (get_ValueOld("C_Tax_ID"))
 	 *	@param trxName transaction
-	 *	@return existing or new tax
+	 *	@return existing or new MRMATax record or empty MRMATax array if line MTax has no child taxes
 	 */
 	public static MRMATax[] getChildTaxes(MRMALine line, int precision, 
 		boolean oldTax, String trxName)
@@ -215,19 +215,18 @@ public class MRMATax extends X_M_RMATax
 	private static CLogger	s_log	= CLogger.getCLogger (MRMATax.class);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_RMATax_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_RMATax_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRMATax(Properties ctx, String M_RMATax_UU, String trxName) {
         super(ctx, M_RMATax_UU, trxName);
 		if (Util.isEmpty(M_RMATax_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
-	 * 	Persistence Constructor
+	/**
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -251,7 +250,6 @@ public class MRMATax extends X_M_RMATax
 
 	/**
 	 * 	Load Constructor.
-	 * 	Set Precision and TaxIncluded for tax calculations!
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -268,7 +266,7 @@ public class MRMATax extends X_M_RMATax
 
 	/**
 	 * 	Get Precision
-	 * 	@return Returns the precision or 2
+	 * 	@return Returns set precision or 2
 	 */
 	private int getPrecision ()
 	{
@@ -297,8 +295,8 @@ public class MRMATax extends X_M_RMATax
 		return m_tax;
 	}	//	getTax
 	
-	/**************************************************************************
-	 * 	Calculate/Set Tax Amt from Order Lines
+	/**
+	 * 	Calculate/Set Tax Amt from RMA Lines
 	 * 	@return true if calculated
 	 */
 	public boolean calculateTaxFromLines ()
@@ -367,6 +365,7 @@ public class MRMATax extends X_M_RMATax
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRMATax[")

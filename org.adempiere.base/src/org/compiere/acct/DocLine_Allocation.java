@@ -24,7 +24,7 @@ import org.compiere.model.MPayment;
 import org.compiere.util.DB;
 
 /**
- *	Allocation Line
+ *	DocLine for {@link MAllocationLine}
  *	
  *  @author Jorg Janke
  *  @version $Id: DocLine_Allocation.java,v 1.2 2006/07/30 00:53:33 jjanke Exp $
@@ -71,11 +71,10 @@ public class DocLine_Allocation extends DocLine
 	private BigDecimal	m_DiscountAmt; 
 	private BigDecimal	m_WriteOffAmt; 
 	private BigDecimal	m_OverUnderAmt; 
-	
-	
+		
 	/**
 	 * 	Get Invoice C_Currency_ID
-	 *	@return 0 if no invoice -1 if not found
+	 *	@return C_Currency_ID (0 if no invoice, -1 if not found)
 	 */
 	public int getInvoiceC_Currency_ID()
 	{
@@ -106,59 +105,65 @@ public class DocLine_Allocation extends DocLine
 			.append("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
+		
 	/**
-	 * @return Returns the c_Order_ID.
+	 * @return C_Order_ID.
 	 */
 	public int getC_Order_ID ()
 	{
 		return m_C_Order_ID;
 	}
+	
 	/**
-	 * @return Returns the discountAmt.
+	 * @return discountAmt.
 	 */
 	public BigDecimal getDiscountAmt ()
 	{
 		return m_DiscountAmt;
 	}
+	
 	/**
-	 * @return Returns the overUnderAmt.
+	 * @return overUnderAmt.
 	 */
 	public BigDecimal getOverUnderAmt ()
 	{
 		return m_OverUnderAmt;
 	}
+	
 	/**
-	 * @return Returns the writeOffAmt.
+	 * @return writeOffAmt.
 	 */
 	public BigDecimal getWriteOffAmt ()
 	{
 		return m_WriteOffAmt;
 	}
+	
 	/**
-	 * @return Returns the c_CashLine_ID.
+	 * @return C_CashLine_ID.
 	 */
 	public int getC_CashLine_ID ()
 	{
 		return m_C_CashLine_ID;
 	}
+	
 	/**
-	 * @return Returns the c_Invoice_ID.
+	 * @return C_Invoice_ID.
 	 */
 	public int getC_Invoice_ID ()
 	{
 		return m_C_Invoice_ID;
 	}
+	
 	/**
-	 * @return Returns the c_Payment_ID.
+	 * @return C_Payment_ID.
 	 */
 	public int getC_Payment_ID ()
 	{
 		return m_C_Payment_ID;
 	}
-	/** adaxa-pb
-	 * @return Returns the C_Charge_ID.
+	
+	/** 
+	 * @return C_Charge_ID.
 	 */
 	public int getC_Charge_ID ()
 	{

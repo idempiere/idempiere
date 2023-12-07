@@ -29,11 +29,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
 /**
- * This List looks up services as extensions in equinox.
- * The extension point must be the class name of the service interface.
+ * This List looks up services as extensions in equinox.<br/>
+ * The extension point must be the class name of the service interface. <br/>
  * The query attributes are checked against the attributes
  * of the extension configuration element.
- *
+ * <p>
  * In order to minimize equinox lookups, a filtering iterator is used.
  * @author viola
  *
@@ -41,15 +41,23 @@ import org.eclipse.core.runtime.Platform;
  */
 public class ExtensionList<T> implements Iterable<T>{
 
+	/**
+	 * Iterator implementation for Equinox extension 
+	 * @param <E>
+	 */
 	public class ExtensionIterator<E extends T> implements Iterator<T> {
 
 		private int index = 0;
 
+		@Override
 		public boolean hasNext() {
 			iterateUntilAccepted();
 			return index<elements.length;
 		}
 
+		/**
+		 * Increment {@link #index} until we found the next matching element
+		 */
 		private void iterateUntilAccepted() {
 			while (index<elements.length) {
 				if (accept(elements[index]))
@@ -58,6 +66,10 @@ public class ExtensionList<T> implements Iterable<T>{
 			}
 		}
 
+		/**
+		 * @param element
+		 * @return true if current element match extension id or filter parameter
+		 */
 		private boolean accept(IConfigurationElement element) {
 			if (extensionId != null) {
 				String id = element.getDeclaringExtension().getUniqueIdentifier();
@@ -74,6 +86,7 @@ public class ExtensionList<T> implements Iterable<T>{
 		}
 
 		@SuppressWarnings("unchecked")
+		@Override
 		public E next() {
 			iterateUntilAccepted();
 			IConfigurationElement e = elements[index++];
@@ -95,6 +108,10 @@ public class ExtensionList<T> implements Iterable<T>{
 			}
 		}
 
+		/**
+		 * Not supported, will throw exception.
+		 */
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
@@ -123,6 +140,12 @@ public class ExtensionList<T> implements Iterable<T>{
 		}
 	}
 
+	/**
+	 * @param type
+	 * @param extensionPointId
+	 * @param extensionId
+	 * @param query
+	 */
 	public ExtensionList(Class<T> type, String extensionPointId, String extensionId, ServiceQuery query) {
 		this(type, extensionPointId);
 		this.extensionId = extensionId;
@@ -133,6 +156,11 @@ public class ExtensionList<T> implements Iterable<T>{
 		}
 	}
 	
+	/**
+	 * Sort by extension priority (if defined in extensions-priorty.properties).
+	 * @param elementArray
+	 * @return sorted elementArray
+	 */
 	private IConfigurationElement[] sort(IConfigurationElement[] elementArray) {
 		IConfigurationElement[] result = elementArray;
 		TreeMap<Integer, List<IConfigurationElement>> elementMap = new TreeMap<Integer, List<IConfigurationElement>>();
@@ -169,14 +197,25 @@ public class ExtensionList<T> implements Iterable<T>{
 		return result;
 	}
 
+	/**
+	 * @return Iterator 
+	 */
 	public Iterator<T> iterator() {
 		return new ExtensionIterator<T>();
 	}
 
+	/**
+	 * add filter for discovery of extensions 
+	 * @param attribute
+	 * @param value
+	 */
 	public void addFilter(String attribute, String value) {
 		filters.put(attribute, value);
 	}
 
+	/**
+	 * @return first matching extension
+	 */
 	public T first() {
 		Iterator<T> i = iterator();
 		if (!i.hasNext())
@@ -184,6 +223,9 @@ public class ExtensionList<T> implements Iterable<T>{
 		return i.next();
 	}
 
+	/**
+	 * @return list of matching extension
+	 */
 	public List<T> asList() {
 		List<T> result = new ArrayList<T>();
 		for (T t : this) {

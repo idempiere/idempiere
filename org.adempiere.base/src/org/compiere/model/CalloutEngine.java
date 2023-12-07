@@ -27,7 +27,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- *	Callout Engine.
+ *	Callout Engine. Default implementation of {@link Callout} interface using Java reflection.
  *	
  *  @author Jorg Janke
  *  @version $Id: CalloutEngine.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -58,8 +58,8 @@ public class CalloutEngine implements Callout
 	/**
 	 *	Start Callout.
 	 *  <p>
-	 *	Callout's are used for cross field validation and setting values in other fields
-	 *	when returning a non empty (error message) string, an exception is raised
+	 *	Callout's are used for field validation, cross field validation and setting values in other fields.
+	 *	When returning a non empty (error message) string, an exception is raised.
 	 *  <p>
 	 *	When invoked, the Tab model has the new value!
 	 *
@@ -72,6 +72,7 @@ public class CalloutEngine implements Callout
 	 *  @param oldValue The old value
 	 *  @return Error message or ""
 	 */
+	@Override
 	public String start (Properties ctx, String methodName, int WindowNo,
 		GridTab mTab, GridField mField, Object value, Object oldValue)
 	{
@@ -132,7 +133,7 @@ public class CalloutEngine implements Callout
 	
 	/**
 	 *	Conversion Rules.
-	 *	Convert a String
+	 *	Use by ImpFormatRow to convert an input value.
 	 *
 	 *	@param methodAndArgs   method name and additional arguments (in brackets, separated by commas)
 	 *  @param value    the value
@@ -196,13 +197,9 @@ public class CalloutEngine implements Callout
 		return null;
 	}	//	getMethod
 
-	/*************************************************************************/
-	
-	//private static boolean s_calloutActive = false;
-	
 	/**
 	 * 	Is the current callout being called in the middle of 
-     *  another callout doing her works.
+     *  another callout doing her works.<br/>
      *  Callout can use GridTab.getActiveCalloutInstance() method
      *  to find out callout for which field is running.
 	 *	@return true if active

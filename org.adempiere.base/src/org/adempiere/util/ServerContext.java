@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- *
+ * Inheritable thread local server context
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $

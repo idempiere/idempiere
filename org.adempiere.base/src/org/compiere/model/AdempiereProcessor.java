@@ -22,7 +22,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 
 /**
- *	Processor Interface
+ *	Background Processor Interface
  *	
  *  @author Jorg Janke
  *  @version $Id: AdempiereProcessor.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
@@ -85,26 +85,26 @@ public interface AdempiereProcessor
 	public String getServerID();
 
 	/**
-	 * 	Get the date Next run
+	 * 	Get next run date
 	 * 	@param requery requery database
 	 * 	@return date next run
 	 */
 	public Timestamp getDateNextRun (boolean requery);
 
 	/**
-	 * 	Set Date Next Run
+	 * 	Set Next Run Date
 	 *	@param dateNextWork next work
 	 */
 	public void setDateNextRun(Timestamp dateNextWork);
 
 	/**
-	 * 	Get the date Last run
+	 * 	Get Last run date
 	 * 	@return date lext run
 	 */
 	public Timestamp getDateLastRun ();
 
 	/**
-	 * 	Set Date Last Run
+	 * 	Set Last Run Date
 	 *	@param dateLastRun last run
 	 */
 	public void setDateLastRun(Timestamp dateLastRun);
@@ -116,7 +116,7 @@ public interface AdempiereProcessor
 	public boolean save();
 
 	/**
-	 * 	Save throwing exception
+	 * Save throwing exception
 	 * @throws AdempiereException
 	 * @see #save()
 	 */

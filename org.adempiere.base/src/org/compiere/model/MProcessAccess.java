@@ -21,7 +21,6 @@ import java.util.Properties;
 
 import org.compiere.util.Util;
 
-
 /**
  *	Process Access Model
  *	
@@ -30,27 +29,24 @@ import org.compiere.util.Util;
  */
 public class MProcessAccess extends X_AD_Process_Access
 {
-	
-	
-	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -2468108979800832171L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Process_Access_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Process_Access_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProcessAccess(Properties ctx, String AD_Process_Access_UU, String trxName) {
         super(ctx, AD_Process_Access_UU, trxName);
 		if (Util.isEmpty(AD_Process_Access_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored

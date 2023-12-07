@@ -17,8 +17,9 @@ import java.io.Serializable;
 /**
  * Use by CConnection to store authentication info for application server.
  * @author Low Heng Sin
- *
+ * @deprecated
  */
+@Deprecated(forRemoval = true, since = "11")
 public class SecurityPrincipal implements Serializable {
 	/**
 	 * generated serial version id

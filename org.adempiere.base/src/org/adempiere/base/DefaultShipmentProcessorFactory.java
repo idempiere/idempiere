@@ -20,8 +20,9 @@ import org.adempiere.model.IShipmentProcessor;
 import org.compiere.util.CLogger;
 
 /**
+ * Default {@link IShipmentProcessorFactory} implementation for core.<br/>
+ * Load {@link IShipmentProcessor} instance from plugin.xml (org.adempiere.model.IShipmentProcessor extension point) or class path.
  * @author hengsin
- *
  */
 public class DefaultShipmentProcessorFactory implements IShipmentProcessorFactory {
 

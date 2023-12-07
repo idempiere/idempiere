@@ -45,7 +45,7 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.DisplayType;
 
 /**
- * 
+ * Shipping rate inquiry for sales order
  * @author Elaine
  *
  */
@@ -188,6 +188,15 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		return "@OK@";
 	}
 	
+	/**
+	 * Create MShippingTransaction record for order.
+	 * @param ctx
+	 * @param m_order
+	 * @param action
+	 * @param isPriviledgedRate
+	 * @param trxName
+	 * @return MShippingTransaction
+	 */
 	public static MShippingTransaction createShippingTransaction(Properties ctx, MOrder m_order, String action, boolean isPriviledgedRate, String trxName)
 	{
 		MShipper shipper = new MShipper(ctx, m_order.getM_Shipper_ID(), trxName);

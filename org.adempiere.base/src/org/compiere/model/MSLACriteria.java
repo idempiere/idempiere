@@ -34,7 +34,9 @@ import org.idempiere.cache.ImmutablePOSupport;
  *	
  *  @author Jorg Janke
  *  @version $Id: MSLACriteria.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
+ *  @deprecated not fully implement, marked as inactive in application dictionary
  */
+@Deprecated
 public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSupport
 {
 	/**

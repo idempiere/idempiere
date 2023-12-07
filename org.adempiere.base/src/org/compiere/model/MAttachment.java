@@ -38,13 +38,11 @@ import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.MimeType;
 import org.compiere.util.Util;
-
 
 /**
  *	Attachment Model.
- *	One Attachment can have multiple entries
+ *	One Attachment can have multiple entries (usually stored as zip files).
  *	
  *  @author Jorg Janke
  *  
@@ -57,12 +55,11 @@ import org.compiere.util.Util;
 public class MAttachment extends X_AD_Attachment
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5615231734722570658L;
 
 	/**
-	 * 
 	 * @param ctx
 	 * @param AD_Table_ID
 	 * @param Record_ID
@@ -74,7 +71,7 @@ public class MAttachment extends X_AD_Attachment
 	}
 	
 	/**
-	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
+	 * 	Get Attachment (if there are more than one attachment, it gets the first in no specific order)
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -87,7 +84,7 @@ public class MAttachment extends X_AD_Attachment
 	}	//	get
 	
 	/**
-	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
+	 * 	Get Attachment (if there are more than one attachment, it gets the first in no specific order)
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -121,20 +118,19 @@ public class MAttachment extends X_AD_Attachment
 	private static CLogger	s_log	= CLogger.getCLogger (MAttachment.class);
 	
 	private MStorageProvider provider;
-
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Attachment_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Attachment_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAttachment(Properties ctx, String AD_Attachment_UU, String trxName) {
         super(ctx, AD_Attachment_UU, trxName);
 		initAttachmentStoreDetails(ctx, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Attachment_ID id
@@ -148,7 +144,6 @@ public class MAttachment extends X_AD_Attachment
 	}	//	MAttachment
 
 	/**
-	 * 	New Constructor
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -162,7 +157,6 @@ public class MAttachment extends X_AD_Attachment
 	}
 
 	/**
-	 * 	New Constructor
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -217,7 +211,7 @@ public class MAttachment extends X_AD_Attachment
 	public final String ATTACHMENT_FOLDER_PLACEHOLDER = "%ATTACHMENT_FOLDER%";
 	
 	/**
-	 * Get the isStoreAttachmentsOnFileSystem and attachmentPath for the client.
+	 * Initialize storage provider
 	 * @param ctx
 	 * @param trxName
 	 */
@@ -236,6 +230,7 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param AD_Client_ID client
 	 *	@param AD_Org_ID org
 	 */
+	@Override
 	public void setClientOrg(int AD_Client_ID, int AD_Org_ID) 
 	{
 		super.setClientOrg(AD_Client_ID, AD_Org_ID);
@@ -259,6 +254,7 @@ public class MAttachment extends X_AD_Attachment
 	 * 	Get Text Msg
 	 *	@return trimmed message
 	 */
+	@Override
 	public String getTextMsg ()
 	{
 		String msg = super.getTextMsg ();
@@ -271,6 +267,7 @@ public class MAttachment extends X_AD_Attachment
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MAttachment[");
@@ -289,8 +286,8 @@ public class MAttachment extends X_AD_Attachment
 	}	//	toString
 
 	/**
-	 * 	Add new Data Entry
-	 *	@param file file
+	 * 	Add new item to attachment
+	 *	@param file file content of new item
 	 *	@return true if added
 	 */
 	public boolean addEntry (File file)
@@ -349,9 +346,9 @@ public class MAttachment extends X_AD_Attachment
 	}	//	addEntry
 
 	/**
-	 * 	Add new Data Entry
-	 *	@param name name
-	 *	@param data data
+	 * 	Add new item to attachment
+	 *	@param name name of new item
+	 *	@param data data content of new item
 	 *	@return true if added
 	 */
 	public boolean addEntry (String name, byte[] data)
@@ -362,7 +359,7 @@ public class MAttachment extends X_AD_Attachment
 	}	//	addEntry
 	
 	/**
-	 * 	Add Entry
+	 * 	Add item to attachment
 	 * 	@param item attachment entry
 	 * 	@return true if added
 	 */
@@ -411,7 +408,7 @@ public class MAttachment extends X_AD_Attachment
 	
 	/**
 	 * 	Get Attachment Entries as array
-	 * 	@return array or null
+	 * 	@return array of attachment item or null
 	 */
 	public MAttachmentEntry[] getEntries ()
 	{
@@ -426,7 +423,7 @@ public class MAttachment extends X_AD_Attachment
 	 * Delete Entry
 	 * 
 	 * @param index
-	 *            index
+	 *            index of item to delete
 	 * @return true if deleted
 	 */
 	public boolean deleteEntry(int index) {
@@ -456,13 +453,12 @@ public class MAttachment extends X_AD_Attachment
 			loadLOBData();
 		return m_items.size();
 	}	//	getEntryCount
-	
-	
+		
 	/**
 	 * Get Entry Name
 	 * 
 	 * @param index
-	 *            index
+	 *            index of item
 	 * @return name or null
 	 */
 	public String getEntryName(int index) {
@@ -482,7 +478,7 @@ public class MAttachment extends X_AD_Attachment
 	} // getEntryName
 
 	/**
-	 * 	Dump Entry Names
+	 * 	Dump Entry Names to standard out
 	 */
 	public void dumpEntryNames()
 	{
@@ -503,7 +499,7 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * 	Get Entry Data
-	 * 	@param index index
+	 * 	@param index index of item
 	 * 	@return data or null
 	 */
 	public byte[] getEntryData (int index)
@@ -516,9 +512,9 @@ public class MAttachment extends X_AD_Attachment
 	
 	/**
 	 * 	Get Entry File with name
-	 * 	@param index index
+	 * 	@param index index of item
 	 *	@param fileName optional file name
-	 *	@return file
+	 *	@return file or null
 	 */	
 	public File getEntryFile (int index, String fileName)
 	{
@@ -530,9 +526,9 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * 	Get Entry File with name
-	 * 	@param index index
+	 * 	@param index index of item
 	 *	@param file file
-	 *	@return file
+	 *	@return file or null
 	 */	
 	public File getEntryFile (int index, File file)
 	{
@@ -543,7 +539,7 @@ public class MAttachment extends X_AD_Attachment
 	}	//	getEntryFile
 
 	/**
-	 * 	Save Entry Data in Zip File format
+	 * 	Save attachment content through storage provider
 	 *	@return true if saved
 	 */
 	private boolean saveLOBData()
@@ -555,7 +551,7 @@ public class MAttachment extends X_AD_Attachment
 	}
 	
 	/**
-	 * 	Load Data into local m_data
+	 * 	Ask storage provider to load attachment data into local m_data
 	 *	@return true if success
 	 */
 	private boolean loadLOBData ()
@@ -571,6 +567,7 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (Util.isEmpty(getTitle()))
@@ -585,7 +582,7 @@ public class MAttachment extends X_AD_Attachment
 	}	//	beforeSave
 
 	/**
-	 * 	Delete Entry Data in Zip File format
+	 * 	Ask storage provider to remove attachment content
 	 *	@return true if saved
 	 */
 	@Override
@@ -599,56 +596,10 @@ public class MAttachment extends X_AD_Attachment
 		return true;
 	} 	//	postDelete
 	
-	/**************************************************************************
-	 * 	Test
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-	//	System.setProperty("javax.activation.debug", "true");
-	
-		System.out.println(MimeType.getMimeType("data.xls"));
-		System.out.println(MimeType.getMimeType("data.cvs"));
-		System.out.println(MimeType.getMimeType("data.txt"));
-		System.out.println(MimeType.getMimeType("data.log"));
-		System.out.println(MimeType.getMimeType("data.html"));
-		System.out.println(MimeType.getMimeType("data.htm"));
-		System.out.println(MimeType.getMimeType("data.png"));
-		System.out.println(MimeType.getMimeType("data.gif"));
-		System.out.println(MimeType.getMimeType("data.jpg"));
-		System.out.println(MimeType.getMimeType("data.xml"));
-		System.out.println(MimeType.getMimeType("data.rtf"));
-
-		System.exit(0);
-		
-		org.compiere.Adempiere.startupEnvironment(true);
-		MAttachment att = new MAttachment(Env.getCtx(), 100, 0, null);
-		att.addEntry(new File ("C:\\Adempiere\\Dev.properties"));
-		att.addEntry(new File ("C:\\Adempiere\\index.html"));
-		att.saveEx();
-		System.out.println (att);
-		att.dumpEntryNames();
-		int AD_Attachment_ID = att.getAD_Attachment_ID();
-		//
-		System.out.println ("===========================================");
-		att = new MAttachment (Env.getCtx(), AD_Attachment_ID, null);
-		System.out.println (att);
-		att.dumpEntryNames();
-		System.out.println ("===========================================");
-		MAttachmentEntry[] entries = att.getEntries();
-		for (int i = 0; i < entries.length; i++)
-		{
-			MAttachmentEntry entry = entries[i];
-			entry.dump();
-		}
-		System.out.println ("===========================================");
-		att.delete(true);		
-	}	//	main
-
 	/**
 	 * Update existing entry
-	 * @param i
-	 * @param file
+	 * @param i index of item
+	 * @param file file content of item
 	 * @return true if success, false otherwise
 	 */
 	public boolean updateEntry(int i, File file) 
@@ -689,8 +640,8 @@ public class MAttachment extends X_AD_Attachment
 	
 	/**
 	 * Update existing entry
-	 * @param i
-	 * @param data
+	 * @param i index of item
+	 * @param data byte[] content of item 
 	 * @return true if success, false otherwise
 	 */
 	public boolean updateEntry(int i, byte[] data)
@@ -718,7 +669,7 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * IDEMPIERE-530
-	 * Get the attachment ID based on table_id and record_id
+	 * Get the attachment ID based on table_id and record_uu
 	 * @param Table_ID
 	 * @param Record_UU record UUID
 	 * @return AD_Attachment_ID 
@@ -729,6 +680,10 @@ public class MAttachment extends X_AD_Attachment
 		return attachid;
 	}
 
+	/**
+	 * Save attachment as zip file
+	 * @return zip file
+	 */
 	public File saveAsZip() {
 		if (getEntryCount() < 1) {
 			return null;
@@ -785,8 +740,8 @@ public class MAttachment extends X_AD_Attachment
 	}
 
 	/**
-	 * Set Storage Provider
-	 * Used temporarily for the process to migrate storage provider
+	 * Set Storage Provider.
+	 * Used temporarily by the storage migration process to migrate storage provider.
 	 * @param p Storage provider
 	 */
 	public void setStorageProvider(MStorageProvider p) {

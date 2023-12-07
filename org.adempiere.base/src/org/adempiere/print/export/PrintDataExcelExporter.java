@@ -73,14 +73,31 @@ extends AbstractExcelExporter
 	private int m_previousFormCol = -1;
 	private String m_previousAreaType = null;
 	
+	/**
+	 * @param printData
+	 * @param printFormat
+	 */
 	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat) {
 		this(printData, printFormat, null, null);
 	}
 	
+	/**
+	 * @param printData
+	 * @param printFormat
+	 * @param childPrintFormatDetails
+	 * @param colSuppressRepeats
+	 */
 	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Map<MPrintFormatItem, PrintData> childPrintFormatDetails, Boolean[] colSuppressRepeats) {
 		this(printData, printFormat, childPrintFormatDetails, colSuppressRepeats, null);
 	}
 	
+	/**
+	 * @param printData
+	 * @param printFormat
+	 * @param childPrintFormatDetails
+	 * @param colSuppressRepeats
+	 * @param query
+	 */
 	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Map<MPrintFormatItem, PrintData> childPrintFormatDetails, Boolean[] colSuppressRepeats, MQuery query) {
 		super();
 		this.m_printData = printData;
@@ -95,6 +112,11 @@ extends AbstractExcelExporter
 		return columns.size();
 	}
 
+	/**
+	 * @param row
+	 * @param col
+	 * @return PrintDataElement for row and col or null
+	 */
 	private PrintDataElement getPDE(int row, int col) {
 		if (m_printData.getRowIndex() != row)
 			m_printData.setRowIndex(row);
@@ -123,6 +145,7 @@ extends AbstractExcelExporter
 		}
 		return null;
 	}
+	
 	@Override
 	public int getDisplayType(int row, int col) {
 		PrintDataElement pde = getPDE(row, col);
@@ -236,6 +259,7 @@ extends AbstractExcelExporter
 		m_printData.setRowIndex(row);
 	}
 
+	@Override
 	protected int getCurrentRow() {
 		return m_printData.getRowIndex();
 	}

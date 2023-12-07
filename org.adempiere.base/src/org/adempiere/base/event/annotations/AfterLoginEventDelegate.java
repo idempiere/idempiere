@@ -29,9 +29,10 @@ import org.adempiere.base.event.LoginEventData;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate for login event.<br/>
+ * To handle login event, create a subclass of this and uses the {@link AfterLogin} annotation to
+ * annotate the method for the login event topic.
  * @author hengsin
- * 
  */
 public abstract class AfterLoginEventDelegate extends EventDelegate {
 

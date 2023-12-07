@@ -37,13 +37,12 @@ import org.compiere.util.Util;
 public class MLandedCostAllocation extends X_C_LandedCostAllocation
 {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8645283018475474574L;
 
-
 	/**
-	 * 	Get Cost Allocations for invoice Line
+	 * 	Get Landed Cost Allocations for invoice Line
 	 *	@param ctx context
 	 *	@param C_InvoiceLine_ID invoice line
 	 *	@param trxName trx
@@ -81,21 +80,20 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 	
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MLandedCostAllocation.class);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_LandedCostAllocation_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_LandedCostAllocation_UU  UUID key
+     * @param trxName Transaction
+     */
     public MLandedCostAllocation(Properties ctx, String C_LandedCostAllocation_UU, String trxName) {
         super(ctx, C_LandedCostAllocation_UU, trxName);
 		if (Util.isEmpty(C_LandedCostAllocation_UU))
 			setInitialDefaults();
     }
 
-	/***************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_LandedCostAllocation_ID id
@@ -127,7 +125,6 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 	{
 		super (ctx, rs, trxName);
 	}	//	MLandedCostAllocation
-
 	
 	/**
 	 * 	Parent Constructor
@@ -159,10 +156,10 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 	 * 	Set Allocation Qty (e.g. free products)
 	 *	@param Qty
 	 */
+	@Override
 	public void setQty (BigDecimal Qty)
 	{
 		super.setQty (Qty);
 	}	//	setQty
-	
-	
+		
 }	//	MLandedCostAllocation

@@ -35,16 +35,16 @@ import org.compiere.util.Util;
 public class MDistributionLine extends X_GL_DistributionLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6148743556518054326L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param GL_DistributionLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param GL_DistributionLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MDistributionLine(Properties ctx, String GL_DistributionLine_UU, String trxName) {
         super(ctx, GL_DistributionLine_UU, trxName);
 		if (Util.isEmpty(GL_DistributionLine_UU))
@@ -97,7 +97,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	}	//	MDistributionLine
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDistributionLine(MDistributionLine copy) 
@@ -106,7 +106,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -116,7 +116,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -198,9 +198,8 @@ public class MDistributionLine extends X_GL_DistributionLine
 				get_TrxName());
 		return acct;
 	}	//	setAccount
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Distribution Amount
 	 *	@return Returns the amt.
 	 */
@@ -218,7 +217,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 		m_amt = amt;
 	}	//	setAmt
 	
-	/**************************************************************************
+	/**
 	 * 	Get Distribution Quantity
 	 *	@return Returns the qty.
 	 */
@@ -237,8 +236,8 @@ public class MDistributionLine extends X_GL_DistributionLine
 	}	//	setQty
 	
 	/**
-	 * 	Set Distribution Amount
-	 *	@param amt The amt to set to be multiplied by percent.
+	 * 	Calculate Distribution Amount
+	 *	@param amt The amt to be multiplied by percent.
 	 *	@param precision precision
 	 */
 	public void calculateAmt (BigDecimal amt, int precision)
@@ -248,7 +247,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	}	//	setAmt
 
 	/**
-	 * 	Set Distribution Quantity
+	 * 	Calculate Distribution Quantity
 	 *	@param qty The qty to set to be multiplied by percent.
 	 */
 	public void calculateQty (BigDecimal qty)
@@ -256,13 +255,13 @@ public class MDistributionLine extends X_GL_DistributionLine
 		m_qty = qty.multiply(getPercent());
 		m_qty = m_qty.divide(Env.ONEHUNDRED, RoundingMode.HALF_UP);
 	}	//	setAmt
-
 	
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getLine() == 0)
@@ -320,6 +319,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)

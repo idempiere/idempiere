@@ -43,7 +43,7 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Simple wrapper for the osgi event admin service.
+ * Simple wrapper for the osgi event admin service.<br/>
  * Usage: EventManager.getInstance().sendEvent/postEvent
  * @author hengsin
  *

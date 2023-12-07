@@ -24,7 +24,9 @@ import java.util.Properties;
  *	
  *  @author Jorg Janke
  *  @version $Id: MRegistrationValue.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 public class MRegistrationValue extends X_A_RegistrationValue
 	implements Comparable<Object>
 {

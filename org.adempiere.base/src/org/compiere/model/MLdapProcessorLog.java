@@ -21,26 +21,24 @@ import java.util.Properties;
 
 import org.compiere.util.Util;
 
-
 /**
- *	LDAP Server Log
+ *	LDAP Processor Log
  *  @author Jorg Janke
  *  @version $Id$
  */
 public class MLdapProcessorLog extends X_AD_LdapProcessorLog implements AdempiereProcessorLog
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -2587778949013986055L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_LdapProcessorLog_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_LdapProcessorLog_UU  UUID key
+     * @param trxName Transaction
+     */
     public MLdapProcessorLog(Properties ctx, String AD_LdapProcessorLog_UU, String trxName) {
         super(ctx, AD_LdapProcessorLog_UU, trxName);
 		if (Util.isEmpty(AD_LdapProcessorLog_UU))

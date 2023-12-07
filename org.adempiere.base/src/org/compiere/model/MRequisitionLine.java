@@ -30,6 +30,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+
 /**
  *	Requisition Line Model
  *	
@@ -46,14 +47,14 @@ import org.compiere.util.Util;
 public class MRequisitionLine extends X_M_RequisitionLine
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -2567343619431184322L;
 
 	/**
-	 * Get corresponding Requisition Line for given Order Line
+	 * Get corresponding Requisition Line for given Order
 	 * @param ctx
-	 * @param C_Order_ID order line
+	 * @param C_Order_ID order
 	 * @param trxName
 	 * @return Requisition Line array
 	 */
@@ -69,7 +70,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	}
 	
 	/**
-	 * UnLink Requisition Lines for given Order
+	 * UnLink Requisition Lines from Order
 	 * @param ctx
 	 * @param C_Order_ID
 	 * @param trxName
@@ -83,7 +84,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		}
 	}
 	
-
 	/**
 	 * Get corresponding Requisition Line(s) for given Order Line
 	 * @param ctx
@@ -101,7 +101,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	}
 
 	/**
-	 * UnLink Requisition Lines for given Order Line
+	 * UnLink Requisition Lines from Order Line
 	 * @param ctx
 	 * @param C_OrderLine_ID
 	 * @param trxName
@@ -115,13 +115,12 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		}
 	}
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_RequisitionLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_RequisitionLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRequisitionLine(Properties ctx, String M_RequisitionLine_UU, String trxName) {
         super(ctx, M_RequisitionLine_UU, trxName);
 		if (Util.isEmpty(M_RequisitionLine_UU))
@@ -139,6 +138,12 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		this (ctx, M_RequisitionLine_ID, trxName, (String[]) null);
 	}	//	MRequisitionLine
 
+	/**
+	 * @param ctx
+	 * @param M_RequisitionLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MRequisitionLine(Properties ctx, int M_RequisitionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_RequisitionLine_ID, trxName, virtualColumns);
 		if (M_RequisitionLine_ID == 0)
@@ -269,13 +274,13 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		BigDecimal lineNetAmt = getQty().multiply(getPriceActual());
 		super.setLineNetAmt (lineNetAmt);
 	}	//	setLineNetAmt
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -323,19 +328,20 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	 *	@param success save was success
 	 *	@return true if saved
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
 		return updateHeader();
 	}	//	afterSave
-
 	
 	/**
 	 * 	After Delete
 	 *	@param success
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -350,7 +356,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	}
 
 	/**
-	 * 	Update Header
+	 * 	Update Header (M_Requisition)
 	 *	@return header updated
 	 */
 	private boolean updateHeader()
