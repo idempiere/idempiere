@@ -1718,28 +1718,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
-     *  @deprecated
      *  @return IDs if selection present
      *  author ashley
      */
-    protected ArrayList<Object> getSelectedRowKeys()
-    {
-        ArrayList<Object> selectedDataList = new ArrayList<Object>();
-        Collection<Object> lsKeyValueOfSelectedRow = getSelectedRowInfo().keySet();
-        if (lsKeyValueOfSelectedRow.size() == 0)
-        {
-            return selectedDataList;
-        }
+	protected ArrayList<Object> getSelectedRowKeys() {
+		ArrayList<Object> selectedDataList = new ArrayList<Object>();
 
-        if (p_multipleSelection)
-        {        	
-        	for (Object key : lsKeyValueOfSelectedRow){        		
-        		selectedDataList.add(key);
-        	}
-        }
-
-        return selectedDataList;
-    }   //  getSelectedRowKeys
+		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
+			if(rowInfo.getValue().get(0) instanceof IDColumn idColumn)
+				selectedDataList.add(idColumn.getRecord_ID());
+		}
+		return selectedDataList;
+	}  //  getSelectedRowKeys
 
     /**
 	 *	Get selected Keys as Collection
