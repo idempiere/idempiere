@@ -25,14 +25,13 @@
 package org.adempiere.util;
 
 /**
- * 
+ * Factory interface for {@link IReservationTracer}
  * @author hengsin
- *
  */
 public interface IReservationTracerFactory {
 
 	/**
-	 * 
+	 * new {@link IReservationTracer} instance
 	 * @param C_DocType_ID
 	 * @param documentNo
 	 * @param lineNo

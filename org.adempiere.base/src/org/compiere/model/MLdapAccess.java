@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
  *	Ldap Access Log 
  *	
@@ -28,18 +27,17 @@ import java.util.Properties;
  */
 public class MLdapAccess extends X_AD_LdapAccess
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 7873484319494804583L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_LdapAccess_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_LdapAccess_UU  UUID key
+     * @param trxName Transaction
+     */
     public MLdapAccess(Properties ctx, String AD_LdapAccess_UU, String trxName) {
         super(ctx, AD_LdapAccess_UU, trxName);
     }
@@ -65,8 +63,4 @@ public class MLdapAccess extends X_AD_LdapAccess
 	{
 		super (ctx, rs, trxName);
 	}	//	MLdapAccess
-	
-	
-	
-	
 }	//	MLdapAccess

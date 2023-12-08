@@ -43,7 +43,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 
 /**
- * 	System Record (just one)
+ * 	System Record (there should be just one AD_System record in the DB)
  *
  *  @author Jorg Janke
  *  @version $Id: MSystem.java,v 1.3 2006/10/09 00:22:28 jjanke Exp $
@@ -54,7 +54,7 @@ import org.compiere.util.TimeUtil;
 public class MSystem extends X_AD_System
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1917493005917422880L;
 
@@ -86,19 +86,19 @@ public class MSystem extends X_AD_System
 	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_System_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_System_UU  UUID key
+     * @param trxName Transaction
+     */
     public MSystem(Properties ctx, String AD_System_UU, String trxName) {
         super(ctx, AD_System_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
-	 *	@param ignored id
+	 *	@param ignored ignore
 	 *	@param mtrxName transaction
 	 */
 	public MSystem (Properties ctx, int ignored, String mtrxName)
@@ -124,7 +124,7 @@ public class MSystem extends X_AD_System
 	}	//	MSystem
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MSystem(MSystem copy) 
@@ -133,7 +133,7 @@ public class MSystem extends X_AD_System
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -143,7 +143,7 @@ public class MSystem extends X_AD_System
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -181,7 +181,7 @@ public class MSystem extends X_AD_System
 
 	/**
 	 * 	Get DB Address
-	 *	@return address
+	 *	@return DB connection URL
 	 */
 	public String getDBAddress ()
 	{
@@ -217,7 +217,7 @@ public class MSystem extends X_AD_System
 	/**
 	 * 	Get Profile Info
 	 * 	@param recalc recalculate
-	 *	@return profile
+	 *	@return List of active AD_Client.Value separated by the '|' character
 	 */
 	public String getProfileInfo (boolean recalc)
 	{
@@ -257,6 +257,7 @@ public class MSystem extends X_AD_System
 	 *	@param newRecord new
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Mandatory Values
@@ -293,9 +294,11 @@ public class MSystem extends X_AD_System
 	}	//	beforeSave
 	
 	/**
-	 * 	Save Record (ID=0)
+	 * 	Save Record (ID=0).
+	 *  Override to always perform update.
 	 * 	@return true if saved
 	 */
+	@Override
 	public boolean save()
 	{
 		if (!beforeSave(false))
@@ -307,6 +310,7 @@ public class MSystem extends X_AD_System
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		return "MSystem[" + getName()
@@ -314,12 +318,13 @@ public class MSystem extends X_AD_System
 			+ ",ReleaseNo=" + getReleaseNo()
 			+ "]";
 	}	//	toString
-
 	
-	/**************************************************************************
+	/**
 	 * 	Check validity
 	 *	@return true if valid
+	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isValid()
 	{
 		if (getName() == null || getName().length() < 2)
@@ -343,17 +348,18 @@ public class MSystem extends X_AD_System
 	/**
 	 * 	Is there a PDF License
 	 *	@return true if there is a PDF License
+	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isPDFLicense()
 	{
 		String key = getSummary();
 		return key != null && key.length() > 25;
 	}	//	isPDFLicense
-	
-	
-	/**************************************************************************
-	 * 	Set/Derive Info if more then a day old
-	 * 	@return true if set
+		
+	/**
+	 * 	Update System Info if more then a day old
+	 * 	@return true if updated
 	 */
 	public boolean setInfo()
 	{
@@ -418,7 +424,6 @@ public class MSystem extends X_AD_System
 			rs = pstmt.executeQuery ();
 			if (rs.next())
 			{
-			//	dbAddress = rs.getString(1);
 				dbName = rs.getString(2);
 				setDBInstance(dbName.toLowerCase());
 			}
@@ -435,7 +440,7 @@ public class MSystem extends X_AD_System
 	}	//	setDBInfo
 	
 	/**
-	 * 	Get DB Info SQL
+	 * 	Get DB Info SQL. Only implemented for Oracle.
 	 *	@param dbType database type
 	 *	@return sql
 	 */
@@ -449,11 +454,12 @@ public class MSystem extends X_AD_System
 		//
 		return "SELECT NULL,NULL FROM DUAL WHERE 1=0";
 	}	//	getDBInfoSQL
-	
-	
+		
 	/**
 	 * 	Print info
+	 *  @deprecated
 	 */
+	@Deprecated
 	public void info()
 	{
 		if (!CLogMgt.isLevelFine())
@@ -516,11 +522,13 @@ public class MSystem extends X_AD_System
 	}
 
 	/**
-	 * Verify if the system manages properties in a more secure way
-	 * for Windows and swing client the properties are managed as always
-	 * for other systems (like Linux) the default is to manage it with more security
-	 * this can be overridden passing the parameter -DIDEMPIERE_SECURE_PROPERTIES=false to the JVM
-	 * @return true if properties needs to be managed more secure
+	 * <pre>
+	 * Verify if the system manages properties in a more secure way.
+	 * For Windows and swing client, the properties are managed as before.
+	 * For other systems (like Linux), the default is to manage it with more security.
+	 * This can be overridden by passing the parameter -DIDEMPIERE_SECURE_PROPERTIES=false to the JVM.
+	 * </pre>
+	 * @return true if properties needs to be managed in a more secure way
 	 */
 	public static boolean isSecureProps() {
 		if (Env.isWindows() || Ini.isClient())
@@ -530,7 +538,7 @@ public class MSystem extends X_AD_System
 
 	/**
 	 * The system allows to use login prefix for tenant
-	 * @return
+	 * @return true if login support the use of prefix for identification of tenant 
 	 */
 	public static boolean isUseLoginPrefix() {
 		String loginWithTenantPrefix = MSysConfig.getValue(MSysConfig.LOGIN_WITH_TENANT_PREFIX, "N");
@@ -539,7 +547,7 @@ public class MSystem extends X_AD_System
 
 	/**
 	 * The system forces to use login prefix for tenant
-	 * @return
+	 * @return true if the use of prefix for identification of tenant is mandatory
 	 */
 	public static boolean isLoginPrefixMandatory() {
 		String loginWithTenantPrefix = MSysConfig.getValue(MSysConfig.LOGIN_WITH_TENANT_PREFIX, "N");

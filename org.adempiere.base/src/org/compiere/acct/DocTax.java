@@ -37,7 +37,6 @@ import org.compiere.util.Env;
 public final class DocTax
 {
 	/**
-	 *	Create Tax
 	 *  @param C_Tax_ID tax
 	 *  @param name name
 	 *  @param rate rate
@@ -149,7 +148,7 @@ public final class DocTax
 
 	/**
 	 *  Get Name of Tax
-	 *  @return name
+	 *  @return name of tax
 	 */
 	public String getName()
 	{
@@ -158,7 +157,7 @@ public final class DocTax
 
 	/**
 	 * 	Get C_Tax_ID
-	 *	@return tax id
+	 *	@return C_Tax_ID
 	 */
 	public int getC_Tax_ID()
 	{
@@ -185,8 +184,8 @@ public final class DocTax
 	}	//	addIncludedTax
 	
 	/**
-	 * 	Get Included Tax
-	 *	@return tax amount
+	 * 	Get Included Tax Amount
+	 *	@return included tax amount
 	 */
 	public BigDecimal getIncludedTax()
 	{
@@ -195,7 +194,7 @@ public final class DocTax
 	
 	/**
 	 * 	Get Included Tax Difference
-	 *	@return tax ampunt - included amount
+	 *	@return tax amount - included amount
 	 */
 	public BigDecimal getIncludedTaxDifference()
 	{
@@ -224,7 +223,7 @@ public final class DocTax
 
 	/**
 	 * 	Is Sales Tax
-	 *	@return sales tax
+	 *	@return true if this is sales tax
 	 */
 	public boolean isSalesTax()
 	{

@@ -32,7 +32,9 @@ import java.util.HashMap;
  * Interface for Address Lookup Web Service.
  * https://sourceforge.net/p/adempiere/feature-requests/137/
  * The Address lookup class interface
+ * @deprecated
  */
+@Deprecated(forRemoval = true, since = "11")
 public interface AddressLookupInterface {
 	
 	/*

@@ -36,16 +36,16 @@ import org.compiere.util.Util;
 public class MProjectLine extends X_C_ProjectLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2668549463273628848L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_ProjectLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_ProjectLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProjectLine(Properties ctx, String C_ProjectLine_UU, String trxName) {
         super(ctx, C_ProjectLine_UU, trxName);
 		if (Util.isEmpty(C_ProjectLine_UU))
@@ -63,6 +63,12 @@ public class MProjectLine extends X_C_ProjectLine
 		this (ctx, C_ProjectLine_ID, trxName, (String[]) null);
 	}	//	MProjectLine
 
+	/**
+	 * @param ctx
+	 * @param C_ProjectLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MProjectLine(Properties ctx, int C_ProjectLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_ProjectLine_ID, trxName, virtualColumns);
 		if (C_ProjectLine_ID == 0)
@@ -112,7 +118,7 @@ public class MProjectLine extends X_C_ProjectLine
 	private MProject	m_parent = null;
 	
 	/**
-	 *	Get the next Line No
+	 *	Get and set next Line No
 	 */
 	private void setLine()
 	{
@@ -134,8 +140,8 @@ public class MProjectLine extends X_C_ProjectLine
 	}	//	setMProjectIssue
 
 	/**
-	 *	Set PO
-	 *	@param C_OrderPO_ID po id
+	 *	Set purchase order
+	 *	@param C_OrderPO_ID purchase order id
 	 */
 	public void setC_OrderPO_ID (int C_OrderPO_ID)
 	{
@@ -159,7 +165,7 @@ public class MProjectLine extends X_C_ProjectLine
 	
 	/**
 	 * 	Get Limit Price if exists
-	 *	@return limit
+	 *	@return limit price (limit price of product or planned price of this record)
 	 */
 	public BigDecimal getLimitPrice()
 	{
@@ -180,6 +186,7 @@ public class MProjectLine extends X_C_ProjectLine
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MProjectLine[");
@@ -200,6 +207,7 @@ public class MProjectLine extends X_C_ProjectLine
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getLine() == 0)
@@ -250,8 +258,7 @@ public class MProjectLine extends X_C_ProjectLine
 		}
 		
 		return true;
-	}	//	beforeSave
-	
+	}	//	beforeSave	
 		
 	/**
 	 * 	After Save
@@ -259,6 +266,7 @@ public class MProjectLine extends X_C_ProjectLine
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -266,13 +274,13 @@ public class MProjectLine extends X_C_ProjectLine
 		updateHeader();
 		return success;
 	}	//	afterSave
-	
-	
+		
 	/**
 	 * 	After Delete
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -282,7 +290,7 @@ public class MProjectLine extends X_C_ProjectLine
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Header
+	 * 	Update Header (C_Project, C_ProjectPhase and C_ProjectTask)
 	 */
 	private void updateHeader()
 	{
@@ -332,7 +340,6 @@ public class MProjectLine extends X_C_ProjectLine
 			if (no != 1)
 				log.log(Level.SEVERE, "updateHeader project task - #" + no);
 		}
-		/*onhate + globalqss BF 3060367*/		
 	} // updateHeader
 
 } // MProjectLine

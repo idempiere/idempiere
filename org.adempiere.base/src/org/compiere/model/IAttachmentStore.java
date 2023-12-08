@@ -17,16 +17,42 @@
 
 package org.compiere.model;
 
-
-
+/**
+ * Store provider interface for storage of attachment content
+ */
 public interface IAttachmentStore {
 
+	/**
+	 * Load binary attachment content
+	 * @param attach
+	 * @param prov
+	 * @return true if successfully loaded
+	 */
     public boolean loadLOBData(MAttachment attach,MStorageProvider prov);
 
+    /**
+     * Save attachment content
+     * @param attach
+     * @param prov
+     * @return true if successfully save
+     */
 	boolean save(MAttachment attach, MStorageProvider prov);
 
+	/**
+	 * Delete stored attachment content
+	 * @param attach
+	 * @param prov
+	 * @return true if successfully deleted
+	 */
 	public boolean delete(MAttachment attach, MStorageProvider prov);
 
+	/**
+	 * Delete attachment content by index
+	 * @param mAttachment
+	 * @param provider
+	 * @param index index of content to delete (for e.g zip entry #2 of a zip file)
+	 * @return true if successfully deleted
+	 */
 	public boolean deleteEntry(MAttachment mAttachment, MStorageProvider provider, int index);
 
 }

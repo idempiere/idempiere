@@ -37,7 +37,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7966846617443248102L;
 
@@ -59,11 +59,11 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	protected static CLogger			s_log = CLogger.getCLogger(MAcctSchemaDefault.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_AcctSchema_Default_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AcctSchema_Default_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAcctSchemaDefault(Properties ctx, String C_AcctSchema_Default_UU, String trxName) {
         super(ctx, C_AcctSchema_Default_UU, trxName);
     }
@@ -91,7 +91,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	}	//	MAcctSchemaDefault
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAcctSchemaDefault(MAcctSchemaDefault copy)
@@ -100,7 +100,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -110,7 +110,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -122,8 +122,8 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	}
 	
 	/**
-	 * 	Get Acct Info list 
-	 *	@return list
+	 * 	Get value of all columns that ends with Acct 
+	 *	@return KeyNamePair(id, column name) list
 	 */
 	public ArrayList<KeyNamePair> getAcctInfo()
 	{
@@ -156,6 +156,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)

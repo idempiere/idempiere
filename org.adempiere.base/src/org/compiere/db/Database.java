@@ -56,8 +56,9 @@ public class Database
 	private static final CCache<String, IServiceReferenceHolder<AdempiereDatabase>> s_databaseReferenceCache = new CCache<>(null, "IDatabase", 2, false);
 	
 	/**
-	 *  Get Database by database Id.
-	 *  @return database
+	 *  Get database adapter by database type.
+	 *  @param type
+	 *  @return database adapter
 	 */
 	public static AdempiereDatabase getDatabase (String type)
 	{
@@ -79,6 +80,9 @@ public class Database
 		return db;
 	}
 	
+	/**
+	 * @return array of supported database name
+	 */
 	public static String[] getDatabaseNames()
 	{
 		List<String> names = new ArrayList<String>();
@@ -90,10 +94,9 @@ public class Database
 	}
 	
 	/**
-	 *  Get Database Driver by url string.
-	 *  Access to database specific functionality.
+	 *  Get Database adapter by URL string.
 	 *  @param url JDBC connection url
-	 *  @return iDempiere Database Driver
+	 *  @return iDempiere Database Adapter
 	 */
 	public static AdempiereDatabase getDatabaseFromURL(String url)
 	{
@@ -112,9 +115,9 @@ public class Database
 	}
 
 	/**
-	 *  Apply common validations for database object names
+	 *  Apply common validations for database identifier.
 	 *  @param identifier String
-	 *  @return String error-code - null if not error
+	 *  @return error-code or null (if no error)
 	 */
 	public static String isValidIdentifier(String identifier)
 	{

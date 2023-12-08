@@ -44,7 +44,7 @@ import org.compiere.util.Util;
 public class DBException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1961265420169932726L;
 
@@ -56,7 +56,7 @@ public class DBException extends AdempiereException
 
 	/**
 	 * Create a new DBException based on a SQLException
-	 * @param e Specicy the Exception cause
+	 * @param e Specify the Exception cause
 	 */
 	public DBException(Exception e)
 	{
@@ -139,7 +139,11 @@ public class DBException extends AdempiereException
     	return (e != null ? e.getSQLState() : null);
     }
 
-
+    /**
+     * @param e
+     * @param errorCode
+     * @return true if e is SQL exception and errorCode is the error code of SQL exception e.
+     */
     private static final boolean isErrorCode(Exception e, int errorCode) {
     	if (e == null) {
     		return false;
@@ -158,6 +162,11 @@ public class DBException extends AdempiereException
     	return false;
     }
 
+    /**
+     * @param e
+     * @param SQLState
+     * @return true if e is SQL exception and SQLState is the SQL state of SQL exception e
+     */
     private static final boolean isSQLState(Exception e, String SQLState) {
     	if (e == null) {
     		return false;
@@ -178,6 +187,7 @@ public class DBException extends AdempiereException
     /**
      * Check if Unique Constraint Exception (aka ORA-00001)
      * @param e exception
+     * @return true if e is unique constraint exception
      */
     public static boolean isUniqueContraintError(Exception e) {
     	if (DB.isPostgreSQL())
@@ -189,6 +199,7 @@ public class DBException extends AdempiereException
     /**
      * Check if "child record found" exception (aka ORA-02292)
      * @param e exception
+     * @return true if e is child record found exception (typically for delete)
      */
     public static boolean isChildRecordFoundError(Exception e) {
     	if (DB.isPostgreSQL())
@@ -199,6 +210,7 @@ public class DBException extends AdempiereException
     /**
      * Check if "invalid identifier" exception (aka ORA-00904)
      * @param e exception
+     * @return true if e is invalid identifier exception
      */
     public static boolean isInvalidIdentifierError(Exception e) {
     	if (DB.isPostgreSQL())
@@ -207,8 +219,10 @@ public class DBException extends AdempiereException
     }
 
     /**
-     * Check if "invalid username/password" exception (aka ORA-01017)
+     * Check if "invalid username/password" exception (aka ORA-01017).<br/>
+     * Only implemented for Oracle.
      * @param e exception
+     * @return true if e is invalid user/password exception
      */
     public static boolean isInvalidUserPassError(Exception e) {
     	return isErrorCode(e, 1017);
@@ -217,6 +231,7 @@ public class DBException extends AdempiereException
     /**
      * Check if "time out" exception (aka ORA-01013)
      * @param e
+     * @return true if e is time out exception
      */
     public static boolean isTimeout(Exception e) {
     	SQLException se = null;
@@ -236,6 +251,7 @@ public class DBException extends AdempiereException
     /**
      * Check if value too large for column exception (aka ORA-12899)
      * @param e exception
+     * @return true if e is value too large for column exception
      */
     public static boolean isValueTooLarge(Exception e) {
     	if (DB.isPostgreSQL())
@@ -246,6 +262,7 @@ public class DBException extends AdempiereException
 
     /**
      * @param e
+     * @return default AD message for exception or null
      */
     public static String getDefaultDBExceptionMessage(Exception e) {
     	if (isUniqueContraintError(e)) {

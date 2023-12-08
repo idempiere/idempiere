@@ -32,8 +32,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for Column Callout. This should only be used with class that implements the IColumnCallout interface.
- * You can repeat the annotation multiple time for different table and column name combination
+ * Annotation for Column Callout. <br/>
+ * This should only be used for class that implements the IColumnCallout interface.
+ * You can repeat the annotation multiple time for different table and column name combination.<br/>
  * Note that you can't use * for both tableName and columnName attribute.
  * @author hengsin
  *

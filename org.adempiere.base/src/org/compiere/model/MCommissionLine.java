@@ -32,16 +32,16 @@ import org.compiere.util.Util;
 public class MCommissionLine extends X_C_CommissionLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2167566875518334780L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_CommissionLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CommissionLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCommissionLine(Properties ctx, String C_CommissionLine_UU, String trxName) {
         super(ctx, C_CommissionLine_UU, trxName);
 		if (Util.isEmpty(C_CommissionLine_UU))
@@ -85,6 +85,12 @@ public class MCommissionLine extends X_C_CommissionLine
 		super(ctx, rs, trxName);
 	}	//	MCommissionLine
 
+	/**
+	 * @param ctx
+	 * @param C_CommissionLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommissionLine(Properties ctx, int C_CommissionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CommissionLine_ID, trxName, virtualColumns);
 	}

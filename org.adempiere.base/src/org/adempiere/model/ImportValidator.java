@@ -22,5 +22,13 @@ public interface ImportValidator
 	/** Event triggered after an import record is processed */
 	public static final int TIMING_AFTER_IMPORT = 40;
 	
+	/**
+	 * Handle import event
+	 * @param process
+	 * @param importModel
+	 * @param targetModel
+	 * @param timing {@link #TIMING_BEFORE_VALIDATE}, {@link #TIMING_AFTER_VALIDATE},
+	 * {@link #TIMING_BEFORE_IMPORT} or {@link #TIMING_AFTER_IMPORT}.
+	 */
 	public void validate(ImportProcess process, Object importModel, Object targetModel, int timing);
 }

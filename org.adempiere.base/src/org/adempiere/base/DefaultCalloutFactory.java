@@ -21,10 +21,9 @@ import org.compiere.model.Callout;
 import org.compiere.util.CLogger;
 
 /**
+ * Default {@link ICalloutFactory} implementation for core.<br/>
+ * Load {@link Callout} instance from plugin.xml (org.compiere.model.Callout extension point) or class path.
  * @author a42niem
- *
- * This is just a blueprint for creation of a CalloutFactory 
- * 
  */
 public class DefaultCalloutFactory implements ICalloutFactory {
 
@@ -96,7 +95,8 @@ public class DefaultCalloutFactory implements ICalloutFactory {
 		        }
 			}
 		}
-		log.log(Level.FINE, "Required method " + methodName + " not found in class " + className);
+		if (log.isLoggable(Level.FINE))
+			log.log(Level.FINE, "Required method " + methodName + " not found in class " + className);
 		return null;
 	}
 

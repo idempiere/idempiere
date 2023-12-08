@@ -28,7 +28,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- *  Physical Inventory Line Model
+ *  Inventory Document Line Model
  *
  *  @author Jorg Janke
  *  @version $Id: MInventoryLine.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
@@ -40,7 +40,7 @@ import org.compiere.util.Util;
 public class MInventoryLine extends X_M_InventoryLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3973418005721380194L;
 
@@ -63,18 +63,18 @@ public class MInventoryLine extends X_M_InventoryLine
 	}	//	get
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_InventoryLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_InventoryLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MInventoryLine(Properties ctx, String M_InventoryLine_UU, String trxName) {
         super(ctx, M_InventoryLine_UU, trxName);
 		if (Util.isEmpty(M_InventoryLine_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param M_InventoryLine_ID line
@@ -85,6 +85,12 @@ public class MInventoryLine extends X_M_InventoryLine
 		this (ctx, M_InventoryLine_ID, trxName, (String[]) null);
 	}	//	MInventoryLine
 
+	/**
+	 * @param ctx
+	 * @param M_InventoryLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MInventoryLine(Properties ctx, int M_InventoryLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_InventoryLine_ID, trxName, virtualColumns);
 		if (M_InventoryLine_ID == 0)
@@ -116,7 +122,7 @@ public class MInventoryLine extends X_M_InventoryLine
 
 	/**
 	 * 	Detail Constructor.
-	 * 	Locator/Product/AttributeSetInstance must be unique
+	 * 	Locator/Product/AttributeSetInstance must be unique.
 	 *	@param inventory parent
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
@@ -147,6 +153,14 @@ public class MInventoryLine extends X_M_InventoryLine
 			setQtyInternalUse (QtyInternalUse);
 	}	//	MInventoryLine
 
+	/**
+	 * @param inventory
+	 * @param M_Locator_ID
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param QtyBook
+	 * @param QtyCount
+	 */
 	public MInventoryLine (MInventory inventory, 
 			int M_Locator_ID, int M_Product_ID, int M_AttributeSetInstance_ID,
 			BigDecimal QtyBook, BigDecimal QtyCount)
@@ -155,7 +169,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MInventoryLine(MInventoryLine copy) 
@@ -164,7 +178,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -174,7 +188,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -211,7 +225,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}	//	getProduct
 	
 	/**
-	 * 	Set Count Qty - enforce UOM 
+	 * 	Set Count Qty - enforce product UOM precision 
 	 *	@param QtyCount qty
 	 */
 	@Override
@@ -230,7 +244,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}	//	setQtyCount
 
 	/**
-	 * 	Set Internal Use Qty - enforce UOM 
+	 * 	Set Internal Use Qty - enforce product UOM precision 
 	 *	@param QtyInternalUse qty
 	 */
 	@Override
@@ -265,7 +279,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}	//	addDescription
 
 	/**
-	 * 	Get Parent
+	 * 	Set Parent
 	 *	@param parent parent
 	 */
 	protected void setParent(MInventory parent)
@@ -288,6 +302,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MInventoryLine[");
@@ -306,6 +321,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -428,7 +444,7 @@ public class MInventoryLine extends X_M_InventoryLine
 
 	/**
 	 * Is Internal Use Inventory
-	 * @return true if is internal use inventory
+	 * @return true if this is an internal use inventory document
 	 */
 	public boolean isInternalUseInventory() {
 		//  IDEMPIERE-675
@@ -438,7 +454,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/**
-	 * Get Movement Qty (absolute value)
+	 * Get Movement Qty
 	 * <li>negative value means outgoing trx
 	 * <li>positive value means incoming trx
 	 * @return movement qty
@@ -453,7 +469,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/**
-	 * @return true if is an outgoing transaction
+	 * @return true if is an outgoing transaction (movement qty < 0)
 	 */
 	public boolean isSOTrx() {
 		return getMovementQty().signum() < 0;

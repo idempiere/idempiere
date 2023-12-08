@@ -26,8 +26,6 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
-
 /**
  *	Accounting Schema GL info
  *	
@@ -38,9 +36,8 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSupport
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -53120274583638950L;
 
@@ -60,14 +57,13 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	
 	/**	Logger							*/
 	protected static CLogger			s_log = CLogger.getCLogger(MAcctSchemaGL.class);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_AcctSchema_GL_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AcctSchema_GL_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAcctSchemaGL(Properties ctx, String C_AcctSchema_GL_UU, String trxName) {
         super(ctx, C_AcctSchema_GL_UU, trxName);
 		if (Util.isEmpty(C_AcctSchema_GL_UU))
@@ -108,7 +104,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	}	//	MAcctSchemaGL
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAcctSchemaGL(MAcctSchemaGL copy)
@@ -117,7 +113,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -127,7 +123,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -139,8 +135,8 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	}
 	
 	/**
-	 * 	Get Acct Info list 
-	 *	@return list
+	 * Get value of all columns that ends with Acct 
+	 * @return KeyNamePair(id, column name) list
 	 */
 	public ArrayList<KeyNamePair> getAcctInfo()
 	{
@@ -173,6 +169,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)

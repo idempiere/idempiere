@@ -18,14 +18,13 @@ import org.adempiere.model.ITaxProvider;
 /**
  * Tax provider factory interface
  * @author Elaine
- *
  */
 public interface ITaxProviderFactory {
 
 	/**
 	 * Create new tax provider instance
 	 * @param className
-	 * @return tax provider instance
+	 * @return new ITaxProvider instance
 	 */
 	public ITaxProvider newTaxProviderInstance(String className);
 }

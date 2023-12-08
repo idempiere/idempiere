@@ -46,7 +46,7 @@ import org.compiere.util.Util;
 
 /**
  * Generic provider of zoom targets. Contains pieces of {@link org.adempiere.webui.WZoomAcross}
- * methods <code>getZoomTargets</code> and <code>addTarget</code>
+ * methods <code>getZoomTargets</code> and <code>addTarget</code>.
  * 
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194  ] Advanced Zoom and RelationTypes
  * 
@@ -57,6 +57,7 @@ public class GenericZoomProvider implements IZoomProvider {
 
 	private Map<String, Integer> queries;
 
+	@Override
 	public List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(PO po) {
 		// User preference
 		boolean detailedZoom = "Y".equals(Env.getContext(Env.getCtx(), "P|IsDetailedZoomAcross"));
@@ -190,6 +191,14 @@ public class GenericZoomProvider implements IZoomProvider {
 		}
 	}
 
+	/**
+	 * 
+	 * @param targetTableName
+	 * @param targetColumnName
+	 * @param AD_Tab_ID
+	 * @param po
+	 * @return MQuery
+	 */
 	private MQuery evaluateQuery(String targetTableName, String targetColumnName, int AD_Tab_ID, final PO po) {
 		Properties ctx = Env.getCtx();
 		int clientID = Env.getAD_Client_ID(ctx);
@@ -283,6 +292,12 @@ public class GenericZoomProvider implements IZoomProvider {
 		return query;
 	}
 
+	/**
+	 * @param object
+	 * @param sql
+	 * @param timeOut
+	 * @return sql value from DB
+	 */
 	private int getSQLValueTimeout(Object object, String sql, int timeOut) {
     	int retValue = -1;
     	PreparedStatement pstmt = null;

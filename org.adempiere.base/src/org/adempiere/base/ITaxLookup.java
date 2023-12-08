@@ -28,9 +28,8 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /**
- * Interface to lookup C_Tax record id
+ * Interface to lookup C_Tax record id (C_Tax_ID)
  * @author hengsin
- *
  */
 public interface ITaxLookup {
 	

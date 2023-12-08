@@ -16,7 +16,7 @@ package org.adempiere.base;
 import java.util.List;
 
 /**
- * 
+ * Holder interface for list of service
  * @author hengsin
  *
  * @param <T>

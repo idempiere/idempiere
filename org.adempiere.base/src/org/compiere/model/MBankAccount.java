@@ -26,7 +26,6 @@ import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *  Bank Account Model
  *
@@ -36,7 +35,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3792366454862697171L;
 
@@ -72,7 +71,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	} //	get
 
 	/**
-	 * Get updateable copy of MBankAccount from cache
+	 * Get updateable copy of MBankAccount from cache (immutable)
 	 * @param ctx
 	 * @param C_BankAccount_ID
 	 * @param trxName
@@ -91,11 +90,11 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer,MBankAccount>(Table_Name, 5);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_BankAccount_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BankAccount_UU  UUID key
+     * @param trxName Transaction
+     */
     public MBankAccount(Properties ctx, String C_BankAccount_UU, String trxName) {
         super(ctx, C_BankAccount_UU, trxName);
 		if (Util.isEmpty(C_BankAccount_UU))
@@ -137,7 +136,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	}	//	MBankAccount
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MBankAccount(MBankAccount copy) 
@@ -146,7 +145,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -156,7 +155,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -171,6 +170,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	 * 	String representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MBankAccount[")
@@ -205,7 +205,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	 *	@param newRecord new record
 	 *	@return success  
 	 */
-	
+	@Override
 	protected boolean beforeSave(boolean newRecord) {
 
 		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
@@ -227,6 +227,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)

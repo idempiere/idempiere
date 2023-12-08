@@ -19,16 +19,15 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
+ * OSGi console command for printing of stack trace.
  * @author hengsin
- *
  */
 public class StackTraceCommand implements CommandProvider {
 
 	/**
-	 *
+	 * default constructor
 	 */
 	public StackTraceCommand() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)

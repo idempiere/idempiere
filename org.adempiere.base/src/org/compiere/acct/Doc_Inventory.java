@@ -74,6 +74,7 @@ public class Doc_Inventory extends Doc
 	 *  Load Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails()
 	{		
 		MInventory inventory = (MInventory)getPO();
@@ -101,7 +102,7 @@ public class Doc_Inventory extends Doc
 	}   //  loadDocumentDetails
 
 	/**
-	 *	Load Invoice Line
+	 *	Load inventory lines
 	 *	@param inventory inventory
 	 *  @return DocLine Array
 	 */
@@ -160,6 +161,7 @@ public class Doc_Inventory extends Doc
 	 *  Get Balance
 	 *  @return Zero (always balanced)
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -177,6 +179,7 @@ public class Doc_Inventory extends Doc
 	 *  @param as account schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//  create Fact Header
@@ -439,6 +442,10 @@ public class Doc_Inventory extends Doc
 		return facts;
 	}   //  createFact
 
+	/**
+	 * @param line
+	 * @return true if line is for reversal
+	 */
 	private boolean isReversal(DocLine line) {
 		return m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}

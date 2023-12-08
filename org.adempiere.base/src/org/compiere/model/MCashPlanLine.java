@@ -23,14 +23,14 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	Cash Plan model
+ *	Cash Plan Line model
  *
  *  @author Carlos Ruiz - GlobalQSS
  */
 public class MCashPlanLine extends X_C_CashPlanLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5535407146793681944L;
 
@@ -39,16 +39,16 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	private static CLogger s_log = CLogger.getCLogger(MCashPlanLine.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_CashPlanLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CashPlanLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCashPlanLine(Properties ctx, String C_CashPlanLine_UU, String trxName) {
         super(ctx, C_CashPlanLine_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_CashPlanLine_ID id
@@ -70,11 +70,12 @@ public class MCashPlanLine extends X_C_CashPlanLine
 		super(ctx, rs, trxName);
 	}	//	MCashPlanLine
 
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if it can be sabed
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Charge
@@ -98,6 +99,7 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	 *	@param success success
 	 *	@return saved
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -106,7 +108,7 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	}	//	afterSave
 
 	/**
-	 *	Update Header
+	 *	Update Header (C_CashPlan)
 	 *	@return true if header updated
 	 */
 	protected boolean updateHeader()

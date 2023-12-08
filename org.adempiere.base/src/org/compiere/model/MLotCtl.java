@@ -30,16 +30,16 @@ import org.compiere.util.Util;
 public class MLotCtl extends X_M_LotCtl
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1020114756336617138L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_LotCtl_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_LotCtl_UU  UUID key
+     * @param trxName Transaction
+     */
     public MLotCtl(Properties ctx, String M_LotCtl_UU, String trxName) {
         super(ctx, M_LotCtl_UU, trxName);
 		if (Util.isEmpty(M_LotCtl_UU))
@@ -80,10 +80,10 @@ public class MLotCtl extends X_M_LotCtl
 	}	//	MLotCtl
 
 	/**
-	 * 	Create new Lot.
-	 * 	Increments Current Next and Commits
+	 * 	Create and save new Lot.
+	 * 	Increments Current Next and Save.
 	 *	@param M_Product_ID product
-	 *	@return saved Lot
+	 *	@return new Lot
 	 */
 	public MLot createLot (int M_Product_ID)
 	{

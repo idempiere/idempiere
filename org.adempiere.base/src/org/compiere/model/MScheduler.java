@@ -31,7 +31,6 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Scheduler Model
  *
@@ -45,14 +44,14 @@ public class MScheduler extends X_AD_Scheduler
 	implements AdempiereProcessor, AdempiereProcessor2, ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -2427229109274587547L;
 
 	/**
-	 * 	Get Active
+	 * 	Get active schedulers
 	 *	@param ctx context
-	 *	@return active processors
+	 *	@return active schedulers
 	 */
 	public static MScheduler[] getActive (Properties ctx)
 	{
@@ -65,11 +64,11 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	getActive
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Scheduler_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Scheduler_UU  UUID key
+     * @param trxName Transaction
+     */
     public MScheduler(Properties ctx, String AD_Scheduler_UU, String trxName) {
         super(ctx, AD_Scheduler_UU, trxName);
 		if (Util.isEmpty(AD_Scheduler_UU))
@@ -108,7 +107,7 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	MScheduler
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MScheduler(MScheduler copy) 
@@ -117,7 +116,7 @@ public class MScheduler extends X_AD_Scheduler
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -127,7 +126,7 @@ public class MScheduler extends X_AD_Scheduler
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -147,7 +146,7 @@ public class MScheduler extends X_AD_Scheduler
 
 	/**
 	 * 	Get Server ID
-	 *	@return id
+	 *	@return server id
 	 */
 	public String getServerID ()
 	{
@@ -162,9 +161,9 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	getServerID
 
 	/**
-	 * 	Get Date Next Run
+	 * 	Get Next Run time stamp
 	 *	@param requery requery
-	 *	@return date next run
+	 *	@return next run time stamp
 	 */
 	public Timestamp getDateNextRun (boolean requery)
 	{
@@ -174,8 +173,8 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	getDateNextRun
 
 	/**
-	 * 	Get Logs
-	 *	@return logs
+	 * 	Get scheduler logs
+	 *	@return scheduler logs
 	 */
 	public AdempiereProcessorLog[] getLogs ()
 	{
@@ -190,8 +189,8 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	getLogs
 
 	/**
-	 * 	Delete old Request Log
-	 *	@return number of records
+	 * 	Delete old scheduler logs
+	 *	@return number of records deleted
 	 */
 	public int deleteLog()
 	{
@@ -214,9 +213,9 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	getProcess
 
 	/**
-	 * 	Get Parameters
-	 *	@param reload reload
-	 *	@return parameter
+	 * 	Get Scheduler Parameters
+	 *	@param reload true to reload from DB
+	 *	@return scheduler parameters
 	 */
 	public MSchedulerPara[] getParameters (boolean reload)
 	{
@@ -236,9 +235,9 @@ public class MScheduler extends X_AD_Scheduler
 	}	//	getParameter
 
 	/**
-	 * 	Get Recipients
-	 *	@param reload reload
-	 *	@return Recipients
+	 * 	Get Scheduler Recipients for notificationss
+	 *	@param reload true to reload from DB
+	 *	@return Scheduler Recipients
 	 */
 	public MSchedulerRecipient[] getRecipients (boolean reload)
 	{
@@ -260,7 +259,7 @@ public class MScheduler extends X_AD_Scheduler
 
 	/**
 	 * 	Get Recipient AD_User_IDs
-	 *	@return array of user IDs
+	 *	@return array of recipient user IDs
 	 */
 	public Integer[] getRecipientAD_User_IDs()
 	{
@@ -269,8 +268,8 @@ public class MScheduler extends X_AD_Scheduler
 	
 	/**
 	 * 	Get Recipient AD_User_IDs
-	 *  @param excludeUploadRecipient
-	 *	@return array of user IDs
+	 *  @param excludeUploadRecipient true to exclude recipient with IsUpload=Y
+	 *	@return array of recipient user IDs
 	 */
 	public Integer[] getRecipientAD_User_IDs(boolean excludeUploadRecipient)
 	{
@@ -369,6 +368,7 @@ public class MScheduler extends X_AD_Scheduler
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MScheduler[");
@@ -417,8 +417,8 @@ public class MScheduler extends X_AD_Scheduler
 	}
 
 	/**
-	 * 
-	 * @return list of upload recipients
+	 * Get scheduler upload recipients
+	 * @return array of upload recipients
 	 */
 	public MSchedulerRecipient[] getUploadRecipients() {
 		List<MSchedulerRecipient> list = new ArrayList<>();

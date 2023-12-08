@@ -31,16 +31,16 @@ import org.compiere.util.Util;
 public class MElement extends X_C_Element
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7656092284157893366L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_Element_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Element_UU  UUID key
+     * @param trxName Transaction
+     */
     public MElement(Properties ctx, String C_Element_UU, String trxName) {
         super(ctx, C_Element_UU, trxName);
 		if (Util.isEmpty(C_Element_UU))
@@ -80,7 +80,6 @@ public class MElement extends X_C_Element
 	}	//	MElement
 
 	/**
-	 * 	Full Constructor
 	 *	@param client client
 	 *	@param Name name
 	 *	@param ElementType type
@@ -116,6 +115,7 @@ public class MElement extends X_C_Element
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)

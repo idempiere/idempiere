@@ -32,10 +32,10 @@ import org.compiere.util.Env;
 import org.compiere.util.Language;
 
 /**
- *  Create MLookups
+ * Factory to create MLookup instance.
  *
- *  @author Jorg Janke
- *  @version  $Id: MLookupFactory.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
+ * @author Jorg Janke
+ * @version  $Id: MLookupFactory.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *		<li>BF [ 1734394 ] MLookupFactory.getLookup_TableDirEmbed is not translated
@@ -59,19 +59,18 @@ public class MLookupFactory
 	/** List Reference Cache				*/
 	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 
-
 	/**
 	 *  Create MLookup
 	 *
 	 *  @param ctx context for access
 	 *  @param WindowNo window no
-	 * 	@param AD_Reference_ID display type
+	 * 	@param AD_Reference_ID lookup display type
 	 *  @param Column_ID AD_Column_ID or AD_Process_Para_ID
-	 *  @param language report language
+	 *  @param language language
 	 * 	@param ColumnName key column name
-	 * 	@param AD_Reference_Value_ID AD_Reference (List, Table)
+	 * 	@param AD_Reference_Value_ID AD_Reference (List - AD_Ref_List, Table - AD_Ref_Table)
 	 * 	@param IsParent parent (prevents query to directly access value)
-	 * 	@param ValidationCode optional SQL validation
+	 * 	@param ValidationCode optional SQL validation/filter
 	 *  @throws Exception if Lookup could not be created
 	 *  @return MLookup
 	 */
@@ -87,11 +86,26 @@ public class MLookupFactory
 		return new MLookup(info, 0);
 	}   //  create
 
+	/**
+	 * @param ctx
+	 * @param WindowNo
+	 * @param Column_ID
+	 * @param AD_Reference_ID
+	 * @return MLookupInfo
+	 */
 	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int Column_ID, int AD_Reference_ID)
 	{
 		return 	getLookupInfo(ctx, WindowNo, 0, Column_ID, AD_Reference_ID);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param WindowNo
+	 * @param TabNo
+	 * @param Column_ID
+	 * @param AD_Reference_ID
+	 * @return MLookupInfo
+	 */
 	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int TabNo, int Column_ID, int AD_Reference_ID)
 	{
 		MColumn column = MColumn.get(ctx, Column_ID);
@@ -131,14 +145,8 @@ public class MLookupFactory
 		return new MLookup(info, TabNo);
 	}   //  get
 
-
-	/**************************************************************************
+	/**
 	 *  Get Information for Lookups based on Column_ID for Table Columns or Process Parameters.
-	 *
-	 *	The SQL returns three columns:
-	 *  <pre>
-	 *		Key, Value, Name, IsActive	(where either key or value is null)
-	 *  </pre>
 	 *  @param ctx context for access
 	 *  @param language report language
 	 *  @param WindowNo window no
@@ -161,13 +169,8 @@ public class MLookupFactory
 				          IsParent, ValidationCode);
 	}	//	getLookupInfo
 	
-	/**************************************************************************
+	/**
 	 *  Get Information for Lookups based on Column_ID for Table Columns or Process Parameters.
-	 *
-	 *	The SQL returns three columns:
-	 *  <pre>
-	 *		Key, Value, Name, IsActive	(where either key or value is null)
-	 *  </pre>
 	 *  @param ctx context for access
 	 *  @param language report language
 	 *  @param WindowNo window no
@@ -268,12 +271,11 @@ public class MLookupFactory
 		return info;
 	}	//	getLookupInfo
 
-
-	/**************************************************************************
-	 *	Get Lookup SQL for Lists
-	 *  @param language report language
-	 *  @param AD_Reference_Value_ID reference value
-	 *	@return SELECT NULL, Value, Name, IsActive FROM AD_Ref_List
+	/**
+	 *	Get Lookup Info for List display type
+	 *  @param language language
+	 *  @param AD_Reference_Value_ID list reference id (AD_Ref_List)
+	 *	@return MLookupInfo
 	 */
 	static public MLookupInfo getLookup_List(Language language, int AD_Reference_Value_ID)
 	{
@@ -339,9 +341,9 @@ public class MLookupFactory
 	}	//	getLookup_List
 
 	/**
-	 * Get Lookup SQL for List
-	 * @param language report Language
-	 * @param AD_Reference_Value_ID reference value
+	 * Get Lookup SQL for List (for use as embedded query in SELECT)
+	 * @param language Language
+	 * @param AD_Reference_Value_ID list reference id (AD_Ref_List)
 	 * @param linkColumnName link column name
 	 * @return SELECT Name FROM AD_Ref_List WHERE AD_Reference_ID=x AND Value=linkColumn
 	 */
@@ -363,14 +365,13 @@ public class MLookupFactory
 		return realSQL.toString();
 	}	//	getLookup_ListEmbed
 
-	/***************************************************************************
-	 *	Get Lookup SQL for Table Lookup
+	/**
+	 *	Get Lookup Info for Table Lookup display type
 	 *  @param ctx context for access and dynamic access
 	 *  @param language report language
 	 *  @param WindowNo window no
-	 *  @param AD_Reference_Value_ID reference value
-	 *	@return	SELECT Key, NULL, Name, IsActive FROM Table - if KeyColumn end with _ID
-	 *	  otherwise	SELECT NULL, Key, Name, IsActive FROM Table
+	 *  @param AD_Reference_Value_ID table reference id (AD_Ref_Table)
+	 *	@return	MLookupInfo
 	 */
 	static private MLookupInfo getLookup_Table (Properties ctx, Language language,
 		int WindowNo, int AD_Reference_Value_ID)
@@ -618,11 +619,11 @@ public class MLookupFactory
 	}	//	getLookup_Table
 
 	/**
-	 *	Get Embedded Lookup SQL for Table Lookup
-	 *  @param language report language
+	 *	Get Embedded Lookup SQL for Table Lookup display type
+	 *  @param language language
 	 * 	@param BaseColumn base column name
 	 * 	@param BaseTable base table name
-	 *  @param AD_Reference_Value_ID reference value
+	 *  @param AD_Reference_Value_ID table reference id (AD_Ref_Table)
 	 *	@return	SELECT Name FROM Table
 	 */
 	public static String getLookup_TableEmbed (Language language,
@@ -755,14 +756,13 @@ public class MLookupFactory
 		return embedSQL.toString();
 	}	//	getLookup_TableEmbed
 
-
-	/**************************************************************************
-	 * Get Lookup SQL for direct Table Lookup
+	/**
+	 * Get Lookup Info for Table Direct lookup display type
 	 * @param ctx context for access
-	 * @param language report language
+	 * @param language language
 	 * @param ColumnName column name
-	 * @param WindowNo Window (for SOTrx)
-	 * @return SELECT Key, NULL, Name, IsActive from Table (fully qualified)
+	 * @param WindowNo Window number
+	 * @return MLookupInfo
 	 */
 	static private MLookupInfo getLookup_TableDir (Properties ctx, Language language,
 		int WindowNo, String ColumnName)
@@ -870,11 +870,24 @@ public class MLookupFactory
 		return lInfo;
 	}	//	getLookup_TableDir
 
+	/**
+	 * @param language
+	 * @param tableName
+	 * @param list
+	 * @return display columns
+	 */
 	private static StringBuilder getDisplayColumn(Language language,
 			String tableName, ArrayList<LookupDisplayColumn> list) {
 		return getDisplayColumn(language, tableName, list, tableName);
 	}
 
+	/**
+	 * @param language
+	 * @param TableName
+	 * @param list
+	 * @param baseTable
+	 * @return display columns
+	 */
 	private static StringBuilder getDisplayColumn(Language language,
 			String TableName, ArrayList<LookupDisplayColumn> list,
 			String baseTable) {
@@ -962,9 +975,9 @@ public class MLookupFactory
 	}
 
 	/**
-	 *  Get embedded SQL for TableDir Lookup
+	 *  Get embedded SQL for TableDir Lookup display type
 	 *
-	 *  @param language report language
+	 *  @param language language
 	 *  @param ColumnName column name
 	 *  @param BaseTable base table
 	 *  @return SELECT Column FROM TableName WHERE BaseTable.ColumnName=TableName.ColumnName
@@ -976,9 +989,9 @@ public class MLookupFactory
 	}   //  getLookup_TableDirEmbed
 
 	/**
-	 *  Get embedded SQL for TableDir Lookup
+	 *  Get embedded SQL for TableDir Lookup display type
 	 *
-	 *  @param language report language
+	 *  @param language language
 	 *  @param ColumnName column name
 	 *  @param BaseTable base table
 	 *  @param BaseColumn base column
@@ -1036,6 +1049,10 @@ public class MLookupFactory
 		return embedSQL.toString();
 	}	//  getLookup_TableDirEmbed
 
+	/**
+	 * @param TableName
+	 * @return identifier list for a table
+	 */
 	private static ArrayList<LookupDisplayColumn> getListIdentifiers(String TableName) {
 		ArrayList<LookupDisplayColumn> list = new ArrayList<LookupDisplayColumn>();
 		MTable table = MTable.get(Env.getCtx(), TableName);

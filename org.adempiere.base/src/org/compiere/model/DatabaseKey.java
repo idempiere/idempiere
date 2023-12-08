@@ -15,9 +15,8 @@
 package org.compiere.model;
 
 /**
- * 
+ * Database foreign or primary key
  * @author Elaine
- *
  */
 public class DatabaseKey
 {
@@ -26,6 +25,12 @@ public class DatabaseKey
 	private String[] keyColumns;
 	private short deleteRule;
 	
+	/**
+	 * @param keyName
+	 * @param keyTable
+	 * @param keyColumns
+	 * @param deleteRule
+	 */
 	public DatabaseKey(String keyName, String keyTable, String[] keyColumns, short deleteRule)
 	{
 		this.keyName = keyName;
@@ -34,34 +39,58 @@ public class DatabaseKey
 		this.deleteRule = deleteRule;
 	}
 
+	/**
+	 * @return constraint name
+	 */
 	public String getKeyName() {
 		return keyName;
 	}
 
+	/**
+	 * @param keyName
+	 */
 	public void setKeyName(String keyName) {
 		this.keyName = keyName;
 	}
 
+	/**
+	 * @return table name
+	 */
 	public String getKeyTable() {
 		return keyTable;
 	}
 
+	/**
+	 * @param keyTable table name
+	 */
 	public void setKeyTable(String keyTable) {
 		this.keyTable = keyTable;
 	}
 
+	/**
+	 * @return columns
+	 */
 	public String[] getKeyColumns() {
 		return keyColumns;
 	}
 
+	/**
+	 * @param keyColumns
+	 */
 	public void setKeyColumns(String[] keyColumns) {
 		this.keyColumns = keyColumns;
 	}
 
+	/**
+	 * @return delete rule (no action, cascade, set null or prevent)
+	 */
 	public short getDeleteRule() {
 		return deleteRule;
 	}
 
+	/**
+	 * @param deleteRule
+	 */
 	public void setDeleteRule(short deleteRule) {
 		this.deleteRule = deleteRule;
 	}

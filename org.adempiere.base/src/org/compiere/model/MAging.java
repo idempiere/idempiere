@@ -33,16 +33,16 @@ import org.compiere.util.Util;
 public class MAging extends X_T_Aging
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3067400117623770188L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param T_Aging_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param T_Aging_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAging(Properties ctx, String T_Aging_UU, String trxName) {
         super(ctx, T_Aging_UU, trxName);
 		if (Util.isEmpty(T_Aging_UU))
@@ -96,7 +96,6 @@ public class MAging extends X_T_Aging
 	}
 
 	/**
-	 * 	Full Constructor
 	 *	@param ctx context
 	 *	@param AD_PInstance_ID instance
 	 *	@param StatementDate statement date
@@ -148,6 +147,7 @@ public class MAging extends X_T_Aging
 	 *
 	 * @deprecated - better use the new constructor with organization included
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public MAging (Properties ctx, int AD_PInstance_ID, Timestamp StatementDate, 
 		int C_BPartner_ID, int C_Currency_ID, 
 		int C_Invoice_ID, int C_InvoicePaySchedule_ID,
@@ -186,7 +186,7 @@ public class MAging extends X_T_Aging
 	private int		m_daysDueSum = 0;
 	
 	/**
-	 * 	Add Amount to Buckets
+	 * 	Add Amount to Buckets (by days due)
 	 *	@param DueDate due date 
 	 *	@param daysDue positive due - negative not due
 	 *	@param invoicedAmt invoiced amount

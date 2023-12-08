@@ -124,7 +124,7 @@ public class ProductInfo
 
 	/**
 	 *  Is Product/Item
-	 *  @return true if product
+	 *  @return true if product is of item type
 	 */
 	public boolean isProduct()
 	{

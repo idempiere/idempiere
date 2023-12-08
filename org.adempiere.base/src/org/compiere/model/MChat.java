@@ -38,7 +38,7 @@ import org.compiere.util.Util;
 public class MChat extends X_CM_Chat
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1188256932717048308L;
 
@@ -62,18 +62,18 @@ public class MChat extends X_CM_Chat
 	}	//	get
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param CM_Chat_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param CM_Chat_UU  UUID key
+     * @param trxName Transaction
+     */
     public MChat(Properties ctx, String CM_Chat_UU, String trxName) {
         super(ctx, CM_Chat_UU, trxName);
 		if (Util.isEmpty(CM_Chat_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param CM_Chat_ID id
@@ -145,12 +145,11 @@ public class MChat extends X_CM_Chat
 	private MChatEntry[] 		m_entries = null;
 	/**	Date Format						*/
 	private SimpleDateFormat	m_format = null;
-	
-	
+		
 	/**
 	 *	Get Entries
 	 *	@param reload reload data
-	 *	@return array of lines
+	 *	@return array of chat entries
 	 */
 	public MChatEntry[] getEntries (boolean reload)
 	{
@@ -183,7 +182,7 @@ public class MChat extends X_CM_Chat
 	}	//	setDescription
 	
 	/**
-	 * 	Get History as htlp paragraph
+	 * 	Get History as html paragraph
 	 * 	@param ConfidentialType confidentiality
 	 *	@return html paragraph
 	 */
@@ -237,7 +236,7 @@ public class MChat extends X_CM_Chat
 	}
 
 	/**
-	 * Get the chat ID based on table_id and record_id
+	 * Get the chat ID based on table_id and record_uu
 	 * @param Table_ID
 	 * @param Record_UU
 	 * @return CM_Chat_ID 

@@ -26,7 +26,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- *	Product PO Model
+ *	Product Purchasing Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MProductPO.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
@@ -34,16 +34,16 @@ import org.compiere.util.Util;
 public class MProductPO extends X_M_Product_PO
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1883198806060209516L;
 
 	/**
-	 * 	Get current PO of Product
+	 * 	Get current MProductPO of Product
 	 * 	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param trxName transaction
-	 *	@return PO - current vendor first
+	 *	@return array of MProductPO - current vendor first
 	 */
 	public static MProductPO[] getOfProduct (Properties ctx, int M_Product_ID, String trxName)
 	{
@@ -57,11 +57,11 @@ public class MProductPO extends X_M_Product_PO
 	}	//	getOfProduct
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_Product_PO_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Product_PO_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProductPO(Properties ctx, String M_Product_PO_UU, String trxName) {
         super(ctx, M_Product_PO_UU, trxName);
 		if (Util.isEmpty(M_Product_PO_UU))

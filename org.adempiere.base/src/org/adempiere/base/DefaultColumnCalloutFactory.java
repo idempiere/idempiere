@@ -18,8 +18,9 @@ import java.util.List;
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
 
 /**
+ * Default {@link IColumnCalloutFactory} implementation for core.<br/>
+ * Load {@link IColumnCallout} instance from plugin.xml (org.adempiere.base.IColumnCallout extension point)
  * @author hengsin
- *
  */
 public class DefaultColumnCalloutFactory implements IColumnCalloutFactory {
 

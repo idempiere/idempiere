@@ -31,13 +31,13 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Service Reference Comparator.
+ * Service Reference Comparator. <br/>
  * This comparator follows OSGi Ranking policy.
  * @author hengsin
  */
 public final class ServiceRankingComparator implements Comparator<ServiceReference<?>>, Serializable {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3444598255961708618L;
 	
@@ -57,6 +57,7 @@ public final class ServiceRankingComparator implements Comparator<ServiceReferen
      * (i.e for sorting in descending order of service.ranking value)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
+	@Override
     public int compare(ServiceReference<?> serviceReference1, ServiceReference<?> serviceReference2) {
         if (serviceReference1.equals(serviceReference2)) { return 0; }
 

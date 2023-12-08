@@ -31,16 +31,16 @@ import java.util.Properties;
 public class MRequestUpdate extends X_R_RequestUpdate
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8862921042436867124L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param R_RequestUpdate_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_RequestUpdate_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRequestUpdate(Properties ctx, String R_RequestUpdate_UU, String trxName) {
         super(ctx, R_RequestUpdate_UU, trxName);
     }
@@ -101,7 +101,7 @@ public class MRequestUpdate extends X_R_RequestUpdate
 	
 	/**
 	 * 	Get Name of creator
-	 *	@return name
+	 *	@return created by name
 	 */
 	public String getCreatedByName()
 	{
@@ -110,8 +110,8 @@ public class MRequestUpdate extends X_R_RequestUpdate
 	}	//	getCreatedByName
 
 	/**
-	 * 	Get Confidential Entry Text (for jsp)
-	 *	@return text
+	 * 	Get Confidential Entry Name
+	 *	@return Confidential Entry Name
 	 */
 	public String getConfidentialEntryText()
 	{
@@ -123,6 +123,7 @@ public class MRequestUpdate extends X_R_RequestUpdate
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getConfidentialTypeEntry() == null)

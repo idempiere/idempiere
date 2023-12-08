@@ -33,7 +33,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 973259852970379643L;
 
@@ -73,11 +73,11 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer, MChatType> (Table_Name, 20);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param CM_ChatType_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param CM_ChatType_UU  UUID key
+     * @param trxName Transaction
+     */
     public MChatType(Properties ctx, String CM_ChatType_UU, String trxName) {
         super(ctx, CM_ChatType_UU, trxName);
 		if (Util.isEmpty(CM_ChatType_UU))
@@ -116,7 +116,7 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	}	//	MChatType
 	
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MChatType(MChatType copy) 
@@ -125,7 +125,7 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -135,7 +135,7 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

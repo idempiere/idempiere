@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
-
 /**
  *	Attribute Use Model
  *	
@@ -32,22 +31,21 @@ import org.compiere.util.Msg;
 public class MAttributeUse extends X_M_AttributeUse
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -9159120094145438975L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_AttributeUse_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_AttributeUse_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAttributeUse(Properties ctx, String M_AttributeUse_UU, String trxName) {
         super(ctx, M_AttributeUse_UU, trxName);
     }
 
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -103,6 +101,7 @@ public class MAttributeUse extends X_M_AttributeUse
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -139,13 +138,13 @@ public class MAttributeUse extends X_M_AttributeUse
 		
 		return success;
 	}	//	afterSave
-	
-	
+		
 	/**
 	 * 	After Delete
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		afterSave(false, success);

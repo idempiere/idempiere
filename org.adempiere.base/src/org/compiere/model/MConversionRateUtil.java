@@ -102,7 +102,16 @@ public final class MConversionRateUtil
 		return amt;
 	}	//	convert
 
-	/** Return the message to show when no exchange rate is found */
+	/** 
+	 * @param ctx
+	 * @param adMessage
+	 * @param currencyFromID
+	 * @param currencyToID
+	 * @param convertionTypeID
+	 * @param date
+	 * @param trxName
+	 * @return the message to show when no exchange rate is found 
+	 */
 	public static String getErrorMessage(Properties ctx, String adMessage, int currencyFromID, int currencyToID, int convertionTypeID, Timestamp date, String trxName)
 	{
 		if (convertionTypeID == 0)

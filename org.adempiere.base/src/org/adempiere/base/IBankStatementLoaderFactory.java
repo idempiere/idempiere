@@ -34,7 +34,7 @@ public interface IBankStatementLoaderFactory {
 	 * want to use.
 	 * 
 	 * @param className
-	 * @return BankStatementLoader instance
+	 * @return BankStatementLoaderInterface instance
 	 */
 	public BankStatementLoaderInterface newBankStatementLoaderInstance(String className);
 }

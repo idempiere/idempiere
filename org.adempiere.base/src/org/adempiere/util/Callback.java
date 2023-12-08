@@ -14,12 +14,16 @@
 package org.adempiere.util;
 
 /**
- * 
+ * Interface for callback.
  * @author hengsin
  *
  * @param <T>
  */
 public interface Callback<T> {
 
+	/**
+	 * Handle callback
+	 * @param result
+	 */
 	public void onCallback(T result);
 }

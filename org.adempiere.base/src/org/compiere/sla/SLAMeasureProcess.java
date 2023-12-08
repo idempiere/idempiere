@@ -34,7 +34,9 @@ import org.compiere.util.AdempiereUserError;
  *	
  *  @author Jorg Janke
  *  @version $Id: SLAMeasureProcess.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
+ *  @deprecated not fully implement, marked as inactive in application dictionary
  */
+@Deprecated
 @org.adempiere.base.annotation.Process
 public class SLAMeasureProcess extends SvrProcess
 {

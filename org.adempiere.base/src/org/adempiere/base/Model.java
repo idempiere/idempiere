@@ -28,7 +28,7 @@ public @interface Model {
 
 	/**
 	 * Table name
-	 * @return
+	 * @return table name
 	 */
 	String table();
 

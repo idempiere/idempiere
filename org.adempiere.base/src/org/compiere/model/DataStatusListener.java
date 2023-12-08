@@ -19,7 +19,7 @@ package org.compiere.model;
 import java.util.EventListener;
 
 /**
- *  Data Status Interface
+ *  Listener Interface for {@link DataStatusEvent}
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: DataStatusListener.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $

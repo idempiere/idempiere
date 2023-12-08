@@ -42,7 +42,7 @@ import org.osgi.service.event.Event;
 public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4298877865937943663L;
 
@@ -57,16 +57,16 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	private String m_label;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_RecentItem_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_RecentItem_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRecentItem(Properties ctx, String AD_RecentItem_UU, String trxName) {
         super(ctx, AD_RecentItem_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_RecentItem_ID id
@@ -81,7 +81,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	 * Get the cache key AD_RecentItem_ID|Language
 	 * @param AD_RecentItem_ID
 	 * @param ctx
-	 * @return
+	 * @return cache key
 	 */
 	private static String getCacheKey(int AD_RecentItem_ID, Properties ctx) {
 		return AD_RecentItem_ID + "|" + Env.getAD_Language(ctx);
@@ -99,7 +99,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}	//	MRecentItem
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRecentItem(MRecentItem copy) 
@@ -108,7 +108,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -118,7 +118,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -204,8 +204,8 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * addModifiedField / method to be called when first field is modified on a window
-	 * it adds a record in recent item, or touches the record if it was added before
+	 * addModifiedField / method to be called when a field is modified on a window.<br/>
+	 * It adds a record in recent item, or touches the record if it was added before.
 	 * @param ctx
 	 * @param AD_Table_ID
 	 * @param Record_ID
@@ -247,6 +247,8 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
+	 * Publish {@link #ON_RECENT_ITEM_CHANGED_TOPIC} message to message service.<br/>
+	 * If message service is not available, fall back to {@link #postOnChangedEvent(int)}.
 	 * @param AD_User_ID
 	 */
 	public static void publishChangedEvent(int AD_User_ID) {
@@ -260,6 +262,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
+	 * Post {@link #ON_RECENT_ITEM_CHANGED_TOPIC} OSGi event.
 	 * @param AD_User_ID
 	 */
 	public static void postOnChangedEvent(int AD_User_ID) {
@@ -270,9 +273,9 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
-	 * touchUpdatedRecord / method to be called when a record is saved or updated in database
-	 * it touches the record added before
-	 * also delete recent items beyond the number of records allowed per user
+	 * touchUpdatedRecord / method to be called when a record is saved or updated in database.<br/>
+	 * It touches the record added before.<br/>
+	 * Also delete recent items beyond the number of records allowed per user.
 	 * @param ctx
 	 * @param AD_Table_ID
 	 * @param Record_UU
@@ -321,7 +324,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	 * Get the recent items from user - for performance obtain the ids and then get the MRecentItem from cache
 	 * @param ctx
 	 * @param AD_User_ID
-	 * @return
+	 * @return list of recent item record
 	 */
 	public static List<MRecentItem> getFromUser(Properties ctx, int AD_User_ID) {
 		int[] ids = new Query(ctx, MRecentItem.Table_Name, "AD_User_ID=?", null)
@@ -337,6 +340,10 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 		return ris;
 	}
 
+	/**
+	 * Build label for this item from window name and title logic. Fall back to record identifier if title logic is not available.
+	 * @return label
+	 */
 	public String getLabel() {
 		if (m_label != null) {
 			return m_label;
@@ -389,7 +396,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
-	 * Clear the label (to display) in a recent item
+	 * Clear the label (to display) cache in a recent item instance.
 	 * @param AD_Table_ID
 	 * @param Record_ID
 	 */
@@ -404,7 +411,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	/**
-	 * Clear the label (to display)
+	 * Clear the label (to display) cache
 	 */
 	private void clearLabel() {
 		m_label = null;

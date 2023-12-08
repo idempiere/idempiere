@@ -31,17 +31,16 @@ import org.eevolution.model.MPPProductBOM;
 public class MChangeRequest extends X_M_ChangeRequest
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8374119541472311165L;
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_ChangeRequest_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ChangeRequest_UU  UUID key
+     * @param trxName Transaction
+     */
     public MChangeRequest(Properties ctx, String M_ChangeRequest_UU, String trxName) {
         super(ctx, M_ChangeRequest_UU, trxName);
 		if (Util.isEmpty(M_ChangeRequest_UU))
@@ -113,6 +112,7 @@ public class MChangeRequest extends X_M_ChangeRequest
 	 *	@param newRecord new
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Have at least one

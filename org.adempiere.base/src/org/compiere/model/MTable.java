@@ -64,14 +64,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTable extends X_AD_Table implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4325276636597337437L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
 	/**
-	 * 	Get Table from Cache (immutable)
+	 * 	Get MTable from Cache (immutable)
 	 *	@param AD_Table_ID id
 	 *	@return MTable
 	 */
@@ -81,7 +81,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 	
 	/** 
-	 * 	Get Table from Cache (immutable)
+	 * 	Get MTable from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
 	 *	@return MTable
@@ -92,7 +92,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * 	Get Table from Cache (immutable)
+	 * 	Get MTable from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
 	 *	@param trxName transaction
@@ -130,10 +130,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get Table from Cache
+	 * 	Get MTable from Cache
 	 *	@param ctx context
 	 *	@param tableName case insensitive table name
-	 *	@return Table
+	 *	@return MTable
 	 */
 	public static synchronized MTable get (Properties ctx, String tableName)
 	{
@@ -141,10 +141,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	get
 	
 	/**
-	 * 	Get Table from Cache
+	 * 	Get MTable from Cache
 	 *	@param ctx context
 	 *	@param tableName case insensitive table name
-	 *	@return Table
+	 *  @param trxName
+	 *	@return MTable
 	 */
 	public static synchronized MTable get (Properties ctx, String tableName, String trxName)
 	{
@@ -193,13 +194,12 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 * 	Get Table Name
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
-	 *	@return tavle name
+	 *	@return table name
 	 */
 	public static String getTableName (Properties ctx, int AD_Table_ID)
 	{
 		return MTable.get(ctx, AD_Table_ID).getTableName();
 	}	//	getTableName
-
 
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, 20);
@@ -210,9 +210,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	private static final CCache<String, IServiceReferenceHolder<IModelFactory>> s_modelFactoryCache = new CCache<>(null, "IModelFactory", 100, 120, false, 2000);
 
 	/**
-	 * 	Get Persistence Class for Table
+	 * 	Get Java Model Class for Table
 	 *	@param tableName table name
-	 *	@return class or null
+	 *	@return Java model class or null
 	 */
 	public static Class<?> getClass (String tableName)
 	{
@@ -247,18 +247,18 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getClass
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Table_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Table_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTable(Properties ctx, String AD_Table_UU, String trxName) {
         super(ctx, AD_Table_UU, trxName);
 		if (Util.isEmpty(AD_Table_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
@@ -297,7 +297,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	MTable
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MTable(MTable copy) 
@@ -306,7 +306,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -316,7 +316,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -332,22 +332,21 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
 	}
 
-
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;
 	/** Key Columns					*/
 	private String[]	m_KeyColumns = null;
-	/** column name to index map **/
+	/** column name to column index map **/
 	private Map<String, Integer> m_columnNameMap;
-	/** ad_column_id to index map **/
+	/** ad_column_id to column index map **/
 	private Map<Integer, Integer> m_columnIdMap;
 	/** View Components		*/
 	private MViewComponent[]	m_viewComponents = null;
 
 	/**
 	 * 	Get Columns
-	 *	@param requery requery
-	 *	@return array of columns
+	 *	@param requery true to re-query from DB
+	 *	@return array of column
 	 */
 	public synchronized MColumn[] getColumns (boolean requery)
 	{
@@ -391,9 +390,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getColumns
 
 	/**
-	 * 	Get Column
+	 * 	Get Column via column name
 	 *	@param columnName (case insensitive)
-	 *	@return column if found
+	 *	@return MColumn if found, null otherwise
 	 */
 	public MColumn getColumn (String columnName)
 	{
@@ -406,8 +405,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getColumn
 
 	/**
-	 *  Get Column Index
-	 *  @param ColumnName column name
+	 *  Get Column Index via column name
+	 *  @param ColumnName column name (case insensitive)
 	 *  @return index of column with ColumnName or -1 if not found
 	 */
 	public synchronized int getColumnIndex (String ColumnName)
@@ -422,9 +421,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}   //  getColumnIndex
 
 	/**
-	 *  Column exists and is not virtual?
-	 *  @param ColumnName column name
-	 *  @return boolean - true indicating that the column exists in the table and is not virtual
+	 *  Is column exists and is not virtual ?
+	 *  @param ColumnName column name (case insensitive)
+	 *  @return true if column exists and is not virtual
 	 */
 	public synchronized boolean columnExistsInDB (String ColumnName)
 	{
@@ -434,8 +433,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 
 	/**
 	 *  Column exists?
-	 *  @param ColumnName column name
-	 *  @return boolean - true indicating that the column exists in dictionary
+	 *  @param ColumnName column name (case insensitive)
+	 *  @return true if column exists in dictionary
 	 */
 	public synchronized boolean columnExistsInDictionary (String ColumnName)
 	{
@@ -444,8 +443,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 
 	/**
 	 *  Get Column Index
-	 *  @param AD_Column_ID column
-	 *  @return index of column with ColumnName or -1 if not found
+	 *  @param AD_Column_ID column id
+	 *  @return index of column with AD_Column_ID or -1 if not found
 	 */
 	public synchronized int getColumnIndex (int AD_Column_ID)
 	{
@@ -459,8 +458,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}   //  getColumnIndex
 
 	/**
-	 * 	Table has a single Key
-	 *	@return true if table has single key column
+	 * 	Table is with single primary key
+	 *	@return true if table has single primary key column
 	 */
 	public boolean isSingleKey()
 	{
@@ -470,7 +469,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 
 	/**
 	 * 	Get Key Columns of Table
-	 *	@return key columns
+	 *	@return array of key column name
 	 */
 	public String[] getKeyColumns()
 	{
@@ -504,7 +503,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getKeyColumns
 	
 	/**
-	 * @return true if table key is _ID key.
+	 * @return true if table has single key column and the key column name ends with _ID.
 	 */
 	public boolean isIDKeyTable()
 	{
@@ -513,7 +512,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * @return true if table key is _UU instead of _ID or composite parent key.
+	 * @return true if table has single key column and the key column name ends with _UU.
 	 */
 	public boolean isUUIDKeyTable()
 	{
@@ -522,7 +521,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 	
 	/**
-	 * @return true if table has a UUID key
+	 * @return true if table has a UUID column (column name ends with _UU)
 	 */
 	public boolean hasUUIDKey()
 	{
@@ -533,8 +532,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * 	Get Identifier Columns of Table
-	 *	@return Identifier columns
+	 * 	Get Identifier Columns of Table (IsIdentifier=Y)
+	 *	@return array of identifier column name
 	 */
 	public String[] getIdentifierColumns() {
 		ArrayList<KeyNamePair> listkn = new ArrayList<KeyNamePair>();
@@ -559,12 +558,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return retValue;
 	}	//	getIdentifierColumns
 
-
-	/**************************************************************************
-	 * 	Get PO Class Instance
-	 *	@param Record_ID record
+	/**
+	 * 	Get PO Instance for this table
+	 *	@param Record_ID record id. 0 to create new record instance, > 0 to load existing record instance.
 	 *	@param trxName
-	 *	@return PO for Record or null
+	 *	@return PO for Record_ID or null
 	 */
 	public PO getPO (int Record_ID, String trxName)
 	{
@@ -625,10 +623,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getPO
 
 	/**
-	 * 	Get PO Class Instance
+	 * 	Get PO Instance from result set
 	 *	@param rs result set
 	 *	@param trxName transaction
-	 *	@return PO for Record or null
+	 *	@return PO instance
 	 */
 	public PO getPO (ResultSet rs, String trxName)
 	{
@@ -673,11 +671,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getPO
 
 	/**
-	 * Get PO Class Instance
+	 * Get PO Instance
 	 * 
-	 * @param  uuID    UUID
+	 * @param  uuID  UUID. Throw IllegalArgumentException if this is null or empty string.
 	 * @param  trxName transaction
-	 * @return         PO for Record
+	 * @return PO for uuID
 	 */
 	public PO getPOByUU (String uuID, String trxName)
 	{
@@ -688,10 +686,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	} // getPOByUU
 
 	/**
-	 * 	Get PO Class Instance
-	 *	@param whereClause where clause
+	 * 	Get PO Instance
+	 *	@param whereClause SQL where clause
 	 *	@param trxName transaction
-	 *	@return PO for Record or null
+	 *	@return PO for whereClause or null
 	 */
 	public PO getPO (String whereClause, String trxName)
 	{
@@ -699,11 +697,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getPO
 
 	/**
-	 * Get PO class instance
-	 * @param whereClause
-	 * @param params
+	 * Get PO instance
+	 * @param whereClause SQL where clause
+	 * @param params parameters for whereClause
 	 * @param trxName
-	 * @return
+	 * @return PO instance or null
 	 */
 	public PO getPO(String whereClause, Object[] params, String trxName)
 	{
@@ -753,6 +751,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isView() && isDeleteable())
@@ -772,6 +771,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -795,7 +795,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	afterSave
 
 	/**
-	 * 	Get SQL Create
+	 * 	Get Create table DDL
 	 *	@return create table DDL
 	 */
 	public String getSQLCreate()
@@ -807,15 +807,20 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			return Database.getDatabase(Database.DB_ORACLE).getSQLCreate(this);
 	}	//	getSQLCreate
 
-	// globalqss
+	/**
+	 * Get AD_Table_ID via table name
+	 * @param tableName
+	 * @return AD_Table_ID
+	 */
 	public static int getTable_ID(String tableName) {
 		return getTable_ID(tableName, null);
 	}
+	
 	/**
-	 * 	Grant independence to GenerateModel from AD_Table_ID
+	 * 	Get AD_Table_ID via table name
 	 *	@param tableName String
 	 *  @param trxName
-	 *	@return int retValue
+	 *	@return AD_Table_ID
 	 */
 	public static int getTable_ID(String tableName, String trxName) {
 		MTable table = get(Env.getCtx(), tableName, trxName);
@@ -823,10 +828,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * Create query to retrieve one or more PO.
-	 * @param whereClause
+	 * Create new query for whereClause
+	 * @param whereClause SQL whereClause
 	 * @param trxName
-	 * @return Query
+	 * @return new Query instance
 	 */
 	public Query createQuery(String whereClause, String trxName)
 	{
@@ -834,8 +839,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get view components
-	 *  @param reload reload data
+	 * 	Get active view components
+	 *  @param reload true to reload from DB
 	 *	@return array of view component
 	 */
 	public MViewComponent[] getViewComponent(boolean reload)
@@ -863,6 +868,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MTable[");
@@ -871,8 +877,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	toString
 
 	/**
-	 * 	Verify if the table contains ID=0
-	 *	@return true if table has zero ID
+	 * 	Verify if the table has record with ID=0
+	 *	@return true if table has record with ID=0
 	 */
 	public static boolean isZeroIDTable(String tablename) {
 		return (tablename.equals("AD_Org") ||
@@ -917,8 +923,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * Get the UUID from the Zero ID record
-	 * @return
+	 * Get the UUID of Zero ID record
+	 * @return UUID or null
 	 */
 	public String getUUIDFromZeroID() {
 		if (! MTable.isZeroIDTable(getTableName()))

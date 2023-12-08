@@ -26,6 +26,7 @@
 
 package com.akunagroup.uk.postcode;
 
+@Deprecated(forRemoval = true, since = "11")
 public class Postcode implements AddressInterface
 {
 	

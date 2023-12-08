@@ -20,8 +20,9 @@ import org.compiere.model.PaymentProcessor;
 import org.compiere.util.CLogger;
 
 /**
+ * Default {@link IPaymentProcessorFactory} implementation for core. <br/>
+ * Load {@link PaymentProcessor} instance from plugin.xml (org.compiere.model.PaymentProcessor extension point) or class path.
  * @author hengsin
- *
  */
 public class DefaultPaymentProcessorFactory implements IPaymentProcessorFactory {
 
