@@ -539,6 +539,15 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  */
 	public boolean isParent();
 
+    /** Column name IsPartitionKey */
+    public static final String COLUMNNAME_IsPartitionKey = "IsPartitionKey";
+
+	/** Set Partition Key	  */
+	public void setIsPartitionKey (boolean IsPartitionKey);
+
+	/** Get Partition Key	  */
+	public boolean isPartitionKey();
+
     /** Column name IsSecure */
     public static final String COLUMNNAME_IsSecure = "IsSecure";
 
@@ -686,6 +695,15 @@ s active status or processed status. This logic Applicable only if Always Updata
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name SeqNoPartition */
+    public static final String COLUMNNAME_SeqNoPartition = "SeqNoPartition";
+
+	/** Set Partition Key Sequence	  */
+	public void setSeqNoPartition (int SeqNoPartition);
+
+	/** Get Partition Key Sequence	  */
+	public int getSeqNoPartition();
 
     /** Column name SeqNoSelection */
     public static final String COLUMNNAME_SeqNoSelection = "SeqNoSelection";

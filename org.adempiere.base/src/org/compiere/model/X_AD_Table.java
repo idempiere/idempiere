@@ -31,7 +31,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231208L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -49,6 +49,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -75,6 +77,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -101,6 +105,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -127,6 +133,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -319,6 +327,21 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 		return (String)get_Value(COLUMNNAME_CopyComponentsFromView);
 	}
 
+	/** Set Create/update partition.
+		@param CreatePartition Create/update partition
+	*/
+	public void setCreatePartition (String CreatePartition)
+	{
+		set_Value (COLUMNNAME_CreatePartition, CreatePartition);
+	}
+
+	/** Get Create/update partition.
+		@return Create/update partition	  */
+	public String getCreatePartition()
+	{
+		return (String)get_Value(COLUMNNAME_CreatePartition);
+	}
+
 	/** Set Create Window From Table.
 		@param CreateWindowFromTable Create Window From Table
 	*/
@@ -508,6 +531,28 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 		return false;
 	}
 
+	/** Set Partition.
+		@param IsPartition Partition
+	*/
+	public void setIsPartition (boolean IsPartition)
+	{
+		set_Value (COLUMNNAME_IsPartition, Boolean.valueOf(IsPartition));
+	}
+
+	/** Get Partition.
+		@return Partition	  */
+	public boolean isPartition()
+	{
+		Object oo = get_Value(COLUMNNAME_IsPartition);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Security enabled.
 		@param IsSecurityEnabled If security is enabled, user access to data can be restricted via Roles
 	*/
@@ -611,6 +656,28 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	/** PartitioningMethod AD_Reference_ID=200261 */
+	public static final int PARTITIONINGMETHOD_AD_Reference_ID=200261;
+	/** List = L */
+	public static final String PARTITIONINGMETHOD_List = "L";
+	/** Range = R */
+	public static final String PARTITIONINGMETHOD_Range = "R";
+	/** Set Partitioning Method.
+		@param PartitioningMethod Partitioning Method
+	*/
+	public void setPartitioningMethod (String PartitioningMethod)
+	{
+
+		set_Value (COLUMNNAME_PartitioningMethod, PartitioningMethod);
+	}
+
+	/** Get Partitioning Method.
+		@return Partitioning Method	  */
+	public String getPartitioningMethod()
+	{
+		return (String)get_Value(COLUMNNAME_PartitioningMethod);
+	}
+
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -659,6 +726,21 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Range Partition Interval.
+		@param RangePartitionInterval Range Partition Interval
+	*/
+	public void setRangePartitionInterval (String RangePartitionInterval)
+	{
+		set_Value (COLUMNNAME_RangePartitionInterval, RangePartitionInterval);
+	}
+
+	/** Get Range Partition Interval.
+		@return Range Partition Interval	  */
+	public String getRangePartitionInterval()
+	{
+		return (String)get_Value(COLUMNNAME_RangePartitionInterval);
 	}
 
 	/** ReplicationType AD_Reference_ID=126 */

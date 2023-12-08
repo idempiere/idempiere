@@ -161,6 +161,15 @@ public interface I_AD_Table
 	  */
 	public int getCreatedBy();
 
+    /** Column name CreatePartition */
+    public static final String COLUMNNAME_CreatePartition = "CreatePartition";
+
+	/** Set Create/update partition	  */
+	public void setCreatePartition (String CreatePartition);
+
+	/** Get Create/update partition	  */
+	public String getCreatePartition();
+
     /** Column name CreateWindowFromTable */
     public static final String COLUMNNAME_CreateWindowFromTable = "CreateWindowFromTable";
 
@@ -298,6 +307,15 @@ public interface I_AD_Table
 	  */
 	public boolean isHighVolume();
 
+    /** Column name IsPartition */
+    public static final String COLUMNNAME_IsPartition = "IsPartition";
+
+	/** Set Partition	  */
+	public void setIsPartition (boolean IsPartition);
+
+	/** Get Partition	  */
+	public boolean isPartition();
+
     /** Column name IsSecurityEnabled */
     public static final String COLUMNNAME_IsSecurityEnabled = "IsSecurityEnabled";
 
@@ -359,6 +377,15 @@ public interface I_AD_Table
 	  */
 	public String getName();
 
+    /** Column name PartitioningMethod */
+    public static final String COLUMNNAME_PartitioningMethod = "PartitioningMethod";
+
+	/** Set Partitioning Method	  */
+	public void setPartitioningMethod (String PartitioningMethod);
+
+	/** Get Partitioning Method	  */
+	public String getPartitioningMethod();
+
     /** Column name PO_Window_ID */
     public static final String COLUMNNAME_PO_Window_ID = "PO_Window_ID";
 
@@ -382,6 +409,15 @@ public interface I_AD_Table
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name RangePartitionInterval */
+    public static final String COLUMNNAME_RangePartitionInterval = "RangePartitionInterval";
+
+	/** Set Range Partition Interval	  */
+	public void setRangePartitionInterval (String RangePartitionInterval);
+
+	/** Get Range Partition Interval	  */
+	public String getRangePartitionInterval();
 
     /** Column name ReplicationType */
     public static final String COLUMNNAME_ReplicationType = "ReplicationType";

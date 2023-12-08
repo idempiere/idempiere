@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.idempiere.process.CreatePartition"
+         name="Create/update partition"
+         point="org.adempiere.base.Process">
+      <process
+            class="org.idempiere.process.CreatePartition">
+      </process>
+   </extension>
+</plugin>

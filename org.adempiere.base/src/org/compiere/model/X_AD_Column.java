@@ -33,7 +33,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231019L;
+	private static final long serialVersionUID = 20231205L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -60,6 +60,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -98,6 +100,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -136,6 +140,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -174,6 +180,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -981,6 +989,28 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return false;
 	}
 
+	/** Set Partition Key.
+		@param IsPartitionKey Partition Key
+	*/
+	public void setIsPartitionKey (boolean IsPartitionKey)
+	{
+		set_Value (COLUMNNAME_IsPartitionKey, Boolean.valueOf(IsPartitionKey));
+	}
+
+	/** Get Partition Key.
+		@return Partition Key	  */
+	public boolean isPartitionKey()
+	{
+		Object oo = get_Value(COLUMNNAME_IsPartitionKey);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Secure content.
 		@param IsSecure Defines whether content must be treated as secure
 	*/
@@ -1217,6 +1247,24 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Partition Key Sequence.
+		@param SeqNoPartition Partition Key Sequence
+	*/
+	public void setSeqNoPartition (int SeqNoPartition)
+	{
+		set_Value (COLUMNNAME_SeqNoPartition, Integer.valueOf(SeqNoPartition));
+	}
+
+	/** Get Partition Key Sequence.
+		@return Partition Key Sequence	  */
+	public int getSeqNoPartition()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoPartition);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
