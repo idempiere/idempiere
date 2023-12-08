@@ -78,11 +78,11 @@ UPDATE AD_Menu SET Name='Inventory Decrease/Increase', Description='Enter Intern
 ;
 
 -- Dec 8, 2023, 6:13:01 AM CST
-UPDATE AD_Window SET Name='Payment and Reciept',Updated=TO_TIMESTAMP('2023-12-08 06:13:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=195
+UPDATE AD_Window SET Name='Payment and Receipt',Updated=TO_TIMESTAMP('2023-12-08 06:13:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=195
 ;
 
 -- Dec 8, 2023, 6:13:01 AM CST
-UPDATE AD_Menu SET Name='Payment and Reciept', Description='Process Payments and Receipts', Updated=TO_TIMESTAMP('2023-12-08 06:13:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=235
+UPDATE AD_Menu SET Name='Payment and Receipt', Description='Process Payments and Receipts', Updated=TO_TIMESTAMP('2023-12-08 06:13:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=235
 ;
 
 -- Dec 8, 2023, 6:15:33 AM CST
