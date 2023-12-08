@@ -36,16 +36,18 @@ import org.compiere.util.Util;
  *  @author Armen Rizal
  *  @version $Id: MSysConfig.java,v 1.5 2005/11/28 11:56:45 armen Exp $
  *  Contributor: Carlos Ruiz - globalqss - [ 1800371 ] System Configurator Enhancements
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1885496 ] Performance NEEDS
  */
 public class MSysConfig extends X_AD_SysConfig
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -8121703411463724745L;
 
+	/** Constant for Predefine System Configuration Names (in alphabetical order) */
+	
     public static final String AD_CHANGELOG_SAVE_UUID = "AD_CHANGELOG_SAVE_UUID";
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -259,11 +261,11 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_SysConfig_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_SysConfig_UU  UUID key
+     * @param trxName Transaction
+     */
     public MSysConfig(Properties ctx, String AD_SysConfig_UU, String trxName) {
         super(ctx, AD_SysConfig_UU, trxName);
     }
@@ -307,7 +309,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * Get system configuration property of type string
 	 * @param Name
-	 * @return String
+	 * @return configured value
 	 */
 	public static String getValue(String Name)
 	{
@@ -315,10 +317,10 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 	
 	/**
-	 * Get system configuration property of type int
+	 * Get system configuration property of type integer
 	 * @param Name
 	 * @param defaultValue
-	 * @return int
+	 * @return configured value or defaultValue
 	 */
 	public static int getIntValue(String Name, int defaultValue)
 	{
@@ -345,8 +347,9 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @return double
-	 * @deprecated use better getBigDecimalValue
+	 * @deprecated replace by getBigDecimalValue
 	 */
+	@Deprecated
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
 		String s = getValue(Name);
@@ -368,7 +371,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type BigDecimal
 	 * @param Name
 	 * @param defaultValue
-	 * @return BigDecimal
+	 * @return configured value or defaultValue
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue)
 	{
@@ -391,7 +394,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type boolean
 	 * @param Name
 	 * @param defaultValue
-	 * @return boolean
+	 * @return configured value or defaultValue
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue)
 	{
@@ -412,7 +415,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return String
+	 * @return configured value or 0
 	 */
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID)
 	{
@@ -423,7 +426,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type string
 	 * @param Name
 	 * @param AD_Client_ID Client ID
-	 * @return String
+	 * @return configured value or null
 	 */
 	public static String getValue(String Name, int AD_Client_ID)
 	{
@@ -435,7 +438,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return int
+	 * @return configured value or defaultValue
 	 */
 	public static int getIntValue(String Name, int defaultValue, int AD_Client_ID)
 	{
@@ -463,8 +466,9 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @return double
-	 * @deprecated use better getBigDecimalValue
+	 * @deprecated replace by getBigDecimalValue
 	 */
+	@Deprecated
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
 		String s = getValue(Name, AD_Client_ID);
@@ -487,7 +491,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return BigDecimal
+	 * @return configured value or defaultValue
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID)
 	{
@@ -511,7 +515,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return boolean
+	 * @return configured value or defaultValue
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue, int AD_Client_ID)
 	{
@@ -528,12 +532,12 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 
 	/**
-	 * Get client configuration property of type string
+	 * Get organization configuration property of type string
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return String
+	 * @return configured value or defaultValue
 	 */
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -587,11 +591,11 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 	
 	/**
-	 * Get system configuration property of type string
+	 * Get organization configuration property of type string
 	 * @param Name
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return String
+	 * @return configured value or null
 	 */
 	public static String getValue(String Name, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -599,12 +603,12 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 	
 	/**
-	 * Get system configuration property of type int
+	 * Get organization configuration property of type integer
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return int
+	 * @return configured value or defaultValue
 	 */
 	public static int getIntValue(String Name, int defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -633,8 +637,9 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
 	 * @return double
-	 * @deprecated use better getBigDecimalValue
+	 * @deprecated replace by getBigDecimalValue
 	 */
+	@Deprecated
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
 		String s = getValue(Name, AD_Client_ID, AD_Org_ID);
@@ -658,7 +663,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return BigDecimal
+	 * @return configured value or defaultValue
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -683,7 +688,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return boolean
+	 * @return configured value or defaultValue
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -702,7 +707,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * Get system configuration property of type Timestamp
 	 * @param Name
-	 * @return Timestamp
+	 * @return configured value or null
 	 */
 	public static Timestamp getTimestampValue(String Name)
 	{
@@ -713,7 +718,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type Timestamp
 	 * @param Name
 	 * @param defaultValue
-	 * @return Timestamp
+	 * @return configured value or defaultValue
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue)
 	{
@@ -725,7 +730,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return Timestamp
+	 * @return configured value or defaultValue
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID)
 	{
@@ -738,7 +743,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return Timestamp
+	 * @return configured value or defaultValue
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -753,8 +758,13 @@ public class MSysConfig extends X_AD_SysConfig
 	private static int lentime = DisplayType.DEFAULT_TIME_FORMAT.length();
 	private static int lentimestamp = DisplayType.DEFAULT_TIMESTAMP_FORMAT.length();
 
-	/** convert a string to a timestamp */
-	static Timestamp convertStringToTimestamp(String text)
+	/** 
+	 * Convert a string to a time stamp.<br/>
+	 * The method uses the length of the text argument to determine the time stamp format pattern to use.
+	 * @param text text to be converted to time stamp
+	 * @return converted time stamp 
+	 */
+	protected static Timestamp convertStringToTimestamp(String text)
 	{
 		SimpleDateFormat sdf = null;
 		int lentext = text.length();
@@ -780,11 +790,12 @@ public class MSysConfig extends X_AD_SysConfig
 		return dt;
 	}	
 	
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if save
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);

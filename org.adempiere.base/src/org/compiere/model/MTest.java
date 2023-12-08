@@ -23,7 +23,6 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.util.Env;
 
 /**
@@ -35,7 +34,7 @@ import org.compiere.util.Env;
 public class MTest extends X_Test
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5390179651635427303L;
 
@@ -73,7 +72,7 @@ public class MTest extends X_Test
 	}	//	MTest
 
 	/**
-	 * 	Test Object Constructor
+	 * 	new Test record Constructor
 	 *	@param ctx context
 	 *	@param testString test string
 	 *	@param testNo test no
@@ -84,7 +83,7 @@ public class MTest extends X_Test
 	}
 
 	/**
-	 * 	Test Object Constructor
+	 * 	new Test record Constructor
 	 *	@param ctx context
 	 *	@param testString test string
 	 *	@param testNo test no
@@ -108,7 +107,12 @@ public class MTest extends X_Test
 		setC_UOM_ID(100);			//	Each
 	}	//	MTest
 
-	
+	/**
+	 * @param ctx
+	 * @param Test_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MTest(Properties ctx, int Test_ID, String trxName, String... virtualColumns) {
 		super(ctx, Test_ID, trxName, virtualColumns);
 	}
@@ -117,6 +121,7 @@ public class MTest extends X_Test
 	 * 	Before Delete
 	 *	@return true if it can be deleted
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		log.info("***");
@@ -128,6 +133,7 @@ public class MTest extends X_Test
 	 *	@param success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("*** Success=" + success);
@@ -151,35 +157,11 @@ public class MTest extends X_Test
 	 *	@param success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("New=" + newRecord + ", Success=" + success + " ***");
 		return success;
 	}	//	afterSave
 
-	
-	/*************************************************************************
-	 * 	Test
-	 *	@param args
-	 */
-	public static void main(String[] args)
-	{
-		Adempiere.startup(true);
-		Properties ctx = Env.getCtx();
-		
-		/** Test CLOB	*/
-		MTest t1 = new MTest (ctx, 0, null);
-		t1.setName("Test1");
-		System.out.println("->" + t1.getCharacterData() + "<-");
-		t1.saveEx();
-		t1.setCharacterData("Long Text JJ");
-		t1.saveEx();
-		int Test_ID = t1.getTest_ID();
-		//
-		MTest t2 = new MTest (Env.getCtx(), Test_ID, null);
-		System.out.println("->" + t2.getCharacterData() + "<-");
-		
-		t2.delete(true);
-	}	//	main
-	
 }	//	MTest
