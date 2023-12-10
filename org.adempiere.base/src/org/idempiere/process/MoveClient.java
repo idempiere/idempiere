@@ -1170,8 +1170,10 @@ public class MoveClient extends SvrProcess {
 				return true;
 			}
 		}
-		if ("AD_ChangeLog".equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName)) {
-			// skip orphan records in AD_ChangeLog and AD_PInstance_Log, can be log of deleted records, skip
+		if (   "AD_ChangeLog".equalsIgnoreCase(tableName)
+			|| "AD_PInstance".equalsIgnoreCase(tableName)
+			|| "AD_PInstance_Log".equalsIgnoreCase(tableName)) {
+			// skip orphan records in AD_ChangeLog, AD_PInstance and AD_PInstance_Log, can be log of deleted records, skip
 			return true;
 		}
 		return false;
