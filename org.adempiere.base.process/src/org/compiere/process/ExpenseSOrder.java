@@ -16,14 +16,12 @@
  *****************************************************************************/
 package org.compiere.process;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
-import org.compiere.model.MConversionRate;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
@@ -31,7 +29,6 @@ import org.compiere.model.MProject;
 import org.compiere.model.MTimeExpense;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 
 /**
  *	Create Sales Orders from Expense Reports
@@ -238,17 +235,7 @@ public class ExpenseSOrder extends SvrProcess
 		ol.setC_Activity_ID(tel.getC_Activity_ID());
 		ol.setC_Campaign_ID(tel.getC_Campaign_ID());
 		//
-		BigDecimal price = tel.getPriceInvoiced();	//	
-		if (price != null && price.compareTo(Env.ZERO) != 0)
-		{
-			if (tel.getC_Currency_ID() != m_order.getC_Currency_ID())
-				price = MConversionRate.convert(getCtx(), price, 
-					tel.getC_Currency_ID(), m_order.getC_Currency_ID(), 
-					m_order.getAD_Client_ID(), m_order.getAD_Org_ID());
-			ol.setPrice(price);
-		}
-		else
-			ol.setPrice();
+		ol.setPrice(tel.getPriceReimbursed());	//	
 		if (tel.getC_UOM_ID() != 0 && ol.getC_UOM_ID() == 0)
 			ol.setC_UOM_ID(tel.getC_UOM_ID());
 		ol.setTax();
