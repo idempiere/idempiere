@@ -22,64 +22,35 @@
  * Contributors:                                                       *
  * - Elaine Tan - etantg       								   		   *
  **********************************************************************/
-package org.idempiere.tablepartition.impl;
+package org.compiere.db.partition;
 
 import org.compiere.model.MTable;
 import org.compiere.process.ProcessInfo;
-import org.idempiere.tablepartition.AbstractTablePartition;
 
-public class TablePartition_Oracle extends AbstractTablePartition {
-
-	public TablePartition_Oracle(MTable table, ProcessInfo pi) {
-		super(table, pi);
-	}
-
-	@Override
-	public boolean isPartitionedTable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean renameOriginalTable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean createPartitionedTable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean migrateDBContrainsts() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean migrateDBIndexes() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean attachToDefaultPartition() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean migrateData() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean runPostMigrationData() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+/**
+ * Interface to support partition table
+ */
+public interface ITablePartitionService {
+	/**
+	 * @return true if table have been partition in DB
+	 */
+	public boolean isPartitionedTable(MTable table, String trxName);
+	
+	/**
+	 * Make existing table a partition table
+	 * @return true if success
+	 */
+	public boolean createPartitionedTable(MTable table, String trxName, ProcessInfo processInfo);
+	
+	/**
+	 * Add new partition for new data and migrate data to new partition (if needed by DB)
+	 * @return true if success
+	 */
+	public boolean addPartitionAndMigrateData(MTable table, String trxName, ProcessInfo processInfo);
+	
+	/**
+	 * Run post partition process (if needed)
+	 * @return true if success
+	 */
+	public boolean runPostPartitionProcess(MTable table, String trxName, ProcessInfo processInfo);
 }

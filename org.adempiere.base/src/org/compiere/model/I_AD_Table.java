@@ -164,10 +164,14 @@ public interface I_AD_Table
     /** Column name CreatePartition */
     public static final String COLUMNNAME_CreatePartition = "CreatePartition";
 
-	/** Set Create/update partition	  */
+	/** Set Create/update partition.
+	  * Process which create or update table partitions based on the table and column records
+	  */
 	public void setCreatePartition (String CreatePartition);
 
-	/** Get Create/update partition	  */
+	/** Get Create/update partition.
+	  * Process which create or update table partitions based on the table and column records
+	  */
 	public String getCreatePartition();
 
     /** Column name CreateWindowFromTable */
@@ -310,10 +314,14 @@ public interface I_AD_Table
     /** Column name IsPartition */
     public static final String COLUMNNAME_IsPartition = "IsPartition";
 
-	/** Set Partition	  */
+	/** Set Partition.
+	  * This is a partitioned table
+	  */
 	public void setIsPartition (boolean IsPartition);
 
-	/** Get Partition	  */
+	/** Get Partition.
+	  * This is a partitioned table
+	  */
 	public boolean isPartition();
 
     /** Column name IsSecurityEnabled */
@@ -380,10 +388,14 @@ public interface I_AD_Table
     /** Column name PartitioningMethod */
     public static final String COLUMNNAME_PartitioningMethod = "PartitioningMethod";
 
-	/** Set Partitioning Method	  */
+	/** Set Partitioning Method.
+	  * Indicates how the Table is partitioned
+	  */
 	public void setPartitioningMethod (String PartitioningMethod);
 
-	/** Get Partitioning Method	  */
+	/** Get Partitioning Method.
+	  * Indicates how the Table is partitioned
+	  */
 	public String getPartitioningMethod();
 
     /** Column name PO_Window_ID */
@@ -409,15 +421,6 @@ public interface I_AD_Table
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
-
-    /** Column name RangePartitionInterval */
-    public static final String COLUMNNAME_RangePartitionInterval = "RangePartitionInterval";
-
-	/** Set Range Partition Interval	  */
-	public void setRangePartitionInterval (String RangePartitionInterval);
-
-	/** Get Range Partition Interval	  */
-	public String getRangePartitionInterval();
 
     /** Column name ReplicationType */
     public static final String COLUMNNAME_ReplicationType = "ReplicationType";

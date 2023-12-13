@@ -31,7 +31,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231208L;
+	private static final long serialVersionUID = 20231213L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -328,7 +328,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	/** Set Create/update partition.
-		@param CreatePartition Create/update partition
+		@param CreatePartition Process which create or update table partitions based on the table and column records
 	*/
 	public void setCreatePartition (String CreatePartition)
 	{
@@ -336,7 +336,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	/** Get Create/update partition.
-		@return Create/update partition	  */
+		@return Process which create or update table partitions based on the table and column records
+	  */
 	public String getCreatePartition()
 	{
 		return (String)get_Value(COLUMNNAME_CreatePartition);
@@ -532,7 +533,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	/** Set Partition.
-		@param IsPartition Partition
+		@param IsPartition This is a partitioned table
 	*/
 	public void setIsPartition (boolean IsPartition)
 	{
@@ -540,7 +541,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	/** Get Partition.
-		@return Partition	  */
+		@return This is a partitioned table
+	  */
 	public boolean isPartition()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPartition);
@@ -663,7 +665,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	/** Range = R */
 	public static final String PARTITIONINGMETHOD_Range = "R";
 	/** Set Partitioning Method.
-		@param PartitioningMethod Partitioning Method
+		@param PartitioningMethod Indicates how the Table is partitioned
 	*/
 	public void setPartitioningMethod (String PartitioningMethod)
 	{
@@ -672,7 +674,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	/** Get Partitioning Method.
-		@return Partitioning Method	  */
+		@return Indicates how the Table is partitioned
+	  */
 	public String getPartitioningMethod()
 	{
 		return (String)get_Value(COLUMNNAME_PartitioningMethod);
@@ -726,21 +729,6 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set Range Partition Interval.
-		@param RangePartitionInterval Range Partition Interval
-	*/
-	public void setRangePartitionInterval (String RangePartitionInterval)
-	{
-		set_Value (COLUMNNAME_RangePartitionInterval, RangePartitionInterval);
-	}
-
-	/** Get Range Partition Interval.
-		@return Range Partition Interval	  */
-	public String getRangePartitionInterval()
-	{
-		return (String)get_Value(COLUMNNAME_RangePartitionInterval);
 	}
 
 	/** ReplicationType AD_Reference_ID=126 */

@@ -45,7 +45,9 @@ import javax.sql.DataSource;
 import javax.sql.RowSet;
 
 import org.adempiere.db.postgresql.PostgreSQLBundleActivator;
+import org.adempiere.db.postgresql.partition.TablePartitionService;
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
 import org.compiere.model.MColumn;
@@ -1371,5 +1373,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return "57014".equals(ex.getSQLState());
 	}
 
-	
+	@Override
+	public ITablePartitionService getTablePartitionService() {
+		return new TablePartitionService();
+	}
 }   //  DB_PostgreSQL

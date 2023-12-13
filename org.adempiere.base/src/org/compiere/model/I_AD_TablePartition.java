@@ -80,10 +80,14 @@ public interface I_AD_TablePartition
     /** Column name AD_TablePartition_ID */
     public static final String COLUMNNAME_AD_TablePartition_ID = "AD_TablePartition_ID";
 
-	/** Set Table Partition	  */
+	/** Set Table Partition.
+	  * Database Table Partition information
+	  */
 	public void setAD_TablePartition_ID (int AD_TablePartition_ID);
 
-	/** Get Table Partition	  */
+	/** Get Table Partition.
+	  * Database Table Partition information
+	  */
 	public int getAD_TablePartition_ID();
 
     /** Column name AD_TablePartition_UU */

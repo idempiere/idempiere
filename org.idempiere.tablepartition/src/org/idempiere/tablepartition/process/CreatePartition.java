@@ -22,17 +22,18 @@
  * Contributors:                                                       *
  * - Elaine Tan - etantg       								   		   *
  **********************************************************************/
-package org.idempiere.process;
+package org.idempiere.tablepartition.process;
 
 import java.util.List;
 
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
-import org.idempiere.tablepartition.ITablePartition;
-import org.idempiere.tablepartition.impl.TablePartition_Oracle;
-import org.idempiere.tablepartition.impl.TablePartition_PostgreSQL;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.idempiere.tablepartition.TablePartitionTask;
 
 @org.adempiere.base.annotation.Process
 public class CreatePartition extends SvrProcess {
@@ -46,13 +47,18 @@ public class CreatePartition extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
+		ITablePartitionService service = DB.getDatabase().getTablePartitionService();
+		if (service == null) {
+			return "@Error@ Database adapter doesn't has table partition support";
+		}
+		
 		int successCount = 0;
 		int errorCount = 0;
 		if (p_record_ID > 0)
 		{
-			MTable table = MTable.get(p_record_ID);
-			ITablePartition tp = getTablePartition(table);
-			boolean success = tp.runProcess();
+			MTable table = new MTable(Env.getCtx(), p_record_ID, null);
+			TablePartitionTask tp = new TablePartitionTask(table, getProcessInfo(), service);
+			boolean success = tp.executeTask();
 			if (success)
 				++successCount;
 			else
@@ -60,14 +66,14 @@ public class CreatePartition extends SvrProcess {
 		}
 		else
 		{
-			List<MTable> tables = new Query(getCtx(), MTable.Table_Name, MTable.COLUMNNAME_IsPartition + "='Y'", get_TrxName())
+			List<MTable> tables = new Query(getCtx(), MTable.Table_Name, MTable.COLUMNNAME_IsPartition + "='Y'", null)
 					.setOnlyActiveRecords(true)
 					.setOrderBy(MTable.COLUMNNAME_TableName)
 					.list();
 			for (MTable table : tables) 
 			{
-				ITablePartition tp = getTablePartition(table);
-				boolean success = tp.runProcess();
+				TablePartitionTask tp = new TablePartitionTask(table, getProcessInfo(), service);
+				boolean success = tp.executeTask();
 				if (success)
 					++successCount;
 				else
@@ -75,12 +81,6 @@ public class CreatePartition extends SvrProcess {
 			}
 		}
 		
-		return "Updated: " + successCount + ", Error: " + errorCount;
-	}
-	
-	private ITablePartition getTablePartition(MTable table) {
-		if (DB.isPostgreSQL())
-			return new TablePartition_PostgreSQL(table, getProcessInfo());
-		return new TablePartition_Oracle(table, getProcessInfo());
-	}
+		return Msg.getMsg(Env.getCtx(), "Updated") + ": " + successCount + ", " + Msg.getMsg(Env.getCtx(), "Error") + errorCount;
+	}	
 }

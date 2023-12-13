@@ -935,4 +935,96 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return uuidFromZeroID;
 	}
 
+	private List<MColumn> partitionKeyColumns;
+	public List<MColumn> getPartitionKeyColumns()
+	{
+		if (partitionKeyColumns == null) {
+			String whereClause = MColumn.COLUMNNAME_AD_Table_ID + "=? AND " + MColumn.COLUMNNAME_IsPartitionKey + "='Y'";
+			partitionKeyColumns = new Query(getCtx(), MColumn.Table_Name, whereClause, null)
+					.setParameters(getAD_Table_ID())
+					.setOnlyActiveRecords(true)
+					.setOrderBy(MColumn.COLUMNNAME_SeqNoPartition)
+					.list();
+		}
+		return partitionKeyColumns;
+	}
+	
+	private List<String> partitionKeyColumnNames;
+	public List<String> getPartitionKeyColumnNames()
+	{
+		if (partitionKeyColumnNames == null) {
+			partitionKeyColumnNames = new ArrayList<String>();
+			
+			List<MColumn> keyColumns = getPartitionKeyColumns();
+			StringBuilder keyColumnsString = new StringBuilder();
+			int columnCount = 0;
+			for (MColumn keyColumn : keyColumns) 
+			{
+				if (columnCount > 0)
+					keyColumnsString.append(",");
+				keyColumnsString.append(keyColumn.getColumnName());			
+				partitionKeyColumnNames.add(keyColumn.getColumnName());
+				++columnCount;
+			}
+			partitionKeyColumnNamesAsString = keyColumnsString.toString();
+		}
+		return partitionKeyColumnNames;
+	}
+	
+	private String partitionKeyColumnNamesAsString;
+	public String getPartitionKeyColumnNamesAsString()
+	{
+		if (partitionKeyColumnNamesAsString == null) {
+			partitionKeyColumnNames = new ArrayList<String>();
+			
+			List<MColumn> keyColumns = getPartitionKeyColumns();
+			StringBuilder keyColumnsString = new StringBuilder();
+			int columnCount = 0;
+			for (MColumn keyColumn : keyColumns) 
+			{
+				if (columnCount > 0)
+					keyColumnsString.append(",");
+				keyColumnsString.append(keyColumn.getColumnName());			
+				partitionKeyColumnNames.add(keyColumn.getColumnName());
+				++columnCount;
+			}
+			partitionKeyColumnNamesAsString = keyColumnsString.toString();
+		}
+		return partitionKeyColumnNamesAsString;
+	}
+	
+	public X_AD_TablePartition createTablePartition(String name, String expression, String trxName)
+	{
+		X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), 0, trxName);
+		partition.setAD_Table_ID(getAD_Table_ID());
+		partition.setName(name);
+		partition.setExpressionPartition(expression);
+		partition.saveEx();
+		return partition;
+	}
+	
+	private List<X_AD_TablePartition> tablePartitions;
+	public List<X_AD_TablePartition> getTablePartitions(String trxName)
+	{
+		if (tablePartitions == null)
+			tablePartitions = new Query(getCtx(), X_AD_TablePartition.Table_Name, X_AD_TablePartition.COLUMNNAME_AD_Table_ID + "=?", trxName)
+					.setParameters(getAD_Table_ID())
+					.setOnlyActiveRecords(true)
+					.setOrderBy(X_AD_TablePartition.COLUMNNAME_Name)
+					.list();
+		return tablePartitions;
+	}
+	
+	private List<String> tablePartitionNames;
+	public List<String> getTablePartitionNames(String trxName)
+	{
+		if (tablePartitionNames == null) {
+			tablePartitionNames = new ArrayList<String>();
+			
+			List<X_AD_TablePartition> partitions = getTablePartitions(trxName);
+			for (X_AD_TablePartition partition : partitions)
+				tablePartitionNames.add(partition.getName());
+		}
+		return tablePartitionNames;
+	}
 }	//	MTable

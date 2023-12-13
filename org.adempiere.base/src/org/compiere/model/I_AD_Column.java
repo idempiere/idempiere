@@ -542,10 +542,14 @@ s active status or processed status. This logic Applicable only if Always Updata
     /** Column name IsPartitionKey */
     public static final String COLUMNNAME_IsPartitionKey = "IsPartitionKey";
 
-	/** Set Partition Key	  */
+	/** Set Partition Key.
+	  * This is a partition key
+	  */
 	public void setIsPartitionKey (boolean IsPartitionKey);
 
-	/** Get Partition Key	  */
+	/** Get Partition Key.
+	  * This is a partition key
+	  */
 	public boolean isPartitionKey();
 
     /** Column name IsSecure */
@@ -668,6 +672,19 @@ s active status or processed status. This logic Applicable only if Always Updata
 	/** Get Placeholder	  */
 	public String getPlaceholder();
 
+    /** Column name RangePartitionInterval */
+    public static final String COLUMNNAME_RangePartitionInterval = "RangePartitionInterval";
+
+	/** Set Range Partition Interval.
+	  * Indicates the interval used in a range partitioning
+	  */
+	public void setRangePartitionInterval (String RangePartitionInterval);
+
+	/** Get Range Partition Interval.
+	  * Indicates the interval used in a range partitioning
+	  */
+	public String getRangePartitionInterval();
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 
@@ -699,10 +716,14 @@ s active status or processed status. This logic Applicable only if Always Updata
     /** Column name SeqNoPartition */
     public static final String COLUMNNAME_SeqNoPartition = "SeqNoPartition";
 
-	/** Set Partition Key Sequence	  */
+	/** Set Partition Key Sequence.
+	  * Indicates the order of partition keys
+	  */
 	public void setSeqNoPartition (int SeqNoPartition);
 
-	/** Get Partition Key Sequence	  */
+	/** Get Partition Key Sequence.
+	  * Indicates the order of partition keys
+	  */
 	public int getSeqNoPartition();
 
     /** Column name SeqNoSelection */

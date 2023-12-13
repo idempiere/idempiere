@@ -18,29 +18,25 @@
  * along with this program; if not, write to the Free Software         *
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
  * MA 02110-1301, USA.                                                 *
- *                                                                     *
- * Contributors:                                                       *
- * - Elaine Tan - etantg       								   		   *
  **********************************************************************/
 package org.idempiere.tablepartition;
 
-public interface ITablePartition {
+import org.adempiere.base.AnnotationBasedProcessFactory;
+import org.adempiere.base.IProcessFactory;
+import org.osgi.service.component.annotations.Component;
 
-	public boolean runProcess();
-	
-	public boolean isPartitionedTable();
-	
-	public boolean renameOriginalTable();
-	
-	public boolean createPartitionedTable();
-	
-	public boolean migrateDBContrainsts();
-	
-	public boolean migrateDBIndexes();
-	
-	public boolean attachToDefaultPartition();
-	
-	public boolean migrateData();
-	
-	public boolean runPostMigrationData();
+@Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=1"}) 
+public class ProcessFactoryImpl extends AnnotationBasedProcessFactory {
+
+	/**
+	 * Default constructor 
+	 */
+	public ProcessFactoryImpl() {
+	}
+
+	@Override
+	protected String[] getPackages() {
+		return new String[] {"org.idempiere.tablepartition.process"};
+	}
+
 }

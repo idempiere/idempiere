@@ -30,7 +30,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231205L;
+	private static final long serialVersionUID = 20231213L;
 
     /** Standard Constructor */
     public X_AD_TablePartition (Properties ctx, int AD_TablePartition_ID, String trxName)
@@ -137,7 +137,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	}
 
 	/** Set Table Partition.
-		@param AD_TablePartition_ID Table Partition
+		@param AD_TablePartition_ID Database Table Partition information
 	*/
 	public void setAD_TablePartition_ID (int AD_TablePartition_ID)
 	{
@@ -148,7 +148,8 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	}
 
 	/** Get Table Partition.
-		@return Table Partition	  */
+		@return Database Table Partition information
+	  */
 	public int getAD_TablePartition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_TablePartition_ID);

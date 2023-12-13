@@ -33,7 +33,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231205L;
+	private static final long serialVersionUID = 20231213L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -990,7 +990,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	/** Set Partition Key.
-		@param IsPartitionKey Partition Key
+		@param IsPartitionKey This is a partition key
 	*/
 	public void setIsPartitionKey (boolean IsPartitionKey)
 	{
@@ -998,7 +998,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	/** Get Partition Key.
-		@return Partition Key	  */
+		@return This is a partition key
+	  */
 	public boolean isPartitionKey()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPartitionKey);
@@ -1217,6 +1218,22 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return (String)get_Value(COLUMNNAME_Placeholder);
 	}
 
+	/** Set Range Partition Interval.
+		@param RangePartitionInterval Indicates the interval used in a range partitioning
+	*/
+	public void setRangePartitionInterval (String RangePartitionInterval)
+	{
+		set_Value (COLUMNNAME_RangePartitionInterval, RangePartitionInterval);
+	}
+
+	/** Get Range Partition Interval.
+		@return Indicates the interval used in a range partitioning
+	  */
+	public String getRangePartitionInterval()
+	{
+		return (String)get_Value(COLUMNNAME_RangePartitionInterval);
+	}
+
 	/** Set Read Only Logic.
 		@param ReadOnlyLogic Logic to determine if field is read only (applies only when field is read-write)
 	*/
@@ -1253,7 +1270,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	/** Set Partition Key Sequence.
-		@param SeqNoPartition Partition Key Sequence
+		@param SeqNoPartition Indicates the order of partition keys
 	*/
 	public void setSeqNoPartition (int SeqNoPartition)
 	{
@@ -1261,7 +1278,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	/** Get Partition Key Sequence.
-		@return Partition Key Sequence	  */
+		@return Indicates the order of partition keys
+	  */
 	public int getSeqNoPartition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoPartition);
