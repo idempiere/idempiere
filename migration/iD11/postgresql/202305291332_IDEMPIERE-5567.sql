@@ -246,7 +246,8 @@ DECLARE
 BEGIN
   FOR r IN
     SELECT DISTINCT t.TableName, at.AD_Table_ID
-      FROM AD_Attachment at JOIN AD_Table t ON (at.AD_Table_ID=t.AD_Table_ID)
+      FROM AD_Attachment at
+	JOIN AD_Table t ON (at.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE at.Record_UU IS NULL AND at.Record_ID IS NOT NULL
   LOOP
     cmd := 'UPDATE AD_Attachment SET Record_UU=(SELECT ' || r.TableName || '_UU FROM ' || r.TableName
@@ -258,7 +259,8 @@ BEGIN
   END LOOP;
   FOR r IN
     SELECT DISTINCT t.TableName, ch.AD_Table_ID
-      FROM CM_Chat ch JOIN AD_Table t ON (ch.AD_Table_ID=t.AD_Table_ID)
+      FROM CM_Chat ch
+	JOIN AD_Table t ON (ch.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE ch.Record_UU IS NULL AND ch.Record_ID IS NOT NULL
   LOOP
     cmd := 'UPDATE CM_Chat SET Record_UU=(SELECT ' || r.TableName || '_UU FROM ' || r.TableName
@@ -270,7 +272,8 @@ BEGIN
   END LOOP;
   FOR r IN
     SELECT DISTINCT t.TableName, po.AD_Table_ID
-      FROM AD_PostIt po JOIN AD_Table t ON (po.AD_Table_ID=t.AD_Table_ID)
+      FROM AD_PostIt po
+	JOIN AD_Table t ON (po.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE po.Record_UU IS NULL AND po.Record_ID IS NOT NULL
   LOOP
     cmd := 'UPDATE AD_PostIt SET Record_UU=(SELECT ' || r.TableName || '_UU FROM ' || r.TableName
@@ -282,7 +285,8 @@ BEGIN
   END LOOP;
   FOR r IN
     SELECT DISTINCT t.TableName, la.AD_Table_ID
-      FROM AD_LabelAssignment la JOIN AD_Table t ON (la.AD_Table_ID=t.AD_Table_ID)
+      FROM AD_LabelAssignment la
+	JOIN AD_Table t ON (la.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE la.Record_UU IS NULL AND la.Record_ID IS NOT NULL
   LOOP
     cmd := 'UPDATE AD_LabelAssignment SET Record_UU=(SELECT ' || r.TableName || '_UU FROM ' || r.TableName
