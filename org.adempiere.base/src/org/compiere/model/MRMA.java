@@ -276,6 +276,10 @@ public class MRMA extends X_M_RMA implements DocAction
 		    return false;
 		}
 
+        if (getSalesRep_ID() == 0 && m_inout != null && m_inout.getSalesRep_ID() > 0) {
+       		setSalesRep_ID(m_inout.getSalesRep_ID());
+        }
+
 		return true;
 	}	//	beforeSave
 

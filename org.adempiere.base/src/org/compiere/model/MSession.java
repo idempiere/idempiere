@@ -130,7 +130,15 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	get
 
 	/**	Session Cache				*/
-	private static ImmutableIntPOCache<Integer,MSession>	s_sessions = new ImmutableIntPOCache<Integer,MSession>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MSession>	s_sessions = new ImmutableIntPOCache<Integer,MSession>(Table_Name, Table_Name, 100, 0, false, 0) {
+		private static final long serialVersionUID = 8421415709907257867L;
+		public int reset() {
+			return 0; // do not remove on cache reset
+		};
+		public int reset(int recordId) {
+			return 0; // do not remove the session on update
+		};
+	};
 	
 	
 	/**************************************************************************

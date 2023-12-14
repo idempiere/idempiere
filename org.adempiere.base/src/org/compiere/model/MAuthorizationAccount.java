@@ -171,7 +171,10 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 			setAccessToken(response.getAccessToken());
 			setAccessTokenTimestamp(ts);
 			setExpireInSeconds(new BigDecimal(response.getExpiresInSeconds()));
-			saveEx();
+			if (getAD_Client_ID() == 0)
+				saveCrossTenantSafeEx(); // sending a tenant email from a system account is possible
+			else
+				saveEx();
 		}
 	}
 

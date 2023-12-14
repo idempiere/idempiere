@@ -263,7 +263,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 			if (isFrameworkStarted())
 				frameworkStarted ();
 		};
-		if (Adempiere.getThreadPoolExecutor() != null) {
+		if (Adempiere.isStarted()) {
 			Adempiere.getThreadPoolExecutor().submit(runnable);
 		} else {
 			MyServerStateChangeListener l = new MyServerStateChangeListener(runnable);

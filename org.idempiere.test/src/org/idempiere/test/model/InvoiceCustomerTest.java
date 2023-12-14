@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.LogRecord;
 
@@ -506,5 +507,149 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 			}
 		}
 		assertEquals(invoiceTaxes.length, match, "MInvoiceTax record doesn't match child tax records");
+	}
+	
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5915
+	 */
+	@Test
+	public void testInvoiceGenerateRMAManualDateInvoiced() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp date2 = new Timestamp(cal.getTimeInMillis());
+		
+		order.setDateOrdered(date1);
+		order.setDatePromised(date1);
+		order.setSalesRep_ID(getAD_User_ID());
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(date1);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());
+
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+
+		//	Shipment
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+		shipmentLine.setQty(new BigDecimal("1"));
+		shipmentLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+
+		//	Invoice
+		MInvoice invoice = new MInvoice(shipment, date1);
+		invoice.saveEx();
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setShipLine(shipmentLine);
+		invoiceLine.setQty(new BigDecimal("1"));
+		invoiceLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+
+		line1.load(getTrxName());
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(1, line1.getQtyInvoiced().intValue());
+
+		//	RMA
+		MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
+		rma.setInOut_ID(shipment.get_ID());
+		rma.setC_BPartner_ID(shipment.getC_BPartner_ID());
+		rma.setC_Currency_ID(order.getC_Currency_ID());
+		rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id);
+		rma.setC_DocType_ID(DictionaryIDs.C_DocType.CUSTOMER_RETURN_MATERIAL.id);
+		rma.setSalesRep_ID(order.getSalesRep_ID());
+		rma.setIsSOTrx(true);
+		rma.setName("testInvoiceGenerateRMAManualDateInvoiced");
+		rma.saveEx();
+
+		MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
+		rmaLine.setM_RMA_ID(rma.get_ID());
+		rmaLine.setM_InOutLine_ID(shipmentLine.get_ID());
+		rmaLine.setM_Product_ID(shipmentLine.getM_Product_ID());
+		rmaLine.setQty(new BigDecimal("1"));
+		rmaLine.saveEx();
+		assertEquals(0, rmaLine.getQtyInvoiced().intValue());
+
+		info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		rma.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
+
+		int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATERMA_MANUAL;
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance.saveEx();
+		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
+		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), rma.get_ID()}, null);
+
+		//	Call InvoiceGenerateRMAManual process
+		ProcessInfo pi = new ProcessInfo ("InvoiceGenerateRMAManual", AD_Process_ID);
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+
+		//	Add Selection parameter Selection=Y
+		MPInstancePara ip = new MPInstancePara(instance, 10);
+		ip.setParameter("Selection","Y");
+		ip.saveEx();
+		//	Add Document Action parameter
+		ip = new MPInstancePara(instance, 20);
+		ip.setParameter("DocAction", "CO");
+		ip.saveEx();
+		//	Add Date Invoiced action parameter
+		ip = new MPInstancePara(instance, 30);
+		ip.setParameter("DateInvoiced", date2);
+		ip.saveEx();
+
+		ServerProcessCtl processCtl = new ServerProcessCtl(pi, getTrx());
+		processCtl.setManagedTrxForJavaProcess(false);
+		processCtl.run();
+
+		assertFalse(pi.isError(), pi.getSummary());
+		rmaLine.load(getTrxName());
+		assertEquals(1, rmaLine.getQtyInvoiced().intValue());
+		
+		int C_Invoice_ID = DB.getSQLValueEx(getTrxName(), "SELECT C_Invoice_ID FROM C_Invoice WHERE M_RMA_ID=?", rma.getM_RMA_ID());
+		MInvoice creditMemo = new MInvoice(Env.getCtx(), C_Invoice_ID, getTrxName());
+		assertEquals(date2, creditMemo.getDateInvoiced());
+		assertEquals(date2, creditMemo.getDateAcct());
 	}
 }

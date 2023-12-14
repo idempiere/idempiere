@@ -54,7 +54,7 @@ public class Doc_Production extends Doc
 	 */
 	public Doc_Production (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (as, X_M_Production.class, rs, DOCTYPE_MatProduction, trxName);
+		super (as, X_M_Production.class, rs, null, trxName);
 	}   //  Doc_Production
 
 	/**

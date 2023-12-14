@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-221205" sequenceNumber="1670222123">
+<target name="idempiere-221205" sequenceNumber="1670222124">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.3"/>
@@ -1310,16 +1310,46 @@ Export-Package:        *;version="${version}";-noimport:=true
       <type>jar</type>
 	</location>
 	<!-- org.eclipse.jetty -->
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
       <version>10.0.9</version>
       <type>jar</type>
 	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>10.0.9</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.5</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
       <version>10.0.9</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>10.0.9</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-servlet-api</artifactId>
+      <version>4.0.6</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.mortbay.jasper</groupId>
+      <artifactId>apache-jsp</artifactId>
+      <version>9.0.52</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">

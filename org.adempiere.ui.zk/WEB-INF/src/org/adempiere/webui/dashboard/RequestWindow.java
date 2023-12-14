@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -152,8 +153,14 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			if(confidentialField.getComponent().getItemCount() > 1)
 				confidentialField.setValue(confidentialField.getComponent().getItemAtIndex(1).getValue());
 		
-		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_SalesRep_ID);
-		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.TableDir);
+		MColumn columnSR = MColumn.get(Env.getCtx(), MRequest.Table_Name, MRequest.COLUMNNAME_SalesRep_ID);
+		try {
+			lookup = MLookupFactory.get(Env.getCtx(), 0, columnSR.getAD_Column_ID(), DisplayType.TableDir,
+					Env.getLanguage(Env.getCtx()), columnSR.getColumnName(), columnSR.getAD_Reference_Value_ID(), false,
+					"(EXISTS (SELECT * FROM C_BPartner bp WHERE AD_User.C_BPartner_ID=bp.C_BPartner_ID AND (bp.IsEmployee='Y' OR bp.IsSalesRep='Y')) OR AD_User_ID=@#AD_User_ID@)");
+		} catch (Exception e) {
+			throw new AdempiereException(e);
+		}
 		salesRepField = new WTableDirEditor("SalesRep_ID", true, false, true, lookup);
 		salesRepField.setValue(Env.getContextAsInt(ctx, "SalesRep_ID"));
 		if(salesRepField.getValue() == null || salesRepField.getValue().equals(0))

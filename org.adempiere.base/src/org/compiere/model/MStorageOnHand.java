@@ -406,34 +406,38 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			allAttributeInstances = true;		
 		
 		ArrayList<MStorageOnHand> list = new ArrayList<MStorageOnHand>();
-		//	Specific Attribute Set Instance
-		String sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
-			+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
-			+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
-			+ "FROM M_StorageOnHand s"
-			+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ";
-		if (M_Locator_ID > 0)
-			sql += "WHERE l.M_Locator_ID = ?";
-		else
-			sql += "WHERE l.M_Warehouse_ID=?";
-		sql += " AND s.M_Product_ID=?"
-			 + " AND COALESCE(s.M_AttributeSetInstance_ID,0)=? ";
-		if (positiveOnly)
+		String sql;
+		if (! allAttributeInstances)
 		{
-			sql += " AND s.QtyOnHand > 0 ";
+			//	Specific Attribute Set Instance
+			sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
+				+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
+				+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
+				+ "FROM M_StorageOnHand s"
+				+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ";
+			if (M_Locator_ID > 0)
+				sql += "WHERE l.M_Locator_ID = ?";
+			else
+				sql += "WHERE l.M_Warehouse_ID=?";
+			sql += " AND s.M_Product_ID=?"
+				 + " AND COALESCE(s.M_AttributeSetInstance_ID,0)=? ";
+			if (positiveOnly)
+			{
+				sql += " AND s.QtyOnHand > 0 ";
+			}
+			else
+			{
+				sql += " AND s.QtyOnHand <> 0 ";
+			}
+			sql += " ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
+			if (!FiFo)
+				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
+			else
+				sql += ", s.M_AttributeSetInstance_ID ";
 		}
 		else
 		{
-			sql += " AND s.QtyOnHand <> 0 ";
-		}
-		sql += " ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
-		if (!FiFo)
-			sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
-		else
-			sql += ", s.M_AttributeSetInstance_ID ";
-		//	All Attribute Set Instances
-		if (allAttributeInstances)
-		{
+			//	All Attribute Set Instances
 			sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
 				+ " s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
 				+ " s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
@@ -453,14 +457,11 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			{
 				sql += " AND s.QtyOnHand <> 0 ";
 			}
-			
 			if (minGuaranteeDate != null)
 			{
 				sql += " AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
 			}
-			
 			MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
-			
 			if(product.isUseGuaranteeDateForMPolicy()){
 				sql += " ORDER BY l.PriorityNo DESC, COALESCE(asi.GuaranteeDate,s.DateMaterialPolicy)";
 				if (!FiFo)
@@ -470,13 +471,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			}
 			else
 			{
-				sql += " ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+				sql += " ORDER BY l.PriorityNo DESC, s.DateMaterialPolicy";
 				if (!FiFo)
 					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 				else
 					sql += ", s.M_AttributeSetInstance_ID ";
 			}
-			
 			sql += ", s.QtyOnHand DESC";
 		} 
 		PreparedStatement pstmt = null;
@@ -620,7 +620,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 		else
 		{
-			sql += " ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+			sql += " ORDER BY l.PriorityNo DESC, s.DateMaterialPolicy";
 			if (!FiFo)
 				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 			else

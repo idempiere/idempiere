@@ -132,7 +132,8 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_TAB, parent_TabNo);
 		initPOs();
-		log.info("R/O=" + isReadOnly());
+		if (log.isLoggable(Level.INFO))
+			log.info("R/O=" + isReadOnly());
 
 	}	//	WQuickEntry
 	

@@ -46,6 +46,7 @@ import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
@@ -132,11 +133,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	m_isClientDefined = isClientDefined;
         m_clientKNPairs = clientsKNPairs;
         
+    	m_userpreference = SessionManager.getSessionApplication().getUserPreference();
         if( m_clientKNPairs.length == 1  &&  !m_showRolePanel ){
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
         	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
-        	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
+        } else {
+        	m_userpreference.loadPreference(-1);
         }
     	
 
@@ -368,9 +371,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             for(int i = 0; i < m_clientKNPairs.length; i++)
             {
             	ComboItem ci = new ComboItem(m_clientKNPairs[i].getName(), m_clientKNPairs[i].getID());
-            	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-            	if (lstClient.getFellowIfAny(id) == null)
-            		ci.setId(id);
+        		if (SystemProperties.isZkUnitTest()) {
+                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                	if (lstClient.getFellowIfAny(id) == null)
+                		ci.setId(id);
+        		}
             	lstClient.appendChild(ci);
                 if (m_clientKNPairs[i].getID().equals(initDefault))
                 	lstClient.setSelectedItem(ci);
@@ -425,9 +430,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for (int i = 0; i < roleKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
-                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	if (lstRole.getFellowIfAny(id) == null)
-                		ci.setId(id);
+            		if (SystemProperties.isZkUnitTest()) {
+                    	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                    	if (lstRole.getFellowIfAny(id) == null)
+                    		ci.setId(id);
+            		}
                 	lstRole.appendChild(ci);
                     if (roleKNPairs[i].getID().equals(initDefault))
                     	lstRole.setSelectedItem(ci);
@@ -473,9 +480,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for(int i = 0; i < orgKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(orgKNPairs[i].getName(), orgKNPairs[i].getID());
-                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	if (lstOrganisation.getFellowIfAny(id) == null)
-                		ci.setId(id);
+            		if (SystemProperties.isZkUnitTest()) {
+                    	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                    	if (lstOrganisation.getFellowIfAny(id) == null)
+                    		ci.setId(id);
+            		}
                 	lstOrganisation.appendChild(ci);
                     if(orgKNPairs[i].getID().equals(initDefault))
                     	lstOrganisation.setSelectedItem(ci);

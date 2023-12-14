@@ -67,17 +67,17 @@ import org.eevolution.model.MDDOrderLine;
 public class ReplenishReportProduction extends SvrProcess
 {
 	/** Warehouse				*/
-	private int		p_M_Warehouse_ID = 0;
+	protected int		p_M_Warehouse_ID = 0;
 	/**	Optional BPartner		*/
-	private int		p_C_BPartner_ID = 0;
+	protected int		p_C_BPartner_ID = 0;
 	/** Create (POO)Purchase Order or (POR)Requisition or (MMM)Movement or (PRD)Production */
-	private String	p_ReplenishmentCreate = null;
+	protected String	p_ReplenishmentCreate = null;
 	/** Document Type			*/
-	private int		p_C_DocType_ID = 0;
+	protected int		p_C_DocType_ID = 0;
 	/** Return Info				*/
-	private StringBuffer	m_info = new StringBuffer();
-	private int p_M_Product_Category_ID = 0;
-	private String isKanban = null;
+	protected StringBuffer	m_info = new StringBuffer();
+	protected int p_M_Product_Category_ID = 0;
+	protected String isKanban = null;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -154,7 +154,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/**
 	 * 	Prepare/Check Replenishment Table
 	 */
-	private void prepareTable()
+	protected void prepareTable()
 	{
 		//	Level_Max must be >= Level_Max
 		StringBuilder sql = new StringBuilder("UPDATE M_Replenish")
@@ -215,7 +215,7 @@ public class ReplenishReportProduction extends SvrProcess
 	 * 	Fill Table
 	 * 	@param wh warehouse
 	 */
-	private void fillTable (MWarehouse wh) throws Exception
+	protected void fillTable (MWarehouse wh) throws Exception
 	{
 		StringBuilder sql = new StringBuilder("INSERT INTO T_Replenish ");
 			sql.append("(AD_PInstance_ID, M_Warehouse_ID, M_Product_ID, AD_Client_ID, AD_Org_ID,");
@@ -440,7 +440,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/**
 	 * 	Create PO's
 	 */
-	private void createPO()
+	protected void createPO()
 	{
 		int noOrders = 0;
 		StringBuilder info = new StringBuilder();
@@ -491,7 +491,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/**
 	 * 	Create Requisition
 	 */
-	private void createRequisition()
+	protected void createRequisition()
 	{
 		int noReqs = 0;
 		StringBuilder info = new StringBuilder();
@@ -540,7 +540,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/**
 	 * 	Create Inventory Movements
 	 */
-	private void createMovements()
+	protected void createMovements()
 	{
 		int noMoves = 0;
 		StringBuilder info = new StringBuilder();
@@ -644,7 +644,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/**
 	 * 	Create Distribution Order
 	 */
-	private void createDO() throws Exception
+	protected void createDO() throws Exception
 	{
 		int noMoves = 0;
 		StringBuilder info = new StringBuilder();
@@ -753,7 +753,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/**
 	 * 	Create Production
 	 */
-	private void createProduction()
+	protected void createProduction()
 	{
 		int noProds = 0;
 		StringBuilder info = new StringBuilder();
@@ -823,7 +823,7 @@ public class ReplenishReportProduction extends SvrProcess
 	 * 	Get Replenish Records
 	 *	@return replenish
 	 */
-	private X_T_Replenish[] getReplenish (String where)
+	protected X_T_Replenish[] getReplenish (String where)
 	{
 		StringBuilder sql = new StringBuilder("SELECT * FROM T_Replenish ");
 			sql.append("WHERE AD_PInstance_ID=? ");

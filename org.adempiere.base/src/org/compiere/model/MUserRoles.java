@@ -35,7 +35,7 @@ public class MUserRoles extends X_AD_User_Roles
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5850010835736994376L;
+	private static final long serialVersionUID = 2957269818448823135L;
 
 	/**
 	 * 	Get User Roles Of Role
@@ -113,20 +113,6 @@ public class MUserRoles extends X_AD_User_Roles
 		setAD_User_ID(AD_User_ID);
 		setAD_Role_ID(AD_Role_ID);
 	}	//	MUserRoles
-
-	/** Set User/Contact.
-        @param AD_User_ID
-        User within the system - Internal or Business Partner Contact
-        Overridden to allow saving System record (zero ID)
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
 
 	/** 
 	 * 	Set Role.

@@ -117,8 +117,10 @@ public class PrintFormatItemSync extends SvrProcess {
 
 		if (p_source.equals(SOURCE_TABLE))
 			whereClause.append(" AND AD_Column.AD_Table_ID = AD_ReportView.AD_Table_ID AND AD_ReportView.AD_ReportView_ID = ?");
-		else if (p_source.equals(SOURCE_RV_COLUMN))
-			whereClause.append(" AND AD_ReportView_Column.AD_ReportView_ID = ?");
+		else if (p_source.equals(SOURCE_RV_COLUMN)) {
+			whereClause.append(" AND AD_ReportView_Column.AD_ReportView_ID = ? AND AD_ReportView.AD_ReportView_ID = ?");
+			listParams.add(p_reportViewID);
+		}
 
 		Query query = new Query(getCtx(), "AD_Column", whereClause.toString(), get_TrxName())
 				.addJoinClause("INNER JOIN AD_ReportView ON (AD_Column.AD_Table_ID = AD_ReportView.AD_Table_ID)")

@@ -1082,6 +1082,17 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
     		}
         }
 
+        if (getSalesRep_ID() == 0) {
+        	if (getC_Order_ID() > 0) {
+        		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+        		setSalesRep_ID(order.getSalesRep_ID());
+        	} else if (getM_RMA_ID() > 0) {
+        		MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
+        		MInOut originalReceipt = rma.getShipment();
+        		setSalesRep_ID(originalReceipt.getSalesRep_ID());
+        	}
+        }
+
 		return true;
 	}	//	beforeSave
 
@@ -2869,6 +2880,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		}
 		else if (il != null)
 		{
+			if (il.getC_OrderLine_ID() > 0)
+				iol.setC_OrderLine_ID(il.getC_OrderLine_ID());
 			if (il.getQtyEntered().compareTo(il.getQtyInvoiced()) != 0)
 			{
 				iol.setMovementQty(Qty
@@ -2940,6 +2953,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setC_Project_ID(order.getC_Project_ID());
 			setC_Campaign_ID(order.getC_Campaign_ID());
 			setC_Activity_ID(order.getC_Activity_ID());
+			setSalesRep_ID (order.getSalesRep_ID());
 			setUser1_ID(order.getUser1_ID());
 			setUser2_ID(order.getUser2_ID());
 

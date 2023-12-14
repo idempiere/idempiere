@@ -641,9 +641,9 @@ public class CLogMgt
 			.append(cc.getDatabase().getStatus().replace(" , ", NL)).append(NL);
 		
 		//  Context
-		sb.append(NL)
-			.append("=== Context ===").append(NL);
 		String[] context = Env.getEntireContext(ctx);
+		sb.append(NL)
+			.append("=== Context (").append(context.length).append(") ===").append(NL);
 		Arrays.sort(context);
 		for (int i = 0; i < context.length; i++)
 			sb.append(context[i]).append(NL);

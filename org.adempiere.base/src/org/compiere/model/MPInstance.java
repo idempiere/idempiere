@@ -451,7 +451,7 @@ public class MPInstance extends X_AD_PInstance
 	public static void postOnChangedEvent(int AD_User_ID) {
 		Map<String, Integer> properties = new HashMap<String, Integer>();
 		properties.put("AD_User_ID", AD_User_ID);
-		Event event = new Event(ON_RUNNING_JOB_CHANGED_TOPIC, properties);
+		Event event = EventManager.newEvent(ON_RUNNING_JOB_CHANGED_TOPIC, properties, true);
 		EventManager.getInstance().postEvent(event);
 	}
 	

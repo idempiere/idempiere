@@ -687,8 +687,9 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 		if (_options != null) {
 			smartUpdate("items", _options);
 			_options = null; //purge the data
+		}else {
+			smartUpdate("chgSel", getChgSel());
 		}
-		smartUpdate("chgSel", getChgSel());
 	}
 
 	private void updateListContent(String prefix, ListModel<T> subModel) {		

@@ -1272,7 +1272,7 @@ public class DashboardController implements EventListener<Event> {
 			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
 			preference.setAD_Org_ID(0);
 			preference.setAD_Role_ID(AD_Role_ID);
-			preference.setAD_User_ID(AD_User_ID); // allow System
+			preference.setAD_User_ID(AD_User_ID);
 			preference.setColumnNo(dc.getColumnNo());
 			preference.setIsCollapsedByDefault(dc.isCollapsedByDefault());
 			preference.setIsShowInDashboard(dc.isShowInDashboard());
@@ -1305,7 +1305,7 @@ public class DashboardController implements EventListener<Event> {
 				MDashboardPreference preference = new MDashboardPreference(ctx,0, null);
 				preference.setAD_Org_ID(0);
 				preference.setAD_Role_ID(Env.getAD_Role_ID(ctx));
-				preference.setAD_User_ID(Env.getAD_User_ID(ctx));  // allow System
+				preference.setAD_User_ID(Env.getAD_User_ID(ctx));
 				preference.setColumnNo(dcs[i].getColumnNo());
 				preference.setIsCollapsedByDefault(dcs[i].isCollapsedByDefault());
 				preference.setIsShowInDashboard(dcs[i].isShowInDashboard());

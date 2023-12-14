@@ -151,7 +151,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 						
 		if (col.equals("M_Product_ID"))
 		{
-			InfoWindow infoWindow = new InfoProductWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, true, whereClause, AD_InfoWindow_ID, true, field);
+			InfoWindow infoWindow = new InfoProductWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field);
 			if (infoWindow.loadedOK())
 				return infoWindow;
 			

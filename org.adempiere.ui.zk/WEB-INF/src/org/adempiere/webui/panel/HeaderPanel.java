@@ -59,6 +59,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 
 	private MenuTreePanel menuTreePanel;
 
+	private GlobalSearch globalSearch;
+
     public HeaderPanel()
     {
         super();
@@ -103,7 +105,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	}
 
 	protected void createSearchPanel() {
-		GlobalSearch globalSearch = new GlobalSearch(new MenuSearchController(menuTreePanel.getMenuTree()));
+		globalSearch = new GlobalSearch(new MenuSearchController(menuTreePanel.getMenuTree()));
     	Component stub = getFellow("menuLookup");
     	stub.getParent().insertBefore(globalSearch, stub);
     	stub.detach();
@@ -139,7 +141,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 				popMenu.setFocus(true);
 			}else if (ke.getKeyCode() == 27) {
 				popMenu.close();
-			} 
+			}else if (ke.getKeyCode() == 71) {
+				globalSearch.setFocus(true);
+			}
 		}
 	}
 

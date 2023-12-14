@@ -1526,4 +1526,74 @@ public class SalesOrderTest extends AbstractTestCase {
 		}
 		assertEquals(orderTaxes.length, match, "MOrdexTax record doesn't match child tax records");
 	}
+
+	@Test
+	public void testGenerateShipmentCompleteMultiSameLine() {
+		// CompleteOrder with 2 lines with almost the available on hand
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		//Joe Block
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		BigDecimal qtyOnHandMinusOne = MStorageOnHand.getQtyOnHandForShipping(DictionaryIDs.M_Product.AZALEA_BUSH.id, order.getM_Warehouse_ID(), 0, getTrxName());
+		if (qtyOnHandMinusOne.signum() > 0)
+			qtyOnHandMinusOne = qtyOnHandMinusOne.subtract(Env.ONE);
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		line1.setQty(qtyOnHandMinusOne);
+		line1.setDatePromised(today);
+		line1.saveEx();		
+
+		MOrderLine line2 = new MOrderLine(order);
+		line2.setLine(20);
+		line2.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		line2.setQty(qtyOnHandMinusOne);
+		line2.setDatePromised(today);
+		line2.saveEx();		
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		int AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance.saveEx();
+
+		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
+		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order.getC_Order_ID()}, null);
+
+		//call process
+		ProcessInfo pi = new ProcessInfo ("InOutGen", AD_Process_ID);
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+
+		//	Add Parameter - Selection=Y
+		MPInstancePara ip = new MPInstancePara(instance, 10);
+		ip.setParameter("Selection","Y");
+		ip.saveEx();
+		//Add Document action parameter
+		ip = new MPInstancePara(instance, 20);
+		ip.setParameter("DocAction", "PR");
+		ip.saveEx();
+		//	Add Parameter - M_Warehouse_ID=x
+		ip = new MPInstancePara(instance, 30);
+		ip.setParameter("M_Warehouse_ID", getM_Warehouse_ID());
+		ip.saveEx();
+
+		ServerProcessCtl processCtl = new ServerProcessCtl(pi, getTrx());
+		processCtl.setManagedTrxForJavaProcess(false);
+		processCtl.run();
+
+		assertFalse(pi.isError(), pi.getSummary());
+	}
+
 }

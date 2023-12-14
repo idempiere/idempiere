@@ -88,6 +88,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public static MRole getDefault (Properties ctx, boolean reload)
 	{
+		if (Util.isEmpty(Env.getContext(ctx, Env.AD_ROLE_ID)) || Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)))
+			return null;
+		
 		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
 		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 
@@ -951,7 +954,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		MTable table = MTable.get(getCtx(), tableName);
 		if (table == null)
 			return false;
-		return MTable.get(getCtx(), tableName).isView();
+		return table.isView();
 	}
 
 	private String getIdColumnName(String tableName)
@@ -960,7 +963,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		MTable table = MTable.get(getCtx(), tableName);
 		if (table == null)
 			return null;
-		if (MTable.get(getCtx(), tableName).columnExists(colkey.toString()))
+		if (table.getColumnIndex(colkey.toString()) >= 0)
 			return colkey.toString();
 		return null;
 	}

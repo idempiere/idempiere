@@ -1,0 +1,12 @@
+-- IDEMPIERE-4682 oracle has M_INVENTORYLINEMA_KEY is reason error when complete Internal Use Inventory
+SELECT register_migration_script('202310161741_IDEMPIERE-4682.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+DROP INDEX M_INVENTORYLINEMA_KEY
+;
+
+DROP INDEX M_MOVEMENTLINEMA_KEY
+;
+

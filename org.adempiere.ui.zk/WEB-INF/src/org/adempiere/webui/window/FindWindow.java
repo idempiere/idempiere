@@ -285,7 +285,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	
     /** IDEMPIERE-2836  User Query Where */
     private String          m_whereUserQuery;
-    /** Toolbar for avdance search tab. North of {@link #winAdvanced}. */
+    /** Toolbar for advance search tab. North of {@link #winAdvanced}. */
     private ToolBar advancedPanelToolBar;
     
     /**IDEMPIERE-4085*/
@@ -633,7 +633,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listhead.appendChild(lstHQueryTo);
         listhead.appendChild(lstHRightBracket);
         advancedPanel.appendChild(listhead);
-        ZKUpdateUtil.setVflex(advancedPanel, true);
 
         Borderlayout layout = new Borderlayout();
         ZKUpdateUtil.setHflex(layout, "1");
@@ -1723,18 +1722,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             		fQueryName.setReadonly(false); 
             	}
             	msgLabel.setText("");
-
-            	if(index == 0) 
-            	{ // no query - wipe and start over.
-            		List<?> rowList = advancedPanel.getChildren();
-            		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
-            			rowList.remove(rowIndex);
-            		createFields();  
-            	}
-    			else
-    			{
-    				parseUserQuery(userQueries[index-1]);
-    			}
+            	onSelectedQueryChanged();
     		}
         	else if (event.getTarget() instanceof Combobox)
             {
@@ -2260,15 +2248,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					{       
 						if (!isCompositeExists) {
 							exists ="SELECT 1 FROM "+m_gridTab.getTableName()+" WHERE "+m_gridTab.getTableName()+"."+m_gridTab.getLinkColumnName()+" = "+m_tableName+"."+m_tableName+"_ID ";//  "+tab.getTableName()+".";
-							ColumnSQL = exists+" AND " + ColumnSQL;
+							ColumnSQL = exists + " AND " + getLeftBracketValue(row) + ColumnSQL;
 						}         
 
 						isExists = true;
 					}
 				}
 	            // Left brackets
-	            Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
-	            String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
+	            String lBrackets = getLeftBracketValue(row);
 				if (lBrackets != null) {
 					openBrackets += lBrackets.length();
 					if (isExists && !lBrackets.isEmpty()) {
@@ -2279,8 +2266,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					lBrackets = "";
 				}
 				// Right brackets
-	            Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
-	            String rBrackets = listRightBracket.getSelectedItem().getValue().toString();
+	            String rBrackets = getRightBracketValue(row);
 				if (rBrackets != null) {
 					openBrackets -= rBrackets.length();
 					if(isCompositeExists && !rBrackets.isEmpty())				
@@ -2464,6 +2450,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	                	if(!isCompositeExists)
 							where += ")";
+	                	
+	                	where += getRightBracketValue(row);
 
 						m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
 					} else {
@@ -2485,6 +2473,28 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		}
 
 	}	//	cmd_saveAdvanced
+    
+    /**
+     * Returns the value selected for the left bracket list item
+     * in the current row 
+     * @param row
+     * @return empty, (, (( or (((
+     */
+    private String getLeftBracketValue(ListItem row) {
+    	Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
+        return listLeftBracket.getSelectedItem().getValue().toString();
+    }
+    
+    /**
+     * Returns the value selected for the right bracket list item
+     * in the current row 
+     * @param row
+     * @return empty, ), )) or )))
+     */
+    private String getRightBracketValue(ListItem row) {
+        Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
+        return listRightBracket.getSelectedItem().getValue().toString();
+    }
 
     /**
      * Append values to code
@@ -2551,7 +2561,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq = new MUserQuery (Env.getCtx(), 0, null);
 						uq.setName (name);
 						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
-						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx())); // allow System
+						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 					}
 					if (shareAllUsers)
 						uq.setAD_User_ID(-1); // set to null
@@ -3559,6 +3569,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private void showAdvanced() {
 		advancedPanelToolBar.setVisible(true);
 		advancedPanel.setVisible(true);
+		winAdvanced.invalidate();
 	}
 	
 	/**

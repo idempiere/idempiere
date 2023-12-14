@@ -38,6 +38,8 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.EMail;
+import org.compiere.util.Language;
+import org.compiere.util.Util;
 
 /**
  *	Dunning Letter Print
@@ -178,8 +180,13 @@ public class DunningPrint extends SvrProcess
 			StringBuilder msginfo = new StringBuilder().append(bp.getName()).append(", Amt=").append(entry.getAmt());
 			info.setDescription(msginfo.toString());
 			ReportEngine re = null;
-			if (format != null)
+			if (format != null) {
+				Language lang = client.getLanguage();
+				if (!Util.isEmpty(bp.getAD_Language()))
+					lang = Language.getLanguage(bp.getAD_Language());
+				format.setLanguage(lang);
 				re = new ReportEngine(getCtx(), format, query, info);
+			}
 			boolean printed = false;
 			if (p_EMailPDF)
 			{

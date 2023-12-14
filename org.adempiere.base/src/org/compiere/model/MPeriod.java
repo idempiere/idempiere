@@ -343,12 +343,8 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		if (idxdoctype < 0) {
 			if (tableID == MInventory.Table_ID) {
 				docBaseType = MDocType.DOCBASETYPE_MaterialPhysicalInventory;
-			} else if (tableID == MProduction.Table_ID) {
-				docBaseType = MDocType.DOCBASETYPE_MaterialProduction;
 			} else if (tableID == MRequisition.Table_ID) {
 				docBaseType = MDocType.DOCBASETYPE_PurchaseRequisition;
-			} else if (tableID == MBankStatement.Table_ID) {
-				docBaseType = MDocType.DOCBASETYPE_BankStatement;
 			} else if (tableID == MAllocationHdr.Table_ID) {
 				docBaseType = MDocType.DOCBASETYPE_PaymentAllocation;
 			} else if (tableID == MMatchInv.Table_ID) {

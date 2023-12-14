@@ -673,11 +673,14 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 					m_activity.setUserChoice(AD_User_ID, value, dt, textMsg);
 					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
 					wfpr.checkCloseActivities(m_activity.get_TrxName());
+					
+					if (!Util.isEmpty(m_activity.getProcessMsg(), true))
+						Dialog.error(m_WindowNo, m_activity.getProcessMsg());
 				}
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					Dialog.error(m_WindowNo, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage());
 					trx.rollback();
 					trx.close();
 					return;
@@ -693,6 +696,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 					m_activity.setUserConfirmation(AD_User_ID, textMsg);
 					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
 					wfpr.checkCloseActivities(m_activity.get_TrxName());
+					
+					if (!Util.isEmpty(m_activity.getProcessMsg(), true))
+						Dialog.error(m_WindowNo, m_activity.getProcessMsg());
 				}
 				catch (Exception e)
 				{

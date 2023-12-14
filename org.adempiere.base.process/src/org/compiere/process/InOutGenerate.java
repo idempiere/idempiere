@@ -362,6 +362,10 @@ public class InOutGenerate extends SvrProcess
 					{
 						MStorageOnHand storage = storages[j];
 						onHand = onHand.add(storage.getQtyOnHand());
+						if (completeOrder && j == 0) {
+							// CompleteOrder is created at the end, so we need to subtract here to keep track of what is "consumed"
+							storage.setQtyOnHand(storage.getQtyOnHand().subtract(toDeliver));
+						}
 					}
 					boolean autoProduce = product.isBOM() && product.isVerified() && product.isAutoProduce();
 					boolean fullLine = onHand.compareTo(toDeliver) >= 0
@@ -426,6 +430,9 @@ public class InOutGenerate extends SvrProcess
 				//	Complete Order successful
 				if (completeOrder && MOrder.DELIVERYRULE_CompleteOrder.equals(order.getDeliveryRule()))
 				{
+					// reset storage cache - it was updated in memory above
+					resetStorageCache();
+
 					for (int i = 0; i < lines.length; i++)
 					{
 						MOrderLine line = lines[i];
@@ -637,8 +644,17 @@ public class InOutGenerate extends SvrProcess
 		}
 		return m_lastStorages;
 	}	//	getStorages
-	
-	
+
+	/**
+	 * Reset in memory map, array and parameters 
+	 */
+	public void resetStorageCache()
+	{
+		m_map = new HashMap<SParameter,MStorageOnHand[]>();
+		m_lastPP = null;
+		m_lastStorages = null;
+	}
+
 	/**
 	 * 	Complete Shipment
 	 */
@@ -658,11 +674,9 @@ public class InOutGenerate extends SvrProcess
 			String message = Msg.parseTranslation(getCtx(), "@ShipmentProcessed@ " + m_shipment.getDocumentNo());
 			addBufferLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, message, m_shipment.get_Table_ID(),m_shipment.getM_InOut_ID());
 			m_created++;
-			
+
 			//reset storage cache as MInOut.completeIt will update m_storage
-			m_map = new HashMap<SParameter,MStorageOnHand[]>();
-			m_lastPP = null;
-			m_lastStorages = null;
+			resetStorageCache();
 		}
 		m_shipment = null;
 		m_line = 0;

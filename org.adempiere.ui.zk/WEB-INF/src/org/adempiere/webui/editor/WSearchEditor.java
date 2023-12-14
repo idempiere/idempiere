@@ -98,6 +98,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	
 	protected ADWindow adwindow;
 
+	protected boolean multipleSelection = false;
+
 	/**
 	 * 
 	 * @param gridField
@@ -124,6 +126,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		init();
 		getComponent().setAttribute(ATTRIBUTE_IS_INFO_PANEL_OPEN, false);
+		multipleSelection = true;
 	}
 
 
@@ -167,6 +170,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
         columnName = lookup.getColumnName();
 		super.setColumnName(columnName);
 		init();
+		multipleSelection = false;
 	}
 
 	public WSearchEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
@@ -183,6 +187,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
         this.columnName = columnName;
 		super.setColumnName(columnName);
 		init();
+		multipleSelection = false;
 	}
 
 
@@ -464,7 +469,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (m_tableName == null)	//	sets table name & key column
 			setTableAndKeyColumn();
 		
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getWhereClause());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
 			Integer key = ip.getFirstRowKey();
@@ -672,7 +677,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (m_tableName == null)	//	sets table name & key column
 			setTableAndKeyColumn();
 
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, multipleSelection, whereClause);
 		if (ip != null)
 			showInfoPanel(ip);
 	}
@@ -890,7 +895,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	@Override
 	public String getDisplayTextForGridView(Object value) {
 		String s = super.getDisplayTextForGridView(value);
-		if (ClientInfo.isMobile() && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
+		if (s != null && ClientInfo.isMobile() && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
 			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, null, Env.getAD_Client_ID(Env.getCtx()));
 			if (!Util.isEmpty(separator, true) && s.indexOf(separator) >= 0) {
 				s = s.replace(separator, "\n");
@@ -898,7 +903,21 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 		return s;
 	}
-	
+
+	/**
+	 * @return true if info window allow multiple selection
+	 */
+	public boolean isMultipleSelection() {
+		return multipleSelection;
+	}
+
+	/**
+	 * @param multipleSelection
+	 */
+	public void setMultipleSelection(boolean multipleSelection) {
+		this.multipleSelection = multipleSelection;
+	}
+
 	static class CustomSearchBox extends ComboEditorBox {
 
 		/**

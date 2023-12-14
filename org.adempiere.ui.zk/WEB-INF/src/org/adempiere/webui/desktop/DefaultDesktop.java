@@ -507,7 +507,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	
         	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {        		
         		preference = new MPreference(Env.getCtx(), 0, null);
-        		preference.setAD_User_ID(userId); // allow System
+        		preference.setAD_User_ID(userId);
         		preference.setAttribute(SIDE_CONTROLLER_WIDTH_PREFERENCE);
         	}
         	preference.setValue(width);
@@ -555,7 +555,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	
         	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {        		
         		preference = new MPreference(Env.getCtx(), 0, null);
-        		preference.setAD_User_ID(userId); // allow System
+        		preference.setAD_User_ID(userId);
         		preference.setAttribute(HELP_CONTROLLER_WIDTH_PREFERENCE);
         	}
         	preference.setValue(width);
@@ -948,50 +948,44 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				@Override
 				public void onEvent(Event event) throws Exception {
 					BroadCastMsg msg = (BroadCastMsg) event.getData();
-					
 
+					MBroadcastMessage mbMessage = null;
 					switch (msg.getEventId()) {
 					case BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE:
-						MBroadcastMessage mbMessage = MBroadcastMessage.get(
-								Env.getCtx(), msg.getIntData());
-						String currSession = Integer
-								.toString(Env.getContextAsInt(Env.getCtx(),
-										"AD_Session_ID"));
+						mbMessage = MBroadcastMessage.get(Env.getCtx(), msg.getIntData());
+						if (mbMessage == null)
+							return;
+						String currSession = Integer.toString(Env.getContextAsInt(Env.getCtx(), "AD_Session_ID"));
 						if (currSession.equals(msg.getTarget())) {
 							BroadcastMessageWindow testMessageWindow = new BroadcastMessageWindow(
 										pnlHead);
 							testMessageWindow.appendMessage(mbMessage, true);
 							testMessageWindow = null;
-
 						}
 						break;
 					case BroadCastUtil.EVENT_BROADCAST_MESSAGE:
-						mbMessage = MBroadcastMessage.get(
-								Env.getCtx(), msg.getIntData());
+						mbMessage = MBroadcastMessage.get(Env.getCtx(), msg.getIntData());
+						if (mbMessage == null)
+							return;
 						if (mbMessage.isValidUserforMessage()) {
-							
 							BroadcastMessageWindow messageWindow = new BroadcastMessageWindow(
 										pnlHead);
 							messageWindow.appendMessage(mbMessage, false);
 						}
 						break;
 					case BroadCastUtil.EVENT_SESSION_TIMEOUT:
-
 						currSession = Integer.toString(Env.getContextAsInt(
 								Env.getCtx(), "AD_Session_ID"));
 						if (currSession.equalsIgnoreCase(msg.getTarget())) {
 							new TimeoutPanel(pnlHead, msg.getIntData());
 						}
-
 						break;
 					case BroadCastUtil.EVENT_SESSION_ONNODE_TIMEOUT:
-
 						currSession = WebUtil.getServerName();
-
 						if (currSession.equalsIgnoreCase(msg.getTarget())) {
 							new TimeoutPanel(pnlHead, msg.getIntData());
 						}
-
+						break;
 					}
 
 				}

@@ -55,6 +55,7 @@ import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -267,9 +268,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				m_autoCall = true;
 			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
-			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-			if (lstMFAMechanism.getFellowIfAny(id) == null)
-				ci.setId(id);
+    		if (SystemProperties.isZkUnitTest()) {
+    			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+    			if (lstMFAMechanism.getFellowIfAny(id) == null)
+    				ci.setId(id);
+    		}
 			lstMFAMechanism.appendChild(ci);
 		}
 		lstMFAMechanism.setSelectedIndex(0);

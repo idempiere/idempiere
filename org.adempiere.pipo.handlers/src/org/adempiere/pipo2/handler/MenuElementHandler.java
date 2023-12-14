@@ -170,7 +170,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
 				DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
 				X_AD_TreeNodeMM nmm = new X_AD_TreeNodeMM(ctx.ctx, 0, getTrxName(ctx));
-				nmm.setParent_ID(parentId);
+				nmm.set_ValueOfColumn(X_AD_TreeNodeMM.COLUMNNAME_Parent_ID, parentId);
 				nmm.setSeqNo(seqNo);
 				nmm.setAD_Tree_ID(AD_Tree_ID);
 				nmm.setNode_ID(mMenu.getAD_Menu_ID());

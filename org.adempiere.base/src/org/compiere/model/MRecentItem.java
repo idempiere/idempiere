@@ -268,7 +268,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	public static void postOnChangedEvent(int AD_User_ID) {
 		Map<String, Integer> properties = new HashMap<String, Integer>();
 		properties.put("AD_User_ID", AD_User_ID);
-		Event event = new Event(ON_RECENT_ITEM_CHANGED_TOPIC, properties);
+		Event event = EventManager.newEvent(ON_RECENT_ITEM_CHANGED_TOPIC, properties, true);
 		EventManager.getInstance().postEvent(event);
 	}
 

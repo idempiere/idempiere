@@ -103,7 +103,7 @@ public class WPaySelect extends PaySelect
 	private Panel parameterPanel = new Panel();
 	private Label labelBankAccount = new Label();
 	/** Bank account parameter */
-	private Listbox fieldBankAccount = ListboxFactory.newDropdownListbox();
+	protected Listbox fieldBankAccount = ListboxFactory.newDropdownListbox();
 	/** Layout of {@link #parameterPanel} */
 	private Grid parameterLayout = GridFactory.newGridLayout();
 	/** Label of {@link #labelBalance} */
@@ -112,20 +112,20 @@ public class WPaySelect extends PaySelect
 	private Label labelCurrency = new Label();
 	/** Current bank account balance */
 	private Label labelBalance = new Label();
-	private Checkbox onlyDue = new Checkbox();
-	private Checkbox onlyPositiveBalance = new Checkbox();
+	protected Checkbox onlyDue = new Checkbox();
+	protected Checkbox onlyPositiveBalance = new Checkbox();
 	private Label labelBPartner = new Label();
-	private Listbox fieldBPartner = ListboxFactory.newDropdownListbox();
+	protected Listbox fieldBPartner = ListboxFactory.newDropdownListbox();
 	private Label labelPayDate = new Label();
 	/** C_PaySelection.PayDate */
-	private WDateEditor fieldPayDate = new WDateEditor();
+	protected WDateEditor fieldPayDate = new WDateEditor();
 	private Label labelPaymentRule = new Label();
-	private Listbox fieldPaymentRule = ListboxFactory.newDropdownListbox();
+	protected Listbox fieldPaymentRule = ListboxFactory.newDropdownListbox();
 	private Label labelDtype = new Label();
 	/** Document Type */
-	private Listbox fieldDtype = ListboxFactory.newDropdownListbox();
+	protected Listbox fieldDtype = ListboxFactory.newDropdownListbox();
 	/** MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice */
-	private Checkbox chkOnePaymentPerInv = new Checkbox();
+	protected Checkbox chkOnePaymentPerInv = new Checkbox();
 	
 	/** Center of {@link #mainLayout}. Open document list. */
 	private WListbox miniTable = ListboxFactory.newDataTable();
