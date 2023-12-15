@@ -125,7 +125,7 @@ public final class UserPreference implements Serializable {
 						preference.setAttribute(attribute);
 					}
 					String oldValue = preference.getValue();
-					if (! oldValue.equals(value)) {
+					if (! value.equals(oldValue)) {
 						try {
 							PO.setCrossTenantSafe();
 							preference.setValue(value);
