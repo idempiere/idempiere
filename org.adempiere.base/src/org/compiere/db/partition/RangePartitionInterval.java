@@ -43,6 +43,10 @@ public class RangePartitionInterval {
 	private Object from;
 	private Object to;
 
+	private static Pattern yearMonthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+year(?:s)?\\s+([1-9]{1}[0-9]?)\\s+month(?:s)?$");
+	private static Pattern yearPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(year)(?:s)?$");
+	private static Pattern monthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(month)(?:s)?$");
+	
 	/**
 	 * @param name
 	 * @param from
@@ -91,10 +95,7 @@ public class RangePartitionInterval {
 	 */
 	public static String validateIntervalPattern(MColumn column) {
 		if (DisplayType.isDate(column.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(column.getAD_Reference_ID()))
-		{
-			Pattern yearMonthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+year(?:s)?\\s+([1-9]{1}[0-9]?)\\s+month(?:s)?$");
-			Pattern yearPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(year)(?:s)?$");
-			Pattern monthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(month)(?:s)?$");
+		{			
 			Matcher matcher = yearMonthPattern.matcher(column.getRangePartitionInterval());
 			if (!matcher.matches())
 			{
@@ -122,11 +123,14 @@ public class RangePartitionInterval {
 			return Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported");
 	}
 	
+	/**
+	 * @param table
+	 * @param rangePartitionColumns
+	 * @param trxName
+	 * @return List of RangePartitionInterval list
+	 */
 	public static List<List<RangePartitionInterval>> createIntervals(MTable table, List<RangePartitionColumn> rangePartitionColumns, String trxName) {
 		List<List<RangePartitionInterval>> columnRangePartitionIntervals = new ArrayList<List<RangePartitionInterval>>();
-		Pattern yearMonthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+year(?:s)?\\s+([1-9]{1}[0-9]?)\\s+month(?:s)?$");
-		Pattern yearPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(year)(?:s)?$");
-		Pattern monthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(month)(?:s)?$");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);		
 		List<String> partitionKeyColumnNames = table.getPartitionKeyColumnNames();
@@ -138,36 +142,14 @@ public class RangePartitionInterval {
 			RangePartitionColumn rangePartitonColumn = rangePartitionColumns.get(x);
 			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
 			{
-				int years = 0;
-				int months = 0;
-				Matcher matcher = yearMonthPattern.matcher(rangePartitonColumn.getIntervalPattern());
-				if (matcher.matches())
-				{
-					years = Integer.parseInt(matcher.group(1));
-					months = Integer.parseInt(matcher.group(2));
-				}
-				else
-				{
-					matcher = yearPattern.matcher(rangePartitonColumn.getIntervalPattern());
-					if (matcher.matches())
-						years = Integer.parseInt(matcher.group(1));
-					else
-					{
-						matcher = monthPattern.matcher(rangePartitonColumn.getIntervalPattern());
-						if (matcher.matches())
-							months = Integer.parseInt(matcher.group(1));
-					}
-				}
-				
-				if (years < 0 || months < 0 || (years == 0 && months == 0))
-					throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
+				Interval interval = getInterval(partitionKeyColumn);
 				
 				Timestamp minValue = (Timestamp) rangePartitonColumn.getMinValue();
 				Timestamp maxValue = (Timestamp) rangePartitonColumn.getMaxValue();					
 				
 				Calendar cal = Calendar.getInstance();
 				cal.setTimeInMillis(minValue.getTime());
-				cal.set(cal.get(Calendar.YEAR), (months > 0) ? cal.get(Calendar.MONTH) : 0, 1);
+				cal.set(cal.get(Calendar.YEAR), (interval.months > 0) ? cal.get(Calendar.MONTH) : 0, 1);
 
 				Calendar cal2 = Calendar.getInstance();
 				cal2.setTimeInMillis(maxValue.getTime());
@@ -175,12 +157,12 @@ public class RangePartitionInterval {
 				while (cal.before(cal2))
 				{
 					String name = cal.get(Calendar.YEAR) + 
-							(months > 0 ? (cal.get(Calendar.MONTH)+1) >=10 ? "_" + (cal.get(Calendar.MONTH)+1) 
+							(interval.months > 0 ? (cal.get(Calendar.MONTH)+1) >=10 ? "_" + (cal.get(Calendar.MONTH)+1) 
 									: "_0" + (cal.get(Calendar.MONTH)+1) : "");
 					
 					String from = dateFormat.format(cal.getTime());	
-					cal.add(Calendar.YEAR, years);
-					cal.add(Calendar.MONTH, months);			
+					cal.add(Calendar.YEAR, interval.years);
+					cal.add(Calendar.MONTH, interval.months);			
 					String to = dateFormat.format(cal.getTime());
 					
 					rangePartitionIntervals.add(new RangePartitionInterval(rangePartitonColumn.getColumnName(), name, "'" + from + "'", "'" + to + "'"));
@@ -214,5 +196,45 @@ public class RangePartitionInterval {
 			columnRangePartitionIntervals.add(rangePartitionIntervals);
 		}
 		return columnRangePartitionIntervals;
+	}
+	
+	/**
+	 * Get year and month interval from AD_Column.RangePartitionInterval.<br/>
+	 * Throw exception if pattern is invalid.
+	 * @param partitionKeyColumn
+	 * @return year and month interval
+	 */
+	public static Interval getInterval(MColumn partitionKeyColumn) {
+		int years = 0;
+		int months = 0;
+		Matcher matcher = yearMonthPattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+		if (matcher.matches())
+		{
+			years = Integer.parseInt(matcher.group(1));
+			months = Integer.parseInt(matcher.group(2));
+		}
+		else
+		{
+			matcher = yearPattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+			if (matcher.matches())
+				years = Integer.parseInt(matcher.group(1));
+			else
+			{
+				matcher = monthPattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+				if (matcher.matches())
+					months = Integer.parseInt(matcher.group(1));
+			}
+		}
+		
+		if (years < 0 || months < 0 || (years == 0 && months == 0))
+			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
+		
+		return new Interval(years, months);
+	}
+	
+	/**
+	 * Year and month interval
+	 */
+	public static record Interval(int years, int months) {
 	}
 }

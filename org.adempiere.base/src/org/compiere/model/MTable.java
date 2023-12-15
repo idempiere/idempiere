@@ -959,6 +959,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	private List<MColumn> partitionKeyColumns;
 	private List<String> partitionKeyColumnNames;
 	private String partitionKeyColumnNamesAsString;
+	
+	/**
+	 * @param requery true to reload from DB
+	 * @return partition key columns
+	 */
 	public List<MColumn> getPartitionKeyColumns(boolean requery)
 	{
 		if (partitionKeyColumns != null && !requery)
@@ -976,6 +981,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return partitionKeyColumns;
 	}
 	
+	/**
+	 * Update {@link #partitionKeyColumnNames} and {@link #partitionKeyColumnNamesAsString}
+	 */
 	private void populatePartitionKeyColumnNames()
 	{
 		List<MColumn> keyColumns = getPartitionKeyColumns(false);
@@ -993,6 +1001,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		partitionKeyColumnNamesAsString = keyColumnsString.toString();
 	}
 	
+	/**
+	 * @return partition key column names
+	 */
 	public List<String> getPartitionKeyColumnNames()
 	{
 		if (partitionKeyColumnNames != null)
@@ -1002,6 +1013,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return partitionKeyColumnNames;
 	}
 	
+	/**
+	 * @return comma separated list of partition key column names
+	 */
 	public String getPartitionKeyColumnNamesAsString()
 	{
 		if (partitionKeyColumnNamesAsString != null)
@@ -1011,6 +1025,13 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return partitionKeyColumnNamesAsString;
 	}
 	
+	/**
+	 * Create and save new X_AD_TablePartition record.
+	 * @param name
+	 * @param expression
+	 * @param trxName
+	 * @return new X_AD_TablePartition record
+	 */
 	public X_AD_TablePartition createTablePartition(String name, String expression, String trxName)
 	{
 		X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), 0, trxName);
@@ -1023,6 +1044,12 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	
 	private List<X_AD_TablePartition> tablePartitions;
 	private List<String> tablePartitionNames;
+	
+	/**
+	 * @param requery true to reload from DB
+	 * @param trxName
+	 * @return X_AD_TablePartition records of this table
+	 */
 	public List<X_AD_TablePartition> getTablePartitions(boolean requery, String trxName)
 	{
 		if (tablePartitions != null && !requery)
@@ -1039,6 +1066,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return tablePartitions;
 	}
 	
+	/**
+	 * @param trxName
+	 * @return list of table partition name
+	 */
 	public List<String> getTablePartitionNames(String trxName)
 	{
 		if (tablePartitionNames != null)

@@ -45,3 +45,7 @@ INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,C
 UPDATE AD_Message SET MsgText='Changed in the table partition configuration',Updated=TO_TIMESTAMP('2023-12-14 15:35:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200853
 ;
 
+-- Dec 15, 2023, 4:50:28 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Only one partition key is allowed',0,0,'Y',TO_TIMESTAMP('2023-12-15 16:50:27','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-15 16:50:27','YYYY-MM-DD HH24:MI:SS'),100,200858,'OnlyOnePartitionKeyAllowed','D','8e205344-7629-441a-af13-c831bafcbf00')
+;
+
