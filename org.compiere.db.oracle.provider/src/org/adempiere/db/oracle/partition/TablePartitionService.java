@@ -595,26 +595,27 @@ public class TablePartitionService implements ITablePartitionService {
 	public String isValidConfiguration(MColumn column) {
 		String trxName = column.get_TrxName();
 		MTable table = MTable.get(Env.getCtx(), column.getAD_Table_ID(), trxName);
+		
+		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(true);	// re-query the partition key columns
+		if (column.isActive() && column.isPartitionKey()) {
+			if (!partitionKeyColumns.contains(column))
+				partitionKeyColumns.add(column);
+			partitionKeyColumns.sort(new Comparator<MColumn>() {
+				@Override
+				public int compare(MColumn o1, MColumn o2) {
+					Integer o1SeqNo = Integer.valueOf(o1.getSeqNoPartition());
+					Integer o2SeqNo = Integer.valueOf(o2.getSeqNoPartition());
+					return o1SeqNo.compareTo(o2SeqNo);
+				}
+			});
+		} else {
+			if (partitionKeyColumns.contains(column))
+				partitionKeyColumns.remove(column);
+		}
+		if (partitionKeyColumns.size() > 1)
+			return Msg.getMsg(Env.getCtx(), "OnlyOnePartitionKeyAllowed");
+		
 		if (column.isActive() && column.isPartitionKey() && table.getPartitioningMethod().equals(MTable.PARTITIONINGMETHOD_Range)) {
-			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(true);	// re-query the partition key columns
-			if (column.isActive() && column.isPartitionKey()) {
-				if (!partitionKeyColumns.contains(column))
-					partitionKeyColumns.add(column);
-				partitionKeyColumns.sort(new Comparator<MColumn>() {
-					@Override
-					public int compare(MColumn o1, MColumn o2) {
-						Integer o1SeqNo = Integer.valueOf(o1.getSeqNoPartition());
-						Integer o2SeqNo = Integer.valueOf(o2.getSeqNoPartition());
-						return o1SeqNo.compareTo(o2SeqNo);
-					}
-				});
-			} else {
-				if (partitionKeyColumns.contains(column))
-					partitionKeyColumns.remove(column);
-			}
-			if (partitionKeyColumns.size() > 1)
-				return Msg.getMsg(Env.getCtx(), "OnlyOnePartitionKeyAllowed");
-			
 			String error = RangePartitionInterval.validateIntervalPattern(column);
 			if (!Util.isEmpty(error))
 				return error;
