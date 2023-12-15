@@ -25,8 +25,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
@@ -99,7 +101,8 @@ public class TablePartitionService implements ITablePartitionService {
 		if (count > 0)
 			return true;		
 		
-		String partitionKeyColumnsString = table.getPartitionKeyColumnNamesAsString();		
+		List<String> partitionKeyColumnNames = table.getPartitionKeyColumnNames();
+		
 		sql = 
 			"""
 				SELECT conname AS constraint_name, 
@@ -125,11 +128,25 @@ public class TablePartitionService implements ITablePartitionService {
 					int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
 					if (pi != null)
 						pi.addLog(0, null, null, no + " " + alterStmt.toString());
-					
+
+					List<String> lowerCasePartitionKeyColumnNames = new ArrayList<String>();
+					for (String partitionKeyColumnName : partitionKeyColumnNames)
+						lowerCasePartitionKeyColumnNames.add(partitionKeyColumnName.toLowerCase());
+					String constraintColumnsStr = constraint_definition.substring(constraint_definition.indexOf("(")+1, constraint_definition.length()-1);
+					StringTokenizer st = new StringTokenizer(constraintColumnsStr, ",");
+					while (st.hasMoreTokens()) {
+						String token = st.nextToken().trim();
+						if (lowerCasePartitionKeyColumnNames.contains(token))
+							lowerCasePartitionKeyColumnNames.remove(token);
+					}
+
 					alterStmt = new StringBuilder();
 					alterStmt.append("ALTER TABLE " + table.getTableName() + " ");
 					alterStmt.append("ADD CONSTRAINT " + constraint_name + " ");
-					alterStmt.append(constraint_definition.substring(0, constraint_definition.length()-1) + ", " + partitionKeyColumnsString + ")");
+					alterStmt.append(constraint_definition.substring(0, constraint_definition.length()-1));
+					for (int x = 0; x < lowerCasePartitionKeyColumnNames.size(); x++)
+						alterStmt.append(", " + lowerCasePartitionKeyColumnNames.get(x));
+					alterStmt.append(")");
 					no = DB.executeUpdateEx(alterStmt.toString(), trxName);
 					if (pi != null)
 						pi.addLog(0, null, null, no + " " + alterStmt.toString());
@@ -275,14 +292,31 @@ public class TablePartitionService implements ITablePartitionService {
 		
 		return false;
 	}
+	
+	/**
+	 * Get DB partition key definition
+	 * @param table
+	 * @param trxName
+	 * @return String
+	 */
+	private String getPartitionKeyDefinition(MTable table, String trxName) {
+		String sql =
+				"""
+					SELECT pg_get_partkeydef(oid) AS partition_key
+					FROM pg_class
+					WHERE relkind = 'p'
+					AND relname = LOWER(?)	
+				""";
+		return DB.getSQLValueStringEx(trxName, sql.toString(), table.getTableName());
+	}
 
 	/**
 	 * Validate partition configuration
 	 * @param table
 	 * @param trxName
-	 * @return true if valid
+	 * @return String error-code - null if not error
 	 */
-	private boolean validateConfiguration(MTable table, String trxName) {		
+	private String validateConfiguration(MTable table, String trxName) {		
 		String currentPartitionKey = null;
 		String partitioningMethod = table.getPartitioningMethod();		
 		if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List))
@@ -290,26 +324,20 @@ public class TablePartitionService implements ITablePartitionService {
 		else if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_Range))
 			currentPartitionKey = "RANGE";
 		currentPartitionKey += " (" + table.getPartitionKeyColumnNamesAsString().toLowerCase() + ")";
-		currentPartitionKey = currentPartitionKey.replaceAll(",", ", ");
-		
-		String sql =
-			"""
-				SELECT pg_get_partkeydef(oid) AS partition_key
-				FROM pg_class
-				WHERE relkind = 'p'
-				AND relname = LOWER(?)	
-			""";
-		String partitionKey = DB.getSQLValueStringEx(trxName, sql.toString(), table.getTableName());
-		
-		return currentPartitionKey.equalsIgnoreCase(partitionKey);
+		currentPartitionKey = currentPartitionKey.replaceAll(",", ", ");		
+		String partitionKey = getPartitionKeyDefinition(table, trxName);
+		if (!currentPartitionKey.equalsIgnoreCase(partitionKey))
+			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + ": " + partitionKey;
+		return null;
 	}
 	
 	@Override
 	public boolean addPartitionAndMigrateData(MTable table, String trxName, ProcessInfo pi) {
 		boolean isUpdated = false;
 		
-		if (!validateConfiguration(table, trxName))
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged"));
+		String error = validateConfiguration(table, trxName);
+		if (!Util.isEmpty(error))
+			throw new AdempiereException(error);
 				
 		String partitioningMethod = table.getPartitioningMethod();		
 		if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List))
@@ -337,7 +365,7 @@ public class TablePartitionService implements ITablePartitionService {
 		boolean isUpdated = false;
 		List<X_AD_TablePartition> partitions = new ArrayList<X_AD_TablePartition>();
 		List<RangePartitionColumn> rangePartitionColumns = new ArrayList<RangePartitionColumn>();
-		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns();
+		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
 
 		for (int x = 0; x < partitionKeyColumns.size(); x++)
 		{
@@ -507,7 +535,7 @@ public class TablePartitionService implements ITablePartitionService {
 		
 		if (!partitions.isEmpty())
 		{
-			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns();
+			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
 			for (X_AD_TablePartition partition : partitions)
 			{
 				List<Object> values = columnValues.get(partition.getName());
@@ -566,6 +594,65 @@ public class TablePartitionService implements ITablePartitionService {
 		if (processInfo != null)
 			processInfo.addLog(0, null, null, no + " " + stmt.toString());
 		return true;
+	}
+
+	@Override
+	public String isValidConfiguration(MTable table) {
+		String trxName = table.get_TrxName();
+		if (!isPartitionedTable(table, trxName))
+			return null;
+		if (!table.isPartition())
+			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + " [" + MTable.COLUMNNAME_IsPartition + "]";
+		if (table.is_ValueChanged(MTable.COLUMNNAME_PartitioningMethod)) {
+			String currentPartitionKey = null;
+			String partitioningMethod = table.getPartitioningMethod();		
+			if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List))
+				currentPartitionKey = "LIST";
+			else if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_Range))
+				currentPartitionKey = "RANGE";
+			String partitionKey = getPartitionKeyDefinition(table, trxName);
+			if (!partitionKey.toLowerCase().startsWith(currentPartitionKey.toLowerCase()))
+				return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + " [" + MTable.COLUMNNAME_PartitioningMethod + "]";
+		}
+		return null;
+	}
+
+	@Override
+	public String isValidConfiguration(MColumn column) {
+		String trxName = column.get_TrxName();
+		MTable table = MTable.get(Env.getCtx(), column.getAD_Table_ID(), trxName);
+		if (column.isActive() && column.isPartitionKey() && table.getPartitioningMethod().equals(MTable.PARTITIONINGMETHOD_Range)) {
+			String error = RangePartitionInterval.validateIntervalPattern(column);
+			if (!Util.isEmpty(error))
+				return error;
+		}
+		
+		if (!isPartitionedTable(table, trxName))
+			return null;
+		if (column.is_ValueChanged(MColumn.COLUMNNAME_IsPartitionKey)
+				|| (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_IsActive))
+				|| (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_SeqNoPartition))) {
+			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(true);	// re-query the partition key columns
+			if (column.isPartitionKey()) {
+				if (!partitionKeyColumns.contains(column))
+					partitionKeyColumns.add(column);
+				partitionKeyColumns.sort(new Comparator<MColumn>() {
+					@Override
+					public int compare(MColumn o1, MColumn o2) {
+						Integer o1SeqNo = Integer.valueOf(o1.getSeqNoPartition());
+						Integer o2SeqNo = Integer.valueOf(o2.getSeqNoPartition());
+						return o1SeqNo.compareTo(o2SeqNo);
+					}
+				});
+			} else {
+				if (partitionKeyColumns.contains(column))
+					partitionKeyColumns.remove(column);
+			}
+			return validateConfiguration(table, trxName);
+		}
+		if (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_RangePartitionInterval))
+			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + " [" + MColumn.COLUMNNAME_RangePartitionInterval + "]";
+		return null;
 	}
 
 }

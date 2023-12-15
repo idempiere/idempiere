@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 public class RangePartitionInterval {
 	private String columnName;
@@ -82,13 +84,51 @@ public class RangePartitionInterval {
 		return to;
 	}
 	
+	/**
+	 * Validate range partition interval pattern
+	 * @param column
+	 * @return String error-code - null if not error
+	 */
+	public static String validateIntervalPattern(MColumn column) {
+		if (DisplayType.isDate(column.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(column.getAD_Reference_ID()))
+		{
+			Pattern yearMonthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+year(?:s)?\\s+([1-9]{1}[0-9]?)\\s+month(?:s)?$");
+			Pattern yearPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(year)(?:s)?$");
+			Pattern monthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(month)(?:s)?$");
+			Matcher matcher = yearMonthPattern.matcher(column.getRangePartitionInterval());
+			if (!matcher.matches())
+			{
+				matcher = yearPattern.matcher(column.getRangePartitionInterval());
+				if (!matcher.matches())
+				{
+					matcher = monthPattern.matcher(column.getRangePartitionInterval());
+					if (!matcher.matches())
+						return Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval");
+					return null;
+				}
+				return null;
+			}
+			return null;
+		}
+		else if (DisplayType.isNumeric(column.getAD_Reference_ID()) || DisplayType.isID(column.getAD_Reference_ID()))
+		{
+			Pattern pattern = Pattern.compile("^[1-9]\\d*$");
+			Matcher matcher = pattern.matcher(column.getRangePartitionInterval());
+			if (!matcher.matches())
+				return Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval");
+			return null;
+		}
+		else
+			return Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported");
+	}
+	
 	public static List<List<RangePartitionInterval>> createIntervals(MTable table, List<RangePartitionColumn> rangePartitionColumns, String trxName) {
 		List<List<RangePartitionInterval>> columnRangePartitionIntervals = new ArrayList<List<RangePartitionInterval>>();
-		Pattern pattern1 = Pattern.compile("(\\d+)\\s+year(?:s)?\\s+(\\d+)\\s+month(?:s)?");
-		Pattern pattern2 = Pattern.compile("(\\d+)\\s+year(?:s)?");
-		Pattern pattern3 = Pattern.compile("(\\d+)\\s+month(?:s)?");
+		Pattern yearMonthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+year(?:s)?\\s+([1-9]{1}[0-9]?)\\s+month(?:s)?$");
+		Pattern yearPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(year)(?:s)?$");
+		Pattern monthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(month)(?:s)?$");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns();		
+		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);		
 		List<String> partitionKeyColumnNames = table.getPartitionKeyColumnNames();
 		for (int x = 0; x < partitionKeyColumnNames.size(); x++)
 		{
@@ -100,7 +140,7 @@ public class RangePartitionInterval {
 			{
 				int years = 0;
 				int months = 0;
-				Matcher matcher = pattern1.matcher(rangePartitonColumn.getIntervalPattern());
+				Matcher matcher = yearMonthPattern.matcher(rangePartitonColumn.getIntervalPattern());
 				if (matcher.matches())
 				{
 					years = Integer.parseInt(matcher.group(1));
@@ -108,19 +148,19 @@ public class RangePartitionInterval {
 				}
 				else
 				{
-					matcher = pattern2.matcher(rangePartitonColumn.getIntervalPattern());
+					matcher = yearPattern.matcher(rangePartitonColumn.getIntervalPattern());
 					if (matcher.matches())
 						years = Integer.parseInt(matcher.group(1));
 					else
 					{
-						matcher = pattern3.matcher(rangePartitonColumn.getIntervalPattern());
+						matcher = monthPattern.matcher(rangePartitonColumn.getIntervalPattern());
 						if (matcher.matches())
 							months = Integer.parseInt(matcher.group(1));
 					}
 				}
 				
 				if (years < 0 || months < 0 || (years == 0 && months == 0))
-					throw new IllegalArgumentException("Invalid range interval: " + years + " year(s) " + months + " month(s)");
+					throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
 				
 				Timestamp minValue = (Timestamp) rangePartitonColumn.getMinValue();
 				Timestamp maxValue = (Timestamp) rangePartitonColumn.getMaxValue();					
@@ -146,21 +186,21 @@ public class RangePartitionInterval {
 					rangePartitionIntervals.add(new RangePartitionInterval(rangePartitonColumn.getColumnName(), name, "'" + from + "'", "'" + to + "'"));
 				}
 			}
-			else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()))
+			else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID()))
 			{
-				BigDecimal interval = new BigDecimal(rangePartitonColumn.getIntervalPattern());
-				if (interval.signum() <= 0)
-					throw new IllegalArgumentException("Invalid range interval: " + interval);
+				Pattern pattern = Pattern.compile("^[1-9]\\d*$");
+				Matcher matcher = pattern.matcher(rangePartitonColumn.getIntervalPattern());
+				if (!matcher.matches())
+					throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
 				
+				BigDecimal interval = new BigDecimal(rangePartitonColumn.getIntervalPattern());	
 				BigDecimal minValue = (BigDecimal) rangePartitonColumn.getMinValue();
 				BigDecimal maxValue = (BigDecimal) rangePartitonColumn.getMaxValue();
 
-				BigDecimal value = minValue.divide(interval);
-				value.setScale(interval.scale(), RoundingMode.DOWN);
-				
+				BigDecimal value = minValue.divide(interval).setScale(0, RoundingMode.DOWN).multiply(interval);
 				while (value.compareTo(maxValue) <= 0)
 				{
-					String name = value.toString().replaceAll(".", "-");
+					String name = String.valueOf(value.intValue());
 					BigDecimal from = value;
 					value = value.add(interval);
 					BigDecimal to = value;
@@ -169,7 +209,7 @@ public class RangePartitionInterval {
 				}
 			}
 			else
-				throw new IllegalArgumentException("Range key column type not supported: " + partitionKeyColumn);
+				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported") + " [" + partitionKeyColumn + "]");
 			
 			columnRangePartitionIntervals.add(rangePartitionIntervals);
 		}

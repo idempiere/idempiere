@@ -2,7 +2,7 @@
 SELECT register_migration_script('202312131039_IDEMPIERE-5943.sql') FROM dual;
 
 -- Dec 13, 2023, 10:39:08 AM MYT
-UPDATE AD_Column SET DefaultValue='@SQL=SELECT COALESCE(MAX(SeqNoPartition),0)+10 AS DefaultValue FROM AD_Column WHERE AD_Table_ID=@AD_Table_ID@',Updated=TO_TIMESTAMP('2023-12-13 10:39:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=216302
+UPDATE AD_Column SET DefaultValue='@SQL=SELECT COALESCE(MAX(SeqNoPartition),0)+10 AS DefaultValue FROM AD_Column WHERE AD_Table_ID=@AD_Table_ID@ AND IsActive=''Y'' AND IsPartitionKey=''Y''' ,Updated=TO_TIMESTAMP('2023-12-13 10:39:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=216302
 ;
 
 -- Dec 13, 2023, 10:41:20 AM MYT

@@ -76,7 +76,7 @@ public class TablePartitionTask {
 		{
 			addLog(Msg.getElement(Env.getCtx(), "TableName") + ": " + table.getTableName());
 			
-			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns();
+			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(true);
 			if (partitionKeyColumns.isEmpty())
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PartitionKeyRequired"));
 			
@@ -108,6 +108,9 @@ public class TablePartitionTask {
 			isError = true;
 			addLog(Msg.getMsg(Env.getCtx(), "FailedRunPostMigrationData"));
 		}
+		
+		if (isUpdated)
+			table.getTablePartitions(true, trxName);
 		
 		return !isError;
 	}

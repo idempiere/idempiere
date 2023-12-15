@@ -24,6 +24,7 @@
  **********************************************************************/
 package org.compiere.db.partition;
 
+import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.process.ProcessInfo;
 
@@ -53,4 +54,16 @@ public interface ITablePartitionService {
 	 * @return true if success
 	 */
 	public boolean runPostPartitionProcess(MTable table, String trxName, ProcessInfo processInfo);
+	
+	/**
+	 * Validate partition configuration for table object
+	 * @return String error-code - null if not error
+	 */
+	public String isValidConfiguration(MTable table);
+	
+	/**
+	 * Validate partition configuration for column object
+	 * @return String error-code - null if not error
+	 */
+	public String isValidConfiguration(MColumn column);
 }

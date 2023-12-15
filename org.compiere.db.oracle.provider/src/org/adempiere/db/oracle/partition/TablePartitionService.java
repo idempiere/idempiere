@@ -28,6 +28,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.partition.ITablePartitionService;
@@ -36,6 +38,7 @@ import org.compiere.db.partition.RangePartitionInterval;
 import org.compiere.db.partition.RangePartitionIntervalCombination;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_TablePartition;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
@@ -46,7 +49,10 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 public class TablePartitionService implements ITablePartitionService {
-
+	//make the following 2 potentially configurable in future (just in case this is needed)
+	private boolean useAutomaticListPartition = true;
+	private boolean useIntervalPartition = true;
+	
 	public TablePartitionService() {
 	}
 
@@ -73,27 +79,47 @@ public class TablePartitionService implements ITablePartitionService {
 		else
 			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "PartitioningMethodNotSupported", new Object[]{partitioningMethod}));
 		
+		List<String> keyColumnNames = table.getPartitionKeyColumnNames();
 		String partitionKeyColumnsString = table.getPartitionKeyColumnNamesAsString();
 		if (!Util.isEmpty(partitionKeyColumnsString))
 			alterStmt.append(" (" + partitionKeyColumnsString + ")");
 		
-		alterStmt.append(" (PARTITION default_partition ");
-		StringBuilder defaultExpression = new StringBuilder();
-		List<String> keyColumnNames = table.getPartitionKeyColumnNames();
+		if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List) && useAutomaticListPartition) {
+			//with automatic, we still need to create at least one partition and we will create a null partition to fulfill the requirement 
+			alterStmt.append(" AUTOMATIC (PARTITION ");
+		} else if (keyColumnNames.size() == 1 && useIntervalPartition) {
+			MColumn partitionKeyColumn = table.getPartitionKeyColumns(false).get(0);
+			alterStmt.append(" INTERVAL(");
+			alterStmt.append(getIntervalExpression(partitionKeyColumn));
+			alterStmt.append(") (PARTITION ");
+		} else {
+			alterStmt.append(" (PARTITION default_partition ");
+		}
+		StringBuilder defaultExpression = new StringBuilder();		
 		if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List)) {
 			defaultExpression.append("VALUES (");
 			for(int i = 0; i< keyColumnNames.size(); i++) {
 				if (i > 0)
 					defaultExpression.append(", ");
-				defaultExpression.append("DEFAULT");
+				if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List) && useAutomaticListPartition) 
+					defaultExpression.append("NULL");
+				else
+					defaultExpression.append("DEFAULT");
 			}
 			defaultExpression.append(")");
 		} else {
-			defaultExpression.append("VALUES LESS THAN (");
-			for(int i = 0; i< keyColumnNames.size(); i++) {
-				if (i > 0)
-					defaultExpression.append(", ");
-				defaultExpression.append("MAXVALUE");
+			if (keyColumnNames.size() == 1 && useIntervalPartition) {
+				if (alterStmt.indexOf("NUMTOYMINTERVAL(") > 0)
+					defaultExpression.append("VALUES LESS THAN (TO_DATE('1970-01-01','YYYY-MM-DD')");
+				else
+					defaultExpression.append("VALUES LESS THAN (").append("0");
+			} else {
+				defaultExpression.append("VALUES LESS THAN (");
+				for(int i = 0; i< keyColumnNames.size(); i++) {
+					if (i > 0)
+						defaultExpression.append(", ");
+					defaultExpression.append("MAXVALUE");
+				}
 			}
 			defaultExpression.append(")");
 		}
@@ -104,11 +130,63 @@ public class TablePartitionService implements ITablePartitionService {
 		if (processInfo != null)
 			processInfo.addLog(0, null, null, no + " " + alterStmt.toString());
 		
-		table.createTablePartition("default_partition", defaultExpression.toString(), trxName);
+		if (!(partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List) && useAutomaticListPartition))
+			table.createTablePartition("default_partition", defaultExpression.toString(), trxName);
 		
 		return true;
 	}
 
+	private String getIntervalExpression(MColumn partitionKeyColumn) {
+		if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID())) {
+			Pattern yearMonthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+year(?:s)?\\s+([1-9]{1}[0-9]?)\\s+month(?:s)?$");
+			Pattern yearPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(year)(?:s)?$");
+			Pattern monthPattern = Pattern.compile("^([1-9]{1}[0-9]?)\\s+(month)(?:s)?$");
+			int years = 0;
+			int months = 0;
+			Matcher matcher = yearMonthPattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+			if (matcher.matches())
+			{
+				years = Integer.parseInt(matcher.group(1));
+				months = Integer.parseInt(matcher.group(2));
+			}
+			else
+			{
+				matcher = yearPattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+				if (matcher.matches())
+					years = Integer.parseInt(matcher.group(1));
+				else
+				{
+					matcher = monthPattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+					if (matcher.matches())
+						months = Integer.parseInt(matcher.group(1));
+				}
+			}
+			if (years < 0 || months < 0 || (years == 0 && months == 0))
+				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
+			
+			if (years > 0) {
+				if (months == 0) {
+					return "NUMTOYMINTERVAL("+years+",'YEAR')";
+				} else {
+					months = months + (years * 12);
+					return "NUMTOYMINTERVAL("+months+",'MONTH')";
+				}
+			} else {
+				return "NUMTOYMINTERVAL("+months+",'MONTH')";
+			}
+		} else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID())) {
+			Pattern pattern = Pattern.compile("^[1-9]\\d*$");
+			Matcher matcher = pattern.matcher(partitionKeyColumn.getRangePartitionInterval());
+			if (!matcher.matches())
+				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
+			
+			BigDecimal interval = new BigDecimal(partitionKeyColumn.getRangePartitionInterval());
+			return interval.toPlainString();
+		} else {
+			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported") + " [" + partitionKeyColumn + "]");
+		}
+	}
+	
 	@Override
 	public boolean addPartitionAndMigrateData(MTable table, String trxName, ProcessInfo processInfo) {
 		boolean isUpdated = false;
@@ -116,11 +194,28 @@ public class TablePartitionService implements ITablePartitionService {
 		String partitioningMethod = table.getPartitioningMethod();		
 		if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_List))
 		{
-			isUpdated = addListPartition(table, trxName, processInfo);
+			if (isAutoList(table, trxName))
+			{
+				syncAutoList(table, trxName, processInfo);
+				syncPartition(table, trxName, processInfo, false);
+			}
+			else
+			{
+				isUpdated = addListPartition(table, trxName, processInfo);
+			}
 		}
 		else if (partitioningMethod.equals(MTable.PARTITIONINGMETHOD_Range))
 		{
-			isUpdated = addRangePartition(table, trxName, processInfo);
+			String interval = getInterval(table, trxName);
+			if (!Util.isEmpty(interval, true))
+			{
+				syncInterval(table, trxName, interval, processInfo);
+				syncPartition(table, trxName, processInfo, true);
+			}
+			else
+			{
+				isUpdated = addRangePartition(table, trxName, processInfo);
+			}
 		}
 		else
 			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "PartitioningMethodNotSupported", new Object[]{partitioningMethod}));
@@ -128,6 +223,142 @@ public class TablePartitionService implements ITablePartitionService {
 		return isUpdated;
 	}
 
+	/**
+	 * Update automatic list partitioning of table if the DB column list is different from current AD_Column values 
+	 * @param table
+	 * @param trxName
+	 * @param pi
+	 */
+	private void syncAutoList(MTable table, String trxName, ProcessInfo pi) {
+		List<String> keyColumns = table.getPartitionKeyColumnNames();
+		String sql = "SELECT Column_Name FROM User_Part_Key_Columns WHERE Name=? ORDER BY Column_Position";
+		List<List<Object>> columnNames = DB.getSQLArrayObjectsEx(trxName, sql, table.getTableName().toUpperCase());
+		boolean notSync = false;
+		if (keyColumns.size() != columnNames.size()) {
+			notSync = true;
+		} else {
+			for(int i = 0; i < keyColumns.size(); i++) {
+				if (!keyColumns.get(i).equalsIgnoreCase(columnNames.get(i).get(0).toString())) {
+					notSync = true;
+					break;
+				}
+			}
+		}
+		if (notSync) {
+			StringBuilder alterStmt = new StringBuilder("ALTER TABLE ")
+					.append(table.getTableName())
+					.append(" MODIFY PARTITION BY List ");
+			String partitionKeyColumnsString = table.getPartitionKeyColumnNamesAsString();
+			alterStmt.append(" (" + partitionKeyColumnsString + ")");
+			alterStmt.append(" AUTOMATIC (PARTITION VALUES (");
+			for(int i = 0; i< keyColumns.size(); i++) {
+				if (i > 0)
+					alterStmt.append(", ");
+				alterStmt.append("NULL");
+			}
+			alterStmt.append("))");
+			int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+			if (pi != null)
+				pi.addLog(0, null, null, no + " " + alterStmt.toString());
+		}
+	}
+
+	/**
+	 * Update partition interval of table if it is not in sync with current AD_Column.RangePartitionInterval value
+	 * @param table
+	 * @param trxName
+	 * @param interval
+	 * @param pi
+	 */
+	private void syncInterval(MTable table, String trxName, String interval, ProcessInfo pi) {
+		MColumn partitionKeyColumn = table.getPartitionKeyColumns(false).get(0);
+		String expression = getIntervalExpression(partitionKeyColumn);
+		if (!interval.toUpperCase().equals(expression)) 
+		{
+			//note that this only effect new data inserted into table and will not change existing partition
+			String sql = "ALTER TABLE " + table.getTableName() + " SET INTERVAL (" + expression + ")";
+			int no = DB.executeUpdateEx(sql, trxName);
+			if (pi != null)
+				pi.addLog(0, null, null, no + " " + sql);
+		}
+	}
+
+	/**
+	 * Read list or interval partition details from DB and update X_AD_TablePartition
+	 * @param table
+	 * @param trxName
+	 * @param processInfo
+	 * @param interval
+	 */
+	private void syncPartition(MTable table, String trxName, ProcessInfo processInfo, boolean interval) {
+		String sql = 
+			"""
+				SELECT Partition_Name, High_Value
+				FROM User_Tab_Partitions
+				WHERE Table_Name=?
+			""";
+		Query query = new Query(Env.getCtx(), X_AD_TablePartition.Table_Name, "AD_Table_ID=?", trxName);
+		List<X_AD_TablePartition> existingList = query.setParameters(table.getAD_Table_ID()).list();
+		List<Integer> matchedIds = new ArrayList<Integer>();
+		try(PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
+			stmt.setString(1, table.getTableName().toUpperCase());
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				String partitionName = rs.getString(1);
+				String values = rs.getString(2);
+				int id = DB.getSQLValueEx(trxName, "SELECT AD_TablePartition_ID FROM AD_TablePartition WHERE AD_Table_ID=? AND Name=?", table.getAD_Table_ID(), partitionName);
+				if (id > 0) {
+					matchedIds.add(id);
+				} else {
+					String expression = interval ? "VALUES LESS THAN " + values  : "VALUES " + values;
+					table.createTablePartition(partitionName, expression, trxName);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}
+		
+		//remove X_AD_TablePartition that doesn't exists in DB
+		if (existingList.size() > 0) {
+			for (X_AD_TablePartition tablePartition : existingList) {
+				if (!matchedIds.contains(tablePartition.getAD_TablePartition_ID()))
+					tablePartition.deleteEx(true);
+			}
+		}
+	}
+
+	/**
+	 * @param table
+	 * @param trxName 
+	 * @return true if table is using automatic list partitioning
+	 */
+	private boolean isAutoList(MTable table, String trxName) {
+		String sql =
+			"""
+				SELECT AutoList
+				FROM User_Part_Tables
+				WHERE Table_Name = ?
+			""";
+		String autoList = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase());
+		return "YES".equals(autoList);
+	}
+
+	/**
+	 * @param table
+	 * @param trxName 
+	 * @return interval for partitioning
+	 */
+	private String getInterval(MTable table, String trxName) {
+		String sql =
+			"""
+				SELECT Interval
+				FROM User_Part_Tables
+				WHERE Table_Name = ?
+			""";
+		String interval = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase());
+		return interval;
+	}
+	
 	/**
 	 * Add new list partition
 	 * @param table
@@ -217,7 +448,7 @@ public class TablePartitionService implements ITablePartitionService {
 		boolean isUpdated = false;
 		List<X_AD_TablePartition> partitions = new ArrayList<X_AD_TablePartition>();
 		List<RangePartitionColumn> rangePartitionColumns = new ArrayList<RangePartitionColumn>();
-		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns();
+		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
 
 		for (int x = 0; x < partitionKeyColumns.size(); x++)
 		{
@@ -318,6 +549,31 @@ public class TablePartitionService implements ITablePartitionService {
 	@Override
 	public boolean runPostPartitionProcess(MTable table, String trxName, ProcessInfo processInfo) {
 		return true;
+	}
+
+	@Override
+	public String isValidConfiguration(MTable table) {
+		String trxName = table.get_TrxName();
+		if (!isPartitionedTable(table, trxName))
+			return null;
+		if (!table.isPartition())
+			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + " [" + MTable.COLUMNNAME_IsPartition + "]";
+		return null;
+	}
+
+	@Override
+	public String isValidConfiguration(MColumn column) {
+		String trxName = column.get_TrxName();
+		MTable table = MTable.get(Env.getCtx(), column.getAD_Table_ID(), trxName);
+		if (column.isActive() && column.isPartitionKey() && table.getPartitioningMethod().equals(MTable.PARTITIONINGMETHOD_Range)) {
+			String error = RangePartitionInterval.validateIntervalPattern(column);
+			if (!Util.isEmpty(error))
+				return error;
+		}
+		
+		if (!isPartitionedTable(table, trxName))
+			return null;
+		return null;
 	}
 
 }

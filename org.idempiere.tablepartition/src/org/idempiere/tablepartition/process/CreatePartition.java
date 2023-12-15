@@ -27,8 +27,10 @@ package org.idempiere.tablepartition.process;
 import java.util.List;
 
 import org.compiere.db.partition.ITablePartitionService;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -39,9 +41,24 @@ import org.idempiere.tablepartition.TablePartitionTask;
 public class CreatePartition extends SvrProcess {
 
 	private int p_record_ID = 0;
+	private String p_partitioningMethod = null;
+	private String p_tableName = null;
 	
 	@Override
 	protected void prepare() {
+		ProcessInfoParameter[] para = getParameter();
+		for (int i = 0; i < para.length; i++)
+		{
+			String name = para[i].getParameterName();
+			if (para[i].getParameter() == null)
+				;
+			else if (name.equals("PartitioningMethod"))
+				p_partitioningMethod = para[i].getParameterAsString();
+			else if (name.equals("TableName"))
+				p_tableName = para[i].getParameterAsString();
+			else
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
+		}
 		p_record_ID = getRecord_ID();
 	}
 
@@ -49,7 +66,7 @@ public class CreatePartition extends SvrProcess {
 	protected String doIt() throws Exception {
 		ITablePartitionService service = DB.getDatabase().getTablePartitionService();
 		if (service == null) {
-			return "@Error@ Database adapter doesn't has table partition support";
+			return "@Error@ " + Msg.getMsg(getCtx(), "DBAdapterNoTablePartitionSupport");
 		}
 		
 		int successCount = 0;
@@ -66,7 +83,12 @@ public class CreatePartition extends SvrProcess {
 		}
 		else
 		{
-			List<MTable> tables = new Query(getCtx(), MTable.Table_Name, MTable.COLUMNNAME_IsPartition + "='Y'", null)
+			String whereClause = MTable.COLUMNNAME_IsPartition + "='Y' AND " + MTable.COLUMNNAME_IsView + "='N'";
+			if (p_partitioningMethod != null)
+				whereClause += " AND " + MTable.COLUMNNAME_PartitioningMethod + "= '" + p_partitioningMethod + "'";
+			if (p_tableName != null)
+				whereClause += " AND " + MTable.COLUMNNAME_TableName + " LIKE '" + p_tableName + "'";
+			List<MTable> tables = new Query(getCtx(), MTable.Table_Name, whereClause, null)
 					.setOnlyActiveRecords(true)
 					.setOrderBy(MTable.COLUMNNAME_TableName)
 					.list();
