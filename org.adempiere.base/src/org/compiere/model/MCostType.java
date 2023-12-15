@@ -29,16 +29,16 @@ import org.compiere.util.Msg;
 public class MCostType extends X_M_CostType
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2060640115481013228L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_CostType_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_CostType_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCostType(Properties ctx, String M_CostType_UU, String trxName) {
         super(ctx, M_CostType_UU, trxName);
     }
@@ -69,6 +69,7 @@ public class MCostType extends X_M_CostType
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MCostType[");
@@ -81,6 +82,7 @@ public class MCostType extends X_M_CostType
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
@@ -92,6 +94,7 @@ public class MCostType extends X_M_CostType
 	 * 	Before Delete
 	 *	@return true if it can be deleted
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());

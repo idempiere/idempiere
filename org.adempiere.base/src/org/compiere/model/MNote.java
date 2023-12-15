@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
  *  Note Model
  *
@@ -33,17 +32,16 @@ import org.compiere.util.Util;
 public class MNote extends X_AD_Note
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -422120961441035731L;
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Note_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Note_UU  UUID key
+     * @param trxName Transaction
+     */
     public MNote(Properties ctx, String AD_Note_UU, String trxName) {
         super(ctx, AD_Note_UU, trxName);
 		if (Util.isEmpty(AD_Note_UU))
@@ -144,10 +142,8 @@ public class MNote extends X_AD_Note
 		setClientOrg(AD_Client_ID, AD_Org_ID);
 	}	//	MNote
 
-
-	/**************************************************************************
-	 * 	Set Record.
-	 * 	(Ss Button and defaults to String)
+	/**
+	 *  Set AD_Message_ID via Value
 	 *	@param AD_Message AD_Message
 	 */
 	public void setAD_Message_ID (String AD_Message)
@@ -165,9 +161,10 @@ public class MNote extends X_AD_Note
 
 	/**
 	 * 	Set AD_Message_ID.
-	 * 	Looks up No Message Found if 0
+	 * 	Looks up NoMessageFound if argument is 0.
 	 *	@param AD_Message_ID id
 	 */
+	@Override
 	public void setAD_Message_ID (int AD_Message_ID)
 	{
 		if (AD_Message_ID == 0)
@@ -178,7 +175,7 @@ public class MNote extends X_AD_Note
 
 	/**
 	 * 	Get Message
-	 *	@return message
+	 *	@return message text
 	 */
 	public String getMessage()
 	{
@@ -192,6 +189,7 @@ public class MNote extends X_AD_Note
 	 *	@param AD_Client_ID client
 	 *	@param AD_Org_ID org
 	 */
+	@Override
 	public void setClientOrg(int AD_Client_ID, int AD_Org_ID) 
 	{
 		super.setClientOrg(AD_Client_ID, AD_Org_ID);
@@ -208,11 +206,11 @@ public class MNote extends X_AD_Note
 		setRecord_ID(Record_ID);
 	}	//	setRecord
 
-
 	/**
 	 * 	String Representation
 	 *	@return	info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MNote[")

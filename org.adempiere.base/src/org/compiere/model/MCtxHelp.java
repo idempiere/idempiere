@@ -35,16 +35,16 @@ import java.util.Properties;
  */
 public class MCtxHelp extends X_AD_CtxHelp {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6004459503884638672L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_CtxHelp_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_CtxHelp_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCtxHelp(Properties ctx, String AD_CtxHelp_UU, String trxName) {
         super(ctx, AD_CtxHelp_UU, trxName);
     }

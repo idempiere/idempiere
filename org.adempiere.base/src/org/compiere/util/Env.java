@@ -52,7 +52,6 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
-import org.compiere.model.MLookupCache;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
@@ -1435,9 +1434,6 @@ public final class Env
 			if (tag.startsWith(WindowNo+"|"))
 				ctx.remove(keys[i]);
 		}
-		//  Clear Lookup Cache
-		MLookupCache.cacheReset(WindowNo);
-	//	MLocator.cacheReset(WindowNo);
 		//
 		IEnvEventListener[] listeners = eventListeners.toArray(new IEnvEventListener[0]);
 		for(IEnvEventListener listener : listeners)

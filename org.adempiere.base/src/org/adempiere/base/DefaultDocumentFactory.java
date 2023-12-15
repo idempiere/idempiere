@@ -25,7 +25,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- *
+ * Default {@link IDocFactory} implementation from core.<br/>
+ * Load {@link Doc} instance from class path.
  * @author hengsin
  *
  */

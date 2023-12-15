@@ -37,15 +37,31 @@ public class MPromotionPreCondition extends X_M_PromotionPreCondition {
         super(ctx, M_PromotionPreCondition_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param M_PromotionPreCondition_ID
+     * @param trxName
+     */
 	public MPromotionPreCondition(Properties ctx,
 			int M_PromotionPreCondition_ID, String trxName) {
 		super(ctx, M_PromotionPreCondition_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionPreCondition(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionPreCondition_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionPreCondition(Properties ctx, int M_PromotionPreCondition_ID, String trxName,
 			String... virtualColumns) {
 		super(ctx, M_PromotionPreCondition_ID, trxName, virtualColumns);

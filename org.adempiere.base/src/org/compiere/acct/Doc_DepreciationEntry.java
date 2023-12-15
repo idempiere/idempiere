@@ -13,9 +13,9 @@ import org.compiere.util.Env;
 
 
 /**
+ *  Posting for {@link MDepreciationEntry} document.
  *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *  @version  $Id$
- *
  */
 public class Doc_DepreciationEntry extends Doc
 {
@@ -34,7 +34,7 @@ public class Doc_DepreciationEntry extends Doc
 	private String						m_PostingType = null;
 	private int							m_C_AcctSchema_ID = 0;
 	
-	
+	@Override
 	protected String loadDocumentDetails ()
 	{
 		MDepreciationEntry entry = (MDepreciationEntry)getPO();
@@ -44,6 +44,10 @@ public class Doc_DepreciationEntry extends Doc
 		return null;
 	}
 	
+	/**
+	 * @param depexp
+	 * @return new DocLine instance
+	 */
 	private DocLine createLine(MDepreciationExp depexp)
 	{
 		if (!depexp.isProcessed())
@@ -52,14 +56,14 @@ public class Doc_DepreciationEntry extends Doc
 		return docLine;
 	}
 	
-	
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
 		return retValue;
 	}   //  getBalance
 
-	
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();

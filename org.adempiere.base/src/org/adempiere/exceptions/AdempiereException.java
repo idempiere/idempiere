@@ -20,7 +20,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Any exception that occurs inside the Adempiere core
+ * Runtime exception that occurs inside the Adempiere core
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
 public class AdempiereException extends RuntimeException {

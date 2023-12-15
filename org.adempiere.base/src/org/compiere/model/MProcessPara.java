@@ -35,7 +35,6 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.expression.logic.LogicEvaluator;
 
-
 /**
  *  Process Parameter Model
  *
@@ -45,13 +44,10 @@ import org.idempiere.expression.logic.LogicEvaluator;
 public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1116840975434565353L;
 
-	/**
-	 * 
-	 */
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
@@ -89,21 +85,20 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer, MProcessPara> s_cache 
 		= new ImmutableIntPOCache<Integer, MProcessPara> (Table_Name, 20);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Process_Para_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Process_Para_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProcessPara(Properties ctx, String AD_Process_Para_UU, String trxName) {
         super(ctx, AD_Process_Para_UU, trxName);
 		if (Util.isEmpty(AD_Process_Para_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Constructor
 	 *	@param ctx context
 	 *	@param AD_Process_Para_ID id
@@ -152,7 +147,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MProcessPara(MProcessPara copy) 
@@ -161,7 +156,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -171,7 +166,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -190,7 +185,6 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**	The Lookup				*/
 	private Lookup		m_lookup = null;
 	
-
 	/**
 	 *  Is this field a Lookup?.
 	 *  @return true if lookup field
@@ -210,7 +204,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	}   //  isLookup
 
 	/**
-	 *  Set Lookup for columns with lookup
+	 *  Load Lookup for column with lookup
 	 */
 	public void loadLookup()
 	{
@@ -280,6 +274,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MProcessPara[")
@@ -289,15 +284,11 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	}	//	toString
 	
 	/**
-	 * Copy settings from another process parameter
-	 * overwrites existing data
-	 * (including translations)
-	 * and saves
+	 * Copy settings from another process parameter and save
 	 * @param source 
 	 */
 	public void copyFrom (MProcessPara source)
 	{
-
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Copying from:" + source + ", to: " + this);
 		setAD_Element_ID(source.getAD_Element_ID());
 		setAD_Reference_ID(source.getAD_Reference_ID());
@@ -343,11 +334,12 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return save
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isCentrallyMaintained() && getAD_Element_ID() == 0)
@@ -411,6 +403,10 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		return true;
 	}	//	beforeSave
 
+	/**
+	 * Get reference table name for lookup and list field
+	 * @return reference table name or null
+	 */
 	public String getReferenceTableName() {
 		String foreignTable = null;
 		int refid = getAD_Reference_ID();
@@ -440,9 +436,9 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	}
 
 	/**
-	 * Write in log when an unexpected parameter is processed
-	 * If the parameter is defined in dictionary log at INFO level as a custom parameter
-	 * Otherwise log at SEVERE level as unknown parameter
+	 * Write in server log when an unexpected parameter is processed.<br/>
+	 * If the parameter is defined in dictionary log at INFO level as a custom parameter.<br/>
+	 * Otherwise log at SEVERE level as unknown parameter.
 	 * @param processId
 	 * @param para
 	 */

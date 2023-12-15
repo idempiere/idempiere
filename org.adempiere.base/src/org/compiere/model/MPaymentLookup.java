@@ -31,13 +31,12 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
- * 
+ * Payment rules lookup
  * @author Elaine
- *
  */
 public class MPaymentLookup extends Lookup implements Serializable {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2876345457828980720L;
 
@@ -48,6 +47,11 @@ public class MPaymentLookup extends Lookup implements Serializable {
 	/** Validation Code			*/
 	private String			m_validationCode;
 	
+	/**
+	 * @param ctx
+	 * @param windowNo
+	 * @param validationCode
+	 */
 	public MPaymentLookup(Properties ctx, int windowNo, String validationCode) {
 		super(DisplayType.TableDir, windowNo);
 		m_ctx = ctx;
@@ -97,6 +101,10 @@ public class MPaymentLookup extends Lookup implements Serializable {
 		return false;
 	}
 
+	/**
+	 * Same as {@link #containsKey(Object)} in this lookup implementation.
+	 */
+	@Override
 	public boolean containsKeyNoDirect (Object key)
 	{
 		return containsKey(key);
@@ -107,6 +115,10 @@ public class MPaymentLookup extends Lookup implements Serializable {
 		return "PaymentRule";
 	}
 	
+	/**
+	 * Get active payment rules
+	 * @return array of ValueNamePair(Value, Name)
+	 */
 	private ValueNamePair[] getData()
 	{
 		String ad_language = Env.getAD_Language(m_ctx);
@@ -162,6 +174,7 @@ public class MPaymentLookup extends Lookup implements Serializable {
 		return retValue;
 	}
 	
+	@Override
 	public String getValidation()
 	{
 		if (Util.isEmpty(m_validationCode, true))
@@ -169,6 +182,10 @@ public class MPaymentLookup extends Lookup implements Serializable {
 		return m_validationCode.trim();
 	}
 	
+	/**
+	 * Parse validation code
+	 * @return where clause (parsed validation code)
+	 */
 	private String getWhereClause()
 	{
 		String whereClause = "";

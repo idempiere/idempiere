@@ -30,19 +30,19 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 
 /**
- *	Product Attribute Lookup Model (not Cached)
+ *	Product Attribute Lookup Model (no local lookup cache)
  *	
  *  @author Jorg Janke
  *  @version $Id: MPAttributeLookup.java,v 1.2 2006/07/30 00:58:38 jjanke Exp $
  *  
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1885260 ] MPAttributeLookup: throws SQLException sometimes
  */
 public class MPAttributeLookup extends Lookup
 	implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1877125428249819248L;
 
@@ -60,56 +60,62 @@ public class MPAttributeLookup extends Lookup
 	private static KeyNamePair	NO_INSTANCE = new KeyNamePair (0,"");
 
 	/**
-	 *	Get Display for Value (not cached)
-	 *  @param value Location_ID
-	 *  @return String Value
+	 *	Get display text for key value (direct from DB)
+	 *  @param key Location_ID
+	 *  @return Display text
 	 */
-	public String getDisplay (Object value)
+	@Override
+	public String getDisplay (Object key)
 	{
-		if (value == null)
+		if (key == null)
 			return "";
-		NamePair pp = get (value);
+		NamePair pp = get (key);
 		if (pp == null)
-			return "<" + value.toString() + ">";
+			return "<" + key.toString() + ">";
 		return pp.getName();
 	}	//	getDisplay
 
 	/**
-	 *  The Lookup contains the key (not cached)
+	 *  The Lookup contains the key (direct check against DB)
 	 *  @param key Location_ID
-	 *  @return true if key known
+	 *  @return true if key exists
 	 */
+	@Override
 	public boolean containsKey (Object key)
 	{
 		return get(key) != null;
 	}   //  containsKey
 
+	/**
+	 * Same as {@link #containsKey(Object)} in this lookup implementation
+	 */
+	@Override
 	public boolean containsKeyNoDirect (Object key)
 	{
 		return containsKey(key);
 	}
 
 	/**
-	 *	Get Object of Key Value
-	 *  @param value value
-	 *  @return Object or null
+	 *	Get KeyNamePair(M_AttributeSetInstance_ID, Description) of Key Value
+	 *  @param key key value (M_AttributeSetInstance_ID)
+	 *  @return KeyNamePair(M_AttributeSetInstance_ID, Description) or null
 	 */
-	public NamePair get (Object value)
+	public NamePair get (Object key)
 	{
-		if (value == null)
+		if (key == null)
 			return null;
 		int M_AttributeSetInstance_ID = 0;
-		if (value instanceof Integer)
-			M_AttributeSetInstance_ID = ((Integer)value).intValue();
+		if (key instanceof Integer)
+			M_AttributeSetInstance_ID = ((Integer)key).intValue();
 		else
 		{
 			try
 			{
-				M_AttributeSetInstance_ID = Integer.parseInt(value.toString());
+				M_AttributeSetInstance_ID = Integer.parseInt(key.toString());
 			}
 			catch (Exception e)
 			{
-				log.log(Level.SEVERE, "Value=" + value, e);
+				log.log(Level.SEVERE, "Value=" + key, e);
 			}
 		}
 		if (M_AttributeSetInstance_ID == 0)
@@ -157,17 +163,17 @@ public class MPAttributeLookup extends Lookup
 	 */
 	public void dispose()
 	{
-		log.fine("");
+		if (log.isLoggable(Level.FINE)) log.fine("");
 		super.dispose();
 	}	//	dispose
 
 	/**
-	 *	Return data as sorted Array - not implemented
+	 *	Get list of lookup data - not implemented
 	 *  @param mandatory mandatory
 	 *  @param onlyValidated only validated
 	 *  @param onlyActive only active
 	 * 	@param temporary force load for temporary display
-	 *  @return null
+	 *  @return not implemented, always return null
 	 */
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
@@ -176,9 +182,7 @@ public class MPAttributeLookup extends Lookup
 	}   //  getArray
 
 	/**
-	 *	Get underlying fully qualified Table.Column Name.
-	 *	Used for VLookup.actionButton (Zoom)
-	 *  @return column name
+	 *  @return "M_AttributeSetInstance_ID"
 	 */
 	public String getColumnName()
 	{

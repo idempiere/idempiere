@@ -23,11 +23,13 @@ import org.compiere.model.MSystem;
 import org.compiere.util.AdempiereSystemError;
 
 /**
- * 	Report System Issue
+ * 	Report System Issue.
  *	
  *  @author Jorg Janke
  *  @version $Id: IssueReport.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 @org.adempiere.base.annotation.Process
 public class IssueReport extends SvrProcess
 {

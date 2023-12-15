@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.MimeType;
 
-
 /**
  *	Individual Attachment Entry of MAttachment
  *	
@@ -49,7 +48,7 @@ public class MAttachmentEntry
 		setName (name);
 		setData (data);
 		setIndex(index);
-	}	//	MAttachmentItem
+	}	//	MAttachmentEntry
 	
 	/**
 	 * 	Attachment Entry
@@ -59,10 +58,10 @@ public class MAttachmentEntry
 	public MAttachmentEntry (String name, byte[] data)
 	{
 		this (name, data, 0);
-	}	//	MAttachmentItem
+	}	//	MAttachmentEntry
 	
 	/**
-	 * Constructor for delayed load
+	 * Constructor for delayed loading of content
 	 * @param name
 	 * @param index
 	 * @param ds lazy data source
@@ -112,7 +111,7 @@ public class MAttachmentEntry
 	private boolean m_isUpdated = false;
 
 	/**
-	 * @return Returns the data.
+	 * @return byte[] content
 	 */
 	public byte[] getData ()
 	{
@@ -121,6 +120,7 @@ public class MAttachmentEntry
 		}
 		return m_data;
 	}
+	
 	/**
 	 * @param data The data to set.
 	 */
@@ -129,8 +129,9 @@ public class MAttachmentEntry
 		m_data = data;
 		m_isDataSet = true;
 	}
+	
 	/**
-	 * @return Returns the name.
+	 * @return name of entry
 	 */
 	public String getName ()
 	{
@@ -149,8 +150,8 @@ public class MAttachmentEntry
 	}	//	setName
 	
 	/**
-	 * 	Get Attachment Index
-	 *	@return int index
+	 * 	Get entry Index
+	 *	@return entry index
 	 */
 	public int getIndex()
 	{
@@ -161,6 +162,7 @@ public class MAttachmentEntry
 	 * 	To String
 	 *	@return name
 	 */
+	@Override
 	public String toString ()
 	{
 		return m_name;
@@ -197,10 +199,9 @@ public class MAttachmentEntry
 		sb.append(" - ").append(getContentType());
 		return sb.toString();
 	}	//	toStringX
-
 	
 	/**
-	 * 	Dump Data
+	 * 	Dump Data to standard out
 	 */
 	public void dump ()
 	{
@@ -294,8 +295,8 @@ public class MAttachmentEntry
 	}	//	isPDF
 	
 	/**
-	 * 	Is attachment entry a Graphic
-	 *	@return true if *.gif, *.jpg, *.png
+	 * 	Is attachment entry an image
+	 *	@return true if *.gif, *.jpg or *.png
 	 */
 	public boolean isGraphic()
 	{
@@ -324,6 +325,10 @@ public class MAttachmentEntry
 		return new ByteArrayInputStream(getData());
 	}	//	getInputStream
 
+	/**
+	 * Set entry index
+	 * @param index
+	 */
 	public void setIndex(int index) {
 		if (index > 0)
 			m_index = index;
@@ -355,15 +360,17 @@ public class MAttachmentEntry
 		return m_ds;
 	}
 
-	/** Set the updated property 
+	/** 
+	 * Set the updated property 
 	 * @param updated
 	 */
 	public void setUpdated(boolean updated) {
 		m_isUpdated = updated;
 	}
 
-	/** Get the updated property 
-	 * @return updated
+	/** 
+	 * Get the updated property 
+	 * @return true if updated
 	 */
 	public boolean isUpdated() {
 		return m_isUpdated;

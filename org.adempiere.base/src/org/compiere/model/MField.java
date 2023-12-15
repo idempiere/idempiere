@@ -25,7 +25,6 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.expression.logic.LogicEvaluator;
 
-
 /**
  *	Field Model
  *	
@@ -35,7 +34,7 @@ import org.idempiere.expression.logic.LogicEvaluator;
 public class MField extends X_AD_Field implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7382459987895129752L;
 	
@@ -43,7 +42,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MField> s_cache = new ImmutableIntPOCache<Integer,MField>(Table_Name, 20);
 	
 	/**
-	 * 
+	 * Get MField from cache
 	 * @param AD_Field_ID
 	 * @return MField (immutable)
 	 */
@@ -73,11 +72,11 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	}
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Field_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Field_UU  UUID key
+     * @param trxName Transaction
+     */
     public MField(Properties ctx, String AD_Field_UU, String trxName) {
         super(ctx, AD_Field_UU, trxName);
 		if (Util.isEmpty(AD_Field_UU))
@@ -149,7 +148,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	}	//	M_Field
 	
 	/**
-	 * 
+	 * Copy Constructor
 	 * @param copy
 	 */
 	public MField(MField copy) 
@@ -158,7 +157,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy Constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -168,7 +167,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy Constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

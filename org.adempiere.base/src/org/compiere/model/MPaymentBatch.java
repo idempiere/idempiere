@@ -30,7 +30,7 @@ import org.compiere.util.Util;
 public class MPaymentBatch extends X_C_PaymentBatch
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 779975501904633495L;
 
@@ -49,11 +49,11 @@ public class MPaymentBatch extends X_C_PaymentBatch
 	}	//	getForPaySelection
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_PaymentBatch_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaymentBatch_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPaymentBatch(Properties ctx, String C_PaymentBatch_UU, String trxName) {
         super(ctx, C_PaymentBatch_UU, trxName);
 		if (Util.isEmpty(C_PaymentBatch_UU))
@@ -91,19 +91,6 @@ public class MPaymentBatch extends X_C_PaymentBatch
 	{
 		super(ctx, rs, trxName);
 	}	//	MPaymentBatch
-
-	/* Old Constructor that sets the name replaced by UUID constructor in version 11 */
-	// /**
-	//  * 	New Constructor
-	//  *	@param ctx context
-	//  *	@param Name name
-	//  *	@param trxName trx
-	//  */
-	// public MPaymentBatch (Properties ctx, String Name, String trxName)
-	// {
-	// 	this (ctx, 0, trxName);
-	// 	setName (Name);
-	// }	//	MPaymentBatch
 
 	/**
 	 * 	Parent Constructor

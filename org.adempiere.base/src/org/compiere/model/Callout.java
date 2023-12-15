@@ -18,9 +18,14 @@ package org.compiere.model;
 
 import java.util.Properties;
 
+import org.adempiere.base.IColumnCallout;
+
 /**
- *  Callout Interface for Callout.
- *  Used in MTab and ImpFormatRow
+ *  Callout Interface for column/field.
+ *  Used in MTab and ImpFormatRow.
+ *  @see CalloutEngine
+ *  @see IColumnCallout
+ *  @see org.adempiere.base.annotation.Callout
  *
  *  @author     Jorg Janke
  *  @version    $Id: Callout.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -30,8 +35,8 @@ public interface Callout
 	/**
 	 *	Start Callout.
 	 *  <p>
-	 *	Callout's are used for cross field validation and setting values in other fields
-	 *	when returning a non empty (error message) string, an exception is raised
+	 *	Callout's are used for field validation, cross field validation and setting values in other fields.
+	 *	When returning a non empty (error message) string, an exception is raised.
 	 *  <p>
 	 *	When invoked, the Tab model has the new value!
 	 *
@@ -49,7 +54,7 @@ public interface Callout
 
 	/**
 	 *	Conversion Rules.
-	 *	Convert a String
+	 *	Use by ImpFormatRow to convert an input value.
 	 *
 	 *	@param method   in notation User_Function
 	 *  @param value    the value

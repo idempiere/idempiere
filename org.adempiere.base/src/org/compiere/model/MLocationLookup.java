@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 
 /**
- *	Address Loaction Lookup Model.
+ *	Address Location Lookup Model.
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: MLocationLookup.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
@@ -35,7 +35,7 @@ public final class MLocationLookup extends Lookup
 	implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7238110708451510319L;
 
@@ -55,31 +55,33 @@ public final class MLocationLookup extends Lookup
 
 	/**
 	 *	Get Display for Value (not cached)
-	 *  @param value Location_ID
-	 *  @return String Value
+	 *  @param key Location_ID
+	 *  @return display text
 	 */
-	public String getDisplay (Object value)
+	@Override
+	public String getDisplay (Object key)
 	{
-		if (value == null)
+		if (key == null)
 			return null;
-		MLocation loc = getLocation (value, null);
+		MLocation loc = getLocation (key, null);
 		if (loc == null){
-			StringBuilder msgreturn = new StringBuilder("<").append(value.toString()).append(">");
+			StringBuilder msgreturn = new StringBuilder("<").append(key.toString()).append(">");
 			return msgreturn.toString();
 		}	
 		return loc.toString();
 	}	//	getDisplay
 
 	/**
-	 *	Get Object of Key Value
-	 *  @param value value
-	 *  @return Object or null
+	 *	Get NamePair of Key Value
+	 *  @param key value
+	 *  @return NamePair or null
 	 */
-	public NamePair get (Object value)
+	@Override
+	public NamePair get (Object key)
 	{
-		if (value == null)
+		if (key == null)
 			return null;
-		MLocation loc = getLocation (value, null);
+		MLocation loc = getLocation (key, null);
 		if (loc == null)
 			return null;
 		return new KeyNamePair (loc.getC_Location_ID(), loc.toString());
@@ -88,23 +90,28 @@ public final class MLocationLookup extends Lookup
 	/**
 	 *  The Lookup contains the key 
 	 *  @param key Location_ID
-	 *  @return true if key known
+	 *  @return true if key exists
 	 */
+	@Override
 	public boolean containsKey (Object key)
 	{
 		return getLocation(key, null) != null;
 	}   //  containsKey
 
+	/**
+	 * Same as {@link #containsKey(Object)} in this class
+	 */
+	@Override
 	public boolean containsKeyNoDirect (Object key)
 	{
 		return containsKey(key);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Get Location
 	 * 	@param key ID as string or integer
 	 *	@param trxName transaction
-	 * 	@return Location
+	 * 	@return Location or null
 	 */
 	public MLocation getLocation (Object key, String trxName)
 	{
@@ -132,9 +139,9 @@ public final class MLocationLookup extends Lookup
 
 	/**
 	 *	Get underlying fully qualified Table.Column Name.
-	 *	Used for VLookup.actionButton (Zoom)
-	 *  @return column name
+	 *  @return "C_Location.C_Location_ID"
 	 */
+	@Override
 	public String getColumnName()
 	{
 		return "C_Location.C_Location_ID";
@@ -157,6 +164,7 @@ public final class MLocationLookup extends Lookup
 	 * 	@param temporary force load for temporary display
 	 *  @return null
 	 */
+	@Override
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
 		log.log(Level.SEVERE, "not implemented");

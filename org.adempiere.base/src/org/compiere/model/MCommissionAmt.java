@@ -33,16 +33,16 @@ import org.compiere.util.Util;
 public class MCommissionAmt extends X_C_CommissionAmt
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1747802539808391638L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_CommissionAmt_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CommissionAmt_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCommissionAmt(Properties ctx, String C_CommissionAmt_UU, String trxName) {
         super(ctx, C_CommissionAmt_UU, trxName);
 		if (Util.isEmpty(C_CommissionAmt_UU))
@@ -95,6 +95,12 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		super(ctx, rs, trxName);
 	}	//	MCommissionAmt
 
+	/**
+	 * @param ctx
+	 * @param C_CommissionAmt_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommissionAmt(Properties ctx, int C_CommissionAmt_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CommissionAmt_ID, trxName, virtualColumns);
 	}
@@ -149,14 +155,14 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		//
 		setCommissionAmt(amt.add(qty));
 	}	//	calculateCommission
-	
-	
+		
 	/**
 	 * 	After Save
 	 *	@param newRecord new
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -171,6 +177,7 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)
@@ -179,7 +186,7 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Amt Header
+	 * 	Update Header (MCommissionRun) amount
 	 */
 	private void updateRunHeader()
 	{

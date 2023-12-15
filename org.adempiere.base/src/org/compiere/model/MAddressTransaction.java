@@ -23,32 +23,42 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Address transaction model
+ * Model to record address validation transaction (usually online)
  * @author Elaine
  *
  */
 public class MAddressTransaction extends X_C_AddressTransaction 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8572809249265680649L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_AddressTransaction_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AddressTransaction_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAddressTransaction(Properties ctx, String C_AddressTransaction_UU, String trxName) {
         super(ctx, C_AddressTransaction_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param C_AddressTransaction_ID
+     * @param trxName
+     */
 	public MAddressTransaction(Properties ctx, int C_AddressTransaction_ID, String trxName) 
 	{
 		super(ctx, C_AddressTransaction_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAddressTransaction(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
@@ -76,8 +86,8 @@ public class MAddressTransaction extends X_C_AddressTransaction
 	}
 	
 	/**
-	 * Get address validation
-	 * @return address validation
+	 * Get address validation model
+	 * @return address validation model
 	 */
 	public MAddressValidation getMAddressValidation()
 	{
@@ -85,7 +95,7 @@ public class MAddressTransaction extends X_C_AddressTransaction
 	}
 	
 	/**
-	 * Online process address validation
+	 * Online address validation
 	 * @return true if valid
 	 */
 	public boolean processOnline()

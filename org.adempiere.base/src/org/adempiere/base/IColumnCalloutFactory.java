@@ -14,14 +14,14 @@
 package org.adempiere.base;
 
 /**
- * 
+ * Factory interface for {@link IColumnCallout}.<br/>
+ * For plugin that implement this as OSGi component, use <b>property = {"service.ranking:Integer=1"}</b> to set up a calling order 
+ * that prioritizes your component over core component.
  * @author hengsin
- *
  */
 public interface IColumnCalloutFactory {
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param columnName
 	 * @return array of matching callouts

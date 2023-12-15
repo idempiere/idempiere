@@ -139,7 +139,7 @@ public class CleanOrphanCascade extends SvrProcess
 					String colRef = refTable.getKeyColumns()[0];
 					String colRefUU = PO.getUUIDColumnName(refTableName);
 
-					if (colRecordID != null && ! refTable.isUUIDKeyTable()) {
+					if (colRecordID != null && refTable.isIDKeyTable()) {
 						StringBuilder whereClause = new StringBuilder("AD_Table_ID=").append(refTableID)
 								.append(" AND Record_ID>0")
 								.append(" AND NOT EXISTS (SELECT ").append(colRef)

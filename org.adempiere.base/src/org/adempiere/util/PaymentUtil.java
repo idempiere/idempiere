@@ -28,14 +28,20 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- * 
+ * Helper methods for payment processor
  * @author Elaine
- *
  */
 public class PaymentUtil {
 
 	private static final CLogger logger = CLogger.getCLogger(PaymentUtil.class);
 
+	/**
+	 * Get business partner bank account by credit card number and payment processor id.
+	 * @param bpartner
+	 * @param creditCardNo
+	 * @param C_PaymentProcessor_ID
+	 * @return list of matching MBPBankAccount records
+	 */
 	public static MBPBankAccount[] getBankAccounts(MBPartner bpartner, String creditCardNo, int C_PaymentProcessor_ID) {
 		ArrayList<MBPBankAccount> list = new ArrayList<MBPBankAccount>();
 		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND CreditCardNumber=? AND C_PaymentProcessor_ID = ? AND IsActive='Y' ORDER BY Created";
@@ -61,6 +67,11 @@ public class PaymentUtil {
 		return m_accounts;
 	}
 
+	/**
+	 * Replace the front part of credit card number with 0, keeping the last 4 digit.
+	 * @param value credit card number
+	 * @return partially mask credit card number 
+	 */
 	public static String encrpytCreditCard(String value) {
 		if (value == null)
 			return "";
@@ -82,6 +93,11 @@ public class PaymentUtil {
 		return encryptedCC.toString();
 	}
 
+	/**
+	 * Replace credit card cvv with 0
+	 * @param creditCardVV
+	 * @return string fill with just 0
+	 */
 	public static String encrpytCvv(String creditCardVV) {
 		if (creditCardVV == null)
 			return "";
@@ -97,6 +113,10 @@ public class PaymentUtil {
 		}
 	}
 
+	/**
+	 * @param str
+	 * @return true if str is a number
+	 */
 	public static boolean isNumeric(String str) {
 		if (str != null && str.length() > 0) {
 			NumberFormat formatter = NumberFormat.getInstance();
@@ -108,6 +128,11 @@ public class PaymentUtil {
 		return true;
 	}
 	
+	/**
+	 * Convert payment amount from dollar to cents (i.e x100)
+	 * @param payAmt
+	 * @return amount in cents (truncated to int)
+	 */
 	public static int getPayAmtInCents(BigDecimal payAmt)
 	{
 		if (payAmt == null)
@@ -117,6 +142,13 @@ public class PaymentUtil {
 		return bd.intValue();
 	}
 	
+	/**
+	 * Build credit card expire string
+	 * @param creditCardExpMM Expire month
+	 * @param creditCardExpYY Expire year
+	 * @param delimiter delimiter character between month and year
+	 * @return credit card expire string (for e.g 10/26)
+	 */
 	public static String getCreditCardExp(int creditCardExpMM, int creditCardExpYY, String delimiter)
 	{
 		String mm = String.valueOf(creditCardExpMM);

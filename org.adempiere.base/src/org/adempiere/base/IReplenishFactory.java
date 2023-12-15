@@ -11,9 +11,8 @@ import org.compiere.util.ReplenishInterface;
 public interface IReplenishFactory {
 
 	/**
-	 * 
 	 * @param className
-	 * @return Replenish instance
+	 * @return new ReplenishInterface instance
 	 */
 	public ReplenishInterface newReplenishInstance(String className);
 }

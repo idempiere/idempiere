@@ -13,8 +13,14 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+/**
+ * Factory interface for {@link AbstractProductPricing}.
+ */
 public interface IProductPricingFactory {
 
+	/**
+	 * @return new AbstractProductPricing instance
+	 */
 	public AbstractProductPricing newProductPricingInstance();
 
 }

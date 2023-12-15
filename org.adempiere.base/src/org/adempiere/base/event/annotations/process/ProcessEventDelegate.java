@@ -30,7 +30,9 @@ import org.compiere.process.ProcessInfo;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate for handling of process event.<br/>
+ * To handle a process related event topic, create a sub class of this and uses the process annotation
+ * (AfterProcess, BeforeProcess or PostProcess) to annotate the method for a specific process event topic.
  * @author hengsin
  *
  */
@@ -41,7 +43,6 @@ public class ProcessEventDelegate extends EventDelegate {
 	}
 
 	/**
-	 * 
 	 * @return {@link ProcessInfo}
 	 */
 	protected ProcessInfo getProcessInfo() {

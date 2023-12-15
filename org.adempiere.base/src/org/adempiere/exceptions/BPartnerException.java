@@ -22,12 +22,16 @@ import org.compiere.model.I_C_BPartner;
 public abstract class BPartnerException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4311798678799373821L;
 	private final int C_BPartner_ID;
 	
-	BPartnerException(String ad_message, I_C_BPartner bp)
+	/**
+	 * @param ad_message AD_Message.Value
+	 * @param bp
+	 */
+	protected BPartnerException(String ad_message, I_C_BPartner bp)
 	{
 		super("@"+ad_message+"@ - "+(bp == null ? "?" : bp.getValue()+"_"+bp.getName()));
 		if (bp != null)
@@ -41,7 +45,7 @@ public abstract class BPartnerException extends AdempiereException
 	}
 	
 	/**
-	 * @return the c_BPartner_ID
+	 * @return C_BPartner_ID
 	 */
 	public int getC_BPartner_ID()
 	{

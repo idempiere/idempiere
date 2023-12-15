@@ -35,31 +35,57 @@ import java.util.Properties;
  *
  */
 public class MDocBaseGroup extends X_C_DocBaseGroup {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4619625345276666731L;
 	
 	/**	Document Base Type Group Lines			*/
 	private MDocBaseGroupLine[]	m_lines;
 
+	/**
+	 * @param ctx
+	 * @param C_DocBaseGroup_ID
+	 * @param trxName
+	 */
 	public MDocBaseGroup(Properties ctx, int C_DocBaseGroup_ID, String trxName) {
 		super(ctx, C_DocBaseGroup_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_DocBaseGroup_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MDocBaseGroup(Properties ctx, int C_DocBaseGroup_ID, String trxName, String[] virtualColumns) {
 		super(ctx, C_DocBaseGroup_ID, trxName, virtualColumns);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MDocBaseGroup(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_DocBaseGroup_UU
+	 * @param trxName
+	 */
 	public MDocBaseGroup(Properties ctx, String C_DocBaseGroup_UU, String trxName) {
 		super(ctx, C_DocBaseGroup_UU, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_DocBaseGroup_UU
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MDocBaseGroup(Properties ctx, String C_DocBaseGroup_UU, String trxName,
 			String[] virtualColumns) {
 		super(ctx, C_DocBaseGroup_UU, trxName, virtualColumns);

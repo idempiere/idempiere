@@ -18,7 +18,7 @@ package org.compiere.impexp;
 
 /**
  *	Bank Statement Match Information.
- *	Returned by Bank Statement Matcher	
+ *	Returned by Bank Statement Matcher.	
  *	
  *  @author Jorg Janke
  *  @version $Id: BankStatementMatchInfo.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -38,7 +38,6 @@ public class BankStatementMatchInfo
 	private int m_C_Payment_ID = 0;
 	private int m_C_Invoice_ID = 0;
 
-
 	/**
 	 * 	Do we have a match?
 	 *	@return true if something could be matched
@@ -47,7 +46,6 @@ public class BankStatementMatchInfo
 	{
 		return m_C_BPartner_ID > 0 || m_C_Payment_ID > 0 || m_C_Invoice_ID > 0;
 	}	//	isValid
-
 
 	/**
 	 *	Get matched BPartner

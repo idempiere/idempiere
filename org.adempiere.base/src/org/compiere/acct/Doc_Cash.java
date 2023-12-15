@@ -28,7 +28,7 @@ import org.compiere.model.MCashLine;
 import org.compiere.util.Env;
 
 /**
- *  Post Invoice Documents.
+ *  Post {@link MCash} Documents. DOCTYPE_CashJournal.
  *  <pre>
  *  Table:              C_Cash (407)
  *  Document Types:     CMC
@@ -53,6 +53,7 @@ public class Doc_Cash extends Doc
 	 *  Load Specific Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails ()
 	{
 		MCash cash = (MCash)getPO();
@@ -71,7 +72,6 @@ public class Doc_Cash extends Doc
 		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
-
 
 	/**
 	 *	Load Cash Line
@@ -97,11 +97,11 @@ public class Doc_Cash extends Doc
 		return dls;
 	}	//	loadLines
 
-
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - subtracts line amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -118,7 +118,6 @@ public class Doc_Cash extends Doc
 		sb.append("]");
 		//
 		if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString());
-	//	return retValue;
 		return Env.ZERO;    //  Lines are balanced
 	}   //  getBalance
 
@@ -146,8 +145,9 @@ public class Doc_Cash extends Doc
 	 *          CashAsset               CR
 	 *  </pre>
 	 *  @param as account schema
-	 *  @return Fact
+	 *  @return Facts
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//  Need to have CashBook

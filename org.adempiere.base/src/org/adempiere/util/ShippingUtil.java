@@ -1,15 +1,38 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.util;
 
 import org.compiere.util.DB;
 
-
+/**
+ * Helper methods for shipping
+ */
 public class ShippingUtil 
 {
 	/**
-	 * 
-	 * @param shipper_id
-	 * @param org_id
-	 * @return ShipperAccount
+	 * Get shipper account from C_BP_ShippingAcct
+	 * @param shipper_id M_Shipper_ID
+	 * @param org_id AD_Org_ID
+	 * @return Shipper Account
 	 */
 	public static String getSenderShipperAccount(int shipper_id, int org_id)
 	{
@@ -24,9 +47,9 @@ public class ShippingUtil
 	}
 	
 	/**
-	 * 
-	 * @param shipper_id
-	 * @param org_id
+	 * Get duties shipper account from C_BP_ShippingAcct
+	 * @param shipper_id M_Shipper_ID
+	 * @param org_id AD_Org_ID
 	 * @return DutiesShipperAccount (if any)
 	 */
 	public static String getSenderDutiesShipperAccount(int shipper_id, int org_id)
@@ -42,12 +65,12 @@ public class ShippingUtil
 	}
 	
 	/**
-	 * 
+	 * Find recipient C_BPartner_Location_ID from C_BP_ShippingAcct, M_InOut or C_Order (in the listed order).
 	 * @param shipper_id M_Shipper_ID
-	 * @param c_bpartner_id
-	 * @param ad_org_id
-	 * @param inout_id
-	 * @param order_id
+	 * @param c_bpartner_id C_BPartner_ID
+	 * @param ad_org_id AD_Org_ID
+	 * @param inout_id M_InOut_ID
+	 * @param order_id C_Order_ID
 	 * @return C_BPartner_Location_ID
 	 */
 	public static int findRecipientAccountLocationId(int shipper_id, int c_bpartner_id, int ad_org_id, int inout_id, int order_id) 
@@ -110,7 +133,7 @@ public class ShippingUtil
 	}
 	
 	/**
-	 * 
+	 * Get shipper account number (ShipperAccount) from C_BP_ShippingAcct
 	 * @param shipper_id
 	 * @param c_bpartner_id
 	 * @param c_bpartner_location_id

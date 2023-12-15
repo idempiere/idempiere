@@ -28,7 +28,7 @@ import org.compiere.util.TimeUtil;
 
 /**
  *	Assignment Slot.
- *  Display Information about Assignment Slot
+ *  Display Information about Assignment Slot.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MAssignmentSlot.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
@@ -44,7 +44,7 @@ public class MAssignmentSlot implements Comparator<Object>
 	}	//	MAssignmentSlot
 
 	/**
-	 *	Timeslot Constructor
+	 *	Time slot Constructor
 	 *  @param startTime start time
 	 *  @param endTime end time
 	 */
@@ -55,9 +55,9 @@ public class MAssignmentSlot implements Comparator<Object>
 	}	//	MAssignmentSlot
 
 	/**
-	 *	Timeslot Constructor
-	 *  @param startTime start time
-	 *  @param endTime end time
+	 *	Time slot Constructor
+	 *  @param startTime start time in millisecond
+	 *  @param endTime end time in millisecond
 	 */
 	public MAssignmentSlot (long startTime, long endTime)
 	{
@@ -96,20 +96,20 @@ public class MAssignmentSlot implements Comparator<Object>
 
 	/** Not Available Code				*/
 	public static final int	STATUS_NotAvailable = 0;
-	/** Not Available Code				*/
+	/** Un-Available Code				*/
 	public static final int	STATUS_UnAvailable = 11;
-	/** Not Available Code				*/
+	/** Non-business Code				*/
 	public static final int	STATUS_NonBusinessDay = 12;
-	/** Not Available Code				*/
+	/** Not in slot day Code			*/
 	public static final int	STATUS_NotInSlotDay = 21;
-	/** Not Available Code				*/
+	/** Not in slot time Code			*/
 	public static final int	STATUS_NotInSlotTime = 22;
-	/** Assignment Code					*/
+	/** Not confirmed Assignment Code	*/
 	public static final int	STATUS_NotConfirmed = 101;
-	/** Assignment Code					*/
+	/** Confirmed Assignment Code		*/
 	public static final int	STATUS_Confirmed = 102;
 
-	/** Assignment Code					*/
+	/** Open Time Slot Code				*/
 	public static final int	STATUS_TimeSlot = 100000;
 
 	/**	Start Time						*/
@@ -153,8 +153,6 @@ public class MAssignmentSlot implements Comparator<Object>
 	/**	DisplayMode								*/
 	private int				m_displayMode = DISPLAY_FULL;
 
-	/*************************************************************************/
-
 	/**
 	 * 	Set Status
 	 * 	@param status STATUS_..
@@ -174,8 +172,8 @@ public class MAssignmentSlot implements Comparator<Object>
 	}	//	getStatus
 
 	/**
-	 * 	Is the Slot an Assignment?
-	 * 	@return true if slot is an assignment
+	 * 	Is this Slot an Assignment?
+	 * 	@return true if this slot is an assignment
 	 */
 	public boolean isAssignment()
 	{
@@ -216,8 +214,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		//	Unknown
 		return background ? Color.black : Color.white;
 	}	//	getColor
-
-	/*************************************************************************/
 
 	/**
 	 * 	Get Start time
@@ -260,8 +256,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		else
 			m_endTime = endTime;
 	}
-
-	/*************************************************************************/
 
 	/**
 	 * 	Set Assignment
@@ -333,8 +327,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		return m_description;
 	}	//	getDescription
 
-	/*************************************************************************/
-
 	/**
 	 * 	Set Y position
 	 * 	@param yStart zero based Y start index
@@ -386,15 +378,13 @@ public class MAssignmentSlot implements Comparator<Object>
 	}	//	setXPos
 
 	/**
-	 * 	Get X columns
-	 * 	@return number of parallel columns
+	 * 	Get max X columns
+	 * 	@return number of max parallel columns
 	 */
 	public int getXMax()
 	{
 		return m_xMax;
 	}	//	setXMax
-
-	/*************************************************************************/
 
 	/**
 	 * 	Set Language
@@ -419,6 +409,7 @@ public class MAssignmentSlot implements Comparator<Object>
 	 * 	String representation
 	 *  @return info
 	 */
+	@Override
 	public String toString()
 	{
 		if (m_displayMode == DISPLAY_TIME_FROM)
@@ -505,8 +496,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		return sb.toString();
 	}	//	getInfo
 
-	/*************************************************************************/
-
 	/**
 	 * 	Returns true if time is between start and end Time.
 	 *  Date part is ignored.
@@ -517,7 +506,7 @@ public class MAssignmentSlot implements Comparator<Object>
 	 *  - inSlot (10:00, true) -> 1		//	end time
 	 *  }</pre>
 	 * 	@param time time of the day
-	 *  @param endTime if true, the end time is included
+	 *  @param endTime if true, the slot end time is included
 	 * 	@return true if within slot
 	 */
 	public boolean inSlot (Timestamp time, boolean endTime)
@@ -582,8 +571,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		return false;
 	}	//	inSlot
 
-	/*************************************************************************/
-
 	/**
 	 * Compares its two arguments for order.  Returns a negative integer,
 	 * zero, or a positive integer as the first argument is less than, equal
@@ -597,6 +584,7 @@ public class MAssignmentSlot implements Comparator<Object>
 	 * @throws ClassCastException if the arguments' types prevent them from
 	 * 	       being compared by this Comparator.
 	 */
+	@Override
 	public int compare(Object o1, Object o2)
 	{
 		if (!(o1 instanceof MAssignmentSlot && o2 instanceof MAssignmentSlot))
@@ -635,6 +623,7 @@ public class MAssignmentSlot implements Comparator<Object>
 	 * @see     java.lang.Object#equals(java.lang.Object)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof MAssignmentSlot)
@@ -652,7 +641,7 @@ public class MAssignmentSlot implements Comparator<Object>
 
 	/**
 	 * 	HashCode of MAssignmentSlot
-	 * 	@return has code
+	 * 	@return hash code of startTime+endTime+status+name+description
 	 */
 	public int hashCode()
 	{

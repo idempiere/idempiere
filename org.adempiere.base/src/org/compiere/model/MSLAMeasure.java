@@ -29,7 +29,9 @@ import org.compiere.util.Util;
  *	
  *  @author Jorg Janke
  *  @version $Id: MSLAMeasure.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
+ *  @deprecated not fully implement, marked as inactive in application dictionary
  */
+@Deprecated
 public class MSLAMeasure extends X_PA_SLA_Measure
 {
 

@@ -32,18 +32,17 @@ import org.compiere.util.Util;
  */
 public class MMovementLineConfirm extends X_M_MovementLineConfirm
 {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5447921784818655144L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_MovementLineConfirm_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_MovementLineConfirm_UU  UUID key
+     * @param trxName Transaction
+     */
     public MMovementLineConfirm(Properties ctx, String M_MovementLineConfirm_UU, String trxName) {
         super(ctx, M_MovementLineConfirm_UU, trxName);
 		if (Util.isEmpty(M_MovementLineConfirm_UU))
@@ -75,7 +74,6 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	}
 
 	/**
-	 * 	M_MovementLineConfirm
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -121,12 +119,13 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 			m_line = new MMovementLine (getCtx(), getM_MovementLine_ID(), get_TrxName());
 		return m_line;
 	}	//	getLine
-	
-	
+		
 	/**
-	 * 	Process Confirmation Line.
-	 * 	- Update Movement Line
-	 *	@return success
+	 *  <pre>
+	 *  Process Confirmation Line.
+	 *  - Update Movement Line.
+	 *  </pre>
+	 *	@return true if success
 	 */
 	public boolean processLine ()
 	{
@@ -148,12 +147,12 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	{
 		return getTargetQty().compareTo(getConfirmedQty()) == 0;
 	}	//	isFullyConfirmed
-	
-	
+		
 	/**
-	 * 	Before Delete - do not delete
+	 * 	Before Delete - do not allow delete
 	 *	@return false 
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		return false;
@@ -164,6 +163,7 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MMovementConfirm parent = new MMovementConfirm(getCtx(), getM_MovementConfirm_ID(), get_TrxName());
@@ -177,7 +177,5 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 		setDifferenceQty(difference);
 		//
 		return true;
-	}	//	beforeSave
-
-	
+	}	//	beforeSave	
 }	//	M_MovementLineConfirm

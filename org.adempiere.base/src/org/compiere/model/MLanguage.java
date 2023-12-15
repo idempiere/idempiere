@@ -47,7 +47,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6553711529361500744L;
 	
@@ -57,7 +57,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, false);
 
 	/**
-	 * 	Get Language Model from Language
+	 * 	Get Language Model from Language (immutable)
 	 * 	@param ctx context
 	 * 	@param lang language
 	 * 	@return language
@@ -68,7 +68,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	}	//	getMLanguage
 
 	/**
-	 * 	Get Language Model from AD_Language
+	 * 	Get Language Model from AD_Language (immutable)
 	 * 	@param ctx context
 	 *	@param AD_Language language e.g. en_US
 	 *	@return language or null
@@ -88,10 +88,10 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * 	Load Languages (variants) with Language
+	 * 	Load Languages via ISO code
 	 * 	@param ctx context
-	 *	@param LanguageISO language (2 letter) e.g. en
-	 *	@return language
+	 *	@param LanguageISO language ISO code (2 letter) e.g. en
+	 *	@return array of MLanguage
 	 */
 	public static MLanguage[] getWithLanguage (Properties ctx, String LanguageISO)
 	{
@@ -102,7 +102,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * 	Maintain all active languages
+	 * 	Maintain translation of all active languages
 	 * 	@param ctx context
 	 */
 	public static void maintain (Properties ctx)
@@ -117,16 +117,16 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	}	//	maintain
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Language_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Language_UU  UUID key
+     * @param trxName Transaction
+     */
     public MLanguage(Properties ctx, String AD_Language_UU, String trxName) {
         super(ctx, AD_Language_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Language_ID id
@@ -170,7 +170,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	}	//	MLanguage
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -179,7 +179,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -199,6 +199,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder str = new StringBuilder("MLanguage[").append(getAD_Language()).append("-").append(getName())
@@ -217,12 +218,9 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 			m_locale = new Locale (getLanguageISO(), getCountryCode());
 		return m_locale;
 	}	//	getLocale
-
 	
 	/**
 	 *  Get (Short) Date Format.
-	 *  The date format must parseable by org.compiere.grid.ed.MDocDate
-	 *  i.e. leading zero for date and month
 	 *  @return date format MM/dd/yyyy - dd.MM.yyyy
 	 */
 	public SimpleDateFormat getDateFormat()
@@ -310,6 +308,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		String dp = getDatePattern();
@@ -387,6 +386,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return true if saved
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -395,9 +395,8 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 		if (log.isLoggable(Level.FINE)) log.fine("Active Languages=" + no);
 		return true;
 	}	//	afterSave
-
 	
-	/**************************************************************************
+	/**
 	 * 	Maintain Translation
 	 *	@param add if true add missing records - otherwise delete
 	 *	@return number of records deleted/inserted

@@ -26,7 +26,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- * 	Payment Allocate Model
+ * 	Payment Allocate Model.
+ *  Process to create allocation records (C_AllocationHdr and C_AllocationLine)
  *	
  *  @author Jorg Janke
  *  @version $Id: MPaymentAllocate.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -34,14 +35,14 @@ import org.compiere.util.Util;
 public class MPaymentAllocate extends X_C_PaymentAllocate
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2894385378672375131L;
 
 	/**
 	 * 	Get active Payment Allocation of Payment
 	 *	@param parent payment
-	 *	@return array of allocations
+	 *	@return array of payment allocations
 	 */
 	public static MPaymentAllocate[] get (MPayment parent)
 	{
@@ -53,18 +54,18 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 	}	//	get
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_PaymentAllocate_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaymentAllocate_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPaymentAllocate(Properties ctx, String C_PaymentAllocate_UU, String trxName) {
         super(ctx, C_PaymentAllocate_UU, trxName);
 		if (Util.isEmpty(C_PaymentAllocate_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_PaymentAllocate_ID id
@@ -135,13 +136,13 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 			return 0;
 		return m_invoice.getC_BPartner_ID();
 	}	//	getC_BPartner_ID
-	
-	
+		
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MPayment payment = new MPayment (getCtx(), getC_Payment_ID(), get_TrxName());

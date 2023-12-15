@@ -28,7 +28,7 @@ public interface IBankStatementMatcherFactory {
 	 * the fully qualified classname of the Loader class you want to use.
 	 * 
 	 * @param className
-	 * @return BankStatementMatcher instance
+	 * @return BankStatementMatcherInterface instance
 	 */
 	public BankStatementMatcherInterface newBankStatementMatcherInstance(String className);
 }

@@ -27,8 +27,8 @@ package org.adempiere.base;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Dynamic service reference holder for a service object.
- * For cache usage, you should cache this instead of service object
+ * Service reference holder for a service object. <br/>
+ * For caching of service, you should cache this instead of the service object.
  * @author hengsin
  *
  * @param <T>

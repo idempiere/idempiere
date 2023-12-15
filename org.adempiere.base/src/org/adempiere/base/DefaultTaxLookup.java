@@ -31,8 +31,9 @@ import org.compiere.model.Tax;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * Default {@link ITaxLookup} implementation for core.<br/>
+ * Delegate to the static get methods in {@link Tax}.
  * @author hengsin
- *
  */
 @Component(immediate = true, service = {ITaxLookup.class})
 public class DefaultTaxLookup implements ITaxLookup {

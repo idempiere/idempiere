@@ -33,7 +33,7 @@ import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- * Generate PDF document using iText
+ * Generate PDF document using iText (openpdf)
  * @author Low Heng Sin
  *
  */
@@ -43,6 +43,11 @@ public class Document {
 		FontFactory.registerDirectories();
 	}
 	
+	/**
+	 * write pageable to output
+	 * @param pageable
+	 * @param output
+	 */
 	private static void writePDF(Pageable pageable, OutputStream output)
 	{
 		try {
@@ -92,6 +97,12 @@ public class Document {
         }
 	}
 	
+	/**
+	 * Create pdf file from pageable
+	 * @param filename
+	 * @param pageable
+	 * @return pdf file
+	 */
 	public static File getPDFAsFile(String filename, Pageable pageable) {
         final File result = new File(filename);
         
@@ -104,6 +115,11 @@ public class Document {
         return result;
     }
     
+	/**
+	 * Create byte[] pdf content from pageable
+	 * @param pageable
+	 * @return pdf content
+	 */
     public static byte[] getPDFAsArray(Pageable pageable) {
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream(10240);
@@ -116,10 +132,17 @@ public class Document {
         return null;
     }
     
+    /**
+     * @param layout
+     * @return nop, always return true
+     */
     public static boolean isValid(Pageable layout) {
     	return true;
     }
     
+    /**
+     * @return nop, always return true
+     */
     public static boolean isLicensed() {
     	return true;
     }    

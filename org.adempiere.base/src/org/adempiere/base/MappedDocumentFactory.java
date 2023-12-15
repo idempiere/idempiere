@@ -35,17 +35,16 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.osgi.service.component.annotations.Component;
 
-@Component(name = "org.adempiere.base.MappedDocumentFactory", 
-	service = {IDocFactory.class, IMappedDocumentFactory.class}, 
-	immediate = true,
-	property = {"service.ranking:Integer=1", "gaap=*"})
 /**
- * 
- * Document factory backed by map between tablename + gaap and lambda function object.
+ * Document factory backed by map between tablename + gaap and lambda function object.<br/>
  * If you create a subclass of this and register it as osgi service, don't register for the IMappedDocumentFactory interface.
  * @author hengsin
  *
  */
+@Component(name = "org.adempiere.base.MappedDocumentFactory", 
+	service = {IDocFactory.class, IMappedDocumentFactory.class}, 
+	immediate = true,
+	property = {"service.ranking:Integer=1", "gaap=*"})
 public class MappedDocumentFactory implements IDocFactory, IMappedDocumentFactory {
 
 	private final ConcurrentHashMap<String, Function<Parameter, ? extends Doc>> documentMap = new ConcurrentHashMap<>();

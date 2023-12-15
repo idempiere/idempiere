@@ -46,7 +46,7 @@ import org.compiere.util.Util;
  */
 public class MArchive extends X_AD_Archive {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1195510484179775189L;
 
@@ -97,17 +97,17 @@ public class MArchive extends X_AD_Archive {
 	private static CLogger s_log = CLogger.getCLogger(MArchive.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Archive_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Archive_UU  UUID key
+     * @param trxName Transaction
+     */
     public MArchive(Properties ctx, String AD_Archive_UU, String trxName) {
         super(ctx, AD_Archive_UU, trxName);
 		initArchiveStoreDetails(ctx, trxName);
     }
 
-	/***************************************************************************
+	/**
 	 * Standard Constructor
 	 * 
 	 * @param ctx
@@ -162,7 +162,7 @@ public class MArchive extends X_AD_Archive {
 	protected MStorageProvider provider;
 	
 	/**
-	 * Get the isStoreArchiveOnFileSystem and archivePath for the client.
+	 * Initialize storage provider
 	 * 
 	 * @param ctx
 	 * @param trxName
@@ -181,6 +181,7 @@ public class MArchive extends X_AD_Archive {
 	 * 
 	 * @return info
 	 */
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("MArchive[");
 		sb.append(get_ID()).append(",Name=").append(getName());
@@ -193,6 +194,7 @@ public class MArchive extends X_AD_Archive {
 	 * 
 	 * @return byte[] or null
 	 */
+	@Override
 	public byte[] getBinaryData() {		
 		IArchiveStore prov = provider.getArchiveStore();
 		if (prov != null)
@@ -218,6 +220,7 @@ public class MArchive extends X_AD_Archive {
 	 * @param inflatedData
 	 *            inflated data
 	 */
+	@Override
 	public void setBinaryData(byte[] inflatedData) {
 		IArchiveStore prov = provider.getArchiveStore();
 		if (prov != null)
@@ -257,7 +260,7 @@ public class MArchive extends X_AD_Archive {
 	 * id. The process, table and record id are only included when they are not
 	 * null.
 	 * 
-	 * @return String
+	 * @return archive path
 	 */
 	public String getArchivePathSnippet() {
 		StringBuilder path = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
@@ -302,6 +305,7 @@ public class MArchive extends X_AD_Archive {
 	 *            new
 	 * @return true if can be saved
 	 */
+	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Binary Data is Mandatory
 		byte[] data = super.getBinaryData();
@@ -318,6 +322,9 @@ public class MArchive extends X_AD_Archive {
 		return true;
 	} // beforeSave
 	
+	/**
+	 * Ask provider to remove archive content
+	 */
 	@Override
 	protected boolean postDelete()
 	{
@@ -328,6 +335,9 @@ public class MArchive extends X_AD_Archive {
 		
 	}
 
+	/**
+	 * Ask provider to flush buffer data (if any)
+	 */
 	@Override
 	protected void saveNew_afterSetID()
 	{
@@ -337,8 +347,8 @@ public class MArchive extends X_AD_Archive {
 	}
 
 	/**
-	 * Set Storage Provider
-	 * Used temporarily for the process to migrate storage provider
+	 * Set Storage Provider.
+	 * Also used temporarily for the migration of storage provider.
 	 * @param p Storage provider
 	 */
 	public void setStorageProvider(MStorageProvider p) {
@@ -426,7 +436,7 @@ public class MArchive extends X_AD_Archive {
 	 * Get number of document and report archive by table and record UUID
 	 * 
 	 * @param AD_Table_ID
-	 * @param Record_ID - record ID used when UUID comes empty, or C_BPartner_ID when searching for this table
+	 * @param Record_ID - record ID used when UUID is empty, or as C_BPartner_ID when searching for C_BPartner
 	 * @param Record_UU - record UUID
 	 * @param trxName
 	 * @return int[], [0] = report count and [1] = document count

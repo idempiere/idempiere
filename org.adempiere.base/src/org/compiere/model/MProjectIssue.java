@@ -43,18 +43,18 @@ import org.compiere.util.Util;
 public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOptions
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 1653681817205265764L;
 	
 	private DocActionDelegate<MProjectIssue> docActionDelegate = null;
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_ProjectIssue_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_ProjectIssue_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProjectIssue(Properties ctx, String C_ProjectIssue_UU, String trxName) {
         super(ctx, C_ProjectIssue_UU, trxName);
 		if (Util.isEmpty(C_ProjectIssue_UU))
@@ -116,6 +116,9 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		init();
 	}	//	MProjectIssue
 
+	/**
+	 * Initialize document action delegate ({@link DocActionDelegate}) for this model class
+	 */
 	private void init() {
 		docActionDelegate = new DocActionDelegate<>(this);
 		docActionDelegate.setActionCallable(DocAction.ACTION_Complete, () -> { return doComplete(); });
@@ -127,7 +130,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	private MProject	m_parent = null;
 	
 	/**
-	 *	Get the next Line No
+	 *	Get next Line No
 	 * 	@return next line no
 	 */
 	private int getNextLine()
@@ -137,7 +140,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	}	//	getLineFromProject
 
 	/**
-	 * 	Set Mandatory Values
+	 * 	Set value of mandatory fields
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
 	 *	@param MovementQty qty
@@ -160,11 +163,12 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		return m_parent;
 	}	//	getParent
 	
-	/**************************************************************************
+	/**
 	 * 	Process Issue
 	 *  @deprecated
 	 *	@return true if processed
 	 */
+	@Deprecated
 	public boolean process()
 	{
 		saveEx();
@@ -172,6 +176,10 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		return doComplete() == null;
 	}	//	process
 
+	/**
+	 * Handle CompleteIt document action
+	 * @return error message or null
+	 */
 	private String doComplete() 
 	{
 		if (getM_Product_ID() == 0)
@@ -268,6 +276,11 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		return null;		
 	}
 	
+	/**
+	 * Handle reverse accrual and reverse correct document action
+	 * @param accrual true to use current date, false to use this record's movement date
+	 * @return error message or null
+	 */
 	private String doReverse(boolean accrual) {
 		MProject project = getParent();
 		MProjectIssue reversal = new MProjectIssue (project);
@@ -311,7 +324,6 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	}
 	
 	/**
-	 * 
 	 * @return true if this is a reversal document created to reverse another document
 	 */
 	public boolean isReversal() {
@@ -383,6 +395,9 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		return docActionDelegate.reverseAccrualIt();
 	}
 
+	/**
+	 * Not implemented, always return false
+	 */
 	@Override
 	public boolean reActivateIt() {
 		return false;

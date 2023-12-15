@@ -25,7 +25,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
 /**
- * 
+ * Void online shipment package
  * @author Low Heng Sin
  *
  */

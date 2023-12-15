@@ -96,6 +96,7 @@ public class Doc_MatchInv extends Doc
 	 *  Load Specific Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails ()
 	{
 		setC_Currency_ID (Doc.NO_CURRENCY);
@@ -120,10 +121,11 @@ public class Doc_MatchInv extends Doc
 	}   //  loadDocumentDetails
 
 
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - subtracts line and tax amounts from total - no rounding
 	 *  @return Zero (always balanced)
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		return Env.ZERO;
@@ -145,6 +147,7 @@ public class Doc_MatchInv extends Doc
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -484,8 +487,9 @@ public class Doc_MatchInv extends Doc
 		}
 	}
 
-	/** Verify if the posting involves two or more organizations
-	@return true if there are more than one org involved on the posting
+	/** 
+	 * Verify if the posting involves two or more organizations
+	 * @return true if there are more than one org involved on the posting
 	 */
 	private boolean isInterOrg(MAcctSchema as) {
 		MAcctSchemaElement elementorg = as.getAcctSchemaElement(MAcctSchemaElement.ELEMENTTYPE_Organization);
@@ -1238,6 +1242,7 @@ public class Doc_MatchInv extends Doc
 	}
 	
 	/**
+	 * Update fact line with invoice line details (qty and accounting dimension)
 	 * @param factLine
 	 */
 	protected void updateFactLine(FactLine factLine) {
@@ -1344,7 +1349,7 @@ public class Doc_MatchInv extends Doc
 	}	//	createInvoiceGainLoss
 	
 	/**
-	 * Create Gain/Loss and Rounding Correction for reverse invoice 
+	 * Create Gain/Loss and Rounding Correction for reversal invoice 
 	 * @param as accounting schema
 	 * @param fact
 	 * @param acct

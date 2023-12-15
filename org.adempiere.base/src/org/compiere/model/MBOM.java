@@ -35,10 +35,11 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Jorg Janke
  *  @version $Id: MBOM.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class MBOM extends X_M_BOM implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6311001492891936078L;
 

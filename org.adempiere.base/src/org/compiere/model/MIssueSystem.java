@@ -25,15 +25,18 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- * 	Issue System Model
+ * 	Issue System Model.<br/>
+ *  Note: Not fully implemented and have been marked as inactive in Application Dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MIssueSystem.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
+ *  @deprecated
  */
+@Deprecated
 public class MIssueSystem extends X_R_IssueSystem
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1652388382466287269L;
 

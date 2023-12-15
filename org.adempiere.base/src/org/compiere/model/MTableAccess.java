@@ -25,30 +25,28 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
 /**
- *	
- *	
+ *  Table access model	
  *  @author Jorg Janke
  *  @version $Id: MTableAccess.java,v 1.3 2006/07/30 00:58:38 jjanke Exp $
  */
 public class MTableAccess extends X_AD_Table_Access
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3747261579266442904L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Table_Access_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Table_Access_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTableAccess(Properties ctx, String AD_Table_Access_UU, String trxName) {
         super(ctx, AD_Table_Access_UU, trxName);
     }
 
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -75,6 +73,7 @@ public class MTableAccess extends X_AD_Table_Access
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MTableAccess[");

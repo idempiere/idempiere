@@ -18,8 +18,15 @@ package org.adempiere.base;
 
 import java.net.URL;
 
+/**
+ * Service interface to find resource by name
+ */
 public interface IResourceFinder {
 
+	/**
+	 * @param name
+	 * @return URL for resource found or null
+	 */
 	URL getResource(String name);
 
 }

@@ -48,14 +48,14 @@ public abstract class ContextRunnable implements Runnable {
 	}
 
 	/**
-	 * setup thread context
+	 * setup thread local context
 	 */
 	protected void setup() {
 		ServerContext.setCurrentInstance(context);
 	}
 
 	/**
-	 * clean up thread context
+	 * clean up thread local context
 	 */
 	protected void cleanup() {
 		ServerContext.dispose();

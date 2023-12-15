@@ -42,7 +42,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4681075469110529774L;
 	
@@ -51,16 +51,16 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	private static CLogger s_log = CLogger.getCLogger(MImportTemplate.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ImportTemplate_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ImportTemplate_UU  UUID key
+     * @param trxName Transaction
+     */
     public MImportTemplate(Properties ctx, String AD_ImportTemplate_UU, String trxName) {
         super(ctx, AD_ImportTemplate_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_ImportTemplate_ID id
@@ -83,7 +83,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	}	//	MImportTemplate
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MImportTemplate(MImportTemplate copy) 
@@ -92,7 +92,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -102,7 +102,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -129,6 +129,12 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	/**	Cache of Role						*/
 	private static CCache<String,List<MImportTemplate>>	s_cacheRoleTab = new CCache<String,List<MImportTemplate>>(Table_Name, Table_Name+"_Of_Role", 5);
 
+	/**
+	 * Get accessible import templates 
+	 * @param roleid AD_Role_ID
+	 * @param tabid AD_Tab_ID
+	 * @return list of MImportTemplate
+	 */
 	public static List<MImportTemplate> getTemplates(int roleid, int tabid) {
 		String key = roleid + "_" + tabid;
 		List<MImportTemplate> retValue = s_cacheRoleTab.get(key);
@@ -160,6 +166,11 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 		return retValue;
 	}
 
+	/**
+	 * @param importMode I (Insert), U (Update) or M (Merge)
+	 * @param roleID AD_Role_ID
+	 * @return true if role can perform importMode with this template
+	 */
 	public boolean isAllowed(String importMode, int roleID) {
 		StringBuilder sql= new StringBuilder(""
 				+ "SELECT COUNT(*) "
@@ -187,9 +198,9 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	}
 	
 	/**
-	 * Validate that InputStream header is CSVHeader or AliasCSVHeader
+	 * Validate that InputStream header is CSVHeader or AliasCSVHeader.<br/>
 	 * If the header is AliasCSVHeader it replaces it with the CSVHeader so it can be
-	 * processed
+	 * processed.
 	 * @param in input file
 	 * @return InputStream with the CSVHeader that can be processed by CsvMapReader
 	 */
