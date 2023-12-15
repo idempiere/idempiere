@@ -153,7 +153,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		if (Util.isEmpty(objectUU) && objectID > 0 && detail.getAD_Table_ID() > 0) {
 			MTable table = MTable.get(ctx.ctx, detail.getAD_Table_ID(), getTrxName(ctx));
 			PO po = table.getPO(objectID, getTrxName(ctx));
-			objectUU = po.get_UUID();
+			if (po != null)
+				objectUU = po.get_UUID();
 		}
 
 		detail.setName(objectName);
