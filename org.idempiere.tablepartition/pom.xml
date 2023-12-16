@@ -7,6 +7,6 @@
 		<version>${revision}</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
-	<artifactId>org.adempiere.pipo</artifactId>
+	<artifactId>org.idempiere.tablepartition</artifactId>
 	<packaging>eclipse-plugin</packaging>
 </project>
