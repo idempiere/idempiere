@@ -657,30 +657,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
-
-	/** PartitioningMethod AD_Reference_ID=200261 */
-	public static final int PARTITIONINGMETHOD_AD_Reference_ID=200261;
-	/** List = L */
-	public static final String PARTITIONINGMETHOD_List = "L";
-	/** Range = R */
-	public static final String PARTITIONINGMETHOD_Range = "R";
-	/** Set Partitioning Method.
-		@param PartitioningMethod Indicates how the Table is partitioned
-	*/
-	public void setPartitioningMethod (String PartitioningMethod)
-	{
-
-		set_Value (COLUMNNAME_PartitioningMethod, PartitioningMethod);
-	}
-
-	/** Get Partitioning Method.
-		@return Indicates how the Table is partitioned
-	  */
-	public String getPartitioningMethod()
-	{
-		return (String)get_Value(COLUMNNAME_PartitioningMethod);
-	}
-
+	
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

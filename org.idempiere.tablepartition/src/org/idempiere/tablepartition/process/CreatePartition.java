@@ -27,6 +27,7 @@ package org.idempiere.tablepartition.process;
 import java.util.List;
 
 import org.compiere.db.partition.ITablePartitionService;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
@@ -84,8 +85,6 @@ public class CreatePartition extends SvrProcess {
 		else
 		{
 			String whereClause = MTable.COLUMNNAME_IsPartition + "='Y' AND " + MTable.COLUMNNAME_IsView + "='N'";
-			if (p_partitioningMethod != null)
-				whereClause += " AND " + MTable.COLUMNNAME_PartitioningMethod + "= '" + p_partitioningMethod + "'";
 			if (p_tableName != null)
 				whereClause += " AND " + MTable.COLUMNNAME_TableName + " LIKE '" + p_tableName + "'";
 			List<MTable> tables = new Query(getCtx(), MTable.Table_Name, whereClause, null)
@@ -94,6 +93,14 @@ public class CreatePartition extends SvrProcess {
 					.list();
 			for (MTable table : tables) 
 			{
+				List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(true);
+				if (partitionKeyColumns.isEmpty())
+					continue;
+				if (p_partitioningMethod != null)
+				{
+					if (!p_partitioningMethod.equals(partitionKeyColumns.get(0).getPartitioningMethod()))
+						continue;
+				}
 				TablePartitionTask tp = new TablePartitionTask(table, getProcessInfo(), service);
 				boolean success = tp.executeTask();
 				if (success)

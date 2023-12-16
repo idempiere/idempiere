@@ -22,7 +22,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Dec 4, 2023, 3:53:10 PM MYT
-INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (200261,'AD_Table PartitioningMethod','L',0,0,'Y',TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,'D','N','81b6431b-0afa-49bc-b5fe-be9a7b2481cf','N')
+INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (200261,'AD_Column PartitioningMethod','L',0,0,'Y',TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,'D','N','81b6431b-0afa-49bc-b5fe-be9a7b2481cf','N')
 ;
 
 -- Dec 4, 2023, 3:53:22 PM MYT
@@ -34,19 +34,15 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,
 ;
 
 -- Dec 4, 2023, 3:55:31 PM MYT
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,MandatoryLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (216283,0,'Partitioning Method',100,'PartitioningMethod',2,'N','N','N','N','N',0,'N',17,200261,0,0,'Y',TO_TIMESTAMP('2023-12-04 15:55:30','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:55:30','YYYY-MM-DD HH24:MI:SS'),100,203882,'Y','N','D','N','N','@IsPartition@=''Y''','N','Y','b67a043a-019a-479d-81c4-5439a3447aaa','Y',0,'N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,MandatoryLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (216283,0,'Partitioning Method',101,'PartitioningMethod',2,'N','N','N','N','N',0,'N',17,200261,0,0,'Y',TO_TIMESTAMP('2023-12-04 15:55:30','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:55:30','YYYY-MM-DD HH24:MI:SS'),100,203882,'Y','N','D','N','N','@IsPartition@=''Y''','N','Y','b67a043a-019a-479d-81c4-5439a3447aaa','Y',0,'N','N','N')
 ;
 
 -- Dec 4, 2023, 3:55:42 PM MYT
-ALTER TABLE AD_Table ADD COLUMN PartitioningMethod VARCHAR(2) DEFAULT NULL 
+ALTER TABLE AD_Column ADD COLUMN PartitioningMethod VARCHAR(2) DEFAULT NULL 
 ;
 
 -- Dec 4, 2023, 3:56:10 PM MYT
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203883,0,0,'Y',TO_TIMESTAMP('2023-12-04 15:56:10','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:56:10','YYYY-MM-DD HH24:MI:SS'),100,'RangePartitionInterval','Range Partition Interval','Range Partition Interval','D','f14b1920-8c8f-4cb5-9f85-a579d854625d')
-;
-
--- Dec 4, 2023, 3:58:33 PM MYT
-ALTER TABLE AD_Table ADD COLUMN RangePartitionInterval VARCHAR(30) DEFAULT NULL 
 ;
 
 -- Dec 4, 2023, 3:59:04 PM MYT
@@ -154,10 +150,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 
 -- Dec 4, 2023, 4:37:38 PM MYT
 INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (208078,'IsPartition',100,216282,'Y',1,250,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-12-04 16:37:37','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 16:37:37','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','d0e6d1e0-96a6-4f3d-8747-061b28c0ef47','Y',210,2,2)
-;
-
--- Dec 4, 2023, 4:37:39 PM MYT
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208079,'Partitioning Method',100,216283,'Y',2,260,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-12-04 16:37:38','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 16:37:38','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','b7a4f734-d0f3-46df-a91c-3a85dc6279c5','Y',220,2)
 ;
 
 -- Dec 4, 2023, 4:37:40 PM MYT

@@ -63,14 +63,6 @@ UPDATE AD_Process_Para SET ColumnName='PartitioningMethod', Name='Partitioning M
 UPDATE AD_Process_Para SET ColumnName='PartitioningMethod', Name='Partitioning Method', Description='Indicates how the Table is partitioned', Help='The Partitioning Method indicates how the Table is partitioned (List or Range). List partitioning - The data distribution is defined by a discrete list of values. Range Partitioning - The data is distributed based on a range of values.', Placeholder=NULL WHERE AD_Element_ID=203882 AND IsCentrallyMaintained='Y'
 ;
 
--- Dec 13, 2023, 11:02:04 AM MYT
-UPDATE AD_InfoColumn SET ColumnName='PartitioningMethod', Name='Partitioning Method', Description='Indicates how the Table is partitioned', Help='The Partitioning Method indicates how the Table is partitioned (List or Range). List partitioning - The data distribution is defined by a discrete list of values. Range Partitioning - The data is distributed based on a range of values.', Placeholder=NULL WHERE AD_Element_ID=203882 AND IsCentrallyMaintained='Y'
-;
-
--- Dec 13, 2023, 11:02:04 AM MYT
-UPDATE AD_Field SET Name='Partitioning Method', Description='Indicates how the Table is partitioned', Help='The Partitioning Method indicates how the Table is partitioned (List or Range). List partitioning - The data distribution is defined by a discrete list of values. Range Partitioning - The data is distributed based on a range of values.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=203882) AND IsCentrallyMaintained='Y'
-;
-
 -- Dec 13, 2023, 11:05:16 AM MYT
 UPDATE AD_Element SET Description='This is a partition key',Updated=TO_TIMESTAMP('2023-12-13 11:05:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=203885
 ;

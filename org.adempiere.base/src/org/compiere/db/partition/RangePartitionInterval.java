@@ -25,9 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -125,77 +123,69 @@ public class RangePartitionInterval {
 	
 	/**
 	 * @param table
-	 * @param rangePartitionColumns
+	 * @param rangePartitionColumn
 	 * @param trxName
-	 * @return List of RangePartitionInterval list
+	 * @return RangePartitionInterval
 	 */
-	public static List<List<RangePartitionInterval>> createIntervals(MTable table, List<RangePartitionColumn> rangePartitionColumns, String trxName) {
-		List<List<RangePartitionInterval>> columnRangePartitionIntervals = new ArrayList<List<RangePartitionInterval>>();
+	public static RangePartitionInterval createInterval(MTable table, RangePartitionColumn rangePartitionColumn, String trxName) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);		
-		List<String> partitionKeyColumnNames = table.getPartitionKeyColumnNames();
-		for (int x = 0; x < partitionKeyColumnNames.size(); x++)
+		MColumn partitionKeyColumn = table.getColumn(rangePartitionColumn.getColumnName());		
+		RangePartitionInterval rangePartitionInterval = null;
+
+		if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
 		{
-			List<RangePartitionInterval> rangePartitionIntervals = new ArrayList<RangePartitionInterval>();
-
-			MColumn partitionKeyColumn = partitionKeyColumns.get(x);
-			RangePartitionColumn rangePartitonColumn = rangePartitionColumns.get(x);
-			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
-			{
-				Interval interval = getInterval(partitionKeyColumn);
-				
-				Timestamp minValue = (Timestamp) rangePartitonColumn.getMinValue();
-				Timestamp maxValue = (Timestamp) rangePartitonColumn.getMaxValue();					
-				
-				Calendar cal = Calendar.getInstance();
-				cal.setTimeInMillis(minValue.getTime());
-				cal.set(cal.get(Calendar.YEAR), (interval.months > 0) ? cal.get(Calendar.MONTH) : 0, 1);
-
-				Calendar cal2 = Calendar.getInstance();
-				cal2.setTimeInMillis(maxValue.getTime());
-
-				while (cal.before(cal2))
-				{
-					String name = cal.get(Calendar.YEAR) + 
-							(interval.months > 0 ? (cal.get(Calendar.MONTH)+1) >=10 ? "_" + (cal.get(Calendar.MONTH)+1) 
-									: "_0" + (cal.get(Calendar.MONTH)+1) : "");
-					
-					String from = dateFormat.format(cal.getTime());	
-					cal.add(Calendar.YEAR, interval.years);
-					cal.add(Calendar.MONTH, interval.months);			
-					String to = dateFormat.format(cal.getTime());
-					
-					rangePartitionIntervals.add(new RangePartitionInterval(rangePartitonColumn.getColumnName(), name, "'" + from + "'", "'" + to + "'"));
-				}
-			}
-			else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID()))
-			{
-				Pattern pattern = Pattern.compile("^[1-9]\\d*$");
-				Matcher matcher = pattern.matcher(rangePartitonColumn.getIntervalPattern());
-				if (!matcher.matches())
-					throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
-				
-				BigDecimal interval = new BigDecimal(rangePartitonColumn.getIntervalPattern());	
-				BigDecimal minValue = (BigDecimal) rangePartitonColumn.getMinValue();
-				BigDecimal maxValue = (BigDecimal) rangePartitonColumn.getMaxValue();
-
-				BigDecimal value = minValue.divide(interval).setScale(0, RoundingMode.DOWN).multiply(interval);
-				while (value.compareTo(maxValue) <= 0)
-				{
-					String name = String.valueOf(value.intValue());
-					BigDecimal from = value;
-					value = value.add(interval);
-					BigDecimal to = value;
-					
-					rangePartitionIntervals.add(new RangePartitionInterval(rangePartitonColumn.getColumnName(), name, from, to));
-				}
-			}
-			else
-				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported") + " [" + partitionKeyColumn + "]");
+			Interval interval = getInterval(partitionKeyColumn);
 			
-			columnRangePartitionIntervals.add(rangePartitionIntervals);
+			Timestamp minValue = (Timestamp) rangePartitionColumn.getMinValue();
+			Timestamp maxValue = (Timestamp) rangePartitionColumn.getMaxValue();					
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(minValue.getTime());
+			cal.set(cal.get(Calendar.YEAR), (interval.months > 0) ? cal.get(Calendar.MONTH) : 0, 1);
+
+			Calendar cal2 = Calendar.getInstance();
+			cal2.setTimeInMillis(maxValue.getTime());
+
+			while (cal.before(cal2))
+			{
+				String name = cal.get(Calendar.YEAR) + 
+						(interval.months > 0 ? (cal.get(Calendar.MONTH)+1) >=10 ? "_" + (cal.get(Calendar.MONTH)+1) 
+								: "_0" + (cal.get(Calendar.MONTH)+1) : "");
+				
+				String from = dateFormat.format(cal.getTime());	
+				cal.add(Calendar.YEAR, interval.years);
+				cal.add(Calendar.MONTH, interval.months);			
+				String to = dateFormat.format(cal.getTime());
+				
+				rangePartitionInterval = new RangePartitionInterval(rangePartitionColumn.getColumnName(), name, "'" + from + "'", "'" + to + "'");
+			}
 		}
-		return columnRangePartitionIntervals;
+		else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID()))
+		{
+			Pattern pattern = Pattern.compile("^[1-9]\\d*$");
+			Matcher matcher = pattern.matcher(rangePartitionColumn.getIntervalPattern());
+			if (!matcher.matches())
+				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "InvalidRangePartitionInterval") + " [" + partitionKeyColumn + "]");
+			
+			BigDecimal interval = new BigDecimal(rangePartitionColumn.getIntervalPattern());	
+			BigDecimal minValue = (BigDecimal) rangePartitionColumn.getMinValue();
+			BigDecimal maxValue = (BigDecimal) rangePartitionColumn.getMaxValue();
+
+			BigDecimal value = minValue.divide(interval).setScale(0, RoundingMode.DOWN).multiply(interval);
+			while (value.compareTo(maxValue) <= 0)
+			{
+				String name = String.valueOf(value.intValue());
+				BigDecimal from = value;
+				value = value.add(interval);
+				BigDecimal to = value;
+				
+				rangePartitionInterval = new RangePartitionInterval(rangePartitionColumn.getColumnName(), name, from, to);
+			}
+		}
+		else
+			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported") + " [" + partitionKeyColumn + "]");
+		
+		return rangePartitionInterval;
 	}
 	
 	/**

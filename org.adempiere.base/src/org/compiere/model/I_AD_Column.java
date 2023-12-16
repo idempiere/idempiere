@@ -663,6 +663,19 @@ s active status or processed status. This logic Applicable only if Always Updata
 
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException;
 
+    /** Column name PartitioningMethod */
+    public static final String COLUMNNAME_PartitioningMethod = "PartitioningMethod";
+
+	/** Set Partitioning Method.
+	  * Indicates how the Table is partitioned
+	  */
+	public void setPartitioningMethod (String PartitioningMethod);
+
+	/** Get Partitioning Method.
+	  * Indicates how the Table is partitioned
+	  */
+	public String getPartitioningMethod();
+
     /** Column name Placeholder */
     public static final String COLUMNNAME_Placeholder = "Placeholder";
 

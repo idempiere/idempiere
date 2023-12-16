@@ -764,7 +764,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			return false;
 		}
 				
-		if (is_ValueChanged(COLUMNNAME_IsPartition) || is_ValueChanged(COLUMNNAME_PartitioningMethod)) {
+		if (is_ValueChanged(COLUMNNAME_IsPartition)) {
 			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
 			if (service == null) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "DBAdapterNoTablePartitionSupport"));
@@ -958,7 +958,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 
 	private List<MColumn> partitionKeyColumns;
 	private List<String> partitionKeyColumnNames;
-	private String partitionKeyColumnNamesAsString;
 	
 	/**
 	 * @param requery true to reload from DB
@@ -970,7 +969,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			return partitionKeyColumns;
 		
 		partitionKeyColumnNames = null;
-		partitionKeyColumnNamesAsString = null;
 		
 		String whereClause = MColumn.COLUMNNAME_AD_Table_ID + "=? AND " + MColumn.COLUMNNAME_IsPartitionKey + "='Y'";
 		partitionKeyColumns = new Query(getCtx(), MColumn.Table_Name, whereClause, null)
@@ -998,7 +996,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			partitionKeyColumnNames.add(keyColumn.getColumnName());
 			++columnCount;
 		}
-		partitionKeyColumnNamesAsString = keyColumnsString.toString();
 	}
 	
 	/**
@@ -1011,18 +1008,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		
 		populatePartitionKeyColumnNames();
 		return partitionKeyColumnNames;
-	}
-	
-	/**
-	 * @return comma separated list of partition key column names
-	 */
-	public String getPartitionKeyColumnNamesAsString()
-	{
-		if (partitionKeyColumnNamesAsString != null)
-			return partitionKeyColumnNamesAsString;
-		
-		populatePartitionKeyColumnNames();
-		return partitionKeyColumnNamesAsString;
 	}
 	
 	/**

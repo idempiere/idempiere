@@ -385,19 +385,6 @@ public interface I_AD_Table
 	  */
 	public String getName();
 
-    /** Column name PartitioningMethod */
-    public static final String COLUMNNAME_PartitioningMethod = "PartitioningMethod";
-
-	/** Set Partitioning Method.
-	  * Indicates how the Table is partitioned
-	  */
-	public void setPartitioningMethod (String PartitioningMethod);
-
-	/** Get Partitioning Method.
-	  * Indicates how the Table is partitioned
-	  */
-	public String getPartitioningMethod();
-
     /** Column name PO_Window_ID */
     public static final String COLUMNNAME_PO_Window_ID = "PO_Window_ID";
 

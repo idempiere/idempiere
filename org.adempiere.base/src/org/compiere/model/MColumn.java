@@ -589,6 +589,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 		
 		if (is_ValueChanged(COLUMNNAME_IsPartitionKey) 
+				|| is_ValueChanged(COLUMNNAME_PartitioningMethod)
 				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_IsActive))
 				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_SeqNoPartition))
 				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_RangePartitionInterval))) {
