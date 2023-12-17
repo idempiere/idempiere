@@ -13,3 +13,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 UPDATE AD_Column SET MandatoryLogic='@IsPartition@=Y & @IsPartitionKey@=Y',Updated=TO_TIMESTAMP('2023-12-16 06:15:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=216283
 ;
 
+-- Dec 17, 2023, 9:50:42 AM MYT
+UPDATE AD_Scheduler SET IsActive='N', Record_ID=NULL,Updated=TO_TIMESTAMP('2023-12-17 09:50:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Scheduler_ID=200003
+;
