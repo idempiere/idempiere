@@ -25,7 +25,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -335,7 +334,10 @@ public class TablePartitionService implements ITablePartitionService {
 	 */
 	private String validateConfiguration(MTable table, String trxName) {		
 		String currentPartitionKey = null;
+		String partitionKey = getPartitionKeyDefinition(table, trxName);
 		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
+		if (partitionKeyColumns.size() == 0)
+			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + ": " + partitionKey;
 		MColumn partitionKeyColumn = partitionKeyColumns.get(0);
 		String partitioningMethod = partitionKeyColumn.getPartitioningMethod();		
 		if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_List))
@@ -343,8 +345,7 @@ public class TablePartitionService implements ITablePartitionService {
 		else if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_Range))
 			currentPartitionKey = "RANGE";
 		currentPartitionKey += " (" + partitionKeyColumn.getColumnName().toLowerCase() + ")";
-		currentPartitionKey = currentPartitionKey.replaceAll(",", ", ");		
-		String partitionKey = getPartitionKeyDefinition(table, trxName);
+		currentPartitionKey = currentPartitionKey.replaceAll(",", ", ");				
 		if (!currentPartitionKey.equalsIgnoreCase(partitionKey))
 			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + ": " + partitionKey;
 		return null;
@@ -591,14 +592,6 @@ public class TablePartitionService implements ITablePartitionService {
 		if (column.isActive() && column.isPartitionKey()) {
 			if (!partitionKeyColumns.contains(column))
 				partitionKeyColumns.add(column);
-			partitionKeyColumns.sort(new Comparator<MColumn>() {
-				@Override
-				public int compare(MColumn o1, MColumn o2) {
-					Integer o1SeqNo = Integer.valueOf(o1.getSeqNoPartition());
-					Integer o2SeqNo = Integer.valueOf(o2.getSeqNoPartition());
-					return o1SeqNo.compareTo(o2SeqNo);
-				}
-			});
 		} else {
 			if (partitionKeyColumns.contains(column))
 				partitionKeyColumns.remove(column);

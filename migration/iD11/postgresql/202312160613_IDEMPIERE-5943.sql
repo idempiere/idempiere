@@ -16,3 +16,19 @@ UPDATE AD_Column SET MandatoryLogic='@IsPartition@=Y & @IsPartitionKey@=Y',Updat
 -- Dec 17, 2023, 9:50:42 AM MYT
 UPDATE AD_Scheduler SET IsActive='N', Record_ID=NULL,Updated=TO_TIMESTAMP('2023-12-17 09:50:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Scheduler_ID=200003
 ;
+
+-- Dec 18, 2023, 1:51:19 PM MYT
+UPDATE AD_Message SET MsgText='Your changes to the current table partition configuration are not supported',Updated=TO_TIMESTAMP('2023-12-18 13:51:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200853
+;
+
+-- Dec 18, 2023, 1:51:40 PM MYT
+UPDATE AD_Message SET MsgText='At least one partition key column is required',Updated=TO_TIMESTAMP('2023-12-18 13:51:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200852
+;
+
+-- Dec 18, 2023, 1:52:33 PM MYT
+UPDATE AD_Message SET MsgText='Failed to attach default partition',Updated=TO_TIMESTAMP('2023-12-18 13:52:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200848
+;
+
+-- Dec 18, 2023, 1:54:36 PM MYT
+UPDATE AD_Message SET MsgText='Only one partition key column is allowed',Updated=TO_TIMESTAMP('2023-12-18 13:54:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200858
+;
