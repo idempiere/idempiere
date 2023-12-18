@@ -286,7 +286,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     		addChangeLogMenu(popupMenu);
     		popupMenu.removeNewUpdateMenu();
     		
-    		if(gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList && gridField.isEditable(true)) {
+    		if(gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList && gridField.isEditable(false)) {
 	    		Menuitem editor = new Menuitem();
 	    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
 	    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
