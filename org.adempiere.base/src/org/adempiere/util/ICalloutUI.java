@@ -25,10 +25,21 @@ import org.compiere.model.MLookup;
  */
 public interface ICalloutUI {
 
+	/**
+	 * ask for input from user
+	 * @param message
+	 * @param lookup
+	 * @param displayType
+	 * @param callback
+	 */
 	default public void askForInput(String message, MLookup lookup, int displayType, Callback<Object> callback){
 		throw new RuntimeException("Not Implemented");
 	}
 
+	/**
+	 * Set desktop reference
+	 * @param desktop
+	 */
 	public void setDesktop(Object desktop);
 
 }

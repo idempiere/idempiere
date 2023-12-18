@@ -30,16 +30,16 @@ import org.compiere.util.Util;
 public class MChatEntry extends X_CM_ChatEntry
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -158924400098841023L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param CM_ChatEntry_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param CM_ChatEntry_UU  UUID key
+     * @param trxName Transaction
+     */
     public MChatEntry(Properties ctx, String CM_ChatEntry_UU, String trxName) {
         super(ctx, CM_ChatEntry_UU, trxName);
 		if (Util.isEmpty(CM_ChatEntry_UU))
@@ -115,7 +115,7 @@ public class MChatEntry extends X_CM_ChatEntry
 	/**
 	 * 	Can be published
 	 *	@param ConfidentialType minimum confidential type
-	 *	@return true if withing confidentiality
+	 *	@return true if within confidentiality
 	 */
 	public boolean isConfidentialType(String ConfidentialType)
 	{

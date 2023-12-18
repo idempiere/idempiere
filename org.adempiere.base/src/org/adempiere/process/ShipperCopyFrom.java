@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.process;
 
 import java.math.BigDecimal;
@@ -11,6 +32,9 @@ import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
+/**
+ * Process to copy shipping configuration records from another M_ShipperCfg record.
+ */
 @org.adempiere.base.annotation.Process
 public class ShipperCopyFrom extends SvrProcess
 {
@@ -49,6 +73,10 @@ public class ShipperCopyFrom extends SvrProcess
 		return "OK";
 	}
 	
+	/**
+	 * Copy M_ShipperPackagingCfg records
+	 * @param To_M_ShipperCfg_ID
+	 */
 	private void createShipperPackaging(int To_M_ShipperCfg_ID)
 	{
 		StringBuilder whereClause = new StringBuilder();
@@ -75,6 +103,10 @@ public class ShipperCopyFrom extends SvrProcess
 		}
 	}
 	
+	/**
+	 * Copy M_ShipperLabelsCfg records
+	 * @param To_M_ShipperCfg_ID
+	 */
 	private void createShipperLabels(int To_M_ShipperCfg_ID)
 	{
 		StringBuilder whereClause = new StringBuilder();
@@ -103,6 +135,10 @@ public class ShipperCopyFrom extends SvrProcess
 		}
 	}
 	
+	/**
+	 * Copy M_ShipperPickupTypesCfg records
+	 * @param To_M_ShipperCfg_ID
+	 */
 	private void createShipperPickupTypes(int To_M_ShipperCfg_ID)
 	{
 		StringBuilder whereClause = new StringBuilder();

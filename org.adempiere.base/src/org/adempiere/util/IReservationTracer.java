@@ -27,13 +27,13 @@ package org.adempiere.util;
 import java.math.BigDecimal;
 
 /**
+ * Interface to trace changes to quantity reserved/ordered
  * @author hengsin
- *
  */
 public interface IReservationTracer {
 	
 	/**
-	 * 
+	 * trace quantity changes
 	 * @param originalQty
 	 * @param diffQty
 	 */

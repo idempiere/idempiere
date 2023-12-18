@@ -30,7 +30,8 @@ import org.compiere.model.MProduct;
 import org.compiere.util.Env;
 
 /**
- *	Create Distribution List Order
+ *	Create Distribution List Order. <br/>
+ *  Note: feature not fully implemented and have been marked as inactive in application dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: DistributionCreate.java,v 1.3 2006/07/30 00:51:01 jjanke Exp $

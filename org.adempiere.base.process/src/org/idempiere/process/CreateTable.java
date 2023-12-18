@@ -214,9 +214,6 @@ public class CreateTable extends SvrProcess {
 	 */
 	protected String doIt() {
 
-		if (!p_isCreateKeyColumn && p_isCreateTranslationTable)
-			return ("@Error@ Main table must have a key column if you want to handle translations");
-
 		if (Util.isEmpty(p_name))
 			p_name = p_tableName;
 
@@ -323,6 +320,8 @@ public class CreateTable extends SvrProcess {
 			int colElementID = 0;
 			if (elementID != null)
 				colElementID = createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
+			else
+				colElementID = createColumn(tableTrl, elementUU.getColumnName()); // <TableName>_UU (UUID of parent table)
 
 			M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
 			if (elementTrlUU == null) {
@@ -610,6 +609,13 @@ public class CreateTable extends SvrProcess {
 			column.setIsParent(true);
 			column.setIsMandatory(true);
 			column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_Cascade);
+		}
+		else if (element.getColumnName().equalsIgnoreCase(PO.getUUIDColumnName(table.getTableName().substring(0, table.getTableName().length()-4)))) { // UUID of parent table (for translation tables)
+			column.setAD_Reference_ID(DisplayType.SearchUU);
+			column.setIsParent(true);
+			column.setIsMandatory(true);
+			column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_Cascade);
+			column.setFieldLength(LENGTH_36);
 		}
 
 		column.saveEx();

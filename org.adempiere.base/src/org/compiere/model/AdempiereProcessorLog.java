@@ -19,7 +19,7 @@ package org.compiere.model;
 import java.sql.Timestamp;
 
 /**
- *	Processor Log Interface
+ *	Background Processor Log Interface
  *	
  *  @author Jorg Janke
  *  @version $Id: AdempiereProcessorLog.java,v 1.3 2006/07/30 00:51:04 jjanke Exp $
@@ -33,7 +33,7 @@ public interface AdempiereProcessorLog
 	public Timestamp getCreated();
 	
 	/**
-	 * 	Get Summary. Textual summary of this request
+	 * 	Get Summary. Textual summary of execution
 	 * 	@return Summary
 	 */
 	public String getSummary ();
@@ -45,7 +45,7 @@ public interface AdempiereProcessorLog
 	public String getDescription ();
 
 	/**
-	 * 	Get Error. An Error occured in the execution
+	 * 	Get Error. An error occurred in execution
 	 * 	@return true if error
 	 */
 	public boolean isError ();

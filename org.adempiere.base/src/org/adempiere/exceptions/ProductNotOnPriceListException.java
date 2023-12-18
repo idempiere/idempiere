@@ -30,17 +30,26 @@ import org.compiere.util.Env;
 public class ProductNotOnPriceListException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3505579126676698444L;
 	
 	public static final String AD_Message = "ProductNotOnPriceList";
 	
+	/**
+	 * @param productPricing
+	 * @param documentLineNo
+	 */
 	public ProductNotOnPriceListException(IProductPricing productPricing, int documentLineNo)
 	{
 		super(buildMessage(productPricing, documentLineNo));
 	}
 
+	/**
+	 * @param pp
+	 * @param documentLineNo
+	 * @return error message
+	 */
 	private static final String buildMessage (IProductPricing pp, int documentLineNo)
 	{
 		StringBuilder sb = new StringBuilder();

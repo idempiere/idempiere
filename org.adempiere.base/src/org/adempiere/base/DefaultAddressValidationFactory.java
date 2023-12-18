@@ -20,7 +20,8 @@ import org.adempiere.model.IAddressValidation;
 import org.compiere.util.CLogger;
 
 /**
- * Default address validation factory
+ * Default {@link IAddressValidationFactory} implementation for core.<br/>
+ * Load {@link IAddressValidation} instance from plugin.xml (org.adempiere.model.IAddressValidation extension point) or class path.
  * @author Elaine
  *
  */

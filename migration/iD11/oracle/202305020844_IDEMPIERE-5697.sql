@@ -66,7 +66,7 @@ ALTER TABLE AD_PInstance_Log DROP PRIMARY KEY
 ;
 
 -- May 15, 2023, 10:50:19 AM CEST
-ALTER TABLE AD_PInstance_Log ADD CONSTRAINT ad_pinstance_log_uu PRIMARY KEY (AD_PInstance_Log_UU)
+ALTER TABLE AD_PInstance_Log ADD CONSTRAINT ad_pinstance_log_uu UNIQUE (AD_PInstance_Log_UU)
 ;
 
 -- May 15, 2023, 3:03:52 PM CEST

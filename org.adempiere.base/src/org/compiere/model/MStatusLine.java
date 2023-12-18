@@ -40,7 +40,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.osgi.service.event.Event;
 
 /**
- *	Status Line Model
+ *	Data Status Line Model
  *	
  *  @author Nicolas Micoud
  *  @version $Id: MStatusLine.java
@@ -48,7 +48,7 @@ import org.osgi.service.event.Event;
 public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1542116796861052734L;
 
@@ -62,11 +62,11 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	public static final String EVENT_WINDOWNO = "event.windowno";
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_StatusLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_StatusLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MStatusLine(Properties ctx, String AD_StatusLine_UU, String trxName) {
         super(ctx, AD_StatusLine_UU, trxName);
     }
@@ -94,7 +94,7 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	}	//	MStatusLine
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MStatusLine(MStatusLine copy) 
@@ -103,7 +103,7 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -113,7 +113,7 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -193,12 +193,12 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Get the widget lines defined for the window and tab and table (immutable)
+	 * Get the widget lines defined for the window and tab and table and info window (immutable)
 	 * @param window_ID
 	 * @param tab_ID
 	 * @param table_ID
 	 * @param infoWindow_ID
-	 * @return array of widget lines discovered for table or specific tab or general window
+	 * @return array of widget lines discovered for table or specific tab or general window or info window
 	 */
 	public static MStatusLine[] getStatusLinesWidget(int window_ID, int tab_ID, int table_ID, int infoWindow_ID) {
 		StringBuilder key = new StringBuilder().append(window_ID).append("|").append(tab_ID).append("|").append(table_ID).append("|").append(infoWindow_ID);
@@ -242,6 +242,11 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 		return retValue;
 	}
 
+	/**
+	 * Parse and execute SQL statement. Combine result of execution (first row) with translated AD message.  
+	 * @param windowNo
+	 * @return AD message formatted output of SQL statement execution result
+	 */
 	public String parseLine(int windowNo) {
 		Event event = EventManager.newEvent(BEFORE_PARSE_STATUS_LINE,
 				new EventProperty(EventManager.EVENT_DATA, this), new EventProperty(EVENT_WINDOWNO, windowNo));

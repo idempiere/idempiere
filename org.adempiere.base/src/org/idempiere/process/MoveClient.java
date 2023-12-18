@@ -454,6 +454,10 @@ public class MoveClient extends SvrProcess {
 				sqlCountData.append(" JOIN AD_PInstance ON (AD_PInstance_Log.AD_PInstance_ID=AD_PInstance.AD_PInstance_ID)");
 				sqlCountData.append(" JOIN AD_Client ON (AD_PInstance.AD_Client_ID=AD_Client.AD_Client_ID)");
 			} else {
+				if (MColumn.get(getCtx(), tableName, "AD_Client_ID") == null) {
+					if (log.isLoggable(Level.WARNING)) log.warning("Ignoring " + tableName + ", doesn't have column AD_Client_ID");
+					return;
+				}
 				sqlCountData.append(" JOIN AD_Client ON (").append(tableName).append(".AD_Client_ID=AD_Client.AD_Client_ID)");
 			}
 			sqlCountData.append(" WHERE ").append(p_whereClient);
@@ -1166,8 +1170,10 @@ public class MoveClient extends SvrProcess {
 				return true;
 			}
 		}
-		if ("AD_ChangeLog".equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName)) {
-			// skip orphan records in AD_ChangeLog and AD_PInstance_Log, can be log of deleted records, skip
+		if (   "AD_ChangeLog".equalsIgnoreCase(tableName)
+			|| "AD_PInstance".equalsIgnoreCase(tableName)
+			|| "AD_PInstance_Log".equalsIgnoreCase(tableName)) {
+			// skip orphan records in AD_ChangeLog, AD_PInstance and AD_PInstance_Log, can be log of deleted records, skip
 			return true;
 		}
 		return false;

@@ -43,7 +43,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.expression.logic.LogicEvaluator;
 
 /**
- *	Persistent Column Model
+ *	Column Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MColumn.java,v 1.6 2006/08/09 05:23:49 jjanke Exp $
@@ -51,7 +51,7 @@ import org.idempiere.expression.logic.LogicEvaluator;
 public class MColumn extends X_AD_Column implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -971225879649586290L;
 
@@ -141,6 +141,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return table.getColumn(columnName);
 	}	//	get
 
+	/**
+	 * @param ctx
+	 * @param AD_Column_ID
+	 * @return Column name or null
+	 */
 	public static String getColumnName (Properties ctx, int AD_Column_ID)
 	{
 		return getColumnName (ctx, AD_Column_ID, null);
@@ -165,18 +170,18 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Column_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Column_UU  UUID key
+     * @param trxName Transaction
+     */
     public MColumn(Properties ctx, String AD_Column_UU, String trxName) {
         super(ctx, AD_Column_UU, trxName);
 		if (Util.isEmpty(AD_Column_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Column_ID
@@ -229,7 +234,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}	//	MColumn
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MColumn(MColumn copy) 
@@ -238,7 +243,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -248,7 +253,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -258,9 +263,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
 	/**
 	 * 	Is Standard Column
-	 *	@return true for AD_Client_ID, etc.
+	 *	@return true if this column is one of the 8 standard column that should exists in every table.<br/>
+	 *  - AD_Client_ID, AD_Org_ID, IsActive, Created, Created By, Updated, Updated By or Processing
 	 */
 	public boolean isStandardColumn()
 	{
@@ -288,7 +295,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Is Virtual Column
-	 *	@return true if virtual column
+	 *	@return true if virtual column (using column SQL)
 	 */
 	public boolean isVirtualColumn()
 	{
@@ -298,7 +305,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Is Virtual DB Column
-	 *	@return true if virtual DB column
+	 *	@return true if virtual DB column (using column SQL and is not using @SQL= or @SQLFIND=)
 	 */
 	public boolean isVirtualDBColumn()
 	{
@@ -308,7 +315,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Is Virtual UI Column
-	 *	@return true if virtual UI column
+	 *	@return true if virtual UI column (using column SQL that starts with @SQL=)
 	 */
 	public boolean isVirtualUIColumn()
 	{
@@ -318,7 +325,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	
 	/**
 	 * 	Is Virtual Search Column
-	 *	@return true if virtual search column
+	 *	@return true if virtual search column (using column SQL that starts with @SQLFIND=)
 	 */
 	public boolean isVirtualSearchColumn()
 	{
@@ -350,6 +357,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		String error = Database.isValidIdentifier(getColumnName());
@@ -561,6 +569,16 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				return false;
 			}
 		}
+		
+		if (getAD_Reference_ID() == DisplayType.YesNo) {
+ 			setIsMandatory(true);
+			if (Util.isEmpty(getDefaultValue(), true)) {
+				if (getAD_Element_ID() == SystemIDs.ELEMENT_ISACTIVE)
+					setDefaultValue("Y");
+				else
+					setDefaultValue("N");
+			}
+ 		}
 
 		return true;
 	}	//	beforeSave
@@ -571,6 +589,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -607,7 +626,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 	Get SQL Add command
 	 *	@param table table
-	 *	@return sql
+	 *	@return SQL to add new column
 	 */
 	public String getSQLAdd (MTable table)
 	{
@@ -620,7 +639,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Get SQL DDL
-	 *	@return columnName datataype ..
+	 *	@return DDL for column
 	 */
 	public String getSQLDDL()
 	{
@@ -638,7 +657,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 * 	Get SQL Modify command
 	 *	@param table table
 	 *	@param setNullOption generate null / not null statement
-	 *	@return sql separated by ;
+	 *	@return SQL to modify existing column
 	 */
 	public String getSQLModify (MTable table, boolean setNullOption)
 	{
@@ -651,7 +670,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Get SQL Data Type
-	 *	@return e.g. NVARCHAR2(60)
+	 *	@return SQL data type (e.g. NVARCHAR2(60))
 	 */
 	public String getSQLDataType()
 	{
@@ -663,7 +682,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 	Get Table Constraint
 	 *	@param tableName table name
-	 *	@return table constraint
+	 *	@return table constraint clause
 	 */
 	public String getConstraint(String tableName)
 	{
@@ -707,6 +726,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MColumn[");
@@ -718,7 +738,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 * 	get Column ID
 	 *  @param TableName
 	 *	@param columnName
-	 *	@return int retValue
+	 *	@return AD_Column_ID
 	 */
 	public static int getColumn_ID(String TableName,String columnName) {
 		MTable table = MTable.get(Env.getCtx(), TableName);
@@ -731,19 +751,23 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 	
 	/**
-	* Get Table Id for a column
-	* @param ctx context
-	* @param AD_Column_ID id
-	* @param trxName transaction
-	* @return MColumn
-	*/
+	 * Get Table Id for a column
+	 * @param ctx context
+	 * @param AD_Column_ID id
+	 * @param trxName transaction
+	 * @return AD_Table_ID
+	 */
 	public static int getTable_ID(Properties ctx, int AD_Column_ID, String trxName)
 	{
 		String sqlStmt = "SELECT AD_Table_ID FROM AD_Column WHERE AD_Column_ID=?";
 		return DB.getSQLValue(trxName, sqlStmt, AD_Column_ID);
 	}
 
-
+	/**
+	 * @param columnName
+	 * @param caseSensitive
+	 * @return true if column should be included as selection column
+	 */
 	public static boolean isSuggestSelectionColumn(String columnName, boolean caseSensitive)
 	{
 		if (Util.isEmpty(columnName, true))
@@ -784,9 +808,10 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			+ "       AND tb.IsActive = 'Y' "
 			+ "       AND f.IsActive = 'Y'";
 	private String foreignTableMulti = null;
+	
 	/**
 	 * Get the foreign table name that relates to this column when the column is multi selection
-	 * @return
+	 * @return foreign table name or null
 	 */
 	public String getMultiReferenceTableName() {
 		if (foreignTableMulti != null)
@@ -803,9 +828,10 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 
 	private String foreignTable = null;
+	
 	/**
 	 * Get the foreign table name that relates to this column
-	 * @return
+	 * @return foreign table name or null
 	 */
 	public String getReferenceTableName() {
 		if (foreignTable != null)
@@ -852,6 +878,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return foreignTable;
 	}
 
+	/**
+	 * Set default values for new column
+	 */
 	public void setSmartDefaults() { // IDEMPIERE-1649 - dup code on Callout_AD_Column.columnName
 		if (MColumn.isSuggestSelectionColumn(getColumnName(), true))
 			setIsSelectionColumn(true);
@@ -955,6 +984,17 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return table;
 	}
 
+	/**
+	 * @param md
+	 * @param catalog
+	 * @param schema
+	 * @param tableName
+	 * @param table
+	 * @param column
+	 * @param isNoTable
+	 * @return SQL to add or replace foreign key constraint
+	 * @throws Exception
+	 */
 	public static String getForeignKeyConstraintSql(DatabaseMetaData md, String catalog, String schema, String tableName, MTable table, MColumn column, boolean isNoTable) throws Exception
 	{
 		StringBuilder fkConstraintSql = new StringBuilder();
@@ -1134,6 +1174,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return fkConstraintSql.toString();
 	}
 
+	/**
+	 * @param md
+	 * @param primaryTableName
+	 * @return primary key
+	 * @throws Exception
+	 */
 	public static DatabaseKey getPrimaryKey(DatabaseMetaData md, String primaryTableName) throws Exception 
 	{
 		DatabaseKey primaryKey = null;
@@ -1173,6 +1219,13 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return primaryKey;
 	}
 
+	/**
+	 * @param md
+	 * @param table
+	 * @param column
+	 * @return Foreign key constraint clause
+	 * @throws Exception
+	 */
 	public static String getForeignKeyConstraint(DatabaseMetaData md, MTable table, MColumn column) throws Exception 
 	{		
 		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
@@ -1281,10 +1334,19 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return cnt > 0;
 	}
 
+	/**
+	 * @param nullForUI true to return the string "NULL" for @SQL=
+	 * @return column SQL (without the @SQL= or @SQLFIND= prefix) or null
+	 */
 	public String getColumnSQL(boolean nullForUI) {
 		return getColumnSQL(nullForUI, true);
 	}
 	
+	/**
+	 * @param nullForUI true to return the string "NULL" for @SQL=
+	 * @param nullForSearch true to return the string "NULL" for @SQLFIND=
+	 * @return column SQL (without the @SQL= or @SQLFIND= prefix) or null
+	 */
 	public String getColumnSQL(boolean nullForUI, boolean nullForSearch) {
 		String query = getColumnSQL();
 		if (query != null && query.length() > 0) {
@@ -1298,6 +1360,10 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return query;
 	}
 
+	/**
+	 * @param newColumnName
+	 * @return new column name + " - " + SQL executed to rename column
+	 */
 	public String renameDBColumn(String newColumnName) {
 		int rvalue = -1;
 		String sql;

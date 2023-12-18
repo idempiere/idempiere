@@ -25,7 +25,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
  *	Alert Processor
  *	
@@ -36,14 +35,14 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6566030540146374829L;
 
 	/**
-	 * 	Get Active
+	 * 	Get active alert processors
 	 *	@param ctx context
-	 *	@return active processors
+	 *	@return active alert processors
 	 */
 	public static MAlertProcessor[] getActive (Properties ctx)
 	{
@@ -58,19 +57,18 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MAlertProcessor.class);
-
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_AlertProcessor_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AlertProcessor_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAlertProcessor(Properties ctx, String AD_AlertProcessor_UU, String trxName) {
         super(ctx, AD_AlertProcessor_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_AlertProcessorLog_ID id
@@ -99,6 +97,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	 * 	Get Server ID
 	 *	@return id
 	 */
+	@Override
 	public String getServerID ()
 	{
 		return "AlertProcessor" + get_ID();
@@ -109,6 +108,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	 *	@param requery requery
 	 *	@return date next run
 	 */
+	@Override
 	public Timestamp getDateNextRun (boolean requery)
 	{
 		if (requery)
@@ -120,6 +120,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	 * 	Get Logs
 	 *	@return logs
 	 */
+	@Override
 	public AdempiereProcessorLog[] getLogs ()
 	{
 		final String whereClause ="AD_AlertProcessor_ID=?"; 
@@ -146,11 +147,10 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 		int no = DB.executeUpdate(sql, get_TrxName());
 		return no;
 	}	//	deleteLog
-
 	
 	/**
 	 * 	Get Alerts
-	 *	@param reload reload data
+	 *	@param reload true to always reload from DB
 	 *	@return array of alerts
 	 */
 	public MAlert[] getAlerts (boolean reload)

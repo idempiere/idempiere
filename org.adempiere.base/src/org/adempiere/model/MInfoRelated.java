@@ -25,7 +25,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, ImmutablePOSupport {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4000783886138460291L;
 
@@ -39,10 +39,20 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, Immut
         super(ctx, AD_InfoRelated_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param AD_InfoRelated_ID
+     * @param trxName
+     */
 	public MInfoRelated(Properties ctx, int AD_InfoRelated_ID, String trxName) {
 		super(ctx, AD_InfoRelated_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MInfoRelated(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
@@ -56,6 +66,9 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, Immut
 		copyPO(copy);
 	}
 	
+	/**
+	 * @return Link info column
+	 */
 	public MInfoColumn getLinkInfoColumn() {
 		if (log.isLoggable(Level.INFO)) log.info("Link Column ID: -----  : " + getRelatedColumn_ID());
 
@@ -66,6 +79,9 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, Immut
 		return infoCol;
 	}
 
+	/**
+	 * @return Link column name
+	 */
 	public String getLinkColumnName() {
 		MInfoColumn infoCol = getLinkInfoColumn();
 		if (infoCol != null)

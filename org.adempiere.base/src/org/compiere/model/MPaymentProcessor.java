@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
-
 /**
  *  Payment Processor Model
  *
@@ -32,23 +31,23 @@ import org.compiere.util.Util;
 public class MPaymentProcessor extends X_C_PaymentProcessor
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8514876566904723695L;
 		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_PaymentProcessor_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaymentProcessor_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPaymentProcessor(Properties ctx, String C_PaymentProcessor_UU, String trxName) {
         super(ctx, C_PaymentProcessor_UU, trxName);
 		if (Util.isEmpty(C_PaymentProcessor_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 *	Payment Processor Model
 	 * 	@param ctx context
 	 * 	@param C_PaymentProcessor_ID payment processor
@@ -95,6 +94,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * 	String representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPaymentProcessor[")
@@ -107,6 +107,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID 
 	 */
 	@Override
+	@Deprecated
 	public I_C_BankAccount getC_BankAccount() throws RuntimeException {
 		return super.getC_BankAccount();
 	}
@@ -115,6 +116,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID
 	 */
 	@Override
+	@Deprecated
 	public void setC_BankAccount_ID(int C_BankAccount_ID) {
 		super.setC_BankAccount_ID(C_BankAccount_ID);
 	}
@@ -123,6 +125,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID
 	 */
 	@Override
+	@Deprecated
 	public int getC_BankAccount_ID() {
 		return super.getC_BankAccount_ID();
 	}

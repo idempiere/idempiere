@@ -24,9 +24,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-
 /**
- *	Payment Validion Routines
+ *	Payment Validation Routines
  *	
  *  @author Jorg Janke
  *  @version $Id: MPaymentValidate.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -35,11 +34,10 @@ public class MPaymentValidate
 {
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MPaymentValidate.class);
-
 	
 	/**
-	 *  Is this a valid Credit Card Exp Date?
-	 *	@param mmyy Exp in form of mmyy
+	 *  Is this a valid Credit Card Expire Date?
+	 *	@param mmyy Expire in form of mmyy
 	 *  @return "" or Error AD_Message
 	 */
 	public static String validateCreditCardExp (String mmyy)
@@ -66,8 +64,8 @@ public class MPaymentValidate
 	}   //  validateCreditCardExp
 
 	/**
-	 *  Return Month of Exp
-	 *  @param mmyy  Exp in form of mmyy
+	 *  Return Month of Expire
+	 *  @param mmyy  Expire in form of mmyy
 	 *  @return month
 	 */
 	public static int getCreditCardExpMM (String mmyy)
@@ -85,8 +83,8 @@ public class MPaymentValidate
 	}   //  getCreditCardExpMM
 
 	/**
-	 *  Return Year of Exp
-	 *  @param mmyy  Exp in form of mmyy
+	 *  Return Year of Expire
+	 *  @param mmyy  Expire in form of mmyy
 	 *  @return year
 	 */
 	public static int getCreditCardExpYY (String mmyy)
@@ -104,7 +102,7 @@ public class MPaymentValidate
 	}   //  getCreditCardExpYY
 
 	/**
-	 *  Is this a valid Credit Card Exp Date?
+	 *  Is this a valid Credit Card Expire Date?
 	 *  @param mm month
 	 *  @param yy year
 	 *  @return "" or Error AD_Message
@@ -125,10 +123,9 @@ public class MPaymentValidate
 			return Msg.getMsg(Env.getCtx(), "CreditCardExpired");
 		return "";
 	}   //  validateCreditCardExp
-
 	
 	/**
-	 *  Validate Credit Card Number.
+	 *  Validate Credit Card Number.<br/>
 	 *  - Based on LUHN formula
 	 *  @param creditCardNumber credit card number
 	 *  @return "" or Error AD_Message
@@ -192,7 +189,7 @@ public class MPaymentValidate
 	}   //  validateCreditCardNumber
 
 	/**
-	 *  Validate Credit Card Number.
+	 *  Validate Credit Card Number.<br/>
 	 *  - Check Card Type and Length
 	 *  @param creditCardNumber CC Number
 	 *  @param creditCardType CC Type
@@ -291,10 +288,9 @@ public class MPaymentValidate
 			return Msg.getMsg(Env.getCtx(), "CreditCardNumberProblem?");
 		return "";
 	}   //  validateCreditCardNumber
-	
-	
+		
 	/**
-	 *  Validate Validation Code
+	 *  Validate Verification Code
 	 *  @param creditCardVV CC Verification Code
 	 *  @return "" or Error AD_Message
 	 */
@@ -319,7 +315,7 @@ public class MPaymentValidate
 	}   //  validateCreditCardVV
 
 	/**
-	 *  Validate Validation Code
+	 *  Validate Verification Code
 	 *  @param creditCardVV CC Verification Code
 	 *  @param creditCardType CC Type see CC_
 	 *  @return "" or Error AD_Message
@@ -374,9 +370,8 @@ public class MPaymentValidate
 		//	Other
 		return "";
 	}   //  validateCreditCardVV
-	
-	
-	/**************************************************************************
+		
+	/**
 	 *  Validate Routing Number
 	 *  @param routingNo Routing No
 	 *  @return "" or Error AD_Message
@@ -421,7 +416,7 @@ public class MPaymentValidate
 	}   //  validateBankCheckNo
 	
 	/**
-	 *  Check Numeric
+	 *  Remove all non Digit characters
 	 *  @param data input
 	 *  @return the digits of the data - ignore the rest
 	 */
@@ -438,6 +433,5 @@ public class MPaymentValidate
 		}
 		return sb.toString();
 	}   //  checkNumeric
-
 	
 }	//	MPaymentValidate

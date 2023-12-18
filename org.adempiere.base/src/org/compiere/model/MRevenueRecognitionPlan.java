@@ -36,16 +36,16 @@ import org.compiere.util.Util;
 public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8437258098744762898L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_RevenueRecognition_Plan_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RevenueRecognition_Plan_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRevenueRecognitionPlan(Properties ctx, String C_RevenueRecognition_Plan_UU, String trxName) {
         super(ctx, C_RevenueRecognition_Plan_UU, trxName);
 		if (Util.isEmpty(C_RevenueRecognition_Plan_UU))
@@ -81,7 +81,6 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 	{
 		super(ctx, rs, trxName);
 	}	//	MRevenueRecognitionPlan
-
 	
 	/**
 	 * 	After Save
@@ -89,6 +88,7 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord)

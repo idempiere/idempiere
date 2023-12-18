@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-
 /**
  *	Document Value Workflow Manager
  *	

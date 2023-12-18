@@ -56,7 +56,6 @@ public class ReadReplicaPreparedStatementProxy implements InvocationHandler {
 	protected CStatementVO				p_vo = null;
 	
 	/**
-	 * 
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param sql
@@ -85,6 +84,10 @@ public class ReadReplicaPreparedStatementProxy implements InvocationHandler {
 		}
 	}
 
+	/**
+	 * Execute the wrapped prepare statement and return row set
+	 * @return row set
+	 */
 	private RowSet getRowSet() 
 	{
 		if (log.isLoggable(Level.FINEST))

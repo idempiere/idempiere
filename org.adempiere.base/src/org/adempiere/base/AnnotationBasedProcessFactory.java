@@ -44,7 +44,7 @@ import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
 
 /**
- * Scan, discover and register process classes.
+ * Scan, discover and register process classes.<br/>
  * Process class will be registered using class name. You can use the optional 
  * {@link Process} annotation to register a process class with an additional name (for e.g
  * to replace a core process class).
@@ -72,6 +72,11 @@ public abstract class AnnotationBasedProcessFactory extends AnnotationBasedFacto
 	 */
 	protected abstract String[] getPackages();
 
+	/**
+	 * Scan annotation upon activation of component
+	 * @param context
+	 * @throws ClassNotFoundException
+	 */
 	@Activate
 	public void activate(ComponentContext context) throws ClassNotFoundException {
 		long start = System.currentTimeMillis();
@@ -103,8 +108,9 @@ public abstract class AnnotationBasedProcessFactory extends AnnotationBasedFacto
 		        	classCache.put(alternateName, className);
 		    }
 			long end = System.currentTimeMillis();
-			s_log.info(() -> this.getClass().getSimpleName() + " loaded " + classCache.size() + " classes in "
-						+ ((end-start)/1000f) + "s");
+			if (s_log.isLoggable(Level.INFO))
+				s_log.info(() -> this.getClass().getSimpleName() + " loaded " + classCache.size() + " classes in "
+							+ ((end-start)/1000f) + "s");
 			signalScanCompletion(true);
 		};
 

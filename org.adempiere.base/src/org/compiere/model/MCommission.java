@@ -37,16 +37,16 @@ import org.compiere.util.Util;
 public class MCommission extends X_C_Commission
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2702487404398723180L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_Commission_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Commission_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCommission(Properties ctx, String C_Commission_UU, String trxName) {
         super(ctx, C_Commission_UU, trxName);
 		if (Util.isEmpty(C_Commission_UU))
@@ -86,6 +86,12 @@ public class MCommission extends X_C_Commission
 		super(ctx, rs, trxName);
 	}	//	MCommission
 
+	/**
+	 * @param ctx
+	 * @param C_Commission_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommission(Properties ctx, int C_Commission_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_Commission_ID, trxName, virtualColumns);
 	}
@@ -113,6 +119,7 @@ public class MCommission extends X_C_Commission
 	 * 	Set Date Last Run
 	 *	@param DateLastRun date
 	 */
+	@Override
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		if (DateLastRun != null)

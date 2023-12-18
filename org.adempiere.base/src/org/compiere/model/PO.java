@@ -1831,7 +1831,7 @@ public abstract class PO
 			Class<?> c = p_info.getColumnClass(i);
 			String stringValue = null;
 			if (c == Object.class)
-				;	//	saveNewSpecial (value, i));
+				;
 			else if (value == null || value.equals (Null.NULL))
 				;
 			else if (value instanceof Integer || value instanceof BigDecimal)
@@ -1852,7 +1852,7 @@ public abstract class PO
 			else if (DisplayType.isLOB(dt))
 				;
 			else
-				;	//	saveNewSpecial (value, i));
+				;
 			//
 			if (stringValue != null)
 				hmOut.put(p_info.getColumnName(i), stringValue);
@@ -1874,8 +1874,8 @@ public abstract class PO
 	}   //  get_HashMap
 
 	/**
-	 *  Load Special data (images, ..).
-	 *  To be extended by sub-classes
+	 *  Load data for custom Java type that has no build in implementation (images, ..).
+	 *  To be extended by sub-classes (default implementation just return null).
 	 *  @param rs result set
 	 *  @param index zero based index
 	 *  @return value value
@@ -2220,9 +2220,12 @@ public abstract class PO
 	{
 		//
 		// Check if columnName, AD_Language is valid or table support translation (has 1 PK) => error
-		if (columnName == null || AD_Language == null
-			|| m_IDs.length > 1 || m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer))
+		if (   columnName == null 
+			|| AD_Language == null
+			|| m_IDs.length > 1
+			|| (m_IDs[0] instanceof Integer && m_IDs[0].equals(I_ZERO))
+			|| (m_IDs[0] instanceof String && Util.isEmpty((String)m_IDs[0]))
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String))
 		{
 			throw new IllegalArgumentException("ColumnName=" + columnName
 												+ ", AD_Language=" + AD_Language
@@ -3831,8 +3834,8 @@ public abstract class PO
 
 
 	/**
-	 *  Save Special Data.
-	 *  To be extended by sub-classes
+	 *  Save data for custom Java type that have no build in implementation.<br/>
+	 *  To be extended by sub-classes (default implementation just call value.toString()).
 	 *  @param value value
 	 *  @param index index
 	 *  @return SQL code for INSERT VALUES clause
@@ -3842,7 +3845,6 @@ public abstract class PO
 		String colName = p_info.getColumnName(index);
 		String colClass = p_info.getColumnClass(index).toString();
 		String colValue = value == null ? "null" : value.getClass().toString();
-//		int dt = p_info.getColumnDisplayType(index);
 
 		log.log(Level.SEVERE, "Unknown class for column " + colName
 			+ " (" + colClass + ") - Value=" + colValue);
@@ -4357,7 +4359,7 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer)
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
 			return true;
 		//
@@ -4409,8 +4411,13 @@ public abstract class PO
 			sql.append(" ");
 		sql.append("FROM AD_Language l, ").append(tableName).append(" t, AD_Client c ")
 			.append("WHERE t.AD_Client_ID=c.AD_Client_ID AND l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.")
-			.append(keyColumn).append("=").append(get_ID())
-			.append(" AND NOT EXISTS (SELECT * FROM ").append(tableName)
+			.append(keyColumn).append("=");
+		MTable table = MTable.get(getCtx(), tableName);
+		if (table.isUUIDKeyTable())
+			sql.append(DB.TO_STRING(get_UUID()));
+		else
+			sql.append(get_ID());
+		sql.append(" AND NOT EXISTS (SELECT * FROM ").append(tableName)
 			.append("_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.")
 			.append(keyColumn).append("=t.").append(keyColumn).append(")");
 		int no = -1;
@@ -4441,7 +4448,7 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer)
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
 			return true;
 
@@ -4487,7 +4494,12 @@ public abstract class PO
 				}
 			}
 		}
-		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
+		MTable table = MTable.get(getCtx(), tableName);
+		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=");
+		if (table.isUUIDKeyTable())
+			whereid.append(DB.TO_STRING(get_UUID()));
+		else
+			whereid.append(get_ID());
 		StringBuilder andClientLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
 		StringBuilder andNotClientLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
 		String baselang = Language.getBaseAD_Language();
@@ -4566,15 +4578,20 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer)
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
 			return true;
 		//
 		String tableName = p_info.getTableName();
+		MTable table = MTable.get(getCtx(), tableName);
 		String keyColumn = m_KeyColumns[0];
 		StringBuilder sql = new StringBuilder ("DELETE FROM ")
 			.append(tableName).append("_Trl WHERE ")
-			.append(keyColumn).append("=").append(get_ID());
+			.append(keyColumn).append("=");
+		if (table.isUUIDKeyTable())
+			sql.append(DB.TO_STRING(get_UUID()));
+		else
+			sql.append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		return no >= 0;
@@ -5116,9 +5133,8 @@ public abstract class PO
 		return getAttachmentData(".pdf");
 	}	//	getPDFAttachment
 
-
-	/**************************************************************************
-	 *  Dump Record
+	/**
+	 *  Dump where clause and column values
 	 */
 	public void dump ()
 	{
@@ -5131,8 +5147,8 @@ public abstract class PO
 	}   //  dump
 
 	/**
-	 *  Dump column
-	 *  @param index index
+	 *  Dump column (index:columnName=oldValue (newValue))
+	 *  @param index column index
 	 */
 	public void dump (int index)
 	{
@@ -5148,10 +5164,9 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}   //  dump
 
-
-	/*************************************************************************
+	/**
 	 * 	Get All IDs of Table.
-	 * 	Used for listing all Entities
+	 * 	Used for listing of all records
 	 * 	<pre>{@code
 	 	int[] IDs = PO.getAllIDs ("AD_PrintFont", null);
 		for (int i = 0; i < IDs.length; i++)

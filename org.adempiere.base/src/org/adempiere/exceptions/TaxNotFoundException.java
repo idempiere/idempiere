@@ -29,13 +29,23 @@ import org.compiere.util.Env;
 public class TaxNotFoundException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5471615720092096644L;
 	
 	/** AD_Message code */
 	private static final String AD_Message = "TaxNotFound";
 	
+	/**
+	 * @param C_TaxCategory_ID
+	 * @param IsSOTrx
+	 * @param shipDate
+	 * @param shipFromC_Location_ID
+	 * @param shipToC_Location_ID
+	 * @param billDate
+	 * @param billFromC_Location_ID
+	 * @param billToC_Location_ID
+	 */
 	public TaxNotFoundException(int C_TaxCategory_ID, boolean IsSOTrx,
 			Timestamp shipDate, int shipFromC_Location_ID, int shipToC_Location_ID,
 			Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID)
@@ -45,6 +55,17 @@ public class TaxNotFoundException extends AdempiereException
 				billDate, billFromC_Location_ID, billToC_Location_ID));
 	}
 	
+	/**
+	 * @param C_TaxCategory_ID
+	 * @param IsSOTrx
+	 * @param shipDate
+	 * @param shipFromC_Location_ID
+	 * @param shipToC_Location_ID
+	 * @param billDate
+	 * @param billFromC_Location_ID
+	 * @param billToC_Location_ID
+	 * @return error message
+	 */
 	private static final String buildMessage (int C_TaxCategory_ID, boolean IsSOTrx,
 			Timestamp shipDate, int shipFromC_Location_ID, int shipToC_Location_ID,
 			Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID)

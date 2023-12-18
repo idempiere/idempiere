@@ -22,7 +22,7 @@ import org.compiere.model.I_C_BPartner;
 public class BPartnerNoShipToAddressException extends BPartnerException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4388496060894704270L;
 	public static final String AD_Message = "BPartnerNoShipToAddress";

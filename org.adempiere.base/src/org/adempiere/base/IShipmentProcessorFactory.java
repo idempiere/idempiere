@@ -16,16 +16,15 @@ package org.adempiere.base;
 import org.adempiere.model.IShipmentProcessor;
 
 /**
- * 
+ * Factory interface for {@link IShipmentProcessor}.
  * @author hengsin
- *
  */
 public interface IShipmentProcessorFactory {
 	
 	/**
 	 * Create new shipment processor instance
 	 * @param className
-	 * @return shipment processor instance
+	 * @return new IShipmentProcessor instance
 	 */
 	public IShipmentProcessor newShipmentProcessorInstance(String className);
 }

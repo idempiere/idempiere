@@ -32,19 +32,17 @@ import org.compiere.util.Util;
  */
 public class MCommissionRun extends X_C_CommissionRun
 {
-
-
     /**
-     * 
+     * generated serial id 
      */
     private static final long serialVersionUID = -3103035295526318283L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_CommissionRun_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CommissionRun_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCommissionRun(Properties ctx, String C_CommissionRun_UU, String trxName) {
         super(ctx, C_CommissionRun_UU, trxName);
 		if (Util.isEmpty(C_CommissionRun_UU))
@@ -96,7 +94,7 @@ public class MCommissionRun extends X_C_CommissionRun
 
 	/**
 	 * 	Get Amounts
-	 *	@return array of amounts
+	 *	@return array of amounts (MCommissionAmt)
 	 */
 	public MCommissionAmt[] getAmts()
 	{
@@ -110,12 +108,18 @@ public class MCommissionRun extends X_C_CommissionRun
 		return retValue;
 	}	//	getAmts
 
+	/**
+	 * @param ctx
+	 * @param C_CommissionRun_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommissionRun(Properties ctx, int C_CommissionRun_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CommissionRun_ID, trxName, virtualColumns);
 	}
 
 	/**
-	 * 	Update From Amt
+	 * 	Update From Amt (MCommissionAmt)
 	 */
 	public void updateFromAmt()
 	{

@@ -28,17 +28,26 @@ public class MShipperFacade
 	private MShipper m_shipper;
 	private MShippingProcessor m_processor;
 
+	/**
+	 * @param shipper
+	 */
 	public MShipperFacade(MShipper shipper)
 	{
 		m_shipper = shipper;
 		m_processor = getShippingProcessor();
 	}
 	
+	/**
+	 * @return MShipper
+	 */
 	public MShipper getMShipper()
 	{
 		return m_shipper;
 	}
 	
+	/**
+	 * @return MShippingProcessor
+	 */
 	private MShippingProcessor getShippingProcessor() 
 	{
 		if (m_shipper.getM_ShippingProcessor_ID() > 0)
@@ -46,66 +55,106 @@ public class MShipperFacade
 		return null;
 	}
 	
+	/**
+	 * @return shipping processor class
+	 */
 	public String getShippingProcessorClass() 
 	{
 		return m_processor == null ? null : m_processor.getShippingProcessorClass();
 	}
 		
+	/**
+	 * @return connection key
+	 */
 	public String getConnectionKey() 
 	{
 		return m_processor == null ? null : m_processor.getConnectionKey();
 	}
 	
+	/**
+	 * @return connection password
+	 */
 	public String getConnectionPassword() 
 	{
 		return m_processor == null ? null : m_processor.getConnectionPassword();
 	}
 	
+	/**
+	 * @return connection user id
+	 */
 	public String getUserID() 
 	{
 		return m_processor == null ? null : m_processor.getUserID();
 	}
 	
+	/**
+	 * @return connection host address
+	 */
 	public String getHostAddress() 
 	{
 		return m_processor == null ? null : m_processor.getHostAddress();
 	}
 	
+	/**
+	 * @return optional connection proxy address
+	 */
 	public String getProxyAddress() 
 	{
 		return m_processor == null ? null : m_processor.getProxyAddress();
 	}
 	
+	/**
+	 * @return connection port
+	 */
 	public int getHostPort() 
 	{
 		return m_processor == null ? null : m_processor.getHostPort();
 	}
 	
+	/**
+	 * @return proxy user id
+	 */
 	public String getProxyLogon()
 	{
 		return m_processor == null ? null : m_processor.getProxyLogon();
 	}
 	
+	/**
+	 * @return proxy password
+	 */
 	public String getProxyPassword() 
 	{
 		return m_processor == null ? null : m_processor.getProxyPassword();
 	}	
 	
+	/**
+	 * @return proxy port
+	 */
 	public int getProxyPort() 
 	{
 		return m_processor == null ? null : m_processor.getProxyPort();
 	}
 	
+	/**
+	 * @return shipping service path
+	 */
 	public String getServicePath() 
 	{
 		return m_processor == null ? null : m_processor.getServicePath();
 	}	
 	
+	/**
+	 * @return shipping service code
+	 */
 	public String getShippingServiceCode() 
 	{
 		return m_shipper.getShippingServiceCode();
 	}
 	
+	/**
+	 * @param AD_Org_ID 
+	 * @return shipping service account
+	 */
 	public String getShipperAccount(int AD_Org_ID) 
 	{
 		StringBuilder sql = new StringBuilder();
@@ -121,6 +170,10 @@ public class MShipperFacade
 		return ac;
 	}
 	
+	/**
+	 * @param AD_Org_ID
+	 * @return duties shipper account
+	 */
 	public String getDutiesShipperAccount(int AD_Org_ID) 
 	{
 		StringBuilder sql = new StringBuilder();
@@ -138,7 +191,6 @@ public class MShipperFacade
 	
 	/**
 	 * get Meter Number associated with Account Number, use by the Fedex interface
-	/**
 	 * @param AD_Org_ID
 	 * @return Shipper Meter Number
 	 */
@@ -152,16 +204,25 @@ public class MShipperFacade
 		return DB.getSQLValueString(null, sql.toString(), m_shipper.getC_BPartner_ID());
 	}
 	
+	/**
+	 * @return true if residential delivery service is supported
+	 */
 	public boolean isResidential() 
 	{
 		return m_shipper.isResidential();
 	}
 	
+	/**
+	 * @return true if saturday delivery service is supported
+	 */
 	public boolean isSaturdayDelivery()
 	{
 		return m_shipper.isSaturdayDelivery();
 	}
 	
+	/**
+	 * @return true if international delivery service is supported
+	 */
 	public boolean isInternational()
 	{
 		return m_shipper.isInternational();

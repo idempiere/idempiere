@@ -625,6 +625,9 @@ public abstract class SvrProcess implements ProcessCall
 			addLog (0, null, null, msg);
 	}	//	addLog
 
+	/**
+	 * Add buffer log to process info
+	 */
 	private void flushBufferLog () {
 		if (listEntryLog == null)
 			return;
@@ -685,7 +688,7 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
 	}	//	saveLog
 	
-	/**************************************************************************
+	/**
 	 * 	Execute function
 	 * 	@param className class
 	 * 	@param methodName method
@@ -714,7 +717,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	doIt
 
 	
-	/**************************************************************************
+	/**
 	 *  Lock Process Instance
 	 */
 	private void lock()

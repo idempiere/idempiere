@@ -33,8 +33,9 @@ import org.jfree.data.general.DefaultPieDataset;
 /**
  *
  * @author hengsin
- *
+ * @deprecated
  */
+@Deprecated
 public class GraphBuilder {
 
 	/** The Goal				*/

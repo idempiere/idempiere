@@ -215,10 +215,11 @@ public class Doc_MatchPO extends Doc
 	}   //  loadDocumentDetails
 
 
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - subtracts line and tax amounts from total - no rounding
 	 *  @return Zero - always balanced
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		return Env.ZERO;
@@ -235,6 +236,7 @@ public class Doc_MatchPO extends Doc
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -537,8 +539,9 @@ public class Doc_MatchPO extends Doc
 		}
 	}   //  createFact
 
-	/** Verify if the posting involves two or more organizations
-	@return true if there are more than one org involved on the posting
+	/** 
+	 * Verify if the posting involves two or more organizations
+	 * @return true if there are more than one org involved on the posting
 	 */
 	private boolean isInterOrg(MAcctSchema as) {
 		MAcctSchemaElement elementorg = as.getAcctSchemaElement(MAcctSchemaElement.ELEMENTTYPE_Organization);
@@ -556,7 +559,13 @@ public class Doc_MatchPO extends Doc
 		return false;
 	}
 
-	// Elaine 2008/6/20	
+	/**
+	 * Create cost detail for MatchPO 	
+	 * @param as
+	 * @param poCost
+	 * @param landedCostMap
+	 * @return error message or empty string
+	 */
 	private String createMatchPOCostDetail(MAcctSchema as, BigDecimal poCost, Map<Integer, BigDecimal> landedCostMap)
 	{
 		if (m_ioLine != null && m_ioLine.getM_InOutLine_ID() > 0 &&
@@ -648,7 +657,14 @@ public class Doc_MatchPO extends Doc
 		return "";
 	}
 
-
+	/**
+	 * Create cost detail for landed cost adjustment
+	 * @param as
+	 * @param landedCostMap
+	 * @param mMatchPO
+	 * @param tQty
+	 * @return error message or empty string
+	 */
 	private String createLandedCostAdjustments(MAcctSchema as,
 			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
 			BigDecimal tQty) {
@@ -675,6 +691,5 @@ public class Doc_MatchPO extends Doc
 	public boolean isDeferPosting() {
 		return m_deferPosting;
 	}
-
 	
 }   //  Doc_MatchPO

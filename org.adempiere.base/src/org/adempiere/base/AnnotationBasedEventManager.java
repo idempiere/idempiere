@@ -215,6 +215,12 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 		scan(bundleContext, true, getPackages());
 	}
 
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param filter
+	 * @return new SimpleEventHandler instance
+	 */
 	private EventHandler simpleEventDelegate(ClassLoader classLoader, String className, String filter) {
 		try {
 			@SuppressWarnings("unchecked")
@@ -233,6 +239,13 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 		}
 	}
 
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param annotationInfo
+	 * @param filter
+	 * @return new ProcessEventHandler instance
+	 */
 	private EventHandler processEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
 		try {
 			String processUUID = (String) annotationInfo.getParameterValues().getValue("processUUID");
@@ -252,6 +265,13 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 		}
 	}
 
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param annotationInfo
+	 * @param filter
+	 * @return new ImportEventHandler instance
+	 */
 	private EventHandler importEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
 		try {
 			String importTableName = (String) annotationInfo.getParameterValues().getValue("importTableName");
@@ -271,6 +291,13 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 		}
 	}
 
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param annotationInfo
+	 * @param filter
+	 * @return new ModelEventHandler instance
+	 */
 	private EventHandler modelEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
 		try {			
 			AnnotationClassRef classRef = (AnnotationClassRef) annotationInfo.getParameterValues().getValue("modelClass");

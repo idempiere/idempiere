@@ -70,16 +70,32 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	private int m_previousFormCol = -1;
 	private String m_previousAreaType = null;
 		
+	/**
+	 * @param printData
+	 * @param printFormat
+	 */
 	public PrintDataXLSXExporter(PrintData printData, MPrintFormat printFormat) 
 	{
 		this(printData, printFormat, null);
 	}
 	
+	/**
+	 * @param printData
+	 * @param printFormat
+	 * @param colSuppressRepeats
+	 */
 	public PrintDataXLSXExporter(PrintData printData, MPrintFormat printFormat, Boolean[] colSuppressRepeats)
 	{
 		this(printData, printFormat, null, colSuppressRepeats, null);
 	}
 	
+	/**
+	 * @param printData
+	 * @param printFormat
+	 * @param childPrintFormatDetails
+	 * @param colSuppressRepeats
+	 * @param query
+	 */
 	public PrintDataXLSXExporter(PrintData printData, MPrintFormat printFormat, Map<MPrintFormatItem, PrintData> childPrintFormatDetails, Boolean[] colSuppressRepeats, MQuery query)
 	{
 		super();
@@ -96,6 +112,11 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 		return columns.size();
 	}
 
+	/**
+	 * @param row
+	 * @param col
+	 * @return PrintDataElement for row and col or null
+	 */
 	private PrintDataElement getPDE(int row, int col)
 	{
 		if (m_printData.getRowIndex() != row)
@@ -255,6 +276,7 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 		m_printData.setRowIndex(row);
 	}
 
+	@Override
 	protected int getCurrentRow()
 	{
 		return m_printData.getRowIndex();

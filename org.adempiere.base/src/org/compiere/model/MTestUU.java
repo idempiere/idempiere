@@ -34,7 +34,7 @@ import java.util.Properties;
  */
 public class MTestUU extends X_TestUU {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5182486896440407051L;
 
@@ -49,6 +49,12 @@ public class MTestUU extends X_TestUU {
 		this(ctx, Test_UU, trxName, (String[]) null);
 	} // MTestUU
 
+	/**
+	 * @param ctx
+	 * @param Test_UU
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MTestUU(Properties ctx, String Test_UU, String trxName, String... virtualColumns) {
 		super(ctx, Test_UU, trxName, virtualColumns);
 		if ("".equals(Test_UU)) {

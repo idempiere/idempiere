@@ -20,8 +20,9 @@ import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
 
 /**
+ * Default {@link IProcessFactory} implementation for core.<br/>
+ * Load {@link ProcessCall} instance from plugin.xml (org.adempiere.base.Process extension point) or class path.
  * @author hengsin
- *
  */
 public class DefaultProcessFactory implements IProcessFactory {
 

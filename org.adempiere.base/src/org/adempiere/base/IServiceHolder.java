@@ -14,7 +14,7 @@
 package org.adempiere.base;
 
 /**
- * 
+ * Holder interface for dynamic service
  * @author hengsin
  *
  * @param <T>

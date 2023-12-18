@@ -22,7 +22,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- * Export excel from ArrayList of data
+ * Export to excel format (xlsx) from ArrayList of data
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *
  */
@@ -30,6 +30,10 @@ public class ArrayExcelExporter extends AbstractXLSXExporter {
 	private Properties m_ctx = null;
 	private ArrayList<ArrayList<Object>> m_data = null;
 
+	/**
+	 * @param ctx
+	 * @param data
+	 */
 	public ArrayExcelExporter(Properties ctx, ArrayList<ArrayList<Object>> data) {
 		super();
 		m_ctx = ctx;

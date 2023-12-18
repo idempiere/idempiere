@@ -32,14 +32,30 @@ public class MPromotionLine extends X_M_PromotionLine {
         super(ctx, M_PromotionLine_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param M_PromotionLine_ID
+     * @param trxName
+     */
 	public MPromotionLine(Properties ctx, int M_PromotionLine_ID, String trxName) {
 		super(ctx, M_PromotionLine_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionLine(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionLine(Properties ctx, int M_PromotionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_PromotionLine_ID, trxName, virtualColumns);
 	}

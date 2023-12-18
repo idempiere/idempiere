@@ -29,8 +29,7 @@ import java.util.function.Function;
 import org.osgi.service.event.Event;
 
 /**
- * 
- * Event handler that delegate to {@link EventDelegate} instance (create for each event call)
+ * Event handler that delegate to {@link EventDelegate} instance (create for each event call).
  * @author hengsin
  *
  */
@@ -39,7 +38,6 @@ public final class SimpleEventHandler extends BaseEventHandler {
 	private Function<Event, ? extends EventDelegate> supplier;
 	
 	/**
-	 * 
 	 * @param delegateClass
 	 * @param supplier
 	 */

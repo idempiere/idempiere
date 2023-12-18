@@ -32,16 +32,16 @@ import org.compiere.util.Util;
 public class MProjectTask extends X_C_ProjectTask
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6714520156233475723L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_ProjectTask_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_ProjectTask_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProjectTask(Properties ctx, String C_ProjectTask_UU, String trxName) {
         super(ctx, C_ProjectTask_UU, trxName);
 		if (Util.isEmpty(C_ProjectTask_UU))
@@ -59,6 +59,12 @@ public class MProjectTask extends X_C_ProjectTask
 		this (ctx, C_ProjectTask_ID, trxName, (String[]) null);
 	}	//	MProjectTask
 
+	/**
+	 * @param ctx
+	 * @param C_ProjectTask_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MProjectTask(Properties ctx, int C_ProjectTask_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_ProjectTask_ID, trxName, virtualColumns);
 		if (C_ProjectTask_ID == 0)
@@ -114,10 +120,9 @@ public class MProjectTask extends X_C_ProjectTask
 		setQty(task.getStandardQty());
 	}	//	MProjectTask
 	
-	/**************************************************************************
+	/**
 	 * 	Get Project Lines
-	 * 	BF 3067850 - monhate
-	 *	@return Array of lines
+	 *	@return Array of project lines
 	 */	public MProjectLine[] getLines()
 	{
 		final String whereClause = "C_ProjectPhase_ID=? and C_ProjectTask_ID=? ";
@@ -132,10 +137,9 @@ public class MProjectTask extends X_C_ProjectTask
 	}
 	 
 	/**
-	 * 	Copy Lines from other Task
-	 * 	BF 3067850 - monhate
-	 *	@param fromTask from Task
-	 *	@return number of lines copied
+	 * 	Copy project lines from other Task
+	 *	@param fromTask Project Task to copy from
+	 *	@return number of project lines copied
 	 */
 	public int copyLinesFrom (MProjectTask fromTask)
 	{
@@ -163,16 +167,21 @@ public class MProjectTask extends X_C_ProjectTask
 
 	private int C_Project_ID = 0;
 
+	/**
+	 * @param reQuery true to re-query from DB
+	 * @return C_Project_ID
+	 */
 	private int getC_Project_ID(boolean reQuery) {
-			if (C_Project_ID==0 || reQuery)
-				C_Project_ID = getC_ProjectPhase().getC_Project_ID();
-			return C_Project_ID;
+		if (C_Project_ID==0 || reQuery)
+			C_Project_ID = getC_ProjectPhase().getC_Project_ID();
+		return C_Project_ID;
 	}
 
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MProjectTask[");

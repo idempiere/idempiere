@@ -17,13 +17,13 @@ import org.compiere.model.I_M_Locator;
 import org.compiere.model.I_M_Warehouse;
 
 /**
- * Throwed when a document warehouse does not match with document or document line locator.
+ * Throw when a document's warehouse does not match with document or document line locator.
  * @author Teo Sarca, www.arhipac.ro
  */
 public class WarehouseLocatorConflictException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4812283712626432829L;
 

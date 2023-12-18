@@ -29,7 +29,7 @@ import org.compiere.util.Util;
 
 /**
  *  Process Instance Log Model.
- * 	(not standard table)
+ * 	(not standard table and not using PO)
  *
  *  @author Jorg Janke
  *  @version $Id: MPInstanceLog.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
@@ -37,7 +37,6 @@ import org.compiere.util.Util;
 public class MPInstanceLog
 {
 	/**
-	 * 	Constructor without Table/Record
 	 *	@param AD_PInstance_ID instance
 	 *	@param Log_ID log sequence
 	 *	@param P_Date date
@@ -52,7 +51,6 @@ public class MPInstanceLog
 	}	//	MPInstance_Log
 
 	/**
-	 * Constructor without PInstanceLogType
 	 * @param AD_PInstance_ID
 	 * @param Log_ID
 	 * @param P_Date
@@ -69,7 +67,6 @@ public class MPInstanceLog
 	}	//	MPInstance_Log
 	
 	/**
-	 * Constructor without AD_PInstance_Log_UU
 	 * @param AD_PInstance_ID
 	 * @param Log_ID
 	 * @param P_Date
@@ -78,7 +75,7 @@ public class MPInstanceLog
 	 * @param P_Msg
 	 * @param AD_Table_ID
 	 * @param Record_ID
-	 * @param PInstanceLogType Log Type
+	 * @param PInstanceLogType Log Type X_AD_PInstance_Log.PINSTANCELOGTYPE_*
 	 */
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
@@ -97,7 +94,7 @@ public class MPInstanceLog
 	 * @param P_Msg
 	 * @param AD_Table_ID
 	 * @param Record_ID
-	 * @param PInstanceLogType Log Type
+	 * @param PInstanceLogType Log Type X_AD_PInstance_Log.PINSTANCELOGTYPE_*
 	 */
 	public MPInstanceLog (String AD_PInstance_Log_UU, int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
@@ -130,7 +127,6 @@ public class MPInstanceLog
 		setP_Msg(rs.getString("P_Msg"));
 	}	//	MPInstance_Log
 
-
 	private int m_AD_PInstance_ID;
 	private int m_Log_ID;
 	private Timestamp m_P_Date;
@@ -142,11 +138,11 @@ public class MPInstanceLog
 	private String m_PInstanceLogType;
 	private String m_AD_PInstance_Log_UU;
 
-
 	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder("PPInstance_Log[");
@@ -162,7 +158,6 @@ public class MPInstanceLog
 		sb.append("]");
 		return sb.toString();
 	}	//	toString
-
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
 			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
@@ -189,7 +184,7 @@ public class MPInstanceLog
 	} 	//	save
 
 	/**
-	 *	Save to Database throwing Exception
+	 *	Save to Database, throw Exception if there are errors.
 	 */
 	public void saveEx ()
 	{
@@ -207,7 +202,7 @@ public class MPInstanceLog
 	} 	//	update
 
 	/**
-	 *	Update record in Database, throwing Exception
+	 *	Update record in Database, throw Exception if there are errors.
 	 */
 	public void updateEx ()
 	{
@@ -223,8 +218,7 @@ public class MPInstanceLog
 		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
 		int maxMsgLength = colMsg.getFieldLength();
 		ArrayList<Object> params = new ArrayList <Object>();
-		
-		
+				
 		if(isInsert) {
 			params.add(m_AD_PInstance_ID);
 			params.add(m_Log_ID);
@@ -259,7 +253,7 @@ public class MPInstanceLog
 	
 	/**
 	 * 	Get AD_PInstance_ID
-	 *	@return Instance id
+	 *	@return AD_PInstance_ID
 	 */
 	public int getAD_PInstance_ID ()
 	{
@@ -277,7 +271,7 @@ public class MPInstanceLog
 
 	/**
 	 * 	Get Log_ID
-	 *	@return log id
+	 *	@return Log_ID
 	 */
 	public int getLog_ID ()
 	{
@@ -295,7 +289,7 @@ public class MPInstanceLog
 
 	/**
 	 * 	Get P_Date
-	 *	@return date
+	 *	@return P_Date
 	 */
 	public Timestamp getP_Date ()
 	{
@@ -313,7 +307,7 @@ public class MPInstanceLog
 
 	/**
 	 * 	Get P_ID
-	 *	@return id
+	 *	@return P_ID
 	 */
 	public int getP_ID ()
 	{
@@ -331,7 +325,7 @@ public class MPInstanceLog
 
 	/**
 	 * 	Get P_Number
-	 *	@return number
+	 *	@return P_Number
 	 */
 	public BigDecimal getP_Number ()
 	{
@@ -349,7 +343,7 @@ public class MPInstanceLog
 
 	/**
 	 * 	Get P_Msg
-	 *	@return Mag
+	 *	@return P_Msg
 	 */
 	public String getP_Msg ()
 	{
@@ -367,7 +361,7 @@ public class MPInstanceLog
 
 	/**
 	 * Get Table ID
-	 * @return Table ID
+	 * @return AD_Table_ID
 	 */
 	public int getAD_Table_ID()
 	{
@@ -385,7 +379,7 @@ public class MPInstanceLog
 
 	/**
 	 * Get Record ID
-	 * @return Record ID
+	 * @return Record_ID
 	 */
 	public int getRecord_ID()
 	{
@@ -403,7 +397,7 @@ public class MPInstanceLog
 
 	/**
 	 * Get Log Type
-	 * @return Log Type
+	 * @return Instance Log Type (X_AD_PInstance_Log.PINSTANCELOGTYPE_*)
 	 */
 	public String getPInstanceLogType() {
 		return m_PInstanceLogType;
@@ -411,7 +405,7 @@ public class MPInstanceLog
 
 	/**
 	 * Set Log Type
-	 * @param m_PInstanceLogType
+	 * @param m_PInstanceLogType X_AD_PInstance_Log.PINSTANCELOGTYPE_*
 	 */
 	public void setPInstanceLogType(String m_PInstanceLogType) {
 		this.m_PInstanceLogType = m_PInstanceLogType;

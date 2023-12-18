@@ -31,16 +31,16 @@ import org.compiere.util.Util;
 public class MTaxDeclarationLine extends X_C_TaxDeclarationLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2723299110241208689L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_TaxDeclarationLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_TaxDeclarationLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTaxDeclarationLine(Properties ctx, String C_TaxDeclarationLine_UU, String trxName) {
         super(ctx, C_TaxDeclarationLine_UU, trxName);
 		if (Util.isEmpty(C_TaxDeclarationLine_UU))
@@ -135,5 +135,4 @@ public class MTaxDeclarationLine extends X_C_TaxDeclarationLine
 		setTaxAmt (tLine.getTaxAmt());
 	}	//	MTaxDeclarationLine
 	
-
 }	//	MTaxDeclarationLine

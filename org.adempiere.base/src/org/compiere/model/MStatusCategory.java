@@ -40,12 +40,12 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5527646898927619293L;
 
 	/**
-	 * 	Get Default Status Categpru for Client
+	 * 	Get Default Status Category for Client
 	 *	@param ctx context
 	 *	@return status category or null
 	 */
@@ -80,7 +80,7 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	}	//	getDefault
 	
 	/**
-	 * 	Get Default Status Categpru for Client
+	 * 	Create Default Status Category for Client (with name equal to the translated message of "Standard")
 	 *	@param ctx context
 	 *	@return status category or null
 	 */
@@ -136,21 +136,20 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 		= new ImmutableIntPOCache<Integer, MStatusCategory> (Table_Name, 20);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MStatusCategory.class);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param R_StatusCategory_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_StatusCategory_UU  UUID key
+     * @param trxName Transaction
+     */
     public MStatusCategory(Properties ctx, String R_StatusCategory_UU, String trxName) {
         super(ctx, R_StatusCategory_UU, trxName);
 		if (Util.isEmpty(R_StatusCategory_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param R_StatusCategory_ID id
@@ -182,7 +181,7 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	}	//	RStatusCategory
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MStatusCategory(MStatusCategory copy) 
@@ -191,7 +190,7 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -201,7 +200,7 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -217,8 +216,8 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	private MStatus[] m_status = null;
 	
 	/**
-	 * 	Get all Status
-	 *	@param reload reload
+	 * 	Get all Status for this category
+	 *	@param reload true to reload from DB
 	 *	@return Status array 
 	 */
 	public MStatus[] getStatus(boolean reload)
@@ -258,7 +257,7 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	}	//	getStatus
 	
 	/**
-	 * 	Get Default R_Status_ID
+	 * 	Get Default R_Status_ID for this category
 	 *	@return id or 0
 	 */
 	public int getDefaultR_Status_ID()
@@ -292,6 +291,7 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("RStatusCategory[");

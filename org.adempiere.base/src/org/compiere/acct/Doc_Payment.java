@@ -31,7 +31,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 
 /**
- *  Post Invoice Documents.
+ *  Post {@link MPayment} Documents.
  *  <pre>
  *  Table:              C_Payment (335)
  *  Document Types      ARP, APP
@@ -63,6 +63,7 @@ public class Doc_Payment extends Doc
 	 *  Load Specific Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails ()
 	{
 		MPayment pay = (MPayment)getPO();
@@ -75,11 +76,11 @@ public class Doc_Payment extends Doc
 		return null;
 	}   //  loadDocumentDetails
 
-
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - always zero
 	 *  @return Zero (always balanced)
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -104,6 +105,7 @@ public class Doc_Payment extends Doc
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//  create Fact Header
@@ -184,7 +186,6 @@ public class Doc_Payment extends Doc
 		MBankAccount ba = MBankAccount.get(getCtx(), m_C_BankAccount_ID);
 		return ba.getAD_Org_ID();
 	}	//	getBank_Org_ID
-
 
 	@Override
 	public BigDecimal getCurrencyRate() {

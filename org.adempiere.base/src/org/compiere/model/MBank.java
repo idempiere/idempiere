@@ -32,7 +32,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MBank extends X_C_Bank implements ImmutablePOSupport
 {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5093713970786841175L;
 
@@ -88,16 +88,16 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 	
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_Bank_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Bank_UU  UUID key
+     * @param trxName Transaction
+     */
     public MBank(Properties ctx, String C_Bank_UU, String trxName) {
         super(ctx, C_Bank_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_Bank_ID bank
@@ -120,7 +120,7 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 	}	//	MBank
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MBank(MBank copy) 
@@ -129,7 +129,7 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -139,7 +139,7 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -150,6 +150,12 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 		copyPO(copy);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_Bank_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MBank(Properties ctx, int C_Bank_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_Bank_ID, trxName, virtualColumns);
 	}
@@ -167,6 +173,7 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MBank[");

@@ -28,17 +28,16 @@ import java.util.Properties;
 public class MGoalRestriction extends X_PA_GoalRestriction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4027980875091517732L;
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_GoalRestriction_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_GoalRestriction_UU  UUID key
+     * @param trxName Transaction
+     */
     public MGoalRestriction(Properties ctx, String PA_GoalRestriction_UU, String trxName) {
         super(ctx, PA_GoalRestriction_UU, trxName);
     }
@@ -64,12 +63,12 @@ public class MGoalRestriction extends X_PA_GoalRestriction
 	{
 		super (ctx, rs, trxName);
 	}	//	MGoalRestriction
-	
-	
+		
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MGoalRestriction[");

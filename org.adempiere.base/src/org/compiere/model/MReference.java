@@ -34,16 +34,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2722869411041069805L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Reference_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Reference_UU  UUID key
+     * @param trxName Transaction
+     */
     public MReference(Properties ctx, String AD_Reference_UU, String trxName) {
         super(ctx, AD_Reference_UU, trxName);
 		if (Util.isEmpty(AD_Reference_UU))
@@ -80,7 +80,7 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	}	//	MReference
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MReference(MReference copy) {
@@ -88,7 +88,7 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -97,7 +97,7 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -111,7 +111,7 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	private static ImmutableIntPOCache<Integer,MReference>	s_cache = new ImmutableIntPOCache<Integer,MReference>(Table_Name, 20);
 
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
 	 *	@param AD_Reference_ID id
 	 *	@return category
 	 */
@@ -165,7 +165,7 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 
 	/**
 	 * Show inactive records
-	 * @return
+	 * @return true if this lookup reference should include inactive records
 	 */
 	public boolean isShowInactiveRecords() {
 		return !Util.isEmpty(getShowInactive()) && MReference.SHOWINACTIVE_Yes.equalsIgnoreCase(getShowInactive());

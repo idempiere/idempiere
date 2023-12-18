@@ -27,7 +27,6 @@ import org.xml.sax.SAXException;
  *  @author Eldir Tomassen
  *  @version $Id:
  */
-
 public final class OFXFileBankStatementLoader extends OFXBankStatementHandler implements BankStatementLoaderInterface
 {
 
@@ -37,8 +36,7 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 	 * @return boolean
 	 * @see org.compiere.impexp.BankStatementLoaderInterface#init(MBankStatementLoader)
 	 */
-	//m_stream is not closed because the BufferedReader in the parent class is closed and according to the Java docs: 
-	//Calling close() on the BufferedReader closes the underlying stream by default implementation
+	@Override
 	public boolean init(MBankStatementLoader controller)
 	{
 		boolean result = false;
@@ -63,12 +61,10 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 			{
 				return result;
 			}
-			//if (m_stream == null)
-			//{
-				//return result;
-			//}
+			//m_stream is not closed because the BufferedReader in the parent class is closed and according to the Java docs: 
+			//Calling close() on the BufferedReader closes the underlying stream by default implementation
 			result = attachInput(m_stream);
-			}
+		}
 		catch(Exception e)
 		{
 			m_errorMessage = new StringBuffer("ErrorReadingData");
@@ -78,15 +74,14 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 		return result;
 	}	//	init
 	
-
 	/**
-	 * Method characters
 	 * @param ch char[]
 	 * @param start int
 	 * @param length int
 	 * @throws SAXException
 	 * @see org.xml.sax.ContentHandler#characters(char[], int, int)
 	 */
+	@Override
 	public void characters (char ch[], int start, int length)
 		throws SAXException
 	{
@@ -97,5 +92,4 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 		super.characters(ch, start, length);
 	}	//	characterS
 	
-
 }	//	OFXFileBankStatementLoader

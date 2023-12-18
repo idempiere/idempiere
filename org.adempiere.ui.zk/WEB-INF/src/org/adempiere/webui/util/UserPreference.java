@@ -124,13 +124,15 @@ public final class UserPreference implements Serializable {
 						preference.setAD_User_ID(m_AD_User_ID);
 						preference.setAttribute(attribute);
 					}
-
-					try {
-						PO.setCrossTenantSafe();
-						preference.setValue(value);
-						preference.saveEx();
-					} finally {
-						PO.clearCrossTenantSafe();
+					String oldValue = preference.getValue();
+					if (! value.equals(oldValue)) {
+						try {
+							PO.setCrossTenantSafe();
+							preference.setValue(value);
+							preference.saveEx();
+						} finally {
+							PO.clearCrossTenantSafe();
+						}
 					}
 				}
 			}
