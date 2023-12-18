@@ -25,7 +25,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -127,10 +129,10 @@ public class RangePartitionInterval {
 	 * @param trxName
 	 * @return RangePartitionInterval
 	 */
-	public static RangePartitionInterval createInterval(MTable table, RangePartitionColumn rangePartitionColumn, String trxName) {
+	public static List<RangePartitionInterval> createInterval(MTable table, RangePartitionColumn rangePartitionColumn, String trxName) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		MColumn partitionKeyColumn = table.getColumn(rangePartitionColumn.getColumnName());		
-		RangePartitionInterval rangePartitionInterval = null;
+		List<RangePartitionInterval> rangePartitionIntervals = new ArrayList<>();
 
 		if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
 		{
@@ -157,7 +159,8 @@ public class RangePartitionInterval {
 				cal.add(Calendar.MONTH, interval.months);			
 				String to = dateFormat.format(cal.getTime());
 				
-				rangePartitionInterval = new RangePartitionInterval(rangePartitionColumn.getColumnName(), name, "'" + from + "'", "'" + to + "'");
+				RangePartitionInterval rangePartitionInterval = new RangePartitionInterval(rangePartitionColumn.getColumnName(), name, "'" + from + "'", "'" + to + "'");
+				rangePartitionIntervals.add(rangePartitionInterval);
 			}
 		}
 		else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID()))
@@ -179,13 +182,14 @@ public class RangePartitionInterval {
 				value = value.add(interval);
 				BigDecimal to = value;
 				
-				rangePartitionInterval = new RangePartitionInterval(rangePartitionColumn.getColumnName(), name, from, to);
+				RangePartitionInterval rangePartitionInterval = new RangePartitionInterval(rangePartitionColumn.getColumnName(), name, from, to);
+				rangePartitionIntervals.add(rangePartitionInterval);
 			}
 		}
 		else
 			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "RangePartitionKeyTypeNotSupported") + " [" + partitionKeyColumn + "]");
 		
-		return rangePartitionInterval;
+		return rangePartitionIntervals;
 	}
 	
 	/**

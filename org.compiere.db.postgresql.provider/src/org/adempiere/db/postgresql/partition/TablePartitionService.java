@@ -408,63 +408,66 @@ public class TablePartitionService implements ITablePartitionService {
 		if (rangePartitionColumn == null)
 			return false;
 		
-		RangePartitionInterval rangePartitionInterval = RangePartitionInterval.createInterval(table, rangePartitionColumn, trxName);
+		List<RangePartitionInterval> rangePartitionIntervals = RangePartitionInterval.createInterval(table, rangePartitionColumn, trxName);
 		List<String> tablePartitionNames = table.getTablePartitionNames(trxName);
-			
-		StringBuilder name = new StringBuilder();
-		name.append(table.getTableName().toLowerCase());
-		name.append("_");
-		name.append(rangePartitionInterval.getName());
-			
-		StringBuilder expression = new StringBuilder();
-		expression.append("FOR VALUES FROM (");
-		expression.append(rangePartitionInterval.getFrom());
-		expression.append(") TO (");
-		expression.append(rangePartitionInterval.getTo());
-		expression.append(")");
-			
-		if (!tablePartitionNames.contains(name.toString()))
-			partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
 		
-		if (partition != null)
+		for (RangePartitionInterval rangePartitionInterval : rangePartitionIntervals)
 		{
-			StringBuilder createStmt = new StringBuilder();
-			createStmt.append("CREATE TABLE " + partition.getName() + " (LIKE ");
-			createStmt.append(getDefaultPartitionName(table) + " INCLUDING ALL)");
-			int no = DB.executeUpdateEx(createStmt.toString(), trxName);
-			if (pi != null)
-				pi.addLog(0, null, null, no + " " + createStmt.toString());
+			StringBuilder name = new StringBuilder();
+			name.append(table.getTableName().toLowerCase());
+			name.append("_");
+			name.append(rangePartitionInterval.getName());
 				
-			StringBuilder updateStmt = new StringBuilder();
-			updateStmt.append("WITH x AS ( ");
-			updateStmt.append("DELETE FROM ").append(getDefaultPartitionName(table)).append(" ");
-			updateStmt.append("WHERE ").append(" ");				
-			updateStmt.append(partitionKeyColumn.getColumnName()).append(" >= ");
-			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
-				updateStmt.append("TO_DATE(").append(rangePartitionInterval.getFrom()).append(",'yyyy-MM-dd') ");
-			else
-				updateStmt.append(rangePartitionInterval.getFrom()).append(" ");
-			updateStmt.append("AND " + partitionKeyColumn.getColumnName()).append(" < ");
-			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
-				updateStmt.append("TO_DATE(").append(rangePartitionInterval.getTo()).append(",'yyyy-MM-dd') ");
-			else
-				updateStmt.append(rangePartitionInterval.getTo()).append(" ");
+			StringBuilder expression = new StringBuilder();
+			expression.append("FOR VALUES FROM (");
+			expression.append(rangePartitionInterval.getFrom());
+			expression.append(") TO (");
+			expression.append(rangePartitionInterval.getTo());
+			expression.append(")");
 				
-			updateStmt.append("RETURNING *) ");
-			updateStmt.append("INSERT INTO ").append(partition.getName()).append(" ");
-			updateStmt.append("SELECT * FROM x");
-			no = DB.executeUpdateEx(updateStmt.toString(), trxName);
-			if (pi != null)
-				pi.addLog(0, null, null, no + " " + updateStmt.toString());
+			if (!tablePartitionNames.contains(name.toString()))
+				partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
 			
-			StringBuilder alterStmt = new StringBuilder();
-			alterStmt.append("ALTER TABLE " + table.getTableName() + " ");
-			alterStmt.append("ATTACH PARTITION " + partition.getName() + " " + partition.getExpressionPartition());
-			no = DB.executeUpdateEx(alterStmt.toString(), trxName);
-			if (pi != null)
-				pi.addLog(0, null, null, no + " " + alterStmt.toString());
-			
-			isUpdated = true;
+			if (partition != null)
+			{
+				StringBuilder createStmt = new StringBuilder();
+				createStmt.append("CREATE TABLE " + partition.getName() + " (LIKE ");
+				createStmt.append(getDefaultPartitionName(table) + " INCLUDING ALL)");
+				int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+				if (pi != null)
+					pi.addLog(0, null, null, no + " " + createStmt.toString());
+					
+				StringBuilder updateStmt = new StringBuilder();
+				updateStmt.append("WITH x AS ( ");
+				updateStmt.append("DELETE FROM ").append(getDefaultPartitionName(table)).append(" ");
+				updateStmt.append("WHERE ").append(" ");				
+				updateStmt.append(partitionKeyColumn.getColumnName()).append(" >= ");
+				if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
+					updateStmt.append("TO_DATE(").append(rangePartitionInterval.getFrom()).append(",'yyyy-MM-dd') ");
+				else
+					updateStmt.append(rangePartitionInterval.getFrom()).append(" ");
+				updateStmt.append("AND " + partitionKeyColumn.getColumnName()).append(" < ");
+				if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
+					updateStmt.append("TO_DATE(").append(rangePartitionInterval.getTo()).append(",'yyyy-MM-dd') ");
+				else
+					updateStmt.append(rangePartitionInterval.getTo()).append(" ");
+					
+				updateStmt.append("RETURNING *) ");
+				updateStmt.append("INSERT INTO ").append(partition.getName()).append(" ");
+				updateStmt.append("SELECT * FROM x");
+				no = DB.executeUpdateEx(updateStmt.toString(), trxName);
+				if (pi != null)
+					pi.addLog(0, null, null, no + " " + updateStmt.toString());
+				
+				StringBuilder alterStmt = new StringBuilder();
+				alterStmt.append("ALTER TABLE " + table.getTableName() + " ");
+				alterStmt.append("ATTACH PARTITION " + partition.getName() + " " + partition.getExpressionPartition());
+				no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+				if (pi != null)
+					pi.addLog(0, null, null, no + " " + alterStmt.toString());
+				
+				isUpdated = true;
+			}
 		}
 		return isUpdated;
 	}
@@ -479,9 +482,9 @@ public class TablePartitionService implements ITablePartitionService {
 	 */
 	private boolean addListPartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi) {
 		boolean isUpdated = false;
-		X_AD_TablePartition partition = null;
-		String nameColumn = "'" + table.getTableName().toLowerCase() + "_' || " + partitionKeyColumn.getColumnName().replaceAll(",", " || '_' || ");
-		String expressionColumn = "'FOR VALUES IN (''' || " + partitionKeyColumn.getColumnName().replaceAll(",", " || ''',''' || ") + " || ''')'";
+		List<X_AD_TablePartition> partitions = new ArrayList<X_AD_TablePartition>();
+		String nameColumn = "'" + table.getTableName().toLowerCase() + "_' || " + partitionKeyColumn.getColumnName();
+		String expressionColumn = "'FOR VALUES IN (''' || " + partitionKeyColumn.getColumnName() + " || ''')'";
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT ").append(nameColumn).append(" AS name, ");
@@ -502,7 +505,8 @@ public class TablePartitionService implements ITablePartitionService {
 				value = rs.getObject(partitionKeyColumn.getColumnName());
 				columnValues.put(name, value);
 				
-				partition = table.createTablePartition(name, expression, trxName);
+				X_AD_TablePartition partition = table.createTablePartition(name, expression, trxName);
+				partitions.add(partition);
 			}
 		}
 		catch (SQLException e)
@@ -510,7 +514,7 @@ public class TablePartitionService implements ITablePartitionService {
 			throw new DBException(e);
 		}
 		
-		if (partition != null)
+		for (X_AD_TablePartition partition : partitions)
 		{
 			Object value = columnValues.get(partition.getName());
 				

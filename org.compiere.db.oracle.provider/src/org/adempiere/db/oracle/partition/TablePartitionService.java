@@ -426,7 +426,7 @@ public class TablePartitionService implements ITablePartitionService {
 	 */
 	private boolean addListPartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi) {
 		boolean isUpdated = false;
-		X_AD_TablePartition partition = null;
+		List<X_AD_TablePartition> partitions = new ArrayList<>();
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT ").append(partitionKeyColumn.getColumnName());
@@ -458,7 +458,8 @@ public class TablePartitionService implements ITablePartitionService {
 				if (Character.isDigit(name.charAt(0))) {
 					name.insert(0, "p");
 				}
-				partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
+				X_AD_TablePartition partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
+				partitions.add(partition);
 			}
 		}
 		catch (SQLException e)
@@ -466,7 +467,7 @@ public class TablePartitionService implements ITablePartitionService {
 			throw new DBException(e);
 		}
 		
-		if (partition != null)
+		for(X_AD_TablePartition partition : partitions)
 		{
 			StringBuilder alterStmt = new StringBuilder();
 			alterStmt.append("ALTER TABLE " + table.getTableName() + " SPLIT PARTITION default_partition ");
@@ -515,43 +516,46 @@ public class TablePartitionService implements ITablePartitionService {
 		if (rangePartitionColumn == null)
 			return false;
 		
-		RangePartitionInterval rangePartitionInterval = RangePartitionInterval.createInterval(table, rangePartitionColumn, trxName);
+		List<RangePartitionInterval> rangePartitionIntervals = RangePartitionInterval.createInterval(table, rangePartitionColumn, trxName);
 		List<String> tablePartitionNames = table.getTablePartitionNames(trxName);
-			
-		StringBuilder name = new StringBuilder();
-		name.append(rangePartitionInterval.getName());
-						
-		StringBuilder expression = new StringBuilder();
-		expression.append("VALUES LESS THAN (");
-		Object toValue = rangePartitionInterval.getTo();
-		if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID())) {
-			expression.append("TO_Date(").append(toValue.toString()).append(",'YYYY-MM-DD')");
-		} else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID())) {
-			BigDecimal bd = new BigDecimal(toValue.toString());
-			if (DisplayType.isID(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.Integer == partitionKeyColumn.getAD_Reference_ID())
-				expression.append(bd.intValue());
-			else
-				expression.append(bd.toPlainString());
-		}
-		expression.append(")");
-			
-		if (Character.isDigit(name.charAt(0))) {
-			name.insert(0, "p");
-		}			
-		if (!tablePartitionNames.contains(name.toString()))
-			partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
 		
-		if (partition != null)
-		{				
-			StringBuilder alterStmt = new StringBuilder();
-			alterStmt.append("ALTER TABLE " + table.getTableName() + " SPLIT PARTITION default_partition ");
-			alterStmt.append(" INTO ( PARTITION ").append(partition.getName()).append(" ").append(partition.getExpressionPartition()).append(", ");
-			alterStmt.append("PARTITION default_partition )");
-			int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
-			if (pi != null)
-				pi.addLog(0, null, null, no + " " + alterStmt.toString());
+		for(RangePartitionInterval rangePartitionInterval : rangePartitionIntervals)
+		{
+			StringBuilder name = new StringBuilder();
+			name.append(rangePartitionInterval.getName());
+							
+			StringBuilder expression = new StringBuilder();
+			expression.append("VALUES LESS THAN (");
+			Object toValue = rangePartitionInterval.getTo();
+			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID())) {
+				expression.append("TO_Date(").append(toValue.toString()).append(",'YYYY-MM-DD')");
+			} else if (DisplayType.isNumeric(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isID(partitionKeyColumn.getAD_Reference_ID())) {
+				BigDecimal bd = new BigDecimal(toValue.toString());
+				if (DisplayType.isID(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.Integer == partitionKeyColumn.getAD_Reference_ID())
+					expression.append(bd.intValue());
+				else
+					expression.append(bd.toPlainString());
+			}
+			expression.append(")");
+				
+			if (Character.isDigit(name.charAt(0))) {
+				name.insert(0, "p");
+			}			
+			if (!tablePartitionNames.contains(name.toString()))
+				partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
 			
-			isUpdated = true;
+			if (partition != null)
+			{				
+				StringBuilder alterStmt = new StringBuilder();
+				alterStmt.append("ALTER TABLE " + table.getTableName() + " SPLIT PARTITION default_partition ");
+				alterStmt.append(" INTO ( PARTITION ").append(partition.getName()).append(" ").append(partition.getExpressionPartition()).append(", ");
+				alterStmt.append("PARTITION default_partition )");
+				int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+				if (pi != null)
+					pi.addLog(0, null, null, no + " " + alterStmt.toString());
+				
+				isUpdated = true;
+			}
 		}
 		return isUpdated;
 	}
