@@ -779,8 +779,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			bDown = createButton("MoveDown16", actionListenerUpDown);
 
 			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
+			boolean isEditable = gridField.isEditable(true);
 
-			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
+			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, isEditable, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
 
 			hlayout = createHlayoutLine(new Component[] {selectedList});
 			center.appendChild(hlayout);
@@ -797,6 +798,12 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			south.setSclass("dialog-footer");
 			mainLayout.appendChild(south);
 			south.appendChild(confirmPanel);
+
+			if (! isEditable) {
+				bUp.setVisible(false);
+				bDown.setVisible(false);
+				bRemoveAll.setVisible(false);
+			}
 		}
 
 		private void load() {
@@ -879,9 +886,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			ZKUpdateUtil.setHflex(lb, "1");
 			ZKUpdateUtil.setVflex(lb, true);
 
-			if (mouseListener != null)
+			if (mouseListener != null && isItemDraggable)
 				lb.addDoubleClickListener(mouseListener);
-			if (crossListMouseListener != null)
+			if (crossListMouseListener != null && isItemDraggable)
 				lb.addOnDropListener(crossListMouseListener);
 			lb.setItemDraggable(isItemDraggable);
 			lb.setItemRenderer(model);
