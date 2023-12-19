@@ -36,6 +36,7 @@ import org.compiere.db.partition.RangePartitionColumn;
 import org.compiere.db.partition.RangePartitionInterval;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_TablePartition;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
@@ -424,7 +425,32 @@ public class TablePartitionService implements ITablePartitionService {
 			expression.append(") TO (");
 			expression.append(rangePartitionInterval.getTo());
 			expression.append(")");
-				
+
+			StringBuilder countStmt = new StringBuilder("SELECT Count(*) FROM ")
+					.append(getDefaultPartitionName(table)).append(" ")
+					.append("WHERE ").append(" ")
+					.append(partitionKeyColumn.getColumnName()).append(" >= ");
+			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
+				countStmt.append("TO_DATE(").append(rangePartitionInterval.getFrom()).append(",'yyyy-MM-dd') ");
+			else
+				countStmt.append(rangePartitionInterval.getFrom()).append(" ");
+			countStmt.append("AND " + partitionKeyColumn.getColumnName()).append(" < ");
+			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
+				countStmt.append("TO_DATE(").append(rangePartitionInterval.getTo()).append(",'yyyy-MM-dd') ");
+			else
+				countStmt.append(rangePartitionInterval.getTo()).append(" ");
+			int recordCount = DB.getSQLValueEx(trxName, countStmt.toString());
+			
+			if (recordCount == 0) {
+				if (tablePartitionNames.contains(name.toString())) {
+					Query query = new Query(Env.getCtx(), X_AD_TablePartition.Table_Name, "AD_Table_ID=? AND Name=?", trxName);
+					X_AD_TablePartition toDelete = query.setParameters(table.getAD_Table_ID(), name.toString()).first();
+					if (toDelete != null)
+						toDelete.deleteEx(true);
+				}
+				continue;
+			}
+			
 			if (!tablePartitionNames.contains(name.toString()))
 				partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
 			

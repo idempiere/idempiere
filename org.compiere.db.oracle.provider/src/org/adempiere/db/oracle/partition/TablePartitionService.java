@@ -523,7 +523,32 @@ public class TablePartitionService implements ITablePartitionService {
 		{
 			StringBuilder name = new StringBuilder();
 			name.append(rangePartitionInterval.getName());
-							
+			
+			StringBuilder countStmt = new StringBuilder("SELECT Count(*) FROM ")
+					.append(table.getTableName()).append(" ")
+					.append("WHERE ").append(" ")
+					.append(partitionKeyColumn.getColumnName()).append(" >= ");
+			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
+				countStmt.append("TO_DATE(").append(rangePartitionInterval.getFrom()).append(",'YYYY-MM-DD') ");
+			else
+				countStmt.append(rangePartitionInterval.getFrom()).append(" ");
+			countStmt.append("AND " + partitionKeyColumn.getColumnName()).append(" < ");
+			if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
+				countStmt.append("TO_DATE(").append(rangePartitionInterval.getTo()).append(",'YYYY-MM-DD') ");
+			else
+				countStmt.append(rangePartitionInterval.getTo()).append(" ");
+			int recordCount = DB.getSQLValueEx(trxName, countStmt.toString());
+			
+			if (recordCount == 0) {
+				if (tablePartitionNames.contains(name.toString())) {
+					Query query = new Query(Env.getCtx(), X_AD_TablePartition.Table_Name, "AD_Table_ID=? AND Name=?", trxName);
+					X_AD_TablePartition toDelete = query.setParameters(table.getAD_Table_ID(), name.toString()).first();
+					if (toDelete != null)
+						toDelete.deleteEx(true);
+				}
+				continue;
+			}
+			
 			StringBuilder expression = new StringBuilder();
 			expression.append("VALUES LESS THAN (");
 			Object toValue = rangePartitionInterval.getTo();
