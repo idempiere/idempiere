@@ -74,7 +74,10 @@ public final class Msg
 	private Map<String,CCache<String,String>> m_languages 
 		= new HashMap<String, CCache<String,String>>();
 	
-	private Map<String,CCache<String,String>> m_elementCache 
+	private Map<String,CCache<String,String>> m_elementNameCache 
+		= new HashMap<String,CCache<String,String>>();
+	
+	private Map<String,CCache<String,String>> m_elementPrintNameCache 
 		= new HashMap<String,CCache<String,String>>();
 
 	/**
@@ -113,12 +116,32 @@ public final class Msg
 		if (AD_Language == null || AD_Language.length() == 0)
 			AD_Language = Language.getBaseAD_Language();
 		//  Do we have the language ?
-		CCache<String,String> retValue = (CCache<String,String>)m_elementCache.get(AD_Language);
+		CCache<String,String> retValue = (CCache<String,String>)m_elementNameCache.get(AD_Language);
 		if (retValue != null)
 			return retValue;
 
 		retValue = new CCache<String, String>(I_AD_Element.Table_Name, I_AD_Element.Table_Name + "|" + AD_Language, 100, 0, false, 0);
-		m_elementCache.put(AD_Language, retValue);
+		m_elementNameCache.put(AD_Language, retValue);
+		return retValue;
+	}
+	
+	/**
+	 * Get language specific translation map for AD_Element
+	 * @param ad_language
+	 * @return ad_element map
+	 */
+	public synchronized CCache<String,String> getElementPrintNameMap (String ad_language)
+	{
+		String AD_Language = ad_language;
+		if (AD_Language == null || AD_Language.length() == 0)
+			AD_Language = Language.getBaseAD_Language();
+		//  Do we have the language ?
+		CCache<String,String> retValue = (CCache<String,String>)m_elementPrintNameCache.get(AD_Language);
+		if (retValue != null)
+			return retValue;
+
+		retValue = new CCache<String, String>(I_AD_Element.Table_Name, I_AD_Element.Table_Name + "|" + AD_Language, 100, 0, false, 0);
+		m_elementPrintNameCache.put(AD_Language, retValue);
 		return retValue;
 	}
 
@@ -504,8 +527,7 @@ public final class Msg
 		}
 		return sb.toString();
 	}	//	getAmtInWords
-
-
+	
 	/**************************************************************************
 	 *  Get Translation for Element
 	 *  @param ad_language language
@@ -515,6 +537,20 @@ public final class Msg
 	 */
 	public static String getElement (String ad_language, String ColumnName, boolean isSOTrx)
 	{
+		return getElement(ad_language, ColumnName, isSOTrx, false);
+	}
+
+
+	/**************************************************************************
+	 *  Get Translation for Element
+	 *  @param ad_language language
+	 *  @param ColumnName column name
+	 *  @param isSOTrx if false PO terminology is used (if exists)
+	 *  @param isPrintName if true, will be used the PrintName instead of Name column
+	 *  @return Name/PrintName of the Column or "" if not found
+	 */
+	public static String getElement (String ad_language, String ColumnName, boolean isSOTrx, boolean isPrintName)
+	{
 		if (ColumnName == null || ColumnName.equals(""))
 			return "";
 		String AD_Language = ad_language;
@@ -522,7 +558,7 @@ public final class Msg
 			AD_Language = Language.getBaseAD_Language();
 		
 		Msg msg = get();
-		CCache<String, String> cache = msg.getElementMap(AD_Language);
+		CCache<String, String> cache = isPrintName ? msg.getElementPrintNameMap(AD_Language) : msg.getElementMap(AD_Language);
 		String key = ColumnName+"|"+isSOTrx;
 		String retStr = cache.get(key);
 		if (retStr != null)
@@ -533,13 +569,20 @@ public final class Msg
 		ResultSet rs = null;
 		try
 		{
-			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Element"))
-				pstmt = DB.prepareStatement("SELECT Name, PO_Name FROM AD_Element WHERE UPPER(ColumnName)=?", null);
+			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Element")) {
+				StringBuilder sql = new StringBuilder("SELECT")
+						.append(isPrintName ? " PrintName, PO_PrintName" : " Name, PO_Name")
+						.append(" FROM AD_Element WHERE UPPER(ColumnName)=?");
+				pstmt = DB.prepareStatement(sql.toString(), null);
+			}
 			else
 			{
-				pstmt = DB.prepareStatement("SELECT t.Name, t.PO_Name FROM AD_Element_Trl t, AD_Element e "
-					+ "WHERE t.AD_Element_ID=e.AD_Element_ID AND UPPER(e.ColumnName)=? "
-					+ "AND t.AD_Language=?", null);
+				StringBuilder sql = new StringBuilder("SELECT")
+						.append(isPrintName ? " t.PrintName, t.PO_PrintName" : " t.Name, t.PO_Name")
+						.append(" FROM AD_Element_Trl t, AD_Element e")
+						.append(" WHERE t.AD_Element_ID=e.AD_Element_ID AND UPPER(e.ColumnName)=?")
+						.append(" AND t.AD_Language=?");
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setString(2, AD_Language);
 			}
 
@@ -596,7 +639,6 @@ public final class Msg
 		return getElement (Env.getAD_Language(ctx), ColumnName, isSOTrx);
 	}   //  getElement
 
-
 	/**************************************************************************
 	 *	"Translate" text.
 	 *  <pre>{@code
@@ -611,6 +653,24 @@ public final class Msg
 	 */
 	public static String translate(String ad_language, boolean isSOTrx, String text)
 	{
+		return translate(ad_language, isSOTrx, text, false);
+	}
+
+	/**************************************************************************
+	 *	"Translate" text.
+	 *  <pre>{@code
+	 *		- Check AD_Message.AD_Message 	->	MsgText
+	 *		- Check AD_Element.ColumnName	->	Name/PrintName
+	 *  }</pre>
+	 *  If checking AD_Element, the SO terminology is used.
+	 *  @param ad_language  Language
+	 *  @param isSOTrx sales order context
+	 *  @param text	Text - MsgText or Element Name
+	 *  @param isPrintName if true, will be used the PrintName instead of Name column
+	 *  @return translated text or original text if not found
+	 */
+	public static String translate(String ad_language, boolean isSOTrx, String text, boolean isPrintName)
+	{
 		if (text == null || text.equals(""))
 			return "";
 		String AD_Language = ad_language;
@@ -623,7 +683,7 @@ public final class Msg
 			return retStr;
 
 		//	Check AD_Element
-		retStr = getElement(AD_Language, text, isSOTrx);
+		retStr = getElement(AD_Language, text, isSOTrx, isPrintName);
 		if (!retStr.equals(""))
 			return retStr.trim();
 
