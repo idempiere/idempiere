@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.DB_PostgreSQL;
 import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.db.partition.RangePartitionColumn;
 import org.compiere.db.partition.RangePartitionInterval;
@@ -457,8 +458,8 @@ public class TablePartitionService implements ITablePartitionService {
 			if (partition != null)
 			{
 				StringBuilder createStmt = new StringBuilder();
-				createStmt.append("CREATE TABLE " + partition.getName() + " (LIKE ");
-				createStmt.append(getDefaultPartitionName(table) + " INCLUDING ALL)");
+				createStmt.append("CREATE TABLE ").append(partition.getName()).append(" (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ");
+				createStmt.append(getDefaultPartitionName(table)).append(" INCLUDING ALL)");
 				int no = DB.executeUpdateEx(createStmt.toString(), trxName);
 				if (pi != null)
 					pi.addLog(0, null, null, no + " " + createStmt.toString());
@@ -472,7 +473,7 @@ public class TablePartitionService implements ITablePartitionService {
 					updateStmt.append("TO_DATE(").append(rangePartitionInterval.getFrom()).append(",'yyyy-MM-dd') ");
 				else
 					updateStmt.append(rangePartitionInterval.getFrom()).append(" ");
-				updateStmt.append("AND " + partitionKeyColumn.getColumnName()).append(" < ");
+				updateStmt.append("AND ").append(partitionKeyColumn.getColumnName()).append(" < ");
 				if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID()))
 					updateStmt.append("TO_DATE(").append(rangePartitionInterval.getTo()).append(",'yyyy-MM-dd') ");
 				else
@@ -486,8 +487,8 @@ public class TablePartitionService implements ITablePartitionService {
 					pi.addLog(0, null, null, no + " " + updateStmt.toString());
 				
 				StringBuilder alterStmt = new StringBuilder();
-				alterStmt.append("ALTER TABLE " + table.getTableName() + " ");
-				alterStmt.append("ATTACH PARTITION " + partition.getName() + " " + partition.getExpressionPartition());
+				alterStmt.append("ALTER TABLE ").append(table.getTableName()).append(" ");
+				alterStmt.append("ATTACH PARTITION ").append(partition.getName()).append(" ").append(partition.getExpressionPartition());
 				no = DB.executeUpdateEx(alterStmt.toString(), trxName);
 				if (pi != null)
 					pi.addLog(0, null, null, no + " " + alterStmt.toString());
@@ -545,8 +546,8 @@ public class TablePartitionService implements ITablePartitionService {
 			Object value = columnValues.get(partition.getName());
 				
 			StringBuilder createStmt = new StringBuilder();
-			createStmt.append("CREATE TABLE " + partition.getName() + " (LIKE ");
-			createStmt.append(getDefaultPartitionName(table) + " INCLUDING ALL)");
+			createStmt.append("CREATE TABLE ").append(partition.getName()).append(" (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ");
+			createStmt.append(getDefaultPartitionName(table)).append(" INCLUDING ALL)");
 			int no = DB.executeUpdateEx(createStmt.toString(), trxName);
 			if (pi != null)
 				pi.addLog(0, null, null, no + " " + createStmt.toString());
@@ -571,8 +572,8 @@ public class TablePartitionService implements ITablePartitionService {
 				pi.addLog(0, null, null, no + " " + updateStmt.toString());
 			
 			StringBuilder alterStmt = new StringBuilder();
-			alterStmt.append("ALTER TABLE " + table.getTableName() + " ");
-			alterStmt.append("ATTACH PARTITION " + partition.getName() + " " + partition.getExpressionPartition());
+			alterStmt.append("ALTER TABLE ").append(table.getTableName()).append(" ");
+			alterStmt.append("ATTACH PARTITION ").append(partition.getName()).append(" ").append(partition.getExpressionPartition());
 			no = DB.executeUpdateEx(alterStmt.toString(), trxName);
 			if (pi != null)
 				pi.addLog(0, null, null, no + " " + alterStmt.toString());
@@ -585,7 +586,7 @@ public class TablePartitionService implements ITablePartitionService {
 	@Override
 	public boolean runPostPartitionProcess(MTable table, String trxName, ProcessInfo processInfo) {
 		StringBuilder stmt = new StringBuilder();
-		stmt.append("VACUUM ANALYZE " + table.getTableName());
+		stmt.append("VACUUM ANALYZE ").append(table.getTableName());
 		int no = DB.executeUpdateEx(stmt.toString(), trxName);
 		if (processInfo != null)
 			processInfo.addLog(0, null, null, no + " " + stmt.toString());

@@ -99,6 +99,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 
 			statement = convertSysDate(statement);
 			statement = convertSimilarTo(statement);
+			statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
 
 		} else {
 
