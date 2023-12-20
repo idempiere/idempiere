@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 
 import javax.sql.DataSource;
 
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
@@ -495,6 +496,14 @@ public interface AdempiereDatabase
 	 */
 	public default boolean isQueryTimeout(SQLException ex) {
 		return ex instanceof SQLTimeoutException;
+	}
+	
+	/**
+	 * Get DB specific table partition support
+	 * @return ITablePartitionService instance
+	 */
+	public default ITablePartitionService getTablePartitionService() {
+		return null;
 	}
 }   //  AdempiereDatabase
 

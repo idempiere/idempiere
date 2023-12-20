@@ -31,7 +31,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231213L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -49,6 +49,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -75,6 +77,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -101,6 +105,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -127,6 +133,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);
+			setIsPartition (false);
+// N
 			setIsSecurityEnabled (false);
 			setIsView (false);
 // N
@@ -319,6 +327,22 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 		return (String)get_Value(COLUMNNAME_CopyComponentsFromView);
 	}
 
+	/** Set Create/update partition.
+		@param CreatePartition Process which create or update table partitions based on the table and column records
+	*/
+	public void setCreatePartition (String CreatePartition)
+	{
+		set_Value (COLUMNNAME_CreatePartition, CreatePartition);
+	}
+
+	/** Get Create/update partition.
+		@return Process which create or update table partitions based on the table and column records
+	  */
+	public String getCreatePartition()
+	{
+		return (String)get_Value(COLUMNNAME_CreatePartition);
+	}
+
 	/** Set Create Window From Table.
 		@param CreateWindowFromTable Create Window From Table
 	*/
@@ -508,6 +532,29 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 		return false;
 	}
 
+	/** Set Partition.
+		@param IsPartition This is a partitioned table
+	*/
+	public void setIsPartition (boolean IsPartition)
+	{
+		set_Value (COLUMNNAME_IsPartition, Boolean.valueOf(IsPartition));
+	}
+
+	/** Get Partition.
+		@return This is a partitioned table
+	  */
+	public boolean isPartition()
+	{
+		Object oo = get_Value(COLUMNNAME_IsPartition);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Security enabled.
 		@param IsSecurityEnabled If security is enabled, user access to data can be restricted via Roles
 	*/
@@ -610,7 +657,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
-
+	
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

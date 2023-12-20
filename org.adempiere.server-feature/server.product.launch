@@ -443,6 +443,7 @@
         <setEntry value="org.idempiere.jetty.osgi.boot.fragment@default:false"/>
         <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.printformat.editor@default:default"/>
+        <setEntry value="org.idempiere.tablepartition@default:default"/>
         <setEntry value="org.idempiere.ui.sso.oidc@default:default"/>
         <setEntry value="org.idempiere.webservices.resources@default:default"/>
         <setEntry value="org.idempiere.webservices@default:default"/>

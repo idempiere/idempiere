@@ -33,6 +33,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -579,6 +580,30 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 					setDefaultValue("N");
 			}
  		}
+		
+		if (isActive() && isPartitionKey() && getSeqNoPartition() <= 0)
+		{
+			String sql = "SELECT COALESCE(MAX(SeqNoPartition),0)+10 AS DefaultValue FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' AND IsPartitionKey='Y'";
+			int ii = DB.getSQLValue(get_TrxName(), sql, getAD_Table_ID());
+			setSeqNoPartition(ii);
+		}
+		
+		if (is_ValueChanged(COLUMNNAME_IsPartitionKey) 
+				|| is_ValueChanged(COLUMNNAME_PartitioningMethod)
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_IsActive))
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_SeqNoPartition))
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_RangePartitionInterval))) {
+			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
+			if (service == null) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "DBAdapterNoTablePartitionSupport"));
+				return false;
+			}
+			error = service.isValidConfiguration(this);
+			if (!Util.isEmpty(error)) {
+				log.saveError("Error", Msg.getMsg(getCtx(), error));
+				return false;				
+			}
+		}
 
 		return true;
 	}	//	beforeSave
