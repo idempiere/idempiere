@@ -136,7 +136,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	/**	Logger			*/
 	private static final CLogger			log	= CLogger.getCLogger (DB_PostgreSQL.class);
 
-    private static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
+    public static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
 
     private CCache<String, String> convertCache = new CCache<String, String>(null, "DB_PostgreSQL_Convert_Cache", 1000, CCache.DEFAULT_EXPIRE_MINUTE, false);
 
