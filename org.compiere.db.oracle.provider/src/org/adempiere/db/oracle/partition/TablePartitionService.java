@@ -119,7 +119,7 @@ public class TablePartitionService implements ITablePartitionService {
 			processInfo.addLog(0, null, null, no + " " + alterStmt.toString());
 		
 		if (!(partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_List) && useAutomaticListPartition))
-			table.createTablePartition("default_partition", defaultExpression.toString(), trxName);
+			table.createTablePartition("default_partition", defaultExpression.toString(), trxName, partitionKeyColumn);
 		
 		return true;
 	}
@@ -155,7 +155,13 @@ public class TablePartitionService implements ITablePartitionService {
 		boolean isUpdated = false;
 		
 		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
+		if (partitionKeyColumns.size() == 0)
+			return false;
 		MColumn partitionKeyColumn = partitionKeyColumns.get(0);
+		String sql = "SELECT Column_Name FROM User_Part_Key_Columns WHERE Name=? ORDER BY Column_Position";
+		String partKeyColumn = DB.getSQLValueString(trxName, sql, table.getTableName().toUpperCase());
+		if (!partitionKeyColumn.getColumnName().equalsIgnoreCase(partKeyColumn))
+			return false;
 		String partitioningMethod = partitionKeyColumn.getPartitioningMethod();		
 		if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_List))
 		{
@@ -342,6 +348,7 @@ public class TablePartitionService implements ITablePartitionService {
 		Query query = new Query(Env.getCtx(), X_AD_TablePartition.Table_Name, "AD_Table_ID=?", trxName);
 		List<X_AD_TablePartition> existingList = query.setParameters(table.getAD_Table_ID()).list();
 		List<Integer> matchedIds = new ArrayList<Integer>();
+		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
 		try(PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
 			stmt.setString(1, table.getTableName().toUpperCase());
 			ResultSet rs = stmt.executeQuery();
@@ -353,7 +360,7 @@ public class TablePartitionService implements ITablePartitionService {
 					matchedIds.add(id);
 				} else {
 					String expression = interval ? "VALUES LESS THAN " + values  : "VALUES " + values;
-					table.createTablePartition(partitionName, expression, trxName);
+					table.createTablePartition(partitionName, expression, trxName, partitionKeyColumns.get(0));
 				}
 			}
 		} catch (SQLException e) {
@@ -458,7 +465,7 @@ public class TablePartitionService implements ITablePartitionService {
 				if (Character.isDigit(name.charAt(0))) {
 					name.insert(0, "p");
 				}
-				X_AD_TablePartition partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
+				X_AD_TablePartition partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn);
 				partitions.add(partition);
 			}
 		}
@@ -567,7 +574,7 @@ public class TablePartitionService implements ITablePartitionService {
 				name.insert(0, "p");
 			}			
 			if (!tablePartitionNames.contains(name.toString()))
-				partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
+				partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn);
 			
 			if (partition != null)
 			{				

@@ -216,7 +216,7 @@ public class TablePartitionService implements ITablePartitionService {
 		if (pi != null)
 			pi.addLog(0, null, null, no + " " + alterStmt.toString());
 		
-		table.createTablePartition(getDefaultPartitionName(table), "DEFAULT", trxName);
+		table.createTablePartition(getDefaultPartitionName(table), "DEFAULT", trxName, table.getPartitionKeyColumns(false).get(0));
 		
 		return true;
 	}
@@ -452,7 +452,7 @@ public class TablePartitionService implements ITablePartitionService {
 			}
 			
 			if (!tablePartitionNames.contains(name.toString()))
-				partition = table.createTablePartition(name.toString(), expression.toString(), trxName);
+				partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn);
 			
 			if (partition != null)
 			{
@@ -531,7 +531,7 @@ public class TablePartitionService implements ITablePartitionService {
 				value = rs.getObject(partitionKeyColumn.getColumnName());
 				columnValues.put(name, value);
 				
-				X_AD_TablePartition partition = table.createTablePartition(name, expression, trxName);
+				X_AD_TablePartition partition = table.createTablePartition(name, expression, trxName, partitionKeyColumn);
 				partitions.add(partition);
 			}
 		}

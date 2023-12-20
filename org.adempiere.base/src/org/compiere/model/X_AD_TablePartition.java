@@ -30,7 +30,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231213L;
+	private static final long serialVersionUID = 20231220L;
 
     /** Standard Constructor */
     public X_AD_TablePartition (Properties ctx, int AD_TablePartition_ID, String trxName)
@@ -38,6 +38,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
       super (ctx, AD_TablePartition_ID, trxName);
       /** if (AD_TablePartition_ID == 0)
         {
+			setAD_Column_ID (0);
 			setAD_Table_ID (0);
 			setExpressionPartition (null);
 			setName (null);
@@ -50,6 +51,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
       super (ctx, AD_TablePartition_ID, trxName, virtualColumns);
       /** if (AD_TablePartition_ID == 0)
         {
+			setAD_Column_ID (0);
 			setAD_Table_ID (0);
 			setExpressionPartition (null);
 			setName (null);
@@ -62,6 +64,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
       super (ctx, AD_TablePartition_UU, trxName);
       /** if (AD_TablePartition_UU == null)
         {
+			setAD_Column_ID (0);
 			setAD_Table_ID (0);
 			setExpressionPartition (null);
 			setName (null);
@@ -74,6 +77,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
       super (ctx, AD_TablePartition_UU, trxName, virtualColumns);
       /** if (AD_TablePartition_UU == null)
         {
+			setAD_Column_ID (0);
 			setAD_Table_ID (0);
 			setExpressionPartition (null);
 			setName (null);
@@ -107,6 +111,34 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
+
+	/** Set Column.
+		@param AD_Column_ID Column in the table
+	*/
+	public void setAD_Column_ID (int AD_Column_ID)
+	{
+		if (AD_Column_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Column_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
+	}
+
+	/** Get Column.
+		@return Column in the table
+	  */
+	public int getAD_Column_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
