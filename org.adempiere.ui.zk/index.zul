@@ -21,8 +21,6 @@ Copyright (C) 2007 Ashley G Ramdass.
 "?>
 <zk>
 <script><![CDATA[
-if (window.location.protocol == 'https:') {
-
   zk.load("jawwa.atmosphere");
   zk.load("org.idempiere.websocket");
   zk.load("adempiere.local.storage");
@@ -37,13 +35,8 @@ if (window.location.protocol == 'https:') {
       if (console) console.log(msg);
     };
   });
-
-} //window.location.protocol check
-else {
-  alert("Direct http:// is forbidden - please use https:// instead with the SSL port used in your installation");
-}
 ]]>
 </script>
-<include src="${themePreference}" if="${execution.getScheme() == 'https'}"/>
-<window use="org.adempiere.webui.AdempiereWebUI" if="${execution.getScheme() == 'https'}"/>
+<include src="${themePreference}"/>
+<window use="org.adempiere.webui.AdempiereWebUI"/>
 </zk>
