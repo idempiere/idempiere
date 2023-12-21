@@ -25,7 +25,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Dec 4, 2023, 3:53:10 PM MYT
-INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (200261,'AD_Table PartitioningMethod','L',0,0,'Y',TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,'D','N','81b6431b-0afa-49bc-b5fe-be9a7b2481cf','N')
+INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (200261,'AD_Column PartitioningMethod','L',0,0,'Y',TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-04 15:53:09','YYYY-MM-DD HH24:MI:SS'),100,'D','N','81b6431b-0afa-49bc-b5fe-be9a7b2481cf','N')
 ;
 
 -- Dec 4, 2023, 3:53:22 PM MYT
