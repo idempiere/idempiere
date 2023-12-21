@@ -19,6 +19,7 @@ package org.compiere.install;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Language;
@@ -185,16 +186,20 @@ public class TranslationHandler extends DefaultHandler
 			m_sql.insert(0, m_updateSQL);
 
 			//	Execute
-			int no = DB.executeUpdate(m_sql.toString(), m_trxName);
-			if (no == 1)
-			{
-				if (log.isLoggable(Level.FINE)) log.fine(m_sql.toString());
-				m_updateCount++;
+			try {
+				int no = DB.executeUpdateEx(m_sql.toString(), m_trxName);
+				if (no == 1)
+				{
+					if (log.isLoggable(Level.FINE)) log.fine(m_sql.toString());
+					m_updateCount++;
+				}
+				else if (no == 0)
+					log.warning ("Not Found - " + m_sql.toString());
+				else
+					log.severe ("Update Rows=" + no + " (Should be 1) - " + m_sql.toString());
+			} catch (Exception e) {
+				throw new AdempiereException("Error: " + e.getLocalizedMessage() + " ... executing " + m_sql, e);
 			}
-			else if (no == 0)
-				log.warning ("Not Found - " + m_sql.toString());
-			else
-				log.severe ("Update Rows=" + no + " (Should be 1) - " + m_sql.toString());
 		}
 		else if (qName.equals(Translation.XML_VALUE_TAG))
 		{
