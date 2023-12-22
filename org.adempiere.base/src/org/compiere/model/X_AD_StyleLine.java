@@ -31,7 +31,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName)

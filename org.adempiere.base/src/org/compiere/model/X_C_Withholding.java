@@ -33,7 +33,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Withholding (Properties ctx, int C_Withholding_ID, String trxName)

@@ -33,7 +33,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Product (Properties ctx, int PP_WF_Node_Product_ID, String trxName)

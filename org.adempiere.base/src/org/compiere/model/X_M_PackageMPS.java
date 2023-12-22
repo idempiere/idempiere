@@ -33,7 +33,7 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PackageMPS (Properties ctx, int M_PackageMPS_ID, String trxName)

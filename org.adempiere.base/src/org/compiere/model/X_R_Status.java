@@ -31,7 +31,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)

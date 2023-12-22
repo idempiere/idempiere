@@ -34,7 +34,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)

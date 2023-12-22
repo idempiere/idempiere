@@ -30,7 +30,7 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230728L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName)
@@ -309,6 +309,8 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 
 	/** SSO_Provider AD_Reference_ID=200213 */
 	public static final int SSO_PROVIDER_AD_Reference_ID=200213;
+	/** OpenID Connect = OIDC */
+	public static final String SSO_PROVIDER_OpenIDConnect = "OIDC";
 	/** Set SSO Provider.
 		@param SSO_Provider Single Sign-On (SSO) Providers ( Microsoft Azure , Google, Jump Cloud etc..)
 	*/

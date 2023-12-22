@@ -668,12 +668,12 @@ public interface I_C_Invoice
     public static final String COLUMNNAME_IsPaid = "IsPaid";
 
 	/** Set Paid.
-	  * The document is paid
+	  * The document is fully paid
 	  */
 	public void setIsPaid (boolean IsPaid);
 
 	/** Get Paid.
-	  * The document is paid
+	  * The document is fully paid
 	  */
 	public boolean isPaid();
 

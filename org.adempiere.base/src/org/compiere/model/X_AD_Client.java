@@ -22,7 +22,7 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Client
- *  @author iDempiere (generated) 
+ *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Client")
 public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
@@ -31,7 +31,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230522L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       super (ctx, AD_Client_ID, trxName);
       /** if (AD_Client_ID == 0)
         {
+			setAuthenticationType (null);
+// AAS
 			setAutoArchive (null);
 // N
 			setIsMultiLingualDocument (false);
@@ -65,6 +67,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       super (ctx, AD_Client_ID, trxName, virtualColumns);
       /** if (AD_Client_ID == 0)
         {
+			setAuthenticationType (null);
+// AAS
 			setAutoArchive (null);
 // N
 			setIsMultiLingualDocument (false);
@@ -91,6 +95,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       super (ctx, AD_Client_UU, trxName);
       /** if (AD_Client_UU == null)
         {
+			setAuthenticationType (null);
+// AAS
 			setAutoArchive (null);
 // N
 			setIsMultiLingualDocument (false);
@@ -117,6 +123,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       super (ctx, AD_Client_UU, trxName, virtualColumns);
       /** if (AD_Client_UU == null)
         {
+			setAuthenticationType (null);
+// AAS
 			setAutoArchive (null);
 // N
 			setIsMultiLingualDocument (false);

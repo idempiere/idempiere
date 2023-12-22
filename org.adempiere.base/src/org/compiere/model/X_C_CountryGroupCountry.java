@@ -31,7 +31,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)

@@ -30,7 +30,7 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AllClients_V (Properties ctx, int AD_AllClients_V_ID, String trxName)

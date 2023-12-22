@@ -30,7 +30,7 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230523L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_RecentItem (Properties ctx, int AD_RecentItem_ID, String trxName)
@@ -41,7 +41,6 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 			setAD_RecentItem_ID (0);
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
         } */
     }
 
@@ -54,7 +53,6 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 			setAD_RecentItem_ID (0);
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
         } */
     }
 
@@ -67,7 +65,6 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 			setAD_RecentItem_ID (0);
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
         } */
     }
 
@@ -80,7 +77,6 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 			setAD_RecentItem_ID (0);
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
         } */
     }
 
