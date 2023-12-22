@@ -30,7 +30,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)

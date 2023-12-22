@@ -30,7 +30,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_FundingMode_Acct (Properties ctx, int A_FundingMode_Acct_ID, String trxName)

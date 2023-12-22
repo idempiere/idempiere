@@ -33,7 +33,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName)

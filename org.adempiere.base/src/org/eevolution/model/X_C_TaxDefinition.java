@@ -33,7 +33,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxDefinition (Properties ctx, int C_TaxDefinition_ID, String trxName)

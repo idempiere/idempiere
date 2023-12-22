@@ -31,7 +31,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230911L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)

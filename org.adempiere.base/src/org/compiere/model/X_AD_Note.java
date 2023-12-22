@@ -31,7 +31,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Note (Properties ctx, int AD_Note_ID, String trxName)

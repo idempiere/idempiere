@@ -30,7 +30,7 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplateAccess (Properties ctx, int AD_ImportTemplateAccess_ID, String trxName)

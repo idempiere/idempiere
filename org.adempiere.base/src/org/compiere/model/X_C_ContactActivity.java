@@ -32,7 +32,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ContactActivity (Properties ctx, int C_ContactActivity_ID, String trxName)

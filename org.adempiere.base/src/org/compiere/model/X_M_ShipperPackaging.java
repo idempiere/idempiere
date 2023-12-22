@@ -32,7 +32,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShipperPackaging (Properties ctx, int M_ShipperPackaging_ID, String trxName)

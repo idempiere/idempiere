@@ -32,7 +32,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PromotionReward (Properties ctx, int M_PromotionReward_ID, String trxName)

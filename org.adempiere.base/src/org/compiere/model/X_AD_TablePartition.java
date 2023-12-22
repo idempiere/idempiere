@@ -30,7 +30,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231220L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_TablePartition (Properties ctx, int AD_TablePartition_ID, String trxName)

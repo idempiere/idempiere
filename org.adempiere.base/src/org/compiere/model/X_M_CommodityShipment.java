@@ -30,7 +30,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231213L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -657,7 +657,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
-	
+
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

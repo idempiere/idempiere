@@ -30,7 +30,7 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_EXP_FormatLine (Properties ctx, int EXP_FormatLine_ID, String trxName)

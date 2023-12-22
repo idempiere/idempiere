@@ -31,7 +31,7 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230415L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ChangeLog (Properties ctx, int AD_ChangeLog_ID, String trxName)
@@ -276,7 +276,7 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
 	public void setEventChangeLog (String EventChangeLog)
 	{
 
-		set_Value (COLUMNNAME_EventChangeLog, EventChangeLog);
+		set_ValueNoCheck (COLUMNNAME_EventChangeLog, EventChangeLog);
 	}
 
 	/** Get Event Change Log.

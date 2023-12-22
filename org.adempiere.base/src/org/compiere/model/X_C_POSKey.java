@@ -33,7 +33,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_POSKey (Properties ctx, int C_POSKey_ID, String trxName)
