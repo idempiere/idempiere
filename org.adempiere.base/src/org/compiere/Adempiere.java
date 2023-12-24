@@ -66,7 +66,7 @@ public final class Adempiere
 	@Deprecated
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Release 11";
+	static public String	MAIN_VERSION	= "Release 12";
 	/** Detail Version as date      Used for Client/Server		*/
 	static public String	DATE_VERSION	= "2023-12-24";
 	/** Database Version as date    Compared with AD_System		*/
