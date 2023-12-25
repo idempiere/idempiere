@@ -137,6 +137,10 @@ public class TablePartitionService implements ITablePartitionService {
 		return true;
 	}
 
+	/**
+	 * @param partitionKeyColumn
+	 * @return Oracle year/month interval expression (using NUMTOYMINTERVAL) for column range interval 
+	 */
 	private String getIntervalExpression(MColumn partitionKeyColumn) {
 		if (DisplayType.isDate(partitionKeyColumn.getAD_Reference_ID()) || DisplayType.isTimestampWithTimeZone(partitionKeyColumn.getAD_Reference_ID())) {
 			RangePartitionInterval.Interval interval = RangePartitionInterval.getInterval(partitionKeyColumn);
@@ -244,6 +248,14 @@ public class TablePartitionService implements ITablePartitionService {
 		return isUpdated;
 	}
 
+	/**
+	 * Find name of default sub-partition auto created by Oracle 
+	 * @param table
+	 * @param primaryPartition
+	 * @param range true if sub-partition is range, false for list
+	 * @param trxName
+	 * @return name of default sub-partition
+	 */
 	private String getDefaultSubPartitionName(MTable table, X_AD_TablePartition primaryPartition, boolean range, String trxName) {
 		String sql = 
 				"""
@@ -272,6 +284,13 @@ public class TablePartitionService implements ITablePartitionService {
 		return null;
 	}
 
+	/**
+	 * Find the list of partition for partitionKeyColumn
+	 * @param table
+	 * @param partitionKeyColumn
+	 * @param trxName
+	 * @return list of partition for column
+	 */
 	private List<X_AD_TablePartition> getPrimaryPartitions(MTable table, MColumn partitionKeyColumn, String trxName) {
 		String whereClause = "AD_Table_ID=? AND AD_Column_ID=? And Name != 'DEFAULT_PARTITION'";
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), X_AD_TablePartition.Table_ID), whereClause, trxName);		
@@ -504,9 +523,9 @@ public class TablePartitionService implements ITablePartitionService {
 	 * @param partitionKeyColumn 
 	 * @param trxName
 	 * @param pi
-	 * @param fromPartition partition of sub-partition to select from
+	 * @param fromPartition name of default partition to select from
 	 * @param partitionNamePrefix
-	 * @param subPartition true for sub-partition, false for partition
+	 * @param subPartition true to add sub-partition, false to add partition
 	 * @return true if new list partition added
 	 */
 	private boolean addListPartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, String fromPartition, String partitionNamePrefix, boolean subPartition) {
@@ -575,9 +594,9 @@ public class TablePartitionService implements ITablePartitionService {
 	 * @param partitionKeyColumn 
 	 * @param trxName
 	 * @param pi
-	 * @param fromPartition
+	 * @param fromPartition name of default partition to select from
 	 * @param partitionNamePrefix
-	 * @param subPartition
+	 * @param subPartition true to add sub-partition, false to add partition
 	 * @return true if new range partition added
 	 */
 	private boolean addRangePartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, String fromPartition, String partitionNamePrefix, boolean subPartition) {

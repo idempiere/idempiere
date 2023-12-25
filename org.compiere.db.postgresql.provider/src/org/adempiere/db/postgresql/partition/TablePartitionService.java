@@ -560,8 +560,9 @@ public class TablePartitionService implements ITablePartitionService {
 		if (subPartitionColumn != null) {
 			List<X_AD_TablePartition> partitions = new ArrayList<>();
 			tablePartitionNames = new ArrayList<>();
-			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=?", trxName)) {
+			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Column_ID=?", trxName)) {
 				stmt.setInt(1, table.getAD_Table_ID());
+				stmt.setInt(2, partitionKeyColumn.getAD_Column_ID());
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
 					X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), rs, trxName);
@@ -584,7 +585,6 @@ public class TablePartitionService implements ITablePartitionService {
 				int count = DB.getSQLValueEx(trxName, sql, subDefaultPartition);
 				if (count <= 0)
 					continue;
-				if (DB.isTableOrViewExists(subDefaultPartition))
 				if (MColumn.PARTITIONINGMETHOD_List.equals(subPartitionColumn.getPartitioningMethod())) {
 					HashMap<String, Object> subValues = new HashMap<>();
 					List<X_AD_TablePartition> subPartitions = generateListPartition(table, partition.getName(), subDefaultPartition, subPartitionColumn, subValues, trxName);
@@ -756,8 +756,9 @@ public class TablePartitionService implements ITablePartitionService {
 		if (subPartitionColumn != null) {
 			List<String> tablePartitionNames = new ArrayList<>();
 			partitions = new ArrayList<>();
-			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=?", trxName)) {
+			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Column_ID=?", trxName)) {
 				stmt.setInt(1, table.getAD_Table_ID());
+				stmt.setInt(2, partitionKeyColumn.getAD_Column_ID());
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
 					X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), rs, trxName);
