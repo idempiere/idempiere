@@ -34,7 +34,7 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Para (Properties ctx, int AD_PInstance_Para_ID, String trxName)

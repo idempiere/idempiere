@@ -32,7 +32,7 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_QM_SpecificationLine (Properties ctx, int QM_SpecificationLine_ID, String trxName)

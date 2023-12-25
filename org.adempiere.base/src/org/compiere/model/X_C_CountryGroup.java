@@ -32,7 +32,7 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CountryGroup (Properties ctx, int C_CountryGroup_ID, String trxName)

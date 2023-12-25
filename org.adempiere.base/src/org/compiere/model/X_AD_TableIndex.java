@@ -31,7 +31,7 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_TableIndex (Properties ctx, int AD_TableIndex_ID, String trxName)

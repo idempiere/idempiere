@@ -32,7 +32,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)

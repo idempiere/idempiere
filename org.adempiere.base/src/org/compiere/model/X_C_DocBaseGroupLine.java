@@ -30,7 +30,7 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_DocBaseGroupLine (Properties ctx, int C_DocBaseGroupLine_ID, String trxName)

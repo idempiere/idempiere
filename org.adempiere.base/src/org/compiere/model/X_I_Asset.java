@@ -34,7 +34,7 @@ public class X_I_Asset extends PO implements I_I_Asset, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_Asset (Properties ctx, int I_Asset_ID, String trxName)

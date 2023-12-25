@@ -30,7 +30,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_IndexColumn (Properties ctx, int AD_IndexColumn_ID, String trxName)

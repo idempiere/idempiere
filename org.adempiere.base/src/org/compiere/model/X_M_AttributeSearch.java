@@ -31,7 +31,7 @@ public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_AttributeSearch (Properties ctx, int M_AttributeSearch_ID, String trxName)

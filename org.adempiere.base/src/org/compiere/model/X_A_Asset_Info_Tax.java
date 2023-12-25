@@ -31,7 +31,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Tax (Properties ctx, int A_Asset_Info_Tax_ID, String trxName)

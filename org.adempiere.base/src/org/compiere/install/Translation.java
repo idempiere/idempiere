@@ -40,6 +40,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 import org.compiere.model.MLanguage;
 import org.compiere.model.MPInstance;
@@ -174,8 +175,7 @@ public class Translation implements IApplication
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "importTrl", e);
-			return e.toString();
+			throw new AdempiereException(e);
 		}
 	}	//	importTrl
 	

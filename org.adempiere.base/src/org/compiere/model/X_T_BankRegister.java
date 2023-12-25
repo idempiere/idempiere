@@ -33,7 +33,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_BankRegister (Properties ctx, String T_BankRegister_UU, String trxName)

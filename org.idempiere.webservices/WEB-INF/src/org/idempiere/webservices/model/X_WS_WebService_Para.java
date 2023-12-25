@@ -31,7 +31,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)
