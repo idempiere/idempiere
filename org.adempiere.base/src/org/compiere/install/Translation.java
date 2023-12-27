@@ -207,8 +207,9 @@ public class Translation implements IApplication
 				return "";
 		}
 
-		String keyColumn = Base_Table + "_ID";
-		String uuidColumn = MTable.getUUIDColumnName(Base_Table);
+		MTable baseTable = MTable.get(Env.getCtx(), Base_Table);
+		String keyColumn = baseTable.getKeyColumns()[0];
+		String uuidColumn = PO.getUUIDColumnName(Base_Table);
 		String[] trlColumns = getTrlColumns (Base_Table);
 		//
 		StringBuilder sql = null;
@@ -272,9 +273,11 @@ public class Translation implements IApplication
 			while (rs.next())
 			{
 				Element row = document.createElement (XML_ROW_TAG);
-				int keyid = rs.getInt(2);
+				int keyid = -1;
+				if (! baseTable.isUUIDKeyTable())
+					keyid = rs.getInt(2);
 				String uuid = rs.getString(3);
-				if (keyid <= MTable.MAX_OFFICIAL_ID || Util.isEmpty(uuid)) {
+				if ((keyid >= 0 && keyid <= MTable.MAX_OFFICIAL_ID) || Util.isEmpty(uuid)) {
 					row.setAttribute(XML_ROW_ATTRIBUTE_ID, String.valueOf(keyid));	//	KeyColumn
 				} else {
 					row.setAttribute(XML_ROW_ATTRIBUTE_UUID, String.valueOf(uuid));	//	UUIDColumn
