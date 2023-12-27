@@ -192,7 +192,7 @@ public class TablePartitionService implements ITablePartitionService {
 			}
 			else
 			{
-				isUpdated = addListPartition(table, partitionKeyColumn, trxName, processInfo, "default_partition", null, false);
+				isUpdated = addListPartition(table, partitionKeyColumn, trxName, processInfo, "default_partition", null, null);
 			}
 		}
 		else if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_Range))
@@ -213,7 +213,7 @@ public class TablePartitionService implements ITablePartitionService {
 				else
 				{
 					syncRange(table, partitionKeyColumn, trxName, interval, processInfo);
-					isUpdated = addRangePartition(table, partitionKeyColumn, trxName, processInfo, "default_partition", null, false);
+					isUpdated = addRangePartition(table, partitionKeyColumn, trxName, processInfo, "default_partition", null, null);
 				}
 			}
 		}
@@ -229,7 +229,7 @@ public class TablePartitionService implements ITablePartitionService {
 					String defaultSubPartition = getDefaultSubPartitionName(table, primaryPartition, false, trxName);
 					if (defaultSubPartition == null)
 						continue;
-					addListPartition(table, subPartitionColumn, trxName, processInfo, defaultSubPartition, primaryPartition.getName(), true);
+					addListPartition(table, subPartitionColumn, trxName, processInfo, defaultSubPartition, primaryPartition.getName(), primaryPartition);
 				}
 			}
 			else if (subPartitionColumn.getPartitioningMethod().equals(MColumn.PARTITIONINGMETHOD_Range))
@@ -239,7 +239,7 @@ public class TablePartitionService implements ITablePartitionService {
 					String defaultSubPartition = getDefaultSubPartitionName(table, primaryPartition, true, trxName);
 					if (defaultSubPartition == null)
 						continue;
-					addRangePartition(table, subPartitionColumn, trxName, processInfo, defaultSubPartition, primaryPartition.getName(), true);
+					addRangePartition(table, subPartitionColumn, trxName, processInfo, defaultSubPartition, primaryPartition.getName(), primaryPartition);
 				}
 			}
 			else
@@ -525,12 +525,13 @@ public class TablePartitionService implements ITablePartitionService {
 	 * @param pi
 	 * @param fromPartition name of default partition to select from
 	 * @param partitionNamePrefix
-	 * @param subPartition true to add sub-partition, false to add partition
+	 * @param parentPartition
 	 * @return true if new list partition added
 	 */
-	private boolean addListPartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, String fromPartition, String partitionNamePrefix, boolean subPartition) {
+	private boolean addListPartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, String fromPartition, String partitionNamePrefix, X_AD_TablePartition parentPartition) {
 		boolean isUpdated = false;
 		List<X_AD_TablePartition> partitions = new ArrayList<>();
+		boolean subPartition = parentPartition != null;
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT ").append(partitionKeyColumn.getColumnName());
@@ -563,7 +564,7 @@ public class TablePartitionService implements ITablePartitionService {
 				if (Character.isDigit(name.charAt(0))) {
 					name.insert(0, "p");
 				}
-				X_AD_TablePartition partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn);
+				X_AD_TablePartition partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn, parentPartition);
 				partitions.add(partition);
 			}
 		}
@@ -596,13 +597,14 @@ public class TablePartitionService implements ITablePartitionService {
 	 * @param pi
 	 * @param fromPartition name of default partition to select from
 	 * @param partitionNamePrefix
-	 * @param subPartition true to add sub-partition, false to add partition
+	 * @param parentPartition
 	 * @return true if new range partition added
 	 */
-	private boolean addRangePartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, String fromPartition, String partitionNamePrefix, boolean subPartition) {
+	private boolean addRangePartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, String fromPartition, String partitionNamePrefix, X_AD_TablePartition parentPartition) {
 		boolean isUpdated = false;
 		X_AD_TablePartition partition = null;
 		RangePartitionColumn rangePartitionColumn = null;
+		boolean subPartition = parentPartition != null;
 
 		String partitionKeyColumnName = partitionKeyColumn.getColumnName();
 		String partitionKeyColumnRangeIntervalPattern = partitionKeyColumn.getRangePartitionInterval();
@@ -677,7 +679,7 @@ public class TablePartitionService implements ITablePartitionService {
 				name.insert(0, "p");
 			}			
 			if (!tablePartitionNames.contains(name.toString()))
-				partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn);
+				partition = table.createTablePartition(name.toString(), expression.toString(), trxName, partitionKeyColumn, parentPartition);
 			
 			if (partition != null)
 			{				
@@ -746,6 +748,18 @@ public class TablePartitionService implements ITablePartitionService {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public boolean detachPartition(MTable table, X_AD_TablePartition partition, String trxName,
+			ProcessInfo processInfo) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean reattachPartition(MTable table, X_AD_TablePartition partition, String trxName,
+			ProcessInfo processInfo) {
+		throw new UnsupportedOperationException();
 	}
 
 }

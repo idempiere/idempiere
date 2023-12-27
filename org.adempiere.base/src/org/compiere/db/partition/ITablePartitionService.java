@@ -26,6 +26,7 @@ package org.compiere.db.partition;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.X_AD_TablePartition;
 import org.compiere.process.ProcessInfo;
 
 /**
@@ -66,4 +67,24 @@ public interface ITablePartitionService {
 	 * @return String error-code - null if not error
 	 */
 	public String isValidConfiguration(MColumn column);
+	
+	/**
+	 * Detach an attached table partition
+	 * @param table
+	 * @param partition
+	 * @param trxName
+	 * @param processInfo
+	 * @return true if success
+	 */
+	public boolean detachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
+	
+	/**
+	 * Re-attach a detached table partition
+	 * @param table
+	 * @param partition
+	 * @param trxName
+	 * @param processInfo
+	 * @return true if success
+	 */
+	public boolean reattachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
 }

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TablePartition
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_TablePartition 
 {
@@ -156,6 +156,19 @@ public interface I_AD_TablePartition
 	  */
 	public boolean isActive();
 
+    /** Column name IsPartitionAttached */
+    public static final String COLUMNNAME_IsPartitionAttached = "IsPartitionAttached";
+
+	/** Set Attached.
+	  * Partition attached to table
+	  */
+	public void setIsPartitionAttached (boolean IsPartitionAttached);
+
+	/** Get Attached.
+	  * Partition attached to table
+	  */
+	public boolean isPartitionAttached();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -168,6 +181,30 @@ public interface I_AD_TablePartition
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Parent_TablePartition_ID */
+    public static final String COLUMNNAME_Parent_TablePartition_ID = "Parent_TablePartition_ID";
+
+	/** Set Parent Partition.
+	  * Parent table partition
+	  */
+	public void setParent_TablePartition_ID (int Parent_TablePartition_ID);
+
+	/** Get Parent Partition.
+	  * Parent table partition
+	  */
+	public int getParent_TablePartition_ID();
+
+	public org.compiere.model.I_AD_TablePartition getParent_TablePartition() throws RuntimeException;
+
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
