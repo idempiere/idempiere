@@ -357,13 +357,17 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			windowName = win.get_Translation("Name");
 		}
 		MTable table = MTable.get(getCtx(), getAD_Table_ID());
-		PO po = table.getPOByUU(getRecord_UU(), null);
+		PO po = null;
+		if (getRecord_UU() != null)
+			po = table.getPOByUU(getRecord_UU(), null);
+		else if (getRecord_ID() > 0)
+			po = table.getPO(getRecord_ID(), null);
 		if (po == null) {
 			String ii = getCacheKey(getAD_RecentItem_ID(), getCtx());
 			synchronized (MRecentItem.class) {
 				s_cache.remove(ii);
 			}
-			DB.executeUpdateEx("DELETE FROM AD_RecentItem WHERE AD_RecentItem=?", new Object[] {getAD_RecentItem_ID()}, null);
+			DB.executeUpdateEx("DELETE FROM AD_RecentItem WHERE AD_RecentItem_ID=?", new Object[] {getAD_RecentItem_ID()}, null);
 			return null;
 		}
 
