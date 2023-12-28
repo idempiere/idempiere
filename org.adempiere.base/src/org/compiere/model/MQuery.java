@@ -161,7 +161,7 @@ public class MQuery implements Serializable, Cloneable
 				int Reference_ID = rs.getInt(12);
 
 				MUserDefProcParameter udpp = MUserDefProcParameter.get(ctx, rs.getInt(15), rs.getInt(14));
-				if (udpp != null)
+				if (udpp != null && udpp.getAD_Reference_ID() > 0)
 					Reference_ID = udpp.getAD_Reference_ID();
 
 				String P_Query = rs.getString(13);
