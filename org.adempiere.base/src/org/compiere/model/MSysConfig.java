@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7338447655641380126L;
+	private static final long serialVersionUID = 4879268878721712444L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -84,6 +84,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
     public static final String CASH_AS_PAYMENT = "CASH_AS_PAYMENT";
     public static final String CHANGE_PASSWORD_MUST_DIFFER = "CHANGE_PASSWORD_MUST_DIFFER";
+    public static final String CHART_MIN_WIDTH_3_PERIOD = "CHART_MIN_WIDTH_3_PERIOD";
+    public static final String CHART_MIN_WIDTH_6_PERIOD = "CHART_MIN_WIDTH_6_PERIOD";
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
