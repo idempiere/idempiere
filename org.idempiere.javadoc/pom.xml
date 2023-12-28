@@ -75,6 +75,8 @@
 									<exclude>metainfo.zk</exclude>
 									<exclude>web*</exclude>
 									<exclude>org.idempiere.adInterface.x10*</exclude>
+									<exclude>org.idempiere.webservices.resources*</exclude>
+									<exclude>schemas*</exclude>
 									<exclude>action.images*</exclude>
 									<exclude>google.*</exclude>
 									<exclude>jsinterop.*</exclude>
@@ -111,7 +113,7 @@
 									<additionalArgument>-breakiterator</additionalArgument>
 									<additionalArgument>-version</additionalArgument>
 									<additionalArgument>-link
-										https://docs.oracle.com/en/java/javase/11/docs/api/</additionalArgument>
+										https://docs.oracle.com/en/java/javase/17/docs/api/</additionalArgument>
 									<additionalArgument>-splitindex</additionalArgument>
 									<additionalArgument>-overview
 										${project.basedir}/doc/overview.html</additionalArgument>
@@ -119,7 +121,6 @@
 									<additionalArgument>-doctitle "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion} API Documentation"</additionalArgument>
 									<additionalArgument>-header "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"</additionalArgument>
 									<additionalArgument>-bottom "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"</additionalArgument>
-									<additionalArgument>--no-module-directories</additionalArgument>
 								</additionalArguments>
 							</javadocOptions>
 						</configuration>
