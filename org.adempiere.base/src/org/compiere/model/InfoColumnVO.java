@@ -414,7 +414,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	}
 
 	/**
-	 * @return query operator (=, <, >, etc)
+	 * @return query operator (=, &lt;, &gt;, etc)
 	 */
 	public String getQueryOperator() {
 		return QueryOperator;

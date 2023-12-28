@@ -928,7 +928,7 @@ public class ModelValidationEngine
 	 * Fire afterLoadPreferences model validator event and {@link IEventTopics#PREF_AFTER_LOAD} OSGi event.
 	 * @param ctx context
 	 * @see org.compiere.util.Login#loadPreferences(KeyNamePair, KeyNamePair, java.sql.Timestamp, String)
-	 * @author Teo Sarca - FR [ 1670025 ] - https://sourceforge.net/p/adempiere/feature-requests/78/
+	 * author Teo Sarca - FR [ 1670025 ] - https://sourceforge.net/p/adempiere/feature-requests/78/
 	 */
 	public void afterLoadPreferences (Properties ctx)
 	{

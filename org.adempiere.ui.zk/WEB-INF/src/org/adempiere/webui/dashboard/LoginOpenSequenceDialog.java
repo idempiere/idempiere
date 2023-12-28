@@ -426,7 +426,8 @@ public class LoginOpenSequenceDialog extends Window
 	/**
 	 * Move within Yes List with Drag Event and Multiple Choice
 	 * 
-	 * @param event - Event
+	 * @param endIndex
+	 * @param selObjects
 	 */
 	protected void migrateValueWithinYesList(int endIndex, List<ListElement> selObjects)
 	{

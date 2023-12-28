@@ -2590,7 +2590,6 @@ public abstract class PO
 
 	/**
 	 * Update Value or create new record, used when writing a cross tenant record
-	 * @param trxName transaction
 	 * @throws AdempiereException
 	 * @see #saveEx(String)
 	 */

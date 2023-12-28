@@ -2560,7 +2560,6 @@ public class GridField
 
 	/**
 	 * Get the default state of collapse field group type
-	 * @param true if field group should collapsed by default
 	 */
 	public boolean getIsCollapsedByDefault() {
 		return m_vo.IsCollapsedByDefault;

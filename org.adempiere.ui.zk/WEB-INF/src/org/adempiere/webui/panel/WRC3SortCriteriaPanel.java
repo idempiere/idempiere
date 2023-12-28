@@ -389,7 +389,8 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	
 	/**
 	 * 	Move selected items within Yes List
-	 *	@param event event
+	 *  @param endIndex
+	 *  @param selObjects
 	 */
 	protected void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
 	{

@@ -1774,7 +1774,7 @@ public class MCost extends X_M_Cost
 	}	//	beforeDelete
 
 	/**
-	 * Throw {@link AverageCostingNegativeQtyException} if cost element is average po or average invoice and currentQty < 0.
+	 * Throw {@link AverageCostingNegativeQtyException} if cost element is average po or average invoice and currentQty &lt; 0.
 	 * @param CurrentQty
 	 */
 	@Override

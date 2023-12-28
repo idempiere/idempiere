@@ -723,7 +723,7 @@ public class MPInstance extends X_AD_PInstance
 	
 	/**
 	 * Set AD_PrintFormat_ID if empty, AD_Language_ID if empty and save the record.
-	 * @param pf
+	 * @param format
 	 */
 	public void updatePrintFormatAndLanguageIfEmpty(MPrintFormat format) {
 		if(getAD_PrintFormat_ID() <= 0 && format.getAD_PrintFormat_ID() > 0) {

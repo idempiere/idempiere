@@ -238,7 +238,7 @@ public final class MLookup extends Lookup implements Serializable
 
 	/**
 	 *	Get Display Text.<br/>
-	 *  If not found, return key embedded in "<>".
+	 *  If not found, return key embedded in "&lt;&gt;".
 	 *  @param key key value
 	 *  @return display text
 	 */

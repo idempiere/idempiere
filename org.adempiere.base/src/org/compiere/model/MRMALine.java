@@ -385,7 +385,7 @@ public class MRMALine extends X_M_RMALine
     }
     
     /**
-     * Validate that line quantity is <= MInOutLine quantity
+     * Validate that line quantity is &lt;= MInOutLine quantity
      * @return true if pass validation
      */
     public boolean checkQty() 
