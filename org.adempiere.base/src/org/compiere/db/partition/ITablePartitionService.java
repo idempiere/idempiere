@@ -74,9 +74,8 @@ public interface ITablePartitionService {
 	 * @param partition
 	 * @param trxName
 	 * @param processInfo
-	 * @return true if success
 	 */
-	public boolean detachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
+	public void detachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
 	
 	/**
 	 * Re-attach a detached table partition
@@ -84,7 +83,6 @@ public interface ITablePartitionService {
 	 * @param partition
 	 * @param trxName
 	 * @param processInfo
-	 * @return true if success
 	 */
-	public boolean reattachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
+	public void reattachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
 }

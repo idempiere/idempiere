@@ -667,7 +667,7 @@ public class TablePartitionService implements ITablePartitionService {
 		if (subPartitionColumn != null) {
 			List<X_AD_TablePartition> partitions = new ArrayList<>();
 			tablePartitionNames = new ArrayList<>();
-			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Column_ID=?", trxName)) {
+			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Column_ID=? AND IsPartitionAttached='Y'", trxName)) {
 				stmt.setInt(1, table.getAD_Table_ID());
 				stmt.setInt(2, partitionKeyColumn.getAD_Column_ID());
 				ResultSet rs = stmt.executeQuery();
@@ -865,7 +865,7 @@ public class TablePartitionService implements ITablePartitionService {
 		if (subPartitionColumn != null) {
 			List<String> tablePartitionNames = new ArrayList<>();
 			partitions = new ArrayList<>();
-			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Column_ID=?", trxName)) {
+			try (PreparedStatement stmt = DB.prepareStatement("SELECT * FROM AD_TablePartition WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Column_ID=? AND IsPartitionAttached='Y'", trxName)) {
 				stmt.setInt(1, table.getAD_Table_ID());
 				stmt.setInt(2, partitionKeyColumn.getAD_Column_ID());
 				ResultSet rs = stmt.executeQuery();
@@ -1022,7 +1022,7 @@ public class TablePartitionService implements ITablePartitionService {
 	}
 
 	@Override
-	public boolean detachPartition(MTable table, X_AD_TablePartition partition, String trxName,
+	public void detachPartition(MTable table, X_AD_TablePartition partition, String trxName,
 			ProcessInfo processInfo) {
 		if (partition.isPartitionAttached()) {
 			if (!"default".equalsIgnoreCase(partition.getExpressionPartition())) {
@@ -1039,14 +1039,14 @@ public class TablePartitionService implements ITablePartitionService {
 					processInfo.addLog(0, null, null, no + " " + alter.toString());
 				partition.setIsPartitionAttached(false);
 				partition.saveEx();
-				return true;
+			} else {
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CantDetachReattachDefaultPartition"));
 			}
 		}
-		return false;
 	}
 
 	@Override
-	public boolean reattachPartition(MTable table, X_AD_TablePartition partition, String trxName,
+	public void reattachPartition(MTable table, X_AD_TablePartition partition, String trxName,
 			ProcessInfo processInfo) {
 		if (!partition.isPartitionAttached()) {
 			if (!"default".equalsIgnoreCase(partition.getExpressionPartition())) {
@@ -1066,10 +1066,10 @@ public class TablePartitionService implements ITablePartitionService {
 					processInfo.addLog(0, null, null, no + " " + alter.toString());
 				partition.setIsPartitionAttached(true);
 				partition.saveEx();
-				return true;
+			} else {
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CantDetachReattachDefaultPartition"));
 			}
 		}
-		return false;
 	}
 
 }

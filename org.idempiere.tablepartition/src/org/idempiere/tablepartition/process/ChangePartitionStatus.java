@@ -60,21 +60,19 @@ public class ChangePartitionStatus extends SvrProcess {
 	}
 
 	private String reattachPartition(X_AD_TablePartition partition, ITablePartitionService service) {
+		String partitionName = partition.getName();
 		MTable table = new MTable(Env.getCtx(), partition.getAD_Table_ID(), get_TrxName());
-		if (service.reattachPartition(table, partition, get_TrxName(), getProcessInfo())) {
-			return "@Ok@";
-		} else {
-			return "@Error@";
-		}
+		service.reattachPartition(table, partition, get_TrxName(), getProcessInfo());
+		service.runPostPartitionProcess(table, get_TrxName(), getProcessInfo());
+		return Msg.getMsg(getCtx(), "PartitionReAttachToTable", new Object[] {partitionName, table.getTableName()});
 	}
 
 	private String detachPartition(X_AD_TablePartition partition, ITablePartitionService service) {
+		String partitionName = partition.getName();
 		MTable table = new MTable(Env.getCtx(), partition.getAD_Table_ID(), get_TrxName());
-		if (service.detachPartition(table, partition, get_TrxName(), getProcessInfo())) {
-			return "@Ok@";
-		} else {
-			return "@Error@";
-		}
+		service.detachPartition(table, partition, get_TrxName(), getProcessInfo());
+		service.runPostPartitionProcess(table, get_TrxName(), getProcessInfo());
+		return Msg.getMsg(getCtx(), "PartitionDetachFromTable", new Object[] {partitionName, table.getTableName()});
 	}
 
 }

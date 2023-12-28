@@ -116,3 +116,15 @@ UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='Y',Updated=TO_TIMESTAMP('202
 -- Dec 27, 2023, 2:20:59 PM MYT
 UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_TIMESTAMP('2023-12-27 14:20:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208096
 ;
+
+-- Dec 28, 2023, 1:55:33 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Can''t detach or re-attach default partition',0,0,'Y',TO_TIMESTAMP('2023-12-28 13:55:32','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-28 13:55:32','YYYY-MM-DD HH24:MI:SS'),100,200859,'CantDetachReattachDefaultPartition','D','375e3278-6231-4486-a8ef-8a978ce57698')
+;
+
+-- Dec 28, 2023, 4:11:58 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The partition {0} has been successfully detached from table {1}',0,0,'Y',TO_TIMESTAMP('2023-12-28 16:11:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-28 16:11:57','YYYY-MM-DD HH24:MI:SS'),100,200860,'PartitionDetachFromTable','D','3b92cf36-e6e4-401b-8663-5897e54b8966')
+;
+
+-- Dec 28, 2023, 4:12:21 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The partition {0} has been successfully re-attached to table {1}',0,0,'Y',TO_TIMESTAMP('2023-12-28 16:12:21','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-28 16:12:21','YYYY-MM-DD HH24:MI:SS'),100,200861,'PartitionReAttachToTable','D','4a3c84d0-fc35-4d62-b5ab-3ba018453783')
+;
