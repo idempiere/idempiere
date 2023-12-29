@@ -216,8 +216,8 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 
 	/** 
 	 * Returns a link to be used in broadcast messages to open a record
-	 * @param PO po
-	 * @param uuid of the window
+	 * @param po PO
+	 * @param windowUUID of the window
 	 * @param text of the link
 	 * @return the URL link to set in the broadcast message
 	 * */

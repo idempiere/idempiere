@@ -2377,7 +2377,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@param TableLevel table access level
 	 *	@return	true if can view<br/>
 	 *  Access error info (AccessTableNoUpdate, AccessTableNoView) is saved in the log
-	 *  @see org.compiere.model.MTabVO#loadTabDetails(MTabVO, ResultSet)
+	 *  @see org.compiere.model.GridTabVO#loadTabDetails(GridTabVO, ResultSet)
 	 */
 	public boolean canView(Properties ctx, String TableLevel)
 	{
@@ -2627,7 +2627,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * @param clientId AD_Client_ID
 	 * @param docTypeId C_DocType_ID
 	 * @param options array of document actions
-	 * @param maxIndex define the range of elements to examine in options (>= 0 and < maxIndex)
+	 * @param maxIndex define the range of elements to examine in options (>= 0 and &lt; maxIndex)
 	 * @return number of valid actions in the String[] options argument
 	 */
 	public int checkActionAccess(int clientId, int docTypeId, String[] options,

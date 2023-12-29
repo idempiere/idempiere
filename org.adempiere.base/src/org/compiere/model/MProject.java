@@ -469,7 +469,7 @@ public class MProject extends X_C_Project
 	/**
 	 * 	Get Invoices Generated for this Project
 	 *	@return array of invoice
-	 *	@author monhate
+	 *	author monhate
 	 */	
 	public MInvoice[] getMInvoices(){
 		StringBuilder sb = new StringBuilder();

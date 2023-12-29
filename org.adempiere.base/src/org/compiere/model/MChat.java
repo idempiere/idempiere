@@ -77,7 +77,7 @@ public class MChat extends X_CM_Chat
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param CM_Chat_ID id
-	 *	@param trxName transcation
+	 *	@param trxName transaction
 	 */
 	public MChat (Properties ctx, int CM_Chat_ID, String trxName)
 	{

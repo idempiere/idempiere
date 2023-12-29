@@ -38,7 +38,7 @@ import org.zkoss.zul.ListitemRendererExt;
 /**
  * Renderer for {@link Listbox} with single level grouping.<br/>
  * Note that due to a class hierarchy issue, this wouldn't works with {@link org.adempiere.webui.component.Listbox}.<br/>
- * Note2: not working very well with {@link Listbox#setCheckmark(true)}. Recommended to roll your own checkbox cell if you need multiple selection. 
+ * Note2: not working very well with {@link Listbox#setCheckmark(boolean) Listbox.setCheckmark(true)}. Recommended to roll your own checkbox cell if you need multiple selection. 
  * @author hengsin
  * @param <T> Common ancestor type for Group and Item class.
  */

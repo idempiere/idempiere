@@ -103,7 +103,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	/**
 	 *
 	 * @param data
-	 * @param WindowNo
+	 * @param windowNo
 	 */
 	public WDrillReport(DrillData data, int windowNo) {
 		this(data, windowNo, 0);
@@ -112,7 +112,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	/**
 	 *
 	 * @param data
-	 * @param WindowNo
+	 * @param windowNo
 	 * @param processID
 	 */
 	public WDrillReport(DrillData data, int windowNo, int processID) {

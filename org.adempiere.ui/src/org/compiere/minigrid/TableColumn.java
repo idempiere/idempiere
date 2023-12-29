@@ -43,7 +43,7 @@ public class TableColumn
 
     /** 
      *  Cover method, using a default width of 75 
-     *  @see #WTableColumn(int)
+     *  @see @WTableColumn(int)
      */
     public TableColumn() {
 		headerValue = null;

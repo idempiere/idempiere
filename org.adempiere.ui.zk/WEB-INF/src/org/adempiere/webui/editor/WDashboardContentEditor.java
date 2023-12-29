@@ -43,7 +43,7 @@ import org.zkoss.zul.Panelchildren;
 
 /**
  * Default editor for {@link DisplayType#DashboardContent}.<br/>
- * A readonly editor that render dashboard content from {@link MDashboardContents} to {@link Panel} component. 
+ * A readonly editor that render dashboard content from {@link MDashboardContent} to {@link Panel} component. 
  * @author hengsin
  *
  */

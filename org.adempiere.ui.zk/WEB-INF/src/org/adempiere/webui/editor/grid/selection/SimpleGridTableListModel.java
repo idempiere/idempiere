@@ -109,7 +109,7 @@ public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> im
 	/**
 	 * @param cmpr
 	 * @param ascending
-	 * @see ListModelExt#sort(Comparator, boolean) 
+	 * @see org.zkoss.zul.ListModelExt#sort(Comparator, boolean) 
 	 */
 	@Override
 	public void sort(Comparator<Object> cmpr, boolean ascending) {

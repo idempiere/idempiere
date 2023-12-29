@@ -90,7 +90,7 @@ public interface IProcessUI {
 	/**
 	 * Prompt for secret input (for e.g password) from user.
 	 * 
-	 * @param title
+	 * @param message
 	 * @param callback
 	 */
 	public void askForSecretInput(String message, Callback<String> callback);

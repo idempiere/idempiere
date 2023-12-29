@@ -265,7 +265,7 @@ public class MDashboardContent extends X_PA_DashboardContent
     /**
      * Parse Process Parameters
      * @param parameters
-     * @return HashMap<String parameterName, String value>
+     * @return HashMap&lt;String parameterName, String value&gt;
      */
     public static Map<String, String> parseProcessParameters(String parameters)	{
     	Map<String, String> paramMap = new HashMap<String, String>();

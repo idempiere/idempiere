@@ -77,7 +77,7 @@ public interface IGridTabExporter {
 	
 	/**
 	 * Maximum deep of child tab supported by the exporter
-	 * @return > 0 for maximum level of deep, <= 0 for unlimited level of deep 
+	 * @return &gt; 0 for maximum level of deep, &lt;= 0 for unlimited level of deep 
 	 */
 	default int maxDeepOfChildTab() {
 		return 0;

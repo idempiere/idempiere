@@ -323,7 +323,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Set M_Locator_ID.
-	 *  Throw IllegalArgumentException if M_Locator_ID < 0.
+	 *  Throw IllegalArgumentException if M_Locator_ID &lt; 0.
 	 *	@param M_Locator_ID id
 	 */
 	@Override
