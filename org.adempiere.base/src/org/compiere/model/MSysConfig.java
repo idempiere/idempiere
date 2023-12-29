@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1548573102245466450L;
+	private static final long serialVersionUID = 7338447655641380126L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -150,6 +150,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";
     public static final String MSEQUENCE_GETNEXT_TIMEOUT = "MSEQUENCE_GETNEXT_TIMEOUT";
+    public static final String OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER = "OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER";
+    public static final String OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER = "OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER";
 	public static final String ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES = "ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT";
