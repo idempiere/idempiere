@@ -112,8 +112,8 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	/**
 	 * 	Get from Cache (immutable)
 	 *	@param ctx context
-	 *	@param M_Product_Category_ID id
-	 *	@return category
+	 *	@param PA_DocumentStatus_ID id
+	 *	@return document status
 	 */
 	public static MDocumentStatus get (Properties ctx, int PA_DocumentStatus_ID)
 	{

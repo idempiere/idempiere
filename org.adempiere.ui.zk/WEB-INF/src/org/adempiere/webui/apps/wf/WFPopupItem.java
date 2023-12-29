@@ -70,7 +70,7 @@ public class WFPopupItem extends Menuitem {
 	 * 	Add Line Item
 	 *	@param title title
 	 *	@param node workflow node
-	 *	@param AD_WF_NodeTo_ID if > 0, next workflow node id. if < 0, actions to apply to node
+	 *	@param AD_WF_NodeTo_ID if > 0, next workflow node id. if &lt; 0, actions to apply to node
 	 */
 	public WFPopupItem (String title, MWFNode node, int AD_WF_NodeTo_ID)
 	{

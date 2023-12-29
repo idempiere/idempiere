@@ -370,7 +370,8 @@ public class DrillReportCtl {
 
 	/**
 	 * 	Launch Report
-	 * 	@param pf print format
+	 *  @param ad_PrintFormat_ID print format
+	 *  @param tableName
 	 */
 	public void launchTableDrillReport (int ad_PrintFormat_ID, String tableName)
 	{
@@ -474,7 +475,8 @@ public class DrillReportCtl {
 
 	/**
 	 * 	Fill Parameter
-	 *	@param pInstance process instance
+	 *  @param pi process info
+	 *  @param processDrillRule
 	 */
 	protected void fillParameter(ProcessInfo pi, MProcessDrillRule processDrillRule)
 	{

@@ -402,7 +402,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	/**
 	 * Clear the label (to display) cache in a recent item instance.
 	 * @param AD_Table_ID
-	 * @param Record_ID
+	 * @param Record_UU
 	 */
 	public static synchronized void clearLabel(int AD_Table_ID, String Record_UU) {
 		Iterator<MRecentItem> it = s_cache.values().iterator();

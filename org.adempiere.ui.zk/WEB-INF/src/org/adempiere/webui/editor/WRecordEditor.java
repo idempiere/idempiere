@@ -84,7 +84,6 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 
 	/**
 	 * Constructor
-	 * @param div
 	 * @param gridField
 	 * @param tableEditor
 	 * @param editorConfiguration
@@ -364,7 +363,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	/**
 	 * Get Lookup
 	 * @param tableID
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public MLookup getRecordsLookup(int tableID) {
 		return getRecordsLookup(tableID, false);
@@ -468,7 +467,6 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 
 	/**
 	 * Validate selected table id value
-	 * @param tableIDEditor
 	 * @param tableId
 	 * @return error message or null
 	 */

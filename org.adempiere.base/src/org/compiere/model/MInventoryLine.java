@@ -469,7 +469,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/**
-	 * @return true if is an outgoing transaction (movement qty < 0)
+	 * @return true if is an outgoing transaction (movement qty &lt; 0)
 	 */
 	public boolean isSOTrx() {
 		return getMovementQty().signum() < 0;

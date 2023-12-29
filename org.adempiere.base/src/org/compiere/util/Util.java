@@ -756,7 +756,7 @@ public class Util
 
 	/**
 	 * Make the filename correct (updating all unauthorized characters to safe ones)
-	 * @param the filename to check
+	 * @param input the filename to check
 	 * @returns the correct filename
 	 */
 	public static String setFilenameCorrect(String input) {
