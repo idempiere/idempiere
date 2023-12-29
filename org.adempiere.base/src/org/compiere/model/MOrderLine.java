@@ -1008,7 +1008,7 @@ public class MOrderLine extends X_C_OrderLine
 	 * @param oldTax true if the old C_Tax_ID should be used
 	 * @return true if success, false otherwise
 	 * 
-	 * @author teo_sarca [ 1583825 ]
+	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
 		int C_Tax_ID = getC_Tax_ID();

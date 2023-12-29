@@ -232,7 +232,7 @@ public interface IDesktop extends UIPart {
 	
 	/**
 	 * update help content in help/info panel
-	 * @param ctxTypes
+	 * @param ctxType
 	 * @param recordId
 	 */
 	public void updateHelpContext(String ctxType, int recordId);
@@ -290,7 +290,7 @@ public interface IDesktop extends UIPart {
 	
 	/**
 	 * Set if closing tab with shortcut is allowed
-	 * @param isCloseTabWithShortcutAllowed
+	 * @param isCloseTabWithShortcut
 	 */
 	public void setCloseTabWithShortcut(boolean isCloseTabWithShortcut);
 }

@@ -315,7 +315,8 @@ public class QuickCustomizeGridViewPanel extends Panel {
 	/**
 	 * Move within Yes List with Drag Event and Multiple Choice
 	 * 
-	 * @param event event
+	 * @param endIndex
+	 * @param selObjects
 	 */
 	protected void migrateValueWithinYesList(int endIndex, List<ListElement> selObjects) {
 		int iniIndex = 0;

@@ -438,7 +438,6 @@ public class FDialog
      * @param adMessage
      * @param adMessageArgs
      * @param title
-     * @param correctInput
      * @param callback
      */
     public static void askForInputTextConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<Map.Entry<Boolean, String>> callback)

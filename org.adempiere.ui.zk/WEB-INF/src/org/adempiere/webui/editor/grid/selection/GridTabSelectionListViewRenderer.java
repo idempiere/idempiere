@@ -60,7 +60,7 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 	/**
 	 * @param listitem
 	 * @param data
-	 * @see ListitemRenderer#render(Listitem, Object)
+	 * @see ListitemRenderer#render(Listitem, Object, int)
 	 */
 	@Override
 	public void render(Listitem listitem, GridTableRow data, int index) throws Exception {

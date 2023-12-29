@@ -143,7 +143,7 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 	 * If needed, caller can use the return {@link CompletableFuture} to wait for the scan to complete (using either get or join).
 	 * @param context bundle context
 	 * @param packageNames one or more package to scan
-	 * @return CompletableFuture<List<EventHandler>>
+	 * @return CompletableFuture&lt;List&lt;EventHandler&gt;&gt;
 	 */
 	public synchronized CompletableFuture<List<EventHandler>> scan(BundleContext context, String ...packageNames) {
 		return scan(context, false, packageNames);
@@ -154,7 +154,7 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 	 * @param context bundle context
 	 * @param logScanDuration
 	 * @param packageNames one or more package to scan
-	 * @return CompletableFuture<List<EventHandler>>
+	 * @return CompletableFuture&lt;List&lt;EventHandler&gt;&gt;
 	 */
 	protected CompletableFuture<List<EventHandler>> scan(BundleContext context, boolean logScanDuration, String ...packageNames) {
 		long start = logScanDuration ? System.currentTimeMillis() : 0;

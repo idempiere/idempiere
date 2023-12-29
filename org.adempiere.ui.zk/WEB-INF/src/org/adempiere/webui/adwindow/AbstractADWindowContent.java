@@ -3916,7 +3916,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	
 	/**
 	 * Show process, form or info window dialog for button.
-	 * Delegate to {@link #executeButtonProcess0(IProcessButton, boolean, int, int)} or {@link #executionButtonInfoWindow0(IProcessButton)}.
+	 * Delegate to {@link #executeButtonProcess0(IProcessButton, boolean, int, int, String, Callback)} or {@link #executionButtonInfoWindow0(IProcessButton)}.
 	 * @param wButton
 	 * @param startWOasking
 	 * @param table_ID
@@ -3932,7 +3932,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	/**
 	 * Show process, form or info window dialog for button.
-	 * Delegate to {@link #executeButtonProcess0(IProcessButton, boolean, int, int)} or {@link #executionButtonInfoWindow0(IProcessButton)}.
+	 * Delegate to {@link #executeButtonProcess0(IProcessButton, boolean, int, int, String, Callback)} or {@link #executionButtonInfoWindow0(IProcessButton)}.
 	 * @param wButton
 	 * @param startWOasking
 	 * @param table_ID

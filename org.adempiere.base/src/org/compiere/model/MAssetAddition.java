@@ -1151,7 +1151,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	}
 	
 	/**
-	 * @return true if assert value <= 0
+	 * @return true if assert value &lt;= 0
 	 */
 	public boolean hasZeroValues()
 	{
