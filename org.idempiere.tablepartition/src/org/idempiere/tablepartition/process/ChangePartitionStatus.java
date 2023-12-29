@@ -63,16 +63,27 @@ public class ChangePartitionStatus extends SvrProcess {
 		String partitionName = partition.getName();
 		MTable table = new MTable(Env.getCtx(), partition.getAD_Table_ID(), get_TrxName());
 		service.reattachPartition(table, partition, get_TrxName(), getProcessInfo());
-		service.runPostPartitionProcess(table, get_TrxName(), getProcessInfo());
 		return Msg.getMsg(getCtx(), "PartitionReAttachToTable", new Object[] {partitionName, table.getTableName()});
 	}
 
 	private String detachPartition(X_AD_TablePartition partition, ITablePartitionService service) {
 		String partitionName = partition.getName();
 		MTable table = new MTable(Env.getCtx(), partition.getAD_Table_ID(), get_TrxName());
-		service.detachPartition(table, partition, get_TrxName(), getProcessInfo());
-		service.runPostPartitionProcess(table, get_TrxName(), getProcessInfo());
+		service.detachPartition(table, partition, get_TrxName(), getProcessInfo());		
 		return Msg.getMsg(getCtx(), "PartitionDetachFromTable", new Object[] {partitionName, table.getTableName()});
 	}
 
+	@Override
+	protected void postProcess(boolean success) {
+		if (success) {
+			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
+			if (service != null) {
+				X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), p_record_ID, null);
+				MTable table = new MTable(Env.getCtx(), partition.getAD_Table_ID(), null);
+				service.runPostPartitionProcess(table, null, getProcessInfo());
+			}
+		}
+	}
+
+	
 }
