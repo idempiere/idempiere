@@ -777,24 +777,43 @@ public class TablePartitionService implements ITablePartitionService {
 		}
 		
 		if (partitionKeyColumns.size() > 2)
-			return Msg.getMsg(Env.getCtx(), "OnlyOnePartitionKeyAllowed");
+			return Msg.getMsg(Env.getCtx(), "OnlyTwoPartitionKeyAllowed");
+
+		if (column.isActive() && column.isPartitionKey() && column.getPartitioningMethod().equals(MColumn.PARTITIONINGMETHOD_Range)) {
+			String error = RangePartitionInterval.validateIntervalPattern(column);
+			if (!Util.isEmpty(error))
+				return error;
+		}
+		
+		if (!isPartitionedTable(table, trxName))
+			return null;
 		
 		//can't change partition key column for range partition
 		if ((!column.isPartitionKey() || !column.isActive()) && Boolean.TRUE.equals(column.get_ValueOld("IsPartitionKey"))) {
-			if (isRangePartitionedTable(table, trxName))
+			if (partitionKeyColumns.size() == 2
+					|| (partitionKeyColumns.size() == 1 && !column.isPartitionKey())
+					|| isRangePartitionedTable(table, trxName))
 				return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged");
+		}
+		
+		if (column.isActive() && column.isPartitionKey() && partitionKeyColumns.size() == 2) {
+			if (column.is_ValueChanged(MColumn.COLUMNNAME_PartitioningMethod)) {
+				return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged");
+			} else if (column.is_ValueChanged(MColumn.COLUMNNAME_SeqNoPartition)) {
+				int oldSeq = column.get_ValueOldAsInt(MColumn.COLUMNNAME_SeqNoPartition);
+				int newSeq = column.getSeqNoPartition();
+				int otherSeq = partitionKeyColumns.get(0).getAD_Column_ID() == column.getAD_Column_ID() 
+									? partitionKeyColumns.get(1).getSeqNoPartition()
+									: partitionKeyColumns.get(0).getSeqNoPartition();
+				if (!(((newSeq < otherSeq) && (oldSeq < otherSeq)) || ((oldSeq > otherSeq) && (newSeq > otherSeq))))
+					return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged");
+			}		
 		}
 		
 		//can't change partition type to list for range partition
 		if (column.isActive() && column.isPartitionKey() && column.getPartitioningMethod().equals(MColumn.PARTITIONINGMETHOD_List)) {
 			if (isRangePartitionedTable(table, trxName))
 				return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged");
-		}
-		
-		if (column.isActive() && column.isPartitionKey() && column.getPartitioningMethod().equals(MColumn.PARTITIONINGMETHOD_Range)) {
-			String error = RangePartitionInterval.validateIntervalPattern(column);
-			if (!Util.isEmpty(error))
-				return error;
 		}
 		
 		return null;

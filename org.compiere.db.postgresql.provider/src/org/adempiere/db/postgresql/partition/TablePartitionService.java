@@ -1001,7 +1001,7 @@ public class TablePartitionService implements ITablePartitionService {
 				partitionKeyColumns.remove(column);
 		}
 		if (partitionKeyColumns.size() > 2)
-			return Msg.getMsg(Env.getCtx(), "OnlyOnePartitionKeyAllowed");
+			return Msg.getMsg(Env.getCtx(), "OnlyTwoPartitionKeyAllowed");
 		
 		if (column.isActive() && column.isPartitionKey() && column.getPartitioningMethod().equals(MColumn.PARTITIONINGMETHOD_Range)) {
 			String error = RangePartitionInterval.validateIntervalPattern(column);
@@ -1011,11 +1011,26 @@ public class TablePartitionService implements ITablePartitionService {
 		
 		if (!isPartitionedTable(table, trxName))
 			return null;
+		
 		if (column.is_ValueChanged(MColumn.COLUMNNAME_IsPartitionKey)
 				|| (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_IsActive))
-				|| (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_SeqNoPartition))) {
-			return validateConfiguration(table, trxName);
+				|| (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_PartitioningMethod))) {
+			if (partitionKeyColumns.size() == 2 || (partitionKeyColumns.size()==1 && !column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_IsPartitionKey)))
+				return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged");
+			else
+				return validateConfiguration(table, trxName);
 		}
+		
+		if (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_SeqNoPartition) && partitionKeyColumns.size() == 2) {
+			int oldSeq = column.get_ValueOldAsInt(MColumn.COLUMNNAME_SeqNoPartition);
+			int newSeq = column.getSeqNoPartition();
+			int otherSeq = partitionKeyColumns.get(0).getAD_Column_ID() == column.getAD_Column_ID() 
+								? partitionKeyColumns.get(1).getSeqNoPartition()
+								: partitionKeyColumns.get(0).getSeqNoPartition();
+			if (!(((newSeq < otherSeq) && (oldSeq < otherSeq)) || ((oldSeq > otherSeq) && (newSeq > otherSeq))))
+				return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged");
+		}
+		
 		if (column.isPartitionKey() && column.is_ValueChanged(MColumn.COLUMNNAME_RangePartitionInterval))
 			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + " [" + MColumn.COLUMNNAME_RangePartitionInterval + "]";
 		return null;

@@ -131,3 +131,7 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 -- Dec 28, 2023, 4:12:21 PM MYT
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The partition {0} has been successfully re-attached to table {1}',0,0,'Y',TO_TIMESTAMP('2023-12-28 16:12:21','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-28 16:12:21','YYYY-MM-DD HH24:MI:SS'),100,200861,'PartitionReAttachToTable','D','4a3c84d0-fc35-4d62-b5ab-3ba018453783')
 ;
+
+-- Dec 29, 2023, 5:45:23 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','A maximum of two columns can be specified as partition keys. The first column defines the primary partition, and the second (optional) column defines the subpartition',0,0,'Y',TO_TIMESTAMP('2023-12-29 17:45:17','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-12-29 17:45:17','YYYY-MM-DD HH24:MI:SS'),100,200862,'OnlyTwoPartitionKeyAllowed','D','8b27d206-d764-4291-80ce-b00b135daa32')
+;
