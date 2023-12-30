@@ -45,6 +45,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 public class TablePartitionService implements ITablePartitionService {
@@ -1076,11 +1077,47 @@ public class TablePartitionService implements ITablePartitionService {
 					 .append(partition.getName())
 					 .append(" ")
 					 .append(partition.getExpressionPartition());
-				int no = DB.executeUpdateEx(alter.toString(), trxName);
-				if (processInfo != null)
-					processInfo.addLog(0, null, null, no + " " + alter.toString());
-				partition.setIsPartitionAttached(true);
-				partition.saveEx();
+				boolean success = true;
+				try {
+					int no = DB.executeUpdateEx(alter.toString(), trxName);
+					if (processInfo != null)
+						processInfo.addLog(0, null, null, no + " " + alter.toString());
+				} catch (RuntimeException e) {
+					success = false;
+					Trx.get(trxName, false).rollback();
+				}
+				
+				if (success) {
+					partition.setIsPartitionAttached(true);
+					partition.saveEx();
+				} else {
+					//fallback to insert and delete
+					StringBuilder updateStmt = new StringBuilder();
+					updateStmt.append("WITH x AS ( ");
+					updateStmt.append("DELETE FROM ").append(partition.getName()).append(" ");
+					updateStmt.append("RETURNING *) ");
+					updateStmt.append("INSERT INTO ").append(table.getTableName()).append(" ");
+					updateStmt.append("SELECT * FROM x");
+					int no = DB.executeUpdateEx(updateStmt.toString(), trxName);
+					if (processInfo != null)
+						processInfo.addLog(0, null, null, no + " " + updateStmt.toString());
+					alter = new StringBuilder("DROP TABLE ").append(partition.getName());
+					no = DB.executeUpdateEx(alter.toString(), trxName);
+					if (processInfo != null)
+						processInfo.addLog(0, null, null, no + " " + alter.toString());
+					try {
+						Trx.get(trxName, false).commit(true);
+					} catch (SQLException e) {
+						throw new DBException(e);
+					}
+					updateStmt = new StringBuilder("UPDATE ")
+							.append(X_AD_TablePartition.Table_Name)
+							.append(" SET Name=?, IsActive=? ")
+							.append("WHERE ").append(X_AD_TablePartition.COLUMNNAME_AD_TablePartition_ID).append("=?");
+					DB.executeUpdateEx(updateStmt.toString(), new Object[] {"~"+partition.getName()+"~","N",partition.get_ID()}, trxName);
+					table.getTablePartitions(true, trxName);
+					addPartitionAndMigrateData(table, trxName, processInfo);
+				}
 			} else {
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CantDetachReattachDefaultPartition"));
 			}

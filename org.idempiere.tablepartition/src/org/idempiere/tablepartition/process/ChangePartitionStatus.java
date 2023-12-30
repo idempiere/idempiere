@@ -81,6 +81,8 @@ public class ChangePartitionStatus extends SvrProcess {
 				X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), p_record_ID, null);
 				MTable table = new MTable(Env.getCtx(), partition.getAD_Table_ID(), null);
 				service.runPostPartitionProcess(table, null, getProcessInfo());
+				if (!partition.isActive())
+					partition.deleteEx(true);
 			}
 		}
 	}
