@@ -2269,7 +2269,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		focusToActivePanel();
 		// IDEMPIERE-1328 - refresh recent item after running a process, i.e. completing a doc that changes documentno
     	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
-    			adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx));
+    			adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx));
 	}
 
     /**
@@ -2877,12 +2877,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    } else {
 		    	if (adTabbox.getSelectedIndex() == 0) {
 		        	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
-		        			adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx));
+		        			adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx));
 		    	} else {
 	        		GridTab mainTab = getMainTabAbove();
 		    		if (mainTab != null) {
 			        	MRecentItem.touchUpdatedRecord(ctx, mainTab.getAD_Table_ID(),
-			        			mainTab.getRecord_UU(), Env.getAD_User_ID(ctx));
+			        			mainTab.getRecord_ID(), mainTab.getRecord_UU(), Env.getAD_User_ID(ctx));
 		    		}
 		    	}
 		    }
