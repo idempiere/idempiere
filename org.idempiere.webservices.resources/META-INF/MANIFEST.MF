@@ -4,6 +4,7 @@ Bundle-Name: Web Services Helper Resource Lookup
 Bundle-SymbolicName: org.idempiere.webservices.resources;singleton:=true
 Bundle-Version: 11.0.0.qualifier
 Export-Package: org.idempiere.webservices.resources,
+ org.idempiere.webservices.resources.cxf,
  schemas,
  schemas.configuration
 Import-Package: javax.servlet;version="4.0.0",
