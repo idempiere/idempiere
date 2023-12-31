@@ -1110,11 +1110,8 @@ public class TablePartitionService implements ITablePartitionService {
 					} catch (SQLException e) {
 						throw new DBException(e);
 					}
-					updateStmt = new StringBuilder("UPDATE ")
-							.append(X_AD_TablePartition.Table_Name)
-							.append(" SET Name=?, IsActive=? ")
-							.append("WHERE ").append(X_AD_TablePartition.COLUMNNAME_AD_TablePartition_ID).append("=?");
-					DB.executeUpdateEx(updateStmt.toString(), new Object[] {"~"+partition.getName()+"~","N",partition.get_ID()}, trxName);
+
+					partition.deleteEx(true);
 					table.getTablePartitions(true, trxName);
 					addPartitionAndMigrateData(table, trxName, processInfo);
 				}

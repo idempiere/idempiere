@@ -34,36 +34,50 @@ import org.compiere.process.ProcessInfo;
  */
 public interface ITablePartitionService {
 	/**
+	 * Is table already a partitioned table in DB
+	 * @param table
+	 * @param trxName
 	 * @return true if table have been partition in DB
 	 */
 	public boolean isPartitionedTable(MTable table, String trxName);
 	
 	/**
 	 * Make existing table a partition table
+	 * @param table
+	 * @param trxName
+	 * @param processInfo
 	 * @return true if success
 	 */
 	public boolean createPartitionedTable(MTable table, String trxName, ProcessInfo processInfo);
 	
 	/**
 	 * Add new partition for new data and migrate data to new partition (if needed by DB)
+	 * @param table
+	 * @param trxName
+	 * @param processInfo
 	 * @return true if success
 	 */
 	public boolean addPartitionAndMigrateData(MTable table, String trxName, ProcessInfo processInfo);
 	
 	/**
 	 * Run post partition process (if needed)
+	 * @param table
+	 * @param trxName
+	 * @param processInfo
 	 * @return true if success
 	 */
 	public boolean runPostPartitionProcess(MTable table, String trxName, ProcessInfo processInfo);
 	
 	/**
 	 * Validate partition configuration for table object
+	 * @param table
 	 * @return String error-code - null if not error
 	 */
 	public String isValidConfiguration(MTable table);
 	
 	/**
 	 * Validate partition configuration for column object
+	 * @param column
 	 * @return String error-code - null if not error
 	 */
 	public String isValidConfiguration(MColumn column);

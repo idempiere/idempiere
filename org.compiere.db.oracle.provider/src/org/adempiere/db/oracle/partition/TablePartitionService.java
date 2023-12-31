@@ -930,8 +930,9 @@ public class TablePartitionService implements ITablePartitionService {
 				for(X_AD_TablePartition subPartition : subPartitions) {
 					subPartition.deleteEx(true);
 				}
-				partition.deleteEx(true);
 				
+				partition.deleteEx(true);
+				table.getTablePartitions(true, trxName);				
 				addPartitionAndMigrateData(table, trxName, processInfo);
 				
 				updateStmt = new StringBuilder("DROP TABLE ")
