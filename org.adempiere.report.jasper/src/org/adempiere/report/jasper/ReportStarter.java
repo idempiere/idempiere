@@ -51,6 +51,8 @@ import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.IProcessUI;
+import org.compiere.model.MLanguage;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
@@ -415,6 +417,13 @@ public class ReportStarter implements ProcessCall, ClientProcess
            	params.put(JRParameter.REPORT_LOCALE, currLang.getLocale());
            	params.put(COLUMN_LOOKUP, new ColumnLookup(currLang));
 
+           	// set Language to PInstance
+           	if(AD_PInstance_ID > 0 && currLang != null) {
+           		MPInstance pInstance = new MPInstance(ctx, AD_PInstance_ID, trxName);
+           		pInstance.setAD_Language_ID(MLanguage.get(ctx, currLang.getAD_Language()).getAD_Language_ID());
+           		pInstance.saveEx(trxName);
+           	}
+           	
             // Resources
             Object resourceBundleObject = null;
             String bundleName = jasperReport.getResourceBundle();
