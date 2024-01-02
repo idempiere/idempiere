@@ -472,24 +472,10 @@ public class ReportCtl
 			if(instance != null) {
 				instance.updatePrintFormatAndLanguageIfEmpty(format);
 			}
-			// We have a Jasper Print Format
-			// ==============================
-			if(format.getJasperProcess_ID() > 0)
+			createOutput(re, !IsDirectPrint, printerName);
+			if (IsDirectPrint)
 			{
-				ServerReportCtl.runJasperProcess(Record_ID, re, IsDirectPrint, printerName);
-				if (IsDirectPrint) {
-					ReportEngine.printConfirm(type, Record_ID);
-				}
-			}
-			else
-			// Standard Print Format (Non-Jasper)
-			// ==================================
-			{
-				createOutput(re, !IsDirectPrint, printerName);
-				if (IsDirectPrint)
-				{
-					ReportEngine.printConfirm (type, Record_ID);
-				}
+				ReportEngine.printConfirm (type, Record_ID);
 			}
 		}
 		return true;
