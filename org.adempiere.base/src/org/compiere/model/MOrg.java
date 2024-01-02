@@ -63,7 +63,6 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 
 	/**
 	 * 	Get Active Organizations Of Client
-	 *	@param ctx context
 	 *	@param clientID AD_Client_ID
 	 *	@return array of organization
 	 */

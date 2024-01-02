@@ -128,7 +128,6 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	
 	/**
 	 * @param win
-	 * @param registered Window Number (start from 0)
 	 */
 	public int registerWindow(Object win) {
 		List<Object> windows = getWindows();

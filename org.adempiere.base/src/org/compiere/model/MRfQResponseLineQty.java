@@ -111,7 +111,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	/**
 	 * 	Is the Amount Valid.<br/>
 	 *  - Price > 0 <br/>
-	 *  - Discount <= 100 <br/>
+	 *  - Discount &lt;= 100 <br/>
 	 *  - Net Amount > 0
 	 * 	@return true if valid
 	 */

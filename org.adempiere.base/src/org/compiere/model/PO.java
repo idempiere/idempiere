@@ -2223,7 +2223,7 @@ public abstract class PO
 		if (   columnName == null 
 			|| AD_Language == null
 			|| m_IDs.length > 1
-			|| (m_IDs[0] instanceof Integer && m_IDs[0].equals(I_ZERO))
+			|| (m_IDs[0] instanceof Integer && m_IDs[0].equals(I_ZERO) && ! MTable.isZeroIDTable(get_TableName()))
 			|| (m_IDs[0] instanceof String && Util.isEmpty((String)m_IDs[0]))
 			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String))
 		{
@@ -2590,7 +2590,6 @@ public abstract class PO
 
 	/**
 	 * Update Value or create new record, used when writing a cross tenant record
-	 * @param trxName transaction
 	 * @throws AdempiereException
 	 * @see #saveEx(String)
 	 */

@@ -420,9 +420,10 @@
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
+        <setEntry value="org.idempiere.tablepartition@default:default"/>
         <setEntry value="org.idempiere.test@default:default"/>
-        <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.webservices.resources@default:default"/>
+        <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>

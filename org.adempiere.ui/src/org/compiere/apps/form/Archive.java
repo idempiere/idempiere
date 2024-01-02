@@ -147,8 +147,8 @@ public class Archive {
 	 * @param description archive description filter
 	 * @param help archive help filter
 	 * @param createdBy CreatedBy filter
-	 * @param createdFrom Created >= createdFrom
-	 * @param createdTo Created <= createdTo
+	 * @param createdFrom Created &gt;= createdFrom
+	 * @param createdTo Created &lt;= createdTo
 	 */
 	public void cmd_query(boolean reports, KeyNamePair process, KeyNamePair table, Integer C_BPartner_ID, 
 			String name, String description, String help, KeyNamePair createdBy, 

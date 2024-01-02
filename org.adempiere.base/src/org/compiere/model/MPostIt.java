@@ -50,8 +50,8 @@ public class MPostIt extends X_AD_PostIt
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param XXA_PostIt_ID id
-	 *	@param trxName transcation
+	 *	@param AD_PostIt_ID id
+	 *	@param trxName transaction
 	 */
 	public MPostIt (Properties ctx, int AD_PostIt_ID, String trxName)
 	{

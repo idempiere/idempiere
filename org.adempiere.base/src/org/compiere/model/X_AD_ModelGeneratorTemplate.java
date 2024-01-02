@@ -30,7 +30,7 @@ public class X_AD_ModelGeneratorTemplate extends PO implements I_AD_ModelGenerat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230710L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ModelGeneratorTemplate (Properties ctx, int AD_ModelGeneratorTemplate_ID, String trxName)

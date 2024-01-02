@@ -9,7 +9,7 @@ http://cxf.apache.org/jaxrs
 http://cxf.apache.org/schemas/jaxrs.xsd">
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	<import resource="classpath:org/idempiere/webservices/resources/cxf/cxf-servlet.xml" />
 
 	<!-- JAX-RS -->
 	<jaxrs:server id="idempiereRest" address="/rest">

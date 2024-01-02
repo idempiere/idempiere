@@ -35,6 +35,7 @@ import org.adempiere.base.Service;
 import org.adempiere.model.GenericPO;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -762,6 +763,20 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [TableName]");
 			return false;
 		}
+				
+		if (is_ValueChanged(COLUMNNAME_IsPartition)) {
+			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
+			if (service == null) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "DBAdapterNoTablePartitionSupport"));
+				return false;
+			}
+			error = service.isValidConfiguration(this);
+			if (!Util.isEmpty(error)) {
+				log.saveError("Error", Msg.getMsg(getCtx(), error));
+				return false;				
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
@@ -941,4 +956,116 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return uuidFromZeroID;
 	}
 
+	private List<MColumn> partitionKeyColumns;
+	private List<String> partitionKeyColumnNames;
+	
+	/**
+	 * @param requery true to reload from DB
+	 * @return partition key columns
+	 */
+	public List<MColumn> getPartitionKeyColumns(boolean requery)
+	{
+		if (partitionKeyColumns != null && !requery)
+			return partitionKeyColumns;
+		
+		partitionKeyColumnNames = null;
+		
+		String whereClause = MColumn.COLUMNNAME_AD_Table_ID + "=? AND " + MColumn.COLUMNNAME_IsPartitionKey + "='Y'";
+		partitionKeyColumns = new Query(getCtx(), MColumn.Table_Name, whereClause, null)
+				.setParameters(getAD_Table_ID())
+				.setOnlyActiveRecords(true)
+				.setOrderBy(MColumn.COLUMNNAME_SeqNoPartition)
+				.list();
+		return partitionKeyColumns;
+	}
+	
+	/**
+	 * Update {@link #partitionKeyColumnNames} and {@link #partitionKeyColumnNamesAsString}
+	 */
+	private void populatePartitionKeyColumnNames()
+	{
+		List<MColumn> keyColumns = getPartitionKeyColumns(false);
+		partitionKeyColumnNames = new ArrayList<String>();
+		StringBuilder keyColumnsString = new StringBuilder();
+		int columnCount = 0;
+		for (MColumn keyColumn : keyColumns) 
+		{
+			if (columnCount > 0)
+				keyColumnsString.append(",");
+			keyColumnsString.append(keyColumn.getColumnName());			
+			partitionKeyColumnNames.add(keyColumn.getColumnName());
+			++columnCount;
+		}
+	}
+	
+	/**
+	 * @return partition key column names
+	 */
+	public List<String> getPartitionKeyColumnNames()
+	{
+		if (partitionKeyColumnNames != null)
+			return partitionKeyColumnNames;
+		
+		populatePartitionKeyColumnNames();
+		return partitionKeyColumnNames;
+	}
+	
+	/**
+	 * Create and save new X_AD_TablePartition record.
+	 * @param name
+	 * @param expression
+	 * @param trxName
+	 * @param column
+	 * @return new X_AD_TablePartition record
+	 */
+	public X_AD_TablePartition createTablePartition(String name, String expression, String trxName, MColumn column)
+	{
+		X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), 0, trxName);
+		partition.setAD_Table_ID(getAD_Table_ID());
+		partition.setName(name);
+		partition.setExpressionPartition(expression);
+		partition.setAD_Column_ID(column.getAD_Column_ID());		
+		partition.saveEx();
+		return partition;
+	}
+	
+	private List<X_AD_TablePartition> tablePartitions;
+	private List<String> tablePartitionNames;
+	
+	/**
+	 * @param requery true to reload from DB
+	 * @param trxName
+	 * @return X_AD_TablePartition records of this table
+	 */
+	public List<X_AD_TablePartition> getTablePartitions(boolean requery, String trxName)
+	{
+		if (tablePartitions != null && !requery)
+			return tablePartitions;
+		
+		tablePartitionNames = null;
+		
+		String whereClause = X_AD_TablePartition.COLUMNNAME_AD_Table_ID + "=?";
+		tablePartitions = new Query(getCtx(), X_AD_TablePartition.Table_Name, whereClause, trxName)
+				.setParameters(getAD_Table_ID())
+				.setOnlyActiveRecords(true)
+				.setOrderBy(X_AD_TablePartition.COLUMNNAME_Name)
+				.list();
+		return tablePartitions;
+	}
+	
+	/**
+	 * @param trxName
+	 * @return list of table partition name
+	 */
+	public List<String> getTablePartitionNames(String trxName)
+	{
+		if (tablePartitionNames != null)
+			return tablePartitionNames;
+		
+		List<X_AD_TablePartition> partitions = getTablePartitions(false, trxName);
+		tablePartitionNames = new ArrayList<String>();
+		for (X_AD_TablePartition partition : partitions)
+			tablePartitionNames.add(partition.getName());
+		return tablePartitionNames;
+	}
 }	//	MTable

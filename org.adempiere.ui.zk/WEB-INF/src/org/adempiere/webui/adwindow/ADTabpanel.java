@@ -2461,7 +2461,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	
 	/**
 	 * 
-	 * @return {@link AbstractADWindowContenta}
+	 * @return {@link AbstractADWindowContent}
 	 */
 	public AbstractADWindowContent getADWindowContent()
 	{

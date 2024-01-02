@@ -30,7 +30,7 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230411L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Style (Properties ctx, int AD_Style_ID, String trxName)

@@ -167,7 +167,7 @@ BEGIN
   FOR r IN (
     SELECT DISTINCT t.TableName, cl.AD_Table_ID
       FROM AD_ChangeLog cl
-	JOIN AD_Table t ON (cl.AD_Table_ID=t.AD_Table_ID)
+	JOIN AD_Table t ON (cl.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE cl.Record_UU IS NULL
 	AND cl.Record_ID IS NOT NULL
 	AND cl.EventChangeLog!='D'

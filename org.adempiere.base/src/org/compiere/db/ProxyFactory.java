@@ -58,7 +58,7 @@ public class ProxyFactory {
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param sql
-	 * @param trxName
+	 * @param connection
 	 * @return new CPreparedStatement proxy instance
 	 */
 	public static CPreparedStatement newCPreparedStatement(int resultSetType,

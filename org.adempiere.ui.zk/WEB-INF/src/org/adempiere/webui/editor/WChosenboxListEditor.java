@@ -286,17 +286,15 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     		addChangeLogMenu(popupMenu);
     		popupMenu.removeNewUpdateMenu();
     		
-    		if(gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList && gridField.isEditable(true)) {
-	    		Menuitem editor = new Menuitem();
-	    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
-	    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
-	    		if (ThemeManager.isUseFontIconForImage())
-	    			editor.setIconSclass("z-icon-Wizard");
-	    		else
-	    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
-	    		editor.addEventListener(Events.ON_CLICK, popupMenu);
-	    		popupMenu.appendChild(editor);
-    		}
+    		Menuitem editor = new Menuitem();
+    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+    		if (ThemeManager.isUseFontIconForImage())
+    			editor.setIconSclass("z-icon-Wizard");
+    		else
+    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+    		editor.addEventListener(Events.ON_CLICK, popupMenu);
+    		popupMenu.appendChild(editor);
 
         }        
     }
@@ -832,11 +830,12 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
 			
 			Hlayout noButtonLayout = createHlayoutBtn(new Button[] {bRemove, bAdd});
+			boolean isEditable = gridField.isEditable(true);
+			
+			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, isEditable, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
 
-			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
-
-			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
-				initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
+			if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList && isEditable) {
+				initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, isEditable, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
 				hlayout = createHlayoutLine(new Component[] {availableList, selectedList});
 			} else {
 				hlayout = createHlayoutLine(new Component[] {selectedList});
@@ -856,6 +855,14 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			south.setSclass("dialog-footer");
 			mainLayout.appendChild(south);
 			south.appendChild(confirmPanel);
+
+			if (! isEditable) {
+				bUp.setVisible(false);
+				bDown.setVisible(false);
+				bAdd.setVisible(false);
+				bRemove.setVisible(false);
+				bRemoveAll.setVisible(false);
+			}
 		}
 
 		private void load() {
@@ -979,9 +986,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			ZKUpdateUtil.setHflex(lb, "1");
 			ZKUpdateUtil.setVflex(lb, true);
 
-			if (mouseListener != null)
+			if (mouseListener != null && isItemDraggable)
 				lb.addDoubleClickListener(mouseListener);
-			if (crossListMouseListener != null)
+			if (crossListMouseListener != null && isItemDraggable)
 				lb.addOnDropListener(crossListMouseListener);
 			lb.setItemDraggable(isItemDraggable);
 			lb.setItemRenderer(model);

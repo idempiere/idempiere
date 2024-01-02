@@ -31,7 +31,7 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Method (Properties ctx, int A_Depreciation_Method_ID, String trxName)
