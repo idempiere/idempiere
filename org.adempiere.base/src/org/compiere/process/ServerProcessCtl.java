@@ -92,7 +92,7 @@ public class ServerProcessCtl implements Runnable {
 					format = (MPrintFormat)pi.getSerializableObject();
 				if (format == null)
 				{
-					log.log(Level.SEVERE, "No PrintFormat");
+					log.log(Level.INFO, "No PrintFormat");
 				}
 				else {
 					instance.updatePrintFormatAndLanguageIfEmpty(format);
