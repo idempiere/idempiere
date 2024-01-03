@@ -36,7 +36,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -815975460880303779L;
+	private static final long serialVersionUID = 3580618153284679385L;
 
 	/**
 	 * 	Standard Constructor
@@ -152,7 +152,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 */
 	public BigDecimal getApprovalAmt()
 	{
-		return getConvertedAmt();
+		return getQty().multiply(getConvertedAmt());
 	}	//	getApprovalAmt
 	
 	
@@ -193,19 +193,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			return false;
 		}
 		
-		//calculate expense amount
-		if(newRecord || is_ValueChanged(COLUMNNAME_Qty) || is_ValueChanged(COLUMNNAME_PriceEntered))
-		{
-			BigDecimal price = getPriceEntered();
-			if(price == null)
-			{
-				price = Env.ZERO;
-			}
-			
-			BigDecimal expenseAmt = price.multiply(getQty());
-			setExpenseAmt(expenseAmt);
-		}
-		
 		//	Calculate Converted Amount
 		if (newRecord || is_ValueChanged("ExpenseAmt") || is_ValueChanged("C_Currency_ID"))
 		{
@@ -218,10 +205,19 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 					getDateExpense(), 0, getAD_Client_ID(), getAD_Org_ID()) );
 			}
 		}
+		
+		// calculate Line Net Amount
+		if (newRecord || is_ValueChanged(COLUMNNAME_Qty) || is_ValueChanged(COLUMNNAME_ExpenseAmt))
+		{
+			BigDecimal lineNetAmt = getExpenseAmt().multiply(getQty());
+			setLineNetAmt(lineNetAmt);
+		}
+		
 		if (isTimeReport())
 		{
 			setExpenseAmt(Env.ZERO);
 			setConvertedAmt(Env.ZERO);
+			setLineNetAmt(Env.ZERO);
 		}
 		return true;
 	}	//	beforeSave
@@ -311,7 +307,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	{
 		String sql = "UPDATE S_TimeExpense te"
 			+ " SET ApprovalAmt = "
-				+ "(SELECT SUM(ConvertedAmt) FROM S_TimeExpenseLine tel "
+				+ "(SELECT SUM(Qty*ConvertedAmt) FROM S_TimeExpenseLine tel "
 				+ "WHERE te.S_TimeExpense_ID=tel.S_TimeExpense_ID) "
 			+ "WHERE S_TimeExpense_ID=" + getS_TimeExpense_ID();
 		@SuppressWarnings("unused")
