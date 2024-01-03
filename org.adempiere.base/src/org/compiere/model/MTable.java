@@ -1020,11 +1020,27 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public X_AD_TablePartition createTablePartition(String name, String expression, String trxName, MColumn column)
 	{
+		return createTablePartition(name, expression, trxName, column, null);
+	}
+	
+	/**
+	 * Create and save new X_AD_TablePartition record.
+	 * @param name
+	 * @param expression
+	 * @param trxName
+	 * @param column
+	 * @param parentPartition
+	 * @return new X_AD_TablePartition record
+	 */
+	public X_AD_TablePartition createTablePartition(String name, String expression, String trxName, MColumn column, X_AD_TablePartition parentPartition)
+	{
 		X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), 0, trxName);
 		partition.setAD_Table_ID(getAD_Table_ID());
 		partition.setName(name);
 		partition.setExpressionPartition(expression);
-		partition.setAD_Column_ID(column.getAD_Column_ID());		
+		partition.setAD_Column_ID(column.getAD_Column_ID());
+		if (parentPartition != null)
+			partition.setParent_TablePartition_ID(parentPartition.getAD_TablePartition_ID());
 		partition.saveEx();
 		return partition;
 	}
