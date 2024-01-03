@@ -373,18 +373,18 @@ public interface I_S_TimeExpenseLine
 	  */
 	public String getNote();
 
-    /** Column name PriceEntered */
-    public static final String COLUMNNAME_PriceEntered = "PriceEntered";
+	 /** Column name LineNetAmt */
+    public static final String COLUMNNAME_LineNetAmt = "LineNetAmt";
 
-	/** Set Price.
-	  * Price Entered - the price based on the selected/base UoM
+	/** Set Line Amount.
+	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
 	  */
-	public void setPriceEntered (BigDecimal PriceEntered);
+	public void setLineNetAmt (BigDecimal LineNetAmt);
 
-	/** Get Price.
-	  * Price Entered - the price based on the selected/base UoM
+	/** Get Line Amount.
+	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
 	  */
-	public BigDecimal getPriceEntered();
+	public BigDecimal getLineNetAmt();
 
     /** Column name PriceInvoiced */
     public static final String COLUMNNAME_PriceInvoiced = "PriceInvoiced";
