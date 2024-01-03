@@ -34,7 +34,7 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240102L;
 
     /** Standard Constructor */
     public X_S_TimeExpenseLine (Properties ctx, int S_TimeExpenseLine_ID, String trxName)
@@ -622,22 +622,23 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
-	/** Set Price.
-		@param PriceEntered Price Entered - the price based on the selected/base UoM
+	/** Set Line Amount.
+		@param LineNetAmt 
+		Line Extended Amount (Quantity * Actual Price) without Freight and Charges
 	*/
-	public void setPriceEntered (BigDecimal PriceEntered)
+	public void setLineNetAmt (BigDecimal LineNetAmt)
 	{
-		set_Value (COLUMNNAME_PriceEntered, PriceEntered);
+		set_Value (COLUMNNAME_LineNetAmt, LineNetAmt);
 	}
 
-	/** Get Price.
-		@return Price Entered - the price based on the selected/base UoM
+	/** Get Line Amount.
+		@return Line Extended Amount (Quantity * Actual Price) without Freight and Charges
 	  */
-	public BigDecimal getPriceEntered()
+	public BigDecimal getLineNetAmt () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceEntered);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LineNetAmt);
 		if (bd == null)
-			 return Env.ZERO;
+			return Env.ZERO;
 		return bd;
 	}
 

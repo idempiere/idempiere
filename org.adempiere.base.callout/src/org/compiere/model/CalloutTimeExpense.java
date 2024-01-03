@@ -39,7 +39,7 @@ public class CalloutTimeExpense extends CalloutEngine
 	/**
 	 *	Expense Report Line
 	 *		- called from M_Product_ID, S_ResourceAssignment_ID
-	 *		- set Price
+	 *		- set ExpenseAmt
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab
@@ -165,14 +165,14 @@ public class CalloutTimeExpense extends CalloutEngine
 		//	finish
 		if (priceActual == null)
 			priceActual = Env.ZERO;
-		mTab.setValue("PriceEntered", priceActual);
+		mTab.setValue("ExpenseAmt", priceActual);
 		return "";
 	}	//	Expense_Product
 
 	/**
 	 *	Expense - Amount.
 	 *		- called from ExpenseAmt, C_Currency_ID
-	 *		- calculates ConvertedAmt
+	 *		- calculates ConvertedAmt and Line Net Amount
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab
@@ -204,53 +204,14 @@ public class CalloutTimeExpense extends CalloutEngine
 				DateExpense, 0, AD_Client_ID, AD_Org_ID);
 		}
 		mTab.setValue("ConvertedAmt", ConvertedAmt);
+		
+		BigDecimal qty = (BigDecimal)mTab.getValue(MTimeExpenseLine.COLUMNNAME_Qty);
+		BigDecimal lineNetAmt = ExpenseAmt.multiply(qty);
+		mTab.setValue(MTimeExpenseLine.COLUMNNAME_LineNetAmt, lineNetAmt);
+		
 		if (log.isLoggable(Level.FINE)) log.fine("= ConvertedAmt=" + ConvertedAmt);
 
 		return "";
 	}	//	Expense_Amount
-	
-	/**
-	 *	Price or Quantity.
-	 *		- called from Price, Quantity
-	 *		- calculates Expense Amount
-	 *  @param ctx context
-	 *  @param WindowNo current Window No
-	 *  @param mTab Grid Tab
-	 *  @param mField Grid Field
-	 *  @param value New Value
-	 *  @return null or error message
-	 */
-	public String priceOrQty(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
-	{
-		BigDecimal qty = Env.ZERO;
-		BigDecimal price = Env.ZERO;
-
-		String columnName = mField.getColumnName();
-		if (MTimeExpenseLine.COLUMNNAME_Qty.equals(columnName))
-		{
-			qty = (BigDecimal) value;
-			price = (BigDecimal) mTab.getValue(MTimeExpenseLine.COLUMNNAME_PriceEntered);
-		}
-		else
-		{
-			price = (BigDecimal) value;
-			qty = (BigDecimal) mTab.getValue(MTimeExpenseLine.COLUMNNAME_Qty);
-		}
-		
-		if(qty == null)
-		{
-			qty = Env.ZERO;
-		}
-
-		if(price == null)
-		{
-			price = Env.ZERO;
-		}
-		
-		BigDecimal expenseAmt = price.multiply(qty);
-		mTab.setValue(MTimeExpenseLine.COLUMNNAME_ExpenseAmt, expenseAmt);
-
-		return "";
-	} // Price or Quantity
 
 }	//	CalloutTimeExpense
