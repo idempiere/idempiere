@@ -655,6 +655,13 @@ public class ProcessParameterPanel extends Panel implements
 			if (valueMax != null) {
 				try { valueMax_TS = new Timestamp(dateFormat.parse(valueMax).getTime()); } catch (Exception ex){}
 			}
+			
+			if (value_TS != null && valueMin_TS != null && value_TS.before(valueMin_TS)) 
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value_TS != null && valueMax_TS != null && value_TS.after(valueMax_TS))
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+			
 		} else if (DisplayType.isNumeric(fieldType)) {
 			if (value != null) {
 				try { value_BD = new BigDecimal(value.toString()); } catch (Exception ex){}
@@ -665,19 +672,19 @@ public class ProcessParameterPanel extends Panel implements
 			if (valueMax != null) {
 				try { valueMax_BD = new BigDecimal(valueMax); } catch (Exception ex){}
 			}
+			
+			if (value_BD != null && valueMin_BD != null && valueMin_BD.compareTo(value_BD) > 0)
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+			
+			if (value_BD != null && valueMax_BD != null && valueMax_BD.compareTo(value_BD) < 0)
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+		}else {
+			if (value != null && valueMin != null && valueMin.compareTo(value.toString()) > 0)
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+			
+			if (value != null && valueMax != null && valueMax.compareTo(value.toString()) < 0)
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
 		}
-
-		if (   (value_TS != null && valueMin_TS != null && value_TS.before(valueMin_TS))
-			|| (value_BD != null && valueMin_BD != null && valueMin_BD.compareTo(value_BD) > 0)
-			|| (value != null && valueMin != null && valueMin.compareTo(value.toString()) > 0)
-		   )
-			return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
-
-		if (   (value_TS != null && valueMax_TS != null && value_TS.after(valueMax_TS))
-			|| (value_BD != null && valueMax_BD != null && valueMax_BD.compareTo(value_BD) < 0)
-			|| (value != null && valueMax != null && valueMax.compareTo(value.toString()) < 0)
-		   )
-			return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
 
 		return null;
 	}
