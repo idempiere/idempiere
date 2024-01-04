@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7338447655641380126L;
+	private static final long serialVersionUID = 4879268878721712444L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -56,7 +56,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
-    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole"; // deprecated
+    @Deprecated(forRemoval = true, since = "11")
+    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
     public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
     public static final String APPLICATION_DATABASE_VERSION_SHOWN = "APPLICATION_DATABASE_VERSION_SHOWN";
     public static final String APPLICATION_HOST_SHOWN = "APPLICATION_HOST_SHOWN";   
@@ -84,6 +85,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
     public static final String CASH_AS_PAYMENT = "CASH_AS_PAYMENT";
     public static final String CHANGE_PASSWORD_MUST_DIFFER = "CHANGE_PASSWORD_MUST_DIFFER";
+    public static final String CHART_MIN_WIDTH_3_PERIOD = "CHART_MIN_WIDTH_3_PERIOD";
+    public static final String CHART_MIN_WIDTH_6_PERIOD = "CHART_MIN_WIDTH_6_PERIOD";
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
@@ -120,7 +123,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
     public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
+    @Deprecated(forRemoval = true, since = "11")
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
+    @Deprecated(forRemoval = true, since = "11")
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
@@ -186,7 +191,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
     public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
 	public static final String SSO_SELECT_ROLE = "SSO_SELECT_ROLE";
-    public static final String TAX_LOOKUP_SERVICE="TAX_LOOKUP_SERVICE";
+    public static final String TAX_LOOKUP_SERVICE = "TAX_LOOKUP_SERVICE";
     public static final String TOP_MARGIN_PIXELS_FOR_HEADER = "TOP_MARGIN_PIXELS_FOR_HEADER";
     public static final String TRACE_ALL_TRX_CONNECTION_GET = "TRACE_ALL_TRX_CONNECTION_GET";
     public static final String TRX_AUTOSET_DISPLAY_NAME = "TRX_AUTOSET_DISPLAY_NAME";
