@@ -513,7 +513,7 @@ public class ReportCtl
 
 	private static void createOutput(ReportEngine re, boolean printPreview, String printerName)
 	{
-		if (m_pi != null)
+		if (m_pi != null && re.getPrintData() != null)
 			m_pi.setRowCount(re.getPrintData().getRowCount());
 		if (printPreview)
 			preview(re);

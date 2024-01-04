@@ -817,7 +817,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
 
-		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData() != null ? m_reportEngine.getPrintData().getRowCount(false) : 0}));
 		rowCount.setStyle("float: right;");
 		linkDiv.appendChild(rowCount);
 		
@@ -2218,6 +2218,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void updateRowCount() {
 		if(rowCount != null)
-			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData() != null ? m_reportEngine.getPrintData().getRowCount(false) : 0}));
 	}
 }

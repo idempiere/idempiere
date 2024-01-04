@@ -387,7 +387,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	{
 		if (m_printFormat == null)
 			throw new IllegalStateException ("No print format");
-		if (m_printData == null)
+		if (m_printData == null && (m_printFormat == null || m_printFormat.getJasperProcess_ID() <= 0))
 			throw new IllegalStateException ("No print data (Delete Print Format and restart)");
 		m_layout = new LayoutEngine (m_printFormat, m_printData, m_query, m_info, m_trxName, m_windowNo);
 	}	//	layout
@@ -468,7 +468,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	 */
 	public int getRowCount()
 	{
-		return m_printData.getRowCount();
+		return m_printData != null ? m_printData.getRowCount() : 0;
 	}	//	getRowCount
 
 	/**
