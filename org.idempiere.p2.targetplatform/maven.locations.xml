@@ -1068,7 +1068,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 version:               ${version_cleanup;${mvnVersion}}
 Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
 Bundle-Version:        ${version}
-Import-Package:        org.apache.commons.logging;version="[1.1.1,2)";resolution:=optional,org.apache.commons.logging.impl;version="[1.1.1,2)";resolution:=optional,org.apache.tools.ant;version="[1.7,2)";resolution:=optional,*;resolution:=optional
+Import-Package:        org.apache.commons.logging;version="[1.2,2)";resolution:=optional,org.apache.commons.logging.impl;version="[1.1.1,2)";resolution:=optional,*;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>

@@ -16,7 +16,7 @@
       <unit id="zul" version="9.6.4"/>
       <unit id="zweb" version="9.6.4"/>
       <unit id="zweb-dsp" version="9.6.4"/>
-      <repository id="zk" location="https://p2.thanhhoawood.vn/p2.zk/9.6.4"/>
+      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/9.6.4"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
@@ -26,7 +26,7 @@
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
       <unit id="org.apache.felix.webconsole" version="4.6.4.v202109010034"/>
       <unit id="org.apache.poi.ooxml-schemas" version="4.1.2.v202109010034"/>
-      <repository id="repackaged" location="https://p2.thanhhoawood.vn/p2.repackaged/9.0.0"/>
+      <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.osgi" version="3.18.300.v20230220-1352"/>
@@ -125,7 +125,7 @@
       <unit id="org.eclipse.pde.junit.runtime" version="3.6.200.v20220523-1051"/>
       <unit id="org.eclipse.jdt.junit.runtime" version="3.7.100.v20230115-0919"/>
       <unit id="org.eclipse.jdt.junit5.runtime" version="1.1.100.v20220907-0450"/>
-      <repository id="eclipse-2023-03" location="https://p2.thanhhoawood.vn/p2.eclipse/4.27"/>
+      <repository id="eclipse-2023-03" location="https://download.eclipse.org/eclipse/updates/4.27"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.apache.ant" version="1.10.10.v20210426-1926"/>
@@ -139,14 +139,14 @@
       <unit id="org.apache.xalan" version="2.7.2.v20201124-1837"/>
       <unit id="org.apache.xml.serializer" version="2.7.1.v201005080400"/>
       <unit id="org.apache.commons.discovery" version="0.2.0.v201004190315"/>
-      <repository id="orbit-2021-06-R20210602031627" location="https://p2.thanhhoawood.vn/p2.orbit/R20210602031627"/>
+      <repository id="orbit-2021-06-R20210602031627" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
       <unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js8_b01"/>
       <unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
       <unit id="org.krysalis.barcode4j" version="2.1.0"/>
-      <repository id="jasperstudio" location="https://p2.thanhhoawood.vn/p2.jasper/6.17.0"/>
+      <repository id="jasperstudio" location="https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0"/>
     </location>
     <!-- com.google -->
     <location includeSource="true" missingManifest="generate" type="Maven">
@@ -1215,7 +1215,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 version:               ${version_cleanup;${mvnVersion}}
 Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
 Bundle-Version:        ${version}
-Import-Package:        org.apache.commons.logging;version="[1.1.1,2)";resolution:=optional,org.apache.commons.logging.impl;version="[1.1.1,2)";resolution:=optional,org.apache.tools.ant;version="[1.7,2)";resolution:=optional,*;resolution:=optional
+Import-Package:        org.apache.commons.logging;version="[1.2,2)";resolution:=optional,org.apache.commons.logging.impl;version="[1.1.1,2)";resolution:=optional,*;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
@@ -1655,11 +1655,5 @@ Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
     <!-- for jdbc library -->
-    <location includeSource="true" missingManifest="error" type="Maven">
-		<groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient-osgi</artifactId>
-	    <version>4.5.14</version>
-	  	<type>jar</type>
-	</location>
   </locations>
 </target>
