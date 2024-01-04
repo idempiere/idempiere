@@ -79,6 +79,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -579,6 +580,7 @@ public class ProcessParameterPanel extends Panel implements
 		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		//mandatory fields validation
+		Map<Component, String> wrongValidateComponents = new HashMap<>();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);
@@ -590,7 +592,8 @@ public class ProcessParameterPanel extends Panel implements
 			if (msg != null) {
 				field.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
 				field.setError(true);
-				throw new WrongValueException(wEditor.getComponent(), msg);
+				wrongValidateComponents.put(wEditor.getComponent(), msg);
+				//throw new WrongValueException(wEditor.getComponent(), msg);
 			}
 			if (m_wEditors2.get(i) != null) { // is a range
 				data = wEditor2.getValue();
@@ -598,12 +601,23 @@ public class ProcessParameterPanel extends Panel implements
 				if (msg != null) {
 					field2.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
 					field2.setError(true);
-					throw new WrongValueException(wEditor2.getComponent(), msg);
+					wrongValidateComponents.put(wEditor2.getComponent(), msg);
+					//throw new WrongValueException(wEditor2.getComponent(), msg);
 				}
 			}
 
 		} // field loop
 
+		List<WrongValueException> wrongValues = new ArrayList<WrongValueException>();
+		
+		wrongValidateComponents.forEach((component, msg) -> {
+			WrongValueException wrongValueException = new WrongValueException(component, msg);
+			wrongValues.add(wrongValueException);			
+		});
+		
+		if (wrongValues.size() > 0)
+			throw new WrongValuesException(wrongValues.toArray(new WrongValueException[0]));
+		
 		/** call {@link IProcessParameterListener} validate(ProcessParameterPanel) **/
 		if (m_processInfo.getAD_Process_ID() > 0) {
 			String className = MProcess.get(Env.getCtx(), m_processInfo.getAD_Process_ID()).getClassname();
