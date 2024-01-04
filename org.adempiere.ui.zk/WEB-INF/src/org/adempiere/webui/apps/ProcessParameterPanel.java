@@ -79,6 +79,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -579,18 +580,23 @@ public class ProcessParameterPanel extends Panel implements
 		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		//mandatory fields validation
+		Map<Component, String> wrongValidateComponents = new HashMap<>();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);
 			GridField field2 = (GridField) m_mFields2.get(i);
 			WEditor wEditor = (WEditor) m_wEditors.get(i);
+			if (wEditor.getComponent() instanceof InputElement)
+				((InputElement)wEditor.getComponent()).clearErrorMessage();
 			WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
+			if (wEditor2 != null && wEditor2.getComponent() instanceof InputElement)
+				((InputElement)wEditor2.getComponent()).clearErrorMessage();
 			Object data = wEditor.getValue();
 			String msg = validate(data, field.getValueMin(), field.getValueMax(), field.isMandatory(true), field.getDisplayType());
 			if (msg != null) {
 				field.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
 				field.setError(true);
-				throw new WrongValueException(wEditor.getComponent(), msg);
+				wrongValidateComponents.put(wEditor.getComponent(), msg);
 			}
 			if (m_wEditors2.get(i) != null) { // is a range
 				data = wEditor2.getValue();
@@ -598,11 +604,21 @@ public class ProcessParameterPanel extends Panel implements
 				if (msg != null) {
 					field2.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
 					field2.setError(true);
-					throw new WrongValueException(wEditor2.getComponent(), msg);
+					wrongValidateComponents.put(wEditor2.getComponent(), msg);
 				}
 			}
 
 		} // field loop
+
+		List<WrongValueException> wrongValues = new ArrayList<WrongValueException>();
+
+		wrongValidateComponents.forEach((component, msg) -> {
+			WrongValueException wrongValueException = new WrongValueException(component, msg);
+			wrongValues.add(wrongValueException);
+		});
+
+		if (wrongValues.size() > 0)
+			throw new WrongValuesException(wrongValues.toArray(new WrongValueException[0]));
 
 		/** call {@link IProcessParameterListener} validate(ProcessParameterPanel) **/
 		if (m_processInfo.getAD_Process_ID() > 0) {
@@ -645,7 +661,7 @@ public class ProcessParameterPanel extends Panel implements
 		Timestamp valueMax_TS = null;
 
 		if (fieldType == DisplayType.Date) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+			SimpleDateFormat dateFormat = new SimpleDateFormat(DisplayType.DEFAULT_DATE_FORMAT);
 			if (value != null) {
 				try { value_TS = new Timestamp(dateFormat.parse(value.toString()).getTime()); } catch (Exception ex){}
 			}
@@ -655,6 +671,13 @@ public class ProcessParameterPanel extends Panel implements
 			if (valueMax != null) {
 				try { valueMax_TS = new Timestamp(dateFormat.parse(valueMax).getTime()); } catch (Exception ex){}
 			}
+
+			if (value_TS != null && valueMin_TS != null && value_TS.before(valueMin_TS))
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value_TS != null && valueMax_TS != null && value_TS.after(valueMax_TS))
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+
 		} else if (DisplayType.isNumeric(fieldType)) {
 			if (value != null) {
 				try { value_BD = new BigDecimal(value.toString()); } catch (Exception ex){}
@@ -665,19 +688,19 @@ public class ProcessParameterPanel extends Panel implements
 			if (valueMax != null) {
 				try { valueMax_BD = new BigDecimal(valueMax); } catch (Exception ex){}
 			}
+
+			if (value_BD != null && valueMin_BD != null && valueMin_BD.compareTo(value_BD) > 0)
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value_BD != null && valueMax_BD != null && valueMax_BD.compareTo(value_BD) < 0)
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+		} else {
+			if (value != null && valueMin != null && valueMin.compareTo(value.toString()) > 0)
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value != null && valueMax != null && valueMax.compareTo(value.toString()) < 0)
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
 		}
-
-		if (   (value_TS != null && valueMin_TS != null && value_TS.before(valueMin_TS))
-			|| (value_BD != null && valueMin_BD != null && valueMin_BD.compareTo(value_BD) > 0)
-			|| (value != null && valueMin != null && valueMin.compareTo(value.toString()) > 0)
-		   )
-			return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
-
-		if (   (value_TS != null && valueMax_TS != null && value_TS.after(valueMax_TS))
-			|| (value_BD != null && valueMax_BD != null && valueMax_BD.compareTo(value_BD) < 0)
-			|| (value != null && valueMax != null && valueMax.compareTo(value.toString()) < 0)
-		   )
-			return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
 
 		return null;
 	}
