@@ -321,7 +321,6 @@
 		<plugin id="wrapped.org.springframework.spring-core"/>
 		<plugin id="wrapped.org.springframework.spring-expression"/>
 		<plugin id="wrapped.org.springframework.spring-web"/>
-		<plugin id="wrapped.org.springframework.spring-jcl"/>
 		<plugin id="wrapped.wsdl4j.wsdl4j"/>
 		<plugin id="xstream"/>
 		<plugin id="zcommon"/>
