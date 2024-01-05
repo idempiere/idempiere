@@ -626,7 +626,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	
 	/** 
 	 * 	Re-activate
-	 * 	@return false 
+	 *  @return true if success 
 	 */
 	public boolean reActivateIt()
 	{
@@ -635,12 +635,37 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;		
-		
+
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
+
+		MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
+		setPosted(false);
+
+		MBankStatementLine[] lines = getLines(true);
+		for (int i = 0; i < lines.length; i++) {
+			MBankStatementLine line = lines[i];
+			line.setProcessed(false);
+
+			if (line.getC_Payment_ID() != 0) {
+				MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), get_TrxName());
+				payment.setIsReconciled(false);
+				payment.saveEx();
+			}
+		}
+
+		MBankAccount ba = getBankAccount();
+		ba.load(get_TrxName());
+		ba.setCurrentBalance(ba.getCurrentBalance().subtract(getStatementDifference()));
+		ba.saveEx();
+
+		setDocAction(X_C_BankStatement.DOCACTION_Complete);
+		setProcessed(false);
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;		
-		return false;
+		return true;
 	}	//	reActivateIt
 		
 	/**
