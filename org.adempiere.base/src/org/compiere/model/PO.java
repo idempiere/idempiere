@@ -1831,7 +1831,7 @@ public abstract class PO
 			Class<?> c = p_info.getColumnClass(i);
 			String stringValue = null;
 			if (c == Object.class)
-				;	//	saveNewSpecial (value, i));
+				;
 			else if (value == null || value.equals (Null.NULL))
 				;
 			else if (value instanceof Integer || value instanceof BigDecimal)
@@ -1852,7 +1852,7 @@ public abstract class PO
 			else if (DisplayType.isLOB(dt))
 				;
 			else
-				;	//	saveNewSpecial (value, i));
+				;
 			//
 			if (stringValue != null)
 				hmOut.put(p_info.getColumnName(i), stringValue);
@@ -1874,8 +1874,8 @@ public abstract class PO
 	}   //  get_HashMap
 
 	/**
-	 *  Load Special data (images, ..).
-	 *  To be extended by sub-classes
+	 *  Load data for custom Java type that has no build in implementation (images, ..).
+	 *  To be extended by sub-classes (default implementation just return null).
 	 *  @param rs result set
 	 *  @param index zero based index
 	 *  @return value value
@@ -2220,9 +2220,12 @@ public abstract class PO
 	{
 		//
 		// Check if columnName, AD_Language is valid or table support translation (has 1 PK) => error
-		if (columnName == null || AD_Language == null
-			|| m_IDs.length > 1 || m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer))
+		if (   columnName == null 
+			|| AD_Language == null
+			|| m_IDs.length > 1
+			|| (m_IDs[0] instanceof Integer && m_IDs[0].equals(I_ZERO) && ! MTable.isZeroIDTable(get_TableName()))
+			|| (m_IDs[0] instanceof String && Util.isEmpty((String)m_IDs[0]))
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String))
 		{
 			throw new IllegalArgumentException("ColumnName=" + columnName
 												+ ", AD_Language=" + AD_Language
@@ -2587,7 +2590,6 @@ public abstract class PO
 
 	/**
 	 * Update Value or create new record, used when writing a cross tenant record
-	 * @param trxName transaction
 	 * @throws AdempiereException
 	 * @see #saveEx(String)
 	 */
@@ -3831,8 +3833,8 @@ public abstract class PO
 
 
 	/**
-	 *  Save Special Data.
-	 *  To be extended by sub-classes
+	 *  Save data for custom Java type that have no build in implementation.<br/>
+	 *  To be extended by sub-classes (default implementation just call value.toString()).
 	 *  @param value value
 	 *  @param index index
 	 *  @return SQL code for INSERT VALUES clause
@@ -3842,7 +3844,6 @@ public abstract class PO
 		String colName = p_info.getColumnName(index);
 		String colClass = p_info.getColumnClass(index).toString();
 		String colValue = value == null ? "null" : value.getClass().toString();
-//		int dt = p_info.getColumnDisplayType(index);
 
 		log.log(Level.SEVERE, "Unknown class for column " + colName
 			+ " (" + colClass + ") - Value=" + colValue);
@@ -5131,9 +5132,8 @@ public abstract class PO
 		return getAttachmentData(".pdf");
 	}	//	getPDFAttachment
 
-
-	/**************************************************************************
-	 *  Dump Record
+	/**
+	 *  Dump where clause and column values
 	 */
 	public void dump ()
 	{
@@ -5146,8 +5146,8 @@ public abstract class PO
 	}   //  dump
 
 	/**
-	 *  Dump column
-	 *  @param index index
+	 *  Dump column (index:columnName=oldValue (newValue))
+	 *  @param index column index
 	 */
 	public void dump (int index)
 	{
@@ -5163,10 +5163,9 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}   //  dump
 
-
-	/*************************************************************************
+	/**
 	 * 	Get All IDs of Table.
-	 * 	Used for listing all Entities
+	 * 	Used for listing of all records
 	 * 	<pre>{@code
 	 	int[] IDs = PO.getAllIDs ("AD_PrintFont", null);
 		for (int i = 0; i < IDs.length; i++)

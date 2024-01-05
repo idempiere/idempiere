@@ -47,7 +47,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *	
  *  @author Carlos Ruiz
  */
-@org.adempiere.base.Model(table = X_WS_WebService.Table_Name)
+@org.adempiere.base.Model(table="WS_WebService")
 public class MWebService extends X_WS_WebService implements ImmutablePOSupport
 {
 	/**

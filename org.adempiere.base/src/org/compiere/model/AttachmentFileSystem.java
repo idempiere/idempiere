@@ -44,18 +44,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * File system backed implementation of {@link IAttachmentStore}
  * @author juliana
- *
  */
 public class AttachmentFileSystem implements IAttachmentStore {
 
-	// TODO: Implement FileSystemFallbackDB
-
 	private final CLogger log = CLogger.getCLogger(getClass());
 	
-	/**
-	 *
-	 */
 	@Override
 	public boolean save(MAttachment attach,MStorageProvider prov) {
 		String attachmentPathRoot = getAttachmentPathRoot(prov);
@@ -243,7 +238,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 	/**
 	 * Get the entries from the XML
 	 * @param data
-	 * @return
+	 * @return xml node list
 	 */
 	private NodeList getEntriesFromXML(byte[] data) {
 		NodeList entries = null;
@@ -276,7 +271,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 
 	/**
 	 * Returns a path snippet, containing client, org, table and record id.
-	 * @return String
+	 * @return path snippet
 	 */
 	private String getAttachmentPathSnippet(MAttachment attach){
 		
@@ -326,6 +321,10 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		return true;
 	}
 
+	/**
+	 * @param prov
+	 * @return root path
+	 */
 	private String getAttachmentPathRoot(MStorageProvider prov) {
 		String attachmentPathRoot = prov.getFolder();
 		if (attachmentPathRoot == null)

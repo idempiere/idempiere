@@ -30,7 +30,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)

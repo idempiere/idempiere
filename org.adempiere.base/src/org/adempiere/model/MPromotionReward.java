@@ -37,15 +37,31 @@ public class MPromotionReward extends X_M_PromotionReward {
         super(ctx, M_PromotionReward_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param M_PromotionReward_ID
+     * @param trxName
+     */
 	public MPromotionReward(Properties ctx, int M_PromotionReward_ID,
 			String trxName) {
 		super(ctx, M_PromotionReward_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionReward(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionReward_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionReward(Properties ctx, int M_PromotionReward_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_PromotionReward_ID, trxName, virtualColumns);
 	}

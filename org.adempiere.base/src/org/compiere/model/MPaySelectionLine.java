@@ -34,16 +34,16 @@ import org.compiere.util.Util;
 public class MPaySelectionLine extends X_C_PaySelectionLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1880961891234637133L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_PaySelectionLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaySelectionLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPaySelectionLine(Properties ctx, String C_PaySelectionLine_UU, String trxName) {
         super(ctx, C_PaySelectionLine_UU, trxName);
 		if (Util.isEmpty(C_PaySelectionLine_UU))
@@ -112,7 +112,9 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 *	@param PayAmt payment
 	 *	@param OpenAmt open
 	 *	@param DiscountAmt discount
+	 *  @deprecated
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public void xsetInvoice (int C_Invoice_ID, boolean isSOTrx, BigDecimal OpenAmt, 
 		BigDecimal PayAmt, BigDecimal DiscountAmt)
 	{
@@ -122,11 +124,11 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	/**
 	 * 	Set Invoice Info
 	 *	@param C_Invoice_ID invoice
-	 *	@param isSOTrx sales trx
-	 *	@param PayAmt payment
-	 *	@param OpenAmt open
-	 *	@param DiscountAmt discount
-	 *	@param WriteOffAmt writeoff
+	 *	@param isSOTrx sales trx flag
+	 *	@param PayAmt payment amount
+	 *	@param OpenAmt open amount
+	 *	@param DiscountAmt discount amount
+	 *	@param WriteOffAmt writeoff amount
 	 */
 	public void setInvoice (int C_Invoice_ID, boolean isSOTrx, BigDecimal OpenAmt, 
 		BigDecimal PayAmt, BigDecimal DiscountAmt, BigDecimal WriteOffAmt)
@@ -156,6 +158,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MPaySelection parent = new MPaySelection(getCtx(), getC_PaySelection_ID(), get_TrxName());
@@ -173,6 +176,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -186,6 +190,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 *	@param success success
 	 *	@return sucess
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -195,7 +200,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	}	//	afterDelete
 	
 	/**
-	 * 	Recalculate Header Sum
+	 * 	Update Header Total
 	 */
 	private void setHeader()
 	{
@@ -205,13 +210,14 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 				+ "FROM C_PaySelectionLine psl "
 				+ "WHERE ps.C_PaySelection_ID=psl.C_PaySelection_ID AND psl.IsActive='Y') "
 			+ "WHERE C_PaySelection_ID=" + getC_PaySelection_ID();
-		DB.executeUpdate(sql, get_TrxName());
+		DB.executeUpdateEx(sql, get_TrxName());
 	}	//	setHeader
 	
 	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MPaySelectionLine[");

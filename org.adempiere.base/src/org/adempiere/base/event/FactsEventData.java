@@ -15,14 +15,14 @@ package org.adempiere.base.event;
 
 import java.util.List;
 
+import org.adempiere.base.event.annotations.doc.FactsValidateDelegate;
 import org.compiere.acct.Fact;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.PO;
 
 /**
- *
+ * Event data for {@link FactsValidateDelegate}.
  * @author hengsin
- *
  */
 public class FactsEventData implements POEventData {
 	private MAcctSchema acctSchema;

@@ -402,7 +402,6 @@
         <setEntry value="wrapped.org.springframework.spring-context@default:default"/>
         <setEntry value="wrapped.org.springframework.spring-core@default:default"/>
         <setEntry value="wrapped.org.springframework.spring-expression@default:default"/>
-        <setEntry value="wrapped.org.springframework.spring-jcl@default:default"/>
         <setEntry value="wrapped.org.springframework.spring-web@default:default"/>
         <setEntry value="wrapped.wsdl4j.wsdl4j@default:default"/>
         <setEntry value="xstream@default:default"/>
@@ -443,8 +442,10 @@
         <setEntry value="org.idempiere.jetty.osgi.boot.fragment@default:false"/>
         <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.printformat.editor@default:default"/>
-        <setEntry value="org.idempiere.webservices@default:default"/>
+        <setEntry value="org.idempiere.tablepartition@default:default"/>
+        <setEntry value="org.idempiere.ui.sso.oidc@default:default"/>
         <setEntry value="org.idempiere.webservices.resources@default:default"/>
+        <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:false"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>

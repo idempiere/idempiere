@@ -108,7 +108,7 @@ public class FinReportJasper extends FinReport
 	    
 	    // TODO - allow java class preprocess if the classname <> ProcessUtil.JASPER_STARTER_CLASS
 
-	    ProcessUtil.startJavaProcess(getCtx(), poInfo, trx);
+	    ProcessUtil.startJavaProcess(getCtx(), poInfo, trx, false);
 	    
 	    return finReportMsg;
 	}	//	doIt

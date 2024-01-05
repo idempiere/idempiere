@@ -20,7 +20,7 @@ import org.compiere.model.MBankStatementLine;
 import org.compiere.model.X_I_BankStatement;
 
 /**
- *	Bank Statement Matcher Algorithm Interface
+ *	Bank Statement Matcher Interface
  *	
  *  @author Jorg Janke
  *  @version $Id: BankStatementMatcherInterface.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $

@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.p2.targetplatform.mirror.feature"
       label="Target Platform Mirror Feature"
-      version="11.0.0.qualifier"
+      version="12.0.0.qualifier"
       provider-name="iDempiere">
 
    <description url="http://www.example.com/description">
@@ -1063,13 +1063,6 @@
 
    <plugin
          id="wrapped.org.springframework.spring-core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="wrapped.org.springframework.spring-jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"

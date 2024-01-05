@@ -31,16 +31,16 @@ import org.compiere.util.Util;
 public class MPaySchedule extends X_C_PaySchedule
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7773501661681911294L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_PaySchedule_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaySchedule_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPaySchedule(Properties ctx, String C_PaySchedule_UU, String trxName) {
         super(ctx, C_PaySchedule_UU, trxName);
 		if (Util.isEmpty(C_PaySchedule_UU))
@@ -87,7 +87,7 @@ public class MPaySchedule extends X_C_PaySchedule
 	public MPaymentTerm		m_parent = null;
 	
 	/**
-	 * @return Returns the parent.
+	 * @return MPaymentTerm
 	 */
 	public MPaymentTerm getParent ()
 	{
@@ -109,6 +109,7 @@ public class MPaySchedule extends X_C_PaySchedule
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (is_ValueChanged("Percentage") || is_ValueChanged("IsActive"))
@@ -125,6 +126,7 @@ public class MPaySchedule extends X_C_PaySchedule
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -148,6 +150,5 @@ public class MPaySchedule extends X_C_PaySchedule
 		m_parent.saveEx();
 		return true;
 	}
-	
-	
+		
 }	//	MPaySchedule

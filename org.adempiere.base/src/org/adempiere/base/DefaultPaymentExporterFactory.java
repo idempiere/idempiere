@@ -20,8 +20,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.PaymentExport;
 
 /**
+ * Default {@link IPaymentExporterFactory} implementation for core.<br/>
+ * Load {@link PaymentExport} instance from plugin.xml (org.compiere.util.PaymentExport extension point) or class path.
  * @author mbozem
- *
  */
 public class DefaultPaymentExporterFactory implements IPaymentExporterFactory {
 

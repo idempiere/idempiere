@@ -42,7 +42,7 @@ import org.compiere.util.Evaluator;
 public class InfoColumnVO implements Serializable, Cloneable {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7401407425423442841L;
 	/** Properties */
@@ -275,7 +275,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	/**
 	 * @param ctx
 	 * @param windowNo
-	 * @return boolean
+	 * @return true if column should be displayed
 	 */
 	public boolean isDisplayed(final Properties ctx, final int windowNo) {
 		if (!isDisplayed())
@@ -294,142 +294,247 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		return retValue;
 	}
 
+	/**
+	 * @return column name
+	 */
 	public String getColumnName() {
 		return ColumnName;
 	}
 
+	/**
+	 * @return true if column is mandatory
+	 */
 	public boolean isMandatory() {
 		return isMandatory;
 	}
 
+	/**
+	 * @return true if this is for user to enter query criteria
+	 */
 	public boolean isQueryCriteria() {
 		return isQueryCriteria;
 	}
 
+	/**
+	 * @return true if info window should auto execute query after user have make changes to this info column
+	 */
 	public boolean isQueryAfterChange() {
 		return isQueryAfterChange;
 	}
 	
+	/**
+	 * @return translated name (in login language)
+	 */
 	public String getNameTrl() {
 		return NameTrl;
 	}
 
+	/**
+	 * @return name
+	 */
 	public String getName() {
 		return Name;
 	}
 
+	/**
+	 * @return AD_Reference_ID
+	 */
 	public int getAD_Reference_ID() {
 		return AD_Reference_ID;
 	}
 
+	/**
+	 * @return AD_Reference_Value_ID
+	 */
 	public int getAD_Reference_Value_ID() {
 		return AD_Reference_Value_ID;
 	}
 
+	/**
+	 * @return translated place holder text (in login language)
+	 */
 	public String getPlaceHolderTrl() {
 		return PlaceHolderTrl;
 	}
 
+	/**
+	 * @return place holder text
+	 */
 	public String getPlaceholder() {
 		return Placeholder;
 	}
 	
+	/**
+	 * @return place holder text for to editor of range type column
+	 */
 	public String getPlaceholder2() {
 		return Placeholder2;
 	}
 
+	/**
+	 * @return true if column is read only
+	 */
 	public boolean isReadOnly() {
 		return isReadOnly;
 	}
 
+	/**
+	 * @return select clause
+	 */
 	public String getSelectClause() {
 		return SelectClause;
 	}
 
+	/**
+	 * @return display logic
+	 */
 	public String getDisplayLogic() {
 		return DisplayLogic;
 	}
 
+	/**
+	 * @return true if visible
+	 */
 	public boolean isDisplayed() {
 		return isDisplayed;
 	}
 
+	/**
+	 * @return SQL validation for input field
+	 */
 	public String getInputFieldValidation() {
 		return InputFieldValidation;
 	}
 
+	/**
+	 * @return true if column is identifier
+	 */
 	public boolean isIdentifier() {
 		return isIdentifier;
 	}
 
+	/**
+	 * @return query operator (=, &lt;, &gt;, etc)
+	 */
 	public String getQueryOperator() {
 		return QueryOperator;
 	}
 
+	/**
+	 * @return sequence for query criteria
+	 */
 	public int getSeqNoSelection() {
 		return SeqNoSelection;
 	}
 
+	/**
+	 * @return SQL function for query criteria field
+	 */
 	public String getQueryFunction() {
 		return QueryFunction;
 	}
 
+	/**
+	 * @return true if this is a key column
+	 */
 	public boolean isKey() {
 		return isKey;
 	}
 
+	/**
+	 * @return description text
+	 */
 	public String getDescription() {
 		return Description;
 	}
 
+	/**
+	 * @return translated description text
+	 */
 	public String getDescriptionTrl() {
 		return DescriptionTrl;
 	}
 
+	/**
+	 * @return MInfoColumn
+	 */
 	public MInfoColumn getAD_InfoColumn() {
 		return infoColumn;
 	}
 
+	/**
+	 * @return AD_Val_Rule_ID
+	 */
 	public int getAD_Val_Rule_ID() {
 		return AD_Val_Rule_ID;
 	}
 
+	/**
+	 * @return default value
+	 */
 	public String getDefaultValue() {
 		return DefaultValue;
 	}
 	
+	/**
+	 * @return default value for to editor of range type column
+	 */
 	public String getDefaultValue2() {
 		return DefaultValue2;
 	}
 
+	/**
+	 * @return translated help text (in login language)
+	 */
 	public String getHelpTrl() {
 		return HelpTrl;
 	}
 
+	/**
+	 * @return help text
+	 */
 	public String getHelp() {
 		return Help;
 	}
 
+	/**
+	 * @return AD_FieldStyle_ID
+	 */
 	public int getAD_FieldStyle_ID() {
 		return AD_FieldStyle_ID;
 	}
 
+	/**
+	 * @return true if auto complete is on for lookup field
+	 */
 	public boolean isAutocomplete() {
 		return isAutocomplete;
 	}
 
+	/**
+	 * @return AD_InfoColumn_ID
+	 */
 	public int getAD_InfoColumn_ID() {
 		return AD_InfoColumn_ID;
 	}
 
+	/**
+	 * @return validation code for lookup
+	 */
 	public String getValidationCode() {
 		return ValidationCode;
 	}
 
+	/**
+	 * @return sequence number
+	 */
 	public int getSeqNo() {
 		return SeqNo;
 	}
 	
+	/**
+	 * @return true if this is a range type column
+	 */
 	public boolean isRange() {
 		return isRange;
 	}

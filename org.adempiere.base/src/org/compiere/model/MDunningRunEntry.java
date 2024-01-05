@@ -41,7 +41,7 @@ import org.compiere.util.Util;
 public class MDunningRunEntry extends X_C_DunningRunEntry
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3838792682143065656L;
 
@@ -49,11 +49,11 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	private static CLogger		s_log = CLogger.getCLogger (MPayment.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_DunningRunEntry_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_DunningRunEntry_UU  UUID key
+     * @param trxName Transaction
+     */
     public MDunningRunEntry(Properties ctx, String C_DunningRunEntry_UU, String trxName) {
         super(ctx, C_DunningRunEntry_UU, trxName);
 		if (Util.isEmpty(C_DunningRunEntry_UU))
@@ -112,7 +112,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	/**
 	 * Set BPartner
 	 * @param bp partner
-	 * @param isSOTrx SO
+	 * @param isSOTrx
 	 */
 	public void setBPartner (MBPartner bp, boolean isSOTrx)
 	{
@@ -206,7 +206,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 
 	/**
 	 * 	Get Lines
-	 *  @param onlyInvoices only with invoices 
+	 *  @param onlyInvoices true for entries with invoice only 
 	 *	@return Array of all lines for this Run
 	 */
 	public MDunningRunLine[] getLines (boolean onlyInvoices) 
@@ -244,7 +244,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 
 	/**
 	 * 	Check whether has Invoices
-	 *	@return true if it has Invoices
+	 *	@return true if C_Invoice_ID > 0
 	 */
 	public boolean hasInvoices() 
 	{

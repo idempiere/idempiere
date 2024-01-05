@@ -28,22 +28,18 @@ package org.adempiere.base.upload;
 import org.compiere.model.MAuthorizationAccount;
 
 /**
- * 
  * handler interface for upload request
  * @author hengsin
- *
  */
 public interface IUploadHandler {
 	/**
-	 * 
 	 * @return label for handler
 	 */
 	public String getLabel();
 	
 	/**
-	 * 
 	 * @param media
-	 * @param account userExternalAccount
+	 * @param account external account to upload to (for e.g, Google drive account)
 	 * @return {@link UploadResponse}
 	 */
 	public UploadResponse uploadMedia(UploadMedia media, MAuthorizationAccount account);

@@ -26,7 +26,6 @@
 package org.adempiere.base.upload;
 
 /**
- * 
  * interface for upload service
  * @author hengsin
  *

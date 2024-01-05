@@ -30,7 +30,7 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Column (Properties ctx, int AD_ReportView_Column_ID, String trxName)

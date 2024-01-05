@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import org.compiere.model.MAccount;
 
 /**
+ * Helper methods for Fact and FactLine
  * @author ancu
- *
  */
 public final class FactUtil
 {

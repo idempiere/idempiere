@@ -24,13 +24,14 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.base.AbstractProductPricing;
+import org.adempiere.base.IProductPricingFactory;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trace;
 
 /**
- *  Product Price Calculations
+ *  Product Pricing
  *
  *  @author Jorg Janke
  *  @version $Id: MProductPricing.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
@@ -38,13 +39,12 @@ import org.compiere.util.Trace;
 public class MProductPricing extends AbstractProductPricing
 {
 	/**
-	 * New constructor to be used with the ProductPriceFactories
+	 * New constructor to be used with {@link IProductPricingFactory}
 	 */
 	public MProductPricing() {}
 	
 	/**
-	 * 	Old Constructor to keep backward
-	 *  compatibility
+	 * 	Old Constructor to keep backward compatibility
 	 * 	@param M_Product_ID product
 	 * 	@param C_BPartner_ID partner
 	 * 	@param Qty quantity
@@ -57,7 +57,6 @@ public class MProductPricing extends AbstractProductPricing
 		setInitialValues(M_Product_ID, C_BPartner_ID, Qty, isSOTrx, trxName);
 	}
 
-
 	/**
 	 * 	Constructor
 	 * 	@param M_Product_ID product
@@ -66,6 +65,7 @@ public class MProductPricing extends AbstractProductPricing
 	 * 	@param isSOTrx SO or PO
 	 *  @deprecated Use constructor with explicit trxName parameter
 	 */
+	@Deprecated
 	public MProductPricing (int M_Product_ID, int C_BPartner_ID, 
 		BigDecimal Qty, boolean isSOTrx)
 	{
@@ -78,6 +78,9 @@ public class MProductPricing extends AbstractProductPricing
 		checkVendorBreak();
 	}
 	
+	/**
+	 * Update {@link #m_vendorbreak} flag
+	 */
 	private void checkVendorBreak() {
 		int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
 				"SELECT COUNT(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE IsActive='Y' AND M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID IS NULL)",
@@ -87,8 +90,7 @@ public class MProductPricing extends AbstractProductPricing
 
 	/** Precision -1 = no rounding		*/
 	private int		 	m_precision = -1;
-	
-	
+		
 	private boolean 	m_calculated = false;
 	private boolean 	m_vendorbreak = false;
 	private boolean 	m_useVendorBreak;
@@ -106,8 +108,7 @@ public class MProductPricing extends AbstractProductPricing
 
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
-	
-	
+		
 	/**
 	 * 	Calculate Price
 	 * 	@return true if calculated
@@ -161,7 +162,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculatePrice
 
 	/**
-	 * 	Calculate Price based on Price List Version
+	 * 	Calculate Price based on Price List Version (if {@link #m_M_PriceList_Version_ID} have been set).
 	 * 	@return true if calculated
 	 */
 	private boolean calculatePLV()
@@ -229,7 +230,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculatePLV
 
 	/**
-	 * 	Calculate Price based on Price List
+	 * 	Calculate Price based on Price List (if {@link m_M_PriceList_ID} have been set)
 	 * 	@return true if calculated
 	 */
 	private boolean calculatePL()
@@ -316,7 +317,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculatePL
 
 	/**
-	 * 	Calculate Price based on Base Price List
+	 * 	Calculate Price based on Base Price List (base price list of set {@link m_M_PriceList_ID}).
 	 * 	@return true if calculated
 	 */
 	private boolean calculateBPL()
@@ -398,7 +399,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculateBPL
 
 	/**
-	 * 	Calculate Price based on Price List Version and Vendor Break
+	 * 	Calculate Price based on Price List Version and Vendor Break (product price vendor break of set {@link m_M_PriceList_Version_ID})
 	 * 	@return true if calculated
 	 */
 	private boolean calculatePLV_VB()
@@ -471,7 +472,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculatePLV_VB
 
 	/**
-	 * 	Calculate Price based on P rice List and Vendor break
+	 * 	Calculate Price based on Price List and Vendor break (product price vendor break of set {@link m_M_PriceList_ID})
 	 * 	@return true if calculated
 	 */
 	private boolean calculatePL_VB()
@@ -562,7 +563,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculatePL_VB
 
 	/**
-	 * 	Calculate Price based on Base Price List and Vendor Break
+	 * 	Calculate Price based on Base Price List and Vendor Break (product price vendor break of base price list of set {@link m_M_PriceList_ID})
 	 * 	@return true if calculated
 	 */
 	private boolean calculateBPL_VB()
@@ -648,7 +649,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	calculateBPL_VB
 
 	/**
-	 * 	Set Base Info (UOM)
+	 * 	Update {@link #m_C_UOM_ID} and {@link #m_M_Product_Category_ID} from product.
 	 */
 	private void setBaseInfo()
 	{
@@ -665,15 +666,14 @@ public class MProductPricing extends AbstractProductPricing
 
 	/**
 	 * 	Is Tax Included
-	 *	@return tax included
+	 *	@return true if tax included
 	 */
 	public boolean isTaxIncluded()
 	{
 		return m_isTaxIncluded;
 	}	//	isTaxIncluded
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Calculate (Business Partner) Discount
 	 */
 	private void calculateDiscount()
@@ -727,9 +727,8 @@ public class MProductPricing extends AbstractProductPricing
 			m_M_Product_Category_ID, FlatDiscount);
 		
 	}	//	calculateDiscount
-
 	
-	/**************************************************************************
+	/**
 	 * 	Calculate Discount Percentage based on Standard/List Price
 	 * 	@return Discount
 	 */
@@ -758,7 +757,7 @@ public class MProductPricing extends AbstractProductPricing
 	
 	/**
 	 * 	Get PriceList Version
-	 *	@return plv
+	 *	@return M_PriceList_Version_ID
 	 */
 	public int getM_PriceList_Version_ID()
 	{
@@ -796,7 +795,7 @@ public class MProductPricing extends AbstractProductPricing
 	
 	/**
 	 * 	Get Precision
-	 *	@return precision - -1 = no rounding
+	 *	@return precision, -1 = no rounding
 	 */
 	public int getPrecision()
 	{
@@ -804,7 +803,7 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	getPrecision
 	
 	/**
-	 * 	Round
+	 * 	Round using set precision
 	 *	@param bd number
 	 *	@return rounded number
 	 */
@@ -816,9 +815,9 @@ public class MProductPricing extends AbstractProductPricing
 		return bd;
 	}	//	round
 	
-	/**************************************************************************
+	/**
 	 * 	Get C_UOM_ID
-	 *	@return uom
+	 *	@return C_UOM_ID
 	 */
 	public int getC_UOM_ID()
 	{
@@ -828,8 +827,8 @@ public class MProductPricing extends AbstractProductPricing
 	}
 	
 	/**
-	 * 	Get Price List
-	 *	@return list
+	 * 	Get List Price
+	 *	@return list price
 	 */
 	public BigDecimal getPriceList()
 	{
@@ -838,8 +837,8 @@ public class MProductPricing extends AbstractProductPricing
 		return round(m_PriceList);
 	}
 	/**
-	 * 	Get Price Std
-	 *	@return std
+	 * 	Get standard price
+	 *	@return standard price
 	 */
 	public BigDecimal getPriceStd()
 	{
@@ -848,8 +847,8 @@ public class MProductPricing extends AbstractProductPricing
 		return round(m_PriceStd);
 	}
 	/**
-	 * 	Get Price Limit
-	 *	@return limit
+	 * 	Get Limit Price
+	 *	@return limit price
 	 */
 	public BigDecimal getPriceLimit()
 	{
@@ -859,7 +858,7 @@ public class MProductPricing extends AbstractProductPricing
 	}
 	/**
 	 * 	Get Price List Currency
-	 *	@return currency
+	 *	@return C_Currency_ID
 	 */
 	public int getC_Currency_ID()
 	{
@@ -868,8 +867,8 @@ public class MProductPricing extends AbstractProductPricing
 		return m_C_Currency_ID;
 	}
 	/**
-	 * 	Is Price List enforded?
-	 *	@return enforce limit
+	 * 	Is Price Limit enforce?
+	 *	@return true if price limit should be enforced
 	 */
 	public boolean isEnforcePriceLimit()
 	{
@@ -879,8 +878,8 @@ public class MProductPricing extends AbstractProductPricing
 	}	//	isEnforcePriceLimit
 
 	/**
-	 * 	Is a DiscountSchema active?
-	 *	@return active Discount Schema
+	 * 	Is using discount schema or vendor break?
+	 *	@return true if using discount schema or vendor break
 	 */
 	public boolean isDiscountSchema()
 	{
@@ -889,7 +888,7 @@ public class MProductPricing extends AbstractProductPricing
 	
 	/**
 	 * 	Is the Price Calculated (i.e. found)?
-	 *	@return calculated
+	 *	@return true if calculated
 	 */
 	public boolean isCalculated()
 	{

@@ -72,7 +72,7 @@ public class MsgResourceBundle extends ResourceBundle {
 		if (overridingResourceBundle != null && overridingResourceBundle.containsKey(key)) {
 			return overridingResourceBundle.getObject(key);
 		}
-		return Msg.translate(adLanguage, isSOTrx, key);
+		return Msg.translate(adLanguage, isSOTrx, key, true);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class MsgResourceBundle extends ResourceBundle {
 			set = Msg.get().getMsgMap(adLanguage).keySet();
 		else			
 			set.addAll(Msg.get().getMsgMap(adLanguage).keySet());
-		set.addAll(Msg.get().getElementMap(adLanguage).keySet());
+		set.addAll(Msg.get().getElementPrintNameMap(adLanguage).keySet());
 		return Collections.enumeration(set);
 	}
 

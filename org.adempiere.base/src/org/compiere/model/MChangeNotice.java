@@ -29,16 +29,16 @@ import org.compiere.util.Util;
 public class MChangeNotice extends X_M_ChangeNotice
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -1252425132317509377L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_ChangeNotice_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ChangeNotice_UU  UUID key
+     * @param trxName Transaction
+     */
     public MChangeNotice(Properties ctx, String M_ChangeNotice_UU, String trxName) {
         super(ctx, M_ChangeNotice_UU, trxName);
 		if (Util.isEmpty(M_ChangeNotice_UU))

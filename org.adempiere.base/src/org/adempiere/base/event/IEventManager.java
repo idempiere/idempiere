@@ -18,9 +18,8 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
- *
+ * Interface for global event manager
  * @author hengsin
- *
  */
 public interface IEventManager {
 

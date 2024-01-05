@@ -23,7 +23,6 @@ import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
-
 /**
  *	Copy Import Format (lines)
  *	
@@ -39,6 +38,7 @@ public class CopyImportFormat extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -54,13 +54,13 @@ public class CopyImportFormat extends SvrProcess
 		}
 		to_AD_ImpFormat_ID = getRecord_ID();
 	}	//	prepare
-
 	
 	/**
 	 * 	Process Copy
 	 *	@return info
 	 *	@throws Exception
 	 */
+	@Override
 	protected String doIt () throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("doIt = From=" + from_AD_ImpFormat_ID + " To=" + to_AD_ImpFormat_ID);

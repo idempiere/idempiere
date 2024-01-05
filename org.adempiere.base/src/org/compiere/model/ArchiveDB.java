@@ -24,8 +24,8 @@ import java.util.zip.ZipOutputStream;
 import org.compiere.util.CLogger;
 
 /**
+ * DB backed implementation of {@link IArchiveStore}
  * @author juliana
- *
  */
 public class ArchiveDB implements IArchiveStore {
 
@@ -108,8 +108,7 @@ public class ArchiveDB implements IArchiveStore {
 	}
 
 	@Override
-	public boolean deleteArchive(MArchive archive, MStorageProvider prov) {
-		
+	public boolean deleteArchive(MArchive archive, MStorageProvider prov) {		
 		return true;
 	}
 

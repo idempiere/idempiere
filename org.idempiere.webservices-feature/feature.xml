@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.webservices.feature"
       label="Web Service Feature"
-      version="11.0.0.qualifier"
+      version="12.0.0.qualifier"
       provider-name="iDempiere">
 
    <description url="http://www.example.com/description">
@@ -334,13 +334,6 @@
 
    <plugin
          id="org.codehaus.jettison.jettison"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="wrapped.org.springframework.spring-jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"

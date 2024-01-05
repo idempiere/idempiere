@@ -37,14 +37,30 @@ public class MPromotionDistribution extends X_M_PromotionDistribution {
         super(ctx, M_PromotionDistribution_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param M_PromotionDistribution_ID
+     * @param trxName
+     */
 	public MPromotionDistribution(Properties ctx, int M_PromotionDistribution_ID, String trxName) {
 		super(ctx, M_PromotionDistribution_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionDistribution(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionDistribution_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionDistribution(Properties ctx, int M_PromotionDistribution_ID, String trxName,
 			String... virtualColumns) {
 		super(ctx, M_PromotionDistribution_ID, trxName, virtualColumns);

@@ -714,7 +714,7 @@ public class SetGetUtil
 	
 	/**
 	 * Get Info for given table and ID.
-	 * This method calls {@link MLookupFactory#getLookup_TableDirEmbed(Language, String, String, String) to
+	 * This method calls {@link MLookupFactory#getLookup_TableDirEmbed(Language, String, String, String)} to
 	 * generate the info string.
 	 * @param ctx context
 	 * @param tableName tablename

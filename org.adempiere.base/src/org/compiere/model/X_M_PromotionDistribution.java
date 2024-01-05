@@ -32,7 +32,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)

@@ -36,7 +36,6 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWorkflow;
 
-
 /**
  *	Inventory Movement Confirmation
  *	
@@ -50,7 +49,7 @@ import org.compiere.wf.MWorkflow;
 public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3617284116557414217L;
 
@@ -84,21 +83,20 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		}
 		return confirm;
 	}	//	create
-
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_MovementConfirm_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_MovementConfirm_UU  UUID key
+     * @param trxName Transaction
+     */
     public MMovementConfirm(Properties ctx, String M_MovementConfirm_UU, String trxName) {
         super(ctx, M_MovementConfirm_UU, trxName);
 		if (Util.isEmpty(M_MovementConfirm_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_MovementConfirm_ID id
@@ -156,7 +154,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 
 	/**
 	 * 	Get Lines
-	 *	@param requery requery
+	 *	@param requery true to requery from DB
 	 *	@return array of lines
 	 */
 	public MMovementLineConfirm[] getLines (boolean requery)
@@ -205,12 +203,12 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		else
 			setDescription(desc + " | " + description);
 	}	//	addDescription
-	
-	
+		
 	/**
 	 * 	Set Approved
 	 *	@param IsApproved approval
 	 */
+	@Override
 	public void setIsApproved (boolean IsApproved)
 	{
 		if (IsApproved && !isApproved())
@@ -225,12 +223,12 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		}
 		super.setIsApproved (IsApproved);
 	}	//	setIsApproved
-	
-	
+		
 	/**
 	 * 	Get Document Info
 	 *	@return document info (untranslated)
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		return Msg.getElement(getCtx(), "M_MovementConfirm_ID") + " " + getDocumentNo();
@@ -240,6 +238,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Create PDF
 	 *	@return File or null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -257,19 +256,19 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	/**
 	 * 	Create PDF file
 	 *	@param file output file
-	 *	@return file if success
+	 *	@return not implemented, always return null
 	 */
 	public File createPDF (File file)
 	{
 		return null;
 	}	//	createPDF
-
 	
-	/**************************************************************************
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -286,6 +285,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Unlock Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
@@ -297,6 +297,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Invalidate Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
@@ -308,6 +309,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid) 
 	 */
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -351,6 +353,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
@@ -362,6 +365,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Reject Approval
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
@@ -373,6 +377,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -476,8 +481,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	}	//	completeIt
 	
 	/**
-	 * 	Create Difference Document.
-	 * 	Creates one or two inventory lines
+	 * 	Create inventory movement line for difference and scrap quantity.<br/>
+	 *  Difference - add line to source movement document.<br/>
+	 *  Scrap - add line to target movement document.
 	 * 	@param move movement
 	 *	@param confirm confirm line
 	 *	@return true if created
@@ -577,9 +583,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		return true;
 	}	//	createDifferenceDoc
 
-
 	/**
-	 * 
+	 * add msg to process message.
+	 * @param msg 
 	 */
 	protected void updateProcessMsg(String msg) {
 		if (m_processMsg != null)
@@ -591,8 +597,8 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			m_processMsg = m_processMsg + ": " + Msg.getMsg(Env.getCtx(), error.getValue()) + " " + error.getName();
 	}
 
-
 	/**
+	 * Set physical inventory doc type id
 	 * @param inventory 
 	 */
 	protected void setInventoryDocType(MInventory inventory) {
@@ -609,8 +615,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 
 	/**
 	 * 	Void Document.
-	 * 	@return false 
+	 * 	@return true if success 
 	 */
+	@Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
@@ -655,9 +662,10 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	
 	/**
 	 * 	Close Document.
-	 * 	Cancel not delivered Qunatities
+	 * 	Cancel not delivered Quantities.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
@@ -678,8 +686,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	
 	/**
 	 * 	Reverse Correction
-	 * 	@return false 
+	 * 	@return not implemented, always return false 
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseCorrectIt - " + toString());
@@ -697,9 +706,10 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	}	//	reverseCorrectionIt
 	
 	/**
-	 * 	Reverse Accrual - none
-	 * 	@return false 
+	 * 	Reverse Accrual
+	 * 	@return not implemented, always return false 
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseAccrualIt - " + toString());
@@ -718,8 +728,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	
 	/** 
 	 * 	Re-activate
-	 * 	@return false 
+	 * 	@return not implemented, always return false 
 	 */
+	@Override
 	public boolean reActivateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reActivateIt - " + toString());
@@ -735,12 +746,12 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		
 		return false;
 	}	//	reActivateIt
-	
-	
-	/*************************************************************************
+		
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+	@Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -759,6 +770,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -768,6 +780,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getUpdatedBy();
@@ -775,8 +788,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 
 	/**
 	 * 	Get Document Currency
-	 *	@return C_Currency_ID
+	 *	@return 0
 	 */
+	@Override
 	public int getC_Currency_ID()
 	{
 		return 0;

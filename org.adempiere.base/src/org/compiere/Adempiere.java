@@ -63,13 +63,14 @@ import org.osgi.framework.Bundle;
 public final class Adempiere
 {
 	/** Timestamp                   */
+	@Deprecated
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Release 11";
+	static public String	MAIN_VERSION	= "Release 12";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2022-12-24";
+	static public String	DATE_VERSION	= "2023-12-24";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2022-12-24";
+	static public String	DB_VERSION		= "2023-12-24";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
@@ -92,7 +93,7 @@ public final class Adempiere
 	/** Subtitle                */
 	static public final String	SUB_TITLE		= "Smart Suite ERP, CRM and SCM";
 	static public final String	ADEMPIERE_R		= "iDempiere\u00AE";
-	static public final String	COPYRIGHT		= "\u00A9 1999-2023 iDempiere\u00AE";
+	static public final String	COPYRIGHT		= "\u00A9 1999-2024 iDempiere\u00AE";
 
 	static private String		s_ImplementationVersion = null;
 	static private String		s_ImplementationVendor = null;
@@ -177,45 +178,65 @@ public final class Adempiere
 		return "Unknown";
 	}   //  getVersion
 
+	/**
+	 * @return true if application version should be shown to user
+	 */
 	public static boolean isVersionShown(){ 
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_MAIN_VERSION_SHOWN, true);
 	}
 
+	/**
+	 * @return true if iDempiere AD version should be shown to user
+	 */
 	public static boolean isDBVersionShown(){
 		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_DATABASE_VERSION_SHOWN, defaultVal);
 	}
 
+	/**
+	 * @return true if implementation vendor name should be shown to user
+	 */
 	public static boolean isVendorShown(){
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_IMPLEMENTATION_VENDOR_SHOWN, true);
 	}
 
+	/**
+	 * @return true if JVM info should be shown to user
+	 */
 	public static boolean isJVMShown(){
 		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_JVM_VERSION_SHOWN, defaultVal);
 	}
 
+	/**
+	 * @return true if OS information should be shown to user
+	 */
 	public static boolean isOSShown(){
 		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_OS_INFO_SHOWN, defaultVal);
 	}
 
+	/**
+	 * @return true if application host should be shown to user
+	 */
 	public static boolean isHostShown() 
 	{
 		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_HOST_SHOWN, defaultVal);
 	}
 
+	/**
+	 * @return version of iDempiere AD
+	 */
 	public static String getDatabaseVersion() 
 	{
-//		return DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system");
 		return MSysConfig.getValue(MSysConfig.APPLICATION_DATABASE_VERSION,
 				DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system"));
 	}
 	
 	/**
-	 *	Short Summary (Windows)
-	 *  @return summary
+	 *	Short Summary
+	 *  @return short summary (name + main_version + sub_title)
 	 */
 	public static String getSum()
 	{
@@ -225,9 +246,9 @@ public final class Adempiere
 	}	//	getSum
 
 	/**
-	 *	Summary (Windows).
-	 * 	iDempiere(tm) Release 1.0c_2013-06-27 -Smart Suite ERP, CRM and SCM- Copyright (c) 1999-2021 iDempiere; Implementation: 2.5.1a 20040417-0243 - (C) 1999-2005 Jorg Janke, iDempiere Inc. USA
-	 *  @return Summary in Windows character set
+	 *	Summary
+	 *  @return Summary (name + main_version + date_version + sub_title+copyright
+	 *  + implementation_version + implementation_vendor)
 	 */
 	public static String getSummary()
 	{
@@ -242,7 +263,7 @@ public final class Adempiere
 	}	//	getSummary
 
 	/**
-	 * 	Set Package Info
+	 * Initialize implementation version and vendor text from Package Info.
 	 */
 	private static void setPackageInfo()
 	{
@@ -260,7 +281,7 @@ public final class Adempiere
 	}	//	setPackageInfo
 
 	/**
-	 * 	Get Jar Implementation Version
+	 * 	Get Implementation Version
 	 * 	@return Implementation-Version
 	 */
 	public static String getImplementationVersion()
@@ -271,7 +292,7 @@ public final class Adempiere
 	}	//	getImplementationVersion
 
 	/**
-	 * 	Get Jar Implementation Vendor
+	 * 	Get Implementation Vendor
 	 * 	@return Implementation-Vendor
 	 */
 	public static String getImplementationVendor()
@@ -336,8 +357,8 @@ public final class Adempiere
 	}	//	getJavaInfo
 
 	/**
-	 *  Get full URL
-	 *  @return URL
+	 *  Get URL of product
+	 *  @return URL or product
 	 */
 	public static String getURL()
 	{
@@ -345,7 +366,7 @@ public final class Adempiere
 	}   //  getURL
 
 	/**
-	 * @return URL
+	 * @return online help URL
 	 */
 	public static String getOnlineHelpURL()
 	{
@@ -354,7 +375,7 @@ public final class Adempiere
 
 	/**
 	 *  Get Sub Title
-	 *  @return Subtitle
+	 *  @return Product Subtitle
 	 */
 	public static String getSubtitle()
 	{
@@ -464,7 +485,7 @@ public final class Adempiere
 	}   //  getImageIconLogo
 
 	/**
-	 *  Get default (Home) directory
+	 *  Get instance home directory
 	 *  @return Home directory
 	 */
 	public static String getAdempiereHome()
@@ -494,19 +515,23 @@ public final class Adempiere
 		s_supportEmail = email;
 	}   //  setSupportEMail
 
+	/**
+	 * @return true if started
+	 */
 	public static synchronized boolean isStarted()
 	{
 		return (log != null);
 	}
 
-	/*************************************************************************
-	 *  Startup Client/Server.
+	/**
+	 *  Startup Client/Server.<br/>
+	 *  <pre>
 	 *  - Print greeting,
 	 *  - Check Java version and
 	 *  - load ini parameters
-	 *  If it is a client, load/set PLAF and exit if error.
-	 *  If Client, you need to call startupEnvironment explicitly!
-	 * 	For testing call method startupEnvironment
+	 *  </pre>
+	 *  If it is a client, load/set PLAF and exit if error.<br/>
+	 *  If client, you need to call startupEnvironment explicitly!
 	 *	@param isClient true for client
 	 *  @return successful startup
 	 */
@@ -588,6 +613,10 @@ public final class Adempiere
 		}
 	}
 
+	/**
+	 * Create thread pool
+	 * @return ScheduledThreadPoolExecutor
+	 */
 	private static ScheduledThreadPoolExecutor createThreadPool() {
 		int max = Runtime.getRuntime().availableProcessors() * 20;
 		int defaultMax = max;
@@ -607,9 +636,8 @@ public final class Adempiere
 	}
 
 	/**
-	 * 	Startup Adempiere Environment.
-	 * 	Automatically called for Server connections
-	 * 	For testing call this method.
+	 * 	Startup Adempiere Environment.<br/>
+	 * 	Automatically called for Server connections. <br/>
 	 *	@param isClient true if client connection
 	 *  @return successful startup
 	 */
@@ -685,17 +713,23 @@ public final class Adempiere
 		return true;
 	}	//	startupEnvironment
 
+	/**
+	 * @param name
+	 * @return URL for named resource
+	 */
 	public static URL getResource(String name) {
 		return Core.getResourceFinder().getResource(name);
 	}
 	
+	/**
+	 * Stop instance
+	 */
 	public static synchronized void stop() {
 		threadPoolExecutor.shutdown();
 		log = null;
 	}
 	
 	/**
-	 * 
 	 * @return {@link ScheduledThreadPoolExecutor}
 	 */
 	public static ScheduledThreadPoolExecutor getThreadPoolExecutor() {
@@ -709,6 +743,7 @@ public final class Adempiere
 	{
 		m_listenerList.remove(ServerStateChangeListener.class, l);
 	}
+	
 	/**
 	 *  @param l listener
 	 */
@@ -717,6 +752,10 @@ public final class Adempiere
 		m_listenerList.add(ServerStateChangeListener.class, l);
 	}
 	
+	/**
+	 * Fire event
+	 * @param e
+	 */
 	private static synchronized void fireServerStateChanged(ServerStateChangeEvent e)
 	{
 		ServerStateChangeListener[] listeners = m_listenerList.getListeners(ServerStateChangeListener.class);

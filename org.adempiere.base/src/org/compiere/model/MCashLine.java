@@ -41,17 +41,16 @@ import org.compiere.util.Util;
 public class MCashLine extends X_C_CashLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5023249596033465923L;
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_CashLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CashLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCashLine(Properties ctx, String C_CashLine_UU, String trxName) {
         super(ctx, C_CashLine_UU, trxName);
 		if (Util.isEmpty(C_CashLine_UU))
@@ -104,6 +103,12 @@ public class MCashLine extends X_C_CashLine
 		m_parent = cash;
 	}	//	MCashLine
 
+	/**
+	 * @param ctx
+	 * @param C_CashLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCashLine(Properties ctx, int C_CashLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CashLine_ID, trxName, virtualColumns);
 	}
@@ -115,7 +120,6 @@ public class MCashLine extends X_C_CashLine
 	/** Invoice					*/
 	protected MInvoice		m_invoice = null;
 	
-
 	/**
 	 * 	Add to Description
 	 *	@param description text
@@ -199,8 +203,8 @@ public class MCashLine extends X_C_CashLine
 	}	//	getStatementDate
 
 	/**
-	 * 	Create Line Reversal or inactivate this line if is not processed
-	 *	@return new reversed CashLine or this one if not processed
+	 * 	Create Line Reversal or inactivate this line if it is not processed
+	 *	@return new reversed CashLine or this instance if not processed
 	 */
 	public MCashLine createReversal()
 	{
@@ -239,11 +243,10 @@ public class MCashLine extends X_C_CashLine
 		reversal.addDescription("(" + getLine() + ")");
 		return reversal;
 	}	//	reverse
-	
-	
+		
 	/**
-	 * 	Get Cash (parent)
-	 *	@return cash
+	 * 	Get MCash (parent)
+	 *	@return MCash
 	 */
 	public MCash getParent()
 	{
@@ -283,10 +286,11 @@ public class MCashLine extends X_C_CashLine
 		return m_invoice;
 	}	//	getInvoice
 	
-	/**************************************************************************
+	/**
 	 * 	Before Delete
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		//	Cannot Delete generated Invoices
@@ -307,6 +311,7 @@ public class MCashLine extends X_C_CashLine
 	 *	@param success
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -320,6 +325,7 @@ public class MCashLine extends X_C_CashLine
 	 *	@param newRecord
 	 *	@return true/false
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -375,12 +381,6 @@ public class MCashLine extends X_C_CashLine
 		if (!CASHTYPE_BankAccountTransfer.equals(getCashType()))
 			setC_BankAccount_ID(I_ZERO);
 
-		/**	General fix of Currency 
-		UPDATE C_CashLine cl SET C_Currency_ID = (SELECT C_Currency_ID FROM C_Invoice i WHERE i.C_Invoice_ID=cl.C_Invoice_ID) WHERE C_Currency_ID IS NULL AND C_Invoice_ID IS NOT NULL;
-		UPDATE C_CashLine cl SET C_Currency_ID = (SELECT C_Currency_ID FROM C_BankAccount b WHERE b.C_BankAccount_ID=cl.C_BankAccount_ID) WHERE C_Currency_ID IS NULL AND C_BankAccount_ID IS NOT NULL;
-		UPDATE C_CashLine cl SET C_Currency_ID = (SELECT b.C_Currency_ID FROM C_Cash c, C_CashBook b WHERE c.C_Cash_ID=cl.C_Cash_ID AND c.C_CashBook_ID=b.C_CashBook_ID) WHERE C_Currency_ID IS NULL;
-		**/
-		
 		//	Get Line No
 		if (getLine() == 0)
 		{
@@ -398,6 +398,7 @@ public class MCashLine extends X_C_CashLine
 	 *	@param success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -406,8 +407,8 @@ public class MCashLine extends X_C_CashLine
 	}	//	afterSave
 	
 	/**
-	 * 	Update Cash Header.
-	 * 	Statement Difference, Ending Balance
+	 * 	Update Cash Header (C_Cash).<br/>
+	 * 	- Statement Difference, Ending Balance.
 	 *	@return true if success
 	 */
 	protected boolean updateHeader()

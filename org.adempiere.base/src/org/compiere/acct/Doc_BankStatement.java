@@ -29,16 +29,16 @@ import org.compiere.model.MBankStatementLine;
 import org.compiere.util.Env;
 
 /**
- *  Post Invoice Documents.
+ *  Post {@link MBankStatement} Documents.
  *  <pre>
  *  Table:              C_BankStatement (392)
  *  Document Types:     CMB
  *  </pre>
  *  @author Jorg Janke
  *  @version  $Id: Doc_Bank.java,v 1.3 2006/07/30 00:53:33 jjanke Exp $
- *
- *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual
- *  Avoid posting if both accounts BankAsset and BankInTransit are equal
+ *  <p>
+ *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual.<br/>
+ *  Avoid posting if both accounts BankAsset and BankInTransit are equal.
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 				<li>FR [ 2520591 ] Support multiples calendar for Org
  * 				@see https://sourceforge.net/p/adempiere/feature-requests/631/
@@ -64,6 +64,7 @@ public class Doc_BankStatement extends Doc
 	 *  Load Specific Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails ()
 	{
 		MBankStatement bs = (MBankStatement)getPO();
@@ -85,13 +86,15 @@ public class Doc_BankStatement extends Doc
 	}   //  loadDocumentDetails
 
 	/**
-	 *	Load Invoice Line.
+	 *	Load bank statement lines.
 	 *	@param bs bank statement
+	 *  <pre>
 	 *  4 amounts
 	 *  AMTTYPE_Payment
 	 *  AMTTYPE_Statement2
 	 *  AMTTYPE_Charge
 	 *  AMTTYPE_Interest
+	 *  </pre>
 	 *  @return DocLine Array
 	 */
 	protected DocLine[] loadLines(MBankStatement bs)
@@ -114,11 +117,11 @@ public class Doc_BankStatement extends Doc
 		return dls;
 	}	//	loadLines
 
-
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - subtracts line amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -144,13 +147,14 @@ public class Doc_BankStatement extends Doc
 	 *  CMB.
 	 *  <pre>
 	 *      BankAsset       DR      CR  (Statement)
-	 *      BankInTransit   DR      CR              (Payment)
+	 *      BankInTransit   DR      CR  (Payment)
 	 *      Charge          DR          (Charge)
 	 *      Interest        DR      CR  (Interest)
 	 *  </pre>
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//  create Fact Header

@@ -59,7 +59,6 @@ public final class ColumnCalloutManager {
 	}
 	
 	/**
-	 *
 	 * @param tableName
 	 * @param columnName
 	 * @return list of {@link IColumnCallout} register for tableName.columnName
@@ -137,7 +136,6 @@ public final class ColumnCalloutManager {
 		
 	// IDEMPIERE-2732
 	/**
-	 *
 	 * @param className
 	 * @param methodName 
 	 * @return {@link Callout} for className and methodName
@@ -172,8 +170,7 @@ public final class ColumnCalloutManager {
 	}
 		
 	/**
-	 * 
-	 * @return {@link IMappedColumnCalloutFactory}
+	 * @return {@link IMappedColumnCalloutFactory} instance
 	 */
 	public synchronized static IMappedColumnCalloutFactory getMappedColumnCalloutFactory() {
 		IMappedColumnCalloutFactory factoryService = null;

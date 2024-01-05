@@ -171,7 +171,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 	
 	/**
 	 * 	Move selected items within Yes List
-	 *	@param event event
+	 *  @param endIndex
+	 *  @param selObjects
 	 */
 	protected void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
 	{

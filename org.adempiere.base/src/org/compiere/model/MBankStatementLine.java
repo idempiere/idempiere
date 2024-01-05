@@ -43,16 +43,16 @@ import org.compiere.util.Util;
  public class MBankStatementLine extends X_C_BankStatementLine
  {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4479911757321927051L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_BankStatementLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BankStatementLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MBankStatementLine(Properties ctx, String C_BankStatementLine_UU, String trxName) {
         super(ctx, C_BankStatementLine_UU, trxName);
 		if (Util.isEmpty(C_BankStatementLine_UU))
@@ -117,6 +117,12 @@ import org.compiere.util.Util;
 		setLine(lineNo);
 	}	//	MBankStatementLine
 
+	/**
+	 * @param ctx
+	 * @param C_BankStatementLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MBankStatementLine(Properties ctx, int C_BankStatementLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_BankStatementLine_ID, trxName, virtualColumns);
 	}
@@ -125,6 +131,7 @@ import org.compiere.util.Util;
 	 * 	Set Statement Line Date and all other dates (Valuta, Acct)
 	 *	@param StatementLineDate date
 	 */
+	@Override
 	public void setStatementLineDate(Timestamp StatementLineDate)
 	{
 		super.setStatementLineDate(StatementLineDate);
@@ -168,13 +175,13 @@ import org.compiere.util.Util;
 			setDescription(msgsd.toString());
 		}
 	}	//	addDescription
-
 	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -253,6 +260,7 @@ import org.compiere.util.Util;
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -265,6 +273,7 @@ import org.compiere.util.Util;
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -273,7 +282,9 @@ import org.compiere.util.Util;
 	}	//	afterSave
 
 	/**
-	 * 	Update Header
+	 * Update Header (Bank Statement)<br/>
+	 * - Statement difference<br/>
+	 * - Ending balance
 	 */
 	protected boolean updateHeader()
 	{
@@ -297,9 +308,9 @@ import org.compiere.util.Util;
 		return true;
 	}	//	updateHeader
 
-
 	/**
-	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are on the same period
+	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are in the same financial period
+	 * @return true if not using date from statement line or header and line is in the same financial period
 	 */
 	public boolean isDateConsistentIfUsedForPosting() {
 		if (MBankStatement.isPostWithDateFromLine(getAD_Client_ID())) {

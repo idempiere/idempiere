@@ -30,7 +30,7 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityApprover (Properties ctx, int AD_WF_ActivityApprover_ID, String trxName)

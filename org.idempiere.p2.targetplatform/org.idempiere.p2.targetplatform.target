@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-231107" sequenceNumber="1688978989">
+<!-- when changing target name please change accordingly in the file utils_dev/oomph/idempiere.setup -->
+<target name="idempiere-240104" sequenceNumber="1688978991">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.4"/>
@@ -1214,7 +1215,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 version:               ${version_cleanup;${mvnVersion}}
 Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
 Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
+Import-Package:        org.apache.commons.logging;version="[1.2,2)";resolution:=optional,org.apache.commons.logging.impl;version="[1.1.1,2)";resolution:=optional,*;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
@@ -1234,19 +1235,6 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>5.3.27</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jcl</artifactId>
       <version>5.3.27</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
@@ -1646,12 +1634,12 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="error" type="Maven">
 		<groupId>com.zaxxer</groupId>
 	    <artifactId>HikariCP</artifactId>
-	    <version>5.0.1</version>
+	    <version>5.1.0</version>
 	</location>
 	<location includeSource="true" missingManifest="error" type="Maven">
 	    <groupId>org.postgresql</groupId>
     	<artifactId>postgresql</artifactId>
-    	<version>42.6.0</version>
+    	<version>42.7.1</version>
     </location>
         <location includeSource="true" missingManifest="generate" type="Maven">
     	<groupId>com.oracle.database.jdbc</groupId>

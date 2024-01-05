@@ -20,9 +20,9 @@ import org.adempiere.model.ITaxProvider;
 import org.compiere.util.CLogger;
 
 /**
- * Default tax provider factory
+ * Default {@link ITaxProviderFactory} implementation for core.<br/>
+ * Load {@link ITaxProvider} instance from plugin.xml (org.adempiere.model.ITaxProvider extension point) or class path.
  * @author Elaine
- *
  */
 public class DefaultTaxProviderFactory implements ITaxProviderFactory {
 

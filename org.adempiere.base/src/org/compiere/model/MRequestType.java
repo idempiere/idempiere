@@ -41,7 +41,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1772516764599702671L;
 
@@ -118,22 +118,21 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
             retValue = null;
 	
 		return retValue;
-	}	//	get
-
+	}	//	getDefault
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param R_RequestType_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_RequestType_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRequestType(Properties ctx, String R_RequestType_UU, String trxName) {
         super(ctx, R_RequestType_UU, trxName);
 		if (Util.isEmpty(R_RequestType_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_RequestType_ID id
@@ -175,7 +174,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}	//	MRequestType
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRequestType(MRequestType copy) 
@@ -184,7 +183,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -194,7 +193,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -205,7 +204,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/** Next time stats to be created		*/
+	/** Next time stats to be updated		*/
 	private long m_nextStats = 0;
 	
 	private int m_openNo = 0;
@@ -264,8 +263,8 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}	//	updateStatistics
 	
 	/**
-	 * 	Get Total No of requests of type
-	 *	@return no
+	 * 	Get total No of requests of type
+	 *	@return total No of requests
 	 */
 	public synchronized int getTotalNo()
 	{
@@ -274,8 +273,8 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 	Get Open No of requests of type
-	 *	@return no
+	 * 	Get no of open requests of type
+	 *	@return no of open requests
 	 */
 	public synchronized int getOpenNo()
 	{
@@ -284,8 +283,8 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 	Get Closed in last 30 days of type
-	 *	@return no
+	 * 	Get closed in last 30 days of type
+	 *	@return no of request closed in last 30 days
 	 */
 	public synchronized int getClosed30No()
 	{
@@ -294,8 +293,8 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get New in the last 30 days of type
-	 *	@return no
+	 * 	Get new request in last 30 days of type
+	 *	@return no of new request in last 30 days
 	 */
 	public synchronized int getNew30No()
 	{
@@ -348,7 +347,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}	//	getRequests
 	
 	/**
-	 * 	Get public Requests of Type
+	 * 	Get public requests of Type
 	 *	@return array of requests
 	 */
 	public MRequest[] getRequests ()
@@ -358,7 +357,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	
 	/**
 	 * 	Get Default R_Status_ID for Type
-	 *	@return status or 0
+	 *	@return R_Status_ID or 0
 	 */
 	public int getDefaultR_Status_ID()
 	{
@@ -383,6 +382,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getR_StatusCategory_ID() == 0)
@@ -398,6 +398,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRequestType[");

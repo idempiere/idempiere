@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.annotations.process.ProcessEventDelegate;
 
 /**
- * Define parameter for {@link ProcessEventDelegate}
- * Works with classes with {@link EventTopicDelegate} annotation
+ * Specify parameter for {@link ProcessEventDelegate}.<br/>
+ * Works with classes with {@link EventTopicDelegate} annotation.
  * @author hengsin
  *
  */
@@ -43,7 +43,7 @@ import org.adempiere.base.event.annotations.process.ProcessEventDelegate;
 public @interface ProcessEventTopic {
 	/**
 	 * AD_Process.AD_Process_UU (uuid) value for {@link ProcessEventDelegate}
-	 * @return process uuid
+	 * @return AD_Process_UU
 	 */
 	String processUUID();
 }

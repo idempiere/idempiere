@@ -16,15 +16,14 @@ package org.adempiere.base;
 import org.compiere.model.PaymentProcessor;
 
 /**
- * 
+ * Factory interface for {@link PaymentProcessor}.
  * @author hengsin
- *
  */
 public interface IPaymentProcessorFactory {
 
 	/**
 	 * @param className
-	 * @return payment processor instance
+	 * @return new PaymentProcessor instance
 	 */
 	public PaymentProcessor newPaymentProcessorInstance(String className);
 }

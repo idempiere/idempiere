@@ -212,7 +212,6 @@ public final class ImpFormatRow
 			throw new IllegalArgumentException("DataType must be S/D/N/C");
 	}   //  setDataType
 
-
 	/**
 	 *  Data Type
 	 *  @return data type
@@ -377,7 +376,7 @@ public final class ImpFormatRow
 
 	/**
 	 *	Set maximum length for Strings (truncated).
-	 * 	Ignored, if 0
+	 * 	Ignored, if 0.
 	 * 	@param maxLength max length
 	 */
 	public void setMaxLength (int maxLength)
@@ -386,7 +385,7 @@ public final class ImpFormatRow
 	}	//	setMaxLength
 
 	
-	/*************************************************************************
+	/**
 	 *	Parse value.
 	 * 	Field content in [] are treated as comments
 	 *  @param info data item
@@ -428,7 +427,6 @@ public final class ImpFormatRow
 			retValue = "";		
 		return (retValue.trim().length() > 0 ? importprefix : "") + retValue.trim();
 	}	//	parse
-
 	
 	/**
 	 *	Return date as YYYY-MM-DD HH24:MI:SS	(JDBC Timestamp format w/o milliseconds)
@@ -469,9 +467,11 @@ public final class ImpFormatRow
 	}	//	parseNumber
 
 	/**
-	 *	Return String.
+	 *  <pre>
+	 *  Return String.
 	 *  - clean ' and backslash
 	 *  - check max length
+	 *  </pre>
 	 *  @param info data
 	 *  @return info with in SQL format
 	 */

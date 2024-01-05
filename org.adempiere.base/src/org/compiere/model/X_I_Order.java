@@ -33,7 +33,7 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_Order (Properties ctx, int I_Order_ID, String trxName)

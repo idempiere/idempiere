@@ -23,7 +23,7 @@ BEGIN
   FOR r IN (
     SELECT DISTINCT t.TableName, ri.AD_Table_ID
       FROM AD_RecentItem ri
-	JOIN AD_Table t ON (ri.AD_Table_ID=t.AD_Table_ID)
+	JOIN AD_Table t ON (ri.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE ri.Record_UU IS NULL
 	AND ri.Record_ID IS NOT NULL
   ) LOOP

@@ -21,15 +21,22 @@ import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.osgi.framework.BundleContext;
 
 /**
- * A dictionary service provides for easy handling of dynamic Adempiere
- * dictionary.
+ * Interface for import of Application Dictionary data.
  * 
  * @author Joerg Viola
- * 
  */
 public interface IDictionaryService {
+	/**
+	 * Import application dictionary package
+	 * @param context
+	 * @param packageFile Application Dictionary package
+	 * @throws Exception
+	 */
 	void merge(BundleContext context, File packageFile) throws Exception;
 	
+	/**
+	 * @return X_AD_Package_Imp_Proc
+	 */
 	default public X_AD_Package_Imp_Proc getAD_Package_Imp_Proc() {
 		return null;
 	};

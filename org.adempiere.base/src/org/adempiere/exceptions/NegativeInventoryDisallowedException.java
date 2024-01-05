@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Exception for negative on hand quantity
  * @author hengsin
  *
  */
 public class NegativeInventoryDisallowedException extends AdempiereException
 {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 253224414462489886L;
 	
@@ -43,6 +43,15 @@ public class NegativeInventoryDisallowedException extends AdempiereException
 	private BigDecimal QtyOnHand;
 	private BigDecimal MovementQty;
 
+	/**
+	 * @param ctx
+	 * @param M_Warehouse_ID
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param M_Locator_ID
+	 * @param QtyOnHand
+	 * @param MovementQty
+	 */
 	public NegativeInventoryDisallowedException(Properties ctx, int M_Warehouse_ID, int M_Product_ID, int M_AttributeSetInstance_ID, int M_Locator_ID, 
 			BigDecimal QtyOnHand, BigDecimal MovementQty)
 	{

@@ -51,7 +51,9 @@ import org.w3c.dom.NodeList;
  * 
  * @author Michael Judd
  * @version $Id$
+ * @deprecated
  */
+@Deprecated(forRemoval = true, since = "11")
 public class AddressLookup implements AddressLookupInterface {
 	/** The logger. */
 	private static final CLogger log = CLogger.getCLogger(AddressLookup.class);

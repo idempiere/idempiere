@@ -30,11 +30,18 @@ public class TaxNoExemptFoundException extends AdempiereException
 	
 	private static final String AD_Message = "TaxNoExemptFound";
 
+	/**
+	 * @param AD_Org_ID
+	 */
 	public TaxNoExemptFoundException(int AD_Org_ID)
 	{
 		super(buildMessage(AD_Org_ID));
 	}
 	
+	/**
+	 * @param AD_Org_ID
+	 * @return error message
+	 */
 	private static final String buildMessage (int AD_Org_ID)
 	{
 		StringBuilder msg = new StringBuilder("@").append(AD_Message).append("@");
@@ -43,6 +50,10 @@ public class TaxNoExemptFoundException extends AdempiereException
 		return msg.toString();
 	}
 	
+	/**
+	 * @param AD_Org_ID
+	 * @return name for AD_Org_ID (* for 0 and ? for not found AD_Org_ID)
+	 */
 	private static final String getOrgString(int AD_Org_ID)
 	{
 		if (AD_Org_ID <= 0)

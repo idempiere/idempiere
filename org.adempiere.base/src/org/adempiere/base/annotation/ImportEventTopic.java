@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.annotations.imp.ImportEventDelegate;
 
 /**
- * Define parameter for {@link ImportEventDelegate}
- * Works with classes with {@link EventTopicDelegate} annotation
+ * Specify parameter for {@link ImportEventDelegate}.<br/>
+ * Works with classes with {@link EventTopicDelegate} annotation.
  * @author hengsin
  *
  */

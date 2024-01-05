@@ -33,7 +33,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShippingTransactionLine (Properties ctx, int M_ShippingTransactionLine_ID, String trxName)

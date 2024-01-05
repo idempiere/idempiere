@@ -45,7 +45,9 @@ import javax.sql.DataSource;
 import javax.sql.RowSet;
 
 import org.adempiere.db.postgresql.PostgreSQLBundleActivator;
+import org.adempiere.db.postgresql.partition.TablePartitionService;
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
 import org.compiere.model.MColumn;
@@ -134,7 +136,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	/**	Logger			*/
 	private static final CLogger			log	= CLogger.getCLogger (DB_PostgreSQL.class);
 
-    private static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
+    public static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
 
     private CCache<String, String> convertCache = new CCache<String, String>(null, "DB_PostgreSQL_Convert_Cache", 1000, CCache.DEFAULT_EXPIRE_MINUTE, false);
 
@@ -1371,5 +1373,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return "57014".equals(ex.getSQLState());
 	}
 
-	
+	@Override
+	public ITablePartitionService getTablePartitionService() {
+		return new TablePartitionService();
+	}
 }   //  DB_PostgreSQL

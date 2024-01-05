@@ -45,9 +45,8 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
 /**
- * 
+ * Default implementation of {@link IMappedColumnCalloutFactory} for core.
  * @author hengsin
- *
  */
 @Component(name = "org.adempiere.base.MappedColumnCalloutFactory", 
 	immediate = true, 
@@ -117,6 +116,9 @@ public class MappedColumnCalloutFactory implements IColumnCalloutFactory, IMappe
 		}		
 	}
 
+	/**
+	 * For plugin to lookup this service by component name and call this method to register annotated callout classes.
+	 */
 	@Override
 	public void scan(BundleContext context, String... packages) {
 		ClassLoader classLoader = context.getBundle().adapt(BundleWiring.class).getClassLoader();

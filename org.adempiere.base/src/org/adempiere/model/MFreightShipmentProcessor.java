@@ -104,6 +104,23 @@ public class MFreightShipmentProcessor implements IShipmentProcessor {
 		return true;
 	}
 
+	/**
+	 * @param ctx
+	 * @param adMessage
+	 * @param shipperId
+	 * @param freightCategoryId
+	 * @param dateOrder
+	 * @param weight
+	 * @param maxProductDimension
+	 * @param countryFrom
+	 * @param countryTo
+	 * @param regionFrom
+	 * @param regionTo
+	 * @param freightId
+	 * @param price
+	 * @param trxName
+	 * @return translated ad message
+	 */
 	private String getMsg(Properties ctx, String adMessage, int shipperId, int freightCategoryId, Timestamp dateOrder,
 			BigDecimal weight, BigDecimal maxProductDimension, int countryFrom, int countryTo, int regionFrom,
 			int regionTo, int freightId, BigDecimal price, String trxName) {

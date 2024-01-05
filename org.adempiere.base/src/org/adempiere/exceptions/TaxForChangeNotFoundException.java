@@ -16,19 +16,27 @@ package org.adempiere.exceptions;
 import org.compiere.util.Util;
 
 /**
- * Throw when tax not found for given charge
+ * Throw when tax not found for a given charge
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2758097 ] Implement TaxNotFoundException
  */
 public class TaxForChangeNotFoundException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6553174922970467775L;
 	
 	private static final String AD_Message = "TaxForChargeNotFound"; // TODO : translate
 
+	/**
+	 * @param C_Charge_ID
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID
+	 * @param shipC_BPartner_Location_ID
+	 * @param additionalMsg
+	 */
 	public TaxForChangeNotFoundException(int C_Charge_ID, int AD_Org_ID, int M_Warehouse_ID,
 			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID, String additionalMsg)
 	{
@@ -37,6 +45,15 @@ public class TaxForChangeNotFoundException extends AdempiereException
 				additionalMsg));
 	}
 	
+	/**
+	 * @param C_Charge_ID
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID
+	 * @param shipC_BPartner_Location_ID
+	 * @param additionalMsg
+	 * @return error message
+	 */
 	private static final String buildMessage(int C_Charge_ID, int AD_Org_ID, int M_Warehouse_ID,
 			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID, String additionalMsg)
 	{

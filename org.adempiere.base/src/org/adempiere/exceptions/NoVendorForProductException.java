@@ -14,14 +14,14 @@
 package org.adempiere.exceptions;
 
 /**
- * Throwed when there is no Vendor Info for given Product.
+ * Throw when there is no Vendor Info for a given Product.
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2457781 ] Introduce NoVendorForProductException
  */
 public class NoVendorForProductException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3412903630540562323L;
 

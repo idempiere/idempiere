@@ -35,7 +35,7 @@ import org.idempiere.cache.ImmutablePOCache;
 public class MProductCategoryAcct extends X_M_Product_Category_Acct implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7990259665379770596L;
 	/** Static cache */
@@ -93,16 +93,16 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	}	//	get
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_Product_Category_Acct_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Product_Category_Acct_UU  UUID key
+     * @param trxName Transaction
+     */
     public MProductCategoryAcct(Properties ctx, String M_Product_Category_Acct_UU, String trxName) {
         super(ctx, M_Product_Category_Acct_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored 
@@ -127,7 +127,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	}	//	MProductCategoryAcct
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MProductCategoryAcct(MProductCategoryAcct copy) 
@@ -136,7 +136,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -146,7 +146,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -173,6 +173,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -194,6 +195,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MProductCategoryAcct[");
@@ -227,6 +229,9 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		return true;
 	}
 	
+	/**
+	 * @return CSV list of product Value for product that has cost detail record.
+	 */
 	private String getProductsWithCost() {
 		StringBuilder products = new StringBuilder();
 		StringBuilder sql = new StringBuilder("SELECT DISTINCT p.Value FROM M_Product p JOIN M_CostDetail d ON p.M_Product_ID=d.M_Product_ID");

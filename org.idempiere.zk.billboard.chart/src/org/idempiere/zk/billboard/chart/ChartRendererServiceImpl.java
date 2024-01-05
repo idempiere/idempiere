@@ -108,9 +108,9 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 			billboard.setTimeSeries(true);
 
 			int noOfPeriod = 0;
-			if (width < MSysConfig.getIntValue("CHART_MIN_WIDTH_3_PERIOD", 230, chartModel.chart.getAD_Client_ID()))
+			if (width < MSysConfig.getIntValue(MSysConfig.CHART_MIN_WIDTH_3_PERIOD, 230, chartModel.chart.getAD_Client_ID()))
 				noOfPeriod = 3;
-			else if (width < MSysConfig.getIntValue("CHART_MIN_WIDTH_6_PERIOD", 320, chartModel.chart.getAD_Client_ID()))
+			else if (width < MSysConfig.getIntValue(MSysConfig.CHART_MIN_WIDTH_6_PERIOD, 320, chartModel.chart.getAD_Client_ID()))
 				noOfPeriod = 6;
 			
 			Calendar c = Calendar.getInstance();

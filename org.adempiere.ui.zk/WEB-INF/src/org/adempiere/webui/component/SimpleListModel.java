@@ -50,7 +50,7 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 	/** Sort Direction. True for Ascending, False for Descrending */
 	private boolean _sortDir;
 	
-	/** Max length for each column (value <= 0 means no Max length) */
+	/** Max length for each column (value &lt;= 0 means no Max length) */
 	private int[] maxLength;
 
 	/**
@@ -62,7 +62,7 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 	
 	/**
 	 * Create model from list
-	 * @param list List<?>
+	 * @param list List&lt;?>
 	 */
 	@SuppressWarnings("unchecked")
 	public SimpleListModel(List<?> list) {

@@ -13,10 +13,11 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import org.adempiere.base.event.annotations.AfterLoginEventDelegate;
+
 /**
- *
+ * Event data for {@link AfterLoginEventDelegate}.
  * @author hengsin
- *
  */
 public class LoginEventData {
 	private int AD_Client_ID;

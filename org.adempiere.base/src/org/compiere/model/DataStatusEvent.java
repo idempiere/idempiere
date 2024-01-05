@@ -34,7 +34,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1988674163839245029L;
 
@@ -75,7 +75,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	private String			m_columnName = null;
 	
 	// IDEMPIERE-1287:indicate case user just start edit field, want update status of toolbar button (like save button) 
-	// but don't want change anything (ever value of edit field)
+	// but don't want change anything (even value of edit field)
 	private boolean         isInitEdit = false;
 	
 	/** Created 				*/
@@ -94,7 +94,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	public Object			Record_ID = null;
 
 	/**
-	 *	Set Loaded Info
+	 *	Set Loading Info
 	 *  @param loadedRows loaded rows
 	 */
 	public void setLoading (int loadedRows)
@@ -132,7 +132,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 
 	/**
 	 *	Get current row (zero based)
-	 *  @return current roe
+	 *  @return current row
 	 */
 	public int getCurrentRow()
 	{
@@ -141,7 +141,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 
 	/**
 	 *	Get total rows
-	 *  @return total rows
+	 *  @return total number of rows
 	 */
 	public int getTotalRows()
 	{
@@ -173,7 +173,6 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	}   //  setInserting
 
 	/**
-	 *  Are we inserting
 	 *  @return true if inserting
 	 */
 	public boolean isInserting()
@@ -182,8 +181,8 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	}   //  isInserting
 
 	/**
-	 *	Get Message Info
-	 *  @return Message
+	 *	Get AD Message
+	 *  @return AD Message
 	 */
 	public String getAD_Message()
 	{
@@ -191,8 +190,8 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	}	//	getAD_Message
 
 	/**
-	 *	Get Message Info
-	 *  @return Info
+	 *	Get info for AD Message
+	 *  @return info for AD Message
 	 */
 	public String getInfo()
 	{
@@ -236,10 +235,10 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	/**
 	 *	String representation of Status.
 	 *  <pre>{@code
-	 *		*1/20 		Change - automatic commit
-	 *		?1/20		Change - manual confirm
-	 *		 1/56->200	Loading
-	 *		 1/20		Normal
+	 *      *1/20       Change - automatic commit
+	 *      ?1/20       Change - manual confirm
+	 *       1/56->200  Loading
+	 *       1/20       Normal
 	 *     +*1/20       Inserting, changed - automatic commit
 	 *  The row number is converted from zero based representation
 	 *  }</pre>
@@ -299,7 +298,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 
 	/**
 	 *	Set Changed Column
-	 *  @param col column
+	 *  @param col column index
 	 *  @param columnName column name
 	 */
 	public void setChangedColumn (int col, String columnName)
@@ -310,7 +309,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 
 	/**
 	 *	Get Changed Column
-	 *  @return changed column
+	 *  @return changed column index
 	 */
 	public int getChangedColumn()
 	{
@@ -344,6 +343,10 @@ public final class DataStatusEvent extends EventObject implements Serializable
 		return m_confirmed;
 	}	//  isConfirmed
 
+	/**
+	 * @param e
+	 * @return true if equal with e
+	 */
 	public boolean isEqual(DataStatusEvent e) {
 		if (e == null) return false;
 		
@@ -358,16 +361,15 @@ public final class DataStatusEvent extends EventObject implements Serializable
 			   e.isInitEdit == isInitEdit;
 	}
 
-
 	/**
-	 * @return indicate this event is by user start edit this field but not yet complete edit
+	 * @return true if this event is by user start edit this field but not yet completed edit
 	 */
 	public boolean isInitEdit() {
 		return isInitEdit;
 	}
 
 	/**
-	 * @param isInitEdit indicate this event is by user start edit this field but not yet complete edit
+	 * @param isInitEdit indicate this event is by user start edit this field but not yet completed edit
 	 */
 	public void setIsInitEdit(boolean isInitEdit) {
 		this.isInitEdit = isInitEdit;

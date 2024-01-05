@@ -31,7 +31,7 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName)

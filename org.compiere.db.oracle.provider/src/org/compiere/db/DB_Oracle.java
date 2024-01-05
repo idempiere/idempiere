@@ -39,7 +39,9 @@ import java.util.logging.Level;
 import javax.sql.DataSource;
 
 import org.adempiere.db.oracle.OracleBundleActivator;
+import org.adempiere.db.oracle.partition.TablePartitionService;
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_Oracle;
 import org.compiere.model.MColumn;
@@ -1187,5 +1189,8 @@ public class DB_Oracle implements AdempiereDatabase
 		return "72000".equals(ex.getSQLState()) && ex.getErrorCode() == 1013;
 	}
 	
-	
+	@Override
+	public ITablePartitionService getTablePartitionService() {
+		return new TablePartitionService();
+	}
 }   //  DB_Oracle

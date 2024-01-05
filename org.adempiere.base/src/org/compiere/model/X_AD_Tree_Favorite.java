@@ -30,7 +30,7 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Tree_Favorite (Properties ctx, int AD_Tree_Favorite_ID, String trxName)

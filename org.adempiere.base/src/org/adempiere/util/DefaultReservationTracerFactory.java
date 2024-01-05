@@ -25,9 +25,8 @@
 package org.adempiere.util;
 
 /**
- * 
+ * Default {@link IReservationTracerFactory} implementation for core.
  * @author hengsin
- *
  */
 public class DefaultReservationTracerFactory implements IReservationTracerFactory {
 
@@ -37,7 +36,7 @@ public class DefaultReservationTracerFactory implements IReservationTracerFactor
 	}
 
 	/**
-	 * 
+	 * Get the global singleton IReservationTracerFactory instance.
 	 * @return {@link IReservationTracerFactory}
 	 */
 	public static IReservationTracerFactory getInstance() {

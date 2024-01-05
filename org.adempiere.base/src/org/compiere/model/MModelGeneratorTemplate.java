@@ -31,24 +31,22 @@ import java.util.Properties;
  * Generate Model Template
  */
 public class MModelGeneratorTemplate extends X_AD_ModelGeneratorTemplate {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8215029851779075135L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ModelGeneratorTemplate_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ModelGeneratorTemplate_UU  UUID key
+     * @param trxName Transaction
+     */
     public MModelGeneratorTemplate(Properties ctx, String AD_ModelGeneratorTemplate_UU, String trxName) {
         super(ctx, AD_ModelGeneratorTemplate_UU, trxName);
     } // MModelGeneratorTemplate
 
 	/**
-	 * SMTP constructor
 	 * @param ctx			context
 	 * @param AD_ModelGeneratorTemplate_ID	ID
 	 * @param trxName		transaction
@@ -58,7 +56,6 @@ public class MModelGeneratorTemplate extends X_AD_ModelGeneratorTemplate {
 	} // MModelGeneratorTemplate
 
 	/**
-	 * SMTP constructor
 	 * @param ctx     context
 	 * @param rs      ResultSet
 	 * @param trxName transaction

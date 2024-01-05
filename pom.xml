@@ -58,11 +58,12 @@
 		<module>org.idempiere.webservices.client-feature</module>
 		<module>org.idempiere.jetty.osgi.boot.fragment</module>
 		<module>org.idempiere.ui.sso.oidc</module>
+		<module>org.idempiere.tablepartition</module>
 		<module>org.idempiere.p2</module>
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>
 		<module>org.idempiere.test</module>
-		<module>org.idempiere.p2.targetplatform</module>
+		<module>org.idempiere.p2.targetplatform</module>		
 	</modules>
 
 </project>

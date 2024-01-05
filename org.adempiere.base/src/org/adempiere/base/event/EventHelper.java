@@ -32,7 +32,7 @@ import org.compiere.util.CLogger;
 import org.osgi.service.event.Event;
 
 /**
- * Helper methods for event handler
+ * Helper methods for {@link AbstractEventHandler}.
  * @author hengsin
  */
 public final class EventHelper {
@@ -66,7 +66,6 @@ public final class EventHelper {
 	}
 
 	/**
-	 *
 	 * @param <T>
 	 * @param event
 	 */
@@ -75,7 +74,6 @@ public final class EventHelper {
 	}
 
 	/**
-	 *
 	 * @param <T>
 	 * @param event
 	 * @param property

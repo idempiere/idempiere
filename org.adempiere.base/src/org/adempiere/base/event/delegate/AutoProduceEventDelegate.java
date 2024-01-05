@@ -78,6 +78,11 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 	   }
 	}
 
+	/**
+	 * Process shipment and create production document for auto produce products (if insufficient on hand).
+	 * @param mInOut
+	 * @return error message or null
+	 */
 	private String processShipment(MInOut mInOut) {
 		// Auto produce if on hand is not sufficient to fulfill order
 		Map<String, BigDecimal> qtyUsedMap = new HashMap<String, BigDecimal>();
@@ -118,6 +123,17 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 		return null;
 	}
 	
+	/**
+	 * Create and complete production document
+	 * @param mInOut
+	 * @param mInOutLine
+	 * @param qtyEntered
+	 * @param qtyOnHand
+	 * @param endProductID
+	 * @param productionCount
+	 * @param qtyUsedMap
+	 * @return error message or null
+	 */
 	private String createProduction(MInOut mInOut, MInOutLine mInOutLine, BigDecimal qtyEntered, BigDecimal qtyOnHand, int endProductID, 
 			int[] productionCount, Map<String, BigDecimal> qtyUsedMap) {
 		String description=Msg.getElement(Env.getCtx(), "M_InOut_ID", true) +  " " + mInOut.getDocumentNo();

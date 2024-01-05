@@ -34,7 +34,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
@@ -1355,7 +1355,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	}
 
 	/** Set Paid.
-		@param IsPaid The document is paid
+		@param IsPaid The document is fully paid
 	*/
 	public void setIsPaid (boolean IsPaid)
 	{
@@ -1363,7 +1363,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	}
 
 	/** Get Paid.
-		@return The document is paid
+		@return The document is fully paid
 	  */
 	public boolean isPaid()
 	{

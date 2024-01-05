@@ -31,7 +31,7 @@ public class X_R_Resolution extends PO implements I_R_Resolution, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_Resolution (Properties ctx, int R_Resolution_ID, String trxName)

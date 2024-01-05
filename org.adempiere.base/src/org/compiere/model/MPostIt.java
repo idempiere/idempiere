@@ -25,7 +25,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- * 	PostIt Model
+ * 	PostIt Note Model
  *	
  *  @author Nicolas Micoud
  *  @version $Id: MPostIt.java
@@ -33,25 +33,25 @@ import org.compiere.util.Util;
 public class MPostIt extends X_AD_PostIt
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7817778632231317976L;
 
 	/**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_PostIt_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PostIt_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPostIt(Properties ctx, String AD_PostIt_UU, String trxName) {
         super(ctx, AD_PostIt_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param XXA_PostIt_ID id
-	 *	@param trxName transcation
+	 *	@param AD_PostIt_ID id
+	 *	@param trxName transaction
 	 */
 	public MPostIt (Properties ctx, int AD_PostIt_ID, String trxName)
 	{
@@ -59,7 +59,6 @@ public class MPostIt extends X_AD_PostIt
 	}	//	MPostIt
 
 	/**
-	 * 	Full Constructor
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -73,7 +72,6 @@ public class MPostIt extends X_AD_PostIt
 	}	//	MPostIt
 
 	/**
-	 * 	Full Constructor
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -98,7 +96,9 @@ public class MPostIt extends X_AD_PostIt
 		super (ctx, rs, trxName);
 	}	//	MPostIt
 
-
+	/**
+	 * @return created text
+	 */
 	public String getCreatedString()
 	{
 		MUser user = MUser.get(getCtx(), getCreatedBy());
@@ -107,7 +107,9 @@ public class MPostIt extends X_AD_PostIt
 		return Msg.getMsg(getCtx(), "PostItCreated", args);
 	}	//	getCreated
 
-	
+	/**
+	 * @return updated text
+	 */
 	public String getUpdatedString()
 	{
 		String retValue = "";
@@ -125,9 +127,10 @@ public class MPostIt extends X_AD_PostIt
 	/**
 	 * @param Table_ID
 	 * @param Record_ID
-	 * @return
+	 * @return AD_PostIt_ID
  	 * @deprecated Use {@link MPostIt#getID(int, String)} instead
 	 */
+	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_ID=?";
 		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
@@ -137,7 +140,7 @@ public class MPostIt extends X_AD_PostIt
 	/**
 	 * @param Table_ID
 	 * @param Record_UU
-	 * @return
+	 * @return AD_PostIt_ID
 	 */
 	public static int getID(int Table_ID, String Record_UU) {
 		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_UU=?";

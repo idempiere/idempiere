@@ -56,6 +56,9 @@ public class ModelGeneratorDialog extends JFrame implements ActionListener {
 	private JTextField fEntityType;
 	private JTextField fColumnEntityType;
 
+	/**
+	 * Default constructor
+	 */
 	public ModelGeneratorDialog() {
 		super();
 		setTitle("Model Class Generator");
@@ -114,6 +117,12 @@ public class ModelGeneratorDialog extends JFrame implements ActionListener {
 		bCancel.addActionListener(this);
 	}
 
+	/**
+	 * Create GridBagConstraints
+	 * @param x
+	 * @param y
+	 * @return GridBagConstraints
+	 */
 	private GridBagConstraints makeGbc(int x, int y) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 1;

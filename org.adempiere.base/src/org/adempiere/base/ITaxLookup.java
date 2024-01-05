@@ -28,9 +28,8 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /**
- * Interface to lookup C_Tax record id
+ * Interface to lookup C_Tax record id (C_Tax_ID)
  * @author hengsin
- *
  */
 public interface ITaxLookup {
 	
@@ -67,7 +66,6 @@ public interface ITaxLookup {
 	 * @param billDate Billing Date
 	 * @param billFromC_Location_ID Billing from (Tax Location from)
 	 * @param billToC_Location_ID Billing to (Tax Location to)
-	 * @param deliveryRule Order/Invoice's Delivery Via Rule
 	 * @param trxName
 	 * @return C_Tax_ID
 	 */

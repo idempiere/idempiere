@@ -33,7 +33,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)

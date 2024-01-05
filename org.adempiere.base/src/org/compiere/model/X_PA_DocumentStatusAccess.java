@@ -30,7 +30,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatusAccess (Properties ctx, int PA_DocumentStatusAccess_ID, String trxName)
