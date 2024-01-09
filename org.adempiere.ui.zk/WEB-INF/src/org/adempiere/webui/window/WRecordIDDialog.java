@@ -56,7 +56,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 
+ * Dialog to edit Record_ID or Record_UU field
  * @author Peter Takacs, Cloudempiere
  *
  */
@@ -114,6 +114,10 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		init(page);
 	}
 	
+	/**
+	 * Layout dialog
+	 * @param page
+	 */
 	private void init(Page page) {
 		Vlayout vLayout = new Vlayout();
 		labelsDiv = new Div();

@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule (Properties ctx, int AD_Process_DrillRule_ID, String trxName)

@@ -54,7 +54,6 @@ import org.compiere.model.MMFARegisteredDevice;
 import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -75,9 +74,12 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Image;
 
+/**
+ * Multi factor authentication panel
+ */
 public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4777197666886479162L;
 
@@ -113,6 +115,15 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
 
+	/**
+	 * @param ctx
+	 * @param loginWindow
+	 * @param orgKNPair
+	 * @param isClientDefined
+	 * @param userName
+	 * @param showRolePanel
+	 * @param clientsKNPairs
+	 */
 	public ValidateMFAPanel(Properties ctx, LoginWindow loginWindow, KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs) {
 		this.wndLogin = loginWindow;
 		m_ctx = ctx;
@@ -146,6 +157,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 	}
 
+	/**
+	 * Layout panel
+	 */
 	private void init() {
 		Div div = new Div();
 		div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
@@ -244,6 +258,10 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		this.appendChild(div);
 	}
 
+	/**
+	 * Create components
+	 * @param hasCookie
+	 */
 	private void initComponents(boolean hasCookie) {
 		lblMFAMechanism = new Label();
 		lblMFAMechanism.setId("lblMFAMechanism");
@@ -298,6 +316,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		txtValidationCode.setDisabled(true);
 	}
 
+	@Override
 	public void onEvent(Event event) {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			validateMFAComplete(true);
@@ -306,6 +325,10 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		}
 	}
 
+	/**
+	 * Validate completion of multi factor authentication
+	 * @param required
+	 */
 	public void validateMFAComplete(boolean required) {
 		Clients.clearBusy();
 
@@ -369,12 +392,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			long daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
 			rd.setExpiration(new Timestamp(System.currentTimeMillis() + (daysExpire * 86400000L)));
 			// TODO: rd.setHelp -> add information about the browser, device and IP address (fingerprint)
-			try {
-				PO.setCrossTenantSafe();
-				rd.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			rd.saveCrossTenantSafeEx();
 		}
 		Env.setContext(m_ctx, Env.MFA_Registration_ID, registrationId);
 
@@ -426,6 +444,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		return null;
 	}
 
+	/**
+	 * @return true if panel is shown to user
+	 */
 	public boolean show() {
 		return m_showMFAPanel;
 	}

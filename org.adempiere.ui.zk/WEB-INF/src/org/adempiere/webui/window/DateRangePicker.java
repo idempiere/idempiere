@@ -75,13 +75,13 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Spinner;
 
 /**
-*
-* @author Peter Takacs, Cloudempiere
-*
-*/
+ * Dialog to set from and to value of range date field editor
+ * @author Peter Takacs, Cloudempiere
+ *
+ */
 public class DateRangePicker extends Popup implements EventListener<Event>, ValueChangeListener {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -1674676283499219325L;
 	
@@ -140,6 +140,8 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	
     /**
      * Constructor
+     * @param editor
+     * @param editor2
      */
 	public DateRangePicker(WEditor editor, WEditor editor2) {
 		super();
@@ -590,7 +592,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	 * Auto-detect the time unit based on the default date values set, and correct the detected mode if necessary
 	 * @param today
 	 * @param predictedMode
-	 * @return
+	 * @return [detectedUnit, correctedMode]
 	 */
 	private String[] autodetectUnitAndCorrectMode(Timestamp today, String predictedMode) {
 		// use case: modes Before, After, On - unit is not needed
@@ -683,8 +685,8 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	/**
 	 * Auto-detect the time offset based on the default date values set
 	 * @param mode
-	 * @param unit
-	 * @return
+	 * @param unit Year (Y), Quarter (Q), Month (M) or Week (W)
+	 * @return difference between from and to date (in unit)
 	 */
 	private int autodetectOffset(String mode, String unit) {
 		Date date = dateFrom;
@@ -714,7 +716,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	
 	/**
 	 * Get the currently selected date interval
-	 * @return String dates separated by " - "
+	 * @return from and to dates separated by " - "
 	 */
 	private String getIntervalAsString() {
 		
@@ -793,7 +795,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	 * @param isToDate - if false, set date from and to to the beginning and end of the given time interval
 	 * @param includeThis - if true, it will include the current date (e.g. return from the beginning of last month until today/until end of last month)
 	 * @param dateFrom - define date from (default now)
-	 * @return array of dates: {DateFrom, DateTo}
+	 * @return array of dates: [DateFrom, DateTo]
 	 */
 	private Date[] getInterval(String timeUnit, String timeUnitForRange, int offset, boolean isToDate, boolean includeThis, Date dateFrom) {
 

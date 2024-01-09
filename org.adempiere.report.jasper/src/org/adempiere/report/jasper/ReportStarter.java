@@ -56,6 +56,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.SystemProperties;
 import org.compiere.model.X_AD_PInstance_Para;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.PrintUtil;
@@ -143,7 +144,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     private static final JasperReportsContext jasperReportContext;
 	
     static {
-        String reportPath = System.getProperty("org.compiere.report.path");
+        String reportPath = SystemProperties.getReportPath();
         if (reportPath == null) {
         	REPORT_HOME = new File(Ini.getAdempiereHome() + File.separator + "reports");
         } else {

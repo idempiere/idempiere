@@ -92,18 +92,13 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Product Attribute Set Product/Instance Dialog Editor.
- * 	Called from VPAttribute.actionPerformed
- *
- *  @author Jorg Janke
- *  
- *  ZK Port
- *  @author Low Heng Sin
+ *  Product Instance/Non-Instance attribute Dialog.
+ *  @author hengsin
  */
 public class WPAttributeDialog extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7810825026970615029L;
 
@@ -167,7 +162,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			return;
 		}
 		AEnv.showCenterScreen(this);
-	}	//	VPAttributeDialog
+	}	//	WPAttributeDialog
 
 	protected int						m_WindowNo;
 	protected MAttributeSetInstance	m_masi;
@@ -178,9 +173,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected int						m_C_BPartner_ID;
 	protected int						m_AD_Column_ID;
 	protected int						m_WindowNoParent;
-	/**	Enter Product Attributes		*/
+	/**	true if open from product window		*/
 	protected boolean					m_productWindow = false;
-	/**	Change							*/
+	/**	true if user has make changes			*/
 	protected boolean					m_changed = false;
 	
 	private static final CLogger	log = CLogger.getCLogger(WPAttributeDialog.class);
@@ -191,6 +186,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	protected Checkbox	cbNewEdit = new Checkbox();
 	protected Button		bNewRecord = new Button(Msg.getMsg(Env.getCtx(), "NewRecord"));
+	/** Listbox for existing non-instance ASI records */
 	protected Listbox		existingCombo = new Listbox();
 	protected Button		bSelect = new Button(); 
 	//	Lot
@@ -198,7 +194,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected Listbox fieldLot = new Listbox();
 	protected Button bLot = new Button(Msg.getMsg (Env.getCtx(), "New"));
 	//	Lot Popup
-	protected Menupopup 					popupMenu = new Menupopup();
+	protected Menupopup 		popupMenu = new Menupopup();
 	protected Menuitem 			mZoom;
 	//	Ser No
 	protected Textbox fieldSerNo = new Textbox();
@@ -222,7 +218,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected boolean isAllowedToCreateAndUpdate = false;
 
 	/**
-	 *	Layout
+	 *	Layout dialog
 	 * 	@throws Exception
 	 */
 	private void init () throws Exception
@@ -231,7 +227,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		ZKUpdateUtil.setHflex(mainLayout, "1");
 		ZKUpdateUtil.setVflex(mainLayout, "min");
 		if (ClientInfo.maxHeight(600)) 
-				mainLayout.setStyle("max-height: 100%;"); 
+			mainLayout.setStyle("max-height: 100%;"); 
 		else 
 			mainLayout.setStyle("max-height: 600px;");
 		
@@ -265,8 +261,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	}	//	init
 
 	/**
-	 *	Dyanmic Init.
-	 *  @return true if initialized
+	 *	Load attribute set and ASI details
+	 *  @return true if initialized ok
 	 */
 	private boolean initAttributes ()
 	{
@@ -326,7 +322,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			return false;
 		}
 
-		//	Show Product Attributes
+		//	Show Product (Non Instance) Attributes
 		if (m_productWindow)
 		{
 			Row row = new Row();
@@ -563,6 +559,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	/**
 	 * 	Add Attribute Line
+	 *  @param rows
 	 *	@param attribute attribute
 	 * 	@param product product level attribute
 	 * 	@param readOnly value is read only
@@ -636,6 +633,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}
 	}	//	addAttributeLine
 
+	/**
+	 * Create GridField for attribute
+	 * @param attribute
+	 * @return GridField
+	 */
 	public GridField getGridField(MAttribute attribute)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
@@ -655,6 +657,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return createGridField(attribute, vo);
 	} // getGridField
 
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.String
+	 */
 	public GridField getStringGridField(MAttribute attribute)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
@@ -663,6 +669,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return createGridField(attribute, vo);
 	} // getStringGridField
 
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.Number
+	 */
 	public GridField getNumberGridField(MAttribute attribute)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
@@ -671,6 +681,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return createGridField(attribute, vo);
 	} // getNumberGridField
 
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.Date
+	 */
 	public GridField getDateGridField(MAttribute attribute)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(), 
@@ -679,6 +693,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return createGridField(attribute, vo);
 	} // getDateGridField
 
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.TableDir
+	 */
 	public GridField getListTypeGridField(MAttribute attribute)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
@@ -692,6 +710,12 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return createGridField(attribute, vo);
 	} // getListTypeGridField
 
+	/**
+	 * Create GridField
+	 * @param attribute
+	 * @param vo
+	 * @return GridField
+	 */
 	private GridField createGridField(MAttribute attribute, GridFieldVO vo)
 	{
 		String desc = attribute.get_Translation("Description");
@@ -699,6 +723,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return new GridField(vo);
 	} // createGridField
 
+	/**
+	 * Update value of editor
+	 * @param attribute
+	 * @param index index of editor
+	 */
 	public void updateAttributeEditor(MAttribute attribute, int index)
 	{
 		WEditor editor = m_editors.get(index);
@@ -706,6 +735,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			setEditorAttribute(attribute, editor);
 	} // updateAttributeEditor
 
+	/**
+	 * Set value of editor from M_AttributeInstance
+	 * @param attribute
+	 * @param editor
+	 */
 	public void setEditorAttribute(MAttribute attribute, WEditor editor)
 	{
 		MAttributeInstance instance = attribute.getMAttributeInstance(m_M_AttributeSetInstance_ID);
@@ -767,6 +801,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		this.detach();
 	}	//	dispose
 
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		//	Select Instance
@@ -849,6 +884,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "not found - " + e);
 	}	//	actionPerformed
 
+	/**
+	 * Handle onCancel event
+	 */
 	protected void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -860,6 +898,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		dispose();
 	}
 
+	/**
+	 * Handle onSelect event for {@link #existingCombo}
+	 */
 	protected void cmd_existingCombo() {
 		ListItem pp = existingCombo.getSelectedItem();
 		if (pp != null && (Integer)pp.getValue() != -1)
@@ -880,6 +921,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Handle onClick event for {@link #bNewRecord}
+	 */
 	protected void cmd_newRecord() {
 		cbNewEdit.setSelected(false);
 		cbNewEdit.setEnabled(false);
@@ -898,6 +942,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		fieldDescription.setText("");
 	}
 
+	/**
+	 * Handle event for {@link #cbNewEdit} (for non-instance ASI)
+	 */
 	protected void cmd_edit() {
 		boolean check = cbNewEdit.isSelected();
 		for (int i = 0; i < m_editors.size(); i++)
@@ -909,12 +956,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	/**
 	 * 	Instance Selection Button
-	 * 	@return true if selected
 	 */
 	protected void cmd_select()
 	{
-		log.config("");
-		
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, "M_Warehouse_ID");
 		
 		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, "C_DocType_ID");
@@ -1022,8 +1066,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	protected boolean saveSelection()
 	{
-		log.info("");
-		
 		MAttributeSet as = m_masi.getMAttributeSet();
 		
 		if (as == null)
@@ -1079,7 +1121,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				m_M_AttributeSetInstanceName = m_masi.getDescription();
 			}
 			
-			//	Save Instance Attributes
+			//	Save Instance Attributes (M_AttributeInstance)
 			MAttribute[] attributes = as.getMAttributes(!m_productWindow);
 			MAttribute.set_TrxName(attributes, trxName);
 			for (int i = 0; i < attributes.length; i++)
@@ -1165,6 +1207,12 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return true;
 	}	//	saveSelection
 
+	/**
+	 * @param mandatory
+	 * @param attributes
+	 * @param editor
+	 * @return error message (if any)
+	 */
 	public String setEditorValue(String mandatory, MAttribute attributes, WEditor editor)
 	{
 		int displayType = editor.getGridField().getDisplayType();
@@ -1225,9 +1273,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		return mandatory;
 	} // setEditorValue
 	
-	/**************************************************************************
+	/**
 	 * 	Get Instance ID
-	 * 	@return Instance ID
+	 * 	@return M_AttributeSetInstance_ID
 	 */
 	public int getM_AttributeSetInstance_ID()
 	{
@@ -1262,9 +1310,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	}	//	isChanged
 
 	/**
-	 * This method searches for User's Window Access to determinate if it is
-	 * possible to create new ASI records (when IsReadWrite = true), only read
-	 * existing ASI records (when IsReadWrite = false) or open the ASI dialog (when
+	 * This method searches for User's Window Access to determinate if user has 
+	 * permission to create new ASI records (when IsReadWrite = true), only read
+	 * existing ASI records (when IsReadWrite = false) or can't open the ASI dialog (when
 	 * there is no Window Access for Attribute Set Instance window).
 	 */
 	private void validadeRoleAccess() {

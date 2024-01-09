@@ -39,7 +39,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4760475718973777369L;
 
@@ -57,11 +57,11 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	}	//	getActive
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_AcctProcessor_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AcctProcessor_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAcctProcessor(Properties ctx, String C_AcctProcessor_UU, String trxName) {
         super(ctx, C_AcctProcessor_UU, trxName);
 		if (Util.isEmpty(C_AcctProcessor_UU))
@@ -149,6 +149,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	 * 	Get Server ID
 	 *	@return id
 	 */
+	@Override
 	public String getServerID ()
 	{
 		StringBuilder msgreturn = new StringBuilder("AcctProcessor").append(get_ID());
@@ -160,6 +161,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	 *	@param requery requery
 	 *	@return date next run
 	 */
+	@Override
 	public Timestamp getDateNextRun (boolean requery)
 	{
 		if (requery)
@@ -171,6 +173,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	 * 	Get Logs
 	 *	@return logs
 	 */
+	@Override
 	public AdempiereProcessorLog[] getLogs ()
 	{
 		String whereClause = "C_AcctProcessor_ID=? ";

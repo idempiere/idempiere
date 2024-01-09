@@ -17,33 +17,30 @@
 package org.adempiere.base;
 
 /**
- * A service locator looks up services.
- * This is the central authority for adempiere service definition,
- * because each service defined has to be looked up via this interface.
- * 
- * A service in adempiere is an implementation for the registered interface, expose through osgi service registry
+ * Interface for dynamic discovery of services.<br/>
+ * This is the primary entry point for iDempiere service discovery.
  * 
  * @author viola
  *
  */
 public interface IServiceLocator {
 	/**
-	 * 
+	 * Locate matching service by type (order by service.ranking priority)
 	 * @param type service interface
 	 * @return holder for dynamic service
 	 */
 	<T> IServiceHolder<T> locate(Class<T> type);
 	
 	/**
-	 * 
+	 * Locate matching service by type and query expression
 	 * @param type
 	 * @param query
-	 * @return
+	 * @return holder for service
 	 */
 	<T> IServiceHolder<T> locate(Class<T> type, ServiceQuery query);
 	
 	/**
-	 * 
+	 * Locate matching service by component name and query expression
 	 * @param type
 	 * @param componentName service component name
 	 * @param query
@@ -52,14 +49,14 @@ public interface IServiceLocator {
 	<T> IServiceHolder<T> locate(Class<T> type, String componentName, ServiceQuery query);
 	
 	/**
-	 * 
+	 * Find all matching services by type
 	 * @param type
 	 * @return holder for list of dynamic service
 	 */
 	<T> IServicesHolder<T> list(Class<T> type);
 	
 	/**
-	 * 
+	 * Find all matching services by type and query expression
 	 * @param type
 	 * @param query
 	 * @return holder for list of dynamic service
@@ -67,7 +64,7 @@ public interface IServiceLocator {
 	<T> IServicesHolder<T> list(Class<T> type, ServiceQuery query);
 	
 	/**
-	 * 
+	 * Find all matching services by component name and query expression
 	 * @param type
 	 * @param componentName osgi service component name
 	 * @param query

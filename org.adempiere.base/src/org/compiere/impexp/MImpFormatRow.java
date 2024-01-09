@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.util.Util;
 
-
 /**
  *	Import Format Row Model 
  *	
@@ -33,16 +32,16 @@ public class MImpFormatRow extends X_AD_ImpFormat_Row
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6251836513717968622L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ImpFormat_Row_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ImpFormat_Row_UU  UUID key
+     * @param trxName Transaction
+     */
     public MImpFormatRow(Properties ctx, String AD_ImpFormat_Row_UU, String trxName) {
         super(ctx, AD_ImpFormat_Row_UU, trxName);
 		if (Util.isEmpty(AD_ImpFormat_Row_UU))

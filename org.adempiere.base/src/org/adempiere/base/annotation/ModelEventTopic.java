@@ -34,8 +34,8 @@ import org.adempiere.base.event.annotations.ModelEventDelegate;
 import org.compiere.model.PO;
 
 /**
- * Specify parameter for {@link ModelEventDelegate}
- * Works with classes with {@link EventTopicDelegate} annotation
+ * Specify parameter for {@link ModelEventDelegate}.<br/>
+ * Works with classes with {@link EventTopicDelegate} annotation.
  * @author hengsin
  *
  */

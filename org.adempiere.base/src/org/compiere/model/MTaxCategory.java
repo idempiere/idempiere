@@ -32,16 +32,16 @@ import org.compiere.util.Util;
 public class MTaxCategory extends X_C_TaxCategory
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5521670797405300136L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_TaxCategory_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_TaxCategory_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTaxCategory(Properties ctx, String C_TaxCategory_UU, String trxName) {
         super(ctx, C_TaxCategory_UU, trxName);
 		if (Util.isEmpty(C_TaxCategory_UU))
@@ -80,9 +80,8 @@ public class MTaxCategory extends X_C_TaxCategory
 	}	//	MTaxCategory
 	
 	/**
-	 * 	getDefaultTax
-	 *	Get the default tax id associated with this tax category
-	 *	
+	 *	Get the default tax associated with this tax category.
+	 *	@return default MTax for this tax category
 	 */
 	public MTax getDefaultTax()
 	{

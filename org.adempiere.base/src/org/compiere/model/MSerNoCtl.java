@@ -30,16 +30,16 @@ import org.compiere.util.Util;
 public class MSerNoCtl extends X_M_SerNoCtl
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -6746210722573475011L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_SerNoCtl_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_SerNoCtl_UU  UUID key
+     * @param trxName Transaction
+     */
     public MSerNoCtl(Properties ctx, String M_SerNoCtl_UU, String trxName) {
         super(ctx, M_SerNoCtl_UU, trxName);
 		if (Util.isEmpty(M_SerNoCtl_UU))
@@ -80,9 +80,9 @@ public class MSerNoCtl extends X_M_SerNoCtl
 	}	//	MSerNoCtl
 
 	/**
-	 * 	Create new Lot.
+	 * 	Create new serial no.
 	 * 	Increments Current Next and Commits
-	 *	@return saved Lot
+	 *	@return new serial no
 	 */
 	public String createSerNo ()
 	{

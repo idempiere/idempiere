@@ -16,14 +16,18 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.apps.form.WTabEditor;
 
+/**
+ * Form to visually layout AD_Tab
+ */
 @org.idempiere.ui.zk.annotation.Form
 public class WTabEditorForm extends ADForm
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2533099650671242190L;
 
+	/** Controller */
 	private WTabEditor te;
 
 	public WTabEditorForm(WTabEditor wTabEditor) {

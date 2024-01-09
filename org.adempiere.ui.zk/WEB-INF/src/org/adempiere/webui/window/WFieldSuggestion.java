@@ -16,7 +16,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MField;
 import org.compiere.model.MFieldSuggestion;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -29,8 +28,8 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Textbox;
 
 /**
+ * Dialog to submit field suggestion (AD_FieldSuggestion)
  * @author hengsin
- *
  */
 public class WFieldSuggestion extends Window implements EventListener<Event> {
 
@@ -53,12 +52,16 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 
 	/**
 	 * default constructor
+	 * @param AD_Field_ID
 	 */
 	public WFieldSuggestion(int AD_Field_ID) {
 		field = new MField(Env.getCtx(), AD_Field_ID, null);
 		layout();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void layout() {
 		Borderlayout borderlayout = new Borderlayout();
 		appendChild(borderlayout);
@@ -142,6 +145,9 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		}		
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -150,6 +156,9 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		this.detach();
 	}
 
+	/**
+	 * Save changes to AD_FieldSuggestion
+	 */
 	private void onSave() {
 		MFieldSuggestion suggestion = new MFieldSuggestion(Env.getCtx(), 0, null);
 		suggestion.setClientOrg(0, 0);
@@ -164,12 +173,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		suggestion.setIsApproved(false);
 		suggestion.setIsUpdateBaseLanguage(false);
 		suggestion.setProcessed(false);
-		try {
-			PO.setCrossTenantSafe();
-			suggestion.saveEx();
-		}finally {
-			PO.clearCrossTenantSafe();
-		}
+		suggestion.saveCrossTenantSafeEx();
 		Dialog.info(0, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 		this.detach();
 	}

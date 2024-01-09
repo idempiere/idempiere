@@ -32,6 +32,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
@@ -51,10 +52,10 @@ import org.compiere.util.Env;
  *  </pre>
  *  @author Jorg Janke
  *  @version  $Id: Doc_Allocation.java,v 1.6 2006/07/30 00:53:33 jjanke Exp $
- *
- *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual
- *  Avoid posting if Receipt and both accounts Unallocated Cash and Receivable are equal
- *  Avoid posting if Payment and both accounts Payment Select and Liability are equal
+ *  <p>
+ *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual<br/>
+ *  Avoid posting if Receipt and both accounts Unallocated Cash and Receivable are equal<br/>
+ *  Avoid posting if Payment and both accounts Payment Select and Liability are equal<br/>
  *
  *  @author phib
  *  BF [ 2019262 ] Allocation posting currency gain/loss omits line reference
@@ -137,7 +138,7 @@ public class Doc_AllocationHdr extends Doc
 	}	//	loadLines
 
 
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - subtracts line and tax amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
 	 */
@@ -178,8 +179,8 @@ public class Doc_AllocationHdr extends Doc
 	 *      -
 	 *  ==============================
 	 *  Realized Gain and Loss
-	 * 		AR/AP			DR		CR
-	 * 		Realized G/L	DR		CR
+	 * 		AR/AP           DR      CR
+	 * 		Realized G/L    DR      CR
 	 *
 	 *
 	 *  </pre>
@@ -537,8 +538,9 @@ public class Doc_AllocationHdr extends Doc
 		return m_facts;
 	}   //  createFact
 
-	/** Verify if the posting involves two or more organizations
-	@return true if there are more than one org involved on the posting
+	/** 
+	 * Verify if the posting involves two or more organizations
+	 * @return true if there are more than one org involved on the posting
 	 */
 	private boolean isInterOrg(MAcctSchema as) {
 		MAcctSchemaElement elementorg = as.getAcctSchemaElement(MAcctSchemaElement.ELEMENTTYPE_Organization);
@@ -687,7 +689,9 @@ public class Doc_AllocationHdr extends Doc
 		//	or Doc.ACCTTYPE_PaymentSelect (AP) or V_Prepayment
 		int accountType = Doc.ACCTTYPE_UnallocatedCash;
 		//
-		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment "
+		int C_Charge_ID = 0;
+		
+		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment, p.C_Charge_ID "
 				+ "FROM C_Payment p INNER JOIN C_DocType d ON (p.C_DocType_ID=d.C_DocType_ID) "
 				+ "WHERE C_Payment_ID=?";
 		PreparedStatement pstmt = null;
@@ -700,6 +704,7 @@ public class Doc_AllocationHdr extends Doc
 			if (rs.next ())
 			{
 				setC_BankAccount_ID(rs.getInt(1));
+				C_Charge_ID = rs.getInt(5);				// Charge
 				if (DOCTYPE_APPayment.equals(rs.getString(2)))
 					accountType = Doc.ACCTTYPE_PaymentSelect;
 				//	Prepayment
@@ -728,6 +733,9 @@ public class Doc_AllocationHdr extends Doc
 			log.log(Level.SEVERE, "NONE for C_Payment_ID=" + C_Payment_ID);
 			return null;
 		}
+		
+		if (C_Charge_ID != 0)
+			return MCharge.getAccount(C_Charge_ID, as);
 		return getAccount (accountType, as);
 	}	//	getPaymentAcct
 
@@ -753,16 +761,17 @@ public class Doc_AllocationHdr extends Doc
 	}	//	getCashAcct
 
 
-	/**************************************************************************
-	 * 	Create Tax Correction.
+	/**
+	 * 	Create Tax Correction.<br/>
 	 * 	Requirement: Adjust the tax amount, if you did not receive the full
 	 * 	amount of the invoice (payment discount, write-off).
 	 * 	Applies to many countries with VAT.
+	 * <pre>
 	 * 	Example:
 	 * 		Invoice:	Net $100 + Tax1 $15 + Tax2 $5 = Total $120
 	 * 		Payment:	$115 (i.e. $5 underpayment)
 	 * 		Tax Adjustment = Tax1 = 0.63 (15/120*5) Tax2 = 0.21 (5/120/5)
-	 *
+	 *  </pre>
 	 * 	@param as accounting schema
 	 * 	@param fact fact
 	 * 	@param line Allocation line
@@ -824,10 +833,10 @@ public class Doc_AllocationHdr extends Doc
 
 	}	//	createTaxCorrection
 
-	/**************************************************************************
-	 * 	Create Realized Gain & Loss.
+	/**
+	 * 	Create Realized Gain & Loss.<br/>
 	 * 	Compares the Accounted Amount of the Invoice to the
-	 * 	Accounted Amount of the Allocation
+	 * 	Accounted Amount of the Allocation.
 	 *  @param line Allocation line
 	 *	@param as accounting schema
 	 *	@param fact fact
@@ -966,10 +975,10 @@ public class Doc_AllocationHdr extends Doc
 		return null;
 	}
 	
-	/**************************************************************************
-	 * 	Create Realized Gain & Loss.
+	/**
+	 * 	Create Realized Gain & Loss.<br/>
 	 * 	Compares the Accounted Amount of the Payment to the
-	 * 	Accounted Amount of the Allocation
+	 * 	Accounted Amount of the Allocation.
 	 * 	@param line Allocation line
 	 *	@param as accounting schema
 	 *	@param fact fact
@@ -1045,7 +1054,8 @@ public class Doc_AllocationHdr extends Doc
 
 		if (acctDifference == null || acctDifference.signum() == 0)
 		{
-			log.fine("No Difference");
+			if (log.isLoggable(Level.FINE))
+				log.fine("No Difference");
 			return null;
 		}
 
@@ -1071,7 +1081,7 @@ public class Doc_AllocationHdr extends Doc
 		return null;
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Create Rounding Correction.
 	 * 	Compares the Accounted Amount of the AR/AP Invoice to the
 	 * 	Accounted Amount of the AR/AP Allocation
@@ -1457,7 +1467,7 @@ public class Doc_AllocationHdr extends Doc
 		return null;				
 	}	//	createInvoiceRounding
 
-	/**************************************************************************
+	/**
 	 * 	Create Rounding Correction.
 	 * 	Compares the Accounted Amount of the Payment to the
 	 * 	Accounted Amount of the Allocation
@@ -1794,7 +1804,7 @@ public class Doc_AllocationHdr extends Doc
 	 * Balance Accounting
 	 * @param as accounting schema
 	 * @param fact
-	 * @return
+	 * @return fact line
 	 */
 	private FactLine balanceAccounting(MAcctSchema as, Fact fact)
 	{
@@ -1824,7 +1834,7 @@ public class Doc_AllocationHdr extends Doc
 	/**
 	 * Has Debit Receivables/Payables Trade Amount
 	 * @param invoice
-	 * @return
+	 * @return true 
 	 */
 	private boolean hasDebitTradeAmt(MInvoice invoice)
 	{

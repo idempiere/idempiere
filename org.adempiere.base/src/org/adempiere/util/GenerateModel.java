@@ -38,7 +38,9 @@ import org.compiere.util.DB;
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 3020640 ] GenerateModel is failing when we provide a list of tables
  *  			https://sourceforge.net/p/adempiere/bugs/2447/
+ *  @deprecated
  */
+@Deprecated(forRemoval = true, since = "11")
 public class GenerateModel
 {
 	

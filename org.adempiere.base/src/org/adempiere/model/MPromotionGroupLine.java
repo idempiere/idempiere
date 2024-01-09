@@ -37,14 +37,30 @@ public class MPromotionGroupLine extends X_M_PromotionGroupLine {
         super(ctx, M_PromotionGroupLine_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param M_PromotionGroupLine_ID
+     * @param trxName
+     */
 	public MPromotionGroupLine(Properties ctx, int M_PromotionGroupLine_ID, String trxName) {
 		super(ctx, M_PromotionGroupLine_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionGroupLine(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionGroupLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionGroupLine(Properties ctx, int M_PromotionGroupLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_PromotionGroupLine_ID, trxName, virtualColumns);
 	}

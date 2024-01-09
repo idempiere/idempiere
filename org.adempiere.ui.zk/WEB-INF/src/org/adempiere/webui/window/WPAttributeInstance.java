@@ -49,7 +49,7 @@ import org.zkoss.zul.Hbox;
 
 
 /**
- *	Display Product Attribute Instance Info
+ *	Product Attribute Set Instance (for instance attributes) view and selection dialog
  *
  *  @author     Jorg Janke
  *  @version    $Id: PAttributeInstance.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
@@ -57,7 +57,7 @@ import org.zkoss.zul.Hbox;
 public class WPAttributeInstance extends Window implements EventListener<Event> 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4052029122256207113L;
 
@@ -93,7 +93,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
 		AEnv.showCenterScreen(this);
-	}	//	PAttributeInstance
+	}	//	WPAttributeInstance
 	
 	/**
 	 * 	Initialization
@@ -141,7 +141,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private static final CLogger log = CLogger.getCLogger(WPAttributeInstance.class);
 
 	/**
-	 * 	Static Init
+	 * 	Layout dialog
 	 * 	@throws Exception
 	 */
 	private void init() throws Exception
@@ -176,7 +176,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	jbInit
 
-	/**	Table Column Layout Info			*/
+	/**	Column Layout Info	for {@link #m_table}		*/
 	private static ColumnInfo[] s_layout = new ColumnInfo[] 
 	{
 		new ColumnInfo(" ", "s.M_AttributeSetInstance_ID", IDColumn.class),
@@ -207,7 +207,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private String	m_sqlMinLife = "";
 
 	/**
-	 * 	Dynamic Init
+	 * 	Init components and variables
 	 * 	@param C_BPartner_ID BP
 	 */
 	private void dynInit(int C_BPartner_ID)
@@ -308,6 +308,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		enableButtons();
 	}	//	refresh
 
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		if (e.getTarget().getId().equals("Ok"))
@@ -326,6 +327,9 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		}
 	}	//	actionPerformed
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -395,4 +399,4 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		return m_M_Locator_ID;
 	}	//	getM_Locator_ID
 
-}	//	PAttributeInstance
+}	//	WPAttributeInstance

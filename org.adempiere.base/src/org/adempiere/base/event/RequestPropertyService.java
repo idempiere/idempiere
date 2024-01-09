@@ -32,9 +32,9 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
- * Request property service
+ * Load request property from requesteventhandler.properties and update {@link Configuration}
+ * through {@link ConfigurationAdmin} service.
  * @author Elaine
- *
  */
 public class RequestPropertyService {
 
@@ -42,17 +42,30 @@ public class RequestPropertyService {
 	
 	private static final CLogger logger = CLogger.getCLogger(RequestPropertyService.class);
 	
+	/**
+	 * Default constructor
+	 */
 	public RequestPropertyService() {
 	}
 
+	/**
+	 * @param configurationAdmin
+	 */
 	public void bindConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
 		readProperties(configurationAdmin);
 	}
 	
+	/**
+	 * @param configurationAdmin
+	 */
 	public void unbindConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
 		
 	}
 	
+	/**
+	 * Load request property from requesteventhandler.properties
+	 * @param service
+	 */
 	private void readProperties(ConfigurationAdmin service) {
 		File file = new File(Ini.getAdempiereHome(), REQUESTEVENTHANDLER_PROPERTIES);
 		if (file.exists()) {

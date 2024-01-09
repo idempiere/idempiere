@@ -29,12 +29,11 @@ import org.compiere.util.Env;
 public class MDashboardPreference extends X_PA_DashboardPreference
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -3887344231734476767L;
+	private static final long serialVersionUID = -8779298936108629638L;
 
 	/**
-	 *
 	 * @param isShowInDashboard
 	 * @param AD_User_ID
 	 * @param AD_Role_ID
@@ -49,7 +48,6 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	}
 
 	/**
-	 *
 	 * @param isShowInDashboard
 	 * @param AD_User_ID
 	 * @param AD_Role_ID
@@ -64,7 +62,6 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	}
 
 	/**
-	 *
 	 * @param isShowInDashboard
 	 * @param AD_User_ID
 	 * @param AD_Role_ID
@@ -76,11 +73,24 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		return list.toArray(new MDashboardPreference[list.size()]);
 	}
 
+	/**
+	 * @param isShowInDashboard
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @return Query
+	 */
 	private static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
 		return getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID, -1);
 	}
 
+	/**
+	 * @param isShowInDashboard
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @param lineNo
+	 * @return Query
+	 */
 	private static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID, int lineNo)
 	{
 		Properties ctx = Env.getCtx();
@@ -112,7 +122,6 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	}
 
 	/**
-	 *
 	 * @param AD_User_ID
 	 * @param AD_Role_ID
 	 * @param isCol
@@ -124,6 +133,12 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		return list.toArray(new MDashboardPreference[list.size()]);
 	}
 
+	/**
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @param isCol
+	 * @return Query
+	 */
 	private static Query getForSessionQuery(int AD_User_ID, int AD_Role_ID, boolean isCol)
 	{
 		Properties ctx = Env.getCtx();
@@ -152,17 +167,16 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	}
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_DashboardPreference_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_DashboardPreference_UU  UUID key
+     * @param trxName Transaction
+     */
     public MDashboardPreference(Properties ctx, String PA_DashboardPreference_UU, String trxName) {
         super(ctx, PA_DashboardPreference_UU, trxName);
     }
 
 	/**
-	 *
 	 * @param ctx
 	 * @param PA_DashboardPreference_ID
 	 * @param trxName
@@ -173,7 +187,6 @@ public class MDashboardPreference extends X_PA_DashboardPreference
     }
 
     /**
-     *
      * @param ctx
      * @param rs
      * @param trxName
@@ -182,19 +195,4 @@ public class MDashboardPreference extends X_PA_DashboardPreference
     {
       super (ctx, rs, trxName);
     }
-
-	/** Set User/Contact.
-        @param AD_User_ID
-        User within the system - Internal or Business Partner Contact
-        Overridden to allow saving System record (zero ID)
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
-
 }

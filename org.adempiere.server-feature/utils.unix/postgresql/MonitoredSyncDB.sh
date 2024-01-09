@@ -17,10 +17,10 @@
 #    It is expected that the script 001.fix always end registering calling register_migration_script
 #      and also cleaning the Error status from the script that is fixing via update, for example:
 #      script 201811121420_IDEMPIERE-2648.001.fix is expected to end with these two lines:
-#        UPDATE AD_MigrationScript SET Status='IP' WHERE Name='201811121420_IDEMPIERE-2648.sql');
+#        UPDATE AD_MigrationScript SET Status='IP' WHERE Name='201811121420_IDEMPIERE-2648.sql';
 #        SELECT register_migration_script('201811121420_IDEMPIERE-2648.001.fix') FROM dual;
 #      and similar the script 201811121420_IDEMPIERE-2648.002.fix is expected to end with these two lines:
-#        UPDATE AD_MigrationScript SET Status='IP' WHERE Name='201811121420_IDEMPIERE-2648.001.fix');
+#        UPDATE AD_MigrationScript SET Status='IP' WHERE Name='201811121420_IDEMPIERE-2648.001.fix';
 #        SELECT register_migration_script('201811121420_IDEMPIERE-2648.002.fix') FROM dual;
 #      and so on
 # 4. If there is an email registered in AD_System.SupportEMail and there is an accessible sendmail program then
@@ -74,15 +74,15 @@ if [ "x$4" = "x" ]
 then
     DIR_SCRIPTS=$IDEMPIERE_HOME/migration
 else
-    if [ "${4#/}" = "${4}" ]
+    if [ "${4:0:1}" = "/" ]
     then
-        DIR_SCRIPTS="$IDEMPIERE_HOME/$4"
-    else
         DIR_SCRIPTS="$4"
+    else
+        DIR_SCRIPTS="$IDEMPIERE_HOME/$4"
     fi
 fi
 
-cd "$DIR_SCRIPTS" || exit 1
+cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1)
 
 mkdir $TMPFOLDER/SyncDB_out_$$
 
@@ -218,7 +218,7 @@ do
     fi
 done < $TMPFOLDER/lisERR_$$.txt
 
-# Create list of files already applied - registered in ad_migrationscript table
+# Create list of files already applied - registered in AD_MigrationScript table
 echo "select name from ad_migrationscript" | $SILENTCMD | sed -e 's:^ ::' | grep -v '^$' | sort > $TMPFOLDER/lisDB_$$.txt
 
 # Create list of files in the migration folder
@@ -232,7 +232,13 @@ then
     while read -r FILE
     do
         SCRIPT=$(find . -name "$FILE" | grep "/$ADEMPIERE_DB_PATH/")
-        OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
+	echo "$SCRIPT" >> $TMPFOLDER/lisPENDINGFOL_$$.txt
+    done < $TMPFOLDER/lisPENDING_$$.txt
+    sort -o $TMPFOLDER/lisPENDINGFOL_$$.txt $TMPFOLDER/lisPENDINGFOL_$$.txt
+    while read -r SCRIPT
+    do
+	OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$SCRIPT" .sql).out
+	FILE=$(basename "$SCRIPT")
         if ! apply_script "$SCRIPT" "$OUTFILE" "$FILE"
         then
             TMPMSGERROR="\n**** ERROR ON FILE $OUTFILE - Please verify ****"
@@ -249,7 +255,7 @@ then
             # Stop processing, problem must be fixed
             break
         fi
-    done < $TMPFOLDER/lisPENDING_$$.txt
+    done < $TMPFOLDER/lisPENDINGFOL_$$.txt
 else
     if [ -s $TMPFOLDER/lisFS_$$.txt ]
     then

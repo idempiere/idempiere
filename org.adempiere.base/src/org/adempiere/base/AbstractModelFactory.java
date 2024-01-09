@@ -45,6 +45,13 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, Record_ID, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param Record_ID
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, int Record_ID, String trxName) {
 		if (clazz == null)
 		{
@@ -53,6 +60,8 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		MTable table = MTable.get(Env.getCtx(), tableName);
 		if (table != null && table.isUUIDKeyTable())
 		{
+			if (Record_ID == 0) // this is the convention to create a new record
+				return getPO(clazz, tableName, "", trxName); // get new Record using UUID constructor
 			return null;
 		}
 
@@ -128,6 +137,13 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, Record_UU, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param Record_UU
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, String Record_UU, String trxName) {
 		if (clazz == null)
 		{
@@ -206,6 +222,13 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, rs, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param rs
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, ResultSet rs, String trxName) {
 		if (clazz == null)
 		{

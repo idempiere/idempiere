@@ -75,7 +75,6 @@ public class Match
 	/**
 	 * Match From Changed - Fill Match To
 	 * @param selection match from
-	 * @param list of match to option
 	 */
 	protected Vector<String> cmd_matchFrom(String selection)
 	{

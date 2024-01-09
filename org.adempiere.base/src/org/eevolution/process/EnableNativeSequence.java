@@ -126,7 +126,7 @@ public class EnableNativeSequence extends SvrProcess
 		Properties ctx = Env.getCtx();
 		int AD_Process_ID = PROCESS_AD_NATIVE_SEQUENCE_ENABLE; // HARDCODED
 
-		MPInstance pinstance = new MPInstance(ctx, AD_Process_ID, -1);
+		MPInstance pinstance = new MPInstance(ctx, AD_Process_ID, 0, -1, null);
 		pinstance.saveEx();
 
 		ProcessInfo pi = new ProcessInfo("", AD_Process_ID, 0, 0);

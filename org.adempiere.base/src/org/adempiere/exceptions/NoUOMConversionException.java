@@ -25,15 +25,26 @@ public class NoUOMConversionException extends AdempiereException
 {
 	public static final String AD_Message = "NoUOMConversion";
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4868882017576097089L;
 
+	/**
+	 * @param M_Product_ID
+	 * @param C_UOM_ID
+	 * @param C_UOM_To_ID
+	 */
 	public NoUOMConversionException(int M_Product_ID, int C_UOM_ID, int C_UOM_To_ID)
 	{
 		super(buildMessage(M_Product_ID, C_UOM_ID, C_UOM_To_ID));
 	}
 
+	/**
+	 * @param M_Product_ID
+	 * @param C_UOM_ID
+	 * @param C_UOM_To_ID
+	 * @return error message
+	 */
 	private static String buildMessage(int M_Product_ID, int C_UOM_ID, int C_UOM_To_ID)
 	{
 		StringBuilder sb = new StringBuilder("@"+AD_Message+"@ - ");

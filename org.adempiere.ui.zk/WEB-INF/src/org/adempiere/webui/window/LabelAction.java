@@ -37,6 +37,9 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.impl.LabelImageElement;
 
+/**
+ * Toolbar action for labelling of record (AD_labelAssignment)
+ */
 public class LabelAction {
 	private AbstractADWindowContent panel;	
 	private Window window = null;	

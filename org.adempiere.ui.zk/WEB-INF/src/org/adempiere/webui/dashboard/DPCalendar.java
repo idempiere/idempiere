@@ -581,7 +581,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 		@Override
 		public void onMessage(Map<String, String> message) {
-			org.osgi.service.event.Event requestChangedEvent = new org.osgi.service.event.Event(ON_REQUEST_CHANGED_TOPIC, message);
+			org.osgi.service.event.Event requestChangedEvent = EventManager.newEvent(ON_REQUEST_CHANGED_TOPIC, message, true);
 			EventManager.getInstance().postEvent(requestChangedEvent);
 		}
 		
@@ -635,7 +635,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 				ITopic<Map<String,String>> topic = service.getTopic(ON_REQUEST_CHANGED_TOPIC);				
 				topic.publish(message);
 			} else {
-				org.osgi.service.event.Event requestChangedEvent = new org.osgi.service.event.Event(ON_REQUEST_CHANGED_TOPIC, message);
+				org.osgi.service.event.Event requestChangedEvent = EventManager.newEvent(ON_REQUEST_CHANGED_TOPIC, message, true);
 				EventManager.getInstance().postEvent(requestChangedEvent);
 			}
 		}	

@@ -137,7 +137,7 @@ public class PackRollProcess extends SvrProcess {
 									DB.close(rs, pstmt);
 								}
 								// Get Table value
-								tableName = MTable.getTableName(getCtx(), backup.getAD_Table_ID());
+								tableName = MTable.get(getCtx(), backup.getAD_Table_ID(), get_TrxName()).getTableName();
 
 								// Get Column Name
 								// Adjust for Column reference table

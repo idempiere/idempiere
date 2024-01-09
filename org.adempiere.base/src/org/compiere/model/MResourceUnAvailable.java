@@ -24,9 +24,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 
-
 /**
- *	Resource Unavailable
+ *	Resource Unavailable Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MResourceUnAvailable.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -36,7 +35,7 @@ import org.compiere.util.TimeUtil;
 public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1087763356022282086L;
 
@@ -59,11 +58,11 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 	}
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param S_ResourceUnAvailable_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_ResourceUnAvailable_UU  UUID key
+     * @param trxName Transaction
+     */
     public MResourceUnAvailable(Properties ctx, String S_ResourceUnAvailable_UU, String trxName) {
         super(ctx, S_ResourceUnAvailable_UU, trxName);
     }
@@ -83,6 +82,7 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 	 * 	MResourceUnAvailable
 	 *	@param ctx context
 	 *	@param rs result set
+	 *  @param trxName
 	 */
 	public MResourceUnAvailable (Properties ctx, ResultSet rs, String trxName)
 	{
@@ -102,11 +102,10 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 		return true;
 	}	//	beforeSave
 	
-
 	/**
 	 * Check if the resource is unavailable for date
 	 * @param dateTime
-	 * @return true if valid
+	 * @return true if not available
 	 */
 	public boolean isUnAvailable(Timestamp dateTime)
 	{
@@ -120,6 +119,5 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 			return false;
 		return true;
 	}
-
 	
 }	//	MResourceUnAvailable

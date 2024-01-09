@@ -33,7 +33,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MBroadcastMessage extends X_AD_BroadcastMessage implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3733943472482553977L;
 	public final static String CLIENTINFO_BROADCAST_COMPONENT_ID = "#clientInfo_BroadcastComponentId";
@@ -49,11 +49,21 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
         super(ctx, AD_BroadcastMessage_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param AD_BroadcastMessage_ID
+     * @param trxName
+     */
     public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID, String trxName)
     {
 		super(ctx, AD_BroadcastMessage_ID, trxName);
 	}
     
+    /**
+     * @param ctx
+     * @param rs
+     * @param trxName
+     */
     public MBroadcastMessage(Properties ctx, ResultSet rs, String trxName)
     {
     	super(ctx, rs, trxName);
@@ -133,7 +143,7 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 	
 	/**
 	 * Is broadcast message applicable to current login user
-	 * @return
+	 * @return true if applicable, false otherwise
 	 */
     public boolean isValidUserforMessage()
     {
@@ -168,11 +178,12 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
     	return false;
     }
     
-    /**************************************************************************
+    /**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return save
 	 */
+    @Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (BROADCASTTYPE_Immediate.equals(getBroadcastType())) {
@@ -203,11 +214,12 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 		return translation;
 	}
 
-	/** Returns a link to be used in broadcast messages to open a record
-	 * @param PO po
-	 * @param uuid of the window
+	/** 
+	 * Returns a link to be used in broadcast messages to open a record
+	 * @param po PO
+	 * @param windowUUID of the window
 	 * @param text of the link
-	 * @return the text to set in the broadcast message
+	 * @return the URL link to set in the broadcast message
 	 * */
 	public String getUrlZoom(PO po, String windowUUID, String text) {
 		StringBuilder url = new StringBuilder("");

@@ -47,14 +47,12 @@ public interface IMappedByNameFactory<T> {
 	public void removeMapping(String name);
 	
 	/**
-	 * 
 	 * @param name
 	 * @return {@link Supplier}
 	 */
 	public Supplier<T> getSupplier(String name);
 	
 	/**
-	 * 
 	 * @param name
 	 * @return new instance of T (if there are register supplier for name)
 	 */

@@ -85,7 +85,7 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 
 	/**
 	 * @param gridField
-	 * @param rowIndex
+	 * @param tableEditor
 	 */
 	public WTimeZoneEditor(GridField gridField, boolean tableEditor) {
 		super(new Combobox(), gridField);

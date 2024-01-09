@@ -28,10 +28,16 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 
 /**
+ * Interface to provider custom viewer component for media
  * @author hengsin
- *
  */
 public interface IMediaView {
 
+	/**
+	 * @param container parent container
+	 * @param media media to render
+	 * @param readOnly
+	 * @return Component
+	 */
 	public Component renderMediaView(Component container, AMedia media, boolean readOnly);
 }

@@ -26,12 +26,6 @@ location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0
 	org.apache.poi.ooxml-schemas	
 }
 
-location eclipse "https://download.eclipse.org/eclipse/updates/4.20" {
-	//dependency for com.google.http-client.google-http-client
-	org.apache.httpcomponents.httpclient
-	org.apache.httpcomponents.httpcore
-}
-
 location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	// equinox core framework
 	org.eclipse.osgi

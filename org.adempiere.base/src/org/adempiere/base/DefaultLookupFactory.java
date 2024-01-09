@@ -26,9 +26,10 @@ import org.compiere.util.DisplayType;
 import static org.compiere.util.DisplayType.*; 
 
 /**
+ * Default {@link ILookupFactory} implementation for core.<br/>
+ * Create new {@link Lookup} instance by predefined display type.
  * @author Jan Thielemann - jan.thielemann@evenos.de
  * @author hengsin
- *
  */
 public class DefaultLookupFactory implements ILookupFactory{
 

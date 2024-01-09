@@ -24,26 +24,26 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
 /**
- * Quick Entry Window
- * Interface based on class WQuickEntry by Carlos Ruiz
+ * Quick Entry Window.<br/>
+ * Based on class WQuickEntry by Carlos Ruiz
  * @Author Andreas Sumerauer
  */
 public abstract class AbstractWQuickEntry extends Window implements Component, ISupportMask, EventListener<Event>, ValueChangeListener
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5092377634523789098L;
 
 	/**
 	 * check table is editable in quick entry
 	 * user must have write right and table has at least one input field
-	 * @return
+	 * @return true if quick edit form is available, false otherwise
 	 */
 	public abstract boolean isAvailableQuickEdit ();
 	
 	/**
-	 * Load Record_ID
+	 * Load record by Record_ID
 	 * @param Record_ID - existing Record or 0 for new
 	 * @return true if loaded
 	 */
@@ -56,12 +56,12 @@ public abstract class AbstractWQuickEntry extends Window implements Component, I
 	public abstract int getRecord_ID();
 
 	/**
-	 * refresh all fields
+	 * Dynamic update of all fields
 	 */
 	public abstract void dynamicDisplay();
 	
 	/**
-	 * get size quickfields
+	 * @return number of quick fields
 	 */
 	public abstract int getQuickFields();
 

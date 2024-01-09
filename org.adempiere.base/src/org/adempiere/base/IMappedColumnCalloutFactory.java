@@ -26,10 +26,11 @@ package org.adempiere.base;
 
 import java.util.function.Supplier;
 
+import org.adempiere.base.annotation.Callout;
 import org.osgi.framework.BundleContext;
 
 /**
- * 
+ * Factory interface for mapping of tableName+columnName to {@link IColumnCallout} implementation.
  * @author hengsin
  *
  */
@@ -52,7 +53,7 @@ public interface IMappedColumnCalloutFactory {
 	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
 
 	/**
-	 * scan, discover and register classes with Callout annotation
+	 * scan, discover and register classes with {@link Callout} annotation
 	 * @param context
 	 * @param packages
 	 */

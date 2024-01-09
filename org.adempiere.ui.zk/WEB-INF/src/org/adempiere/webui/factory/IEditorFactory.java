@@ -19,7 +19,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 
 /**
- *
+ * Factory interface for {@link GridField} editor
  * @author hengsin
  *
  */

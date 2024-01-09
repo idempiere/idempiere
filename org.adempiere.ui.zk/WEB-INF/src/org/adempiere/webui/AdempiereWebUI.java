@@ -30,6 +30,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
 import org.adempiere.webui.apps.AEnv;
@@ -337,7 +339,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
+		keyListener.setCtrlKeys("@a@c@d@e@f@g@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create IDesktop instance
@@ -497,6 +499,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    final Desktop desktop = Executions.getCurrent().getDesktop();    	
 	    final WebApp wapp = desktop.getWebApp();
 	    final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(desktop.getSession());	    	    
+	    boolean isAdminLogin = false;
+	    if (desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
+	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -505,7 +510,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect("index.zul");       
+        Executions.sendRedirect(isAdminLogin ? "admin.zul" : "index.zul");       
         
         try {
     		desktopCache.removeDesktop(desktop);
@@ -752,12 +757,13 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		String attribute = attributes.nextElement();
     		
     		//need to keep zk's session attributes
-    		if (attribute.contains("zkoss."))
+    		if (attribute.contains("zkoss.") || attribute.startsWith("sso."))
     			continue;
     		
     		httpSession.removeAttribute(attribute);
     	}
 
+    	httpSession.setAttribute(SSOUtils.ISCHANGEROLE_REQUEST, true);
     	//logout ad_session
     	AEnv.logout();
 		

@@ -503,6 +503,25 @@ public abstract class SvrProcess implements ProcessCall
 	} // getRecord_IDs
 
 	/**
+	 *  Get Record_UU
+	 *  @return Record_UU
+	 */
+	protected String getRecord_UU()
+	{
+		return m_pi.getRecord_UU();
+	}   //  getRecord_UU
+
+	/**
+	 * Get Record_UUs
+	 * 
+	 * @return Record_UUs
+	 */
+	protected List<String> getRecord_UUs() 
+	{
+		return m_pi.getRecord_UUs();
+	} // getRecord_UUs
+
+	/**
 	 *  Get AD_User_ID
 	 *  @return AD_User_ID of Process owner or -1 if not found
 	 */
@@ -606,6 +625,9 @@ public abstract class SvrProcess implements ProcessCall
 			addLog (0, null, null, msg);
 	}	//	addLog
 
+	/**
+	 * Add buffer log to process info
+	 */
 	private void flushBufferLog () {
 		if (listEntryLog == null)
 			return;
@@ -666,7 +688,7 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
 	}	//	saveLog
 	
-	/**************************************************************************
+	/**
 	 * 	Execute function
 	 * 	@param className class
 	 * 	@param methodName method
@@ -695,7 +717,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	doIt
 
 	
-	/**************************************************************************
+	/**
 	 *  Lock Process Instance
 	 */
 	private void lock()

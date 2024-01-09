@@ -137,7 +137,7 @@ import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *	Print View Frame
+ *	Report Viewer.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Viewer.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
@@ -155,7 +155,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class ZkReportViewer extends Window implements EventListener<Event>, IReportViewerExportSource {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3732290698059632847L;
 
@@ -200,6 +200,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private Listbox comboReport = new Listbox();
 	private Listitem previousSelected = new Listitem();
 	private WTableDirEditor wLanguage;
+	/** List box for preview type (pdf, html, etc) */
 	protected Listbox previewType = new Listbox();
 	
 	private ToolBarButton bRefresh = new ToolBarButton();
@@ -250,8 +251,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
-	 * 	Static Layout
-	 * 	@throws Exception
+	 * @param re
+	 * @param title
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
@@ -280,10 +281,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		initMediaSuppliers();
 	}
 
+	/**
+	 * @param contentType
+	 * @param fileExtension
+	 * @return contentType + ; + fileExtension
+	 */
 	private String toMediaType(String contentType, String fileExtension) {
 		return contentType + ";" + fileExtension;
 	}
 	
+	/**
+	 * Create media supplier for supported format (pdf, html, etc)
+	 */
 	private void initMediaSuppliers() {
 		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
 			try {
@@ -438,6 +447,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		cleanUp();
 	}
 
+	/**
+	 * Layout viewer
+	 */
 	private void init() {
 		Borderlayout layout = new Borderlayout();
 		layout.setWidth("100%");
@@ -871,6 +883,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		setTabOnCloseHandler();
 	}
 
+	/**
+	 * Set dummy onCloseHandler for parent tab
+	 */
 	private void setTabOnCloseHandler() {
 		Component parent = this.getParent();
 		while (parent != null) {
@@ -900,6 +915,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		return AD_Tab_ID;
 	}
 
+	/**
+	 * Render report
+	 */
 	private void renderReport() {
 		media = null;
 		Listitem selected = previewType.getSelectedItem();
@@ -916,6 +934,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}		
 	}
 	
+	/**
+	 * Call from renderer runnable to show report output
+	 */
 	private void onPreviewReport() {
 		if(media == null)
 			return;
@@ -1006,10 +1027,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Remove iframe
+	 */
 	private void detachIFrame() {
 		center.getChildren().clear();
 	}
 
+	/**
+	 * Add iframe to center
+	 */
 	private void attachIFrame() {
 		if (iframe != null && iframe.getPage() == null) {
 			center.getChildren().clear();
@@ -1017,6 +1044,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Create file name prefix from name
+	 * @param name
+	 * @return file name prefix from name
+	 */
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
@@ -1050,6 +1082,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}	//	dynInit
 
+	/**
+	 * Open {@link ProcessInfoDialog} if pi has error or logs
+	 * @param pi
+	 */
 	private void checkProcessInfo(ProcessInfo pi) {
 		ProcessInfoUtil.setLogFromDB(pi);
 		if (pi.isError() || (pi.getLogs() != null && pi.getLogs().length > 0)) {
@@ -1061,7 +1097,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	/**
-	 * 	Fill ComboBox comboReport (report options)
+	 * 	Fill ComboBox comboReport with print formats available and option to create new print format.
 	 *  @param AD_PrintFormat_ID item to be selected
 	 */
 	private void fillComboReport(int AD_PrintFormat_ID)
@@ -1142,7 +1178,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	fillComboReport
 
 	/**
-	 * 	Revalidate settings after change of environment
+	 * Update title, status text and state of {@link #bWizard}
 	 */
 	private void revalidate()
 	{
@@ -1164,7 +1200,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	revalidate
 
 	/**
-	 * 	Dispose
+	 * Close viewer
 	 */
 	public void onClose()
 	{
@@ -1182,6 +1218,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	@Override
 	public void onEvent(Event event) throws Exception {				
 		if(event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT)) 
 			actionPerformed(event);
@@ -1223,6 +1260,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
         }
 	}
 
+	/**
+	 * Open {@link WReportUploadDialog} to upload report to external destination
+	 */
 	private void cmd_upload() {
 		if (media == null)
 			return;
@@ -1233,6 +1273,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		AEnv.showWindow(winUploadFile);
 	}
 
+	/**
+	 * Handle key event
+	 * @param keyEvent
+	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
@@ -1243,12 +1287,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Handle onRenderReportEvent
+	 */
 	private void onRenderReportEvent() {
     	renderReport();
 	}
 
-	/**************************************************************************
-	 * 	Action Listener
+	/**
+	 * 	Handle event
 	 * 	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -1288,6 +1335,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			cmd_upload();
 	}	//	actionPerformed
 	
+	/**
+	 * Handle onSelect event from {@link #previewType}
+	 */
 	private void cmd_render() {
 		postRenderReportEvent();		
 	}
@@ -1313,7 +1363,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	executeDrill
 
 	/**
-	 * 	Open Window
+	 * 	Zoom to window
 	 *	@param query query
 	 */
 	private void cmd_window (MQuery query)
@@ -1397,11 +1447,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_attachment
 
 	/**
-	 * 	Export
+	 * Open {@link WReportExportDialog} to export report
 	 */
 	private void cmd_export()
 	{		
-		log.config("");
 		if (!m_isCanExport)
 		{
 			Dialog.error(m_WindowNo, "AccessCannotExport", getTitle());
@@ -1573,15 +1622,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	/**
-	 * Refresh With Parameters
+	 * Rerun report
 	 */
 	private void cmd_reRun() {
 		this.cmd_reRun(null);
 	}
 	
 	/**
-	 * Refresh With Parameters
-	 * @param showHelp
+	 * Rerun report
+	 * @param showHelp if SHOWHELP_RunSilently_TakeDefaults, re-run with same parameter (i.e just refresh)
 	 */
 	private void cmd_reRun(String showHelp) {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
@@ -1616,8 +1665,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			LayoutUtils.openOverlappedWindow(this, processModalDialog, "middle_center");
 		}
 		processModalDialog.focus();
-}	// cmd_reRun
+	}	// cmd_reRun
 	
+	/**
+	 * Set language to {@link #m_reportEngine}
+	 */
 	protected void setLanguage (){
 		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage != null && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
@@ -1628,6 +1680,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	/**
+	 * Set preview type to {@link #m_reportEngine}
+	 */
 	protected void setPreviewType() {
 		String type = Objects.toString(previewType.getValue());
 		
@@ -1639,7 +1694,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 		m_reportEngine.setReportType(type);
 	}
-	
+
+	/**
+	 * Echo {@link #ON_RENDER_REPORT_EVENT} event
+	 */
 	private void postRenderReportEvent() {
 		showBusyDialog();
 		setLanguage();
@@ -1647,8 +1705,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
 		updateRowCount();
 	}
-
-
 
 	/**
 	 * 	Query Report
@@ -1766,7 +1822,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_find
 
 	/**
-	 * 	Call Customize
+	 * Open print format window
 	 */
 	private void cmd_customize()
 	{
@@ -1775,7 +1831,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		AEnv.zoom(pfAD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 	}	//	cmd_customize
 	
-	/*IDEMPIERE -379*/
+	/**
+	 * IDEMPIERE-379 Report customization wizard
+	 */
 	private void cmd_Wizard()
 	{
 	    ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
@@ -1814,6 +1872,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	private boolean ToolBarMenuRestictionLoaded = false;
 
+	/**
+	 * Hide not accessible toolbar
+	 * @param AD_Window_ID
+	 * @param AD_Process_ID
+	 */
 	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;

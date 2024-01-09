@@ -17,8 +17,9 @@ import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.compiere.model.ModelValidator;
 
 /**
+ * Default {@link IModelValidatorFactory} implementation for core. <br/>
+ * Load {@link ModelValidator} instance from plugin.xml (org.adempiere.base.ModelValidator extension point) or class path.
  * @author hengsin
- *
  */
 public class DefaultModelValidatorFactory implements IModelValidatorFactory {
 

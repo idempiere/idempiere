@@ -37,12 +37,12 @@ import org.compiere.util.Util;
 public class MRfQLine extends X_C_RfQLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -387372215148731148L;
 
 	/**
-	 * 	Get MRfQLine from db
+	 * 	Get MRfQLine from DB
 	 *	@param C_RfQLine_ID id
 	 *	@return MRfQLine
 	 */
@@ -52,7 +52,7 @@ public class MRfQLine extends X_C_RfQLine
 	}
 	
 	/**
-	 * 	Get MRfQLine from db
+	 * 	Get MRfQLine from DB
 	 *	@param C_RfQLine_ID id
 	 *	@param trxName transaction
 	 *	@return MRfQLine
@@ -63,7 +63,7 @@ public class MRfQLine extends X_C_RfQLine
 	}
 	
 	/**
-	 * 	Get MRfQLine from db
+	 * 	Get MRfQLine from DB
 	 *	@param ctx context
 	 *	@param C_RfQLine_ID id
 	 *	@param trxName transaction
@@ -80,11 +80,11 @@ public class MRfQLine extends X_C_RfQLine
 	} //	get
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_RfQLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRfQLine(Properties ctx, String C_RfQLine_UU, String trxName) {
         super(ctx, C_RfQLine_UU, trxName);
 		if (Util.isEmpty(C_RfQLine_UU))
@@ -134,7 +134,7 @@ public class MRfQLine extends X_C_RfQLine
 	}	//	MRfQLine
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MRfQLine(MRfQLine copy) 
@@ -143,7 +143,7 @@ public class MRfQLine extends X_C_RfQLine
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -153,7 +153,7 @@ public class MRfQLine extends X_C_RfQLine
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -165,7 +165,7 @@ public class MRfQLine extends X_C_RfQLine
 		this.m_qtys = copy.m_qtys != null ? Arrays.stream(copy.m_qtys).map(e -> {return new MRfQLineQty(ctx, e, trxName);}).toArray(MRfQLineQty[]::new) : null;
 	}
 	
-	/**	Qyantities				*/
+	/**	Line Quantities				*/
 	private MRfQLineQty[] 	m_qtys = null;
 	
 	/**
@@ -178,9 +178,9 @@ public class MRfQLine extends X_C_RfQLine
 	}	//	getQtys
 	
 	/**
-	 * 	Get Quantities
-	 * 	@param requery requery
-	 *	@return array of quantities
+	 * 	Get RFQ Line Quantities
+	 * 	@param requery true to re-query from DB
+	 *	@return array of RFQ line quantities
 	 */
 	public MRfQLineQty[] getQtys (boolean requery)
 	{
@@ -224,8 +224,8 @@ public class MRfQLine extends X_C_RfQLine
 	}	//	getQtys
 	
 	/**
-	 * 	Get Product Details
-	 *	@return Product Name, etc.
+	 * 	Get Product Details in HTML
+	 *	@return Product Name and Description in HTML format
 	 */
 	public String getProductDetailHTML()
 	{
@@ -243,6 +243,7 @@ public class MRfQLine extends X_C_RfQLine
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRfQLine[");
@@ -256,6 +257,7 @@ public class MRfQLine extends X_C_RfQLine
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Calculate Complete Date (also used to verify)

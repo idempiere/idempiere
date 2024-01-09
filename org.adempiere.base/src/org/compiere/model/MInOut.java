@@ -29,6 +29,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.CreditStatus;
+import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
@@ -55,7 +57,7 @@ import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWorkflow;
 
 /**
- *  Shipment Model
+ *  Shipment/Receipt Model
  *
  *  @author Jorg Janke
  *  @version $Id: MInOut.java,v 1.4 2006/07/30 00:51:03 jjanke Exp $
@@ -81,6 +83,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 */
 	private static final long serialVersionUID = -8699990804131725782L;
 
+	/** Matching SQL Template for M_InOut */
 	private static final String BASE_MATCHING_SQL = 
 			"""
 				SELECT hdr.M_InOut_ID, hdr.DocumentNo, hdr.MovementDate, bp.Name, hdr.C_BPartner_ID,
@@ -97,6 +100,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				 WHERE hdr.DocStatus IN ('CO','CL')				  
 			""";
 	
+	/** Matching SQL template for GROUP BY */
 	private static final String BASE_MATCHING_GROUP_BY_SQL =
 			"""
 				GROUP BY hdr.M_InOut_ID,hdr.DocumentNo,hdr.MovementDate,bp.Name,hdr.C_BPartner_ID,
@@ -517,7 +521,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}	//	copyFrom
 
 	/**
-	 *  @deprecated
 	 * 	Create new Shipment by copying
 	 * 	@param from shipment
 	 * 	@param dateDoc date of the document date
@@ -527,7 +530,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	@param trxName trx
 	 * 	@param setOrder set the order link
 	 *	@return Shipment
+	 *  @deprecated
 	 */
+	@Deprecated
 	public static MInOut copyFrom (MInOut from, Timestamp dateDoc,
 		int C_DocType_ID, boolean isSOTrx, boolean counter, String trxName, boolean setOrder)
 	{
@@ -539,18 +544,18 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_InOut_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_InOut_UU  UUID key
+     * @param trxName Transaction
+     */
     public MInOut(Properties ctx, String M_InOut_UU, String trxName) {
         super(ctx, M_InOut_UU, trxName);
 		if (Util.isEmpty(M_InOut_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_InOut_ID
@@ -561,6 +566,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		this (ctx, M_InOut_ID, trxName, (String[]) null);
 	}	//	MInOut
 
+	/**
+	 * @param ctx
+	 * @param M_InOut_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MInOut(Properties ctx, int M_InOut_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_InOut_ID, trxName, virtualColumns);
 		if (M_InOut_ID == 0)
@@ -791,7 +802,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	}	//	MInOut
 
-
 	/**	Lines					*/
 	protected MInOutLine[]	m_lines = null;
 	/** Confirmations			*/
@@ -799,10 +809,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	/** BPartner				*/
 	protected MBPartner		m_partner = null;
 
-
 	/**
-	 * 	Get Document Status
-	 *	@return Document Status Clear Text
+	 * 	Get Document Status Name
+	 *	@return Document Status Name
 	 */
 	public String getDocStatusName()
 	{
@@ -828,6 +837,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	String representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MInOut[")
@@ -839,8 +849,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * 	Get Document Info
-	 *	@return document info (untranslated)
+	 *	@return document info (not translated)
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
@@ -852,6 +863,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Create PDF
 	 *	@return File or null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -928,7 +940,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * 	Get Confirmations
-	 * 	@param requery requery
+	 * 	@param requery true to requery from DB
 	 *	@return array of Confirmations
 	 */
 	public MInOutConfirm[] getConfirmations(boolean requery)
@@ -945,7 +957,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		list.toArray (m_confirms);
 		return m_confirms;
 	}	//	getConfirmations
-
 
 	/**
 	 * 	Copy Lines From other Shipment
@@ -1034,16 +1045,17 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	protected boolean m_reversal = false;
 
 	/**
-	 * 	Set Reversal
+	 * 	Set reversal state (instance variable)
 	 *	@param reversal reversal
 	 */
 	protected void setReversal(boolean reversal)
 	{
 		m_reversal = reversal;
 	}	//	setReversal
+	
 	/**
 	 * 	Is Reversal
-	 *	@return reversal
+	 *	@return true reversal state is set to true
 	 */
 	public boolean isReversal()
 	{
@@ -1055,6 +1067,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Propagate to Lines/Taxes
 	 *	@param processed processed
 	 */
+	@Override
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);
@@ -1070,7 +1083,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * 	Get BPartner
-	 *	@return partner
+	 *	@return business partner
 	 */
 	public MBPartner getBPartner()
 	{
@@ -1081,7 +1094,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * 	Set Document Type
-	 * 	@param DocBaseType doc type MDocType.DOCBASETYPE_
+	 * 	@param DocBaseType MDocType.DOCBASETYPE_*
 	 */
 	public void setC_DocType_ID (String DocBaseType)
 	{
@@ -1105,7 +1118,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * 	Set Default C_DocType_ID.
-	 * 	Based on SO flag
+	 * 	Based on IsSOTrx flag.
 	 */
 	public void setC_DocType_ID()
 	{
@@ -1205,6 +1218,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			MInOutConfirm.create (this, MInOutConfirm.CONFIRMTYPE_ShipReceiptConfirm, true);
 	}	//	createConfirmation
 	
+	/**
+	 * Void confirmations
+	 */
 	protected void voidConfirmations()
 	{
 		for(MInOutConfirm confirm : getConfirmations(true))
@@ -1217,7 +1233,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			}
 		}
 	}
-
 
 	/**
 	 * 	Set Warehouse and check/set Organization
@@ -1242,12 +1257,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}	//	setM_Warehouse_ID
 
 	/**
-	 * Gets Movement Type based on Document Type's DocBaseType and isSOTrx
+	 * Get Movement Type based on Document Type's DocBaseType and isSOTrx
 	 * @param ctx 
 	 * @param C_DocType_ID Document Type ID
 	 * @param issotrx is sales transaction
 	 * @param trxName transaction name
-	 * @return Movement Type
+	 * @return Movement Type (MOVEMENTTYPE_*)
 	 */
 	public static String getMovementType(Properties ctx, int C_DocType_ID, boolean issotrx, String trxName) {
 		String movementType = null;
@@ -1282,6 +1297,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	@param newRecord new
 	 *	@return true or false
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if(newRecord || is_ValueChanged("C_DocType_ID")) {
@@ -1335,6 +1351,17 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
     		}
         }
 
+        if (getSalesRep_ID() == 0) {
+        	if (getC_Order_ID() > 0) {
+        		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+        		setSalesRep_ID(order.getSalesRep_ID());
+        	} else if (getM_RMA_ID() > 0) {
+        		MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
+        		MInOut originalReceipt = rma.getShipment();
+        		setSalesRep_ID(originalReceipt.getSalesRep_ID());
+        	}
+        }
+
 		return true;
 	}	//	beforeSave
 
@@ -1344,6 +1371,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
@@ -1362,12 +1390,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return true;
 	}	//	afterSave
 
-
-	/**************************************************************************
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -1384,6 +1412,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Unlock Document.
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -1395,6 +1424,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Invalidate Document
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -1406,6 +1436,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid)
 	 */
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -1454,40 +1485,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		}
 				
 		//	Credit Check
-		if (isSOTrx() && !isReversal() && !isCustomerReturn())
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
 		{
-			I_C_Order order = getC_Order();
-			if (order != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(order.getC_DocType().getDocSubTypeSO())
-					&& !MSysConfig.getBooleanValue(MSysConfig.CHECK_CREDIT_ON_PREPAY_ORDER, true, getAD_Client_ID(), getAD_Org_ID())) {
-				// ignore -- don't validate Prepay Orders depending on sysconfig parameter
-			} else {
-				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-				if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
-				{
-					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
-						+ bp.getTotalOpenBalance()
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
-				{
-					m_processMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@="
-						+ bp.getTotalOpenBalance()
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-				if (!MBPartner.SOCREDITSTATUS_NoCreditCheck.equals(bp.getSOCreditStatus())
-						&& Env.ZERO.compareTo(bp.getSO_CreditLimit()) != 0)
-				{
-					BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
-					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
-					{
-						m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
-							+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
-							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-						return DocAction.STATUS_Invalid;
-					}
-				}
+			CreditStatus status = creditManager.checkCreditStatus(DOCACTION_Prepare);
+			if (status.isError())
+			{
+				m_processMsg = status.getErrorMsg();
+				return DocAction.STATUS_Invalid;
 			}
 		}
 
@@ -1547,6 +1552,32 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		// Check if Order is Valid - load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM M_InOutLine iol "
+		    		+ " JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE iol.M_InOut_ID=?", getM_InOut_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
+		}
+		
+		// Check if RMA is Valid - load all M_RMA_ID and replace/remove M_RMA_ID if not valid
+		if (getM_RMA_ID() > 0) {
+		    int[] rmaIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT rmal.M_RMA_ID "
+		    		+ " FROM M_InOutLine iol "
+		    		+ " JOIN M_RMALine rmal ON (iol.M_RMALine_ID=rmal.M_RMALine_ID) "
+		    		+ " WHERE iol.M_InOut_ID=?", getM_InOut_ID());
+		    if (rmaIds.length == 1 && rmaIds[0] != getM_RMA_ID())
+		        setM_RMA_ID(rmaIds[0]);
+		    else if (rmaIds.length > 1)
+		        setM_RMA_ID(0);
+		}
+		
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))
 			setDocAction(DOCACTION_Complete);
@@ -1557,7 +1588,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * Check if Document is Customer Return.
 	 * @return True if Document is Customer Return
 	 */
-	private boolean isCustomerReturn() {
+	public boolean isCustomerReturn() {
 		MDocType doctype = MDocType.get(getC_DocType_ID());
 		if(isSOTrx() && doctype.getDocBaseType().equals("MMR") && doctype.isSOTrx())
 			return true;
@@ -1568,6 +1599,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Approve Document
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -1579,6 +1611,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Reject Approval
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -1590,6 +1623,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -2142,7 +2176,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * Outstanding (not processed) Customer Confirmations ?
-	 * @return true if there are pending Customer Confirmations
+	 * @return true if there are pending Customer Confirmations (MInOutConfirm.CONFIRMTYPE_CustomerConfirmation)
 	 */
 	public boolean pendingCustomerConfirmations() {
 		MInOutConfirm[] confirmations = getConfirmations(true);
@@ -2174,8 +2208,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}
 
 	/* Save array of documents to process AFTER completing this one */
-	ArrayList<PO> docsPostProcess = new ArrayList<PO>();
+	protected ArrayList<PO> docsPostProcess = new ArrayList<PO>();
 
+	/**
+	 * Add doc for post processing (after processing of document action)
+	 * @param doc
+	 */
 	protected void addDocsPostProcess(PO doc) {
 		docsPostProcess.add(doc);
 	}
@@ -2187,8 +2225,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * Automatically creates a customer shipment for any
-	 * drop shipment material receipt
-	 * Based on createCounterDoc() by JJ
+	 * drop shipment material receipt.
+	 * Based on createCounterDoc() by JJ.
 	 * @return shipment if created else null
 	 */
 	protected MInOut createDropShipment() {
@@ -2285,8 +2323,10 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}
 
 	/**
-	 * 	Check Material Policy
-	 * 	Sets line ASI
+	 * 	Check Material Policy.
+	 * 	Create MInOutLineMA and set line ASI (if needed).
+	 *  @param line
+	 *  @param qty
 	 */
 	protected void checkMaterialPolicy(MInOutLine line,BigDecimal qty)
 	{
@@ -2435,8 +2475,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return qtyToReceive;
 	}
 
-
-	/**************************************************************************
+	/**
 	 * 	Create Counter Document
 	 * 	@return InOut
 	 */
@@ -2539,6 +2578,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Void Document.
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());		
@@ -2615,6 +2655,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Close Document.
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -2637,6 +2678,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Reverse Correction - same date
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -2661,6 +2703,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return true;
 	}	//	reverseCorrectionIt
 
+	/**
+	 * Reverse this document
+	 * @param accrual true to create reversal document using current date, false to use the accounting date of this document
+	 * @return reversal MInOut
+	 */
 	protected MInOut reverse(boolean accrual) {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getDateAcct();
@@ -2762,7 +2809,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		reversal.setM_RMA_ID(getM_RMA_ID());
 		StringBuilder msgadd = new StringBuilder("{->").append(getDocumentNo()).append(")");
 		reversal.addDescription(msgadd.toString());
-		//FR1948157
 		reversal.setReversal_ID(getM_InOut_ID());
 		reversal.saveEx(get_TrxName());
 		//
@@ -2788,12 +2834,16 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		// Void Confirmations
 		setDocStatus(DOCSTATUS_Reversed); // need to set & save docstatus to be able to check it in MInOutConfirm.voidIt()
 		saveEx();
-		//FR1948157
 		this.setReversal_ID(reversal.getM_InOut_ID());
 		voidConfirmations();
 		return reversal;
 	}
 
+	/**
+	 * Reverse match invoice and match PO.
+	 * @param reversalDate
+	 * @return false if there errors, true otherwise
+	 */
 	protected boolean reverseMatching(Timestamp reversalDate) {
 		MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
 		for (MMatchInv mMatchInv : mInv)
@@ -2833,9 +2883,10 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}
 
 	/**
-	 * 	Reverse Accrual - none
+	 * 	Reverse Accrual - current date
 	 * 	@return false
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -2864,6 +2915,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Re-activate
 	 * 	@return false
 	 */
+	@Override
 	public boolean reActivateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -2880,11 +2932,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return false;
 	}	//	reActivateIt
 
-
-	/*************************************************************************
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+	@Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -2902,6 +2954,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -2911,6 +2964,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getSalesRep_ID();
@@ -2918,8 +2972,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	/**
 	 * 	Get Document Approval Amount
-	 *	@return amount
+	 *	@return 0
 	 */
+	@Override
 	public BigDecimal getApprovalAmt()
 	{
 		return Env.ZERO;
@@ -2929,6 +2984,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * 	Get C_Currency_ID
 	 *	@return Accounting Currency
 	 */
+	@Override
 	public int getC_Currency_ID ()
 	{
 		return Env.getContextAsInt(getCtx(),Env.C_CURRENCY_ID);
@@ -2956,7 +3012,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * @param M_InOutLine_ID
 	 * @param reversal
 	 * @param trxName
-	 * @return error doc status if there are any errors
+	 * @return error doc status if there are any errors, null otherwise
 	 */
 	protected String moveOnHandToShipmentASI(MProduct product, int M_Locator_ID, int M_AttributeSetInstance_ID, BigDecimal qty,
 			Timestamp dateMaterialPolicy, int M_InOutLine_ID, boolean reversal, String trxName) {
@@ -3017,6 +3073,18 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return null;
 	}
 
+	/**
+	 * Move non ASI on hand (M_AttributeSetInstance_ID==0) to ASI storage record
+	 * @param product
+	 * @param M_Locator_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param dateMaterialPolicy
+	 * @param qty
+	 * @param M_InOutLine_ID
+	 * @param reversal
+	 * @param trxName
+	 * @return null or error doc status
+	 */
 	private String doMove(MProduct product, int M_Locator_ID, int M_AttributeSetInstance_ID, Timestamp dateMaterialPolicy, BigDecimal qty,
 			int M_InOutLine_ID, boolean reversal, String trxName) {
 		MStorageOnHand[] storages;
@@ -3122,6 +3190,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		}
 		else if (il != null)
 		{
+			if (il.getC_OrderLine_ID() > 0)
+				iol.setC_OrderLine_ID(il.getC_OrderLine_ID());
 			if (il.getQtyEntered().compareTo(il.getQtyInvoiced()) != 0)
 			{
 				iol.setMovementQty(Qty
@@ -3178,8 +3248,10 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	
 	/**
 	 * Update from order/invoice/rma
-	 * - if linked to another order/invoice/rma - remove link
-	 * - if no link set it
+	 * <ul>
+	 * <li>if linked to another order/invoice/rma - remove link</li>
+	 * <li>if no link set it</li>
+	 * </ul>
 	 * @param order
 	 * @param invoice
 	 * @param rma

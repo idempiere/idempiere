@@ -18,12 +18,10 @@ package org.compiere.model;
 
 import java.awt.Color;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
 
 /**
- *  Color Persistent Object Model
+ *  Color Model
  *  (DisplayType=27)
  *
  *  @author Jorg Janke
@@ -32,7 +30,7 @@ import java.util.logging.Level;
 public class MColor extends X_AD_Color
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2721945803283036539L;
 
@@ -49,6 +47,11 @@ public class MColor extends X_AD_Color
 			setName("-/-");
 	}   //  MColor
 
+	/**
+	 * @param ctx
+	 * @param AD_Color_UU
+	 * @param trxName
+	 */
 	public MColor(Properties ctx, String AD_Color_UU, String trxName)
 	{
 		super (ctx, AD_Color_UU, trxName);
@@ -56,6 +59,11 @@ public class MColor extends X_AD_Color
 			setName("-/-");
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MColor(Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
@@ -65,6 +73,7 @@ public class MColor extends X_AD_Color
 	 *  String Representation
 	 *  @return string
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder msgreturn = new StringBuilder("MColor[ID=").append(get_ID()).append(" - ").append(getName()).append("]");
@@ -72,42 +81,8 @@ public class MColor extends X_AD_Color
 	}   //  toString
 
 	/**
-	 *  Load Special data (images, ..).
-	 *  To be extended by sub-classes
-	 *  @param rs result set
-	 *  @param index zero based index
-	 *  @return value
-	 *  @throws SQLException
-	 */
-	protected Object loadSpecial (ResultSet rs, int index) throws SQLException
-	{
-		if (log.isLoggable(Level.CONFIG)) log.config(p_info.getColumnName(index));
-		if (index == get_ColumnIndex("ColorType"))
-			return rs.getString(index+1);
-		return null;
-	}   //  loadSpecial
-
-
-	/**
-	 *  Save Special Data.
-	 *      AD_Image_ID (Background)
-	 *  @param value value
-	 *  @param index index
-	 *  @return SQL code for INSERT VALUES clause
-	 */
-	protected String saveNewSpecial (Object value, int index)
-	{
-		String colName = p_info.getColumnName(index);
-		String colValue = value == null ? "null" : value.getClass().toString();
-		if (log.isLoggable(Level.FINE)) log.fine(colName + "=" + colValue);
-		if (value == null)
-			return "NULL";
-		return value.toString();
-	}   //  saveNewSpecial
-		
-	/**
 	 *  Get Color
-	 *  @param primary true if primary false if secondary
+	 *  @param primary true for primary color model (usually rgb), false for secondary color model (usually cmy)
 	 *  @return Color
 	 */
 	public Color getColor (boolean primary)

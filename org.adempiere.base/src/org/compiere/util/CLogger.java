@@ -165,6 +165,33 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
+	 *  Set and issue Error and save as ValueNamePair
+	 *  @param AD_Message message key
+	 *  @param message
+	 *  @param ex exception
+	 *  @return true (to avoid removal of method)
+	 */
+	public boolean saveError (String AD_Message, String message, Exception ex)
+	{
+		Env.getCtx().put(LAST_EXCEPTION, ex);
+		return saveError (AD_Message, message, true);
+	}   //  saveError
+
+	/**
+	 *  Set and issue (if specified) Error and save as ValueNamePair
+	 *  @param AD_Message message key
+	 *  @param message
+	 *  @param ex exception
+	 *  @param issueError if true will issue an error
+	 *  @return true (to avoid removal of method)
+	 */
+	public boolean saveError (String AD_Message, String message, Exception ex, boolean issueError)
+	{
+		Env.getCtx().put(LAST_EXCEPTION, ex);
+		return saveError (AD_Message, message, issueError);
+	}   //  saveError
+
+	/**
 	 *  Set Error and save as ValueNamePair
 	 *  @param AD_Message message key
 	 *  @param message clear text message

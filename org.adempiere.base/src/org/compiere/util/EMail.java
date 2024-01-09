@@ -74,7 +74,7 @@ public final class EMail implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5355436165040508855L;
+	private static final long serialVersionUID = -8982983766981221312L;
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
@@ -305,8 +305,8 @@ public final class EMail implements Serializable
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
-		//Timeout for sending the email defaulted to 20 seconds
-		props.put("mail.smtp.timeout", 20000);
+		//Timeout for sending the email defaulted to 20 seconds if not defined in a SysConfig Key
+		props.put("mail.smtp.timeout", MSysConfig.getIntValue(MSysConfig.MAIL_SMTP_TIMEOUT, 20000, Env.getAD_Client_ID(m_ctx)));
 
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");

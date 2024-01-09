@@ -24,9 +24,8 @@ package org.adempiere.exceptions;
  */
 public class WarehouseInvalidForOrgException extends AdempiereException
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -8637554073291880392L;
 

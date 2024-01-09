@@ -43,14 +43,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4914952212171251715L;
 
 	/**
 	 * 	Get Material Cost Element or create it
 	 *	@param po parent
-	 *	@param CostingMethod method
+	 *	@param CostingMethod costing method
 	 *	@return cost element
 	 */
 	public static MCostElement getMaterialCostElement (PO po, String CostingMethod)
@@ -85,7 +85,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}	//	getMaterialCostElement
 
 	/**
-	 * 	Get first Material Cost Element
+	 * 	Get first Material Cost Element for a costing method.
 	 *	@param ctx context
 	 *	@param CostingMethod costing method
 	 *	@return Cost Element or null
@@ -106,7 +106,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}	//	getMaterialCostElement
 	
 	/**
-	 * 	Get first Material Cost Element
+	 * 	Get first Material Cost Element for a costing method
 	 *	@param ctx context
 	 *	@param CostingMethod costing method
 	 *	@return Cost Element or null
@@ -127,9 +127,9 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}	//	getMaterialCostElement
 	
 	/**
-	 * 	Get active Material Cost Element for client 
+	 * 	Get active Material Cost Element (associated with costing method) for client 
 	 *	@param po parent
-	 *	@return cost element array
+	 *	@return cost element list
 	 */
 	public static List<MCostElement> getCostElementsWithCostingMethods (PO po)
 	{
@@ -141,7 +141,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}	//	getCostElementCostingMethod	
 	
 	/**
-	 * 	Get active Material Cost Element for client 
+	 * 	Get active Material Cost Element (associated with costing method) for client 
 	 *	@param po parent
 	 *	@return cost element array
 	 */
@@ -158,9 +158,8 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 		return retValue;
 	}	//	getMaterialCostElement
 
-	// MZ Goodwill
 	/**
-	 * 	Get active non Material Cost Element for client 
+	 * 	Get active non Material Cost Element (i.e costing method is null) for client 
 	 *	@param po parent
 	 *	@return cost element array
 	 */
@@ -244,14 +243,11 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Get All Cost Elements for current AD_Client_ID
+	 * Get All active Cost Elements for current AD_Client_ID
 	 * @param ctx context
 	 * @param CostingMethod
-	 * @return array cost elements
+	 * @return cost element list
 	 **/
-	/**
-	 * @return
-	 */
 	public static List<MCostElement> getByCostingMethod (Properties ctx, String CostingMethod)
 	{		
 		final String whereClause = "AD_Client_ID = ? AND CostingMethod=?";
@@ -266,21 +262,20 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCostElement.class);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_CostElement_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_CostElement_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCostElement(Properties ctx, String M_CostElement_UU, String trxName) {
         super(ctx, M_CostElement_UU, trxName);
 		if (Util.isEmpty(M_CostElement_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_CostElement_ID id
@@ -313,7 +308,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}	//	MCostElement
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCostElement(MCostElement copy) 
@@ -322,7 +317,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -332,7 +327,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -348,6 +343,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Check Unique Costing Method
@@ -376,6 +372,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	 * 	Before Delete
 	 *	@return true if can be deleted
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		String cm = getCostingMethod();
@@ -414,7 +411,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	
 	/**
 	 * 	Is this a Costing Method
-	 *	@return true if not Material cost or no costing method.
+	 *	@return true if cost element is of type material and costing method is not null
 	 */
 	public boolean isCostingMethod()
 	{
@@ -424,7 +421,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	
 	/**
 	 * 	Is Avg Invoice Costing Method
-	 *	@return true if AverageInvoice
+	 *	@return true if costing method is AverageInvoice
 	 */
 	public boolean isAverageInvoice()
 	{
@@ -436,7 +433,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	
 	/**
 	 * 	Is Avg PO Costing Method
-	 *	@return true if AveragePO
+	 *	@return true if costing method is AveragePO
 	 */
 	public boolean isAveragePO()
 	{
@@ -445,9 +442,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			&& cm.equals(COSTINGMETHOD_AveragePO)
 			&& COSTELEMENTTYPE_Material.equals(getCostElementType());
 	}	//	isAveragePO
+	
 	/**
 	 * 	Is FiFo Costing Method
-	 *	@return true if Fifo
+	 *	@return true if costing method is Fifo
 	 */
 	public boolean isFifo()
 	{
@@ -456,9 +454,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			&& cm.equals(COSTINGMETHOD_Fifo)
 			&& COSTELEMENTTYPE_Material.equals(getCostElementType());
 	}	//	isFifo
+	
 	/**
 	 * 	Is Last Invoice Costing Method
-	 *	@return true if LastInvoice
+	 *	@return true if costing method is LastInvoice
 	 */
 	public boolean isLastInvoice()
 	{
@@ -467,9 +466,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			&& cm.equals(COSTINGMETHOD_LastInvoice)
 			&& COSTELEMENTTYPE_Material.equals(getCostElementType());
 	}	//	isLastInvoice
+	
 	/**
 	 * 	Is Last PO Costing Method
-	 *	@return true if LastPOPrice
+	 *	@return true if costing method is LastPOPrice
 	 */
 	public boolean isLastPOPrice()
 	{
@@ -478,9 +478,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			&& cm.equals(COSTINGMETHOD_LastPOPrice)
 			&& COSTELEMENTTYPE_Material.equals(getCostElementType());
 	}	//	isLastPOPrice
+	
 	/**
 	 * 	Is LiFo Costing Method
-	 *	@return true if Lifo
+	 *	@return true if costing method is Lifo
 	 */
 	public boolean isLifo()
 	{
@@ -489,9 +490,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			&& cm.equals(COSTINGMETHOD_Lifo)
 			&& COSTELEMENTTYPE_Material.equals(getCostElementType());
 	}	//	isLiFo
+	
 	/**
 	 * 	Is Std Costing Method
-	 *	@return true if StandardCosting
+	 *	@return true if costing method is StandardCosting
 	 */
 	public boolean isStandardCosting()
 	{
@@ -500,9 +502,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			&& cm.equals(COSTINGMETHOD_StandardCosting)
 			&& COSTELEMENTTYPE_Material.equals(getCostElementType());
 	}	//	isStandardCosting
+	
 	/**
 	 * 	Is User Costing Method
-	 *	@return true if User Defined
+	 *	@return true if costing method is User Defined
 	 */
 	public boolean isUserDefined()
 	{
@@ -516,6 +519,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MCostElement[");

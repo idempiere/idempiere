@@ -121,10 +121,6 @@ public abstract class PO
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
-	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
-	
-	private static final String USE_OPTIMISTIC_LOCKING = "org.idempiere.po.useOptimisticLocking";
-
 	/** default timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
 
@@ -1835,7 +1831,7 @@ public abstract class PO
 			Class<?> c = p_info.getColumnClass(i);
 			String stringValue = null;
 			if (c == Object.class)
-				;	//	saveNewSpecial (value, i));
+				;
 			else if (value == null || value.equals (Null.NULL))
 				;
 			else if (value instanceof Integer || value instanceof BigDecimal)
@@ -1856,7 +1852,7 @@ public abstract class PO
 			else if (DisplayType.isLOB(dt))
 				;
 			else
-				;	//	saveNewSpecial (value, i));
+				;
 			//
 			if (stringValue != null)
 				hmOut.put(p_info.getColumnName(i), stringValue);
@@ -1878,8 +1874,8 @@ public abstract class PO
 	}   //  get_HashMap
 
 	/**
-	 *  Load Special data (images, ..).
-	 *  To be extended by sub-classes
+	 *  Load data for custom Java type that has no build in implementation (images, ..).
+	 *  To be extended by sub-classes (default implementation just return null).
 	 *  @param rs result set
 	 *  @param index zero based index
 	 *  @return value value
@@ -2224,9 +2220,12 @@ public abstract class PO
 	{
 		//
 		// Check if columnName, AD_Language is valid or table support translation (has 1 PK) => error
-		if (columnName == null || AD_Language == null
-			|| m_IDs.length > 1 || m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer))
+		if (   columnName == null 
+			|| AD_Language == null
+			|| m_IDs.length > 1
+			|| (m_IDs[0] instanceof Integer && m_IDs[0].equals(I_ZERO) && ! MTable.isZeroIDTable(get_TableName()))
+			|| (m_IDs[0] instanceof String && Util.isEmpty((String)m_IDs[0]))
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String))
 		{
 			throw new IllegalArgumentException("ColumnName=" + columnName
 												+ ", AD_Language=" + AD_Language
@@ -2591,16 +2590,18 @@ public abstract class PO
 
 	/**
 	 * Update Value or create new record, used when writing a cross tenant record
-	 * @param trxName transaction
 	 * @throws AdempiereException
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx() {
+		boolean crossTenantSet = isSafeCrossTenant.get();
 		try {
-			PO.setCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
 			saveEx();
 		} finally {
-			PO.clearCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
 		}
 	}
 
@@ -2659,7 +2660,7 @@ public abstract class PO
 		{
 			//post osgi event
 			String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
-			Event event = EventManager.newEvent(topic, this);
+			Event event = EventManager.newEvent(topic, this, true);
 			EventManager.getInstance().postEvent(event);
 
 			if (s_docWFMgr == null)
@@ -2755,11 +2756,14 @@ public abstract class PO
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx(String trxName) {
+		boolean crossTenantSet = isSafeCrossTenant.get();
 		try {
-			PO.setCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
 			saveEx(trxName);
 		} finally {
-			PO.clearCrossTenantSafe();
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
 		}
 	}
 
@@ -3248,7 +3252,7 @@ public abstract class PO
 		if (m_useOptimisticLocking != null)
 			return m_useOptimisticLocking;
 		else
-			return "true".equalsIgnoreCase(System.getProperty(USE_OPTIMISTIC_LOCKING, "false"));
+			return SystemProperties.isOptimisticLocking();
 	}
 	
 	/**
@@ -3277,7 +3281,7 @@ public abstract class PO
 	}
 	
 	private boolean isUseTimeoutForUpdate() {
-		return "true".equalsIgnoreCase(System.getProperty(USE_TIMEOUT_FOR_UPDATE, "false"))
+		return SystemProperties.isUseTimeoutForUpdate()
 			&& DB.getDatabase().isQueryTimeoutSupported();
 	}
 
@@ -3829,8 +3833,8 @@ public abstract class PO
 
 
 	/**
-	 *  Save Special Data.
-	 *  To be extended by sub-classes
+	 *  Save data for custom Java type that have no build in implementation.<br/>
+	 *  To be extended by sub-classes (default implementation just call value.toString()).
 	 *  @param value value
 	 *  @param index index
 	 *  @return SQL code for INSERT VALUES clause
@@ -3840,7 +3844,6 @@ public abstract class PO
 		String colName = p_info.getColumnName(index);
 		String colClass = p_info.getColumnClass(index).toString();
 		String colValue = value == null ? "null" : value.getClass().toString();
-//		int dt = p_info.getColumnDisplayType(index);
 
 		log.log(Level.SEVERE, "Unknown class for column " + colName
 			+ " (" + colClass + ") - Value=" + colValue);
@@ -4223,7 +4226,10 @@ public abstract class PO
 						localTrx.commit(true);
 					} catch (SQLException e) {
 						String msg = DBException.getDefaultDBExceptionMessage(e);
-						log.saveError(msg != null ? msg : "Error", e);
+						if (msg != null)
+							log.saveError(msg, msg, e, false);
+						else
+							log.saveError("Error", e, false);
 						success = false;
 					}
 				}
@@ -4237,7 +4243,7 @@ public abstract class PO
 				}
 
 				//osgi event handler
-				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
+				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
 				EventManager.getInstance().postEvent(event);
 	
 				m_idOld = 0;
@@ -4352,7 +4358,7 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer)
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
 			return true;
 		//
@@ -4404,8 +4410,13 @@ public abstract class PO
 			sql.append(" ");
 		sql.append("FROM AD_Language l, ").append(tableName).append(" t, AD_Client c ")
 			.append("WHERE t.AD_Client_ID=c.AD_Client_ID AND l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.")
-			.append(keyColumn).append("=").append(get_ID())
-			.append(" AND NOT EXISTS (SELECT * FROM ").append(tableName)
+			.append(keyColumn).append("=");
+		MTable table = MTable.get(getCtx(), tableName);
+		if (table.isUUIDKeyTable())
+			sql.append(DB.TO_STRING(get_UUID()));
+		else
+			sql.append(get_ID());
+		sql.append(" AND NOT EXISTS (SELECT * FROM ").append(tableName)
 			.append("_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.")
 			.append(keyColumn).append("=t.").append(keyColumn).append(")");
 		int no = -1;
@@ -4436,7 +4447,7 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer)
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
 			return true;
 
@@ -4482,7 +4493,12 @@ public abstract class PO
 				}
 			}
 		}
-		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
+		MTable table = MTable.get(getCtx(), tableName);
+		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=");
+		if (table.isUUIDKeyTable())
+			whereid.append(DB.TO_STRING(get_UUID()));
+		else
+			whereid.append(get_ID());
 		StringBuilder andClientLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
 		StringBuilder andNotClientLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
 		String baselang = Language.getBaseAD_Language();
@@ -4561,15 +4577,20 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !(m_IDs[0] instanceof Integer)
+			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
 			return true;
 		//
 		String tableName = p_info.getTableName();
+		MTable table = MTable.get(getCtx(), tableName);
 		String keyColumn = m_KeyColumns[0];
 		StringBuilder sql = new StringBuilder ("DELETE FROM ")
 			.append(tableName).append("_Trl WHERE ")
-			.append(keyColumn).append("=").append(get_ID());
+			.append(keyColumn).append("=");
+		if (table.isUUIDKeyTable())
+			sql.append(DB.TO_STRING(get_UUID()));
+		else
+			sql.append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		return no >= 0;
@@ -5033,7 +5054,7 @@ public abstract class PO
 	public MAttachment getAttachment (boolean requery)
 	{
 		if (m_attachment == null || requery)
-			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID());
+			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), null);
 		return m_attachment;
 	}	//	getAttachment
 
@@ -5111,9 +5132,8 @@ public abstract class PO
 		return getAttachmentData(".pdf");
 	}	//	getPDFAttachment
 
-
-	/**************************************************************************
-	 *  Dump Record
+	/**
+	 *  Dump where clause and column values
 	 */
 	public void dump ()
 	{
@@ -5126,8 +5146,8 @@ public abstract class PO
 	}   //  dump
 
 	/**
-	 *  Dump column
-	 *  @param index index
+	 *  Dump column (index:columnName=oldValue (newValue))
+	 *  @param index column index
 	 */
 	public void dump (int index)
 	{
@@ -5143,10 +5163,9 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}   //  dump
 
-
-	/*************************************************************************
+	/**
 	 * 	Get All IDs of Table.
-	 * 	Used for listing all Entities
+	 * 	Used for listing of all records
 	 * 	<pre>{@code
 	 	int[] IDs = PO.getAllIDs ("AD_PrintFont", null);
 		for (int i = 0; i < IDs.length; i++)
@@ -5657,21 +5676,16 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex[] indexes = MTableIndex.get(MTable.get(getCtx(), get_Table_ID()));
-				for (MTableIndex index : indexes)
+				MTableIndex index = new Query(getCtx(), MTableIndex.Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
+						.setParameters(get_Table_ID(), dbIndexName)
+						.setOnlyActiveRecords(true)
+						.first();
+				if (index != null && index.getAD_Message_ID() > 0)
 				{
-					if (dbIndexName.equalsIgnoreCase(index.getName()))
-					{
-						if (index.getAD_Message_ID() > 0)
-						{
-							MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
-							log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
-							found = true;
-						}
-						break;
-					}
+					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
+					log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
+					found = true;
 				}
-				
 				if (!found)
 					log.saveError(msg, info);
 			}
@@ -5757,7 +5771,9 @@ public abstract class PO
 				} else {
 					fkval = Integer.valueOf(get_ValueAsInt(index));
 				}
-				if (fkval != null) {
+				if (fkval != null
+					&& (   (fkval instanceof Integer && ((Integer)fkval).intValue() > 0)
+						|| (fkval instanceof String && ((String)fkval).length() > 0) )) {
 					MTable ft = MTable.get(getCtx(), fktab);
 					boolean systemAccess = false;
 					String accessLevel = ft.getAccessLevel();
@@ -5798,6 +5814,12 @@ public abstract class PO
 	private void checkRecordIDCrossTenant() {
 		if (isSafeCrossTenant.get())
 			return;
+		
+		//ad_table_id+record_id validation will fail for ad_pinstance due to ad_pinstance is 
+		//being saved and updated outside of server process transaction.
+		if (I_AD_PInstance.Table_Name.equals(p_info.getTableName()))
+			return;
+		
 		int idxRecordId = p_info.getColumnIndex("Record_ID");
 		if (idxRecordId < 0)
 			return;
@@ -5844,6 +5866,12 @@ public abstract class PO
 	private void checkRecordUUCrossTenant() {
 		if (isSafeCrossTenant.get())
 			return;
+
+		//ad_table_id+record_uu validation will fail for ad_pinstance due to ad_pinstance is 
+		//being saved and updated outside of server process transaction.
+		if (I_AD_PInstance.Table_Name.equals(p_info.getTableName()))
+			return;
+
 		int idxRecordUU = p_info.getColumnIndex("Record_UU");
 		if (idxRecordUU < 0)
 			return;

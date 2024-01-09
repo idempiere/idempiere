@@ -31,7 +31,6 @@ import java.math.RoundingMode;
 
 import org.compiere.model.MUOM;
 import org.compiere.model.MUOMConversion;
-import org.compiere.model.PO;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -61,12 +60,7 @@ public class MUOMConversionTest extends AbstractTestCase {
 		conv1.setC_UOM_To_ID(DictionaryIDs.C_UOM.HOUR.id);
 		conv1.setMultiplyRate(new BigDecimal("1.15"));
 		conv1.setDivideRate(BigDecimal.ZERO);
-		try {
-			PO.setCrossTenantSafe();
-			conv1.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		conv1.saveCrossTenantSafeEx();
 		
 		MUOMConversion conv2 = null;
 		MUOMConversion conv3 = null;

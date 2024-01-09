@@ -31,7 +31,7 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_FreightCategory (Properties ctx, int M_FreightCategory_ID, String trxName)

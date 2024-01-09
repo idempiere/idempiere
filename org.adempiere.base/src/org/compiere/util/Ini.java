@@ -35,6 +35,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.SystemProperties;
 
 /**
  *	Load and Save INI Settings from property file
@@ -224,6 +225,7 @@ public final class Ini implements Serializable
 	 *	Save INI parameters to disk
 	 *  @param tryUserHome get user home first
 	 */
+	@SuppressWarnings("deprecation")
 	public static void saveProperties (boolean tryUserHome)
 	{
 		if (Ini.isClient() && DB.isConnected()) {
@@ -403,8 +405,8 @@ public final class Ini implements Serializable
 	 */
 	public static String getFileName (boolean tryUserHome)
 	{
-		if (System.getProperty("PropertyFile") != null)
-			return System.getProperty("PropertyFile");
+		if (SystemProperties.getPropertyFile() != null)
+			return SystemProperties.getPropertyFile();
 		//
 		String base = null;
 		if (tryUserHome && s_client)
@@ -607,9 +609,9 @@ public final class Ini implements Serializable
 	 */
 	public static String getAdempiereHome()
 	{
-		String env = System.getProperty (ENV_PREFIX + IDEMPIERE_HOME);
+		String env = SystemProperties.getEnvIdempiereHome();
 		if (env == null || env.trim().length() == 0)
-			env = System.getProperty (IDEMPIERE_HOME);
+			env = SystemProperties.getIdempiereHome();
 		if (env == null || env.trim().length() == 0)
 		{
 			//client - user home, server - current working directory

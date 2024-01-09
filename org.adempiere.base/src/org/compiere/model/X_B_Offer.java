@@ -31,7 +31,7 @@ public class X_B_Offer extends PO implements I_B_Offer, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_Offer (Properties ctx, int B_Offer_ID, String trxName)

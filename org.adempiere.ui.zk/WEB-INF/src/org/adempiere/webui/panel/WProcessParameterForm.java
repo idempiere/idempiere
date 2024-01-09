@@ -46,14 +46,18 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
+/**
+ * Form to capture process parameters for scheduler, etc
+ */
 @org.idempiere.ui.zk.annotation.Form
 public class WProcessParameterForm extends ADForm
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2533099650671242190L;
 
+	/** Form Controller */
 	private WProcessParameter pp;
 
 	private VerticalBox dialogBody;
@@ -77,6 +81,9 @@ public class WProcessParameterForm extends ADForm
 	
 	private final static CLogger log = CLogger.getCLogger(WProcessParameterForm.class);
 
+	/**
+	 * @param wpp
+	 */
 	public WProcessParameterForm(WProcessParameter wpp) {
 		pp = wpp;
 		initComponents();
@@ -110,6 +117,9 @@ public class WProcessParameterForm extends ADForm
 		}
 	}
 	
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -118,6 +128,9 @@ public class WProcessParameterForm extends ADForm
 		this.dispose();
 	}
 
+	/**
+	 * Handle onOk event
+	 */
 	private void onOK() {
 		MPInstancePara[] paras = parameterPanel.getParameters();
 		GridTab gridTab = super.getGridTab();
@@ -157,6 +170,9 @@ public class WProcessParameterForm extends ADForm
 		ZKUpdateUtil.setVflex(this, "min");
 	}
 
+	/**
+	 * Create components
+	 */
 	private void initComponents() {
 		this.setBorder("normal");		
 		dialogBody = new VerticalBox();
@@ -194,8 +210,8 @@ public class WProcessParameterForm extends ADForm
 	}
 	
 	/**
-	 *	Dynamic Init
-	 *  @return true, if there is something to process (start from menu)
+	 * Init {@link #parameterPanel}
+	 * @return true if init ok
 	 */
 	private boolean init()
 	{
@@ -252,7 +268,6 @@ public class WProcessParameterForm extends ADForm
 		this.setTitle(m_Name);
 		message.setContent(m_messageText.toString());
 
-		//	Move from APanel.actionButton
 		processInfo.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		processInfo.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		processInfo.setTitle(m_Name);

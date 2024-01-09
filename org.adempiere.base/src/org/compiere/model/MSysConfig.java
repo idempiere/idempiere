@@ -36,7 +36,7 @@ import org.compiere.util.Util;
  *  @author Armen Rizal
  *  @version $Id: MSysConfig.java,v 1.5 2005/11/28 11:56:45 armen Exp $
  *  Contributor: Carlos Ruiz - globalqss - [ 1800371 ] System Configurator Enhancements
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1885496 ] Performance NEEDS
  */
 public class MSysConfig extends X_AD_SysConfig
@@ -44,8 +44,10 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4924291305767860669L;
+	private static final long serialVersionUID = 4879268878721712444L;
 
+	/** Constant for Predefine System Configuration Names (in alphabetical order) */
+	
     public static final String AD_CHANGELOG_SAVE_UUID = "AD_CHANGELOG_SAVE_UUID";
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -54,7 +56,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
-    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole"; // deprecated
+    @Deprecated(forRemoval = true, since = "11")
+    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
     public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
     public static final String APPLICATION_DATABASE_VERSION_SHOWN = "APPLICATION_DATABASE_VERSION_SHOWN";
     public static final String APPLICATION_HOST_SHOWN = "APPLICATION_HOST_SHOWN";   
@@ -82,6 +85,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
     public static final String CASH_AS_PAYMENT = "CASH_AS_PAYMENT";
     public static final String CHANGE_PASSWORD_MUST_DIFFER = "CHANGE_PASSWORD_MUST_DIFFER";
+    public static final String CHART_MIN_WIDTH_3_PERIOD = "CHART_MIN_WIDTH_3_PERIOD";
+    public static final String CHART_MIN_WIDTH_6_PERIOD = "CHART_MIN_WIDTH_6_PERIOD";
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
@@ -101,6 +106,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
     public static final String EMAIL_TEST_MAILTEXT_ID = "EMAIL_TEST_MAILTEXT_ID";
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
+    public static final String ENABLE_SSO = "ENABLE_SSO";
+    public static final String ENABLE_SSO_OSGI_CONSOLE = "ENABLE_SSO_OSGI_CONSOLE";
+    public static final String ENABLE_SSO_IDEMPIERE_MONITOR = "ENABLE_SSO_IDEMPIERE_MONITOR";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
     public static final String FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE = "FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE";
@@ -115,7 +123,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
     public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
+    @Deprecated(forRemoval = true, since = "11")
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
+    @Deprecated(forRemoval = true, since = "11")
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
@@ -137,6 +147,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
+    public static final String MAIL_SMTP_TIMEOUT = "MAIL_SMTP_TIMEOUT";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_ROWS_IN_TABLE_COMBOLIST = "MAX_ROWS_IN_TABLE_COMBOLIST";
@@ -149,7 +160,11 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";
     public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";
     public static final String MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS";
+	public static final String MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT = "MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT";
     public static final String MSEQUENCE_GETNEXT_TIMEOUT = "MSEQUENCE_GETNEXT_TIMEOUT";
+    public static final String OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER = "OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER";
+    public static final String OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER = "OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER";
+	public static final String ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES = "ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD";
@@ -175,12 +190,14 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String SYSTEM_IN_MAINTENANCE_MODE = "SYSTEM_IN_MAINTENANCE_MODE";
     public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
     public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
-    public static final String TAX_LOOKUP_SERVICE="TAX_LOOKUP_SERVICE";
+	public static final String SSO_SELECT_ROLE = "SSO_SELECT_ROLE";
+    public static final String TAX_LOOKUP_SERVICE = "TAX_LOOKUP_SERVICE";
     public static final String TOP_MARGIN_PIXELS_FOR_HEADER = "TOP_MARGIN_PIXELS_FOR_HEADER";
     public static final String TRACE_ALL_TRX_CONNECTION_GET = "TRACE_ALL_TRX_CONNECTION_GET";
     public static final String TRX_AUTOSET_DISPLAY_NAME = "TRX_AUTOSET_DISPLAY_NAME";
     public static final String TWOPACK_COMMIT_DDL = "2PACK_COMMIT_DDL";
     public static final String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
+    public static final String UPLOAD_TEMP_FILENAME_PREFIX = "UPLOAD_TEMP_FILENAME_PREFIX";
     public static final String USE_EMAIL_FOR_LOGIN = "USE_EMAIL_FOR_LOGIN";
     public static final String USE_ESC_FOR_TAB_CLOSING = "USE_ESC_FOR_TAB_CLOSING";
     public static final String USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES = "USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES";
@@ -252,11 +269,11 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_SysConfig_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_SysConfig_UU  UUID key
+     * @param trxName Transaction
+     */
     public MSysConfig(Properties ctx, String AD_SysConfig_UU, String trxName) {
         super(ctx, AD_SysConfig_UU, trxName);
     }
@@ -300,7 +317,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * Get system configuration property of type string
 	 * @param Name
-	 * @return String
+	 * @return configured value
 	 */
 	public static String getValue(String Name)
 	{
@@ -308,10 +325,10 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 	
 	/**
-	 * Get system configuration property of type int
+	 * Get system configuration property of type integer
 	 * @param Name
 	 * @param defaultValue
-	 * @return int
+	 * @return configured value or defaultValue
 	 */
 	public static int getIntValue(String Name, int defaultValue)
 	{
@@ -338,8 +355,9 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @return double
-	 * @deprecated use better getBigDecimalValue
+	 * @deprecated replace by getBigDecimalValue
 	 */
+	@Deprecated
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
 		String s = getValue(Name);
@@ -361,7 +379,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type BigDecimal
 	 * @param Name
 	 * @param defaultValue
-	 * @return BigDecimal
+	 * @return configured value or defaultValue
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue)
 	{
@@ -384,7 +402,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type boolean
 	 * @param Name
 	 * @param defaultValue
-	 * @return boolean
+	 * @return configured value or defaultValue
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue)
 	{
@@ -405,7 +423,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return String
+	 * @return configured value or 0
 	 */
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID)
 	{
@@ -416,7 +434,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type string
 	 * @param Name
 	 * @param AD_Client_ID Client ID
-	 * @return String
+	 * @return configured value or null
 	 */
 	public static String getValue(String Name, int AD_Client_ID)
 	{
@@ -428,7 +446,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return int
+	 * @return configured value or defaultValue
 	 */
 	public static int getIntValue(String Name, int defaultValue, int AD_Client_ID)
 	{
@@ -456,8 +474,9 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @return double
-	 * @deprecated use better getBigDecimalValue
+	 * @deprecated replace by getBigDecimalValue
 	 */
+	@Deprecated
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
 		String s = getValue(Name, AD_Client_ID);
@@ -480,7 +499,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return BigDecimal
+	 * @return configured value or defaultValue
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID)
 	{
@@ -504,7 +523,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return boolean
+	 * @return configured value or defaultValue
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue, int AD_Client_ID)
 	{
@@ -521,12 +540,12 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 
 	/**
-	 * Get client configuration property of type string
+	 * Get organization configuration property of type string
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return String
+	 * @return configured value or defaultValue
 	 */
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -580,11 +599,11 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 	
 	/**
-	 * Get system configuration property of type string
+	 * Get organization configuration property of type string
 	 * @param Name
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return String
+	 * @return configured value or null
 	 */
 	public static String getValue(String Name, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -592,12 +611,12 @@ public class MSysConfig extends X_AD_SysConfig
 	}
 	
 	/**
-	 * Get system configuration property of type int
+	 * Get organization configuration property of type integer
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return int
+	 * @return configured value or defaultValue
 	 */
 	public static int getIntValue(String Name, int defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -626,8 +645,9 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
 	 * @return double
-	 * @deprecated use better getBigDecimalValue
+	 * @deprecated replace by getBigDecimalValue
 	 */
+	@Deprecated
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
 		String s = getValue(Name, AD_Client_ID, AD_Org_ID);
@@ -651,7 +671,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return BigDecimal
+	 * @return configured value or defaultValue
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -676,7 +696,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return boolean
+	 * @return configured value or defaultValue
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -695,7 +715,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * Get system configuration property of type Timestamp
 	 * @param Name
-	 * @return Timestamp
+	 * @return configured value or null
 	 */
 	public static Timestamp getTimestampValue(String Name)
 	{
@@ -706,7 +726,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type Timestamp
 	 * @param Name
 	 * @param defaultValue
-	 * @return Timestamp
+	 * @return configured value or defaultValue
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue)
 	{
@@ -718,7 +738,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Name
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
-	 * @return Timestamp
+	 * @return configured value or defaultValue
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID)
 	{
@@ -731,7 +751,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param defaultValue
 	 * @param AD_Client_ID Client ID
 	 * @param AD_Org_ID Organization ID
-	 * @return Timestamp
+	 * @return configured value or defaultValue
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -746,8 +766,13 @@ public class MSysConfig extends X_AD_SysConfig
 	private static int lentime = DisplayType.DEFAULT_TIME_FORMAT.length();
 	private static int lentimestamp = DisplayType.DEFAULT_TIMESTAMP_FORMAT.length();
 
-	/** convert a string to a timestamp */
-	static Timestamp convertStringToTimestamp(String text)
+	/** 
+	 * Convert a string to a time stamp.<br/>
+	 * The method uses the length of the text argument to determine the time stamp format pattern to use.
+	 * @param text text to be converted to time stamp
+	 * @return converted time stamp 
+	 */
+	protected static Timestamp convertStringToTimestamp(String text)
 	{
 		SimpleDateFormat sdf = null;
 		int lentext = text.length();
@@ -773,11 +798,12 @@ public class MSysConfig extends X_AD_SysConfig
 		return dt;
 	}	
 	
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if save
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);

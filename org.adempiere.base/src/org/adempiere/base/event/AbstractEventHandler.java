@@ -13,14 +13,17 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import java.util.Properties;
 import java.util.UUID;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfo;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
+ * Base class to help simplify implementation of OSGi {@link EventHandler}.
  * @author hengsin
  *
  */
@@ -33,7 +36,13 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 */
 	@Override
 	public void handleEvent(Event event) {
+		Properties context = null;
 		try {
+			if (event.containsProperty(IEventManager.EVENT_CONTEXT)) {
+				Properties eventContext = (Properties) event.getProperty(IEventManager.EVENT_CONTEXT);
+				context = ServerContext.getCurrentInstance();
+				ServerContext.setCurrentInstance(eventContext);
+			}
 			doHandleEvent(event);
 		} catch (RuntimeException e) {
 			addError(event, e);
@@ -47,6 +56,10 @@ public abstract class AbstractEventHandler implements EventHandler {
 		} catch (Throwable e) {
 			addError(event, e);
 			throw new Error(e);
+		} finally {
+			if (context != null) {
+				ServerContext.setCurrentInstance(context);
+			}
 		}
 	}
 
@@ -67,13 +80,13 @@ public abstract class AbstractEventHandler implements EventHandler {
 	}
 
 	/**
-	 * override this method to handle event
+	 * Sub class should override this method to handle event.
 	 * @param event
 	 */
 	protected abstract void doHandleEvent(Event event);
 
 	/**
-	 * override this method to register event that the class want to listen to
+	 * Sub class should override this method to register event that the class want to listen to
 	 */
 	protected abstract void initialize();
 

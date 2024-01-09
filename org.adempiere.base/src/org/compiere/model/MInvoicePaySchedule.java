@@ -40,12 +40,12 @@ import org.compiere.util.Util;
 public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4613382619117842586L;
 
 	/**
-	 * 	Get Payment Schedule of the invoice
+	 * 	Get Payment Schedule of invoice
 	 * 	@param ctx context
 	 * 	@param C_Invoice_ID invoice id (direct)
 	 * 	@param C_InvoicePaySchedule_ID id (indirect)
@@ -99,18 +99,18 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	private static CLogger		s_log = CLogger.getCLogger (MInvoicePaySchedule.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_InvoicePaySchedule_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_InvoicePaySchedule_UU  UUID key
+     * @param trxName Transaction
+     */
     public MInvoicePaySchedule(Properties ctx, String C_InvoicePaySchedule_UU, String trxName) {
         super(ctx, C_InvoicePaySchedule_UU, trxName);
 		if (Util.isEmpty(C_InvoicePaySchedule_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_InvoicePaySchedule_ID id
@@ -183,10 +183,9 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	
 	/**	Parent						*/
 	private MInvoice	m_parent = null;
-
 	
 	/**
-	 * @return Returns the parent.
+	 * @return parent invoice
 	 */
 	public MInvoice getParent ()
 	{
@@ -207,6 +206,7 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MInvoicePaySchedule[");
@@ -216,13 +216,12 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		return sb.toString();
 	}	//	toString
 	
-	
-	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (is_ValueChanged("DueAmt"))
@@ -239,11 +238,12 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		if (is_ValueChanged("DueAmt") || is_ValueChanged("IsActive"))
+		if (newRecord || is_ValueChanged("DueAmt") || is_ValueChanged("IsActive"))
 		{
 			log.fine("afterSave");
 			getParent();

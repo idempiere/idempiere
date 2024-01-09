@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.base.IDocFactory;
 import org.adempiere.base.IServiceReferenceHolder;
@@ -43,7 +44,6 @@ import org.compiere.util.ValueNamePair;
  * This class contains methods to manage the posting of financial document. Most of the code is adapted from the legacy code in Doc.java
  * @author Jorg Janke
  * @author hengsin
- *
  */
 public class DocManager {
 
@@ -57,19 +57,25 @@ public class DocManager {
 	/** Table Names of documents          */
 	private static String[]  documentsTableName = null;
 
-	/*
-	 * Array of tables with Post column
+	/**
+	 * Array of table ids with Posted column
 	 */
 	public static int[] getDocumentsTableID() {
 		fillDocumentsTableArrays();
 		return documentsTableID;
 	}
 
+	/**
+	 * Array of table names with Posted column
+	 */
 	public static String[] getDocumentsTableName() {
 		fillDocumentsTableArrays();
 		return documentsTableName;
 	}
 
+	/**
+	 * Load financial document tables (tables with Posted column)
+	 */
 	private synchronized static void fillDocumentsTableArrays() {
 		if (documentsTableID == null) {
 			String sql = "SELECT t.AD_Table_ID, t.TableName " +
@@ -202,8 +208,8 @@ public class DocManager {
 	 *  @param AD_Table_ID Table ID of Documents
 	 *  @param rs ResultSet
 	 *  @param trxName transaction name
-	 *  @return Document
-	 * @throws AdempiereUserError
+	 *  @return Document or null
+	 *  @throws AdempiereUserError
 	 */
 	public static Doc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName)
 	{
@@ -372,7 +378,8 @@ public class DocManager {
 						}
 						else
 							trx.rollback();
-						s_log.info("Error Posting " + doc + " to " + as + " Error: " + error);
+						if (s_log.isLoggable(Level.INFO))
+							s_log.info("Error Posting " + doc + " to " + as + " Error: " + error);
 						break;
 					}
 				}
@@ -386,7 +393,8 @@ public class DocManager {
 					else
 						trx.rollback();
 
-					s_log.info("Error Posting " + doc + " to " + as + " Error:  NoDoc");
+					if (s_log.isLoggable(Level.INFO))
+						s_log.info("Error Posting " + doc + " to " + as + " Error:  NoDoc");
 					return "NoDoc";
 				}
 			}
@@ -397,7 +405,6 @@ public class DocManager {
 			if (!save(trxName, AD_Table_ID, Record_ID, status))
 			{
 				ValueNamePair dbError = CLogger.retrieveError();
-				// log.log(Level.SEVERE, "(doc not saved) ... rolling back");
 				if (localTrxName != null) {
 					if (trx != null)
 						trx.rollback();
@@ -450,8 +457,8 @@ public class DocManager {
 		return error;
 	}
 
-	/**************************************************************************
-	 *  Save to Disk - set posted flag
+	/**
+	 *  Save to DB - set posted flag
 	 *  @param trxName transaction name
 	 *  @return true if saved
 	 */

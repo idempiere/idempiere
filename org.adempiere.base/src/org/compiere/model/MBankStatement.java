@@ -52,16 +52,16 @@ import org.compiere.util.Util;
 public class MBankStatement extends X_C_BankStatement implements DocAction
 {
     /**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 7420574960104461342L;
 
 	/**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_BankStatement_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BankStatement_UU  UUID key
+     * @param trxName Transaction
+     */
     public MBankStatement(Properties ctx, String C_BankStatement_UU, String trxName) {
         super(ctx, C_BankStatement_UU, trxName);
 		if (Util.isEmpty(C_BankStatement_UU))
@@ -139,8 +139,8 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	
  	/**
  	 * 	Get Bank Statement Lines
- 	 * 	@param requery requery
- 	 *	@return line array
+ 	 * 	@param requery true to always re-query from DB
+ 	 *	@return statement line array
  	 */
  	public MBankStatementLine[] getLines (boolean requery)
  	{
@@ -163,7 +163,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Add to Description
 	 *	@param description text
 	 */
-	public void addDescription (String description)
+ 	public void addDescription (String description)
 	{
 		String desc = getDescription();
 		if (desc == null)
@@ -176,9 +176,10 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 
 	/**
 	 * 	Set Processed.
-	 * 	Propergate to Lines/Taxes
+	 * 	Propagate to Lines.
 	 *	@param processed processed
 	 */
+	@Override
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);
@@ -205,6 +206,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Get Document No 
 	 *	@return name
 	 */
+	@Override
 	public String getDocumentNo()
 	{
 		return getName();
@@ -214,6 +216,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Get Document Info
 	 *	@return document info (untranslated)
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		StringBuilder msgreturn = new StringBuilder().append(getBankAccount().getName()).append(" ").append(getDocumentNo());
@@ -222,8 +225,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 
 	/**
 	 * 	Create PDF
-	 *	@return File or null
+	 *	@return PDF File or null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -242,19 +246,19 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	/**
 	 * 	Create PDF file
 	 *	@param file output file
-	 *	@return file if success
+	 *	@return not implemented, always return null
 	 */
 	public File createPDF (File file)
 	{
 		return null;
 	}	//	createPDF
-
 	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getC_DocType_ID() <= 0) {
@@ -270,11 +274,12 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		return true;
 	}	//	beforeSave
 	
-	/**************************************************************************
+	/**
 	 * 	Process document
 	 *	@param processAction document action
-	 *	@return true if performed
+	 *	@return true if success
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -291,6 +296,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Unlock Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
@@ -302,6 +308,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Invalidate Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
@@ -313,6 +320,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid) 
 	 */
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -361,6 +369,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
@@ -372,6 +381,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Reject Approval
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
@@ -383,6 +393,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -460,8 +471,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 
 	/**
 	 * 	Void Document.
-	 * 	@return false 
+	 * 	@return true if successfully voided 
 	 */
+	@Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -552,6 +564,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Close Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
@@ -571,8 +584,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	
 	/**
 	 * 	Reverse Correction
-	 * 	@return false 
+	 * 	@return true if success 
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseCorrectIt - " + toString());
@@ -593,6 +607,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Reverse Accrual
 	 * 	@return false 
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseAccrualIt - " + toString());
@@ -627,12 +642,12 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			return false;		
 		return false;
 	}	//	reActivateIt
-	
-	
-	/*************************************************************************
+		
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+	@Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -651,6 +666,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -660,6 +676,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getUpdatedBy();
@@ -667,9 +684,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 
 	/**
 	 * 	Get Document Approval Amount.
-	 * 	Statement Difference
-	 *	@return amount
+	 *	@return Statement Difference
 	 */
+	@Override
 	public BigDecimal getApprovalAmt()
 	{
 		return getStatementDifference();
@@ -679,13 +696,14 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 * 	Get Document Currency
 	 *	@return C_Currency_ID
 	 */
+	@Override
 	public int getC_Currency_ID()
 	{
 		return 0;
 	}	//	getC_Currency_ID
 
 	/**
-	 * 	Document Status is Complete or Closed
+	 * 	Document Status is Complete, Closed or Reversed
 	 *	@return true if CO, CL or RE
 	 */
 	public boolean isComplete()
@@ -696,6 +714,10 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
+	/**
+	 * @param clientID
+	 * @return true if bank statement posting should use accounting date from bank statement lines.
+	 */
 	public static boolean isPostWithDateFromLine(int clientID) {
 		return MSysConfig.getBooleanValue(MSysConfig.BANK_STATEMENT_POST_WITH_DATE_FROM_LINE, false, Env.getAD_Client_ID(Env.getCtx()));
 	}

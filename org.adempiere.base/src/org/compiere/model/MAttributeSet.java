@@ -43,12 +43,12 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6570475541239019293L;
 
 	/**
-	 * 	Get MAttributeSet from Cache
+	 * 	Get MAttributeSet from Cache (Immutable)
 	 *	@param M_AttributeSet_ID id
 	 *	@return MAttributeSet
 	 */
@@ -58,7 +58,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}
 	
 	/**
-	 * 	Get MAttributeSet from Cache
+	 * 	Get MAttributeSet from Cache (Immutable)
 	 *	@param ctx context
 	 *	@param M_AttributeSet_ID id
 	 *	@return MAttributeSet
@@ -98,11 +98,11 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_AttributeSet_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_AttributeSet_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAttributeSet(Properties ctx, String M_AttributeSet_UU, String trxName) {
         super(ctx, M_AttributeSet_UU, trxName);
 		if (Util.isEmpty(M_AttributeSet_UU))
@@ -149,7 +149,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}	//	MAttributeSet
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAttributeSet(MAttributeSet copy) 
@@ -158,7 +158,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -168,7 +168,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -197,8 +197,8 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	private MSerNoCtlExclude[]	m_excludeSerNos = null;
 
 	/**
-	 * 	Get Attribute Array
-	 * 	@param instanceAttributes true if for instance
+	 * 	Get instance or product attributes
+	 * 	@param instanceAttributes true for instance attributes, false for product attributes
 	 *	@return instance or product attribute array
 	 */
 	public MAttribute[] getMAttributes (boolean instanceAttributes)
@@ -297,9 +297,9 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}	//	isMandatoryShipping
 	
 	/**
-	 * 	Exclude column entry
-	 *	@param AD_Column_ID column
-	 *	@param isSOTrx sales order
+	 * 	Check if mandatory checking is excluded for a table
+	 *	@param AD_Column_ID column of table to check
+	 *	@param isSOTrx true for sales transactions, false otherwise
 	 *	@return true if excluded
 	 */
 	public boolean excludeEntry (int AD_Column_ID, boolean isSOTrx)
@@ -309,9 +309,9 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}	//	excludeEntry
 	
 	/**
-	 * 	Exclude table entry
+	 * 	Check if mandatory checking is excluded for a table
 	 *	@param AD_Table_ID column
-	 *	@param isSOTrx sales order
+	 *	@param isSOTrx true for sales transactions, false otherwise
 	 *	@return true if excluded
 	 */
 	public boolean excludeTableEntry (int AD_Table_ID, boolean isSOTrx)
@@ -330,6 +330,9 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 		return false;
 	}	//	excludeTableEntry
 
+	/**
+	 * Load MAttributeSetExclude records
+	 */
 	private void loadExcludes() {
 		if (m_excludes == null)
 		{
@@ -344,8 +347,8 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}
 	
 	/**
-	 * 	Exclude Lot creation
-	 *	@param AD_Column_ID column
+	 * 	Check if Lot creation is excluded for a table
+	 *	@param AD_Column_ID column of table to check
 	 *	@param isSOTrx SO
 	 *	@return true if excluded
 	 */
@@ -378,9 +381,9 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}	//	isExcludeLot
 	
 	/**
-	 *	Exclude SerNo creation
-	 *	@param AD_Column_ID column
-	 *	@param isSOTrx SO
+	 *	Check if SerNo creation is excluded for a table
+	 *	@param AD_Column_ID column of table to check
+	 *	@param isSOTrx true for sales transactions, false otherwise
 	 *	@return true if excluded
 	 */
 	public boolean isExcludeSerNo (int AD_Column_ID, boolean isSOTrx)
@@ -413,7 +416,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 
 	/**
 	 * 	Get Lot Char Start
-	 *	@return defined or \u00ab 
+	 *	@return defined start character or \u00ab 
 	 */
 	public String getLotCharStart()
 	{
@@ -425,7 +428,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 
 	/**
 	 * 	Get Lot Char End
-	 *	@return defined or \u00bb 
+	 *	@return defined end character or \u00bb 
 	 */
 	public String getLotCharEnd()
 	{
@@ -437,7 +440,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	
 	/**
 	 * 	Get SerNo Char Start
-	 *	@return defined or #
+	 *	@return defined start character or #
 	 */
 	public String getSerNoCharStart()
 	{
@@ -449,7 +452,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 
 	/**
 	 * 	Get SerNo Char End
-	 *	@return defined or none
+	 *	@return defined end character or empty string
 	 */
 	public String getSerNoCharEnd()
 	{
@@ -458,14 +461,14 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 			return s;
 		return "";
 	}	//	getSerNoCharEnd
-	
-	
+		
 	/**
-	 * 	Before Save.
+	 * 	Before Save.<br/>
 	 * 	- set instance attribute flag
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (!isInstanceAttribute()
@@ -476,12 +479,13 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	
 	
 	/**
-	 * 	After Save.
+	 * 	After Save.<br/>
 	 * 	- Verify Instance Attribute
 	 *	@param newRecord new
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		//	Set Instance Attribute
@@ -544,7 +548,6 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
 	 * @return Arrays of {@link MAttributeUse}
 	 */
 	public MAttributeUse[] getMAttributeUse()

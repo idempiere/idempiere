@@ -60,17 +60,14 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Base on the original Swing Image Dialog.
- *  @author   Jorg Janke
- *  
- *  Zk Port
+ *  Dialog to view, remove or upload new image
  *  @author Low Heng Sin 
  *  
  */
 public class WImageDialog extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5048907034691374834L;
 
@@ -121,7 +118,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 	/**	Logger					*/
 	private static final CLogger log = CLogger.getCLogger(WImageDialog.class);
 
-	/** */
+	/** Main layout */
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel parameterPanel = new Panel();
 	private Button fileButton = new Button();
@@ -150,10 +147,10 @@ public class WImageDialog extends Window implements EventListener<Event>
 	}
 
 	/**
-	 *  Static Init
+	 *  Layout dialog
 	 *  @throws Exception
 	 */
-	void init() throws Exception
+	protected void init() throws Exception
 	{
 		this.setSclass("popup-dialog image-dialog");
 		this.setBorder("normal");
@@ -247,6 +244,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}   //  init
 
+	@Override
 	public void onEvent(Event e) throws Exception {
 		if (e instanceof UploadEvent) 
 		{
@@ -330,6 +328,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -339,6 +340,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 		detach();
 	}
 
+	/**
+	 * Save changes
+	 */
 	private void onSave() {
 		if (image.getContent() != null)
 		{
@@ -362,6 +366,10 @@ public class WImageDialog extends Window implements EventListener<Event>
 		return cancel;
 	}
 
+	/**
+	 * Process uploaded image file
+	 * @param imageFile
+	 */
 	private void processUploadMedia(Media imageFile) {
 		if (imageFile == null)
 			return;
@@ -412,7 +420,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 
 	/**
 	 * 	Get Image ID
-	 *	@return ID or 0
+	 *	@return AD_Image_ID or 0
 	 */
 	public int getAD_Image_ID()
 	{
@@ -440,7 +448,5 @@ public class WImageDialog extends Window implements EventListener<Event>
 		super.focus();
 		if (fileButton != null)
 			fileButton.focus();
-	}	
-	
-	
+	}			
 }   //  WImageDialog

@@ -34,7 +34,7 @@ import org.compiere.util.Util;
 public class LookupDisplayColumn implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5876427657897043394L;
 
@@ -53,7 +53,6 @@ public class LookupDisplayColumn implements Serializable
 	}	//
 	
 	/**
-	 * Lookup Column Value Object
 	 * @param columnName column name
 	 * @param columnSQL column SQL (in case is virtual column)
 	 * @param isTranslated translated
@@ -80,7 +79,7 @@ public class LookupDisplayColumn implements Serializable
 	public boolean 	IsTranslated;
 	/** Display Type	*/
 	public int 		DisplayType;
-	/** Value Reference	*/
+	/** table/list reference id (AD_Reference_Value_ID)	*/
 	public int 		AD_Reference_ID;
 	/** Column SQL		*/
 	public final String		ColumnSQL;

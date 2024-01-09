@@ -700,7 +700,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		//
 		if(isImageIsAttached())
 		{	
-			MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID());
+			MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID(), get_UUID(), null);
 			if (attachment == null)
 			{
 				log.log(Level.WARNING, "No Attachment - ID=" + get_ID());

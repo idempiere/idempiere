@@ -454,6 +454,10 @@ public class MoveClient extends SvrProcess {
 				sqlCountData.append(" JOIN AD_PInstance ON (AD_PInstance_Log.AD_PInstance_ID=AD_PInstance.AD_PInstance_ID)");
 				sqlCountData.append(" JOIN AD_Client ON (AD_PInstance.AD_Client_ID=AD_Client.AD_Client_ID)");
 			} else {
+				if (MColumn.get(getCtx(), tableName, "AD_Client_ID") == null) {
+					if (log.isLoggable(Level.WARNING)) log.warning("Ignoring " + tableName + ", doesn't have column AD_Client_ID");
+					return;
+				}
 				sqlCountData.append(" JOIN AD_Client ON (").append(tableName).append(".AD_Client_ID=AD_Client.AD_Client_ID)");
 			}
 			sqlCountData.append(" WHERE ").append(p_whereClient);
@@ -907,10 +911,7 @@ public class MoveClient extends SvrProcess {
 						String convertTable = column.getReferenceTableName();
 						if ((tableName + "_ID").equalsIgnoreCase(columnName)) {
 							convertTable = tableName;
-						} else if (   column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable
-								   || column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch
-								   || column.getAD_Reference_ID() == DisplayType.SingleSelectionGrid
-								   || column.getAD_Reference_ID() == DisplayType.MultipleSelectionGrid) {
+						} else if (DisplayType.isMultiID(column.getAD_Reference_ID())) {
 							convertTable = column.getMultiReferenceTableName();
 						} else if (convertTable != null
 								&& ("AD_Ref_List".equalsIgnoreCase(convertTable)
@@ -1007,10 +1008,8 @@ public class MoveClient extends SvrProcess {
 								if (   ! (key instanceof Number && ((Number)key).intValue() == 0 && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)))  // Parent_ID/Node_ID=0 is valid
 									&& (key instanceof String || (key instanceof Number && ((Number)key).intValue() >= MTable.MAX_OFFICIAL_ID) || p_IsCopyClient)) {
 									Object convertedId = null;
-									if (   column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch
-										|| column.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable
-										|| column.getAD_Reference_ID() == DisplayType.SingleSelectionGrid
-										|| column.getAD_Reference_ID() == DisplayType.MultipleSelectionGrid) {
+
+									if (DisplayType.isMultiID(column.getAD_Reference_ID())) {
 										// multiple IDs or UUIDs separated by commas
 										String[] multiKeys = ((String)key).split(",");
 										for (String multiKey : multiKeys) {
@@ -1171,8 +1170,10 @@ public class MoveClient extends SvrProcess {
 				return true;
 			}
 		}
-		if ("AD_ChangeLog".equalsIgnoreCase(tableName)) {
-			// skip orphan records in AD_ChangeLog, can be log of deleted records, skip
+		if (   "AD_ChangeLog".equalsIgnoreCase(tableName)
+			|| "AD_PInstance".equalsIgnoreCase(tableName)
+			|| "AD_PInstance_Log".equalsIgnoreCase(tableName)) {
+			// skip orphan records in AD_ChangeLog, AD_PInstance and AD_PInstance_Log, can be log of deleted records, skip
 			return true;
 		}
 		return false;

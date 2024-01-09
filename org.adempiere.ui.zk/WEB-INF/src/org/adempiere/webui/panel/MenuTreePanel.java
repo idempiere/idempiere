@@ -35,14 +35,15 @@ import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
- * Menu Tree Panel
+ * Menu tree panel. <br/>
+ * Consist of Tree, expand toggle and {@link MenuTreeFilterPanel}.
  * @author Elaine
  * @date July 31, 2012
  */
 public class MenuTreePanel extends AbstractMenuPanel
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -911113870835089567L;
 	private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
@@ -69,7 +70,6 @@ public class MenuTreePanel extends AbstractMenuPanel
         // Auto Expand Tree - nmicoud IDEMPIERE 195
      	if (MUser.get(getCtx()).isMenuAutoExpand())
      		expandAll();
-     	// Auto Expand Tree - nmicoud IDEMPIERE 195
      	
      	listener = new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
@@ -104,7 +104,6 @@ public class MenuTreePanel extends AbstractMenuPanel
         this.appendChild(pc);
         pc.appendChild(getMenuTree());
         
-        // Elaine 2009/02/27 - expand tree
         Toolbar toolbar = new Toolbar();
         toolbar.setSclass("desktop-menu-toolbar");
         this.appendChild(toolbar);
@@ -135,7 +134,6 @@ public class MenuTreePanel extends AbstractMenuPanel
     	super.onEvent(event);
     	
         String eventName = event.getName();
-        // Elaine 2009/02/27 - expand tree
         if (eventName.equals(Events.ON_CHECK) && event.getTarget() == expandToggle)
         {
         	Clients.showBusy(null);
@@ -152,8 +150,8 @@ public class MenuTreePanel extends AbstractMenuPanel
     }
 	
 	/**
-	* expand all node
-	*/
+	 * expand all node
+	 */
 	public void expandAll()
 	{
 		if (!expandToggle.isChecked())
@@ -174,7 +172,7 @@ public class MenuTreePanel extends AbstractMenuPanel
 	}
 	
 	/**
-	 *  On check event for the expand checkbox
+	 * On check event for the expand checkbox
 	 */
 	private void expandOnCheck()
 	{

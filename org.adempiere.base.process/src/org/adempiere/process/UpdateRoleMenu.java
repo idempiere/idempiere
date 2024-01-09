@@ -11,6 +11,7 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 
 @org.adempiere.base.annotation.Process
+@Deprecated
 public class UpdateRoleMenu extends SvrProcess
 {
 	private int p_role_id = 0;

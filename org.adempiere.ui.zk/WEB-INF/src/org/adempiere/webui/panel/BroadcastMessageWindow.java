@@ -49,14 +49,14 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Window to view and acknowledge messages from AD_BroadcastMessage
  * @author Vivek
  * @author Deepak Pansheriya
  *
  */
 public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup,EventListener<Event>{
 	/**
-	 *  
+	 *  generated serial id
 	 */
 	private static final long serialVersionUID = 1849434312706721390L;
 
@@ -65,20 +65,27 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	public static final int PRESSED_NEXT = 2;
 	public static final int UPDATE_CurrMsg = 0;
 	
+	/** index of current show/render message in {@link #mbMessages} */
 	private int currMsg=0;
 	private Label textMsgNo = null;
 	private Html textMsgContent = null;
 	private North north =null;
+	/** Container for message navigation controls */
 	private Div swDiv =null;
 	private Button btnPrev = null;
 	private Button btnNext = null;
 	private Checkbox acknowledged = null;
 	private ArrayList<MBroadcastMessage> mbMessages = null;
+	/** AD_BroadcastMessage_ID:Processed */
 	private Hashtable<Integer, Boolean> hashMessages = new Hashtable<Integer, Boolean>();
+	/** Parent of window */
 	private HeaderPanel pnlHead = null;
 	private boolean isTest = false;
 	private boolean initialised = false;
 	
+	/**
+	 * @param pnlHead
+	 */
 	public BroadcastMessageWindow(HeaderPanel pnlHead) {
 		this.pnlHead = pnlHead;
 		textMsgNo = new Label();
@@ -88,6 +95,9 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		btnNext = new Button(">");
 	}
 	
+	/**
+	 * Layout window
+	 */
 	private void init() {
 		Borderlayout layout = new Borderlayout();
 		this.appendChild(layout);
@@ -145,20 +155,20 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		swDiv.setParent(leftCell);
 		acknowledged = new Checkbox();
 		
-			//createHashTable();
-			currMsg = 0;
-			btnPrev.addEventListener("onClick", this);
-			btnNext = new Button(">");
-			btnNext.addEventListener("onClick", this);
-			
-			swDiv.appendChild(btnPrev);
-			swDiv.appendChild(new Separator("vertical"));
-			swDiv.appendChild(textMsgNo);
-			swDiv.appendChild(new Separator("vertical"));
-			swDiv.appendChild(btnNext);
-			textMsgNo.setStyle("font-weight:bold;");
-			
-			renderMsg(UPDATE_CurrMsg);
+		//createHashTable();
+		currMsg = 0;
+		btnPrev.addEventListener("onClick", this);
+		btnNext = new Button(">");
+		btnNext.addEventListener("onClick", this);
+		
+		swDiv.appendChild(btnPrev);
+		swDiv.appendChild(new Separator("vertical"));
+		swDiv.appendChild(textMsgNo);
+		swDiv.appendChild(new Separator("vertical"));
+		swDiv.appendChild(btnNext);
+		textMsgNo.setStyle("font-weight:bold;");
+		
+		renderMsg(UPDATE_CurrMsg);
 		
 		if(mbMessages.size()<=0)
 			swDiv.setVisible(false);
@@ -183,6 +193,10 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		}
 	}
 
+	/**
+	 * Process messages
+	 * @param arrMessages
+	 */
 	public void prepareMessage(ArrayList<MBroadcastMessage> arrMessages){
 		mbMessages = arrMessages;
 		createHashTable();
@@ -243,7 +257,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	
 	/**
 	 * Update message on window
-	 * @param status
+	 * @param status next, previous or current
 	 */
 	public void renderMsg(int status) {
 		int msgToUpdate = currMsg-1;
@@ -367,7 +381,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	}
 
 	/** Set the title for the panel using what is defined on the message or fallback to "Message" */
-	void setTitle(MBroadcastMessage bm) {
+	protected void setTitle(MBroadcastMessage bm) {
 		String title = bm.get_Translation(MBroadcastMessage.COLUMNNAME_Title);
 		setTitle(Util.isEmpty(title) ? Msg.getMsg(Env.getCtx(), "Message") : title);
 	}

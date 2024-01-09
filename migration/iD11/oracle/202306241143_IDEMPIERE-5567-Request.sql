@@ -194,7 +194,7 @@ BEGIN
   FOR r IN (
     SELECT DISTINCT t.TableName, a.AD_Table_ID
       FROM R_Request a
-	JOIN AD_Table t ON (a.AD_Table_ID=t.AD_Table_ID)
+	JOIN AD_Table t ON (a.AD_Table_ID=t.AD_Table_ID AND EXISTS (SELECT 1 FROM AD_Column WHERE ColumnName=t.TableName||'_ID'))
       WHERE a.Record_UU IS NULL
 	AND a.Record_ID > 0
   ) LOOP

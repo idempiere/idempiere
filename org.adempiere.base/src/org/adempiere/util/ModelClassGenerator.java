@@ -46,7 +46,6 @@ import org.compiere.util.Util;
 
 /**
  *  Generate Model Classes extending PO.
- *  Base class for CMP interface - will be extended to create byte code directly
  *
  *  @author Jorg Janke
  *  @version $Id: GenerateModel.java,v 1.42 2005/05/08 15:16:56 jjanke Exp $
@@ -602,7 +601,13 @@ public class ModelClassGenerator
 	}	//	createColumnMethods
 
 
-	//	****** Set Comment ******
+	/**
+	 * Generate javadoc comment for Set methods.
+	 * @param columnName
+	 * @param propertyName
+	 * @param description
+	 * @param result
+	 */
 	public void generateJavaSetComment(String columnName, String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
@@ -617,7 +622,12 @@ public class ModelClassGenerator
 		result.append(NL).append("\t*/").append(NL);
 	}
 
-	//	****** Get Comment ******
+	/**
+	 * Generate javadoc comment for Get methods
+	 * @param propertyName
+	 * @param description
+	 * @param result
+	 */
 	public void generateJavaGetComment(String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
@@ -802,7 +812,7 @@ public class ModelClassGenerator
 	}	//	createValueNamePair
 
 
-	/**************************************************************************
+	/**
 	 * 	Write to file
 	 * 	@param sb string buffer
 	 * 	@param fileName file name
@@ -845,6 +855,7 @@ public class ModelClassGenerator
 
 	/** Import classes */
 	private Collection<String> s_importClasses = new TreeSet<String>();
+	
 	/**
 	 * Add class name to class import list
 	 * @param className
@@ -860,6 +871,7 @@ public class ModelClassGenerator
 		}
 		s_importClasses.add(className);
 	}
+	
 	/**
 	 * Add class to class import list
 	 * @param cl
@@ -872,6 +884,7 @@ public class ModelClassGenerator
 			return;
 		addImportClass(cl.getCanonicalName());
 	}
+	
 	/**
 	 * Generate java imports
 	 * @param sb

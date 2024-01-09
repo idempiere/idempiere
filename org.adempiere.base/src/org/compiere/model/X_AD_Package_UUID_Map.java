@@ -31,7 +31,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, int AD_Package_UUID_Map_ID, String trxName)

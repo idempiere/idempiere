@@ -18,12 +18,12 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
- *
+ * Interface for global event manager
  * @author hengsin
- *
  */
 public interface IEventManager {
 
+	public static final String EVENT_CONTEXT = "event.context";
 	public static final String EVENT_DATA = "event.data";
 	public static final String EVENT_ERROR_MESSAGES = "event.errorMessages";
 	public static final String IMPORT_TABLE_NAME_PROPERTY = "importTableName";

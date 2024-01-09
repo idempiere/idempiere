@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.webui.window;
 
 import java.io.File;
@@ -89,9 +110,12 @@ import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
+/**
+ * Viewer for jasper report
+ */
 public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, IReportViewerExportSource {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8782402996207677811L;
 
@@ -144,6 +168,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 	private Center center;
 	
+	/**
+	 * @param jasperPrint
+	 * @param title
+	 * @param printInfo
+	 */
 	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) {
 		super();
 		this.setTitle(title);
@@ -156,6 +185,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		init();
 	}
 
+	/**
+	 * @param jasperPrintList
+	 * @param title
+	 * @param printInfo
+	 */
 	public ZkJRViewer(java.util.List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo) {
 		super();
 		this.setTitle(title);
@@ -186,6 +220,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		} catch (Exception e) {}
 	}
 
+	/**
+	 * Layout viewer
+	 */
 	private void init() {
 		final boolean isCanExport=MRole.getDefault().isCanExport();
 		defaultType = jasperPrint == null ? null : jasperPrint.getProperty(ReportStarter.IDEMPIERE_REPORT_TYPE);
@@ -342,6 +379,12 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;
+	
+	/**
+	 * Hide not accessible toolbar button
+	 * @param AD_Window_ID
+	 * @param AD_Process_ID
+	 */
 	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;
@@ -377,6 +420,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		ToolBarMenuRestictionLoaded = true;
 	}//updateToolbarAccess
 
+	/**
+	 * Create exporter for supported format type (html, pdf, etc)
+	 */
 	private void initMediaSuppliers() {
 		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
 			try {
@@ -584,10 +630,20 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		});
 	}
 	
+	/**
+	 * @param contentType
+	 * @param fileExtension
+	 * @return contentType + ; + fileExtension
+	 */
 	private String toMediaType(String contentType, String fileExtension) {
 		return contentType + ";" + fileExtension;
 	}
 	
+	/**
+	 * Create file name prefix from name
+	 * @param name
+	 * @return file name prefix
+	 */
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
@@ -600,8 +656,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 		return prefix.toString();
 	}
-	/**************************************************************************
-	 * 	Action Listener
+	/**
+	 * 	Handle event
 	 * 	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -621,6 +677,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			cmd_upload();
 	}	//	actionPerformed
 
+	/**
+	 * Render report
+	 */
 	private void cmd_render() {
 		try {
 			renderReport();
@@ -629,7 +688,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 	}
 
-	// Added by Martin Augustine - Ntier Software Services 09/10/2013
+	/**
+	 * Email report as pdf attachment
+	 */
 	private void cmd_sendMail()
 	{
 
@@ -653,6 +714,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT)) {
 			actionPerformed(event);
@@ -670,6 +732,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
         }
 	}
 
+	/**
+	 * Handle key event
+	 * @param keyEvent
+	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
 				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
@@ -678,6 +744,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 	}
 
+	/**
+	 * Render report
+	 * @throws Exception
+	 */
 	private void renderReport() throws Exception {
 		String reportType;
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -704,6 +774,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		Events.echoEvent("onRenderReport", this, null);
 	}
 
+	/**
+	 * @return PDF file
+	 * @throws IOException
+	 * @throws JRException
+	 */
 	private File getPDF() throws IOException, JRException {
 		String path = System.getProperty("java.io.tmpdir");
 
@@ -730,6 +805,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		return file;
 	}
 
+	/**
+	 * Handle onRenderReport event
+	 */
 	public void onRenderReport() {
 		Listitem selected = previewType.getSelectedItem();
 		String reportType=selected.getValue();
@@ -798,6 +876,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 	}
 
+	/**
+	 * Open report using javascript pdf viewer (pdf.js from Mozilla)
+	 */
 	protected void openWithPdfJsViewer() {
 		attachIFrame();
 		mediaVersion++;
@@ -892,7 +973,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	} // cmd_archive
 
 	/**
-	 * Create archive for jasper report
+	 * Save jasper report as attachment of a record (AD_Table_ID and Record_ID from {@link #m_printInfo})
 	 */
 	protected void cmd_attachment()
 	{
@@ -915,9 +996,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	} // cmd_archive
 
 	/** 
-	 * convert File data into Byte Data
+	 * convert File data into byte[]
 	 * @param tempFile
-	 * @return file in ByteData 
+	 * @return content of file in byte[]
 	 */
 	private byte[] getFileByteData(File tempFile)
 	{
@@ -951,6 +1032,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
 	
+	/**
+	 * Upload to external destination
+	 */
 	private void cmd_upload() {
 		if (media == null)
 			return;

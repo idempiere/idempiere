@@ -29,9 +29,12 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
+/**
+ * Binary content storage provider model
+ */
 public class MStorageProvider extends X_AD_StorageProvider implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7444967391781941193L;
 
@@ -87,25 +90,35 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	}
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_StorageProvider_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_StorageProvider_UU  UUID key
+     * @param trxName Transaction
+     */
     public MStorageProvider(Properties ctx, String AD_StorageProvider_UU, String trxName) {
         super(ctx, AD_StorageProvider_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param AD_StorageProvider_ID
+     * @param trxName
+     */
 	public MStorageProvider(Properties ctx, int AD_StorageProvider_ID, String trxName) {
 		super(ctx, AD_StorageProvider_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MStorageProvider(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MStorageProvider(MStorageProvider copy) 
@@ -114,7 +127,7 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -124,7 +137,7 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -136,8 +149,7 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	}
 	
 	/**
-	 * 
-	 * @return {@link IAttachmentStore}
+	 * @return {@link IAttachmentStore} instance
 	 */
 	public IAttachmentStore getAttachmentStore() {
 		ServiceQuery query=new ServiceQuery();
@@ -155,9 +167,8 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	private static CCache<ServiceQuery, IServiceReferenceHolder<IAttachmentStore>> s_attachmentStoreReference = new CCache<>(null, "IAttachmentStore", 3, false);
 	
 	/**
-	 * 
 	 * @param query
-	 * @return {@link IAttachmentStore}
+	 * @return {@link IAttachmentStore} service
 	 */
 	public static IAttachmentStore getAttachmentStoreService(ServiceQuery query) {
 		IAttachmentStore store = null;
@@ -179,8 +190,7 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	}
 	
 	/**
-	 * 
-	 * @return {@link IArchiveStore}
+	 * @return {@link IArchiveStore} instance
 	 */
 	public IArchiveStore getArchiveStore() {
 		ServiceQuery query=new ServiceQuery();
@@ -198,9 +208,8 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	private static CCache<ServiceQuery, IServiceReferenceHolder<IArchiveStore>> s_archiveStoreReference = new CCache<>(null, "IArchiveStore", 3, false);
 	
 	/**
-	 * 
 	 * @param query
-	 * @return {@link IArchiveStore}
+	 * @return {@link IArchiveStore} service
 	 */
 	public static IArchiveStore getArchiveStoreService(ServiceQuery query) {
 		IArchiveStore store = null;
@@ -223,8 +232,7 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	}
 		
 	/**
-	 * 
-	 * @return {@link IImageStore}
+	 * @return {@link IImageStore} instance
 	 */
 	public IImageStore getImageStore() {
 		ServiceQuery query=new ServiceQuery();
@@ -242,9 +250,8 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 	private static CCache<ServiceQuery, IServiceReferenceHolder<IImageStore>> s_imageStoreReference = new CCache<>(null, "IImageStore", 3, false);
 	
 	/**
-	 * 
 	 * @param query
-	 * @return {@link IImageStore}
+	 * @return {@link IImageStore} service
 	 */
 	public static IImageStore getImageStoreService(ServiceQuery query) {
 		IImageStore store = null;
@@ -264,6 +271,9 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 		return store;
 	}
 
+	/**
+	 * @return default AD_StorageProvider_ID
+	 */
 	public static int getDefaultStorageProviderID() {
 		final String sql = "SELECT AD_StorageProvider_ID FROM AD_StorageProvider WHERE IsDefault='Y' AND IsActive='Y' ORDER BY AD_StorageProvider_ID";
 		return DB.getSQLValueEx(null, sql);

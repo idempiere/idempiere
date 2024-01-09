@@ -34,7 +34,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -743516751730874877L;
 
@@ -136,16 +136,16 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MCashBook.class);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_CashBook_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CashBook_UU  UUID key
+     * @param trxName Transaction
+     */
     public MCashBook(Properties ctx, String C_CashBook_UU, String trxName) {
         super(ctx, C_CashBook_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_CashBook_ID id
@@ -168,7 +168,7 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 	}	//	MCashBook
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCashBook(MCashBook copy) 
@@ -177,7 +177,7 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -187,7 +187,7 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -204,6 +204,7 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)

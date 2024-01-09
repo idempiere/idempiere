@@ -104,9 +104,10 @@ public class TranslationDocSync extends SvrProcess
 			}
 		}
 		String trlTable = table.getTableName();
-		String baseTable = trlTable.substring(0, trlTable.length()-4);
-		
-		if (log.isLoggable(Level.CONFIG)) log.config(baseTable + ": " + columnNames);
+		String baseTableName = trlTable.substring(0, trlTable.length()-4);
+		MTable baseTable = MTable.get(getCtx(), baseTableName);
+
+		if (log.isLoggable(Level.CONFIG)) log.config(baseTableName + ": " + columnNames);
 
 	  try {
 		if (client.isMultiLingualDocument()) {
@@ -117,25 +118,25 @@ public class TranslationDocSync extends SvrProcess
 			} else {
 				// tenant language <> base language
 				// auto update translation for tenant language
-				StringBuilder sql = new StringBuilder("UPDATE ").append(trlTable).append(" SET (")
-						.append(columnNames).append(",IsTranslated) = (SELECT ").append(columnNames)
-						.append(",'Y' FROM ").append(baseTable).append(" b WHERE ").append(trlTable).append(".")
-						.append(baseTable).append("_ID=b.").append(baseTable).append("_ID) WHERE AD_Client_ID=")
+				StringBuilder sql = new StringBuilder("UPDATE ").append(trlTable)
+						.append(" SET (").append(columnNames).append(",IsTranslated) = (SELECT ").append(columnNames)
+						.append(",'Y' FROM ").append(baseTableName).append(" b WHERE ").append(trlTable).append(".")
+						.append(baseTable.getKeyColumns()[0]).append("=b.").append(baseTable.getKeyColumns()[0]).append(") WHERE AD_Client_ID=")
 						.append(getAD_Client_ID()).append(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
 
 				int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-				addBufferLog(0, null, new BigDecimal(no), baseTable, 0, 0);
+				addBufferLog(0, null, new BigDecimal(no), baseTableName, 0, 0);
 			}
 		} else {
 			// auto update all translations
 			StringBuilder sql = new StringBuilder("UPDATE ").append(trlTable).append(" SET (")
 					.append(columnNames).append(",IsTranslated) = (SELECT ").append(columnNames)
-					.append(",'Y' FROM ").append(baseTable).append(" b WHERE ").append(trlTable).append(".")
-					.append(baseTable).append("_ID=b.").append(baseTable).append("_ID) WHERE AD_Client_ID=")
+					.append(",'Y' FROM ").append(baseTableName).append(" b WHERE ").append(trlTable).append(".")
+					.append(baseTable.getKeyColumns()[0]).append("=b.").append(baseTable.getKeyColumns()[0]).append(") WHERE AD_Client_ID=")
 					.append(getAD_Client_ID());
 
 			int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-			addBufferLog(0, null, new BigDecimal(no), baseTable, 0, 0);
+			addBufferLog(0, null, new BigDecimal(no), baseTableName, 0, 0);
 		}
 	  } catch (DBException e) {
 		String msg = trlTable + " -> ";

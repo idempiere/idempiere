@@ -47,13 +47,13 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 
+ * Text editor dialog with plain text and HTML editor tab
  * @author Low Heng Sin
  *
  */
 public class WTextEditorDialog extends Window implements EventListener<Event>{
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1857623453350849161L;
 
@@ -71,7 +71,6 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
-	 * 
 	 * @param title
 	 * @param text
 	 * @param editable
@@ -88,7 +87,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param editable
 	 * @param maxSize
 	 * @param IsHtml - select the html tab at start
-	 * @param IsShowHTMLTab - Is to shown HTML tab
+	 * @param IsShowHTMLTab - true to shown HTML tab
 	 */
 	public WTextEditorDialog(String title, String text, boolean editable, int maxSize,boolean IsHtml, boolean IsShowHTMLTab) {
 		super();
@@ -103,10 +102,19 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			tabbox.setSelectedTab(htmlTab);
 	}
 
+	/**
+	 * @param title
+	 * @param text
+	 * @param editable
+	 * @param maxSize
+	 */
 	public WTextEditorDialog(String title, String text, boolean editable, int maxSize) {
 		this(title, text, editable, maxSize, false);
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void init() {
 		setBorder("normal");
 		if (!ThemeManager.isUseCSSForWindowSize()) {
@@ -202,6 +210,10 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		addEventListener(Events.ON_MAXIMIZE, e -> onSize());
 	}
 
+	/**
+	 * Create html editor (ckeditor) and add it to tabPanel
+	 * @param tabPanel
+	 */
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {		
 		editor = new CKeditor();
 		if (ClientInfo.isMobile())
@@ -218,6 +230,10 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		editor.setValue(text);
 	}
 
+	/**
+	 * Call back event for Ok button (from html editor)
+	 * @param event
+	 */
 	public void onEditorCallback(Event event) {
 		text = sanitize((String) event.getData());
 		detach();
@@ -231,7 +247,6 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
-
 				if (maxSize > 0) {
 					int currentSize = 0;
 					if (tabbox.getSelectedIndex() == 0)
@@ -287,6 +302,9 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		}
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
@@ -296,11 +314,18 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		detach();
 	}
 	
+	/**
+	 * Handle onSize event
+	 */
 	private void onSize() {
 		if(editor != null)
 			editor.invalidate();
 	}
 	
+	/**
+	 * Update status text (for text length)
+	 * @param newLength
+	 */
 	private void updateStatus(int newLength) {
 		if (status != null && maxSize > 0) {
 			StringBuilder msg = new StringBuilder();
@@ -318,21 +343,23 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	}
 	
 	/**
-	 * 
-	 * @return boolean
+	 * @return true if dialog is cancel by user
 	 */
 	public boolean isCancelled() {
 		return cancelled;
 	}
 	
 	/**
-	 * 
 	 * @return text
 	 */
 	public String getText() {
 		return text;
 	}
 
+	/**
+	 * @param untrustedHTML
+	 * @return sanitized html content
+	 */
 	public static String sanitize(String untrustedHTML) {
 		final PolicyFactory policy = Sanitizers.BLOCKS
 				.and(Sanitizers.FORMATTING)

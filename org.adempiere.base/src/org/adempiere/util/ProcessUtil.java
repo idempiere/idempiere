@@ -45,7 +45,7 @@ import org.compiere.wf.MWFProcess;
 import org.compiere.wf.MWorkflow;
 
 /**
- *
+ * Helper methods for server process
  * @author Low Heng Sin
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1757523 ] Server Processes are using Server's context
@@ -62,6 +62,7 @@ public final class ProcessUtil {
 	private ProcessUtil() {}
 
 	/**
+	 * Start database store procedure
 	 * @param processInfo
 	 * @param ProcedureName
 	 * @param trx
@@ -72,6 +73,7 @@ public final class ProcessUtil {
 	}
 
 	/**
+	 * Start database store procedure
 	 * @param processInfo
 	 * @param ProcedureName
 	 * @param trx
@@ -123,7 +125,7 @@ public final class ProcessUtil {
 	 * @param ctx
 	 * @param pi
 	 * @param trx
-	 * @return boolean
+	 * @return true if process completed successfully
 	 */
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx) {
 		return startJavaProcess(ctx, pi, trx, true);
@@ -134,7 +136,7 @@ public final class ProcessUtil {
 	 * @param pi
 	 * @param trx
 	 * @param managedTrx false if trx is managed by caller
-	 * @return boolean
+	 * @return true if process completed successfully
 	 */
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx) {
 		return startJavaProcess(ctx, pi, trx, managedTrx, null);
@@ -145,7 +147,7 @@ public final class ProcessUtil {
 	 * @param pi
 	 * @param trx
 	 * @param managedTrx false if trx is managed by caller
-	 * @return boolean
+	 * @return true if process completed successfully
 	 */
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessUI processMonitor) {
 		String className = pi.getClassName();
@@ -198,6 +200,13 @@ public final class ProcessUtil {
 		return success;
 	}
 
+	/**
+	 * Start process written in script (javascript, groovy, etc)
+	 * @param ctx
+	 * @param pi
+	 * @param trx
+	 * @return true if process completed successfully
+	 */
 	public static boolean startScriptProcess(Properties ctx, ProcessInfo pi, Trx trx) {
 		String msg = null;
 		boolean success = true;
@@ -314,6 +323,13 @@ public final class ProcessUtil {
 		return success;
 	}
 
+	/**
+	 * Start workflow
+	 * @param ctx
+	 * @param pi
+	 * @param AD_Workflow_ID
+	 * @return MWFProcess
+	 */
 	public static MWFProcess startWorkFlow(Properties ctx, ProcessInfo pi, int AD_Workflow_ID) {
 		MWorkflow wf = MWorkflow.get (ctx, AD_Workflow_ID);
 		MWFProcess wfProcess = wf.start(pi, pi.getTransactionName());
@@ -326,11 +342,10 @@ public final class ProcessUtil {
 	 * @param ctx
 	 * @param pi
 	 * @param trx
-	 * @return
+	 * @return true if process completed successfully
 	 */
 	public static boolean startJavaProcessWithoutTrxClose(Properties ctx, ProcessInfo pi, Trx trx) {
 		return startJavaProcess(ctx, pi, trx, false);
 	}
-
 
 }

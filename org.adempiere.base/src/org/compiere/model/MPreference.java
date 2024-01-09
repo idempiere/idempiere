@@ -28,25 +28,24 @@ import java.util.Properties;
 public class MPreference extends X_AD_Preference
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8935876328996934527L;
+	private static final long serialVersionUID = -3831004323199130018L;
 
 	/**	Null Indicator				*/
 	public static String		NULL = "null";
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Preference_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Preference_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPreference(Properties ctx, String AD_Preference_UU, String trxName) {
         super(ctx, AD_Preference_UU, trxName);
     }
 
 	/**
-	 * 	Standatrd Constructor
 	 *	@param ctx ctx
 	 *	@param AD_Preference_ID id
 	 *	@param trxName transaction
@@ -57,7 +56,6 @@ public class MPreference extends X_AD_Preference
 	}	//	MPreference
 
 	/**
-	 * 	Load Contsructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -68,7 +66,6 @@ public class MPreference extends X_AD_Preference
 	}	//	MPreference
 
 	/**
-	 * 	Full Constructor
 	 *	@param ctx context
 	 *	@param Attribute attribute
 	 *	@param Value value
@@ -86,6 +83,7 @@ public class MPreference extends X_AD_Preference
 	 *	@param newRecord
 	 *	@return true if can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		String value = getValue();
@@ -100,6 +98,7 @@ public class MPreference extends X_AD_Preference
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPreference[");
@@ -108,19 +107,5 @@ public class MPreference extends X_AD_Preference
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-
-	/** Set User/Contact.
-        @param AD_User_ID
-        User within the system - Internal or Business Partner Contact
-        Overridden to allow saving System record (zero ID)
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
 
 }	//	MPreference

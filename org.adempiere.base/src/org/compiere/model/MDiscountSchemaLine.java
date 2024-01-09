@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Discount Schema Line (Price List) Model 
  *	
@@ -32,16 +31,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 5145958821951855437L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_DiscountSchemaLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_DiscountSchemaLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MDiscountSchemaLine(Properties ctx, String M_DiscountSchemaLine_UU, String trxName) {
         super(ctx, M_DiscountSchemaLine_UU, trxName);
     }
@@ -69,7 +68,7 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 	}	//	MDiscountSchemaLine
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MDiscountSchemaLine(MDiscountSchemaLine copy) 
@@ -78,7 +77,7 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -88,7 +87,7 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -108,11 +107,12 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 		return this;
 	}
 
-  /**
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getC_BPartner_ID() == 0)

@@ -33,12 +33,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Language;
 import org.compiere.utils.DigestOfFile;
+import org.osgi.framework.Bundle;
 
 /**
  * 
@@ -75,12 +78,29 @@ public class BundleResourceLoader {
 		boolean empty = true;
 		String parentPath = "/";
 		String bundleFileName = resourceName;
+		String bundleName = null;
+		//check is resource name include optional bundle symbolic name (syntax -> bundle:bundleSymbolicName:jasperReportFileName)
+		if (resourceName.indexOf(":") > 0) {
+			bundleName = resourceName.substring(0, resourceName.indexOf(":"));
+			resourceName = resourceName.substring(resourceName.indexOf(":")+1);
+			bundleFileName = resourceName;
+		}
 		if (resourceName.lastIndexOf("/") > 0) {
 			parentPath = "/"+resourceName.substring(0, resourceName.lastIndexOf("/"));
 			bundleFileName = resourceName.substring(resourceName.lastIndexOf("/")+1);
 		}
 		URL url = null;
-		Enumeration<URL> entries = Activator.getBundleContext().getBundle().findEntries(parentPath, bundleFileName, false);
+		Bundle bundle = null;
+		//if resource name include optional bundle symbolic name, load from specific bundle 
+		if (bundleName == null) {
+			bundle = Activator.getBundleContext().getBundle();
+		} else {
+			String symbolicName = bundleName;
+			Optional<Bundle> optional = Arrays.stream(Activator.getBundleContext().getBundles()).filter(b -> b.getSymbolicName().equals(symbolicName)).findFirst();
+			if (optional.isPresent())
+				bundle = optional.get();
+		}
+		Enumeration<URL> entries = bundle != null ? bundle.findEntries(parentPath, bundleFileName, false) : null;
 		if (entries != null && entries.hasMoreElements())
 			url = entries.nextElement();
 		if (url != null) {
@@ -90,7 +110,7 @@ public class BundleResourceLoader {
 					if (inputStream != null) {
 						String localResourceName = toLocalName(resourceName);
 						String localAbsoluteFileName = destinationFolder + localResourceName;
-						String localAbsolutePathName = localAbsoluteFileName.substring(0, localAbsoluteFileName.lastIndexOf(System.getProperty("file.separator"))+1);
+						String localAbsolutePathName = localAbsoluteFileName.substring(0, localAbsoluteFileName.lastIndexOf(File.separator)+1);
 						Path localPath = Path.of(localAbsolutePathName);
 						try {
 							if (!Files.exists(localPath))
@@ -98,7 +118,7 @@ public class BundleResourceLoader {
 						} catch (IOException e) {
 							throw new RuntimeException(e);
 						}
-						String localFileName = localAbsoluteFileName.substring(localAbsoluteFileName.lastIndexOf(System.getProperty("file.separator"))+1);
+						String localFileName = localAbsoluteFileName.substring(localAbsoluteFileName.lastIndexOf(File.separator)+1);
 						String extension = localFileName.substring(localFileName.lastIndexOf("."));
 						reportFile = new File(localAbsoluteFileName);						
 						if (!reportFile.exists()) {
@@ -162,7 +182,7 @@ public class BundleResourceLoader {
 			String path = localName.substring(0, localName.lastIndexOf("/"));
 			localName = localName.substring(localName.lastIndexOf("/")+1);
 			path = path.replace('/', '_');
-			localName = path + System.getProperty("file.separator") + localName;
+			localName = path + File.separator + localName;
 		}
 		return localName;
 	}

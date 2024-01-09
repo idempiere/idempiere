@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.compiere.db.DB_PostgreSQL;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -98,6 +99,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 
 			statement = convertSysDate(statement);
 			statement = convertSimilarTo(statement);
+			statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
 
 		} else {
 
@@ -141,8 +143,8 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			statement = recoverQuotedStrings(statement, retVars, nonce);
 		result.add(statement);
 
-		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
-			String filterPgDebug = System.getProperty("org.idempiere.db.debug.filter");
+		if (SystemProperties.isDBDebug()) {
+			String filterPgDebug = SystemProperties.getDBDebugFilter();
 			boolean print = true;
 			if (filterPgDebug != null)
 				print = statement.matches(filterPgDebug);

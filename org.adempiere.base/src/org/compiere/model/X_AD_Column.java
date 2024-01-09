@@ -33,7 +33,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230505L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -60,6 +60,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -98,6 +100,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -136,6 +140,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -174,6 +180,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsPartitionKey (false);
+// 'N'
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
@@ -645,6 +653,33 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Message getFKConstraintMsg() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
+			.getPO(getFKConstraintMsg_ID(), get_TrxName());
+	}
+
+	/** Set Constraint Message.
+		@param FKConstraintMsg_ID Constraint Message
+	*/
+	public void setFKConstraintMsg_ID (int FKConstraintMsg_ID)
+	{
+		if (FKConstraintMsg_ID < 1)
+			set_Value (COLUMNNAME_FKConstraintMsg_ID, null);
+		else
+			set_Value (COLUMNNAME_FKConstraintMsg_ID, Integer.valueOf(FKConstraintMsg_ID));
+	}
+
+	/** Get Constraint Message.
+		@return Constraint Message	  */
+	public int getFKConstraintMsg_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_FKConstraintMsg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Constraint Name.
 		@param FKConstraintName Constraint Name
 	*/
@@ -954,6 +989,29 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return false;
 	}
 
+	/** Set Partition Key.
+		@param IsPartitionKey This is a partition key
+	*/
+	public void setIsPartitionKey (boolean IsPartitionKey)
+	{
+		set_Value (COLUMNNAME_IsPartitionKey, Boolean.valueOf(IsPartitionKey));
+	}
+
+	/** Get Partition Key.
+		@return This is a partition key
+	  */
+	public boolean isPartitionKey()
+	{
+		Object oo = get_Value(COLUMNNAME_IsPartitionKey);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Secure content.
 		@param IsSecure Defines whether content must be treated as secure
 	*/
@@ -1145,6 +1203,29 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return ii.intValue();
 	}
 
+	/** PartitioningMethod AD_Reference_ID=200261 */
+	public static final int PARTITIONINGMETHOD_AD_Reference_ID=200261;
+	/** List = L */
+	public static final String PARTITIONINGMETHOD_List = "L";
+	/** Range = R */
+	public static final String PARTITIONINGMETHOD_Range = "R";
+	/** Set Partitioning Method.
+		@param PartitioningMethod Indicates how the Table is partitioned
+	*/
+	public void setPartitioningMethod (String PartitioningMethod)
+	{
+
+		set_Value (COLUMNNAME_PartitioningMethod, PartitioningMethod);
+	}
+
+	/** Get Partitioning Method.
+		@return Indicates how the Table is partitioned
+	  */
+	public String getPartitioningMethod()
+	{
+		return (String)get_Value(COLUMNNAME_PartitioningMethod);
+	}
+
 	/** Set Placeholder.
 		@param Placeholder Placeholder
 	*/
@@ -1158,6 +1239,22 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public String getPlaceholder()
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder);
+	}
+
+	/** Set Range Partition Interval.
+		@param RangePartitionInterval Indicates the interval used in a range partitioning
+	*/
+	public void setRangePartitionInterval (String RangePartitionInterval)
+	{
+		set_Value (COLUMNNAME_RangePartitionInterval, RangePartitionInterval);
+	}
+
+	/** Get Range Partition Interval.
+		@return Indicates the interval used in a range partitioning
+	  */
+	public String getRangePartitionInterval()
+	{
+		return (String)get_Value(COLUMNNAME_RangePartitionInterval);
 	}
 
 	/** Set Read Only Logic.
@@ -1190,6 +1287,25 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Partition Key Sequence.
+		@param SeqNoPartition Indicates the order of partition keys
+	*/
+	public void setSeqNoPartition (int SeqNoPartition)
+	{
+		set_Value (COLUMNNAME_SeqNoPartition, Integer.valueOf(SeqNoPartition));
+	}
+
+	/** Get Partition Key Sequence.
+		@return Indicates the order of partition keys
+	  */
+	public int getSeqNoPartition()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoPartition);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

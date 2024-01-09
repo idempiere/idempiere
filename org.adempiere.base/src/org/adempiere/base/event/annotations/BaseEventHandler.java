@@ -29,34 +29,36 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.base.annotation.EventTopicDelegate;
 import org.adempiere.base.event.EventHelper;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
  * 
- * Base class for event handler that works with annotation driven event delegate.
+ * Base class for event handler that works with annotation driven event delegate ({@link EventTopicDelegate}).
  * The implementation of event delegate doesn't have to be thread safe as a new instance of delegate is created for each event call.
  * @author hengsin
  *
  */
 public abstract class BaseEventHandler implements EventHandler {
 
-	//event topic to method mapping
+	/** event topic:method */
 	protected final Map<String, Method> eventTopicMap = new HashMap<String, Method>();
 	private String filter;
+	private Class<? extends EventDelegate> delegateClass;
 
 	/**
-	 * 
 	 * @param delegateClass
 	 */
 	public BaseEventHandler(Class<? extends EventDelegate> delegateClass) {
 		filter = null;
 		createTopicMap(delegateClass);
+		this.delegateClass = delegateClass;
 	}
 
 	/**
-	 * create event to topic to method mapping from annotations
+	 * create event topic to method mapping from annotations
 	 * @param delegateClass
 	 */
 	protected void createTopicMap(Class<?> delegateClass) {
@@ -78,7 +80,6 @@ public abstract class BaseEventHandler implements EventHandler {
 	}
 
 	/**
-	 * 
 	 * @return arrays of event topic
 	 */
 	public String[] getTopics() {
@@ -89,7 +90,6 @@ public abstract class BaseEventHandler implements EventHandler {
 	}
 
 	/**
-	 * 
 	 * @return event filter
 	 */
 	public String getFilter() {
@@ -105,7 +105,6 @@ public abstract class BaseEventHandler implements EventHandler {
 	}
 
 	/**
-	 * 
 	 * @param propertyName
 	 * @param value
 	 */
@@ -151,7 +150,14 @@ public abstract class BaseEventHandler implements EventHandler {
 	/**
 	 * create new instance of event delegate
 	 * @param event
-	 * @return {@link EventDelegate}
+	 * @return new {@link EventDelegate} instance
 	 */
 	protected abstract EventDelegate newEventDelegate(Event event);
+
+	/**
+	 * @return event delegate class
+	 */
+	public Class<? extends EventDelegate> getDelegateClass() {
+		return delegateClass;
+	}
 }

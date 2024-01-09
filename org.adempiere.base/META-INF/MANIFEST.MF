@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 11.0.0.qualifier
+Bundle-Version: 12.0.0.qualifier
 Bundle-ClassPath: .,
  lib/bsh.jar,
  lib/commons-validator.jar,
@@ -32,6 +32,7 @@ Export-Package: bsh,
  org.adempiere.base.event.annotations.imp,
  org.adempiere.base.event.annotations.po,
  org.adempiere.base.event.annotations.process,
+ org.adempiere.base.sso,
  org.adempiere.base.upload,
  org.adempiere.exceptions,
  org.adempiere.impexp,
@@ -43,6 +44,7 @@ Export-Package: bsh,
  org.compiere,
  org.compiere.acct,
  org.compiere.db,
+ org.compiere.db.partition,
  org.compiere.dbPort,
  org.compiere.impexp,
  org.compiere.install,

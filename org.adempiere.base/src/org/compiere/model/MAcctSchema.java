@@ -34,7 +34,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *  Accounting Schema Model (base)
+ *  Accounting Schema Model
  *
  *  @author 	Jorg Janke
  *  @author     victor.perez@e-evolution.com, www.e-evolution.com
@@ -44,7 +44,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 405097978362430053L;
 
@@ -187,21 +187,20 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, false);	//  3 clients
 	/**	Cache of AcctSchemas 					**/
 	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120);	//  3 accounting schemas
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_AcctSchema_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AcctSchema_UU  UUID key
+     * @param trxName Transaction
+     */
     public MAcctSchema(Properties ctx, String C_AcctSchema_UU, String trxName) {
         super(ctx, C_AcctSchema_UU, trxName);
 		if (Util.isEmpty(C_AcctSchema_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_AcctSchema_ID id
@@ -263,7 +262,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	MAcctSchema
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MAcctSchema(MAcctSchema copy)
@@ -272,7 +271,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -282,7 +281,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -322,9 +321,9 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	/** Only Post Org Childs			*/
 	private Integer[] 				m_onlyOrgs = null; 
 
-	/**************************************************************************
+	/**
 	 *  AcctSchema Elements
-	 *  @return ArrayList of AcctSchemaElement
+	 *  @return Array of AcctSchemaElement
 	 */
 	public MAcctSchemaElement[] getAcctSchemaElements()
 	{
@@ -332,7 +331,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}   //  getAcctSchemaElements
 
 	/**
-	 *  Get AcctSchema Element
+	 *  Get AcctSchema Element via element type
 	 *  @param elementType segment type - AcctSchemaElement.ELEMENTTYPE_
 	 *  @return AcctSchemaElement
 	 */
@@ -347,7 +346,6 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}   //  getAcctSchemaElement
 
 	/**
-	 *  Has AcctSchema Element
 	 *  @param segmentType segment type - AcctSchemaElement.SEGMENT_
 	 *  @return true if schema has segment type
 	 */
@@ -392,7 +390,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 
 	/**
 	 *	String representation
-	 *  @return String rep
+	 *  @return String representation
 	 */
 	public String toString()
 	{
@@ -404,7 +402,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 
 	/**
 	 * 	Is Suspense Balancing active
-	 *	@return suspense balancing
+	 *	@return true if schema is using suspense balancing account
 	 */
 	public boolean isSuspenseBalancing()
 	{
@@ -414,8 +412,8 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isSuspenseBalancing
 
 	/**
-	 *	Get Suspense Error Account
-	 *  @return suspense error account
+	 *	Get Suspense Balancing Account
+	 *  @return suspense balancing account
 	 */
 	public MAccount getSuspenseBalancing_Acct()
 	{
@@ -430,7 +428,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 
 	/**
 	 * 	Is Currency Balancing active
-	 *	@return suspense balancing
+	 *	@return true if schema is using currency balancing account
 	 */
 	public boolean isCurrencyBalancing()
 	{
@@ -495,7 +493,6 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 */
 	public void setOnlyOrgs (Integer[] orgs)
 	{
-//		m_onlyOrgs = orgs;
 		throw new IllegalStateException("The OnlyOrgs are now fetched automatically");
 	}	//	setOnlyOrgs
 	
@@ -516,7 +513,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	/**
 	 * 	Skip creating postings for this Org.
 	 *	@param AD_Org_ID
-	 *	@return true if to skip
+	 *	@return true if to skip posting
 	 */
 	public synchronized boolean isSkipOrg (int AD_Org_ID)
 	{
@@ -601,7 +598,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	
 	/**
 	 * 	Is Client Costing Level (default)
-	 *	@return true if Client
+	 *	@return true if schema costing is at client level
 	 */
 	public boolean isCostingLevelClient()
 	{
@@ -613,7 +610,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	
 	/**
 	 * 	Is Org Costing Level
-	 *	@return true if Org
+	 *	@return true if schema costing is at organization level
 	 */
 	public boolean isCostingLevelOrg()
 	{
@@ -622,7 +619,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	
 	/**
 	 * 	Is Batch Costing Level
-	 *	@return true if Batch
+	 *	@return true if schema costing is at lot/batch level
 	 */
 	public boolean isCostingLevelBatch()
 	{
@@ -630,8 +627,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isCostingLevelBatch
 
 	/**
-	 * 	Create PO Commitment Accounting
-	 *	@return true if creaet commitments
+	 *	@return true if using commitments accounting for PO
 	 */
 	public boolean isCreatePOCommitment()
 	{
@@ -645,8 +641,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isCreateCommitment
 
 	/**
-	 * 	Create SO Commitment Accounting
-	 *	@return true if creaet commitments
+	 *	@return true if using commitments accounting for SO
 	 */
 	public boolean isCreateSOCommitment()
 	{
@@ -659,8 +654,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isCreateCommitment
 
 	/**
-	 * 	Create Commitment/Reservation Accounting
-	 *	@return true if create reservations
+	 *	@return true if create reservations for PO
 	 */
 	public boolean isCreateReservation()
 	{
@@ -673,7 +667,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 
 	/**
 	 * 	Get Tax Correction Type
-	 *	@return tax correction type
+	 *	@return tax correction type (discount, write off or none)
 	 */
 	public String getTaxCorrectionType()
 	{
@@ -685,7 +679,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	
 	/**
 	 * 	Tax Correction
-	 *	@return true if not none
+	 *	@return true if tax correction type is not none
 	 */
 	public boolean isTaxCorrection()
 	{
@@ -693,8 +687,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isTaxCorrection
 	
 	/**
-	 * 	Tax Correction for Discount
-	 *	@return true if tax is corrected for Discount 
+	 *	@return true if tax correction type is discount or write off+discount 
 	 */
 	public boolean isTaxCorrectionDiscount()
 	{
@@ -703,8 +696,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isTaxCorrectionDiscount
 
 	/**
-	 * 	Tax Correction for WriteOff
-	 *	@return true if tax is corrected for WriteOff 
+	 *	@return true if tax correction type is write off or write off+discount 
 	 */
 	public boolean isTaxCorrectionWriteOff()
 	{
@@ -743,6 +735,10 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
+	/**
+	 * Get products that has costing detail records. 
+	 * @return comma separated product values
+	 */
 	private String getProductsWithCost() {
 		StringBuilder products = new StringBuilder();
 		StringBuilder sql = new StringBuilder("SELECT DISTINCT p.Value FROM M_Product p JOIN M_CostDetail d ON p.M_Product_ID=d.M_Product_ID");

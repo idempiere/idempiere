@@ -31,7 +31,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_IssueProject (Properties ctx, int R_IssueProject_ID, String trxName)

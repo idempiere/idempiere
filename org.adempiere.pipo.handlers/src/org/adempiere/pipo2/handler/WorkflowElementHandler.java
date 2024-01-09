@@ -110,13 +110,13 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 	 * @param element
 	 */
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
-		if (!element.defer && !element.skip && element.recordId > 0) {
+		if (!element.defer && !element.skip && (Integer)element.recordId > 0) {
 			//set start node
 			String value = getStringValue(element, "AD_WF_Node_ID");
 			if (value != null && value.trim().length() > 0) {
-				MWorkflow m_Workflow = new MWorkflow(ctx.ctx, element.recordId, getTrxName(ctx));
+				MWorkflow m_Workflow = new MWorkflow(ctx.ctx, (Integer)element.recordId, getTrxName(ctx));
 				PoFiller filler = new PoFiller(ctx, m_Workflow, element, this);
-				int id = filler.setTableReference("AD_WF_Node_ID");
+				int id = ((Number)filler.setTableReference("AD_WF_Node_ID")).intValue();
 				if (id <= 0) {
 					log.warning("Failed to resolve start node reference for workflow element. Workflow="
 							+ m_Workflow.getName() + " StartNode=" + value);

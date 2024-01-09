@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
@@ -49,17 +50,17 @@ import org.compiere.util.ValueNamePair;
 public class MInOutLine extends X_M_InOutLine
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8630611882798722864L;
 
 	/**
-	 * 	Get Ship lines Of Product
-	 * 	 *	@param ctx context
+	 * 	Get Shipment/Receipt lines Of Product
+	 * 	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param where optional addition where clause
 	 *  @param trxName transaction
-	 *	@return array of receipt lines
+	 *	@return array of shipment/receipt lines
 	 */
 	public static MInOutLine[] getOfProduct (Properties ctx,
 		int M_Product_ID, String where, String trxName)
@@ -72,12 +73,12 @@ public class MInOutLine extends X_M_InOutLine
 	}
 	
 	/**
-	 * 	Get Ship lines Of Order Line
+	 * 	Get Shipment/Receipt lines Of Order Line
 	 *	@param ctx context
 	 *	@param C_OrderLine_ID line
 	 *	@param where optional addition where clause
 	 *  @param trxName transaction
-	 *	@return array of receipt lines
+	 *	@return array of shipment/receipt lines
 	 */
 	public static MInOutLine[] getOfOrderLine (Properties ctx,
 		int C_OrderLine_ID, String where, String trxName)
@@ -90,12 +91,12 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	getOfOrderLine
 
 	/**
-	 * 	Get Ship lines Of RMA Line
+	 * 	Get shipment/receipt lines Of RMA Line
 	 *	@param ctx context
 	 *	@param M_RMALine_ID line
 	 *	@param where optional addition where clause
 	 *  @param trxName transaction
-	 *	@return array of receipt lines
+	 *	@return array of shipment/receipt lines
 	 */
 	public static MInOutLine[] getOfRMALine (Properties ctx,
 		int M_RMALine_ID, String where, String trxName)
@@ -108,31 +109,30 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	getOfRMALine
 
 	/**
-	 * 	Get Ship lines Of Order Line
+	 * 	Get shipment/receipt lines Of Order Line
 	 *	@param ctx context
 	 *	@param C_OrderLine_ID line
 	 *  @param trxName transaction
-	 *	@return array of receipt lines2
+	 *	@return array of shipment/receipt lines
 	 */
 	public static MInOutLine[] get (Properties ctx, int C_OrderLine_ID, String trxName)
 	{
 		return getOfOrderLine(ctx, C_OrderLine_ID, null, trxName);
 	}	//	get
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_InOutLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_InOutLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MInOutLine(Properties ctx, String M_InOutLine_UU, String trxName) {
         super(ctx, M_InOutLine_UU, trxName);
 		if (Util.isEmpty(M_InOutLine_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_InOutLine_ID id
@@ -143,6 +143,12 @@ public class MInOutLine extends X_M_InOutLine
 		this (ctx, M_InOutLine_ID, trxName, (String[]) null);
 	}	//	MInOutLine
 
+	/**
+	 * @param ctx
+	 * @param M_InOutLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MInOutLine(Properties ctx, int M_InOutLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_InOutLine_ID, trxName, virtualColumns);
 		if (M_InOutLine_ID == 0)
@@ -209,8 +215,8 @@ public class MInOutLine extends X_M_InOutLine
 	 * 	Set Order Line.
 	 * 	Does not set Quantity!
 	 *	@param oLine order line
-	 *	@param M_Locator_ID locator
-	 * 	@param Qty used only to find suitable locator
+	 *	@param M_Locator_ID optional locator id
+	 * 	@param Qty used to find locator if M_Locator_ID parameter is 0
 	 */
 	public void setOrderLine (MOrderLine oLine, int M_Locator_ID, BigDecimal Qty)
 	{
@@ -257,8 +263,8 @@ public class MInOutLine extends X_M_InOutLine
 	 * 	Set Invoice Line.
 	 * 	Does not set Quantity!
 	 *	@param iLine invoice line
-	 *	@param M_Locator_ID locator
-	 *	@param Qty qty only fo find suitable locator
+	 *	@param M_Locator_ID optional locator id
+	 * 	@param Qty used to find locator if M_Locator_ID parameter is 0
 	 */
 	public void setInvoiceLine (MInvoiceLine iLine, int M_Locator_ID, BigDecimal Qty)
 	{
@@ -316,7 +322,8 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	setM_Warehouse_ID
 
 	/**
-	 * 	Set M_Locator_ID
+	 * 	Set M_Locator_ID.
+	 *  Throw IllegalArgumentException if M_Locator_ID &lt; 0.
 	 *	@param M_Locator_ID id
 	 */
 	@Override
@@ -330,8 +337,8 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Set (default) Locator based on qty.
+	 *  Assumes Warehouse is set.
 	 * 	@param Qty quantity
-	 * 	Assumes Warehouse is set
 	 */
 	public void setM_Locator_ID(BigDecimal Qty)
 	{
@@ -359,7 +366,7 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	setM_Locator_ID
 
 	/**
-	 * 	Set Movement/Movement Qty
+	 * 	Set Entered and Movement Qty
 	 *	@param Qty Entered/Movement Qty
 	 */
 	public void setQty (BigDecimal Qty)
@@ -369,9 +376,10 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	setQtyInvoiced
 
 	/**
-	 * 	Set Qty Entered - enforce entered UOM
+	 * 	Set Qty Entered - enforce UOM precision
 	 *	@param QtyEntered
 	 */
+	@Override
 	public void setQtyEntered (BigDecimal QtyEntered)
 	{
 		if (QtyEntered != null && getC_UOM_ID() != 0)
@@ -383,9 +391,10 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	setQtyEntered
 
 	/**
-	 * 	Set Movement Qty - enforce Product UOM
+	 * 	Set Movement Qty - enforce Product UOM precision
 	 *	@param MovementQty
 	 */
+	@Override
 	public void setMovementQty (BigDecimal MovementQty)
 	{
 		MProduct product = getProduct();
@@ -431,7 +440,7 @@ public class MInOutLine extends X_M_InOutLine
 	/**
 	 * 	Set M_Product_ID
 	 *	@param M_Product_ID product
-	 *	@param setUOM also set UOM from product
+	 *	@param setUOM true to also set UOM from product
 	 */
 	public void setM_Product_ID (int M_Product_ID, boolean setUOM)
 	{
@@ -473,7 +482,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Get C_Project_ID
-	 *	@return project
+	 *	@return C_Project_ID
 	 */
 	public int getC_Project_ID()
 	{
@@ -485,7 +494,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Get C_Activity_ID
-	 *	@return Activity
+	 *	@return C_Activity_ID
 	 */
 	public int getC_Activity_ID()
 	{
@@ -497,7 +506,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Get C_Campaign_ID
-	 *	@return Campaign
+	 *	@return C_Campaign_ID
 	 */
 	public int getC_Campaign_ID()
 	{
@@ -508,8 +517,8 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	getC_Campaign_ID
 
 	/**
-	 * 	Get User2_ID
-	 *	@return User2
+	 * 	Get User1_ID
+	 *	@return User1_ID
 	 */
 	public int getUser1_ID ()
 	{
@@ -521,7 +530,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Get User2_ID
-	 *	@return User2
+	 *	@return User2_ID
 	 */
 	public int getUser2_ID ()
 	{
@@ -533,7 +542,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Get AD_OrgTrx_ID
-	 *	@return trx org
+	 *	@return AD_OrgTrx_ID
 	 */
 	public int getAD_OrgTrx_ID()
 	{
@@ -543,14 +552,15 @@ public class MInOutLine extends X_M_InOutLine
 		return ii;
 	}	//	getAD_OrgTrx_ID
 
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return save
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		log.fine("");
+		if (log.isLoggable(Level.FINE)) log.fine("");
 		if (newRecord && getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
@@ -591,7 +601,6 @@ public class MInOutLine extends X_M_InOutLine
 			if (getM_Locator_ID() <= 0 && getC_Charge_ID() <= 0)
 			{
 				// Try to load Default Locator
-
 				MWarehouse warehouse = MWarehouse.get(getM_Warehouse_ID());
 				
 				if(warehouse != null) {
@@ -711,6 +720,7 @@ public class MInOutLine extends X_M_InOutLine
 	 * 	Before Delete
 	 *	@return true if drafted
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		if (! getParent().getDocStatus().equals(MInOut.DOCSTATUS_Drafted)) {
@@ -737,6 +747,7 @@ public class MInOutLine extends X_M_InOutLine
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MInOutLine[").append (get_ID())
@@ -750,7 +761,7 @@ public class MInOutLine extends X_M_InOutLine
 
 	/**
 	 * 	Get Base value for Cost Distribution
-	 *	@param CostDistribution cost Distribution
+	 *	@param CostDistribution cost Distribution (MLandedCost.LANDEDCOSTDISTRIBUTION_*)
 	 *	@return base number
 	 */
 	public BigDecimal getBase (String CostDistribution)
@@ -798,6 +809,9 @@ public class MInOutLine extends X_M_InOutLine
 		return Env.ZERO;
 	}	//	getBase
 
+	/**
+	 * @return true if has same UOM with order line
+	 */
 	public boolean sameOrderLineUOM()
 	{
 		if (getC_OrderLine_ID() <= 0)

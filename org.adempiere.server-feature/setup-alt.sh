@@ -16,11 +16,11 @@ fi
 find . -name '*.sh' -exec chmod u+x '{}' \;
 
 #setup idempiere.properties and idempiereEnv.propertiess
-$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.application $@
+"$JAVA" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.application $@
 
 echo ... Setup Jetty
 #setup jetty
-$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
+"$JAVA" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 echo ...
 echo For problems, check log file in base directory

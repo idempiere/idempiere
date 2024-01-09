@@ -18,7 +18,6 @@
 package org.adempiere.webui.exception;
 
 /**
- *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
  * @version $Revision: 0.10 $
@@ -26,15 +25,22 @@ package org.adempiere.webui.exception;
 public class ApplicationException extends RuntimeException
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4217881437634023176L;
 
+	/**
+	 * @param msg
+	 */
 	public ApplicationException(String msg)
     {
         super(msg);
     }
     
+	/**
+	 * @param msg
+	 * @param ex
+	 */
     public ApplicationException(String msg, Exception ex)
     {
         super(msg, ex);

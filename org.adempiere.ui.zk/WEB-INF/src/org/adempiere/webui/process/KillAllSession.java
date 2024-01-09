@@ -28,7 +28,7 @@ import org.idempiere.broadcast.BroadCastUtil;
 import org.idempiere.broadcast.BroadcastMsgUtil;
 
 /**
- * 
+ * Process to kill a session by Record_ID parameter (for AD_Session_ID)
  * @author Deepak Pansheriya
  *
  */

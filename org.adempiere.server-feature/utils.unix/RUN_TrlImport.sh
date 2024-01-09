@@ -36,7 +36,7 @@ cd ..
 
 echo    This Procedure imports language $AD_LANGUAGE from directory "$DIRECTORY"
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.install.translation import "$DIRECTORY" $AD_LANGUAGE
+"$JAVA" -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.install.translation import "$DIRECTORY" $AD_LANGUAGE
 
 echo    Done
 echo .

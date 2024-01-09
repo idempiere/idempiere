@@ -33,22 +33,21 @@ import org.compiere.util.Msg;
 public class MRecordAccess extends X_AD_Record_Access
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5115765616266528435L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Record_Access_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Record_Access_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRecordAccess(Properties ctx, String AD_Record_Access_UU, String trxName) {
         super(ctx, AD_Record_Access_UU, trxName);
     }
 
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -139,8 +138,10 @@ public class MRecordAccess extends X_AD_Record_Access
 	}	//	getKeyColumnName
 
 	/**
-	 * 	Get Synonym of Column
-	 *	@return Synonym Column Name
+	 * 	Get predefined synonym of column.<br/>
+	 *  SalesRep_ID is synonym of AD_User_ID.<br/>
+	 *  Account_ID is synonym of C_ElementValue_ID.
+	 *	@return Synonym of Column Name or null
 	 */
 	public String getSynonym()
 	{
@@ -153,8 +154,9 @@ public class MRecordAccess extends X_AD_Record_Access
 	}	//	getSynonym
 
 	/**
-	 * 	Key Column has a Synonym
+	 * 	Key Column has a Synonym.
 	 *	@return true if Key Column has Synonym
+	 *  @see #getSynonym()
 	 */
 	public boolean isSynonym()
 	{
@@ -163,7 +165,7 @@ public class MRecordAccess extends X_AD_Record_Access
 
 	/**
 	 * 	Is Read Write
-	 *	@return rw - false if exclude
+	 *	@return false if exclude or readonly
 	 */
 	public boolean isReadWrite()
 	{
@@ -176,6 +178,7 @@ public class MRecordAccess extends X_AD_Record_Access
 	 * 	Get Key Column Name with consideration of Synonym
 	 *	@param tableInfo
 	 *	@return key column name
+	 *  @see #getSynonym()
 	 */
 	public String getKeyColumnName (AccessSqlParser.TableInfo[] tableInfo)
 	{
@@ -205,6 +208,7 @@ public class MRecordAccess extends X_AD_Record_Access
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MRecordAccess[AD_Role_ID=")

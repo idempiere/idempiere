@@ -31,7 +31,7 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Year (Properties ctx, int C_Year_ID, String trxName)

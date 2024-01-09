@@ -41,7 +41,7 @@ import org.compiere.process.DocAction;
  */
 public class GenericPO extends PO implements DocAction {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3180937588404433030L;
 	
@@ -134,8 +134,6 @@ public class GenericPO extends PO implements DocAction {
 	protected int get_AccessLevel() {
 		return Integer.parseInt(p_info.getAccessLevel());
 	}
-
-
 
 	/* METHODS TO USE GenericPO in Documents */
 

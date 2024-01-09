@@ -31,9 +31,8 @@ import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
-
 /**
- *	Package Model
+ *	Shipment Package Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MPackage.java,v 1.3 2006/07/30 00:51:04 jjanke Exp $
@@ -41,12 +40,12 @@ import org.eevolution.model.MPPProductBOMLine;
 public class MPackage extends X_M_Package
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6082002551560148518L;
 
 	/**
-	 * 	Create one Package for Shipment 
+	 * 	Create Package with one MPackageMPS for Shipment 
 	 *	@param shipment shipment
 	 *	@param shipper shipper
 	 *	@param shipDate null for today
@@ -102,7 +101,13 @@ public class MPackage extends X_M_Package
 		return retValue;
 	}	//	create
 
-	
+	/**
+	 * Create shipment package
+	 * @param shipment
+	 * @param shipper
+	 * @param shipDate
+	 * @return
+	 */
 	public static MPackage createPackage (MInOut shipment, MShipper shipper, Timestamp shipDate)
 	{
 		MPackage retValue = new MPackage (shipment, shipper);
@@ -115,19 +120,18 @@ public class MPackage extends X_M_Package
 	}
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_Package_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Package_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPackage(Properties ctx, String M_Package_UU, String trxName) {
         super(ctx, M_Package_UU, trxName);
 		if (Util.isEmpty(M_Package_UU))
 			setInitialDefaults(ctx);
     }
 
-	/**************************************************************************
-	 * 	MPackage
+	/**
 	 *	@param ctx context
 	 *	@param M_Package_ID id
 	 *	@param trxName transaction
@@ -236,6 +240,7 @@ public class MPackage extends X_M_Package
 		}
 	}	//	MPackage
 	
+	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (getWeight() == null || getWeight().compareTo(BigDecimal.ZERO) == 0)
@@ -250,6 +255,7 @@ public class MPackage extends X_M_Package
 		return true;
 	}
 	
+	@Override
 	protected boolean afterSave(boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -272,7 +278,8 @@ public class MPackage extends X_M_Package
 		
 		return success;
 	}
-	
+
+	@Override
 	protected boolean beforeDelete()
 	{
 		String sql = "DELETE FROM M_PackageLine WHERE M_PackageMPS_ID IN (SELECT M_PackageMPS_ID FROM M_PackageMPS WHERE M_Package_ID = ?)";
@@ -286,16 +293,28 @@ public class MPackage extends X_M_Package
 	/** Error Message						*/
 	private String				m_errorMessage = null;
 	
+	/**
+	 * @param errorMessage
+	 */
 	public void setErrorMessage(String errorMessage)
 	{
 		m_errorMessage = errorMessage;
 	}
 	
+	/**
+	 * @return error message
+	 */
 	public String getErrorMessage()
 	{
 		return m_errorMessage;
 	}
 	
+	/**
+	 * Execute online processing of shipment package
+	 * @param action MShippingTransaction.ACTION_*
+	 * @param isPriviledgedRate
+	 * @return true if success
+	 */
 	public boolean processOnline(String action, boolean isPriviledgedRate)
 	{
 		setErrorMessage(null);
@@ -406,6 +425,13 @@ public class MPackage extends X_M_Package
 		return ok;
 	}
 	
+	/**
+	 * Create online shipping transaction
+	 * @param action MShippingTransaction.ACTION_*
+	 * @param isPriviledgedRate
+	 * @param trxName
+	 * @return MShippingTransaction
+	 */
 	public MShippingTransaction createShippingTransaction(String action, boolean isPriviledgedRate, String trxName)
 	{
 		MInOut ioOut = null;

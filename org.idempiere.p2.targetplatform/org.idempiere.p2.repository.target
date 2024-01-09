@@ -321,7 +321,6 @@
 		<plugin id="wrapped.org.springframework.spring-core"/>
 		<plugin id="wrapped.org.springframework.spring-expression"/>
 		<plugin id="wrapped.org.springframework.spring-web"/>
-		<plugin id="wrapped.org.springframework.spring-jcl"/>
 		<plugin id="wrapped.wsdl4j.wsdl4j"/>
 		<plugin id="xstream"/>
 		<plugin id="zcommon"/>
@@ -364,5 +363,8 @@
 		<plugin id="org.osgi.util.pushstream"/>
 		<plugin id="org.osgi.util.tracker"/>
 		<plugin id="org.osgi.util.xml"/>
+		<plugin id="com.zaxxer.HikariCP"/>
+		<plugin id="org.postgresql.jdbc"/>
+		<plugin id="wrapped.com.oracle.database.jdbc.ojdbc10"/>
 	</includeBundles>
 </target>

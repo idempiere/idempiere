@@ -9,13 +9,13 @@
     xmlns:predicates="http://www.eclipse.org/oomph/predicates/1.0"
     xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
     xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
-    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/maven/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Maven.ecore http://www.eclipse.org/oomph/setup/pde/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
-    name="idempiere.11.230620"
-    label="iDempiere 11">
+    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/jdt/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/maven/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Maven.ecore http://www.eclipse.org/oomph/setup/pde/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/SetupWorkingSets.ecore"
+    name="idempiere.12.231227"
+    label="iDempiere 12">
   <setupTask
-    xsi:type="setup:PreferenceTask"
-    key="/instance/org.eclipse.oomph.setup.ui/preference.recorder.target"
-    value="${workspace.location|uri}/.metadata/.plugins/org.eclipse.oomph.setup/workspace.setup#/"/>
+      xsi:type="setup:PreferenceTask"
+      key="/instance/org.eclipse.oomph.setup.ui/preference.recorder.target"
+      value="${workspace.location|uri}/.metadata/.plugins/org.eclipse.oomph.setup/workspace.setup#/"/>
   <setupTask
       xsi:type="setup:VariableTask"
       type="FOLDER"
@@ -26,7 +26,7 @@
   <setupTask
       xsi:type="setup:VariableTask"
       name="idempiere.target.platform"
-      defaultValue="idempiere-230620"
+      defaultValue="idempiere-231227"
       storageURI="scope://Workspace"
       label="Target Platform"/>
   <setupTask
@@ -42,11 +42,11 @@
     <setupTask
         xsi:type="setup:PreferenceTask"
         key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform"
-        value="11"/>
+        value="17"/>
     <setupTask
         xsi:type="setup:PreferenceTask"
         key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance"
-        value="11"/>
+        value="17"/>
     <setupTask
         xsi:type="setup:PreferenceTask"
         key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.release"
@@ -54,7 +54,7 @@
     <setupTask
         xsi:type="setup:PreferenceTask"
         key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source"
-        value="11"/>
+        value="17"/>
   </setupTask>
   <setupTask
       xsi:type="maven:MavenImportTask"

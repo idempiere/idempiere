@@ -28,7 +28,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- * Wrap GridTab to ADempiere Bean Interface (i.e. generated interfaces).
+ * Wrap GridTab to ADempiere Model Interface (i.e. generated interfaces).<br/>
  * Usage example:
  * <pre>
  * I_A_Asset_Disposed bean = GridTabWrapper.create(mTab, I_A_Asset_Disposed.class); 
@@ -42,6 +42,13 @@ public class GridTabWrapper implements InvocationHandler
 {
 	private static final CLogger log = CLogger.getCLogger(GridTabWrapper.class);
 	
+	/**
+	 * Create wrapper of type cl for gridTab.
+	 * @param <T>
+	 * @param gridTab
+	 * @param cl
+	 * @return wrapper instance for gridTab
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T create(GridTab gridTab, Class<T> cl)
 	{
@@ -52,6 +59,10 @@ public class GridTabWrapper implements InvocationHandler
 	
 	private final GridTab m_gridTab;
 	
+	/**
+	 * Private constructor.
+	 * @param gridTab
+	 */
 	private GridTabWrapper(GridTab gridTab)
 	{
 		this.m_gridTab = gridTab;
@@ -121,6 +132,9 @@ public class GridTabWrapper implements InvocationHandler
 		}
 	}
 	
+	/**
+	 * @return GridTab
+	 */
 	public GridTab getGridTab()
 	{
 		return this.m_gridTab;
@@ -174,6 +188,10 @@ public class GridTabWrapper implements InvocationHandler
 		return po;
 	}
 	
+	/**
+	 * @param cl
+	 * @return true if cl is iDempiere model interface
+	 */
 	private boolean isModelInterface(Class<?> cl)
 	{
 		try

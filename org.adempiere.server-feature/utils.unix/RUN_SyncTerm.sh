@@ -21,7 +21,7 @@ cd ..
 
 echo    This Procedure synchronize terminology
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -application org.adempiere.install.translation sync
+"$JAVA" -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -application org.adempiere.install.translation sync
 
 echo    Done
 echo .

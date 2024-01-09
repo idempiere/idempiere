@@ -33,7 +33,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_TrialBalance (Properties ctx, String T_TrialBalance_UU, String trxName)

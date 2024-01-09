@@ -25,14 +25,13 @@ import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 
 /**
- *
+ * Helper methods for auto matching of M_MatchPO records.
  * @author hengsin
  *
  */
 public class MatchPOAutoMatch {
 
 	/**
-	 *
 	 * @param ctx
 	 * @param C_OrderLine_ID
 	 * @param trxName
@@ -139,7 +138,7 @@ public class MatchPOAutoMatch {
 	}
 
 	/**
-	 * auto match matchpo
+	 * auto match matchpo (between match po created by vendor credit memo and match po created by vendor invoice)
 	 * @param ctx
 	 * @param C_OrderLine_ID
 	 * @param currentPO
@@ -150,6 +149,8 @@ public class MatchPOAutoMatch {
 		List<MMatchPO> notMatchedMatchPOList = new ArrayList<MMatchPO>();
 		List<MMatchPO> creditMemoMatchPOList = new ArrayList<MMatchPO>();
 		List<MMatchPO> matchedMatchPOList = new ArrayList<MMatchPO>();
+		
+		//find not matched POs
 		MMatchPO[] mpos = MMatchPO.getOrderLine(ctx, C_OrderLine_ID, trxName);
 		for (MMatchPO mpo : mpos)
 		{
@@ -419,7 +420,7 @@ public class MatchPOAutoMatch {
 	}
 
 	/**
-	 * remove match between vendor invoice and vendor cm
+	 * remove matchpo and matchinv records between vendor invoice and vendor cm
 	 * @param ctx
 	 * @param C_Invoice_ID
 	 * @param trxName

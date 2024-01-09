@@ -34,11 +34,10 @@ import org.compiere.model.PO;
 import org.osgi.service.event.Event;
 
 /**
- * 
- * Event handler for PO related events (po_before_change, doc_before_complete, etc).
- * Delegate to {@link ModelEventDelegate} instance created for each event call
+ * Event handler for PO related events. <br/>
+ * Developers usually don't have to use this class directly; instead, the recommended approach is 
+ * to subclass {@link ModelEventDelegate} and use model event topic annotations.
  * @author hengsin
- * 
  */
 public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 
@@ -48,6 +47,8 @@ public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 	
 	/**
 	 * @param modelClassType
+	 * @param delegateClass
+	 * @param supplier
 	 */
 	public ModelEventHandler(Class<T> modelClassType, Class<? extends ModelEventDelegate<T>> delegateClass, 
 			BiFunction<T, Event, ? extends ModelEventDelegate<T>> supplier) {
@@ -57,6 +58,9 @@ public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 		findTableName();
 	}
 
+	/**
+	 * Find table name property from annotation or static field (Table_Name).
+	 */
 	private void findTableName() {
 		try {
 			Model model = modelClassType.getSuperclass().getAnnotation(Model.class);
