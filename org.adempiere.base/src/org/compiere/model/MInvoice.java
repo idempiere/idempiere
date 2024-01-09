@@ -1794,6 +1794,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		// Check if Order is Valid load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM C_InvoiceLine il "
+		    		+ " JOIN C_OrderLine ol ON (il.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE il.C_Invoice_ID=?", getC_Invoice_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
+		}
+		
 		//	Add up Amounts
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))
