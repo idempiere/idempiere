@@ -240,7 +240,14 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 		//complete the production
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(production, "CO");
 		if (pi.isError()) {
-			return pi.getSummary();
+			StringBuilder msgError = new StringBuilder();
+			if (!Util.isEmpty(pi.getSummary()))
+				msgError.append(pi.getSummary());
+			if (!Util.isEmpty(production.getProcessMsg()))
+				msgError.append(" - " ).append(production.getProcessMsg());
+			if (msgError.length() == 0) // unlikely to arrive here, but we need to ensure that issues is raised
+				msgError.append("Error completing auto-produce production");
+			return msgError.toString();
 		}
 		return null;
 	}
