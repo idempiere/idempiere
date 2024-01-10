@@ -19,20 +19,19 @@ import java.util.Properties;
 import org.compiere.model.X_M_PromotionReward;
 
 /**
- *
+ * Extended model class for M_PromotionReward
  * @author hengsin
- *
  */
 public class MPromotionReward extends X_M_PromotionReward {
 
 	private static final long serialVersionUID = -1466367082383341103L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_PromotionReward_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_PromotionReward_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPromotionReward(Properties ctx, String M_PromotionReward_UU, String trxName) {
         super(ctx, M_PromotionReward_UU, trxName);
     }

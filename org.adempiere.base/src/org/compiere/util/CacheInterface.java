@@ -17,7 +17,7 @@
 package org.compiere.util;
 
 /**
- *  Adempiere Cache Interface
+ *  iDempiere Cache interaction Interface
  *
  *  @author Jorg Janke
  *  @version $Id: CacheInterface.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $

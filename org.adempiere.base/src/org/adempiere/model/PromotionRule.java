@@ -44,7 +44,6 @@ import org.compiere.util.Env;
 /**
  * Static helper methods for promotion rule (M_Promotion)
  * @author hengsin
- *
  */
 public class PromotionRule {
 

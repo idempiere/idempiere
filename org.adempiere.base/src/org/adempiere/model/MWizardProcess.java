@@ -21,6 +21,9 @@ import java.util.Properties;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WizardProcess;
 
+/**
+ * Extended model class for AD_WizardProcess
+ */
 public class MWizardProcess extends X_AD_WizardProcess {
 	/**
 	 * generated serial id

@@ -30,7 +30,7 @@ import org.osgi.service.event.Event;
 /**
  * Event delegate for PO related event.<br/>
  * To handle a model event, create a subclass of this and uses the model event annotation (BeforeChange, BeforeComplete, etc)
- * to annotate the method for a specific model event topic.
+ * to annotate the event handling method.
  * @author hengsin
  *
  * @param <T>
@@ -49,6 +49,7 @@ public class ModelEventDelegate<T extends PO> extends EventDelegate {
 	}
 
 	/**
+	 * Get PO model for event
 	 * @return PO model (MBPartner, MOrder, etc)
 	 */
 	protected T getModel() {

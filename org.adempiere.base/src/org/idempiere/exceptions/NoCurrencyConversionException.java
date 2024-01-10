@@ -29,14 +29,12 @@ import org.compiere.util.Env;
  */
 public class NoCurrencyConversionException extends AdempiereException
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 1593966161685137709L;
 
 	/**
-	 * 
 	 * @param C_Currency_ID
 	 * @param C_Currency_ID_To
 	 * @param ConvDate
@@ -55,6 +53,15 @@ public class NoCurrencyConversionException extends AdempiereException
 				AD_Client_ID, AD_Org_ID));
 	}
 
+	/**
+	 * @param C_Currency_ID
+	 * @param C_Currency_ID_To
+	 * @param ConvDate
+	 * @param C_ConversionType_ID
+	 * @param AD_Client_ID
+	 * @param AD_Org_ID
+	 * @return message
+	 */
 	private static final String buildMessage(int C_Currency_ID, int C_Currency_ID_To,
 			Timestamp ConvDate,
 			int C_ConversionType_ID,

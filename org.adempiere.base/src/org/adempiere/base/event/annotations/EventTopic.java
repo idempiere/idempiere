@@ -31,13 +31,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Method annotation for OSGi event topic. <br/>
+ * Developer usually use one of the predefined event topic annotation (for e.g {@link AfterLogin}) instead of using this annotation directly. 
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target({ METHOD, ANNOTATION_TYPE })
-/**
- * 
- * @author hengsin
- *
- */
 public @interface EventTopic {
+	/**
+	 * Get OSGi event topic name
+	 * @return event topic name
+	 */
 	String topic();
 }

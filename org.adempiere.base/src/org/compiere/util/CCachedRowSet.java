@@ -56,9 +56,8 @@ import javax.sql.rowset.spi.SyncProviderException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 
-
 /**
- *	Adempiere Cached Row Set Implementation
+ *	iDempiere Cached Row Set Implementation
  *	
  *  @author Jorg Janke
  *  @version $Id: CCachedRowSet.java,v 1.6 2006/07/30 00:54:36 jjanke Exp $
@@ -66,11 +65,12 @@ import org.compiere.db.Database;
 public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRowSet
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -233983261449861555L;
 
 	private CachedRowSet compositeCachedRowSet;
+	
 	/**
 	 * 	Get Cached Row Set.
 	 * 	Required due to Java Sun bug 393865
@@ -190,14 +190,12 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	{
 		return getRowSet(rs, DB.getDatabase());
 	}	//	getRowSet
-
 	
 	/**	Private Locale Marker	*/
 	private static Locale s_loc = null;
-	
-	
-	/**************************************************************************
-	 * 	Adempiere Cached RowSet
+		
+	/**
+	 * 	iDempiere Cached RowSet
 	 *	@throws java.sql.SQLException
 	 */
 	private CCachedRowSet() throws SQLException
@@ -207,8 +205,7 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 		setSyncProvider("com.sun.rowset.providers.RIOptimisticProvider");
 	}	//	CCachedRowSet
 
-	
-	/**************************************************************************
+	/**
 	 * 	Test
 	 *	@param args ignored
 	 */

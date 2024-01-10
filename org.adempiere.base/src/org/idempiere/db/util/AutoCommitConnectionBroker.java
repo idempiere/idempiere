@@ -19,11 +19,12 @@ import java.sql.SQLException;
 import org.compiere.util.DB;
 
 /**
- * This class managed the sharing of non-transactional connection per thread.
+ * This class managed the sharing of non-transaction connection per thread.
  * @author hengsin
  *
  */
 public class AutoCommitConnectionBroker {
+	/** Thread local connection reference */
 	private static ThreadLocal<ConnectionReference> threadLocalConnection = new ThreadLocal<ConnectionReference>() {
         protected ConnectionReference initialValue()
         {
@@ -32,7 +33,7 @@ public class AutoCommitConnectionBroker {
     };
     
     /**
-     * Retrieve non-transactional connection for current thread. 
+     * Retrieve non-transaction connection for current thread.<br/> 
      * If none have been allocated yet, a new one will be created from the connection pool.
      * @return Connection
      */
@@ -52,7 +53,7 @@ public class AutoCommitConnectionBroker {
     }
     
     /**
-     * Release connection. The connection goes back to pool if reference count is zero.
+     * Release connection. The connection goes back to connection pool if reference count is zero.
      * @param conn
      */
     public static void releaseConnection(Connection conn) {
@@ -72,6 +73,7 @@ public class AutoCommitConnectionBroker {
     	}
     }
 
+    /** Value object for connection reference */
 	private static class ConnectionReference {
 		protected Connection connection;
 		protected int referenceCount;

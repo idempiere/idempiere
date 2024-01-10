@@ -21,7 +21,6 @@ import org.compiere.util.DB;
 /**
  * Facade for MShipper, providing accessor method for custom field
  * @author Low Heng Sin
- *
  */
 public class MShipperFacade 
 {
@@ -38,7 +37,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return MShipper
+	 * @return wrap shipper instance
 	 */
 	public MShipper getMShipper()
 	{
@@ -46,7 +45,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return MShippingProcessor
+	 * @return shipping processor instance for wrap shipper
 	 */
 	private MShippingProcessor getShippingProcessor() 
 	{
@@ -64,7 +63,7 @@ public class MShipperFacade
 	}
 		
 	/**
-	 * @return connection key
+	 * @return connection key for shipping processor
 	 */
 	public String getConnectionKey() 
 	{
@@ -72,7 +71,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return connection password
+	 * @return connection password for shipping processor
 	 */
 	public String getConnectionPassword() 
 	{
@@ -80,7 +79,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return connection user id
+	 * @return connection user id for shipping processor
 	 */
 	public String getUserID() 
 	{
@@ -88,7 +87,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return connection host address
+	 * @return connection host address for shipping processor
 	 */
 	public String getHostAddress() 
 	{
@@ -96,7 +95,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return optional connection proxy address
+	 * @return optional connection proxy address for shipping processor
 	 */
 	public String getProxyAddress() 
 	{
@@ -104,7 +103,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return connection port
+	 * @return connection port for shipping processor
 	 */
 	public int getHostPort() 
 	{
@@ -112,7 +111,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return proxy user id
+	 * @return proxy user id for shipping processor
 	 */
 	public String getProxyLogon()
 	{
@@ -120,7 +119,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return proxy password
+	 * @return proxy password for shipping processor
 	 */
 	public String getProxyPassword() 
 	{
@@ -128,7 +127,7 @@ public class MShipperFacade
 	}	
 	
 	/**
-	 * @return proxy port
+	 * @return proxy port for shipping processor
 	 */
 	public int getProxyPort() 
 	{
@@ -136,7 +135,7 @@ public class MShipperFacade
 	}
 	
 	/**
-	 * @return shipping service path
+	 * @return shipping service path for shipping processor
 	 */
 	public String getServicePath() 
 	{
@@ -144,7 +143,7 @@ public class MShipperFacade
 	}	
 	
 	/**
-	 * @return shipping service code
+	 * @return shipping service code 
 	 */
 	public String getShippingServiceCode() 
 	{
@@ -153,7 +152,7 @@ public class MShipperFacade
 	
 	/**
 	 * @param AD_Org_ID 
-	 * @return shipping service account
+	 * @return shipper account
 	 */
 	public String getShipperAccount(int AD_Org_ID) 
 	{

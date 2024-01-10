@@ -17,7 +17,7 @@
 package org.compiere.util;
 
 /**
- *	(Numeric) Key Name Pair
+ *	Key Name Pair (Integer key and string name)
  *
  *  @author     Jorg Janke
  *  @version    $Id: KeyNamePair.java,v 1.2 2006/07/30 00:52:23 jjanke Exp $
@@ -25,14 +25,14 @@ package org.compiere.util;
 public final class KeyNamePair extends NamePair
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6347385376010388473L;
 	
 	public static final KeyNamePair EMPTY = new KeyNamePair(-1, "");
 
 	/**
-	 *	Constructor KeyValue Pair -
+	 *	Constructor KeyNamePair Pair -
 	 *  @param key Key (-1 is considered as null)
 	 *  @param name string representation
 	 */
@@ -55,9 +55,9 @@ public final class KeyNamePair extends NamePair
 	}	//	getKey
 
 	/**
-	 *	Get ID (key as String)
+	 *	Get ID (convert key to string)
 	 *
-	 *  @return String value of key or null if -1
+	 *  @return String value of key or null if key value is -1
 	 */
 	public String getID()
 	{
@@ -66,12 +66,12 @@ public final class KeyNamePair extends NamePair
 		return String.valueOf(m_key);
 	}	//	getID
 
-
 	/**
 	 *	Equals
 	 *  @param obj object
 	 *  @return true if equal
 	 */
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof KeyNamePair)
@@ -87,9 +87,10 @@ public final class KeyNamePair extends NamePair
 	}	//	equals
 
 	/**
-	 *  Return Hashcode of key
-	 *  @return hascode
+	 *  Return key as hash code of object
+	 *  @return key value
 	 */
+	@Override
 	public int hashCode()
 	{
 		return m_key;

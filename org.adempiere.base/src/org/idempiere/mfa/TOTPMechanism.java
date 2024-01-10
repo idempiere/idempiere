@@ -54,6 +54,9 @@ import dev.samstevens.totp.time.NtpTimeProvider;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 
+/**
+ * Time-based one-time password (TOTP) based multi-factor authentication implementation
+ */
 public class TOTPMechanism implements IMFAMechanism {
 
 	/**
@@ -63,12 +66,12 @@ public class TOTPMechanism implements IMFAMechanism {
 	 * @param method
 	 * @param prm         optional - assigned name from the user
 	 * @param trxName
-	 * @return Object[] - first object is the String with the instructions to follow
-	 *                    second object is the registration generated
-	 *                    third message qrcode
-	 *                    fourth qrcode
-	 *                    fifth message secret
-	 *                    sixth secret
+	 * @return Object[] - first object is the String with the instructions to follow<br/>
+	 *                    second object is the registration generated<br/>
+	 *                    third message qrcode<br/>
+	 *                    fourth qrcode<br/>
+	 *                    fifth message secret<br/>
+	 *                    sixth secret<br/>
 	 */
 	@Override
 	public Object[] register(Properties ctx, MMFAMethod method, String prm, String trxName) {

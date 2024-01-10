@@ -33,14 +33,13 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.annotations.EventTopic;
 
+/**
+ * Method annotation for before delete event
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.PO_BEFORE_DELETE)
-/**
- * 
- * @author hengsin
- * 
- */
 public @interface BeforeDelete {
 
 }

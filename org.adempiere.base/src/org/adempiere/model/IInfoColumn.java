@@ -21,7 +21,6 @@ import org.compiere.model.MInfoColumn;
  * @see MInfoProcess
  * @see MInfoRelated
  * @author hieplq
- *
  */
 public interface IInfoColumn {
 	/**
@@ -31,7 +30,7 @@ public interface IInfoColumn {
 	public int getInfoColumnID ();
 	
 	/**
-	 * Object MInfoColumn
+	 * Get MInfoColumn instance
 	 * @return MInfoColumn
 	 */
 	public MInfoColumn getAD_InfoColumn ();

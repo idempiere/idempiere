@@ -25,8 +25,9 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /**
+ * Eclipse application to run processes that must be executed (sequence check, role access update and synchronize terminology)  
+ * after the execution of migration scripts 
  * @author hengsin
- *
  */
 public class PostMigrationApplication implements IApplication {
 

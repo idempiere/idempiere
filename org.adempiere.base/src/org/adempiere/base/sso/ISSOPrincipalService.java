@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.compiere.util.Language;
 
 /**
+ * Single sign on service interface
  * @author Logilite Technologies
  */
 public interface ISSOPrincipalService

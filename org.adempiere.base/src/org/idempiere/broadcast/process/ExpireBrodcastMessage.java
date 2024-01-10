@@ -20,10 +20,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- * 
+ * Process to expire a broadcast message
  * @author Vivek
  * @author Deepak Pansheriya
- *
  */
 @org.adempiere.base.annotation.Process
 public class ExpireBrodcastMessage extends SvrProcess{

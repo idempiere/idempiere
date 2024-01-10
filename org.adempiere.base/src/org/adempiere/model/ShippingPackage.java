@@ -16,9 +16,8 @@ package org.adempiere.model;
 import java.math.BigDecimal;
 
 /**
- * 
+ * Shipping package value object
  * @author Elaine
- *
  */
 public class ShippingPackage 
 {

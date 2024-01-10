@@ -31,9 +31,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * To support the use of multiple {@link Callout} annotation 
  * @author hengsin
- *
  */
 @Retention(RUNTIME)
 @Target(ElementType.TYPE)

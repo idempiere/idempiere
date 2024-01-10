@@ -16,6 +16,7 @@
 package org.adempiere.util;
 
 import java.math.BigDecimal;
+
 /**
  * 	Custom performance measurement interface
  *	
@@ -24,8 +25,8 @@ import java.math.BigDecimal;
 public interface MeasureInterface
 {
 	/**
-	 *	@return measure value
+	 *	@return measured value
 	 */
 	public BigDecimal getValue();
 	
-}	//	ReplenishmentInterface
+}

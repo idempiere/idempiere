@@ -32,9 +32,8 @@ import org.compiere.model.X_AD_WorkflowProcessor;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
- *	Workflow Processor Model
+ *	Extended Workflow Processor Model for AD_WorkflowProcessor
  *	
  *  @author Jorg Janke
  *  @version $Id: MWorkflowProcessor.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -43,14 +42,14 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	implements AdempiereProcessor,AdempiereProcessor2
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6110376502075157361L;
 
 	/**
-	 * 	Get Active
+	 * 	Get active workflow processors
 	 *	@param ctx context
-	 *	@return active processors
+	 *	@return active workflow processors
 	 */
 	public static MWorkflowProcessor[] getActive (Properties ctx)
 	{
@@ -61,19 +60,18 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 		list.toArray (retValue);
 		return retValue;
 	}	//	getActive
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_WorkflowProcessor_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WorkflowProcessor_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWorkflowProcessor(Properties ctx, String AD_WorkflowProcessor_UU, String trxName) {
         super(ctx, AD_WorkflowProcessor_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_WorkflowProcessor_ID id
@@ -97,8 +95,9 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 
 	/**
 	 * 	Get Server ID
-	 *	@return id
+	 *	@return server id
 	 */
+	@Override
 	public String getServerID ()
 	{
 		return "WorkflowProcessor" + get_ID();
@@ -106,8 +105,8 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 
 	/**
 	 * 	Get Date Next Run
-	 *	@param requery requery
-	 *	@return date next run
+	 *	@param requery true to reload from DB
+	 *	@return next run date
 	 */
 	public Timestamp getDateNextRun (boolean requery)
 	{
@@ -117,9 +116,10 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	}	//	getDateNextRun
 
 	/**
-	 * 	Get Logs
-	 *	@return logs
+	 * 	Get process logs
+	 *	@return processor logs
 	 */
+	@Override
 	public AdempiereProcessorLog[] getLogs ()
 	{
 		List<MWorkflowProcessorLog> list = new Query(getCtx(), MWorkflowProcessorLog.Table_Name, "AD_WorkflowProcessor_ID=?", get_TrxName())
@@ -132,8 +132,8 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	}	//	getLogs
 	
 	/**
-	 * 	Delete old Request Log
-	 *	@return number of records
+	 * 	Delete old processor logs
+	 *	@return number of records deleted
 	 */
 	public int deleteLog()
 	{

@@ -25,7 +25,7 @@ import org.compiere.process.StateEngine;
 import org.compiere.process.SvrProcess;
 
 /**
- *	Manage Workflow Process
+ *	Process to Manage Workflow Process
  *	
  *  @author Jorg Janke
  *  @version $Id: WFProcessManage.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -45,6 +45,7 @@ public class WFProcessManage extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -70,6 +71,7 @@ public class WFProcessManage extends SvrProcess
 	 *  @return Message (variables are parsed)
 	 *  @throws Exception if not successful
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		MWFProcess process = new MWFProcess (getCtx(), p_AD_WF_Process_ID, get_TrxName());

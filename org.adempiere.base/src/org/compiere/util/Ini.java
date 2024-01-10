@@ -38,21 +38,20 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.SystemProperties;
 
 /**
- *	Load and Save INI Settings from property file
- *	Initiated in Adempiere.startup
- *	Settings activated in ALogin.getIni
+ *	Load and Save INI Settings from property file (idempiere.properties).<br/>
+ *	Initiated in Adempiere.startup.<br/>
  *
  *  @author     Jorg Janke
  *  @version    $Id$
  *
- * @author Teo Sarca, www.arhipac.ro
+ *  @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1658127 ] Select charset encoding on import
  * 			<li>FR [ 2406123 ] Ini.saveProperties fails if target directory does not exist
  */
 public final class Ini implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8936090051638559660L;
 
@@ -223,7 +222,7 @@ public final class Ini implements Serializable
 
 	/**
 	 *	Save INI parameters to disk
-	 *  @param tryUserHome get user home first
+	 *  @param tryUserHome true to try user home first
 	 */
 	@SuppressWarnings("deprecation")
 	public static void saveProperties (boolean tryUserHome)
@@ -371,7 +370,7 @@ public final class Ini implements Serializable
 	}	//	deleteProperties
 
 	/**
-	 *	Load property and set to default, if not existing
+	 *	Load property and set to default, if not exists
 	 *
 	 * 	@param key   Key
 	 * 	@param defaultValue   Default Value
@@ -400,7 +399,7 @@ public final class Ini implements Serializable
 	 *  </pre>
 	 *  Can be overwritten by -DPropertyFile=myFile allowing multiple
 	 *  configurations / property files.
-	 *  @param tryUserHome get user home first
+	 *  @param tryUserHome true to try user home first, ignore for server
 	 *  @return file name
 	 */
 	public static String getFileName (boolean tryUserHome)
@@ -426,15 +425,13 @@ public final class Ini implements Serializable
 		return base + IDEMPIERE_PROPERTY_FILE;
 	}	//	getFileName
 
-
-	/**************************************************************************
+	/**
 	 *	Set Property
 	 *  @param key   Key
 	 *  @param value Value
 	 */
 	public static void setProperty (String key, String value)
 	{
-	//	log.finer(key + "=" + value);
 		if (s_prop == null)
 			s_prop = new Properties();
 		if (key.equals(P_WARNING) || key.equals(P_WARNING_de))
@@ -490,7 +487,6 @@ public final class Ini implements Serializable
 			return "";
 		//
 		String value = SecureEngine.decrypt(retStr, 0);
-	//	log.finer(key + "=" + value);
 		if (value == null)
 			return "";
 		return value;
@@ -515,7 +511,7 @@ public final class Ini implements Serializable
 		return getProperty (P_CACHE_WINDOW).equals("Y");
 	}	//	isCacheWindow
 
-	/**************************************************************************
+	/**
 	 *  Get Properties
 	 *
 	 * @return Ini properties
@@ -542,9 +538,6 @@ public final class Ini implements Serializable
 		buf.append("]");
 		return buf.toString();
 	}   //  toString
-
-
-	/*************************************************************************/
 
 	/** System environment prefix                                       */
 	public static final String  ENV_PREFIX = "env.";
@@ -604,7 +597,7 @@ public final class Ini implements Serializable
 	}   //  isLoaded
 
 	/**
-	 *  Get Idempiere Home from Environment
+	 *  Get iDempiere Home from Environment
 	 *  @return idempiereHome or null
 	 */
 	public static String getAdempiereHome()
@@ -633,7 +626,7 @@ public final class Ini implements Serializable
 	}   //  getAdempiereHome
 
 	/**
-	 *  Set Idempiere Home
+	 *  Set iDempiere Home
 	 *  @param idempiereHome IDEMPIERE_HOME
 	 */
 	public static void setAdempiereHome (String idempiereHome)
@@ -643,7 +636,7 @@ public final class Ini implements Serializable
 	}   //  setAdempiereHome
 
 	/**
-	 * 	Find Idempiere Home
+	 * 	Find iDempiere Home
 	 *	@return idempiere home or null
 	 */
 	public static String findAdempiereHome()
@@ -651,11 +644,12 @@ public final class Ini implements Serializable
 		return getAdempiereHome();
 	}	//	findAdempiereHome
 
-	/**************************************************************************
+	/**
 	 * 	Get Window Dimension
 	 *	@param AD_Window_ID window no
 	 *	@return dimension or null
 	 */
+	@Deprecated
 	public static Dimension getWindowDimension(int AD_Window_ID)
 	{
 		String key = "WindowDim" + AD_Window_ID;
@@ -682,6 +676,7 @@ public final class Ini implements Serializable
 	 *	@param AD_Window_ID window
 	 *	@param windowDimension dimension - null to remove
 	 */
+	@Deprecated
 	public static void setWindowDimension(int AD_Window_ID, Dimension windowDimension)
 	{
 		String key = "WindowDim" + AD_Window_ID;
@@ -699,6 +694,7 @@ public final class Ini implements Serializable
 	 *	@param AD_Window_ID window id
 	 *	@return location or null
 	 */
+	@Deprecated
 	public static Point getWindowLocation(int AD_Window_ID)
 	{
 		String key = "WindowLoc" + AD_Window_ID;
@@ -725,6 +721,7 @@ public final class Ini implements Serializable
 	 *	@param AD_Window_ID window
 	 *	@param windowLocation location - null to remove
 	 */
+	@Deprecated
 	public static void setWindowLocation(int AD_Window_ID, Point windowLocation)
 	{
 		String key = "WindowLoc" + AD_Window_ID;
@@ -741,6 +738,7 @@ public final class Ini implements Serializable
 	 * 	Get Divider Location
 	 *	@return location
 	 */
+	@Deprecated
 	public static int getDividerLocation()
 	{
 		String key = "Divider";
@@ -761,6 +759,7 @@ public final class Ini implements Serializable
 	 * 	Set Divider Location
 	 *	@param dividerLocation location
 	 */
+	@Deprecated
 	public static void setDividerLocation(int dividerLocation)
 	{
 		String key = "Divider";
@@ -796,11 +795,20 @@ public final class Ini implements Serializable
 		return Charset.defaultCharset();
 	}
 
+	/**
+	 * Get property file name
+	 * @return property file name
+	 */
 	public static String getPropertyFileName()
 	{
 		return s_propertyFileName;
 	}
 
+	/**
+	 * Get value of a secret variable
+	 * @param secretVar secret variable name
+	 * @return value of secret variable
+	 */
 	public static String getVar(String secretVar) {
 		String cmd = getUtilsCmd("getVar");
 		String[] command = new String[] {
@@ -811,6 +819,11 @@ public final class Ini implements Serializable
 		return retValue;
 	}
 
+	/**
+	 * Set value of secret variable
+	 * @param secretVar
+	 * @param secretValue
+	 */
 	public static void setVar(String secretVar, String secretValue) {
 		String cmd = getUtilsCmd("setVar");
 		String[] command = new String[] {
@@ -821,6 +834,11 @@ public final class Ini implements Serializable
 		runCommand(command);
 	}
 
+	/**
+	 * Get absolute path of script
+	 * @param script command script file name
+	 * @return absolute path of script
+	 */
 	private static String getUtilsCmd(String script) {
 		File utilsFolder = new File(getAdempiereHome() + File.separator + "utils");
 		if (! utilsFolder.exists()) {
@@ -841,6 +859,11 @@ public final class Ini implements Serializable
 		return cmd.getAbsolutePath();
 	}
 
+	/**
+	 * Run shell command
+	 * @param command
+	 * @return command output
+	 */
 	public static String runCommand(String[] command) {
 		StringBuilder msg = new StringBuilder();
 		try {

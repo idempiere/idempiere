@@ -33,8 +33,8 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
 /**
+ * Callout for AD_InfoWindow and AD_InfoColumn
  * @author hengsin
- *
  */
 @Callout(tableName = "AD_InfoWindow", columnName = "AD_Table_ID")
 @Callout(tableName = "AD_InfoColumn", columnName = {"AD_Element_ID","AD_Reference_ID"})

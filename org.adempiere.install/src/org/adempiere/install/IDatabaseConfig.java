@@ -16,9 +16,8 @@ package org.adempiere.install;
 import org.compiere.install.ConfigurationData;
 
 /**
- *
+ * Database connection configuration interface
  * @author hengsin
- *
  */
 public interface IDatabaseConfig {
 
@@ -31,7 +30,7 @@ public interface IDatabaseConfig {
 	public String getDatabaseName(String nativeConnectioName);
 
 	/**
-	 * Init Configuration Data
+	 * Initialize Configuration Data
 	 * @param configurationData
 	 */
 	public void init(ConfigurationData configurationData);

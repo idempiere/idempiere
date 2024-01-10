@@ -38,7 +38,7 @@ import java.util.Comparator;
 public final class MSort implements Comparator<Object>, Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 792126435302591368L;
 
@@ -77,14 +77,14 @@ public final class MSort implements Comparator<Object>, Serializable
 		else
 			m_multiplier = -1;
 	}	//	setSortAsc
-
 	
-	/**************************************************************************
-	 *	Compare Data of two entities
+	/**
+	 *	Compare o1 and o2
 	 *  @param o1 object
 	 *  @param o2 object
-	 *  @return comparator
+	 *  @return -1 (less than), 0 (equal) or 1 (greater than). Reverse is return if sort descending.
 	 */
+	@Override
 	public int compare (Object o1, Object o2)
 	{
 		//	Get Objects to compare
@@ -150,10 +150,11 @@ public final class MSort implements Comparator<Object>, Serializable
 	}	//	compare
 
 	/**
-	 *	Equal (based on data, ignores index)
+	 *	Equal (based on {@link #data}, ignores index)
 	 *  @param obj object
 	 *  @return true if equal
 	 */
+	@Override
 	public boolean equals (Object obj)
 	{
 		if (obj instanceof MSort)
@@ -165,6 +166,10 @@ public final class MSort implements Comparator<Object>, Serializable
 		return false;
 	}	//	equals
 	
+	/**
+	 * Not implemented, always return 42
+	 */
+	@Override
 	public int hashCode()
 	{
 	  assert false : "hashCode not designed";
@@ -175,6 +180,7 @@ public final class MSort implements Comparator<Object>, Serializable
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MSort[");
