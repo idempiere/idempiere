@@ -20,5 +20,7 @@
  * MA 02110-1301, USA.                                                 *
  **********************************************************************/
 
-@java.lang.Deprecated
+/**
+ * Deprecated
+ */
 package com.akunagroup.uk.postcode;
