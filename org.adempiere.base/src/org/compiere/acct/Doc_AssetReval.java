@@ -32,7 +32,6 @@ import org.compiere.model.MAssetReval;
 import org.compiere.model.MDocType;
 import org.compiere.util.Env;
 
-
 /**
  * Posting for {@link MAssetReval} document. DOCBASETYPE_GLJournal.
  * @author Anca Bradau www.arhipac.ro

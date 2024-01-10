@@ -17,9 +17,8 @@ import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 /**
- * 
+ * Callable to reset distributed cache nodes
  * @author hengsin
- *
  */
 public class ResetCacheCallable implements Callable<Integer>, Serializable 
 {

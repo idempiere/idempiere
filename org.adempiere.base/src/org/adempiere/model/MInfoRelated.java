@@ -23,6 +23,9 @@ import org.compiere.model.X_AD_InfoRelated;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
+/**
+ * Extended model class for AD_InfoRelated
+ */
 public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, ImmutablePOSupport {	
 	/**
 	 * generated serial id
@@ -30,11 +33,11 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, Immut
 	private static final long serialVersionUID = 4000783886138460291L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_InfoRelated_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_InfoRelated_UU  UUID key
+     * @param trxName Transaction
+     */
     public MInfoRelated(Properties ctx, String AD_InfoRelated_UU, String trxName) {
         super(ctx, AD_InfoRelated_UU, trxName);
     }

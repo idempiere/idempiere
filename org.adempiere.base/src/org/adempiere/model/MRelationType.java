@@ -44,7 +44,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Formal definition for a set of data record pairs
+ * Extended model class for AD_RelationType.<br/>
+ * Formal definition for a set of data record pairs.
  * 
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
@@ -62,7 +63,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * <b>Warning:</b> Doesn't support POs with more or less than one key
 	 * column.
 	 */
-	final static String SQL =
+	protected final static String SQL =
 	    "  SELECT "
 			+ "    rt.AD_RelationType_ID"
 			+ ",   rt.Name"
@@ -89,9 +90,9 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			+ "    AND tab.AD_Key=?"
 			+ "  ORDER BY rt.Name";
 
-	final static String SQL_WINDOW_NAME = "SELECT Name FROM AD_Window WHERE AD_WINDOW_ID=?";
+	protected final static String SQL_WINDOW_NAME = "SELECT Name FROM AD_Window WHERE AD_WINDOW_ID=?";
 
-	final static String SQL_WINDOW_NAME_TRL = "SELECT Name FROM AD_Window_Trl WHERE AD_WINDOW_ID=? AND AD_LANGUAGE=?";
+	protected final static String SQL_WINDOW_NAME_TRL = "SELECT Name FROM AD_Window_Trl WHERE AD_WINDOW_ID=? AND AD_LANGUAGE=?";
 
 	/**
 	 * generated serial id
@@ -101,11 +102,11 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	public int destinationRefId;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_RelationType_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_RelationType_UU  UUID key
+     * @param trxName Transaction
+     */
     public MRelationType(Properties ctx, String AD_RelationType_UU, String trxName) {
         super(ctx, AD_RelationType_UU, trxName);
     }
@@ -139,7 +140,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	}
 
 	/**
-	 * Returns the types that define a relation which contains the given PO.
+	 * Returns the types that define a relation which contains the given PO.<br/>
 	 * Explicit types are returned even if they don't actually contain the given
 	 * PO.
 	 * 

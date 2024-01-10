@@ -43,7 +43,7 @@ import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Workflow Node Model
+ *	Extended Workflow Node Model for AD_WF_Node
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MWFNode.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -56,7 +56,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3328770995394833132L;
 
@@ -108,14 +108,13 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	
 	/**	Cache						*/
 	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_WF_Node_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_Node_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWFNode(Properties ctx, String AD_WF_Node_UU, String trxName) {
         super(ctx, AD_WF_Node_UU, trxName);
 		if (Util.isEmpty(AD_WF_Node_UU))
@@ -126,7 +125,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		}
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor - save to cache
 	 *	@param ctx context
 	 *	@param AD_WF_Node_ID id
@@ -194,7 +193,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}	//	MWFNode
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MWFNode(MWFNode copy) 
@@ -203,7 +202,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -213,7 +212,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -260,7 +259,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}	//	setClientOrg
 
 	/**
-	 * 	Load Next
+	 * 	Load Next Nodes into {@link #m_next}
 	 */
 	private void loadNext()
 	{
@@ -328,7 +327,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}	//	getNextNodeCount
 
 	/**
-	 * 	Get the transitions
+	 * 	Get next nodes for transitions
 	 * 	@param AD_Client_ID for client
 	 * 	@return array of next nodes
 	 */
@@ -346,9 +345,8 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		list.toArray(retValue);
 		return retValue;
 	}	//	getNextNodes
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Name
 	 * 	@param translated translated
 	 * 	@return Name
@@ -415,7 +413,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 
 	/**
 	 * 	Get Action Info
-	 *	@return info
+	 *	@return action info text
 	 */
 	public String getActionInfo()
 	{
@@ -447,13 +445,13 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 			return "Sleep:WaitTime=" + getWaitTime();
 		return "??";
 	}	//	getActionInfo
-	
-	
+		
 	/**
 	 * 	Get Attribute Name
 	 *	@see org.compiere.model.X_AD_WF_Node#getAttributeName()
 	 *	@return Attribute Name
 	 */
+	@Override
 	public String getAttributeName ()
 	{
 		if (getAD_Column_ID() == 0)
@@ -465,11 +463,10 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		setAttributeName(getColumn().getColumnName());
 		return super.getAttributeName ();
 	}	//	getAttributeName
-	
-	
+		
 	/**
 	 * 	Get Column
-	 *	@return column if valid
+	 *	@return column or null
 	 */
 	public MColumn getColumn()
 	{
@@ -519,8 +516,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 			return true;
 		return false;
 	}	//	isUserManual
-	
-	
+		
 	/**
 	 * 	Get Duration in ms
 	 *	@return duration in ms
@@ -550,8 +546,8 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}	//	getLimitMS
 	
 	/**
-	 * 	Get Duration CalendarField
-	 *	@return Calendar.MINUTE, etc.
+	 * 	Get Duration Calendar Field
+	 *	@return Calendar Field (Calendar.MINUTE, etc.)
 	 */
 	public int getDurationCalendarField()
 	{
@@ -561,7 +557,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	/**
 	 * 	Calculate Dynamic Priority
 	 * 	@param seconds second after created
-	 *	@return dyn prio
+	 *	@return Dynamic Priority
 	 */
 	public int calculateDynamicPriority (int seconds)
 	{
@@ -586,9 +582,9 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		return change.intValue();
 	}	//	calculateDynamicPriority
 	
-	/**************************************************************************
-	 * 	Get Parameters
-	 *	@return array of parameters
+	/**
+	 * 	Get Node Parameters
+	 *	@return array of node parameters
 	 */
 	public MWFNodePara[] getParameters()
 	{
@@ -621,6 +617,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MWFNode[");
@@ -745,12 +742,6 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 				return false;
 			}
 		}
-//		else if (action.equals(ACTION_UserWorkbench)) 
-//		{
-//		&& getAD_Workbench_ID() == 0)
-//			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Workbench_ID"));
-//			return false;
-//		}
 		
 		return true;
 	}	//	beforeSave
@@ -783,7 +774,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	/**
 	 * Check if the workflow node is valid for given date
 	 * @param date
-	 * @return true if valid
+	 * @return true if node is valid for the given date
 	 */
 	public boolean isValidFromTo(Timestamp date)
 	{
@@ -814,4 +805,4 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		return this;
 	}
 
-}	//	M_WFNext
+}

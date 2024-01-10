@@ -27,9 +27,8 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * Contain details of process in info window, 
- * include ad_process_id, image name and name.
+ * including ad_process_id, image name and name.
  * @author hieplq
- *
  */
 public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, ImmutablePOSupport {
 	
@@ -39,11 +38,11 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, Immut
 	private static final long serialVersionUID = 7833442401205258074L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_InfoProcess_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_InfoProcess_UU  UUID key
+     * @param trxName Transaction
+     */
     public MInfoProcess(Properties ctx, String AD_InfoProcess_UU, String trxName) {
         super(ctx, AD_InfoProcess_UU, trxName);
     }

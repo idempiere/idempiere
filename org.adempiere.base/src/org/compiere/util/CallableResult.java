@@ -2,6 +2,7 @@ package org.compiere.util;
 
 import java.util.Map;
 
+@Deprecated(forRemoval = true, since = "11")
 public class CallableResult extends ExecuteResult {
 	
 	/**

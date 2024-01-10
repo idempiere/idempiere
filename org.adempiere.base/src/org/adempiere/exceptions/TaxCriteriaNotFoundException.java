@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.adempiere.exceptions;
 
-
 /**
  * Throw when a tax criteria was not found
  * @author Teo Sarca, www.arhipac.ro

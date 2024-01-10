@@ -32,9 +32,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- *  Bank Transfer. Generate two Payments entry
- *  
- *  For Bank Transfer From Bank Account "A" 
+ *  Process for Bank Transfer. <br/> 
+ *  Generate two Payments entry for Bank Transfer From Bank Account "A". 
  *                 
  *	@author victor.perez@e-evoltuion.com
  *  @author Carlos Ruiz - globalqss - bxservice - add create bank transfer document
@@ -62,6 +61,7 @@ public class BankTransfer extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -104,6 +104,7 @@ public class BankTransfer extends SvrProcess
 	 *  @return Message (translated text)
 	 *  @throws Exception if not successful
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("From Bank="+p_From_C_BankAccount_ID+" - To Bank="+p_To_C_BankAccount_ID
@@ -150,8 +151,7 @@ public class BankTransfer extends SvrProcess
 	
 
 	/**
-	 * Generate BankTransfer()
-	 *
+	 * Create and Complete 2 payment document for bank transfer
 	 */
 	private void generateBankTransfer()
 	{
@@ -213,9 +213,8 @@ public class BankTransfer extends SvrProcess
 	}  //  generateBankTransfer
 
 	/**
-	 * Generate Bank Transfer Document
+	 * Create and Complete Bank Transfer Document ({@link MBankTransfer})
 	 * @throws Exception 
-	 *
 	 */
 	private void generateBankTransferDoc() throws Exception {
 		MBankTransfer bt = new MBankTransfer(getCtx(), 0, get_TrxName());

@@ -29,9 +29,8 @@ import org.compiere.process.ProcessCall;
 import org.osgi.framework.BundleContext;
 
 /**
- * 
+ * Mapped process factory interface
  * @author hengsin
- *
  */
 public interface IMappedProcessFactory extends IMappedByNameFactory<ProcessCall> {
 

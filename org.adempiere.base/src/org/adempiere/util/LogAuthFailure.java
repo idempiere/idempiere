@@ -31,7 +31,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 
 /**
- * Log authentication failure
+ * Log authentication failure to AuthFailure.log text file.
  */
 public class LogAuthFailure  {
 

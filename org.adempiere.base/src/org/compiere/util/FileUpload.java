@@ -41,6 +41,7 @@ import org.apache.ecs.xhtml.label;
  *  @author Jorg Janke
  *  @version $Id: FileUpload.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class FileUpload
 {
 	/**

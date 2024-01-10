@@ -24,7 +24,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
 /**
- *	Copy Import Format (lines)
+ *	Process to Copy Import Format (lines)
  *	
  *  @author Jorg Janke
  *  @version $Id: CopyImportFormat.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $

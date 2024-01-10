@@ -28,9 +28,8 @@ package org.adempiere.base.upload;
 import java.io.InputStream;
 
 /**
- * representation of media
+ * Representation of upload media
  * @author hengsin
- *
  */
 public class UploadMedia {
 
@@ -54,6 +53,7 @@ public class UploadMedia {
 	}
 
 	/**
+	 * Get content type of media
 	 * @return content type of media
 	 */
 	public String getContentType() {
@@ -61,6 +61,7 @@ public class UploadMedia {
 	}
 
 	/**
+	 * Get media name
 	 * @return name/label of media
 	 */
 	public String getName() {
@@ -68,6 +69,7 @@ public class UploadMedia {
 	}
 
 	/**
+	 * Get input stream for media content
 	 * @return {@link InputStream} for media content
 	 */
 	public InputStream getInputStream() {
@@ -75,6 +77,7 @@ public class UploadMedia {
 	}
 
 	/**
+	 * Get length of media content
 	 * @return length of media content
 	 */
 	public long getContentLength() {

@@ -57,9 +57,8 @@ import org.compiere.util.Util;
 /**
  *  Generate interface class for model 
  *	@author Trifon Trifonov
- *	@version $Id$
  *
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1781629 ] Don't use Env.NL in model class/interface generators
  * 				<li>FR [ 1781630 ] Generated class/interfaces have a lot of unused imports
  * 				<li>BF [ 1781632 ] Generated class/interfaces should be UTF-8
@@ -73,10 +72,10 @@ import org.compiere.util.Util;
  * 				<li>--
  * 				<li>FR [ 2848449 ] ModelClassGenerator: Implement model getters
  *					https://sourceforge.net/p/adempiere/feature-requests/812/
- * @author Teo Sarca, teo.sarca@gmail.com
+ *  @author Teo Sarca, teo.sarca@gmail.com
  * 				<li>FR [ 3020635 ] Model Generator should use FQ class names
  * 					https://sourceforge.net/p/adempiere/feature-requests/987/
- * @author Victor Perez, e-Evolution
+ *  @author Victor Perez, e-Evolution
  * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
  */
 public class ModelInterfaceGenerator

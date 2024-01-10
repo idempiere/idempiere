@@ -87,7 +87,7 @@ import org.compiere.model.MLanguage;
 import org.compiere.model.MTable;
 
 /**
- *	System Display Types.
+ *	System Display/Data Types.
  *  <pre>
  *	SELECT AD_Reference_ID, Name FROM AD_Reference WHERE ValidationType = 'D'
  *  </pre>

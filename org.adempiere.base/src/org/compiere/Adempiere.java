@@ -54,11 +54,9 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 /**
- *  Adempiere Control Class
+ *  Static methods for iDempiere startup, system info and global thread pool.
  *
  *  @author Jorg Janke
- *  @version $Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $
- *
  */
 public final class Adempiere
 {

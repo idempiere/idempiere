@@ -23,27 +23,25 @@ import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Workflow_Access;
 import org.compiere.util.Util;
 
-
 /**
- *	Worflow Access Model
+ *	Extended Workflow Access Model for AD_Workflow_Access
  *	
  *  @author Jorg Janke
  *  @version $Id: MWorkflowAccess.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MWorkflowAccess extends X_AD_Workflow_Access
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2598861248782340850L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Workflow_Access_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Workflow_Access_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWorkflowAccess(Properties ctx, String AD_Workflow_Access_UU, String trxName) {
         super(ctx, AD_Workflow_Access_UU, trxName);
 		if (Util.isEmpty(AD_Workflow_Access_UU))

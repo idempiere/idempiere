@@ -18,13 +18,13 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
- * This class help for parse order configuration
- * example problem in IDEMPIERE-2296. some people wish priority of "default value" is higher than "user value preference"
- * some other wish reverse.
- * it's better for define 1 is representative for "default value" and 2 is representative for "user value preference"
- * in configuration just set 12 or 21 for order configuration.
- * 
- * this class will help by provide method same in Iterable, it's also provider validate for duplicate value as 221 or 211
+ * This class help to parse ordered configuration.<br/>
+ * For example, problem in IDEMPIERE-2296. Some wish priority of "default value" is higher than "user value preference"
+ * and some other wish the reverse of that.<br/>
+ * It is better to define 1 is representative for "default value" and 2 is representative for "user value preference",
+ * and in configuration just set 12 or 21 for an ordered configuration.
+ * <p>
+ * This class will help by providing method similar to Iterable and it also provide validation for duplicate value such as 221 or 211.
  * @author hieplq
  *
  */
@@ -33,13 +33,14 @@ public class ParseSeq implements Iterable<Character> {
 	public static String MSG_NOT_NULL = "configuration must is a not null or non empty string";
 	public static String MSG_ONLY_NUNBER = "your value must contain only number character";
 	public static String MSG_CONTAIN_DUP = "your value must contain non duplicate character";
+	
 	/**
-	 * init a Order configuration by parse configuration value, 
-	 * configuration can contain duplicate value or contain only number
-	 * when detect wrong configuration value, a {@link IllegalArgumentException} will throw
+	 * Init an Ordered configuration by parsing configuration value.<br/> 
+	 * Configuration can contain duplicate value or contain only number.<br/>
+	 * When detected a wrong configuration value, will throw {@link IllegalArgumentException}.
 	 * 
-	 * @param orderConfiguration configuration value as "5ry76t"
-	 * @param allowDupCharacter if false configuration value as "1245648" is wrong value by "4" is duplicate
+	 * @param orderConfiguration configuration value such as "5ry76t"
+	 * @param allowDupCharacter if false configuration value as "1245648" is invalid since "4" is duplicate
 	 * @param onlyNumber configuration value contain only number
 	 */
 	private ParseSeq (String orderConfiguration, boolean allowDupCharacter, boolean onlyNumber){

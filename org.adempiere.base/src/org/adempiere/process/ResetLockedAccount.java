@@ -32,7 +32,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Unlock locked user account
+ * Process to unlock locked user account.
  */
 @org.adempiere.base.annotation.Process
 public class ResetLockedAccount extends SvrProcess {

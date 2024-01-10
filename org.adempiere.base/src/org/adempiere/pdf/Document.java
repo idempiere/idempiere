@@ -33,9 +33,8 @@ import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- * Generate PDF document using iText (openpdf)
+ * Create PDF document from {@link Pageable} using iText (openpdf)
  * @author Low Heng Sin
- *
  */
 public class Document {
 

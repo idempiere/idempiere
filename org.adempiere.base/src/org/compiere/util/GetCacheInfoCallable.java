@@ -30,12 +30,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- * 
+ * Callable to collect cache info from distributed cache nodes
  * @author hengsin
- *
  */
 public class GetCacheInfoCallable implements Callable<List<CacheInfo>>, Serializable {
-
 	
 	/**
 	 * generated serial id

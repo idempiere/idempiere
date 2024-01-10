@@ -28,7 +28,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Online validate address process
+ * Process to perform online validation of an address (M_Location)
  * @author Elaine
  *
  */

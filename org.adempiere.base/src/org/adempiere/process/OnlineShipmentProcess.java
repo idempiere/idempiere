@@ -24,7 +24,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
 /**
- * 
+ * Process to perform online shipment processing for {@link MPackage}
  * @author Low Heng Sin
  *
  */

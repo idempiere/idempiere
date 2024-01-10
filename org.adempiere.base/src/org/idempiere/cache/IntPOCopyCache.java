@@ -35,7 +35,7 @@ import org.compiere.model.PO;
 public class IntPOCopyCache<K, V extends PO> extends POCopyCache<Integer, V> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 606664825366527176L;
 

@@ -41,8 +41,8 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /**
+ * Eclipse application that would launch the org.adempiere.pipo2.PackInFolder process to import 2pack archives inside a predefine folder. 
  * @author Carlos Ruiz (globalqss)
- *
  */
 public class PackInFolderApplication implements IApplication {
 

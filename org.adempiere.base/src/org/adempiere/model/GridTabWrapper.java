@@ -28,7 +28,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- * Wrap GridTab to ADempiere Model Interface (i.e. generated interfaces).<br/>
+ * Wrap GridTab to iDempiere Model Interface (i.e. generated interfaces).<br/>
  * Usage example:
  * <pre>
  * I_A_Asset_Disposed bean = GridTabWrapper.create(mTab, I_A_Asset_Disposed.class); 
@@ -44,10 +44,10 @@ public class GridTabWrapper implements InvocationHandler
 	
 	/**
 	 * Create wrapper of type cl for gridTab.
-	 * @param <T>
+	 * @param <T> iDempiere Model Interface (i.e. generated I_* interfaces) type
 	 * @param gridTab
-	 * @param cl
-	 * @return wrapper instance for gridTab
+	 * @param cl iDempiere Model Interface (i.e. generated I_* interfaces) class
+	 * @return wrapped instance for gridTab
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T create(GridTab gridTab, Class<T> cl)
@@ -68,7 +68,7 @@ public class GridTabWrapper implements InvocationHandler
 		this.m_gridTab = gridTab;
 	}
 	
-//	@Override
+	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 	throws Throwable
 	{
@@ -133,7 +133,8 @@ public class GridTabWrapper implements InvocationHandler
 	}
 	
 	/**
-	 * @return GridTab
+	 * Get wrap GridTab instance
+	 * @return Wrap grid tab instance
 	 */
 	public GridTab getGridTab()
 	{
@@ -151,12 +152,12 @@ public class GridTabWrapper implements InvocationHandler
 	}
 	
 	/**
-	 * Load object that is referenced by given property.
+	 * Load object that is referenced by given property.<br/>
 	 * Example: getReferencedObject("M_Product", method) should load the M_Product record
 	 * with ID given by M_Product_ID property name;
 	 * @param propertyName
 	 * @param method
-	 * @return
+	 * @return referenced instance
 	 */
 	private final Object getReferencedObject(String propertyName, Method method)
 	{

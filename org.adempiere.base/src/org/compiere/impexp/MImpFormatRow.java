@@ -23,7 +23,7 @@ import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.util.Util;
 
 /**
- *	Import Format Row Model 
+ *	Extended Import Format Row Model for AD_ImpFormat_Row
  *	
  *  @author Jorg Janke
  *  @version $Id: MImpFormatRow.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
