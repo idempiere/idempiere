@@ -38,16 +38,14 @@ import org.compiere.model.MSysConfig;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate to perform validation for insert and update of MLocation record.
  * @author hengsin
- *
  */
 @EventTopicDelegate
 @ModelEventTopic(modelClass = MLocation.class)
 public class AddressValidationEventDelegate extends ModelEventDelegate<MLocation> {
 
 	/**
-	 * 
 	 * @param po
 	 * @param event
 	 */

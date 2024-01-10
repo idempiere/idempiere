@@ -18,6 +18,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation for iDempiere process
+ */
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface Process {

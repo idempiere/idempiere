@@ -24,6 +24,7 @@ import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.util.CCache;
 
 /**
+ * Utility methods for single sign on support.
  * @author Logilite Technologies
  */
 public class SSOUtils
@@ -52,6 +53,10 @@ public class SSOUtils
 		ignoreResourceURL.add("res");
 	}
 
+	/**
+	 * Get single sign on service
+	 * @return single sign on service
+	 */
 	public static ISSOPrincipalService getSSOPrincipalService()
 	{
 		ISSOPrincipalService principal = null;
@@ -91,9 +96,9 @@ public class SSOUtils
 	}
 
 	/**
-	 * Create Error page for error message
+	 * Create HTML page for error message
 	 * @param error
-	 * @return
+	 * @return HTML error page
 	 */
 	public static String getCreateErrorResponce(String error)
 	{
@@ -118,10 +123,10 @@ public class SSOUtils
 	}
 
 	/**
-	 * if Resource request then it do not redirected to identity provider for authentication
+	 * If request is a resource request, do not redirected to identity provider for authentication
 	 * @param request
 	 * @param isWebUI
-	 * @return
+	 * @return true if request is a resource request
 	 */
 	public static boolean isResourceRequest(HttpServletRequest request, boolean isWebUI)
 	{

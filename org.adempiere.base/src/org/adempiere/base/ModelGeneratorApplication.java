@@ -29,6 +29,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 
 /**
+ * Eclipse application to launch the swing based model generation dialog.
  * @author hengsin
  * @author tbayen - command line start
  *

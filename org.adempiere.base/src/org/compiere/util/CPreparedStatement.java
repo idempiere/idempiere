@@ -18,10 +18,13 @@ package org.compiere.util;
 
 import java.sql.PreparedStatement;
 
+import org.compiere.db.ProxyFactory;
+
 /**
- * Interface to wrap PreparedStatement
+ * Interface to wrap PreparedStatement.<br/>
+ * This is use by {@link ProxyFactory} and developer shouldn't use this class directly.
  * @author Low Heng Sin
- *
+ * @see ProxyFactory
  */
 public interface CPreparedStatement extends CStatement, PreparedStatement
 {

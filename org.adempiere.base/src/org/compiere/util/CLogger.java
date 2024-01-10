@@ -19,9 +19,8 @@ package org.compiere.util;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-
 /**
- *	idempiere Logger
+ *	iDempiere Logger
  *
  *  @author Jorg Janke
  *  @version $Id: CLogger.java,v 1.3 2006/08/09 16:38:47 jjanke Exp $
@@ -32,7 +31,6 @@ public class CLogger extends Logger
 	private static final String LAST_WARNING = "org.compiere.util.CLogger.lastWarning";
 	private static final String LAST_ERROR = "org.compiere.util.CLogger.lastError";
 	private static final String LAST_EXCEPTION = "org.compiere.util.CLogger.lastException";
-
 
 	/**
 	 * 	Get Logger
@@ -52,7 +50,6 @@ public class CLogger extends Logger
 	 */
     public static synchronized CLogger getCLogger (String className, boolean usePackageLevel)
     {
-   	//	CLogMgt.initialize();
     	LogManager manager = LogManager.getLogManager();
     	if (className == null || className.trim().length() == 0)
     		className = "";
@@ -99,8 +96,7 @@ public class CLogger extends Logger
     }	//	getLogger
 
     /**
-     * 	Get default idempiere Logger.
-     * 	Need to be used in serialized objects
+     * 	Get default iDempiere Logger.
      *	@return logger
      */
     public static CLogger get()
@@ -113,8 +109,7 @@ public class CLogger extends Logger
     /**	Default Logger			*/
     private volatile static CLogger	s_logger = null;
 
-
-	/**************************************************************************
+	/**
 	 * 	Standard constructor
 	 *	@param name logger name
 	 *	@param resourceBundleName optional resource bundle (ignored)
@@ -124,9 +119,6 @@ public class CLogger extends Logger
 		super (name, resourceBundleName);
 	//	setLevel(Level.ALL);
 	}	//	CLogger
-
-
-	/*************************************************************************/
 
 	/**
 	 *  Set and issue Error and save as ValueNamePair
@@ -140,7 +132,7 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Set and issue Error and save as ValueNamePair
+	 *  Set and issue Error and save into context as ValueNamePair (LAST_EXCEPTION)
 	 *  @param AD_Message message key
 	 *  @param ex exception
 	 *  @return true (to avoid removal of method)
@@ -165,7 +157,9 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Set and issue Error and save as ValueNamePair
+	 *  Save exception as environment context's last exception. <br/>
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error.<br/>
+	 *  Issue/publish AD_Message and message as severe log message
 	 *  @param AD_Message message key
 	 *  @param message
 	 *  @param ex exception
@@ -178,7 +172,9 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Set and issue (if specified) Error and save as ValueNamePair
+	 *  Save exception as environment context's last exception. <br/>
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error.<br/>
+	 *  Issue/publish AD_Message and message as severe log message if issueError is true.  
 	 *  @param AD_Message message key
 	 *  @param message
 	 *  @param ex exception
@@ -192,7 +188,8 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Set Error and save as ValueNamePair
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error.<br/>
+	 *  Issue/publish AD_Message and message as severe log message if issueError is true.
 	 *  @param AD_Message message key
 	 *  @param message clear text message
 	 *  @param issueError print error message (default true)
@@ -209,7 +206,7 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Get Error from Stack
+	 *  Get and remove last error from environment context
 	 *  @return AD_Message as Value and Message as String
 	 */
 	public static ValueNamePair retrieveError()
@@ -219,7 +216,7 @@ public class CLogger extends Logger
 	}   //  retrieveError
 
 	/**
-	 *  Peek Error from Stack
+	 *  Get last error from environment context
 	 *  @return AD_Message as Value and Message as String
 	 */
 	public static ValueNamePair peekError()
@@ -229,9 +226,9 @@ public class CLogger extends Logger
 	}   //  peekError
 	
 	/**
-	 * Get Error message from stack
+	 * Get and remove last error message from environment context.
 	 * @param defaultMsg default message (used when there are no errors on stack)
-	 * @return error message, or defaultMsg if there is not error message saved
+	 * @return error message, or defaultMsg if there is no error message saved
 	 * @see #retrieveError()
 	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
@@ -243,7 +240,7 @@ public class CLogger extends Logger
 	}
 
 	/**
-	 *  Get Error from Stack
+	 *  Get and remove last exception from environment context.
 	 *  @return last exception
 	 */
 	public static Exception retrieveException()
@@ -253,7 +250,7 @@ public class CLogger extends Logger
 	}   //  retrieveError
 
 	/**
-	 *  Peek Exception from Stack
+	 *  Get last exception from environment context.
 	 *  @return last exception
 	 */
 	public static Exception peekException()
@@ -263,7 +260,8 @@ public class CLogger extends Logger
 	}   //  peekException
 	
 	/**
-	 *  Save Warning as ValueNamePair.
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last warning.<br/>
+	 *  Issue/publish AD_Message and message as warning log message
 	 *  @param AD_Message message key
 	 *  @param message clear text message
 	 *  @return true
@@ -279,7 +277,7 @@ public class CLogger extends Logger
 	}   //  saveWarning
 
 	/**
-	 * Get Warning message from stack
+	 * Get and remove last Warning message from environment context.
 	 * @param defaultMsg default message (used when there are no warnings on stack)
 	 * @return error message, or defaultMsg if there is not error message saved
 	 * @see #retrieveError()
@@ -292,7 +290,7 @@ public class CLogger extends Logger
 	}
 
 	/**
-	 *  Get Warning from Stack
+	 *  Get and remove last Warning from environment context
 	 *  @return AD_Message as Value and Message as String
 	 */
 	public static ValueNamePair retrieveWarning()
@@ -302,21 +300,21 @@ public class CLogger extends Logger
 	}   //  retrieveWarning
 
 	/**
-	 *  Save Info as ValueNamePair
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last info.<br/>
+	 *  Issue/publish AD_Message and message as info log message
 	 *  @param AD_Message message key
 	 *  @param message clear text message
 	 *  @return true
 	 */
 	public boolean saveInfo (String AD_Message, String message)
 	{
-//		s_lastInfo = new ValueNamePair (AD_Message, message);
 		ValueNamePair lastInfo = new ValueNamePair (AD_Message, message);
 		Env.getCtx().put(LAST_INFO, lastInfo);
 		return true;
 	}   //  saveInfo
 
 	/**
-	 *  Get Info from Stack
+	 *  Get and remove last Info from environment context
 	 *  @return AD_Message as Value and Message as String
 	 */
 	public static ValueNamePair retrieveInfo()
@@ -326,7 +324,7 @@ public class CLogger extends Logger
 	}   //  retrieveInfo
 
 	/**
-	 * 	Reset Saved Messages/Errors/Info
+	 * 	Remove last Saved Messages/Errors/Info from environment context
 	 */
 	public static void resetLast()
 	{
@@ -362,37 +360,5 @@ public class CLogger extends Logger
 			.append (",Level=").append (getLevel()).append ("]");
 		return sb.toString ();
 	}	 //	toString
-
-	/**
-	 * 	Write Object - Serialization
-	 *	@param out out
-	 *	@throws IOException
-	 *
-	private void writeObject (ObjectOutputStream out) throws IOException
-	{
-		out.writeObject(getName());
-		System.out.println("====writeObject:" + getName());
-	}	//	writeObject
-
-	private String m_className = null;
-
-	private void readObject (ObjectInputStream in) throws IOException
-	{
-		try
-		{
-			m_className = (String)in.readObject();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		System.out.println("====readObject:" + m_className);
-	}
-
-	protected Object readResolve() throws ObjectStreamException
-	{
-		System.out.println("====readResolve:" + m_className);
-		return getLogger(m_className);
-	}
-	/** **/
+	
 }	//	CLogger

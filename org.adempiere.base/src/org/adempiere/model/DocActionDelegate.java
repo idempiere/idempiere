@@ -50,7 +50,7 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
- * Helper class for implementation of {@link DocAction} interface.
+ * Helper class to simplify the implementation of {@link DocAction} interface.
  * @see {@link MProjectIssue} for example usage.
  * @author hengsin
  */

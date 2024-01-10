@@ -30,7 +30,7 @@ public class HtmlCode extends MultiPartElement
 	implements Printable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4231482888802431943L;
 

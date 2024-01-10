@@ -31,6 +31,9 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_Tab_Customization;
 import org.compiere.util.Util;
 
+/**
+ * Extended model class for AD_Tab_Customization
+ */
 public class MTabCustomization extends X_AD_Tab_Customization {
     /**
 	 * generated serial id

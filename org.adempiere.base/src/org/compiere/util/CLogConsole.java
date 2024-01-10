@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
- * 	Adempiere Console Logger
+ * 	Handler that publish log record to the system standard output stream
  *	@author Jorg Janke
  *	@version $Id: CLogConsole.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
  */

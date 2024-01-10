@@ -27,9 +27,8 @@ import java.util.logging.LogRecord;
 
 import org.compiere.model.SystemProperties;
 
-
 /**
- *	idempiere Log Formatter
+ *	iDempiere Log Formatter
  *	
  *  @author Jorg Janke
  *  @version $Id: CLogFormatter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
@@ -52,7 +51,7 @@ public class CLogFormatter extends Formatter
     /**	New Line				*/
     public static String	NL = System.getProperty("line.separator");
 	
-	/**************************************************************************
+	/**
 	 * 	CLogFormatter
 	 */
 	private CLogFormatter()
@@ -197,7 +196,7 @@ public class CLogFormatter extends Formatter
     	m_shortFormat = shortFormat;
     }	//	setFormat
     
-    /**************************************************************************
+    /**
      * 	Get Class Method from Log Record
      *	@param record record
      *	@return class.method

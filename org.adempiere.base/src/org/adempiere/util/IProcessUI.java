@@ -18,9 +18,13 @@ import java.util.List;
 
 import org.compiere.model.MLookup;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.SvrProcess;
 
 /**
- * Interface to provide server process access to UI
+ * Interface to provide server process access to UI.<br/>
+ * iDempiere process usually extends {@link SvrProcess} and uses the protected processUI reference.<br/>
+ * Process must perform null check when using the SvrProcess.processUI field since it will be null when a process is not launch
+ * from the client end (for e.g from scheduler).  
  * @author hengsin
  *
  */

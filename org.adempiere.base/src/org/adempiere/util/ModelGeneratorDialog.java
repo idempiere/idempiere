@@ -35,9 +35,8 @@ import javax.swing.JTextField;
 import org.compiere.Adempiere;
 
 /**
- *
+ * Swing dialog for generation of model class and interface
  * @author hengsin
- *
  */
 public class ModelGeneratorDialog extends JFrame implements ActionListener {
 

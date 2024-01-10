@@ -28,9 +28,8 @@ import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
 /**
- *	CopyFromBOM Process
- *	Copies BOM Lines from Selected BOM to the Current BOM
- *	The BOM being copied to must have no pre-existing BOM Lines
+ *	Process to copy BOM Lines from Selected BOM to the Current BOM.<br/>
+ *	The BOM being copied to must have no pre-existing BOM Lines.
  *
  *  @author Tony Snook
  *  @version $Id: CopyFromBOM.java,v 1.0 2008/07/04 05:24:03 tspc Exp $
@@ -46,6 +45,7 @@ public class CopyFromBOM extends SvrProcess {
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -62,6 +62,7 @@ public class CopyFromBOM extends SvrProcess {
 		p_Record_ID = getRecord_ID();
 	} //	prepare
 
+	@Override
 	protected String doIt() throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("From PP_Product_BOM_ID=" + p_PP_Product_BOM_ID + " to " + p_Record_ID);

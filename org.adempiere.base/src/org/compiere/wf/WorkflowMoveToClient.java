@@ -25,7 +25,7 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 
 /**
- *	Move Workflow Customizations to Client
+ *	Process to Move Workflow Customizations from System to Client
  *	
  *  @author Jorg Janke
  *  @version $Id: WorkflowMoveToClient.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -41,6 +41,7 @@ public class WorkflowMoveToClient extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare ()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -59,10 +60,11 @@ public class WorkflowMoveToClient extends SvrProcess
 	}	//	prepare
 
 	/**
-	 * 	Process
+	 * 	Perform Process
 	 *	@return message
 	 *	@throws Exception
 	 */
+	@Override
 	protected String doIt () throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("doIt - AD_Client_ID=" + p_AD_Client_ID + ", AD_Workflow_ID=" + p_AD_Workflow_ID);

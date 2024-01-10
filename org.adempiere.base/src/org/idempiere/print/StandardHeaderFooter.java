@@ -39,13 +39,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * 
+ * Default report header and footer implementation
  * @author hengsin
- *
  */
 public class StandardHeaderFooter implements IPrintHeaderFooter {
 
-	/**************************************************************************
+	/**
 	 *	Create Standard Header/Footer
 	 *  <pre>{@code
 	 *  title           C        Page x of x

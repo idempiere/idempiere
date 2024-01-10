@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.fa.model;
 
 import java.util.List;
@@ -24,12 +42,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.idempiere.fa.exceptions.AssetProductStockedException;
 
-
-
 /**
  * Fixed Assets Model Validator
  * @author Teo_Sarca, SC ARHIPAC SERVICE SRL
- *
  */
 public class ModelValidator
 implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
@@ -39,12 +54,12 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 	/** Client */
 	private int m_AD_Client_ID = -1;
 
-	
+	@Override
 	public int getAD_Client_ID() {
 		return m_AD_Client_ID;
 	}
 
-	
+	@Override
 	public void initialize(ModelValidationEngine engine, MClient client)
 	{
 		if (client != null)
@@ -58,11 +73,13 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 		//
 	}
 
+	@Override
 	public String login(int AD_Org_ID, int AD_Role_ID, int AD_User_ID)
 	{
 		return null;
 	}
 
+	@Override
 	public String modelChange(PO po, int type) throws Exception
 	{
 		if (po instanceof MMatchInv
@@ -75,9 +92,6 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 				MInvoiceLine invoiceLine = new MInvoiceLine(mi.getCtx(), mi.getC_InvoiceLine_ID(), mi.get_TrxName());
 				if (invoiceLine.isA_CreateAsset()
 						&& !invoiceLine.isA_Processed()
-						/* commented by @win
-						&& MAssetType.isFixedAssetGroup(mi.getCtx(), invoiceLine.getA_Asset_Group_ID())
-						*/
 					)
 				{
 					MAssetAddition.createAsset(mi);
@@ -94,9 +108,9 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 		
 	}
 
+	@Override
 	public String docValidate(PO po, int timing)
-	{
-			
+	{			
 		if (log.isLoggable(Level.INFO)) log.info(po.get_TableName() + " Timing: " + timing);
 		String result = null;
 		
@@ -134,24 +148,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 			@SuppressWarnings("unused")
 			boolean isSOTrx = DB.isSOTrx(MInvoice.Table_Name, MInvoice.COLUMNNAME_C_Invoice_ID+"="+invoice_id);
 			boolean isAsset = false;
-			/* comment by @win
-			boolean isFixedAsset = false;
-			*/
 			int assetGroup_ID = 0;
-			//@win commenting this out to enable relating AR Invoice to Asset Disposal
-			/*
-			if (!isSOTrx) {
-				int product_id = SetGetUtil.get_AttrValueAsInt(m, MInvoiceLine.COLUMNNAME_M_Product_ID);
-				if (product_id > 0) {
-					MProduct prod = MProduct.get(m.getCtx(), product_id);
-					isAsset = (prod != null && prod.get_ID() > 0 && prod.isCreateAsset());
-					assetGroup_ID = prod.getA_Asset_Group_ID();
-					
-					//isFixedAsset = MAssetType.isFixedAssetGroup(m.getCtx(), assetGroup_ID); //commented by @win - remove asset type
-					
-				}
-			}
-			*/
 			int product_id = SetGetUtil.get_AttrValueAsInt(m, MInvoiceLine.COLUMNNAME_M_Product_ID);
 			if (product_id > 0) {
 				MProduct prod = MProduct.get(m.getCtx(), product_id);
@@ -159,14 +156,9 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 				assetGroup_ID = prod!=null ? prod.getA_Asset_Group_ID() : 0;
 			}
 				
-			// end modification by @win
-				
 			m.set_AttrValue(MInvoiceLine.COLUMNNAME_A_CreateAsset, isAsset);
 			if (isAsset) {
 				m.set_AttrValue(MInvoiceLine.COLUMNNAME_A_Asset_Group_ID, assetGroup_ID);
-				/* comment by @win
-				m.set_AttrValue(MInvoiceLine.COLUMNNAME_IsFixedAssetInvoice, isFixedAsset);
-				*/
 				m.set_AttrValue("IsFixedAssetInvoice", isAsset);
 				m.set_AttrValue(MInvoiceLine.COLUMNNAME_A_CreateAsset, "Y");
 				
@@ -215,6 +207,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 		}
 	}
 
+	@Override
 	public String factsValidate(MAcctSchema schema, List<Fact> facts, PO po) {
 		return null;
 	}

@@ -44,10 +44,11 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
+/**
+ * Process to replace a specific ID or UUID
+ */
 @org.adempiere.base.annotation.Process
 public class MigraID extends SvrProcess {
-
-	// Process to change the ID of a record in the whole database
 
 	private int p_AD_Table_ID = -1;
 	private int p_ID_From = -1;

@@ -32,7 +32,6 @@ import org.compiere.util.Env;
 /**
  * Model validator to sync corresponding price list with the price list schema and base price list.
  * @author Elaine
- *
  */
 public class ProductPriceValidator implements ModelValidator {
 	

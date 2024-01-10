@@ -24,9 +24,8 @@ import java.util.List;
 
 import org.compiere.model.MCountry;
 
-
 /**
- *	Time Utilities
+ *	Time and Date Utilities
  *
  * 	@author 	Jorg Janke
  *  @author 	Teo Sarca, SC ARHIPAC SERVICE SRL
@@ -35,8 +34,8 @@ import org.compiere.model.MCountry;
 public class TimeUtil
 {
 	/**
-	 * 	Get earliest time of a day (truncate)
-	 *  @param time day and time
+	 * 	Get day only timestamp from time (setting all the time values to zero).
+	 *  @param time timestamp in millisecond. 0 for current time.
 	 *  @return day with 00:00
 	 */
 	static public Timestamp getDay (long time)
@@ -53,7 +52,7 @@ public class TimeUtil
 	}	//	getDay
 
 	/**
-	 * 	Get earliest time of a day (truncate)
+	 * 	Truncate timestamp to day only timestamp (setting all the time values to zero)
 	 *  @param dayTime day and time
 	 *  @return day with 00:00
 	 */
@@ -65,7 +64,7 @@ public class TimeUtil
 	}	//	getDay
 
 	/**
-	 * 	Get earliest time of a day (truncate)
+	 * 	Create day only timestamp (setting all time values to zero) 
 	 *	@param year year (if two digits: &lt; 50 is 2000; &gt; 50 is 1900)
 	 *	@param month month 1..12
 	 *	@param day day 1..31
@@ -86,7 +85,7 @@ public class TimeUtil
 	}	//	getDay
 
 	/**
-	 * 	Get today (truncate)
+	 * 	Get today (truncate the time portion)
 	 *  @return day with 00:00
 	 */
 	static public Calendar getToday ()
@@ -100,7 +99,7 @@ public class TimeUtil
 	}	//	getToday
 
 	/**
-	 * 	Get earliest time of next day
+	 * 	Get next day timestamp (truncate the time portion)
 	 *  @param day day
 	 *  @return next day with 00:00
 	 */
@@ -119,7 +118,7 @@ public class TimeUtil
 	}	//	getNextDay
 	
 	/**
-	 * 	Get earliest time of previous day
+	 * 	Get previous day timestamp (truncate the time portion)
 	 *  @param day day
 	 *  @return previous day with 00:00
 	 */
@@ -138,7 +137,7 @@ public class TimeUtil
 	}	//	getPreviousDay
 
 	/**
-	 * 	Get last date in month
+	 * 	Get last date in month (truncate the time portion)
 	 *  @param day day
 	 *  @return last day of month with 00:00
 	 */
@@ -160,10 +159,10 @@ public class TimeUtil
 	}	//	getMonthLastDay
 
 	/**
-	 * 	Return the day and time
+	 * 	Create a new timestamp from the day and time part (millisecond is set to 0).
 	 * 	@param day day part
 	 * 	@param time time part
-	 * 	@return day + time
+	 * 	@return new timestamp from day + time
 	 */
 	static public Timestamp getDayTime (Timestamp day, Timestamp time)
 	{
@@ -190,7 +189,7 @@ public class TimeUtil
 	 * 		Time_1         +--x--+
 	 * 		Time_2   +a+      +---b---+   +c+
 	 * 	</pre>
-	 *  The function returns true for b and false for a/b.
+	 *  The function returns true for b and false for a/c.
 	 *  @param start_1 start (1)
 	 *  @param end_1 not included end (1)
 	 *  @param start_2 start (2)
@@ -218,7 +217,7 @@ public class TimeUtil
 	}	//	inRange
 
 	/**
-	 * 	Is start..end on one of the days ?
+	 * 	Is start..end include one of the days ?
 	 *  @param start start day
 	 *  @param end end day (not including)
 	 *  @param OnMonday true if OK
@@ -319,7 +318,7 @@ public class TimeUtil
 	 * 	Is it the same day and same hour
 	 * 	@param one day/time
 	 * 	@param two compared day/time
-	 * 	@return true if one and two is same day and hour
+	 * 	@return true if one and two is same day and same hour
 	 */
 	static public boolean isSameHour (Timestamp one, Timestamp two)
 	{
@@ -414,7 +413,7 @@ public class TimeUtil
 	}	//	getDaysBetween
 
 	/**
-	 * 	Return Day + offset (truncates)
+	 * 	Return Day + offset (truncate the time portion)
 	 * 	@param day Day
 	 * 	@param offset day offset
 	 * 	@return Day + offset at 00:00
@@ -461,12 +460,11 @@ public class TimeUtil
 		return new Timestamp (cal.getTimeInMillis());
 	}	//	addMinutes
 
-
-	/**************************************************************************
+	/**
 	 * 	Format Elapsed Time
 	 * 	@param start start time or null for now
 	 * 	@param end end time or null for now
-	 * 	@return formatted time string 1'23:59:59.999
+	 * 	@return formatted elapsed time string 1'23:59:59.999
 	 */
 	public static String formatElapsed (Timestamp start, Timestamp end)
 	{
@@ -487,7 +485,7 @@ public class TimeUtil
 	/**
 	 * 	Format Elapsed Time until now
 	 * 	@param start start time
-	 *	@return formatted time string 1'23:59:59.999
+	 *	@return formatted elapsed time string 1'23:59:59.999
 	 */
 	public static String formatElapsed (Timestamp start)
 	{
@@ -500,8 +498,8 @@ public class TimeUtil
 
 	/**
 	 * 	Format Elapsed Time
-	 *	@param elapsedMS time in ms
-	 *	@return formatted time string 1'23:59:59.999 - d'hh:mm:ss.xxx
+	 *	@param elapsedMS elapsed time in ms
+	 *	@return formatted elapsed time string 1'23:59:59.999 - d'hh:mm:ss.xxx
 	 */
 	public static String formatElapsed (long elapsedMS)
 	{
@@ -553,9 +551,8 @@ public class TimeUtil
 		return "0" + s;
 	}	//	get2digits
 
-
 	/**
-	 * 	Is it valid today?
+	 * 	Is today a valid date ?
 	 *	@param validFrom valid from
 	 *	@param validTo valid to
 	 *	@return true if today is between validFrom and validTo
@@ -588,10 +585,10 @@ public class TimeUtil
 	}	//	isValid
 	
 	/**
-	 * 	Max date
+	 * 	Get the greater of ts1 and ts2
 	 *	@param ts1 p1
 	 *	@param ts2 p2
-	 *	@return max time
+	 *	@return the greater of ts1 and ts2
 	 */
 	public static Timestamp max (Timestamp ts1, Timestamp ts2)
 	{
@@ -665,7 +662,7 @@ public class TimeUtil
 	}	//	trunc
 	
 	/**
-	 * Returns timestamp by combining the date part from dateTime and time part form timeSlot.
+	 * Returns timestamp by combining the date part from dateTime and time part form timeSlot.<br/>
 	 * If timeSlot is null, then first millisecond of the day will be used (if end == false)
 	 * or last millisecond of the day (if end == true).
 	 * 
@@ -708,8 +705,6 @@ public class TimeUtil
 		return new Timestamp(gc.getTimeInMillis());
 	}
 
-	
-// ARHIPAC: TEO: ADDITION ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/**
 	 * [ ARHIPAC ] Gets calendar instance of given date
 	 * @param date calendar initialization date; if null, the current date is used
@@ -745,7 +740,7 @@ public class TimeUtil
 	}	//	getMonthFirstDay
 	
 	/**
-	 * [ ARHIPAC ] Return Day + offset (truncates)
+	 * [ ARHIPAC ] Return Day + offset (truncate the time portion)
 	 * @param day Day; if null current time will be used
 	 * @param offset months offset
 	 * @return Day + offset (time will be 00:00)
@@ -768,7 +763,7 @@ public class TimeUtil
 	}	//	addMonths
 	
 	/**
-	 * 
+	 * Get number of months between start and end
 	 * @param start
 	 * @param end
 	 * @return number of months between start and end
@@ -783,7 +778,7 @@ public class TimeUtil
 	}
 
 	/**
-	 * 
+	 * Add n days to startDate, skipping non business day.
 	 * @param startDate
 	 * @param nbDays number of days
 	 * @param clientID AD_Client_ID
@@ -803,9 +798,9 @@ public class TimeUtil
 	}
 
 	/**
-	 * 
+	 * Get number of business day between startDate and endDate
 	 * @param startDate
-	 * @param endDate
+	 * @param endDate (not inclusive)
 	 * @param clientID
 	 * @param trxName
 	 * @return number of business days between 2 dates for the country based on current default country
@@ -816,7 +811,7 @@ public class TimeUtil
 	}
 
 	/**
-	 * 
+	 * Get number of business day between startDate and endDate
 	 * @param startDate
 	 * @param endDate
 	 * @param clientID
@@ -830,9 +825,9 @@ public class TimeUtil
 	}
 	
 	/**
-	 * 
+	 * Get number of business day between startDate and endDate
 	 * @param startDate
-	 * @param endDate
+	 * @param endDate (not inclusive)
 	 * @param clientID
 	 * @param countryID
 	 * @param trxName
@@ -844,7 +839,7 @@ public class TimeUtil
 	}
 	
 	/**
-	 * 
+	 * Get number of business day between startDate and endDate
 	 * @param startDate
 	 * @param endDate
 	 * @param clientID

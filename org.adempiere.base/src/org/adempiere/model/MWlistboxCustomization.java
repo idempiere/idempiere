@@ -27,6 +27,9 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_Wlistbox_Customization;
 import org.compiere.util.Util;
 
+/**
+ * Extended model class for AD_Wlistbox_Customization
+ */
 public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 
 	/**

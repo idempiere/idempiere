@@ -15,8 +15,8 @@ package org.adempiere.base.sso;
 import org.compiere.model.I_SSO_PrincipalConfig;
 
 /**
+ * Factory interface for single sign on service
  * @author Logilite Technologies
- *
  */
 public interface ISSOPrincipalFactory
 {

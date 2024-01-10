@@ -15,7 +15,7 @@
 package org.adempiere.exceptions;
 
 /**
- * 
+ * Exception raise when current quantity of a product's average costing record become negative 
  * @author hengsin
  *
  */

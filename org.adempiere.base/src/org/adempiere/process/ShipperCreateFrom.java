@@ -31,7 +31,7 @@ import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.SvrProcess;
 
 /**
- * Create shipper child records from M_ShipperCfg child records.
+ * Process to create shipper child records from M_ShipperCfg child records.
  */
 @org.adempiere.base.annotation.Process
 public class ShipperCreateFrom extends SvrProcess

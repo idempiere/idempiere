@@ -48,15 +48,13 @@ import org.eevolution.model.MPPProductBOMLine;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate to implement auto produce for shipment
  * @author hengsin
- *
  */
 @EventTopicDelegate
 @ModelEventTopic(modelClass = MInOut.class)
 public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 	/**
-	 * 
 	 * @param po
 	 * @param event
 	 */
