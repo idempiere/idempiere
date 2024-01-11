@@ -165,7 +165,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
 	{
-		this (ctx, MAttachment.getID(AD_Table_ID, Record_UU) > 0 ? MAttachment.getID(AD_Table_ID, Record_UU) : 0, trxName);
+		this (ctx, MAttachment.getID(AD_Table_ID, Record_UU) > 0 ? MAttachment.getID(AD_Table_ID, Record_UU) : (MAttachment.getID(AD_Table_ID, Record_ID) > 0 ? MAttachment.getID(AD_Table_ID, Record_ID) : 0), trxName);
 		if (get_ID() == 0) {
 			setAD_Table_ID (AD_Table_ID);
 			setRecord_ID (Record_ID);
