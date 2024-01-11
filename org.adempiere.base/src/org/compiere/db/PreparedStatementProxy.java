@@ -15,6 +15,7 @@ package org.compiere.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
@@ -80,6 +81,7 @@ public class PreparedStatementProxy extends StatementProxy {
 	 * Initialize the prepared statement wrapper object
 	 */
 	protected void init() {
+		boolean localConn = false;
 		try {
 			Connection conn = null;
 			Trx trx = p_vo.getTrxName() == null ? null : Trx.get(p_vo
@@ -87,6 +89,7 @@ public class PreparedStatementProxy extends StatementProxy {
 			if (trx != null) {
 				conn = trx.getConnection();
 			} else {
+				localConn = true;
 				m_conn = AutoCommitConnectionBroker.getConnection();
 				conn = m_conn;
 			}
@@ -95,6 +98,12 @@ public class PreparedStatementProxy extends StatementProxy {
 			p_stmt = conn.prepareStatement(p_vo.getSql(), p_vo
 					.getResultSetType(), p_vo.getResultSetConcurrency());
 		} catch (Exception e) {
+			if (localConn && m_conn != null) {
+				try {
+					m_conn.close();
+					m_conn = null;
+				} catch (SQLException e1) {}
+			}
 			log.log(Level.SEVERE, p_vo.getSql(), e);
 			throw new DBException(e);
 		}
