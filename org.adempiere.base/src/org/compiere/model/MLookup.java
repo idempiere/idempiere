@@ -38,6 +38,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -993,6 +994,148 @@ public final class MLookup extends Lookup implements Serializable
 			s_directValueNamePairCache.put(cacheKey, vnpCache);
 		}
 		return vnpCache;
+	}
+	
+
+
+	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param windowNo
+	 * @param tabNo
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo) {
+		return getRecordsLookup(tableID, false, windowNo, tabNo);
+	}
+	
+	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param windowNo
+	 * @param tabNo
+	 * @param keyColumn
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo, String keyColumn) {
+		return getRecordsLookup(tableID, false, windowNo, tabNo, keyColumn);
+	}
+
+	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
+	 * @param windowNo
+	 * @param tabNo
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	public static MLookup getRecordsLookup(int tableID, boolean tableBased, int windowNo, int tabNo) {
+		return getRecordsLookup(tableID, tableBased, windowNo, tabNo, null);
+	}
+	
+	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
+	 * @param windowNo
+	 * @param tabNo
+	 * @param keyColumn
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	public static MLookup getRecordsLookup(int tableID, boolean tableBased, int windowNo, int tabNo, String keyColumn) {
+		if(tableID <= 0)	
+			return null;
+		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+		// load key column
+		if(Util.isEmpty(keyColumn)) {
+			if (tableBased) {
+				String[] keyColumns = mTable.getKeyColumns();
+				keyColumn = keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
+			} else {				
+				keyColumn = PO.getUUIDColumnName(mTable.getTableName());
+			}
+			if (Util.isEmpty(keyColumn))
+				return null;
+		}
+
+		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
+
+		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo (Env.getCtx(), windowNo, tabNo, mColumn.getAD_Column_ID(), DisplayType.Search);
+		return new MLookup(lookupInfo, tabNo);
+	}
+
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @return String
+	 */
+	public static String getIdentifier(int tableID, Object recordID) {
+		return getIdentifier(tableID, recordID, 0, 0);
+	}
+	
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @param windowNo
+	 * @param tabNo
+	 * @return String
+	 */
+	public static String getIdentifier(int tableID, Object recordID, int windowNo, int tabNo) {
+		MLookup lookup = getRecordsLookup(tableID, windowNo, tabNo);
+		return lookup != null ? lookup.getDisplay(recordID) : "";
+	}
+	
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @param windowNo
+	 * @param tabNo
+	 * @param keyColumn
+	 * @return String
+	 */
+	public static String getIdentifier(int tableID, Object recordID, int windowNo, int tabNo, String keyColumn) {
+		MLookup lookup = getRecordsLookup(tableID, windowNo, tabNo, keyColumn);
+		return lookup != null ? lookup.getDisplay(recordID) : "";
+	}
+
+	/**
+	 * Get Parent Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @return String
+	 */
+	public static String getParentIdentifier(int tableID, Object recordID) {
+		return getParentIdentifier(tableID, recordID, 0, 0);
+	}
+		
+	/**
+	 * Get Parent Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @param windowNo
+	 * @param tabNo
+	 * @return String
+	 */
+	public static String getParentIdentifier(int tableID, Object recordID, int windowNo, int tabNo) {
+		MLookup lookup = getRecordsLookup(tableID, true, windowNo, tabNo);
+		return lookup != null ? lookup.getDisplay(recordID) : "";
+	}
+	
+	/**
+	 * Get Parent Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @param windowNo
+	 * @param tabNo
+	 * @param keyColumn
+	 * @return String
+	 */
+	public static String getParentIdentifier(int tableID, Object recordID, int windowNo, int tabNo, String keyColumn) {
+		MLookup lookup = getRecordsLookup(tableID, true, windowNo, tabNo, keyColumn);
+		return lookup != null ? lookup.getDisplay(recordID) : "";
 	}
 	
 	/**

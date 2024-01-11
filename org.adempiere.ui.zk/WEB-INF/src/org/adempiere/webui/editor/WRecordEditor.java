@@ -39,10 +39,7 @@ import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
-import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
-import org.compiere.model.MLookupFactory;
-import org.compiere.model.MLookupInfo;
 import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -72,6 +69,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 
 	/** Current tab's AD_Table_ID GridField */
 	protected GridField tableIDGridField;
+	/** Window Number */
+	int windowNo;
+	/** Tab Number */
+	int tabNo;
 
 	// UI components
 	protected Textbox recordTextBox;
@@ -90,7 +91,8 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	 */
 	public WRecordEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(new Div(), gridField, tableEditor, editorConfiguration);
-
+		tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
+		windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
 		getComponent().setSclass("recordid-editor");
 		getComponent().addEventListener(Events.ON_RIGHT_CLICK, this);
 
@@ -262,8 +264,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
 				if (tableID > 0) {
 					Object recordID = toKeyValue(value);
-					if(recordID != null && tableID > 0)
-						recordTextBox.setValue(getIdentifier(tableID, recordID));
+					if(recordID != null && tableID > 0) {
+						MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+						recordTextBox.setValue(MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, getKeyColumn(mTable)));
+					}
 				}
 			}
 		}
@@ -299,7 +303,8 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			} catch (NumberFormatException e) {
 				return recordIDValue.toString();
 			}
-			return getIdentifier(tableID, recordID);
+			MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+			return MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, getKeyColumn(mTable));
 		}
 		else {
 			return recordIDValue.toString();
@@ -321,7 +326,8 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			} catch (NumberFormatException e) {
 				return value.toString();
 			}
-			return getIdentifier(rowTableID, rowRecordID);
+			MTable mTable = MTable.get(Env.getCtx(), rowTableID, null);
+			return MLookup.getIdentifier(rowTableID, rowRecordID, tabNo, windowNo, getKeyColumn(mTable));
 		} else {
 			return value.toString();
 		}
@@ -361,65 +367,6 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	}
 
 	/**
-	 * Get Lookup
-	 * @param tableID
-	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
-	 */
-	public MLookup getRecordsLookup(int tableID) {
-		return getRecordsLookup(tableID, false);
-	}
-
-	/**
-	 * Get Lookup
-	 * @param tableID
-	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
-	 */
-	private MLookup getRecordsLookup(int tableID, boolean tableBased) {
-		if(tableID <= 0)	
-			return null;
-		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-		String keyColumn = "";
-		if (tableBased) {
-			String[] keyColumns = mTable.getKeyColumns();
-			keyColumn = keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
-		} else {
-			keyColumn = getKeyColumn(mTable);
-		}
-		if (Util.isEmpty(keyColumn))
-			return null;
-
-		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
-
-		int tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
-		int windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
-		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo (Env.getCtx(), windowNo, tabNo, mColumn.getAD_Column_ID(), DisplayType.Search);
-		return new MLookup(lookupInfo, tabNo);
-	}
-
-	/**
-	 * Get Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @return String
-	 */
-	public String getIdentifier(int tableID, Object recordID) {
-		MLookup lookup = getRecordsLookup(tableID);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
-	}
-
-	/**
-	 * Get Parent Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @return String
-	 */
-	public String getParentIdentifier(int tableID, Object recordID) {
-		MLookup lookup = getRecordsLookup(tableID, true);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
-	}
-
-	/**
 	 * Get AD_Table_ID
 	 * @return AD_Table_ID value
 	 */
@@ -456,7 +403,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	 * @param mTable Reference table
 	 * @return Key column name
 	 */
-	protected abstract String getKeyColumn(MTable mTable);
+	public abstract String getKeyColumn(MTable mTable);
 
 	/**
 	 * Convert value to key value type

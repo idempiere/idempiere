@@ -96,7 +96,7 @@ public class WRecordUUIDEditor extends WRecordEditor<String> {
 	}
 
 	@Override
-	protected String getKeyColumn(MTable mTable) {
+	public String getKeyColumn(MTable mTable) {
 		return PO.getUUIDColumnName(mTable.getTableName());		
 	}
 

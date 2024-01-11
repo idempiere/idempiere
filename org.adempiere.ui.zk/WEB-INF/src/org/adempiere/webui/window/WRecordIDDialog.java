@@ -38,6 +38,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -74,6 +75,14 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	private Object recordIDValue;
 	/** Current AD_Table_ID value from {@link #editor} */
 	private Integer tableIDValue;
+	/** Grid Tab */
+	GridTab gridTab;
+	/** Grid Field */
+	GridField gridField;
+	/** Window Number */
+	int windowNo;
+	/** Tab Number */
+	int tabNo;
 	
 	// UI components
 	private Div contentDiv;
@@ -97,7 +106,10 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		super();
 
 		this.editor = editor;
-
+		gridTab = editor.getGridField().getGridTab();
+		gridField = editor.getGridField();
+		tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
+		windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
 		if (editor.getAD_Table_ID() instanceof Integer) {
 			tableIDValue = (Integer) editor.getAD_Table_ID();
 		} else {
@@ -137,7 +149,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		tableIDEditor.setValue(tableIDValue);
 		
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
-		MLookup recordsLookup = editor.getRecordsLookup(tableID);
+		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+		MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.getKeyColumn(mTable));
 		if(recordsLookup != null)
 			recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		
@@ -159,7 +172,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				parentRecordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
 			else
 				parentRecordId = editor.getGridField().getGridTab().getRecord_ID();
-			parentTextBox.setValue(editor.getParentIdentifier(parentTable.getAD_Table_ID(), parentRecordId));
+			parentTextBox.setValue(MLookup.getParentIdentifier(parentTable.getAD_Table_ID(), parentRecordId, tabNo, windowNo));
 		}
 		
 		if (recordsEditor != null)
@@ -239,7 +252,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				recordsEditorLabel.detach();
 				recordsEditor.getComponent().detach();
 			}
-			MLookup recordsLookup = editor.getRecordsLookup(tableID);
+			MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+			MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.getKeyColumn(mTable));
 			if(recordsLookup != null) {
 				recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		    	labelsDiv.appendChild(recordsEditorLabel);
