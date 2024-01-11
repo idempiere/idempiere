@@ -1717,19 +1717,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	}   //  getIntSelectedRowKey
 
 	/**
-     *  Get the keys of selected row/s based on layout defined in prepareTable
-     *  @return IDs if selection present
-     *  author ashley
+     *  Get the keys of selected rows
+     *  @return selected IDs or UUIDs
      */
-	protected ArrayList<Object> getSelectedRowKeys() {
-		ArrayList<Object> selectedDataList = new ArrayList<Object>();
-
+    @SuppressWarnings("unchecked")
+	protected <T extends Serializable> List<T> getSelectedRowKeys()
+    {
+    	List<T> selectedDataList = new ArrayList<>();
 		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
 			if(rowInfo.getValue().get(0) instanceof IDColumn idColumn)
-				selectedDataList.add(idColumn.getRecord_ID());
+				selectedDataList.add((T)idColumn.getRecord_ID());
+			else if(rowInfo.getValue().get(0) instanceof UUIDColumn uuidColumn)
+				selectedDataList.add((T)uuidColumn.getRecord_UU());
 		}
 		return selectedDataList;
-	}  //  getSelectedRowKeys
+    }   //  getSelectedRowKeys
 
     /**
 	 *	Get selected Keys as Collection
