@@ -2855,8 +2855,26 @@ public class MPayment extends X_C_Payment
 		if (m_processMsg != null)
 			return false;	
 		
-		if (! reverseCorrectIt())
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+
+		MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+		if (allocations.length > 0) {
+			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentWithAllocLine@"); // ~ Can't reactivate / Payment is allocated
 			return false;
+		}
+
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM C_BankStatement bs WHERE bs.AD_Client_ID = ? AND bs.DocStatus in ('CO', 'CL', 'IP', 'DR')")
+		.append(" AND EXISTS (SELECT C_BankStatement_ID FROM C_BankStatementLine bsl WHERE bs.C_BankStatement_ID = bsl.C_BankStatement_ID AND bsl.C_Payment_ID = ?)");
+		if (DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_Client_ID(), getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnBankStatementLine@"); // ~ Can't reactivate / Payment is used on a bank statement
+			return false;
+		}
+
+		MFactAcct.deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
+		setPosted(false);
+		deAllocate(true); 
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
 
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
