@@ -21,7 +21,7 @@ import java.awt.geom.Dimension2D;
 import java.io.Serializable;
 
 /**
- *	2D Dimesnion Implementation
+ *	2D Dimension Implementation
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Dimension2DImpl.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $

@@ -2056,7 +2056,7 @@ public class GridField
 	 *  Set Value to null.
 	 *  <p>
 	 *  Do update context - called from GridTab.setCurrentRow.
-	 *  Send Bean PropertyChange event if there is a change (i.e curent value is not null).
+	 *  Send Bean PropertyChange event if there is a change (i.e current value is not null).
 	 */
 	public void setValueAndUpdateContext ()
 	{

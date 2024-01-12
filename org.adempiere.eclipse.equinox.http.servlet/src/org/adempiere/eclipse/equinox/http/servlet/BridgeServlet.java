@@ -66,7 +66,7 @@ public class BridgeServlet extends HttpServlet {
 	}
 
 	/**
-	 * Search from OSGi registry the servlet, ressources... to executed according the path of the HTTP request. If no service are founded :
+	 * Search from OSGi registry the servlet, resources... to execute according to the path of the HTTP request. If no services are found :
 	 * <ul>
 	 *   <li>if {@link FilterChain} is not null : {@link FilterChain#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse)} is called.</li>
 	 *   <li>otherwise throw 404 error.</li>

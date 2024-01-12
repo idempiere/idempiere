@@ -267,7 +267,7 @@ public class td extends MultiPartElement
 	}
 
 	/**
-	 * Sets the align="" attribute convience variables are provided in the
+	 * Sets the align="" attribute convenience variables are provided in the
 	 * AlignType interface
 	 * 
 	 * @param hAlign
@@ -287,7 +287,7 @@ public class td extends MultiPartElement
 	}
 
 	/**
-	 * Sets the valign="" attribute convience variables are provided in the
+	 * Sets the valign="" attribute convenience variables are provided in the
 	 * AlignType interface
 	 * 
 	 * @param vAlign

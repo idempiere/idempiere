@@ -256,7 +256,7 @@ public class GridTabTest extends AbstractTestCase {
 								|| (Core.findCallout(gridTab.getTableName(), mField.getColumnName())).size() > 0
 								|| gridTab.hasDependants(mField.getColumnName()))) {
 							gridTab.processFieldChange(mField); // Dependencies & Callout
-							// Refresh the list on dependant fields
+							// Refresh the list on dependent fields
 							for (GridField dependentField : gridTab.getDependantFields(mField.getColumnName())) {
 								// if the field has a lookup
 								if (dependentField != null && dependentField.getLookup() instanceof MLookup) {

@@ -188,7 +188,7 @@ public class RModelData
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("Start Rows=" + m_rows.size());
 
-		//  Row level Funcions
+		//  Row level Functions
 		//  would come here
 
 		//  Group by Values

@@ -1289,7 +1289,7 @@ public class QuickGridView extends Vbox
 	 * @param code cell navigation code
 	 * @param row
 	 * @param col 
-	 * @return true if save succesfully
+	 * @return true if save successful
 	 */
 	private boolean save(int code, int row, int col)
 	{

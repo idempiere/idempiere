@@ -364,7 +364,7 @@ public class FileUtil
 
 	/**
 	 * 	Get Filter String
-	 *	@return flter String
+	 *	@return filter String
 	 */
 	String getFilterString()
 	{

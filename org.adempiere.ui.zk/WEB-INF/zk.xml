@@ -24,7 +24,7 @@
 	</listener -->
 
 	<listener>
-		<description>[Optional] Mointor the statistic</description>
+		<description>[Optional] Monitor the statistic</description>
 		<listener-class>org.adempiere.webui.util.Statistic</listener-class>
 	</listener>
 

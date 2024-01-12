@@ -538,7 +538,7 @@ public class StringElement extends PrintElement
 					float lineHeight = layout.getAscent() + layout.getDescent() + layout.getLeading();
 					if (p_maxHeight == -1f && i == 0)		//	one line only
 						p_maxHeight = lineHeight;
-					//	If we have hight left over
+					//	If we have height left over
 					if (p_maxHeight == 0f || (height + lineHeight) <= p_maxHeight)
 					{
 						yPen = (float)location.y + height + layout.getAscent();

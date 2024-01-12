@@ -1208,7 +1208,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 
 	/**
 	 *	Get SMTP Host
-	 *	@return SMTP or loaclhost
+	 *	@return SMTP or localhost
 	 */
 	@Override
 	public String getSMTPHost() {

@@ -33,7 +33,7 @@ public class NullParameter implements Serializable
 	private static final long serialVersionUID = 5098594046699488306L;
 
 	/**
-	 * 	Cosntructor
+	 * 	Constructor
 	 *	@param type SQL Type java.sql.Types.*
 	 */
 	public NullParameter(int type)

@@ -44,7 +44,7 @@ public class param extends SinglePartElement implements Printable
 
 {
 
-    // Convience variables.
+    // Convenience variables.
 
 
 
@@ -141,7 +141,7 @@ public class param extends SinglePartElement implements Printable
 
         @param valuetype sets the name of this parameter.<br>
 
-        ref|data|object convience varaibles provided as param.ref,param.data,param.object
+        ref|data|object convenience variables provided as param.ref,param.data,param.object
 
     */
 

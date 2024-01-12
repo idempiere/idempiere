@@ -97,7 +97,7 @@ public abstract class Config
 
 	/**
 	 * 	UI Signal OK
-	 *	@param cb ckeck box
+	 *	@param cb check box
 	 *	@param resString resource string key
 	 *	@param pass true if test passed
 	 *	@param critical true if critical

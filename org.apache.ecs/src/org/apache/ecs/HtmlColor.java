@@ -316,420 +316,420 @@ public abstract class HtmlColor
     /** HTML 3.0 specification for color <font color="#52D017"></font>. */
     public final static String YELLOWGREEN = "#52D017";
 
-    // lowercase for compatability colors HTML 4.0
+    // lowercase for compatibility colors HTML 4.0
 
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BLACK */
     public final static String black = BLACK;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SILVER */
     public final static String silver = SILVER;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GRAY */
     public final static String gray = GRAY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #WHITE */
     public final static String white = WHITE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MAROON */
     public final static String maroon = MAROON;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #RED */
     public final static String red = RED;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PURPLE */
     public final static String purple = PURPLE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #FUCHSIA */
     public final static String fuchsia = FUCHSIA;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GREEN */
     public final static String green = GREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIME */
     public final static String lime = LIME;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #OLIVE */
     public final static String olive = OLIVE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #YELLOW */
     public final static String yellow = YELLOW;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #NAVY */
     public final static String navy = NAVY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BLUE */
     public final static String blue = BLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #TEAL */
     public final static String teal = TEAL;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #AQUA */
     public final static String aqua = AQUA;
 
-    // lowercase for compatability colors html 3.0
+    // lowercase for compatibility colors html 3.0
 
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ALICEBLUE */
     public final static String aliceblue = ALICEBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ANTIQUEWHITE */
     public final static String antiquewhite = ANTIQUEWHITE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #AQUAMARINE */
     public final static String aquamarine = AQUAMARINE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #AZURE */
     public final static String azure = AZURE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BEIGE */
     public final static String beige = BEIGE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BISQUE */
     public final static String bisque = BISQUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BLANCHEDALMOND */
     public final static String blanchedalmond = BLANCHEDALMOND;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BLUEVIOLET */
     public final static String blueviolet = BLUEVIOLET;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BROWN */
     public final static String brown = BROWN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #BURLYWOOD */
     public final static String burlywood = BURLYWOOD;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CADETBLUE */
     public final static String cadetblue = CADETBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CHARTREUSE */
     public final static String chartreuse = CHARTREUSE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CHOCOLATE */
     public final static String chocolate = CHOCOLATE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CORAL */
     public final static String coral = CORAL;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CORNFLOWERBLUE */
     public final static String cornfolowerblue = CORNFLOWERBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CORNSILK */
     public final static String cornsilk = CORNSILK;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CRIMSON */
     public final static String crimson = CRIMSON;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #CYAN */
     public final static String cyan = CYAN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKBLUE */
     public final static String darkblue = DARKBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKCYAN */
     public final static String darkcyan = DARKCYAN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKGOLDENROD */
     public final static String darkgoldenrod = DARKGOLDENROD;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKGRAY */
     public final static String darkgray = DARKGRAY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKGREEN */
     public final static String darkgreen = DARKGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKKHAKI */
     public final static String darkkahki = DARKKHAKI;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKMAGENTA */
     public final static String darkmagenta = DARKMAGENTA;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKOLIVEGREEN */
     public final static String darkolivegreen = DARKOLIVEGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKORANGE */
     public final static String darkorange = DARKORANGE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKORCHID */
     public final static String darkorchid = DARKORCHID;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKRED */
     public final static String darkred = DARKRED;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKSALMON */
     public final static String darksalmon = DARKSALMON;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKSEAGREEN */
     public final static String darkseagreen = DARKSEAGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKSLATEBLUE */
     public final static String darkslateblue = DARKSLATEBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKSLATEGRAY */
     public final static String darkslategray = DARKSLATEGRAY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKTURQUOISE */
     public final static String darkturquoise = DARKTURQUOISE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DARKVIOLET */
     public final static String darkviolet = DARKVIOLET;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DEEPPINK */
     public final static String deeppink = DEEPPINK;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DEEPSKYBLUE */
     public final static String deepskyblue = DEEPSKYBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DIMGRAY */
     public final static String dimgray = DIMGRAY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #DODGERBLUE */
     public final static String dodgerblue = DODGERBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #FIREBRICK */
     public final static String firebrick = FIREBRICK;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #FLORALWHITE */
     public final static String floralwhite = FLORALWHITE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #FORESTGREEN */
     public final static String forestgreen = FORESTGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GAINSBORO */
     public final static String gainsboro = GAINSBORO;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GHOSTWHITE */
     public final static String ghostwhite = GHOSTWHITE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GOLD */
     public final static String gold = GOLD;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GOLDENROD */
     public final static String goldenrod = GOLDENROD;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #GREENYELLOW */
     public final static String greenyellow = GREENYELLOW;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #HONEYDEW */
     public final static String honeydew = HONEYDEW;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #INDIANRED */
     public final static String indianred = INDIANRED;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #INDIGO */
     public final static String indigo = INDIGO;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #IVORY */
     public final static String ivory = IVORY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #KHAKI */
     public final static String khaki = KHAKI;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LAVENDER */
     public final static String lavender = LAVENDER;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LAVENDERBLUSH */
     public final static String lavenderblush = LAVENDERBLUSH;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LAWNGREEN */
     public final static String lawngreen = LAWNGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LEMONCHIFFON */
     public final static String lemmonchiffon = LEMONCHIFFON;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTBLUE */
     public final static String lightblue = LIGHTBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTCORAL */
     public final static String lightcoral = LIGHTCORAL;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTCYAN */
     public final static String lightcyan = LIGHTCYAN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTGOLDENRODYELLOW */
     public final static String lightgoldenrodyellow = LIGHTGOLDENRODYELLOW;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTGREEN */
     public final static String lightgreen = LIGHTGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTPINK */
     public final static String lightpink = LIGHTPINK;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTSALMON */
     public final static String lightsalmon = LIGHTSALMON;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTSEAGREEN */
     public final static String lightseagreen = LIGHTSEAGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTSKYBLUE */
     public final static String lightskyblue = LIGHTSKYBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTSLATEGRAY */
     public final static String lightslategray = LIGHTSLATEGRAY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTSTEELBLUE */
     public final static String lightsteelblue = LIGHTSTEELBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIGHTYELLOW */
     public final static String lightyellow = LIGHTYELLOW;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LIMEGREEN */
     public final static String limegreen = LIMEGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #LINEN */
     public final static String linen = LINEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MAGENTA */
     public final static String magenta = MAGENTA;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMAQUAMARINE */
     public final static String mediumaquamarine = MEDIUMAQUAMARINE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMBLUE */
     public final static String mediumblue = MEDIUMBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMORCHID */
     public final static String mediumorchid = MEDIUMORCHID;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMPURPLE */
     public final static String mediumpurple = MEDIUMPURPLE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMSEAGREEN */
     public final static String mediumseagreen = MEDIUMSEAGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMSLATEBLUE */
     public final static String mediumslateblue = MEDIUMSLATEBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMSPRINGGREEN */
     public final static String mediumspringgreen = MEDIUMSPRINGGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMTURQUOISE */
     public final static String mediumturquoise = MEDIUMTURQUOISE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MEDIUMVIOLETRED */
     public final static String mediumvioletred = MEDIUMVIOLETRED;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MIDNIGHTBLUE */
     public final static String midnightblue = MIDNIGHTBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MINTCREAM */
     public final static String mintcream = MINTCREAM;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MISTYROSE */
     public final static String mistyrose = MISTYROSE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #MOCCASIN */
     public final static String moccasin = MOCCASIN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #NAVAJOWHITE */
     public final static String navajowhite = NAVAJOWHITE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #OLDLACE */
     public final static String oldlace = OLDLACE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #OLIVEDRAB */
     public final static String olivedrab = OLIVEDRAB;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ORANGE */
     public final static String orange = ORANGE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ORANGERED */
     public final static String orangered = ORANGERED;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ORCHID */
     public final static String orchid = ORCHID;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PALEGOLDENROD */
     public final static String palegoldenrod = PALEGOLDENROD;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PALETURQUOISE */
     public final static String paleturquoise = PALETURQUOISE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PALEVIOLETRED */
     public final static String palevioletred = PALEVIOLETRED;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PAPAYAWHIP */
     public final static String papayawhip = PAPAYAWHIP;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PEACHPUFF */
     public final static String peachpuff = PEACHPUFF;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PERU */
     public final static String peru = PERU;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PINK */
     public final static String pink = PINK;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #PLUM */
     public final static String plum = PLUM;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #POWDERBLUE */
     public final static String powderblue = POWDERBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ROSYBROWN */
     public final static String rosybrown = ROSYBROWN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #ROYALBLUE */
     public final static String royalblue = ROYALBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SADDLEBROWN */
     public final static String saddlebrown = SADDLEBROWN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SALMON */
     public final static String salmon = SALMON;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SANDYBROWN */
     public final static String sandybrown = SANDYBROWN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SEAGREEN */
     public final static String seagreen = SEAGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SEASHELL */
     public final static String seashell = SEASHELL;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SIENNA */
     public final static String sienna = SIENNA;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SKYBLUE */
     public final static String skyblue = SKYBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SLATEBLUE */
     public final static String slateblue = SLATEBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SLATEGRAY */
     public final static String slategray = SLATEGRAY;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SNOW */
     public final static String snow = SNOW;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #SPRINGGREEN */
     public final static String springgreen = SPRINGGREEN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #STEELBLUE */
     public final static String steelblue = STEELBLUE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #TAN */
     public final static String tan = TAN;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #THISTLE */
     public final static String thistle = THISTLE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #TOMATO */
     public final static String tomato = TOMATO;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #TURQUOISE */
     public final static String turquoise = TURQUOISE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #VIOLET */
     public final static String violet = VIOLET;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #WHEAT */
     public final static String wheat = WHEAT;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #WHITESMOKE */
     public final static String whitesmoke = WHITESMOKE;
-    /** Lowercase for compatiblity.
+    /** Lowercase for compatibility.
      *  @see #YELLOWGREEN */
     public final static String yellowgreen = YELLOWGREEN;
     

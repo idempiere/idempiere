@@ -413,7 +413,7 @@ public class MPInstanceLog
 
 	/**
 	 * Set AD_PInstance_Log_UU
-	 * @return Sting AD_PInstance_Log_UU
+	 * @return String AD_PInstance_Log_UU
 	 */
 	public String getAD_PInstance_Log_UU() {
 		if(Util.isEmpty(m_AD_PInstance_Log_UU))

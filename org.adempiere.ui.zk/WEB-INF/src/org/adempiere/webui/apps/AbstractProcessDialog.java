@@ -486,7 +486,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	protected void reportOptionLayout(HtmlBasedComponent bottomParameterLayout) {
 		if (!isReport() && !isJasperReport())
-			return;//if not a report not need show this pannel
+			return;//if not a report not need show this panel
 
 		// option control
 		Hlayout reportOptionLayout = new Hlayout();

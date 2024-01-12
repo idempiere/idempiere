@@ -259,7 +259,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 			}
 			
 		}
-		return "Sucess";
+		return "Success";
 	}
 
 	@Override

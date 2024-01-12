@@ -495,7 +495,7 @@ public class iframe extends MultiPartElement implements Printable
 
         @param  align sets the align="" attribute. You can
 
-        use the AlignType.* variables for convience.
+        use the AlignType.* variables for convenience.
 
     */
 

@@ -38,32 +38,32 @@ Copyright (C) 2009 Idalica Corporation
 		<tr if="${isVersionShown == true}">
 			<td align="right">Version</td>
 			<td>:</td>
-			<td aligh="left">${mainVersion}</td>
+			<td align="left">${mainVersion}</td>
 		</tr>
 		<tr if="${isDBVersionShown == true}">
 			<td align="right">Database Version</td>
 			<td>:</td>
-			<td aligh="left">${dbVersion}</td>
+			<td align="left">${dbVersion}</td>
 		</tr>
 		<tr if="${isVendorShown == true}">
 			<td align="right">Vendor</td>
 			<td>:</td>
-			<td aligh="left">${vendor}</td>
+			<td align="left">${vendor}</td>
 		</tr>
 		<tr if="${isJVMShown == true}">
 			<td align="right">JVM</td>
 			<td>:</td>
-			<td aligh="left">${jvm}</td>
+			<td align="left">${jvm}</td>
 		</tr>
 		<tr if="${isOSShown == true}">
 			<td align="right">OS</td>
 			<td>:</td>
-			<td aligh="left">${os}</td>
+			<td align="left">${os}</td>
 		</tr>
 		<tr if="${isHostShown == true}">
 			<td align="right">Host</td>
 			<td>:</td>
-			<td aligh="left">${desktop.execution.serverName}</td>
+			<td align="left">${desktop.execution.serverName}</td>
 		</tr>
 	</table>
 </div>

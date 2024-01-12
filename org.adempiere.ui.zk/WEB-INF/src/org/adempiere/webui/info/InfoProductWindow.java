@@ -815,7 +815,7 @@ public class InfoProductWindow extends InfoWindow {
 	}	//	refresh
 	
 	/**
-	 * Query Avaiable to promise (ATP)
+	 * Query Available to promise (ATP)
 	 * @param m_M_Warehouse_ID
 	 * @param m_M_Product_ID 
 	 */
