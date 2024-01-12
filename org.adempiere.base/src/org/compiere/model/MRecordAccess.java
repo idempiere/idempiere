@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
@@ -287,5 +289,21 @@ public class MRecordAccess extends X_AD_Record_Access
 		}		
 		return m_tableName;
 	}	//	getTableName
+	
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return success;
+
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name));
+		
+		return success;
+	}	//	afterSave
 
 }	//	MRecordAccess
