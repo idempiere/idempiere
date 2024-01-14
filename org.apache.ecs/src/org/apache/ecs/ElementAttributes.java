@@ -116,7 +116,7 @@ public abstract class ElementAttributes extends GenericElement implements Attrib
     }
 
     /**
-        Set weather or not we surround the attributes with quotes.
+        Set whether or not we surround the attributes with quotes.
     */
     public Element setAttributeQuote(boolean attribute_quote)
     {

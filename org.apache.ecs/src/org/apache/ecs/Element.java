@@ -85,7 +85,7 @@ public interface Element extends ElementRegistry
     public String getElementType();
 
     /**
-        Set weather or not this Element needs a closing tag
+        Set whether or not this Element needs a closing tag
     */
     public void setNeedClosingTag(boolean close_tag);
 
