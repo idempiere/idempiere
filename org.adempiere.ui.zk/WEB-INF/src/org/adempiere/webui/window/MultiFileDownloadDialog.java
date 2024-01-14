@@ -28,7 +28,7 @@ import org.zkoss.zul.Vlayout;
 /**
  * Dialog to download multiple files
  * @author hengsin
- *
+ * @deprecated
  */
 public class MultiFileDownloadDialog extends Window {
 

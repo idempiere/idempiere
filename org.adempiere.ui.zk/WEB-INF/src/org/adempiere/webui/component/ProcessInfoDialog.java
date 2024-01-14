@@ -28,6 +28,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
@@ -192,12 +193,14 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			btnPrint.setVisible(true);
 		
 		if (m_logs != null && m_logs.length > 0){
+			m_logs = ProcessInfoUtil.sortLogs(m_logs);
 			separator = new Separator();
 			ZKUpdateUtil.setWidth(separator, "100%");
 			separator.setBar(true);
 			pnlMessage.appendChild(separator);
 			for (int loopCtr = 0; loopCtr < m_logs.length; loopCtr++) {				
-				ProcessInfoLog log = m_logs[loopCtr];			
+				ProcessInfoLog log = m_logs[loopCtr];
+
 				if (log.getP_Msg() != null || log.getP_Date() != null || log.getP_Number() != null) {			
 					SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);		
 					StringBuffer sb = new StringBuffer ();		
@@ -213,8 +216,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 					if (log.getP_Msg() != null)		
 						sb.append(Msg.parseTranslation(Env.getCtx(), log.getP_Msg()));	
 					//		
-							
-					if (log.getAD_Table_ID() > 0		
+						
+					if (log.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
+						pnlMessage.appendChild(AEnv.getDownloadLinkFromLog(log.getP_Msg()));
+					}else if (log.getAD_Table_ID() > 0		
 							&& log.getRecord_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());
 						recordLink.addEventListener(Events.ON_CLICK, e -> {

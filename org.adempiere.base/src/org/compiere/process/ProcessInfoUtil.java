@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 import org.compiere.model.MPInstanceLog;
 import org.compiere.model.X_AD_PInstance_Log;
@@ -250,5 +251,24 @@ public class ProcessInfoUtil
 		pi.setParameter(pars);
 	}   //  setParameterFromDB
 
-
+	/**
+	 * sort log of file path after log of info 
+	 * @param mLogs
+	 * @return
+	 */
+	public static ProcessInfoLog [] sortLogs (ProcessInfoLog[] mLogs) {
+		return Stream.of(mLogs)
+				.sorted((mLog1, mLog2) -> {
+					if (mLog1.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath
+							&& mLog2.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
+						return 0;
+					}else if (mLog1.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
+						return 1;
+					}else if (mLog2.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
+						return -1;
+					}else {
+						return 0;
+					}
+				}).toArray(ProcessInfoLog[]::new);
+	}
 }	//	ProcessInfoUtil

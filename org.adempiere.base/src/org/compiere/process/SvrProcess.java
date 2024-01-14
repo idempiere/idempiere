@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -42,6 +43,7 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.PO;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -84,7 +86,14 @@ public abstract class SvrProcess implements ProcessCall
 	 */
 	public void addBufferLog(int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId) {
 		ProcessInfoLog entryLog = new ProcessInfoLog(id, date, number, msg, tableId, recordId);
-		
+		addBufferLog(entryLog);
+	}
+	
+	/**
+	 * Add log to buffer, only process total success, flush buffer
+	 * @param entryLog
+	 */
+	public void addBufferLog(ProcessInfoLog entryLog) {
 		if (listEntryLog == null)
 			listEntryLog = new ArrayList<ProcessInfoLog>();
 		
@@ -901,4 +910,33 @@ public abstract class SvrProcess implements ProcessCall
 		return Collections.emptyList();
 	}
 
+	/**
+	 * refer {@link #addDownloadFile(File, boolean)} with onlySuccess = true
+	 * @param file
+	 */
+	public void addDownloadFile(File file) {
+		addDownloadFile(file, true);
+	}
+
+	/**
+	 * call {@link IProcessUI#download(File)} to keep old behavior
+	 * add file path to {@link ProcessInfoLog} with logtype is {@link X_AD_PInstance_Log#PINSTANCELOGTYPE_FilePath}
+	 * @param file
+	 * @param onlySuccess file show only process success
+	 */
+	public void addDownloadFile(File file, boolean onlySuccess) {
+		if (processUI != null)
+			processUI.download(file);
+		
+		// store file path to audit log to get back for case infowindow
+		ProcessInfoLog pLog = new ProcessInfoLog(m_pi.getAD_Process_ID(), null, null, file.getAbsolutePath(), 0, 0);
+		pLog.setPInstanceLogType(X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath);
+		if (onlySuccess) {
+			addBufferLog(pLog);
+		}else {
+			if (m_pi != null)
+				m_pi.addLog(pLog);
+		}
+		
+	}
 }   //  SvrProcess

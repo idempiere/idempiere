@@ -51,7 +51,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
-import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
@@ -158,7 +157,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	/** Reference to process thread/task **/
 	private Future<?> future;
-	/** files for download by user **/
+	
+	/** 
+	 * files for download by user
+	 * file path for download also store at @ProcessInfoLog with @ProcessInfoLog#getPInstanceLogType = X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath 
+	**/
 	private List<File> downloadFiles;
 	/** true when UI have been locked, i.e busy **/
 	private boolean m_locked = false;
@@ -1147,13 +1150,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		future = null;
 		unlockUI(m_pi);
-		if (downloadFiles.size() > 0) {
-			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
-			downloadDialog.setPage(getPage());
-			downloadDialog.setTitle(m_pi.getTitle());
-			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
-		}
-		
+
 		if (m_disposeOnComplete)
 			dispose();
 	}

@@ -31,12 +31,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletRequest;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.component.DynamicMediaLink;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
@@ -74,6 +76,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -81,6 +84,7 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.impl.InputElement;
 
@@ -992,5 +996,26 @@ public final class AEnv
 				detachInputElement(child);
 			}
 		}		
+	}
+
+	/**
+	 * build link component for download file
+	 * in case error build a empty link
+	 * @param filePath
+	 * @return
+	 */
+	public static Component getDownloadLinkFromLog(String filePath) {
+		File downloadFile = new File(filePath);
+		A downloadLink = null;
+		try {
+			AMedia media = new AMedia(downloadFile, MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(downloadFile), null);
+			downloadLink = new DynamicMediaLink();
+			((DynamicMediaLink)downloadLink).setMedia(media);
+			downloadLink.setLabel(media.getName());
+		} catch (FileNotFoundException e) {
+			downloadLink = new A(e.getMessage());
+		}
+		
+		return downloadLink;
 	}
 }	//	AEnv

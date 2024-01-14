@@ -33,7 +33,7 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240112L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName)
@@ -238,6 +238,8 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 
 	/** PInstanceLogType AD_Reference_ID=200242 */
 	public static final int PINSTANCELOGTYPE_AD_Reference_ID=200242;
+	/** FilePath = F */
+	public static final String PINSTANCELOGTYPE_FilePath = "F";
 	/** Progress = P */
 	public static final String PINSTANCELOGTYPE_Progress = "P";
 	/** Result = R */

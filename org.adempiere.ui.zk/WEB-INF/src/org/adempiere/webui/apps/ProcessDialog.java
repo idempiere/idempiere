@@ -45,6 +45,7 @@ import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.MProcess;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
@@ -454,7 +455,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private void appendRecordLogInfo(ProcessInfoLog[] m_logs, HtmlBasedComponent infoResultContent) {
 		if (m_logs == null)
 			return;
-
+		
+		m_logs = ProcessInfoUtil.sortLogs(m_logs);
+		
 		SimpleDateFormat dateFormat = DisplayType
 				.getDateFormat(DisplayType.Date);
 
@@ -511,7 +514,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			if (msgPresents) {
 				Td td = new Td();
 				if (log.getP_Msg() != null) {
-					if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0) {
+					if (log.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
+						td.appendChild(AEnv.getDownloadLinkFromLog(log.getP_Msg()));
+					}else if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(log.getP_Msg(), log.getAD_Table_ID(), log.getRecord_ID());																								
 						td.appendChild(recordLink);
 					} else {

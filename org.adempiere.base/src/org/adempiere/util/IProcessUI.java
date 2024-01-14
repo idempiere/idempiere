@@ -117,6 +117,7 @@ public interface IProcessUI {
 
 	/**
 	 * add to list of file available for download after process end 
+	 * think about to use {@link SvrProcess#addDownloadFile(File)} 
 	 * @param file
 	 */
 	public void download(File file);
