@@ -2121,17 +2121,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *	Get Attachment_ID for current record.
 	 *	@return AD_AttachmentID or 0 if no attachment.
 	 */
-	@SuppressWarnings("deprecation")
 	public int getAD_AttachmentID()
 	{
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		if (recordUU == null) {
-			int recordID = m_mTable.getKeyID(m_currentRow);
-			return MAttachment.getID(m_vo.AD_Table_ID, recordID);
-		}
-		return MAttachment.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MAttachment.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getAttachmentID
 
 	/**
@@ -2147,17 +2143,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *	Get Chat_ID for this record.
 	 *	@return CM_Chat_ID or 0 if no chat records
 	 */
-	@SuppressWarnings("deprecation")
 	public int getCM_ChatID()
 	{
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		if (recordUU == null) {
-			int recordID = m_mTable.getKeyID(m_currentRow);
-			return MChat.getID(m_vo.AD_Table_ID, recordID);
-		}
-		return MChat.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MChat.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getCM_ChatID
 	
 	/**
@@ -2172,33 +2164,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *	Get PostItID for this record.
 	 *	@return AD_PostIt_ID or 0 if no post it note records.
 	 */
-	@SuppressWarnings("deprecation")
 	public int getAD_PostIt_ID()
 	{
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		if (recordUU == null) {
-			int recordID = m_mTable.getKeyID(m_currentRow);
-			return MPostIt.getID(m_vo.AD_Table_ID, recordID);
-		}
-		return MPostIt.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MPostIt.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getAD_PostIt_ID	
 	
 	/**
 	 *  @return true if current row has Label records.
 	 */
-	@SuppressWarnings("deprecation")
 	public boolean hasLabel()
 	{
 		if (!canHaveAttachment())
 			return false;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		if (recordUU == null) {
-			int recordID = m_mTable.getKeyID(m_currentRow);
-			return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID);
-		}
-		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	hasLabel
 
 	/**
