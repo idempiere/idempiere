@@ -184,7 +184,7 @@ public class StatementProxy implements InvocationHandler {
 	 * @throws SQLException
 	 * @see java.sql.Statement#close()
 	 */
-	private void close () throws SQLException
+	protected void close () throws SQLException
 	{
 		if (close) return;
 		
