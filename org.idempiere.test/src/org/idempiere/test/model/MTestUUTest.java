@@ -82,10 +82,20 @@ public class MTestUUTest extends AbstractTestCase {
 	public void testDeletingTestUU() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
-		MTestUU testuu = new MTestUU(ctx, TestRecordInGardenWorld, trxName);
-		testuu.deleteEx(true);
-		MTestUU testuu2 = new MTestUU(ctx, TestRecordInGardenWorld, trxName);
-	    assertFalse(testuu2.get_UUID().equals(TestRecordInGardenWorld));
+
+		// deleting the TestRecordInGardenWorld is creating a deadlock with testReadingUpdatingTestUU in parallel execution
+		// insert a new record
+		MTestUU testuu = new MTestUU(ctx, PO.UUID_NEW_RECORD, trxName);
+		testuu.setName("Test UU record created on JUnit test");
+		testuu.saveEx();
+		testuu.load(trxName);
+	    assertEquals("Test UU record created on JUnit test", testuu.getName());
+	    String uukey = testuu.getTestUU_UU();
+
+		MTestUU testuuToDelete = new MTestUU(ctx, uukey, trxName);
+		testuuToDelete.deleteEx(true);
+		MTestUU testuu2 = new MTestUU(ctx, uukey, trxName);
+	    assertFalse(testuu2.get_UUID().equals(uukey));
 	}
 
 	@Test
