@@ -230,6 +230,11 @@ public class StatusBar extends Panel implements EventListener<Event>
 			label.addEventListener(Events.ON_CLICK, this);
     	}
     	
+    	div = buildPopupContent(m_logs);
+    }
+
+    private Div buildPopupContent(ProcessInfoLog[] m_logs) {
+    	Div div = null;
     	//add document/record link from ProcessInfoLog
     	if (m_logs != null) {
 			div = new Div();
@@ -251,8 +256,10 @@ public class StatusBar extends Panel implements EventListener<Event>
     	{
     		msgPopupCnt.appendChild(div);
     	}
+    	
+    	return div;
     }
-
+    
     /**
      * shorten statusText if exceed predefine max length of 80
      * @param statusText
