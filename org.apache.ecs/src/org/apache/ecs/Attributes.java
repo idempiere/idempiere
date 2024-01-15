@@ -116,7 +116,7 @@ public interface Attributes
     public boolean getAttributeQuote();
 
     /**
-        Set weather or not we surround the attributes with quotes.
+        Set whether or not we surround the attributes with quotes.
     */
     public Element setAttributeQuote(boolean attribute_quote);
 } 
