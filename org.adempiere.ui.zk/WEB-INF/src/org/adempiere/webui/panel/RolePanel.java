@@ -417,8 +417,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         Comboitem lstItemClient = lstClient.getSelectedItem();
         if (lstItemClient != null)
         {
-        	if (lstClient.getChildren().size() > 1) // load the preference was postponed until client selected
-        		userPreference.loadPreference(Env.getContextAsInt(m_ctx, Env.AD_USER_ID));
+       		userPreference.loadPreference(Env.getContextAsInt(m_ctx, Env.AD_USER_ID));
 
         	//  initial role
 			String initDefault = userPreference.getProperty(UserPreference.P_ROLE);
