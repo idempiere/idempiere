@@ -28,6 +28,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -218,7 +219,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 					//		
 						
 					if (log.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
-						pnlMessage.appendChild(AEnv.getDownloadLinkFromLog(log.getP_Msg()));
+						if (!MSysConfig.getBooleanValue(MSysConfig.PROCESS_SHOW_SEPARATE_DOWNLOAD_DIALOG, true))
+							pnlMessage.appendChild(AEnv.getDownloadLinkFromLog(log.getP_Msg()));
+						else//show on separate dialog by AbstractProcessDialog.onComplete
+							continue;
 					}else if (log.getAD_Table_ID() > 0		
 							&& log.getRecord_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());

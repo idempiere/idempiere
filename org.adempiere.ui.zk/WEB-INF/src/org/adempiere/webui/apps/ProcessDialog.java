@@ -486,7 +486,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		for (int i = 0; i < m_logs.length; i++) {
 
 			Tr tr = new Tr();
-			logMessageTable.appendChild(tr);
 
 			ProcessInfoLog log = m_logs[i];
 
@@ -515,7 +514,10 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				Td td = new Td();
 				if (log.getP_Msg() != null) {
 					if (log.getPInstanceLogType() == X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath) {
-						td.appendChild(AEnv.getDownloadLinkFromLog(log.getP_Msg()));
+						if (!MSysConfig.getBooleanValue(MSysConfig.PROCESS_SHOW_SEPARATE_DOWNLOAD_DIALOG, true))
+							td.appendChild(AEnv.getDownloadLinkFromLog(log.getP_Msg()));
+						else//show on separate dialog by AbstractProcessDialog.onComplete
+							continue;
 					}else if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(log.getP_Msg(), log.getAD_Table_ID(), log.getRecord_ID());																								
 						td.appendChild(recordLink);
@@ -528,6 +530,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				}
 				tr.appendChild(td);
 			}
+			
+			logMessageTable.appendChild(tr);
 		}
 	}
 

@@ -911,7 +911,7 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 * refer {@link #addDownloadFile(File, boolean)} with onlySuccess = true
+	 * Refer {@link #addDownloadFile(File, boolean)} with onlySuccess = true
 	 * @param file
 	 */
 	public void addDownloadFile(File file) {
@@ -919,10 +919,10 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 * call {@link IProcessUI#download(File)} to keep old behavior
-	 * add file path to {@link ProcessInfoLog} with logtype is {@link X_AD_PInstance_Log#PINSTANCELOGTYPE_FilePath}
+	 * For backward compatibility call {@link IProcessUI#download(File)}<br/>
+	 * Stored file path in the {@link ProcessInfoLog#m_P_Msg} with the {@link ProcessInfoLog#getPInstanceLogType} set to {@link X_AD_PInstance_Log#PINSTANCELOGTYPE_FilePath} 
 	 * @param file
-	 * @param onlySuccess file show only process success
+	 * @param onlySuccess normal file download keep on buffer log so appear only success case. In case want to show file ever un-success process then parse false  
 	 */
 	public void addDownloadFile(File file, boolean onlySuccess) {
 		if (processUI != null)

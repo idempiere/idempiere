@@ -14,13 +14,9 @@
 package org.adempiere.webui.window;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
-import javax.activation.MimetypesFileTypeMap;
-
-import org.adempiere.webui.component.DynamicMediaLink;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
-import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Vlayout;
@@ -28,7 +24,6 @@ import org.zkoss.zul.Vlayout;
 /**
  * Dialog to download multiple files
  * @author hengsin
- * @deprecated
  */
 public class MultiFileDownloadDialog extends Window {
 
@@ -60,17 +55,8 @@ public class MultiFileDownloadDialog extends Window {
 		Vlayout layout = new Vlayout();
 		layout.setStyle("padding-top: 10px; padding-bottom: 10px;");
 		appendChild(layout);
-		MimetypesFileTypeMap mimeMap = new MimetypesFileTypeMap();
 		for(File file : files) {
-			try {
-				AMedia media = new AMedia(file, mimeMap.getContentType(file), null);
-				DynamicMediaLink link = new DynamicMediaLink();
-				layout.appendChild(link);
-				link.setMedia(media);
-				link.setLabel(media.getName());				
-				link.setStyle("margin: 5px;");
-			} catch (FileNotFoundException e) {				
-			}
+			layout.appendChild(AEnv.getDownloadLinkFromLog(file));
 		}
 		
 		this.setClosable(true);

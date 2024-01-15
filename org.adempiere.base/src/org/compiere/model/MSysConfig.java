@@ -170,6 +170,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD";
     public static final String PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE = "PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE";
     public static final String PDF_FONT_DIR = "PDF_FONT_DIR";
+    public static final String PROCESS_SHOW_SEPARATE_DOWNLOAD_DIALOG = "PROCESS_SHOW_SEPARATE_DOWNLOAD_DIALOG";
     public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
     public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
     public static final String PROJECT_ID_PASSWORD = "PROJECT_ID_PASSWORD";

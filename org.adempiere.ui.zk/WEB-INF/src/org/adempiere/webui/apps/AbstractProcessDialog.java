@@ -51,6 +51,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
+import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
@@ -73,8 +74,10 @@ import org.compiere.model.MUserDefProc;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_PInstance;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.AdempiereSystemError;
@@ -159,8 +162,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private Future<?> future;
 	
 	/** 
-	 * files for download by user
-	 * file path for download also store at @ProcessInfoLog with @ProcessInfoLog#getPInstanceLogType = X_AD_PInstance_Log.PINSTANCELOGTYPE_FilePath 
+	 * Files for download by user <br/>
+	 * The file path for download is also stored in the {@link ProcessInfoLog#m_P_Msg} with the {@link ProcessInfoLog#getPInstanceLogType} set to {@link X_AD_PInstance_Log#PINSTANCELOGTYPE_FilePath} 
 	**/
 	private List<File> downloadFiles;
 	/** true when UI have been locked, i.e busy **/
@@ -1150,7 +1153,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		future = null;
 		unlockUI(m_pi);
-
+		if (downloadFiles.size() > 0 
+				&& MSysConfig.getBooleanValue(MSysConfig.PROCESS_SHOW_SEPARATE_DOWNLOAD_DIALOG, true)) {
+			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
+			downloadDialog.setPage(getPage());
+			downloadDialog.setTitle(m_pi.getTitle());
+			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
+		}
 		if (m_disposeOnComplete)
 			dispose();
 	}

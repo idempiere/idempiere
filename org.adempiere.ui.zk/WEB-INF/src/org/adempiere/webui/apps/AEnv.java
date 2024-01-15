@@ -999,18 +999,29 @@ public final class AEnv
 	}
 
 	/**
-	 * build link component for download file
-	 * in case error build a empty link
+	 * @see #getDownloadLinkFromLog(File)
 	 * @param filePath
 	 * @return
 	 */
 	public static Component getDownloadLinkFromLog(String filePath) {
 		File downloadFile = new File(filePath);
+		return AEnv.getDownloadLinkFromLog(downloadFile);
+	}
+	
+	/**
+	 * Create a link for download file<br/>
+	 * In case of error show error message on link text
+	 * @param downloadFile
+	 * @return
+	 */
+	public static Component getDownloadLinkFromLog(File downloadFile) {
+		
 		A downloadLink = null;
 		try {
 			AMedia media = new AMedia(downloadFile, MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(downloadFile), null);
 			downloadLink = new DynamicMediaLink();
 			((DynamicMediaLink)downloadLink).setMedia(media);
+			downloadLink.setStyle("margin: 5px;");
 			downloadLink.setLabel(media.getName());
 		} catch (FileNotFoundException e) {
 			downloadLink = new A(e.getMessage());

@@ -252,7 +252,7 @@ public class ProcessInfoUtil
 	}   //  setParameterFromDB
 
 	/**
-	 * sort log of file path after log of info 
+	 * Sort log entries so that the file path follows the log information 
 	 * @param mLogs
 	 * @return
 	 */

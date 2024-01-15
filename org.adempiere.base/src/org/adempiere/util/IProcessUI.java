@@ -116,8 +116,8 @@ public interface IProcessUI {
 	}
 
 	/**
-	 * add to list of file available for download after process end 
-	 * think about to use {@link SvrProcess#addDownloadFile(File)} 
+	 * Add to list of file available for download after process end<br/> 
+	 * While this API is limited to processes with user interfaces, consider using {@link SvrProcess#addDownloadFile(File)} for broader support, as it stores file download information in the database 
 	 * @param file
 	 */
 	public void download(File file);
