@@ -5,96 +5,16 @@ SELECT register_migration_script('202401151138_IDEMPIERE-5245.sql') FROM dual;
 UPDATE AD_Element SET Description='Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book',Updated=TO_TIMESTAMP('2024-01-15 11:38:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=52031
 ;
 
--- Jan 15, 2024, 11:38:38 AM CET
-UPDATE AD_Column SET ColumnName='CashBookTransferType', Name='Cash Book Transfer Type', Description='Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=52031
-;
-
--- Jan 15, 2024, 11:38:38 AM CET
-UPDATE AD_Process_Para SET ColumnName='CashBookTransferType', Name='Cash Book Transfer Type', Description='Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book', Help=NULL, AD_Element_ID=52031 WHERE UPPER(ColumnName)='CASHBOOKTRANSFERTYPE' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:38:38 AM CET
-UPDATE AD_Process_Para SET ColumnName='CashBookTransferType', Name='Cash Book Transfer Type', Description='Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=52031 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:38:38 AM CET
-UPDATE AD_InfoColumn SET ColumnName='CashBookTransferType', Name='Cash Book Transfer Type', Description='Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=52031 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:38:38 AM CET
-UPDATE AD_Field SET Name='Cash Book Transfer Type', Description='Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book', Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=52031) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:48:38 AM CET
 UPDATE AD_Element SET Help='EMail user name for requests, alerts and escalation are sent from this email address as well as delivery information if the sales rep does not have an email account. Required, if your mail server requires authentication as well as for processing incoming mails.',Updated=TO_TIMESTAMP('2024-01-15 11:48:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=1700
-;
-
--- Jan 15, 2024, 11:48:38 AM CET
-UPDATE AD_Column SET ColumnName='RequestUser', Name='Request User', Description='User Name (ID) of the email owner', Help='EMail user name for requests, alerts and escalation are sent from this email address as well as delivery information if the sales rep does not have an email account. Required, if your mail server requires authentication as well as for processing incoming mails.', Placeholder=NULL WHERE AD_Element_ID=1700
-;
-
--- Jan 15, 2024, 11:48:38 AM CET
-UPDATE AD_Process_Para SET ColumnName='RequestUser', Name='Request User', Description='User Name (ID) of the email owner', Help='EMail user name for requests, alerts and escalation are sent from this email address as well as delivery information if the sales rep does not have an email account. Required, if your mail server requires authentication as well as for processing incoming mails.', AD_Element_ID=1700 WHERE UPPER(ColumnName)='REQUESTUSER' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:48:38 AM CET
-UPDATE AD_Process_Para SET ColumnName='RequestUser', Name='Request User', Description='User Name (ID) of the email owner', Help='EMail user name for requests, alerts and escalation are sent from this email address as well as delivery information if the sales rep does not have an email account. Required, if your mail server requires authentication as well as for processing incoming mails.', Placeholder=NULL WHERE AD_Element_ID=1700 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:48:38 AM CET
-UPDATE AD_InfoColumn SET ColumnName='RequestUser', Name='Request User', Description='User Name (ID) of the email owner', Help='EMail user name for requests, alerts and escalation are sent from this email address as well as delivery information if the sales rep does not have an email account. Required, if your mail server requires authentication as well as for processing incoming mails.', Placeholder=NULL WHERE AD_Element_ID=1700 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:48:38 AM CET
-UPDATE AD_Field SET Name='Request User', Description='User Name (ID) of the email owner', Help='EMail user name for requests, alerts and escalation are sent from this email address as well as delivery information if the sales rep does not have an email account. Required, if your mail server requires authentication as well as for processing incoming mails.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=1700) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 11:48:50 AM CET
 UPDATE AD_Element SET Help='The user name in the mail system is usually the string before the @ of your email address.  Required if the mail server requires authentication to send emails.',Updated=TO_TIMESTAMP('2024-01-15 11:48:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=1896
 ;
 
--- Jan 15, 2024, 11:48:50 AM CET
-UPDATE AD_Column SET ColumnName='EMailUser', Name='EMail User ID', Description='User Name (ID) in the Mail System', Help='The user name in the mail system is usually the string before the @ of your email address.  Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Element_ID=1896
-;
-
--- Jan 15, 2024, 11:48:50 AM CET
-UPDATE AD_Process_Para SET ColumnName='EMailUser', Name='EMail User ID', Description='User Name (ID) in the Mail System', Help='The user name in the mail system is usually the string before the @ of your email address.  Required if the mail server requires authentication to send emails.', AD_Element_ID=1896 WHERE UPPER(ColumnName)='EMAILUSER' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:48:50 AM CET
-UPDATE AD_Process_Para SET ColumnName='EMailUser', Name='EMail User ID', Description='User Name (ID) in the Mail System', Help='The user name in the mail system is usually the string before the @ of your email address.  Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Element_ID=1896 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:48:50 AM CET
-UPDATE AD_InfoColumn SET ColumnName='EMailUser', Name='EMail User ID', Description='User Name (ID) in the Mail System', Help='The user name in the mail system is usually the string before the @ of your email address.  Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Element_ID=1896 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:48:50 AM CET
-UPDATE AD_Field SET Name='EMail User ID', Description='User Name (ID) in the Mail System', Help='The user name in the mail system is usually the string before the @ of your email address.  Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=1896) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:49:29 AM CET
 UPDATE AD_Element SET Help='Required if the mail server requires authentication to send emails.',Updated=TO_TIMESTAMP('2024-01-15 11:49:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=1897
-;
-
--- Jan 15, 2024, 11:49:29 AM CET
-UPDATE AD_Column SET ColumnName='EMailUserPW', Name='EMail User Password', Description='Password of your email user id', Help='Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Element_ID=1897
-;
-
--- Jan 15, 2024, 11:49:29 AM CET
-UPDATE AD_Process_Para SET ColumnName='EMailUserPW', Name='EMail User Password', Description='Password of your email user id', Help='Required if the mail server requires authentication to send emails.', AD_Element_ID=1897 WHERE UPPER(ColumnName)='EMAILUSERPW' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:49:29 AM CET
-UPDATE AD_Process_Para SET ColumnName='EMailUserPW', Name='EMail User Password', Description='Password of your email user id', Help='Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Element_ID=1897 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:49:29 AM CET
-UPDATE AD_InfoColumn SET ColumnName='EMailUserPW', Name='EMail User Password', Description='Password of your email user id', Help='Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Element_ID=1897 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:49:29 AM CET
-UPDATE AD_Field SET Name='EMail User Password', Description='Password of your email user id', Help='Required if the mail server requires authentication to send emails.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=1897) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 11:50:41 AM CET
@@ -105,32 +25,8 @@ UPDATE AD_Element SET PO_Name='Receipt Description',Updated=TO_TIMESTAMP('2024-0
 UPDATE AD_Element SET Help='This allows to have the three general situations of "not open" - "open" - "closed"',Updated=TO_TIMESTAMP('2024-01-15 11:51:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2722
 ;
 
--- Jan 15, 2024, 11:51:21 AM CET
-UPDATE AD_Column SET ColumnName='IsOpen', Name='Open Status', Description='The status is closed', Help='This allows to have the three general situations of "not open" - "open" - "closed"', Placeholder=NULL WHERE AD_Element_ID=2722
-;
-
--- Jan 15, 2024, 11:51:21 AM CET
-UPDATE AD_Process_Para SET ColumnName='IsOpen', Name='Open Status', Description='The status is closed', Help='This allows to have the three general situations of "not open" - "open" - "closed"', AD_Element_ID=2722 WHERE UPPER(ColumnName)='ISOPEN' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:51:21 AM CET
-UPDATE AD_Process_Para SET ColumnName='IsOpen', Name='Open Status', Description='The status is closed', Help='This allows to have the three general situations of "not open" - "open" - "closed"', Placeholder=NULL WHERE AD_Element_ID=2722 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:51:21 AM CET
-UPDATE AD_InfoColumn SET ColumnName='IsOpen', Name='Open Status', Description='The status is closed', Help='This allows to have the three general situations of "not open" - "open" - "closed"', Placeholder=NULL WHERE AD_Element_ID=2722 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:51:21 AM CET
-UPDATE AD_Field SET Name='Open Status', Description='The status is closed', Help='This allows to have the three general situations of "not open" - "open" - "closed"', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=2722) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:51:52 AM CET
 UPDATE AD_Element SET PrintName='Unit Runtime',Updated=TO_TIMESTAMP('2024-01-15 11:51:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2778
-;
-
--- Jan 15, 2024, 11:51:52 AM CET
-UPDATE AD_PrintFormatItem SET PrintName='Unit Runtime', Name='Runtime per Unit' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=2778)
 ;
 
 -- Jan 15, 2024, 11:53:53 AM CET
@@ -138,149 +34,24 @@ UPDATE AD_Element SET Help='Reporting Hierarchy allows you to select different H
 Accounting Segments like Organization, Account, Product may have several hierarchies to accommodate different views on the business.',Updated=TO_TIMESTAMP('2024-01-15 11:53:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2868
 ;
 
--- Jan 15, 2024, 11:53:53 AM CET
-UPDATE AD_Column SET ColumnName='PA_Hierarchy_ID', Name='Reporting Hierarchy', Description='Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.', Help='Reporting Hierarchy allows you to select different Hierarchies/Trees for the report.
-Accounting Segments like Organization, Account, Product may have several hierarchies to accommodate different views on the business.', Placeholder=NULL WHERE AD_Element_ID=2868
-;
-
--- Jan 15, 2024, 11:53:53 AM CET
-UPDATE AD_Process_Para SET ColumnName='PA_Hierarchy_ID', Name='Reporting Hierarchy', Description='Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.', Help='Reporting Hierarchy allows you to select different Hierarchies/Trees for the report.
-Accounting Segments like Organization, Account, Product may have several hierarchies to accommodate different views on the business.', AD_Element_ID=2868 WHERE UPPER(ColumnName)='PA_HIERARCHY_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:53:53 AM CET
-UPDATE AD_Process_Para SET ColumnName='PA_Hierarchy_ID', Name='Reporting Hierarchy', Description='Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.', Help='Reporting Hierarchy allows you to select different Hierarchies/Trees for the report.
-Accounting Segments like Organization, Account, Product may have several hierarchies to accommodate different views on the business.', Placeholder=NULL WHERE AD_Element_ID=2868 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:53:53 AM CET
-UPDATE AD_InfoColumn SET ColumnName='PA_Hierarchy_ID', Name='Reporting Hierarchy', Description='Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.', Help='Reporting Hierarchy allows you to select different Hierarchies/Trees for the report.
-Accounting Segments like Organization, Account, Product may have several hierarchies to accommodate different views on the business.', Placeholder=NULL WHERE AD_Element_ID=2868 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:53:53 AM CET
-UPDATE AD_Field SET Name='Reporting Hierarchy', Description='Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.', Help='Reporting Hierarchy allows you to select different Hierarchies/Trees for the report.
-Accounting Segments like Organization, Account, Product may have several hierarchies to accommodate different views on the business.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=2868) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:55:53 AM CET
 UPDATE AD_Element SET Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',Updated=TO_TIMESTAMP('2024-01-15 11:55:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2877
-;
-
--- Jan 15, 2024, 11:55:53 AM CET
-UPDATE AD_Column SET ColumnName='UserElement1_ID', Name='User Column 1', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', Placeholder=NULL WHERE AD_Element_ID=2877
-;
-
--- Jan 15, 2024, 11:55:53 AM CET
-UPDATE AD_Process_Para SET ColumnName='UserElement1_ID', Name='User Column 1', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', AD_Element_ID=2877 WHERE UPPER(ColumnName)='USERELEMENT1_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:55:53 AM CET
-UPDATE AD_Process_Para SET ColumnName='UserElement1_ID', Name='User Column 1', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', Placeholder=NULL WHERE AD_Element_ID=2877 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:55:53 AM CET
-UPDATE AD_InfoColumn SET ColumnName='UserElement1_ID', Name='User Column 1', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', Placeholder=NULL WHERE AD_Element_ID=2877 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:55:53 AM CET
-UPDATE AD_Field SET Name='User Column 1', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=2877) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 11:55:59 AM CET
 UPDATE AD_Element SET Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested) ',Updated=TO_TIMESTAMP('2024-01-15 11:55:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2878
 ;
 
--- Jan 15, 2024, 11:55:59 AM CET
-UPDATE AD_Column SET ColumnName='UserElement2_ID', Name='User Column 2', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested) ', Placeholder=NULL WHERE AD_Element_ID=2878
-;
-
--- Jan 15, 2024, 11:55:59 AM CET
-UPDATE AD_Process_Para SET ColumnName='UserElement2_ID', Name='User Column 2', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested) ', AD_Element_ID=2878 WHERE UPPER(ColumnName)='USERELEMENT2_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:55:59 AM CET
-UPDATE AD_Process_Para SET ColumnName='UserElement2_ID', Name='User Column 2', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested) ', Placeholder=NULL WHERE AD_Element_ID=2878 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:55:59 AM CET
-UPDATE AD_InfoColumn SET ColumnName='UserElement2_ID', Name='User Column 2', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested) ', Placeholder=NULL WHERE AD_Element_ID=2878 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:55:59 AM CET
-UPDATE AD_Field SET Name='User Column 2', Description='User defined accounting Element', Help='A user defined accounting element refers to an iDempiere table. This allows to use any table content as an accounting dimension (e.g. Project Task).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested) ', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=2878) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:56:49 AM CET
 UPDATE AD_Element SET Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).',Updated=TO_TIMESTAMP('2024-01-15 11:56:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2903
-;
-
--- Jan 15, 2024, 11:56:49 AM CET
-UPDATE AD_Column SET ColumnName='PA_ColorSchema_ID', Name='Color Schema', Description='Performance Color Schema', Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).', Placeholder=NULL WHERE AD_Element_ID=2903
-;
-
--- Jan 15, 2024, 11:56:49 AM CET
-UPDATE AD_Process_Para SET ColumnName='PA_ColorSchema_ID', Name='Color Schema', Description='Performance Color Schema', Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).', AD_Element_ID=2903 WHERE UPPER(ColumnName)='PA_COLORSCHEMA_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:56:49 AM CET
-UPDATE AD_Process_Para SET ColumnName='PA_ColorSchema_ID', Name='Color Schema', Description='Performance Color Schema', Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).', Placeholder=NULL WHERE AD_Element_ID=2903 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:56:49 AM CET
-UPDATE AD_InfoColumn SET ColumnName='PA_ColorSchema_ID', Name='Color Schema', Description='Performance Color Schema', Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).', Placeholder=NULL WHERE AD_Element_ID=2903 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:56:49 AM CET
-UPDATE AD_Field SET Name='Color Schema', Description='Performance Color Schema', Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=2903) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 11:57:10 AM CET
 UPDATE AD_Element SET Description='Next Maintenance Unit',Updated=TO_TIMESTAMP('2024-01-15 11:57:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=2934
 ;
 
--- Jan 15, 2024, 11:57:10 AM CET
-UPDATE AD_Column SET ColumnName='NextMaintenenceUnit', Name='Next Unit', Description='Next Maintenance Unit', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=2934
-;
-
--- Jan 15, 2024, 11:57:10 AM CET
-UPDATE AD_Process_Para SET ColumnName='NextMaintenenceUnit', Name='Next Unit', Description='Next Maintenance Unit', Help=NULL, AD_Element_ID=2934 WHERE UPPER(ColumnName)='NEXTMAINTENENCEUNIT' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:57:10 AM CET
-UPDATE AD_Process_Para SET ColumnName='NextMaintenenceUnit', Name='Next Unit', Description='Next Maintenance Unit', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=2934 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:57:10 AM CET
-UPDATE AD_InfoColumn SET ColumnName='NextMaintenenceUnit', Name='Next Unit', Description='Next Maintenance Unit', Help=NULL, Placeholder=NULL WHERE AD_Element_ID=2934 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:57:10 AM CET
-UPDATE AD_Field SET Name='Next Unit', Description='Next Maintenance Unit', Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=2934) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:57:40 AM CET
 UPDATE AD_Element SET Description='Media Server list to which content should get transferred',Updated=TO_TIMESTAMP('2024-01-15 11:57:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=3009
-;
-
--- Jan 15, 2024, 11:57:40 AM CET
-UPDATE AD_Column SET ColumnName='CM_Media_Server_ID', Name='Media Server', Description='Media Server list to which content should get transferred', Help='Media Server list to which content should get transferred', Placeholder=NULL WHERE AD_Element_ID=3009
-;
-
--- Jan 15, 2024, 11:57:40 AM CET
-UPDATE AD_Process_Para SET ColumnName='CM_Media_Server_ID', Name='Media Server', Description='Media Server list to which content should get transferred', Help='Media Server list to which content should get transferred', AD_Element_ID=3009 WHERE UPPER(ColumnName)='CM_MEDIA_SERVER_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:57:40 AM CET
-UPDATE AD_Process_Para SET ColumnName='CM_Media_Server_ID', Name='Media Server', Description='Media Server list to which content should get transferred', Help='Media Server list to which content should get transferred', Placeholder=NULL WHERE AD_Element_ID=3009 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:57:40 AM CET
-UPDATE AD_InfoColumn SET ColumnName='CM_Media_Server_ID', Name='Media Server', Description='Media Server list to which content should get transferred', Help='Media Server list to which content should get transferred', Placeholder=NULL WHERE AD_Element_ID=3009 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:57:40 AM CET
-UPDATE AD_Field SET Name='Media Server', Description='Media Server list to which content should get transferred', Help='Media Server list to which content should get transferred', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=3009) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 11:58:16 AM CET
@@ -288,81 +59,12 @@ UPDATE AD_Element SET Help='A Container defines the abstract level around the co
 The ID is related 1 to 1 to the container ID',Updated=TO_TIMESTAMP('2024-01-15 11:58:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=3022
 ;
 
--- Jan 15, 2024, 11:58:16 AM CET
-UPDATE AD_Column SET ColumnName='CM_CStage_ID', Name='Web Container Stage', Description='Web Container Stage contains the staging content like images, text etc.', Help='A Container defines the abstract level around the content, it defines how the content gets displayed, indexed and stored.
-The ID is related 1 to 1 to the container ID', Placeholder=NULL WHERE AD_Element_ID=3022
-;
-
--- Jan 15, 2024, 11:58:16 AM CET
-UPDATE AD_Process_Para SET ColumnName='CM_CStage_ID', Name='Web Container Stage', Description='Web Container Stage contains the staging content like images, text etc.', Help='A Container defines the abstract level around the content, it defines how the content gets displayed, indexed and stored.
-The ID is related 1 to 1 to the container ID', AD_Element_ID=3022 WHERE UPPER(ColumnName)='CM_CSTAGE_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:58:16 AM CET
-UPDATE AD_Process_Para SET ColumnName='CM_CStage_ID', Name='Web Container Stage', Description='Web Container Stage contains the staging content like images, text etc.', Help='A Container defines the abstract level around the content, it defines how the content gets displayed, indexed and stored.
-The ID is related 1 to 1 to the container ID', Placeholder=NULL WHERE AD_Element_ID=3022 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:58:16 AM CET
-UPDATE AD_InfoColumn SET ColumnName='CM_CStage_ID', Name='Web Container Stage', Description='Web Container Stage contains the staging content like images, text etc.', Help='A Container defines the abstract level around the content, it defines how the content gets displayed, indexed and stored.
-The ID is related 1 to 1 to the container ID', Placeholder=NULL WHERE AD_Element_ID=3022 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:58:16 AM CET
-UPDATE AD_Field SET Name='Web Container Stage', Description='Web Container Stage contains the staging content like images, text etc.', Help='A Container defines the abstract level around the content, it defines how the content gets displayed, indexed and stored.
-The ID is related 1 to 1 to the container ID', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=3022) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:58:46 AM CET
 UPDATE AD_Element SET Help='If your application requires additional jar files, enter them here. The jar files must be located in the $IDEMPIERE_HOME/lib directory.',Updated=TO_TIMESTAMP('2024-01-15 11:58:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=3054
 ;
 
--- Jan 15, 2024, 11:58:46 AM CET
-UPDATE AD_Column SET ColumnName='Classpath', Name='Classpath', Description='Extension Classpath', Help='If your application requires additional jar files, enter them here. The jar files must be located in the $IDEMPIERE_HOME/lib directory.', Placeholder=NULL WHERE AD_Element_ID=3054
-;
-
--- Jan 15, 2024, 11:58:46 AM CET
-UPDATE AD_Process_Para SET ColumnName='Classpath', Name='Classpath', Description='Extension Classpath', Help='If your application requires additional jar files, enter them here. The jar files must be located in the $IDEMPIERE_HOME/lib directory.', AD_Element_ID=3054 WHERE UPPER(ColumnName)='CLASSPATH' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:58:46 AM CET
-UPDATE AD_Process_Para SET ColumnName='Classpath', Name='Classpath', Description='Extension Classpath', Help='If your application requires additional jar files, enter them here. The jar files must be located in the $IDEMPIERE_HOME/lib directory.', Placeholder=NULL WHERE AD_Element_ID=3054 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:58:46 AM CET
-UPDATE AD_InfoColumn SET ColumnName='Classpath', Name='Classpath', Description='Extension Classpath', Help='If your application requires additional jar files, enter them here. The jar files must be located in the $IDEMPIERE_HOME/lib directory.', Placeholder=NULL WHERE AD_Element_ID=3054 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:58:46 AM CET
-UPDATE AD_Field SET Name='Classpath', Description='Extension Classpath', Help='If your application requires additional jar files, enter them here. The jar files must be located in the $IDEMPIERE_HOME/lib directory.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=3054) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 11:59:52 AM CET
 UPDATE AD_Element SET Name='Allow Shipment Info', PrintName='Allow Shipment Info',Updated=TO_TIMESTAMP('2024-01-15 11:59:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=50049
-;
-
--- Jan 15, 2024, 11:59:52 AM CET
-UPDATE AD_Column SET ColumnName='Allow_Info_InOut', Name='Allow Shipment Info', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=50049
-;
-
--- Jan 15, 2024, 11:59:52 AM CET
-UPDATE AD_Process_Para SET ColumnName='Allow_Info_InOut', Name='Allow Shipment Info', Description=NULL, Help=NULL, AD_Element_ID=50049 WHERE UPPER(ColumnName)='ALLOW_INFO_INOUT' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 11:59:52 AM CET
-UPDATE AD_Process_Para SET ColumnName='Allow_Info_InOut', Name='Allow Shipment Info', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=50049 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:59:52 AM CET
-UPDATE AD_InfoColumn SET ColumnName='Allow_Info_InOut', Name='Allow Shipment Info', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=50049 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:59:52 AM CET
-UPDATE AD_Field SET Name='Allow Shipment Info', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=50049) AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 11:59:52 AM CET
-UPDATE AD_PrintFormatItem SET PrintName='Allow Shipment Info', Name='Allow Shipment Info' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=50049)
 ;
 
 -- Jan 15, 2024, 12:01:48 PM CET
@@ -373,46 +75,6 @@ UPDATE AD_Element SET Description='Indicate the Quantity use in this BOM', Help=
 ',Updated=TO_TIMESTAMP('2024-01-15 12:01:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=53255
 ;
 
--- Jan 15, 2024, 12:01:48 PM CET
-UPDATE AD_Column SET ColumnName='QtyBOM', Name='Quantity', Description='Indicate the Quantity use in this BOM', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Element_ID=53255
-;
-
--- Jan 15, 2024, 12:01:48 PM CET
-UPDATE AD_Process_Para SET ColumnName='QtyBOM', Name='Quantity', Description='Indicate the Quantity use in this BOM', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', AD_Element_ID=53255 WHERE UPPER(ColumnName)='QTYBOM' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 12:01:48 PM CET
-UPDATE AD_Process_Para SET ColumnName='QtyBOM', Name='Quantity', Description='Indicate the Quantity use in this BOM', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Element_ID=53255 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:01:48 PM CET
-UPDATE AD_InfoColumn SET ColumnName='QtyBOM', Name='Quantity', Description='Indicate the Quantity use in this BOM', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Element_ID=53255 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:01:48 PM CET
-UPDATE AD_Field SET Name='Quantity', Description='Indicate the Quantity use in this BOM', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=53255) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 12:02:22 PM CET
 UPDATE AD_Element SET Help='Exist two way the add a component to a BOM or Formula:
 
@@ -421,128 +83,20 @@ UPDATE AD_Element SET Help='Exist two way the add a component to a BOM or Formul
 ',Updated=TO_TIMESTAMP('2024-01-15 12:02:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=53256
 ;
 
--- Jan 15, 2024, 12:02:22 PM CET
-UPDATE AD_Column SET ColumnName='QtyBatch', Name='Quantity in %', Description='Indicate the Quantity % use in this Formula', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Element_ID=53256
-;
-
--- Jan 15, 2024, 12:02:22 PM CET
-UPDATE AD_Process_Para SET ColumnName='QtyBatch', Name='Quantity in %', Description='Indicate the Quantity % use in this Formula', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', AD_Element_ID=53256 WHERE UPPER(ColumnName)='QTYBATCH' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 12:02:22 PM CET
-UPDATE AD_Process_Para SET ColumnName='QtyBatch', Name='Quantity in %', Description='Indicate the Quantity % use in this Formula', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Element_ID=53256 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:02:22 PM CET
-UPDATE AD_InfoColumn SET ColumnName='QtyBatch', Name='Quantity in %', Description='Indicate the Quantity % use in this Formula', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Element_ID=53256 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:02:22 PM CET
-UPDATE AD_Field SET Name='Quantity in %', Description='Indicate the Quantity % use in this Formula', Help='Exist two way the add a component to a BOM or Formula:
-
-1.- Adding a Component based in quantity to use in this BOM
-2.- Adding a Component based in % to use the Order Quantity of Manufacturing Order in this Formula.
-', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=53256) AND IsCentrallyMaintained='Y'
-;
-
 -- Jan 15, 2024, 12:03:19 PM CET
 UPDATE AD_Element SET Help='Scrap is useful to determinate a right Standard Cost and management a good supply.',Updated=TO_TIMESTAMP('2024-01-15 12:03:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=53257
-;
-
--- Jan 15, 2024, 12:03:19 PM CET
-UPDATE AD_Column SET ColumnName='Scrap', Name='Scrap %', Description='Indicate the Scrap %  for calculate the Scrap Quantity', Help='Scrap is useful to determinate a right Standard Cost and management a good supply.', Placeholder=NULL WHERE AD_Element_ID=53257
-;
-
--- Jan 15, 2024, 12:03:20 PM CET
-UPDATE AD_Process_Para SET ColumnName='Scrap', Name='Scrap %', Description='Indicate the Scrap %  for calculate the Scrap Quantity', Help='Scrap is useful to determinate a right Standard Cost and management a good supply.', AD_Element_ID=53257 WHERE UPPER(ColumnName)='SCRAP' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 12:03:20 PM CET
-UPDATE AD_Process_Para SET ColumnName='Scrap', Name='Scrap %', Description='Indicate the Scrap %  for calculate the Scrap Quantity', Help='Scrap is useful to determinate a right Standard Cost and management a good supply.', Placeholder=NULL WHERE AD_Element_ID=53257 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:03:20 PM CET
-UPDATE AD_InfoColumn SET ColumnName='Scrap', Name='Scrap %', Description='Indicate the Scrap %  for calculate the Scrap Quantity', Help='Scrap is useful to determinate a right Standard Cost and management a good supply.', Placeholder=NULL WHERE AD_Element_ID=53257 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:03:20 PM CET
-UPDATE AD_Field SET Name='Scrap %', Description='Indicate the Scrap %  for calculate the Scrap Quantity', Help='Scrap is useful to determinate a right Standard Cost and management a good supply.', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=53257) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 12:04:01 PM CET
 UPDATE AD_Element SET Name='Job Qty', PrintName='Job Qty',Updated=TO_TIMESTAMP('2024-01-15 12:04:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=53401
 ;
 
--- Jan 15, 2024, 12:04:01 PM CET
-UPDATE AD_Column SET ColumnName='JobCant', Name='Job Qty', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=53401
-;
-
--- Jan 15, 2024, 12:04:01 PM CET
-UPDATE AD_Process_Para SET ColumnName='JobCant', Name='Job Qty', Description=NULL, Help=NULL, AD_Element_ID=53401 WHERE UPPER(ColumnName)='JOBCANT' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 12:04:01 PM CET
-UPDATE AD_Process_Para SET ColumnName='JobCant', Name='Job Qty', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=53401 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:04:01 PM CET
-UPDATE AD_InfoColumn SET ColumnName='JobCant', Name='Job Qty', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=53401 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:04:01 PM CET
-UPDATE AD_Field SET Name='Job Qty', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=53401) AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:04:01 PM CET
-UPDATE AD_PrintFormatItem SET PrintName='Job Qty', Name='Job Qty' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=53401)
-;
-
 -- Jan 15, 2024, 12:04:38 PM CET
 UPDATE AD_Element SET PrintName='Ignore Processing Time',Updated=TO_TIMESTAMP('2024-01-15 12:04:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=54123
 ;
 
--- Jan 15, 2024, 12:04:38 PM CET
-UPDATE AD_PrintFormatItem SET PrintName='Ignore Processing Time', Name='Ignore Processing Time' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=54123)
-;
-
 -- Jan 15, 2024, 12:05:04 PM CET
 UPDATE AD_Element SET Help='The Number of Inventory Counts indicates the number of times per year that inventory counts will be performed',Updated=TO_TIMESTAMP('2024-01-15 12:05:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=1112
-;
-
--- Jan 15, 2024, 12:05:04 PM CET
-UPDATE AD_Column SET ColumnName='NoInventoryCount', Name='Number of Inventory counts', Description='Frequency of inventory counts per year', Help='The Number of Inventory Counts indicates the number of times per year that inventory counts will be performed', Placeholder=NULL WHERE AD_Element_ID=1112
-;
-
--- Jan 15, 2024, 12:05:04 PM CET
-UPDATE AD_Process_Para SET ColumnName='NoInventoryCount', Name='Number of Inventory counts', Description='Frequency of inventory counts per year', Help='The Number of Inventory Counts indicates the number of times per year that inventory counts will be performed', AD_Element_ID=1112 WHERE UPPER(ColumnName)='NOINVENTORYCOUNT' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
-;
-
--- Jan 15, 2024, 12:05:04 PM CET
-UPDATE AD_Process_Para SET ColumnName='NoInventoryCount', Name='Number of Inventory counts', Description='Frequency of inventory counts per year', Help='The Number of Inventory Counts indicates the number of times per year that inventory counts will be performed', Placeholder=NULL WHERE AD_Element_ID=1112 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:05:04 PM CET
-UPDATE AD_InfoColumn SET ColumnName='NoInventoryCount', Name='Number of Inventory counts', Description='Frequency of inventory counts per year', Help='The Number of Inventory Counts indicates the number of times per year that inventory counts will be performed', Placeholder=NULL WHERE AD_Element_ID=1112 AND IsCentrallyMaintained='Y'
-;
-
--- Jan 15, 2024, 12:05:04 PM CET
-UPDATE AD_Field SET Name='Number of Inventory counts', Description='Frequency of inventory counts per year', Help='The Number of Inventory Counts indicates the number of times per year that inventory counts will be performed', Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=1112) AND IsCentrallyMaintained='Y'
 ;
 
 -- Jan 15, 2024, 12:07:56 PM CET
@@ -567,10 +121,6 @@ The CBOM is used to dynamically create "end-items" that a company sells. The ben
 
 -- Jan 15, 2024, 12:11:18 PM CET
 UPDATE AD_Form SET Description='Payroll Action Notice allows to entry the events that happened with any Employee',Updated=TO_TIMESTAMP('2024-01-15 12:11:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=53009
-;
-
--- Jan 15, 2024, 12:11:18 PM CET
-UPDATE AD_Menu SET Name='Payroll Action Notice', Description='Payroll Action Notice allows to entry the events that happened with any Employee', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 12:11:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53123
 ;
 
 -- Jan 15, 2024, 12:11:55 PM CET
@@ -622,16 +172,8 @@ UPDATE AD_Process SET Help='Be careful, this process will reindex all tables and
 UPDATE AD_Process SET Name='Multiple Components Change',Updated=TO_TIMESTAMP('2024-01-15 12:20:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53008
 ;
 
--- Jan 15, 2024, 12:20:36 PM CET
-UPDATE AD_Menu SET Name='Multiple Components Change', Description='This option allows the change of any component into BOM or Formula', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 12:20:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53027
-;
-
 -- Jan 15, 2024, 12:21:10 PM CET
 UPDATE AD_Process SET Description='This process calculates the demand, approved and open orders for a product.', Help='This process calculates the demand, approved and open orders for a product.',Updated=TO_TIMESTAMP('2024-01-15 12:21:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53016
-;
-
--- Jan 15, 2024, 12:21:10 PM CET
-UPDATE AD_Menu SET Name='Calculate Material Plan', Description='This process calculates the demand, approved and open orders for a product.', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 12:21:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53038
 ;
 
 -- Jan 15, 2024, 12:22:10 PM CET
@@ -640,16 +182,8 @@ If several Distribution Orders of a business partner have the same location, the
 You can also include Distribution orders who have outstanding confirmations (e.g. ordered=10 - not confirmed movements=4 - would create a new movement of 6 if available).',Updated=TO_TIMESTAMP('2024-01-15 12:22:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53046
 ;
 
--- Jan 15, 2024, 12:22:10 PM CET
-UPDATE AD_Menu SET Name='Generate Movement', Description='Generate and print Movement from open Distribution Orders', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 12:22:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53070
-;
-
 -- Jan 15, 2024, 12:22:36 PM CET
 UPDATE AD_Process SET Description='Used to review Assets Transferred Entry ',Updated=TO_TIMESTAMP('2024-01-15 12:22:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53099
-;
-
--- Jan 15, 2024, 12:22:36 PM CET
-UPDATE AD_Menu SET Name='Asset Transfer Entry', Description='Used to review Assets Transferred Entry ', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 12:22:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53143
 ;
 
 -- Jan 15, 2024, 12:23:22 PM CET
@@ -809,10 +343,6 @@ UPDATE AD_Tab SET Help='The Accounting Tab defines the accounting parameters use
 UPDATE AD_Window SET Name='Bank/Cash', Description='Maintain Bank/Cash', Help='The Bank/Cash Window is used to define the banks and accounts associated with an organization or business partner',Updated=TO_TIMESTAMP('2024-01-15 12:54:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=158
 ;
 
--- Jan 15, 2024, 12:54:59 PM CET
-UPDATE AD_Menu SET Name='Bank/Cash', Description='Maintain Bank/Cash', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 12:54:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=171
-;
-
 -- Jan 15, 2024, 12:55:06 PM CET
 UPDATE AD_Tab SET Name='Bank/Cash',Updated=TO_TIMESTAMP('2024-01-15 12:55:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=227
 ;
@@ -906,10 +436,6 @@ UPDATE AD_Tab SET Help='Table (header) definition - Note that the name of most t
 UPDATE AD_Window SET Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).',Updated=TO_TIMESTAMP('2024-01-15 13:10:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=364
 ;
 
--- Jan 15, 2024, 1:10:27 PM CET
-UPDATE AD_WF_Node SET Name='Performance Color Schema', Description='Maintain Performance Color Schema', Help='Visual representation of performance by color.  The Schema has often three levels (e.g. red-yellow-green).  iDempiere supports two levels (e.g. red-green) or four levels (e.g. gray-bronce-silver-gold).  Note that Measures without a goal are represented white.  The percentages could be between 0 and unlimited (i.e. above 100%).',Updated=TO_TIMESTAMP('2024-01-15 13:10:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_WF_Node_ID=147
-;
-
 -- Jan 15, 2024, 1:10:55 PM CET
 UPDATE AD_Window SET Help='Ad Management is used to create and manage advertisements in your content management',Updated=TO_TIMESTAMP('2024-01-15 13:10:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=375
 ;
@@ -922,16 +448,8 @@ UPDATE AD_Window SET Help='You can use the tax definition information to create 
 UPDATE AD_Window SET Help='The Asset Revaluation Index window allow you to setup the values of indexes or factors to be used in revaluation of assets',Updated=TO_TIMESTAMP('2024-01-15 13:11:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=53045
 ;
 
--- Jan 15, 2024, 1:11:51 PM CET
-UPDATE AD_Menu SET Name='Asset Revaluation Index', Description='Set the Revaluate Assets Index or Factors', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 13:11:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53138
-;
-
 -- Jan 15, 2024, 1:12:16 PM CET
 UPDATE AD_Window SET Help='The Depreciation Calculation Method window allows the user to define how adjustments to the fixed asset depreciation expense are handled',Updated=TO_TIMESTAMP('2024-01-15 13:12:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=53061
-;
-
--- Jan 15, 2024, 1:12:16 PM CET
-UPDATE AD_Menu SET Name='Depreciation Calculation Method', Description='Define Calculation Methods used in depreciation expense calculation', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 13:12:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53176
 ;
 
 -- Jan 15, 2024, 1:13:47 PM CET
@@ -941,10 +459,6 @@ The highest priority has the Print Format you define on a Document Type (example
 
 -- Jan 15, 2024, 1:14:16 PM CET
 UPDATE AD_Window SET Help='The Data Replication Strategy determines which tables and how they are replicated. Note that the migration does not synchronize Application Dictionary items.',Updated=TO_TIMESTAMP('2024-01-15 13:14:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=285
-;
-
--- Jan 15, 2024, 1:14:16 PM CET
-UPDATE AD_WF_Node SET Name='Replication Strategy', Description='Maintain Data Replication Strategy', IsActive='Y', Help='The Data Replication Strategy determines which tables and how they are replicated. Note that the migration does not synchronize Application Dictionary items.',Updated=TO_TIMESTAMP('2024-01-15 13:14:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_WF_Node_ID=174
 ;
 
 -- Jan 15, 2024, 1:14:44 PM CET
@@ -960,19 +474,7 @@ UPDATE AD_Window SET Help='The Source of a Knowledge Entry is a pointer to the o
 ;
 
 -- Jan 15, 2024, 1:15:40 PM CET
-UPDATE AD_Window SET Description='Knowledge Keyword Synonym', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 13:15:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=290
-;
-
--- Jan 15, 2024, 1:15:40 PM CET
-UPDATE AD_Menu SET Name='Knowledge Synonym', Description='Knowledge Keyword Synonym', IsActive='Y',Updated=TO_TIMESTAMP('2024-01-15 13:15:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=390
-;
-
--- Jan 15, 2024, 1:15:41 PM CET
-UPDATE AD_Window SET IsActive='N',Updated=TO_TIMESTAMP('2024-01-15 13:15:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=290
-;
-
--- Jan 15, 2024, 1:15:41 PM CET
-UPDATE AD_Menu SET Name='Knowledge Synonym', Description='Knowledge Keyword Synonym', IsActive='N',Updated=TO_TIMESTAMP('2024-01-15 13:15:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=390
+UPDATE AD_Window SET Description='Knowledge Keyword Synonym',Updated=TO_TIMESTAMP('2024-01-15 13:15:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=290
 ;
 
 -- Jan 15, 2024, 1:16:14 PM CET
