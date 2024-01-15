@@ -38,12 +38,15 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  *
  * @author Carlos Ruiz - globalqss - bxservice
  *
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public class MTestUUTest extends AbstractTestCase {
 
 	private static final String TestRecordInGardenWorld = "8858ecc2-cf1d-405f-987f-793536037e76";
@@ -82,20 +85,10 @@ public class MTestUUTest extends AbstractTestCase {
 	public void testDeletingTestUU() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
-
-		// deleting the TestRecordInGardenWorld is creating a deadlock with testReadingUpdatingTestUU in parallel execution
-		// insert a new record
-		MTestUU testuu = new MTestUU(ctx, PO.UUID_NEW_RECORD, trxName);
-		testuu.setName("Test UU record created on JUnit test");
-		testuu.saveEx();
-		testuu.load(trxName);
-	    assertEquals("Test UU record created on JUnit test", testuu.getName());
-	    String uukey = testuu.getTestUU_UU();
-
-		MTestUU testuuToDelete = new MTestUU(ctx, uukey, trxName);
-		testuuToDelete.deleteEx(true);
-		MTestUU testuu2 = new MTestUU(ctx, uukey, trxName);
-	    assertFalse(testuu2.get_UUID().equals(uukey));
+		MTestUU testuu = new MTestUU(ctx, TestRecordInGardenWorld, trxName);
+		testuu.deleteEx(true);
+		MTestUU testuu2 = new MTestUU(ctx, TestRecordInGardenWorld, trxName);
+	    assertFalse(testuu2.get_UUID().equals(TestRecordInGardenWorld));
 	}
 
 	@Test
