@@ -57,9 +57,6 @@ public class MTestUU extends X_TestUU {
 	 */
 	public MTestUU(Properties ctx, String Test_UU, String trxName, String... virtualColumns) {
 		super(ctx, Test_UU, trxName, virtualColumns);
-		if ("".equals(Test_UU)) {
-			setName(null);
-		}
 	} // MTestUU
 
 	/**
