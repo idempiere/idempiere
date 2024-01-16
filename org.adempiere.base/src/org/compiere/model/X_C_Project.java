@@ -1019,8 +1019,8 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public static final int PROJINVOICERULE_AD_Reference_ID=383;
 	/** None = - */
 	public static final String PROJINVOICERULE_None = "-";
-	/** Time&amp;Material max Comitted = c */
-	public static final String PROJINVOICERULE_TimeMaterialMaxComitted = "c";
+	/** Time&amp;Material max Committed = c */
+	public static final String PROJINVOICERULE_TimeMaterialMaxCommitted = "c";
 	/** Committed Amount = C */
 	public static final String PROJINVOICERULE_CommittedAmount = "C";
 	/** Product  Quantity = P */

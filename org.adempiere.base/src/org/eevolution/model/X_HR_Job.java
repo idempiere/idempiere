@@ -208,16 +208,16 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 		return false;
 	}
 
-	/** Set Job Cant.
-		@param JobCant Job Cant
+	/** Set Job Qty.
+		@param JobCant Job Qty
 	*/
 	public void setJobCant (int JobCant)
 	{
 		set_Value (COLUMNNAME_JobCant, Integer.valueOf(JobCant));
 	}
 
-	/** Get Job Cant.
-		@return Job Cant	  */
+	/** Get Job Qty.
+		@return Job Qty	  */
 	public int getJobCant()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_JobCant);

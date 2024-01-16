@@ -257,7 +257,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** CashBook = C */
 	public static final String CASHBOOKTRANSFERTYPE_CashBook = "C";
 	/** Set Cash Book Transfer Type.
-		@param CashBookTransferType Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+		@param CashBookTransferType Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book
 	*/
 	public void setCashBookTransferType (String CashBookTransferType)
 	{
@@ -266,7 +266,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Get Cash Book Transfer Type.
-		@return Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+		@return Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book
 	  */
 	public String getCashBookTransferType()
 	{

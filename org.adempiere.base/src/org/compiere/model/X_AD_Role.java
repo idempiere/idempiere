@@ -490,16 +490,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return false;
 	}
 
-	/** Set Allow Info InOut.
-		@param Allow_Info_InOut Allow Info InOut
+	/** Set Allow Shipment Info.
+		@param Allow_Info_InOut Allow Shipment Info
 	*/
 	public void setAllow_Info_InOut (boolean Allow_Info_InOut)
 	{
 		set_Value (COLUMNNAME_Allow_Info_InOut, Boolean.valueOf(Allow_Info_InOut));
 	}
 
-	/** Get Allow Info InOut.
-		@return Allow Info InOut	  */
+	/** Get Allow Shipment Info.
+		@return Allow Shipment Info	  */
 	public boolean isAllow_Info_InOut()
 	{
 		Object oo = get_Value(COLUMNNAME_Allow_Info_InOut);

@@ -379,7 +379,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Quantity.
-		@param QtyBOM Indicate the Quantity  use in this BOM
+		@param QtyBOM Indicate the Quantity use in this BOM
 	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
@@ -387,7 +387,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Get Quantity.
-		@return Indicate the Quantity  use in this BOM
+		@return Indicate the Quantity use in this BOM
 	  */
 	public BigDecimal getQtyBOM()
 	{

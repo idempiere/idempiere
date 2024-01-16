@@ -231,8 +231,8 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 
 	/** A_Reval_Effective_Date AD_Reference_ID=53261 */
 	public static final int A_REVAL_EFFECTIVE_DATE_AD_Reference_ID=53261;
-	/** Date Aquired = DA */
-	public static final String A_REVAL_EFFECTIVE_DATE_DateAquired = "DA";
+	/** Date Acquired = DA */
+	public static final String A_REVAL_EFFECTIVE_DATE_DateAcquired = "DA";
 	/** Revaluation Date = RD */
 	public static final String A_REVAL_EFFECTIVE_DATE_RevaluationDate = "RD";
 	/** Date Depreciation Started = SD */

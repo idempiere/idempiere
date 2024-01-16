@@ -1224,7 +1224,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	}
 
 	/** Set Next Unit.
-		@param NextMaintenenceUnit Next Maintenence Unit
+		@param NextMaintenenceUnit Next Maintenance Unit
 	*/
 	public void setNextMaintenenceUnit (int NextMaintenenceUnit)
 	{
@@ -1232,7 +1232,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	}
 
 	/** Get Next Unit.
-		@return Next Maintenence Unit
+		@return Next Maintenance Unit
 	  */
 	public int getNextMaintenenceUnit()
 	{

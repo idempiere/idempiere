@@ -708,12 +708,12 @@ public interface I_A_Asset
     public static final String COLUMNNAME_NextMaintenenceUnit = "NextMaintenenceUnit";
 
 	/** Set Next Unit.
-	  * Next Maintenence Unit
+	  * Next Maintenance Unit
 	  */
 	public void setNextMaintenenceUnit (int NextMaintenenceUnit);
 
 	/** Get Next Unit.
-	  * Next Maintenence Unit
+	  * Next Maintenance Unit
 	  */
 	public int getNextMaintenenceUnit();
 

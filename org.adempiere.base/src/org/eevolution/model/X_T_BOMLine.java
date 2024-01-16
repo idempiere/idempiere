@@ -532,7 +532,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param QtyBOM Indicate the Quantity  use in this BOM
+		@param QtyBOM Indicate the Quantity use in this BOM
 	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
@@ -540,7 +540,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	}
 
 	/** Get Quantity.
-		@return Indicate the Quantity  use in this BOM
+		@return Indicate the Quantity use in this BOM
 	  */
 	public BigDecimal getQtyBOM()
 	{

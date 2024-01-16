@@ -218,7 +218,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	*/
 	public void setExpressionPartition (String ExpressionPartition)
 	{
-		set_Value (COLUMNNAME_ExpressionPartition, ExpressionPartition);
+		set_ValueNoCheck (COLUMNNAME_ExpressionPartition, ExpressionPartition);
 	}
 
 	/** Get Expression.
@@ -257,7 +257,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	*/
 	public void setName (String Name)
 	{
-		set_Value (COLUMNNAME_Name, Name);
+		set_ValueNoCheck (COLUMNNAME_Name, Name);
 	}
 
 	/** Get Name.

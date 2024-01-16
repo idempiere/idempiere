@@ -578,6 +578,25 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
 
+	/** Set Line Amount.
+		@param LineNetAmt Line Extended Amount (Quantity * Actual Price) without Freight and Charges
+	*/
+	public void setLineNetAmt (BigDecimal LineNetAmt)
+	{
+		set_Value (COLUMNNAME_LineNetAmt, LineNetAmt);
+	}
+
+	/** Get Line Amount.
+		@return Line Extended Amount (Quantity * Actual Price) without Freight and Charges
+	  */
+	public BigDecimal getLineNetAmt()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LineNetAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -620,26 +639,6 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	public String getNote()
 	{
 		return (String)get_Value(COLUMNNAME_Note);
-	}
-
-	/** Set Line Amount.
-		@param LineNetAmt 
-		Line Extended Amount (Quantity * Actual Price) without Freight and Charges
-	*/
-	public void setLineNetAmt (BigDecimal LineNetAmt)
-	{
-		set_Value (COLUMNNAME_LineNetAmt, LineNetAmt);
-	}
-
-	/** Get Line Amount.
-		@return Line Extended Amount (Quantity * Actual Price) without Freight and Charges
-	  */
-	public BigDecimal getLineNetAmt () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LineNetAmt);
-		if (bd == null)
-			return Env.ZERO;
-		return bd;
 	}
 
 	/** Set Price Invoiced.

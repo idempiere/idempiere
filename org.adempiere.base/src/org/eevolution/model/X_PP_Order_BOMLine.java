@@ -775,7 +775,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Quantity.
-		@param QtyBOM Indicate the Quantity  use in this BOM
+		@param QtyBOM Indicate the Quantity use in this BOM
 	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
@@ -783,7 +783,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Get Quantity.
-		@return Indicate the Quantity  use in this BOM
+		@return Indicate the Quantity use in this BOM
 	  */
 	public BigDecimal getQtyBOM()
 	{
