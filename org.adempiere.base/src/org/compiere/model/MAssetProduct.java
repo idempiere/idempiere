@@ -27,7 +27,7 @@ import java.util.Properties;
 
 /**
  * Asset Product
- * @author 
+ * @author Teo Sarca, SC ARHIPAC SERIVCE SRL
  */
 public class MAssetProduct extends X_A_Asset_Product
 {
