@@ -88,8 +88,6 @@ public class ServerProcessCtl implements Runnable {
 				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU());
 				// Get PrintFormat
 				MPrintFormat format = (MPrintFormat)pi.getTransientObject();
-				if (format == null)
-					format = (MPrintFormat)pi.getSerializableObject();
 				if (format != null)
 				{
 					instance.updatePrintFormatAndLanguageIfEmpty(format);
