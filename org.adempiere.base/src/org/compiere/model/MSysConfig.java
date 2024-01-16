@@ -910,8 +910,8 @@ public class MSysConfig extends X_AD_SysConfig
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (success && newRecord && ! getName().endsWith("_NOCACHE")) {
 			// Clear cache of AD_SysConfig
-			// This is to clear the cache of parent records when creating a Tenant or Org record
-			// the reset cache is being called just when a record is changed or deleted, but not on new
+			// This is to clear the cache of AD_SysConfig when creating a new record
+			// the reset cache is being called on PO when a record is changed or deleted, but not on new
 			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache holds a
 			//   String type, and CCache.reset(int) just call reset when the key is not an Integer
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
