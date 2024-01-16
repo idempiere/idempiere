@@ -90,11 +90,8 @@ public class ServerProcessCtl implements Runnable {
 				MPrintFormat format = (MPrintFormat)pi.getTransientObject();
 				if (format == null)
 					format = (MPrintFormat)pi.getSerializableObject();
-				if (format == null)
+				if (format != null)
 				{
-					log.log(Level.INFO, "No PrintFormat");
-				}
-				else {
 					instance.updatePrintFormatAndLanguageIfEmpty(format);
 					ReportEngine.setDefaultReportTypeToPInstance(Env.getCtx(), instance, instance.getAD_PrintFormat_ID());
 				}

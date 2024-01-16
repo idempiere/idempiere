@@ -421,7 +421,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
            	if(AD_PInstance_ID > 0 && currLang != null) {
            		MPInstance pInstance = new MPInstance(ctx, AD_PInstance_ID, null);
            		pInstance.setAD_Language_ID(MLanguage.get(ctx, currLang.getAD_Language()).getAD_Language_ID());
-           		pInstance.saveEx(null);
+           		pInstance.saveEx();
            	}
            	
             // Resources
