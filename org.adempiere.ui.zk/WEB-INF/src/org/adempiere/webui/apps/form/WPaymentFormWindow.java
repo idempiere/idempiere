@@ -218,7 +218,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 	}
 	
 	/**
-	 * @return true if initialization have been completed sucessfully
+	 * @return true if initialization have been completed successfully
 	 */
 	public boolean isInitOK()
 	{

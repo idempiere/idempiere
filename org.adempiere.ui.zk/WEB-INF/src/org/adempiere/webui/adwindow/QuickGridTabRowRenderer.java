@@ -108,7 +108,7 @@ public class QuickGridTabRowRenderer
 	private Row currentRow;
 	/** values of current row. updated in {@link #render(Row, Object[], int)}. **/
 	private Object[] currentValues;
-	/** true if currrent row is in edit mode **/
+	/** true if current row is in edit mode **/
 	private boolean editing = false;
 	public int currentRowIndex = -1;
 	/** AD window content part that own this renderer **/

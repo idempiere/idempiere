@@ -88,7 +88,7 @@ public class ImageFileStorageImpl implements IImageStore {
 			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 			if(filePath!=null){
 				filePath = filePath.replaceFirst(IMAGE_FOLDER_PLACEHOLDER, imagePathRoot.replaceAll("\\\\","\\\\\\\\"));
-				//just to be shure...
+				//just to be sure...
 				String replaceSeparator = File.separator;
 				if(!replaceSeparator.equals("/")){
 					replaceSeparator = "\\\\";

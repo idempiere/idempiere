@@ -1008,7 +1008,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			if (row > 0 && m_format.isBreakPagePerRecord())
 				newPage(true, false); // break page per record when the report is a form
 
-			boolean somethingPrinted = true;	//	prevent NL of nothing printed and supress null
+			boolean somethingPrinted = true;	//	prevent NL of nothing printed and suppress null
 			//	for every item
 			for (int i = 0; i < m_format.getItemCount(); i++)
 			{
@@ -1441,7 +1441,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//	Get Color/ Font
 		Color color = getColor();	//	default
 		if (ID != null && !isForm)
-			;									//	link color/underline handeled in PrintElement classes
+			;									//	link color/underline handled in PrintElement classes
 		else if (item.getAD_PrintColor_ID() != 0 && m_printColor.get_ID() != item.getAD_PrintColor_ID())
 		{
 			MPrintColor c = MPrintColor.get (getCtx(), item.getAD_PrintColor_ID());

@@ -955,7 +955,7 @@ public class EmailSrv {
 		 */
 		public List<BodyPart> lsEmbedPart = new ArrayList<BodyPart>();
 		/**
-		 * list part unknow to process
+		 * list part unknown to process
 		 */
 		public List<Part> lsUnknowPart = new ArrayList<Part>();
 		

@@ -223,7 +223,7 @@ public class PrintUtil
 	/**
 	 * 	Print Async
 	 *  @param pageable pageable
-	 *  @param prats print attribure set
+	 *  @param prats print attribute set
 	 */
 	static public void print (Pageable pageable, PrintRequestAttributeSet prats)
 	{
@@ -235,7 +235,7 @@ public class PrintUtil
 	/**
 	 * 	Print
 	 * 	@param job printer job
-	 *  @param prats print attribure set
+	 *  @param prats print attribute set
 	 *  @param withDialog if true shows Dialog
 	 *  @param waitForIt if false print async
 	 */

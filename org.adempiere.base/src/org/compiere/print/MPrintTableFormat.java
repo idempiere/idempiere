@@ -201,8 +201,8 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	setStandard_Font
 
 	/**
-	 * 	Get Stndard Font
-	 * 	@return stndard font
+	 * 	Get Standard Font
+	 * 	@return standard font
 	 */
 	public Font getStandard_Font()
 	{
@@ -473,7 +473,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	getHLine_Color
 	
 	/**
-	 *  Get Verical Line Color.
+	 *  Get Vertical Line Color.
 	 * 	(one db attribute for line color)
 	 *  @return color or gray light
 	 */

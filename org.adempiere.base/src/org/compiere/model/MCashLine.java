@@ -81,7 +81,7 @@ public class MCashLine extends X_C_CashLine
 	}
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -92,7 +92,7 @@ public class MCashLine extends X_C_CashLine
 	}	//	MCashLine
 	
 	/**
-	 * 	Parent Cosntructor
+	 * 	Parent Constructor
 	 *	@param cash parent
 	 */
 	public MCashLine (MCash cash)

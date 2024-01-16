@@ -394,7 +394,7 @@ public class AbstractService {
 			sql = sql.substring(5);
 
 		if (sql.toLowerCase().indexOf(" where ") == -1)
-			throw new AdempiereException("Invalid SQL: Query do not have any filetering criteria");
+			throw new AdempiereException("Invalid SQL: Query do not have any filtering criteria");
 
 		StringBuilder sqlBuilder = new StringBuilder();
 

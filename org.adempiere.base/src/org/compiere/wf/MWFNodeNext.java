@@ -57,7 +57,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
     }
 
 	/**
-	 * 	Standard Costructor
+	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_WF_NodeNext_ID id
 	 *	@param trxName transaction

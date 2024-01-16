@@ -307,7 +307,7 @@ public class MGoal extends X_PA_Goal
 	/**
 	 *	@param ctx context
 	 *	@param Name Name
-	 *	@param Description Decsription
+	 *	@param Description Description
 	 *	@param MeasureTarget target
 	 *	@param trxName trx
 	 */

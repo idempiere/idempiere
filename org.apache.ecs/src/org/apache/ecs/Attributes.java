@@ -111,12 +111,12 @@ public interface Attributes
     public char getAttributeEqualitySign();
 
     /**
-        Do we surround attributes with qoutes?
+        Do we surround attributes with quotes?
     */
     public boolean getAttributeQuote();
 
     /**
-        Set wether or not we surround the attributes with quotes.
+        Set whether or not we surround the attributes with quotes.
     */
     public Element setAttributeQuote(boolean attribute_quote);
 } 

@@ -509,7 +509,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	getTableFormat
 
 	/**
-	 * 	Sting Representation
+	 * 	String Representation
 	 * 	@return info
 	 */
 	public String toString()

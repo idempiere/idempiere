@@ -87,7 +87,7 @@ public class del extends MultiPartElement implements Printable, MouseEvents, Key
 
     /**
 
-        Set the url that designates a source doument or message.
+        Set the url that designates a source document or message.
 
         @param url set the url that designates a source document or message.
 

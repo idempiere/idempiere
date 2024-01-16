@@ -136,7 +136,7 @@ public class SetGetUtil
 					boolean ok = false;
 					obj = rs.getObject(columnName);
 					//
-					// Date Columns are retuned as Date -> convert to java.sql.Timestamp
+					// Date Columns are returned as Date -> convert to java.sql.Timestamp
 					if (obj instanceof java.sql.Date)
 					{
 						obj = new java.sql.Timestamp(((java.sql.Date)obj).getTime());

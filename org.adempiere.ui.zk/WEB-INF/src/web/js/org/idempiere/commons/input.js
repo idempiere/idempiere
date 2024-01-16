@@ -67,7 +67,7 @@ zk.afterLoad('zul.inp', function() {
           ; // do nothing, this case rare happen because ".adwindow-layout" always is a component
         } else {
           let isEditting = winLayoutWg.get("isEditting");
-          // winLayoutWg should cache to improve perfomance
+          // winLayoutWg should cache to improve performance
           if (isEditting == "false") {
             winLayoutWg.set("isEditting", "true");
             id.zk.Extend.fireOnInitEdit(this); //fire change event to move to edit
@@ -119,7 +119,7 @@ zk.afterLoad('zul.inp', function() {
           });
 
         return;
-        // TODO:current idempiere use alt + down/up to move child parrent tab, but combobox also use it to open, close drop down
+        // TODO:current idempiere use alt + down/up to move child parent tab, but combobox also use it to open, close drop down
         // at the moment, idempiere shortcut is more useful, so just get it work
       } else {
         this.$doKeyDown_(evt);

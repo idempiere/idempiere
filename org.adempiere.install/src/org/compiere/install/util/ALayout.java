@@ -50,7 +50,7 @@ public class ALayout implements LayoutManager2
 	}   //  ALayout
 
 	/**
-	 *  Detail Contructor
+	 *  Detail Constructor
 	 *  @param spaceH horizontal space (top, between rows, button)
 	 *  @param spaceV vertical space (left, between columns, right)
 	 *  @param colFill fields are fully filled (rather then preferred size)
@@ -162,7 +162,7 @@ public class ALayout implements LayoutManager2
 	/**
 	 *  Calculate Layout Size
 	 *  @param parent Parent Container
-	 *  @param  how P=Preferred - M=Maximum = m=Mimimum
+	 *  @param  how P=Preferred - M=Maximum = m=Minimum
 	 *  @return Size
 	 */
 	private Dimension calculateLayoutSize(Container parent, char how)

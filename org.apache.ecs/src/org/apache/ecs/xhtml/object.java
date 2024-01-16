@@ -127,7 +127,7 @@ public class object extends MultiPartElement
      * This should be a mime type.
      * 
      * @param type
-     *            a mime type for the data specifed by the data attribute.
+     *            a mime type for the data specified by the data attribute.
      */
 	public object setType (String type)
 	{
@@ -136,10 +136,10 @@ public class object extends MultiPartElement
 	}
 
 	/**
-     * Space seperated archive list.
+     * Space separated archive list.
      * 
      * @param url
-     *            Space seperate archive list.
+     *            Space separate archive list.
      */
 	// Anyone know what the hell this is? the spec is rather vague in its
     // definition.
@@ -343,11 +343,11 @@ public class object extends MultiPartElement
 
 	/**
      * Set the horizontal or vertical alignment of this object.<br>
-     * Convience variables are in the AlignTypes interface.
+     * Convenience variables are in the AlignTypes interface.
      * 
      * @param alignment
      *            Set the horizontal or vertical alignment of this object.<br>
-     *            Convience variables are in the AlignTypes interface.
+     *            Convenience variables are in the AlignTypes interface.
      */
 	public object setAlign (String alignment)
 	{

@@ -403,7 +403,7 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 		
 		/** Linear damping coefficient for one year = 1 / total number of years */
 		BigDecimal coef_sl = BigDecimal.ONE.divide(new BigDecimal(A_Life_Year), getPrecision() + 2, RoundingMode.DOWN);
-		/** Degressive damping coefficient for one year = one-year linear depreciation * coeficient K */
+		/** Degressive damping coefficient for one year = one-year linear depreciation * coefficient K */
 		BigDecimal coef_ad1 = coef_sl.multiply(BigDecimal.valueOf(2.0)); //added by @win
 		
 		// logging

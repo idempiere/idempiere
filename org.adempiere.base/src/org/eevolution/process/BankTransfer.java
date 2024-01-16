@@ -49,7 +49,7 @@ public class BankTransfer extends SvrProcess
 	private int 		p_C_ConversionType_ID = 0;		// Payment Conversion Type
 	private int			p_C_Charge_ID = 0;				// Charge to be used as bridge
 
-	private BigDecimal 	p_Amount = Env.ZERO;  			// Amount to be transfered between the accounts
+	private BigDecimal 	p_Amount = Env.ZERO;  			// Amount to be transferred between the accounts
 	private int 		p_From_C_BankAccount_ID = 0;	// Bank Account From
 	private int 		p_To_C_BankAccount_ID= 0;		// Bank Account To
 	private Timestamp	p_StatementDate = null;  		// Date Statement

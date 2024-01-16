@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  *	HTML Form Print ELement.
  *  Restrictions:
  *  - Label is not printed
- * 	- Alighnment is ignored
+ * 	- Alignment is ignored
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: HTMLElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $

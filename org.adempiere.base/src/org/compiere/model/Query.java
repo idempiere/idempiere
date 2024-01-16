@@ -380,7 +380,7 @@ public class Query
 	
 	/**
 	 * Return first PO that match query criteria.
-	 * If there are more records that match criteria an exception will be throwed 
+	 * If there are more records that match criteria an exception will be thrown
 	 * @return first PO
 	 * @throws DBException
 	 * @see {@link #first()}
