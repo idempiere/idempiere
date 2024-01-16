@@ -57,7 +57,7 @@ import bsh.Interpreter;
 
 /**
  * Data Engine.
- * Creates SQL and laods data into PrintData (including totals/etc.)
+ * Creates SQL and loads data into PrintData (including totals/etc.)
  *
  * @author 	Jorg Janke
  * @version 	$Id: DataEngine.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -696,8 +696,8 @@ public class DataEngine
 
 		if (columns.size() == 0)
 		{
-			log.log(Level.SEVERE, "No Colums - Delete Report Format " + reportName + " and start again");
-			if (log.isLoggable(Level.FINEST)) log.finest("No Colums - SQL=" + sql + " - ID=" + format.get_ID());
+			log.log(Level.SEVERE, "No Columns - Delete Report Format " + reportName + " and start again");
+			if (log.isLoggable(Level.FINEST)) log.finest("No Columns - SQL=" + sql + " - ID=" + format.get_ID());
 			return null;
 		}
 
@@ -1192,7 +1192,7 @@ public class DataEngine
 		//	Check last Group Change
 		if (m_group.getGroupColumnCount() > 1)	//	one is TOTAL
 		{
-			for (int i = pd.getColumnInfo().length-1; i >= 0; i--)	//	backwards (leaset group first)
+			for (int i = pd.getColumnInfo().length-1; i >= 0; i--)	//	backwards (last group first)
 			{
 				PrintDataColumn group_pdc = pd.getColumnInfo()[i];
 				if (!m_group.isGroupColumn(group_pdc.getAD_PrintFormatItem_ID()))

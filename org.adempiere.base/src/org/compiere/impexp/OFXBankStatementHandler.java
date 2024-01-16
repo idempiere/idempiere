@@ -291,14 +291,14 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 	}	//isValid
 
 	/**	
-	 * Check wether the import was succesfull
-	 * @return true if all statement lines have been imported succesfully
+	 * Check whether the import was successful
+	 * @return true if all statement lines have been imported successfully
 	 */
 	public boolean importSuccessfull()
 	{
 		/*
 		 * Currently there are no checks after the statement lines are read.
-		 * Once all lines are read correctly a successfull import is assumed.
+		 * Once all lines are read correctly a successful import is assumed.
 		 */
 		return m_success;
 	}	//	importSuccessfull

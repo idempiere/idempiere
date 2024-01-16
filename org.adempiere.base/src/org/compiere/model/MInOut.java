@@ -2510,7 +2510,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			counter.setDropShip_User_ID(getDropShip_User_ID());
 		}
 
-		//	Refernces (Should not be required
+		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
 		counter.saveEx(get_TrxName());
 

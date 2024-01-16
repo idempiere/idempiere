@@ -1213,7 +1213,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 			}
 			else
 			{
-				// Succesfull creation of Asset
+				// Successful creation of Asset
 				if (cnt == 0)
 				{
 					setA_CreateAsset(true);

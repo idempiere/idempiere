@@ -48,7 +48,7 @@ public class MAlertRule extends X_AD_AlertRule
     }
 
 	/**
-	 * 	Standatd Constructor
+	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_AlertRule_ID id
 	 *	@param trxName transaction

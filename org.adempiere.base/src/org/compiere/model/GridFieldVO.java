@@ -633,7 +633,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	public int          displayType = 0;
 	/**	Table ID		*/
 	public int          AD_Table_ID = 0;
-	/**	Clumn ID		*/
+	/**	Column ID		*/
 	public int          AD_Column_ID = 0;
 	/**	Display Length	*/
 	public int          DisplayLength = 0;
@@ -647,7 +647,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	public int			SeqNo = 0;
 	/** Grid Display sequence	*/
 	public int			SeqNoGrid = 0;
-	/**	Dislay Logic, never set null for it	*/
+	/**	Display Logic, never set null for it	*/
 	public String       DisplayLogic = "";
 	/**	Default Value, never set null for it	*/	
 	public String       DefaultValue = "";

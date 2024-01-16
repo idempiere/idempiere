@@ -385,7 +385,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				infoPanel.detach();
 		 	 	infoPanel = null;
 		 	}
-			// hsv: fix to when switch has text => emtpy text, don't show info panel
+			// hsv: fix to when switch has text => empty text, don't show info panel
 			if ("".equals(getComponent().getText().trim())){
 				actionCombo(null);
 				resetButtonState();
@@ -834,7 +834,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			MTable table = MTable.get(Env.getCtx(), m_tableName);
 			m_keyColumnName = table.getKeyColumns()[0];
 		} else {
-			// no field - the search editor is defined programatically
+			// no field - the search editor is defined programmatically
 			m_keyColumnName = getColumnName();
 			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
 		}

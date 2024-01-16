@@ -612,7 +612,7 @@ public final class ConfirmPanel extends JPanel
 
 	/**
 	 *	Is OK Visible
-	 *  @return true of OK visisble
+	 *  @return true of OK visible
 	 */
 	public boolean isOKVisible()
 	{

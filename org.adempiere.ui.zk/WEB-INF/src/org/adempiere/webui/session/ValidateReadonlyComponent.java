@@ -31,7 +31,7 @@ import org.zkoss.zul.impl.InputElement;
 
 
 /**
- * Zk dekstop listener to deny request to modify a readonly field or perform action using a readonly button.  
+ * Zk desktop listener to deny request to modify a readonly field or perform action using a readonly button.  
  * @author hieplq
  *
  */

@@ -133,12 +133,12 @@ public interface I_U_POSTerminal
     public static final String COLUMNNAME_CashBookTransferType = "CashBookTransferType";
 
 	/** Set Cash Book Transfer Type.
-	  * Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+	  * Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book
 	  */
 	public void setCashBookTransferType (String CashBookTransferType);
 
 	/** Get Cash Book Transfer Type.
-	  * Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+	  * Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book
 	  */
 	public String getCashBookTransferType();
 

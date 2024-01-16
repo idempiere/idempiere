@@ -181,7 +181,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	MWFActivity
 
 	/**
-	 * 	Parent Contructor
+	 * 	Parent Constructor
 	 *	@param process process
 	 *	@param AD_WF_Node_ID start node
 	 */

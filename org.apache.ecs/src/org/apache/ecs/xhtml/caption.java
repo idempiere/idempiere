@@ -49,7 +49,7 @@ public class caption extends MultiPartElement
 	}
 
 	/**
-     * Basic construtor use set* methods.
+     * Basic constructor use set* methods.
      */
 	public caption ()
 	{

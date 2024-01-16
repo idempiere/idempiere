@@ -70,7 +70,7 @@ public final class AppsAction extends AbstractAction
 	 *
 	 *  @param   action base action command - used as AD_Message for Text and Icon name
 	 *  @param   accelerator optional keystroke for accelerator
-	 *  @param   text text, if null defered from action
+	 *  @param   text text, if null deferred from action
 	 */
 	public AppsAction (String action, KeyStroke accelerator, String text)
 	{
@@ -82,7 +82,7 @@ public final class AppsAction extends AbstractAction
 	 *
 	 *  @param   action base action command - used as AD_Message for Text and Icon name
 	 *  @param   accelerator optional keystroke for accelerator
-	 *  @param   toolTipText text, if null defered from action
+	 *  @param   toolTipText text, if null deferred from action
 	 *  @param   toggle is toggle action (maintains state)
 	 */
 	public AppsAction (String action, KeyStroke accelerator, String toolTipText, boolean toggle)

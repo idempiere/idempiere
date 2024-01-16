@@ -31,7 +31,7 @@ import org.apache.ecs.xhtml.title;
 
 /**
 
-    This class creates an XhtmlDocument container, for convience.
+    This class creates an XhtmlDocument container, for convenience.
 
 
 
@@ -488,7 +488,7 @@ public class XhtmlDocument implements Serializable,Cloneable
 
         }
 
-        // XhtmlDocument is just a convient wrapper for html call html.output
+        // XhtmlDocument is just a convenient wrapper for html call html.output
 
         html.output(out);
 
@@ -526,7 +526,7 @@ public class XhtmlDocument implements Serializable,Cloneable
 
         }
 
-        // XhtmlDocument is just a convient wrapper for html call html.output
+        // XhtmlDocument is just a convenient wrapper for html call html.output
 
         html.output(out);
 

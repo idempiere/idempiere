@@ -233,7 +233,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					separator : function(v) {
 						let separatorCode = this._separatorCode;
 						separatorCode.length = 0;
-						// save keycode for special symble
+						// save keycode for special symbol
 						// handle the code of special char because
 						// we need process it with both keyUp and
 						// keyDown
@@ -456,7 +456,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 								this.$n()).find(
 								'.' + this.getZclass()
 										+ '-sel-item-focus')[0];
-						// only works if cursor is at the begining of
+						// only works if cursor is at the beginning of
 						// input
 						if (pos[0] == 0 && pos[1] == 0) {
 							if (key == 'left')
@@ -530,7 +530,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					let inp = this.$n('inp'), pos = zk(inp)
 							.getSelectionRange(), label;
 
-					// only works if cursor is at the begining of input
+					// only works if cursor is at the beginning of input
 					if (pos[0] == 0 && pos[1] == 0) {
 						let zcls = this.getZclass() + '-sel-item-focus';
 						if (label = jq(this.$n()).find('.' + zcls)[0]) {
@@ -935,7 +935,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 						clearTimeout(this.fixInputWidth);
 					this.fixInputWidth = null;
 				},
-				// prevent redundent fix display
+				// prevent redundant fix display
 				_startFixDisplay : function(opts) {
 					// fix asap if from server
 					if (opts && opts.fromServer)

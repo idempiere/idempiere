@@ -551,7 +551,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 	
 	/**
-	 * Evaluate display logic of process info button and set visiblity of button. <br/>
+	 * Evaluate display logic of process info button and set visibility of button. <br/>
 	 */
 	protected void bindInfoProcessBt (){
 		if (infoProcessBtList == null){

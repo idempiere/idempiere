@@ -211,7 +211,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 			if(filePath!=null){
 				filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
-				//just to be shure...
+				//just to be sure...
 				String replaceSeparator = File.separator;
 				if(!replaceSeparator.equals("/")){
 					replaceSeparator = "\\\\";

@@ -718,7 +718,7 @@ public class AllocationAuto extends SvrProcess
 	/**********************************************************************************************
 	 * 	Create Allocation allocation
 	 *	@param C_Currency_ID currency
-	 *	@param description decription
+	 *	@param description description
 	 *	@param Amount amount
 	 *	@param DiscountAmt discount
 	 *	@param WriteOffAmt write off

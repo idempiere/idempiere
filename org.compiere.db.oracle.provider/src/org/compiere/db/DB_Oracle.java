@@ -68,7 +68,7 @@ import oracle.jdbc.OracleDriver;
  *  @version    $Id: DB_Oracle.java,v 1.7 2006/09/22 23:35:19 jjanke Exp $
  *  ---
  *  Modifications: Refactoring. Replaced Oracle Cache Manager with C3P0
- *  connection pooling framework for better and more efficient connnection handling
+ *  connection pooling framework for better and more efficient connection handling
  *
  *  @author Ashley Ramdass (Posterita)
  */

@@ -50,7 +50,7 @@ public class img extends SinglePartElement implements Printable, MouseEvents, Ke
 
 
     /**
-        Basic constructor. Use the set* methods to set the attibutes.
+        Basic constructor. Use the set* methods to set the attributes.
     */
     public img()
     {

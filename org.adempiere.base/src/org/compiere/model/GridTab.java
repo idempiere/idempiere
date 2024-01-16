@@ -849,7 +849,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	e.g. Column=UPPER(Name), Key=AD_Element_ID, Query=UPPER(AD_Element.Name) LIKE '%CUSTOMER%'
 		if (tableName == null)
 		{
-			if (log.isLoggable(Level.INFO)) log.info ("Not successfull - Column="
+			if (log.isLoggable(Level.INFO)) log.info ("Not successful - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
 			return query.getWhereClause(true);

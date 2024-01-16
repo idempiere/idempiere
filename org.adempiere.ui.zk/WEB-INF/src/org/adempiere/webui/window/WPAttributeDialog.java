@@ -544,7 +544,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			}
 		}
 
-		//	Attrribute Set Instance Description
+		//	Attribute Set Instance Description
 		Label label = new Label (Msg.translate(Env.getCtx(), "Description"));
 		fieldDescription.setText(m_masi.getDescription());
 		fieldDescription.setReadonly(true);

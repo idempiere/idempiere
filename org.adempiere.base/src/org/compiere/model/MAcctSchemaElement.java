@@ -295,7 +295,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 
 	/**
 	 * Set value for Account element type
-	 * @param SeqNo squence
+	 * @param SeqNo sequence
 	 * @param Name name
 	 * @param C_Element_ID element
 	 * @param C_ElementValue_ID element value

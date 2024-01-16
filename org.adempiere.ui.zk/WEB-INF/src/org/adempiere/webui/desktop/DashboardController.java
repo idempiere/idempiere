@@ -1574,7 +1574,7 @@ public class DashboardController implements EventListener<Event> {
 	/**
 	 * Strip &lt;html&gt;, &lt;body&gt; and &lt;head&gt; tag
 	 * @param htmlString
-	 * @param all true to escpae &lt; and &gt;
+	 * @param all true to escape &lt; and &gt;
 	 * @return stripped htmlString
 	 */
 	private String stripHtml(String htmlString, boolean all) {

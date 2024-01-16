@@ -188,7 +188,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	/**
 	 * 	After Delete
 	 *	@param success success
-	 *	@return sucess
+	 *	@return success
 	 */
 	@Override
 	protected boolean afterDelete (boolean success)

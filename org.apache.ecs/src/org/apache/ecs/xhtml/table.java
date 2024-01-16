@@ -41,7 +41,7 @@ public class table extends MultiPartElement
 	private static final long serialVersionUID = -6841603851523601317L;
 
 	/**
-	 * Private iniitialization routine
+	 * Private initialization routine
 	 */
 	{
 		setElementType ("table");
@@ -104,7 +104,7 @@ public class table extends MultiPartElement
 	
 
 	/**
-	 * Set the summary="" attribue.
+	 * Set the summary="" attribute.
 	 * 
 	 * @param summary
 	 *            sets the summary="" attribute.
@@ -120,7 +120,7 @@ public class table extends MultiPartElement
 	 * 
 	 * @param align
 	 *            sets the align="" attribute. You can use the AlignType.*
-	 *            variables for convience.
+	 *            variables for convenience.
 	 */
 	public table setAlign (String align)
 	{
@@ -201,10 +201,10 @@ public class table extends MultiPartElement
 	}
 
 	/**
-	 * Sets the cellpading="" attribute.
+	 * Sets the cellpadding="" attribute.
 	 * 
 	 * @param cellpadding
-	 *            sets the cellpading="" attribute.
+	 *            sets the cellpadding="" attribute.
 	 */
 	public table setCellPadding (int cellpadding)
 	{
@@ -225,10 +225,10 @@ public class table extends MultiPartElement
 	}
 
 	/**
-	 * Sets the cellpading="" attribute.
+	 * Sets the cellpadding="" attribute.
 	 * 
 	 * @param cellpadding
-	 *            sets the cellpading="" attribute.
+	 *            sets the cellpadding="" attribute.
 	 */
 	public table setCellPadding (String cellpadding)
 	{

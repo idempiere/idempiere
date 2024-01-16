@@ -127,9 +127,9 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	protected WYesNoEditor editorIsReadOnly = null;
 
 	//Child of westVLayout
-	/** List of display fields */
+	/** List of visible display fields */
 	private Listbox visible = new Listbox();
-	/** List of not dispaly fields */
+	/** List of invisible fields */
 	private Listbox invisible = new Listbox();
 
 	// The grid components

@@ -2214,7 +2214,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (includes.size() == 0 && excludes.size() == 0)
 			return "";
 		if (includes.size() != 0 && excludes.size() != 0)
-			log.warning("Mixing Include and Excluse rules - Will not return values");
+			log.warning("Mixing Include and Exclude rules - Will not return values");
 		
 		StringBuilder where = new StringBuilder(" AND ");
 		if (includes.size() == 1)
@@ -2269,7 +2269,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (c == '.')
 		{
 			StringBuilder sb = new StringBuilder();
-			while (c != ' ' && c != ',' && c != '(')	//	delimeter
+			while (c != ' ' && c != ',' && c != '(')	//	delimiter
 			{
 				sb.insert(0, c);
 				c = mainSql.charAt(--offset);

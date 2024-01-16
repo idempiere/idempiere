@@ -315,7 +315,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
     private void initComponents()
     {
-        /** Initalise toolbar */
+        /** Initialise toolbar */
         toolbar = new ADWindowToolbar(this, getWindowNo());
         toolbar.setId("windowToolbar");
         toolbar.addListener(this);
@@ -748,7 +748,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 			else
 			{
-				logger.log(Level.SEVERE, "No implementaton for tab type " + type + " Found", new Exception("No implementaton for tab type " + type + " Found"));
+				logger.log(Level.SEVERE, "No implementation for tab type " + type + " Found", new Exception("No implementation for tab type " + type + " Found"));
 			}
 		}
 		else if (gTab.isSortTab())

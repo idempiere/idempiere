@@ -85,7 +85,7 @@ public class strong extends MultiPartElement implements Printable, MouseEvents, 
 
     /**
 
-        Basic Constructor.  Creats a strong object with its contents set.
+        Basic Constructor.  Creates a strong object with its contents set.
 
         @param element  set the content of the strong element
 
@@ -103,7 +103,7 @@ public class strong extends MultiPartElement implements Printable, MouseEvents, 
 
     /**
 
-        Basic Constructor.  Creats a strong object with its contents set.
+        Basic Constructor.  Creates a strong object with its contents set.
 
         @param element  set the content of the strong element
 

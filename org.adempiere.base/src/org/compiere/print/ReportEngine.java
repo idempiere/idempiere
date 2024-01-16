@@ -618,7 +618,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 * 	Create HTML File
 	 * 	@param file file
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null the default language is used to format nubers/dates
+	 *  @param language optional language - if null the default language is used to format numbers/dates
 	 * 	@return true if success
 	 */
 	public boolean createHTML (File file, boolean onlyTable, Language language)
@@ -630,7 +630,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 * 	Create HTML File
 	 * 	@param file file
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null the default language is used to format nubers/dates
+	 *  @param language optional language - if null the default language is used to format numbers/dates
 	 *  @param extension optional extension for html output
 	 * 	@return true if success
 	 */
@@ -660,7 +660,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 * 	Write HTML to writer
 	 * 	@param writer writer
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null nubers/dates are not formatted
+	 *  @param language optional language - if null numbers/dates are not formatted
 	 * 	@return true if success
 	 */
 	public boolean createHTML (Writer writer, boolean onlyTable, Language language)
