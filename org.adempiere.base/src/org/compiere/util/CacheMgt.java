@@ -271,7 +271,7 @@ public class CacheMgt
 		CacheInterface[] instances = getInstancesAsArray();
 		for (CacheInterface stored : instances)
 		{
-			if (stored != null && stored.size() > 0)
+			if (stored != null && stored instanceof CCache)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(stored.toString());
 				total += stored.reset();
