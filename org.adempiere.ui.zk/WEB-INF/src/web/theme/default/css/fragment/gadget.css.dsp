@@ -174,7 +174,8 @@
 	text-align: center;
 }
 .views-box .z-toolbarbutton [class^="z-icon"]:before {
-	width: 14px;
+	width: 16px;
+	display: inline-block;
 }
 
 .activities-box {
