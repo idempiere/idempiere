@@ -2692,7 +2692,7 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord)
-			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_UUID());
+			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID(), get_UUID());
 		if (CacheMgt.get().hasCache(p_info.getTableName())) {
 			boolean cacheResetScheduled = false;
 			if (get_TrxName() != null) {
