@@ -71,9 +71,8 @@ import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 
 /**
- *	Workflow Activity Model.
- *	Controlled by WF Process:
- *		set Node - startWork
+ *	Extended Workflow Activity Model for AD_WF_Activity. <br/>
+ *	Controlled by WF Process: set Node - startWork
  *
  *  @author Jorg Janke
  *  @author Silvano Trinchero, www.freepath.it
@@ -83,7 +82,7 @@ import org.compiere.util.Util;
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
 {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -9119089506977887142L;
 
@@ -95,7 +94,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
 	 *	@param activeOnly if true only not processed records are returned
-	 *	@return activity
+	 *	@return activities
 	 */
 	public static MWFActivity[] get (Properties ctx, int AD_Table_ID, int Record_ID, boolean activeOnly)
 	{
@@ -119,11 +118,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	get
 
 	/**
-	 * 	Get Active Info
+	 * 	Get info of active activities
 	 * 	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
-	 *	@return activity summary
+	 *	@return info of active activities (separated by new line character)
 	 */
 	public static String getActiveInfo (Properties ctx, int AD_Table_ID, int Record_ID)
 	{
@@ -142,13 +141,12 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return sb.toString();
 	}	//	getActivityInfo
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_WF_Activity_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_Activity_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWFActivity(Properties ctx, String AD_WF_Activity_UU, String trxName) {
         super(ctx, AD_WF_Activity_UU, trxName);
 		if (Util.isEmpty(AD_WF_Activity_UU))
@@ -156,7 +154,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		m_state = new StateEngine (getWFState());
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_WF_Activity_ID id
@@ -183,7 +181,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	MWFActivity
 
 	/**
-	 * 	Parent Contructor
+	 * 	Parent Constructor
 	 *	@param process process
 	 *	@param AD_WF_Node_ID start node
 	 */
@@ -274,7 +272,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	/** List of email recipients	*/
 	private ArrayList<String> 	m_emails = new ArrayList<String>();
 
-	/**************************************************************************
+	/**
 	 * 	Get State
 	 *	@return state
 	 */
@@ -284,10 +282,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	getState
 
 	/**
-	 * Set Activity State.
+	 * Set Activity State.<br/>
 	 * It also validates the new state and if is valid,
 	 * then create event audit and call {@link MWFProcess#checkActivities(String, PO)}
-	 * @param WFState
+	 * @param WFState StateEngine.STATE_*
 	 */
 	@Override
 	public void setWFState (String WFState)
@@ -341,13 +339,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return m_state.isClosed();
 	}	//	isClosed
 
-
-	/**************************************************************************
-	 * 	Update Event Audit
+	/**
+	 * 	Update Event Audit ({@link MWFEventAudit})
 	 */
 	private void updateEventAudit()
 	{
-	//	log.fine("");
 		getEventAudit();
 		m_audit.setTextMsg(getTextMsg());
 		m_audit.setWFState(getWFState());
@@ -371,7 +367,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	updateEventAudit
 
 	/**
-	 * 	Get/Create Event Audit
+	 * 	Get/Create new Event Audit
 	 * 	@return event
 	 */
 	public MWFEventAudit getEventAudit()
@@ -386,8 +382,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return m_audit;
 	}	//	getEventAudit
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Persistent Object in Transaction
 	 * 	@param trx transaction
 	 *	@return po
@@ -431,7 +426,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	getPO_AD_Client_ID
 
 	/**
-	 * 	Get Attribute Value (based on Node) of PO
+	 * 	Get Attribute Value (AD_Column_ID of {@link MWFNode}) of PO
 	 *	@return Attribute Value or null
 	 */
 	public Object getAttributeValue()
@@ -478,11 +473,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return true;
 	}	//	isSOTrx
 
-
-	/**************************************************************************
+	/**
 	 * 	Set AD_WF_Node_ID.
-	 * 	(Re)Set to Not Started
-	 *	@param AD_WF_Node_ID now node
+	 * 	(Re)Set state to Not Started.
+	 *	@param AD_WF_Node_ID new node
 	 */
 	@Override
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
@@ -538,7 +532,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return getNode().getHelp(true);
 	}	//	getNodeHelp
 
-
 	/**
 	 * 	Is this an user Approval step?
 	 *	@return true if User Approval
@@ -565,7 +558,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	{
 		return getNode().isUserChoice();
 	}	//	isUserChoice
-
 
 	/**
 	 * 	Set Text Msg (add to existing)
@@ -634,7 +626,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 	/**
 	 * 	Get WF State text
-	 *	@return state text
+	 *	@return workflow state text
 	 */
 	public String getWFStateText ()
 	{
@@ -664,8 +656,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	setResponsible
 
 	/**
-	 * 	Get Responsible
-	 *	@return responsible
+	 * 	Get workflow Responsible
+	 *	@return workflow responsible
 	 */
 	public MWFResponsible getResponsible()
 	{
@@ -683,7 +675,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	isInvoker
 
 	/**
-	 * 	Get Approval User.
+	 * 	Get Approval User.<br/>
 	 * 	If the returned user is the same, the document is approved.
 	 *	@param AD_User_ID starting User
 	 *	@param C_Currency_ID currency
@@ -771,7 +763,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			}
 			else
 			{
-				log.fine("No Supervisor");
+				if (log.isLoggable(Level.FINE)) log.fine("No Supervisor");
 				MOrg org = MOrg.get (getCtx(), AD_Org_ID);
 				MOrgInfo orgInfo = org.getInfo();
 				//	Get Org Supervisor
@@ -782,7 +774,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				}
 				else
 				{
-					log.fine("No Org Supervisor");
+					if (log.isLoggable(Level.FINE)) log.fine("No Org Supervisor");
 					//	Get Parent Org Supervisor
 					if (orgInfo.getParent_Org_ID() != 0)
 					{
@@ -800,7 +792,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			ownDocument = false;
 		}	//	while there is a user to approve
 
-		log.fine("No user found");	
+		if (log.isLoggable(Level.FINE)) log.fine("No user found");	
 		return -1;
 	}	//	getApproval
 
@@ -873,16 +865,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return amtaccum;
 	}
 
-	/**************************************************************************
-	 * 	Execute Work.
-	 * 	Called from MWFProcess.startNext
-	 * 	Feedback to Process via setWFState -&gt; checkActivities
+	/**
+	 * 	Run activity. <br/>
+	 * 	Called from MWFProcess.startNext.<br/>
+	 * 	Feedback to Process via setWFState -&gt; checkActivities.
 	 */
 	public void run()
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("Node=" + getNode());
 		m_newValue = null;
-
 
 		Trx trx = null;
 		boolean localTrx = false;
@@ -1041,7 +1032,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}
 	
 	/**
-	 * 	Perform Work.
+	 * 	Perform action of current workflow node.
 	 * 	Set Text Msg.
 	 * 	@param trx transaction
 	 *	@return true if completed, false otherwise
@@ -1378,7 +1369,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	performWork
 
 	/**
-	 * 	Set Variable
+	 * 	Set value to PO
 	 *	@param value new Value
 	 *	@param displayType display type
 	 *	@param textMsg optional Message
@@ -1463,43 +1454,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	public boolean setUserChoice (int AD_User_ID, String value, int displayType,
 		String textMsg) throws Exception
 	{
-		//	Check if user approves own document when a role is reponsible
-		/*
-		 * 2007-06-08, matthiasO.
-		 * The following sequence makes sure that only users in roles which
-		 * have the 'Approve own document flag' set can set the user choice
-		 * of 'Y' (approve) or 'N' (reject).
-		 * IMHO this is against the meaning of 'Approve own document': Why
-		 * should a user who is faced with the task of approving documents
-		 * generally be required to have the ability to approve his OWN
-		 * documents? If the document to approve really IS his own document
-		 * this will be respected when trying to find an approval user in
-		 * the call to getApprovalUser(...) below.
-		*/
-		/*
-		if (getNode().isUserApproval() && getPO() instanceof DocAction)
-		{
-			DocAction doc = (DocAction)m_po;
-			MUser user = new MUser (getCtx(), AD_User_ID, null);
-			MRole[] roles = user.getRoles(m_po.getAD_Org_ID());
-			boolean canApproveOwnDoc = false;
-			for (int r = 0; r < roles.length; r++)
-			{
-				if (roles[r].isCanApproveOwnDoc())
-				{
-					canApproveOwnDoc = true;
-					break;
-				}	//	found a role which allows to approve own document
-			}
-			if (!canApproveOwnDoc)
-			{
-				String info = user.getName() + " cannot approve own document " + doc;
-				addTextMsg(info);
-				log.fine(info);
-				return false;		//	ignore
-			}
-		}*/
-
 		setWFState (StateEngine.STATE_Running);
 		setAD_User_ID(AD_User_ID);
 		Trx trx = ( get_TrxName() != null ) ? Trx.get(get_TrxName(), false) : null;
@@ -1602,7 +1556,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	setUserChoice
 
 	/**
-	 * 	Forward To
+	 * 	Forward to user, usually for approval
 	 *	@param AD_User_ID user
 	 *	@param textMsg text message
 	 *	@return true if forwarded
@@ -1662,7 +1616,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 
 	/**
-	 * 	Fill Parameter
+	 * 	Fill Report/Process Parameters
 	 *	@param pInstance process instance
 	 * 	@param trx transaction
 	 */
@@ -1757,6 +1711,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}	//	instance parameter loop
 	}	//	fillParameter
 
+	/**
+	 * Parse attribute value of node parameter
+	 * @param nPara node parameter
+	 * @return parsed value
+	 */
 	private Object parseNodeParaAttribute(MWFNodePara nPara)
 	{
 		String variableName = nPara.getAttributeValue();
@@ -1803,7 +1762,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return value;
 	}
 	
-	/*********************************
+	/**
 	 * 	Send EMail
 	 */
 	private void sendEMail()
@@ -1890,7 +1849,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	sendEMail
 
 	/**
-	 * 	Send actual EMail
+	 * 	Send EMail
 	 *	@param client client
 	 *	@param AD_User_ID user
 	 *	@param email email string
@@ -1947,9 +1906,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 	}	//	sendEMail
 
-	/**************************************************************************
+	/**
 	 * 	Get Process Activity (Event) History
-	 *	@return history
+	 *	@return history in html format
 	 */
 	public String getHistoryHTML()
 	{
@@ -1959,7 +1918,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		for (int i = 0; i < events.length; i++)
 		{
 			MWFEventAudit audit = events[i];
-		//	sb.append("<p style=\"width:400\">");
 			sb.append("<p>");
 			sb.append(format.format(audit.getCreated()))
 				.append(" ")
@@ -1991,9 +1949,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return sb;
 	}	//	getHTMLpart
 
-
-	/**************************************************************************
-	 * 	Does the underlying PO (!) object have a PDF Attachment
+	/**
+	 * 	Does the underlying PO object has a PDF Attachment
 	 * 	@return true if there is a pdf attachment
 	 */
 	public boolean isPdfAttachment()
@@ -2004,7 +1961,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	isPDFAttachment
 
 	/**
-	 * 	Get PDF Attachment of underlying PO (!) object
+	 * 	Get PDF Attachment of underlying PO object
 	 *	@return pdf data or null
 	 */
 	public byte[] getPdfAttachment()
@@ -2014,11 +1971,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return m_po.getPdfAttachment();
 	}	//	getPdfAttachment
 
-
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MWFActivity[");
@@ -2098,7 +2055,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 		return sb.toString();
 	}	//	getSummary
-	
+
+	/**
+	 * Set up transaction event listener to set workflow state to StateEngine.STATE_Completed in the transaction
+	 * after commit event. 
+	 */
 	private void prepareCommitEvent()
 	{
 		Trx trx = null;
@@ -2111,8 +2072,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		trx.addTrxEventListener(new TrxListener(activity));		
 	}
 
-	
-	
+	/** Transaction event listener to update workflow activity in the after commit event */
 	static class TrxListener implements TrxEventListener {
 
 		private MWFActivity activity;
@@ -2140,8 +2100,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}
 
 	/**
-	 * Where to get the pending activities related to a User (unprocessed and suspended)
-	 * The where returned requires the AD_User_ID parameter 5 times, and then AD_Client_ID
+	 * Get where clause to get the pending activities related to a User (unprocessed and suspended).<br/>
+	 * The where clause return requires the AD_User_ID parameter 5 times, and then AD_Client_ID.
 	 * @return Where Clause
 	 */
 	public static String getWhereUserPendingActivities() {
@@ -2160,11 +2120,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			+ " WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
 			///* Manual Responsible */ 
 			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
-			+ " WHERE AD_WF_Activity.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
-			+ ") AND AD_WF_Activity.AD_Client_ID=?";	//	#5
+			+ " WHERE AD_WF_Activity.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" // #5
+			+ ") AND AD_WF_Activity.AD_Client_ID=?";	//	#6
 		return where;
 	}
 
+	/**
+	 * Get process message
+	 * @return process message
+	 */
 	public String getProcessMsg() {
 
 		if (m_process == null)

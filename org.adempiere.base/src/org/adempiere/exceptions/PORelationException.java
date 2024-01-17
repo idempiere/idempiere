@@ -15,12 +15,13 @@ package org.adempiere.exceptions;
 
 import java.util.logging.Level;
 
+import org.adempiere.model.MRelationType;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Exception related to invalid {@link MRelationType} configuration.
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
  */

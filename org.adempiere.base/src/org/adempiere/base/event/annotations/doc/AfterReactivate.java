@@ -33,14 +33,13 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.annotations.EventTopic;
 
+/**
+ * Method annotation for after re-activate document action event 
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.DOC_AFTER_REACTIVATE)
-/**
- * 
- * @author hengsin
- * 
- */
 public @interface AfterReactivate {
 
 }

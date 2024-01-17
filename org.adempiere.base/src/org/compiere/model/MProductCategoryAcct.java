@@ -116,7 +116,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	}	//	MProductCategoryAcct
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName trx

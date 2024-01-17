@@ -35,7 +35,7 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240116;
 
     /** Standard Constructor */
     public X_PP_Cost_Collector (Properties ctx, int PP_Cost_Collector_ID, String trxName)
@@ -341,8 +341,8 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	public static final String COSTCOLLECTORTYPE_MaterialReceipt = "100";
 	/** Component Issue = 110 */
 	public static final String COSTCOLLECTORTYPE_ComponentIssue = "110";
-	/** Usege Variance = 120 */
-	public static final String COSTCOLLECTORTYPE_UsegeVariance = "120";
+	/** Usage Variance = 120 */
+	public static final String COSTCOLLECTORTYPE_UsageVariance = "120";
 	/** Method Change Variance = 130 */
 	public static final String COSTCOLLECTORTYPE_MethodChangeVariance = "130";
 	/** Rate Variance = 140 */

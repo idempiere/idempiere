@@ -28,6 +28,10 @@ import org.compiere.model.MPackage;
 import org.compiere.model.MShipperLabels;
 import org.compiere.process.SvrProcess;
 
+/**
+ * Process to perform printing of shipping label that have been attached to {@link MPackage}.
+ * Uses {@link IPrintShippingLabel} service to print as image or to label printer.
+ */
 @org.adempiere.base.annotation.Process
 public class PrintShippingLabel extends SvrProcess 
 {

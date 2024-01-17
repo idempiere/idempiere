@@ -119,7 +119,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 	 * @param trxName transaction name
 	 * @return true if loop detected. If you specified not null trace, you will have in that list the IDs from the loop
 	 */
-	// TODO: refactor this method and move into org.compiere.util.DB class because it's general and usefull of others too
+	// TODO: refactor this method and move into org.compiere.util.DB class because it's general and useful of others too
 	private static boolean hasLoop(String tableName, String idColumnName, String parentIdColumnName,
 			int nodeId, List<Integer> trace,
 			String trxName)

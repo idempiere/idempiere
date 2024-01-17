@@ -27,7 +27,7 @@ import net.sf.jasperreports.export.SimpleExporterConfiguration;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 /**
- * mange to fire event relate jasper report
+ * manage to fire event relate jasper report
  * at the moment just fire export pdf event
  * @author hieplq
  *

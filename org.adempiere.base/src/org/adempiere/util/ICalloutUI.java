@@ -13,12 +13,12 @@
  *****************************************************************************/
 package org.adempiere.util;
 
+import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 
-
-
 /**
- * Interface for callout Ask For Input
+ * Interface for callout to Ask For Input. <br/>
+ * Callout will call {@link GridTab#getCalloutUI()} to get access to it.
  *
  * @author Murilo H. Torquato (devCoffee, http://devcoffee.com.br)
  *

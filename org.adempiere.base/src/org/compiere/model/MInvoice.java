@@ -70,7 +70,7 @@ import org.eevolution.model.MPPProductBOMLine;
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org
  *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  Modifications: Added RMA functionality (Ashley Ramdass)
- *  Modifications: Generate DocNo^ instead of using a new number whan an invoice is reversed (Diego Ruiz-globalqss)
+ *  Modifications: Generate DocNo^ instead of using a new number when an invoice is reversed (Diego Ruiz-globalqss)
  */
 public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 {
@@ -1629,6 +1629,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 			pi.setRecord_ID ( getC_Invoice_ID() );
 			pi.setIsBatch(true);
+			pi.setTransientObject(format);
 			
 			ServerProcessCtl.process(pi, null);
 			

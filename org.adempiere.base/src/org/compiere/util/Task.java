@@ -30,7 +30,7 @@ import java.util.logging.Level;
 public class Task extends Thread
 {
 	/**
-	 *  Create Process with cmd
+	 *  Create Process with OS cmd
 	 *  @param cmd o/s command
 	 */
 	public Task (String cmd)

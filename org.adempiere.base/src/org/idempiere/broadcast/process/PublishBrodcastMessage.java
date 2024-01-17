@@ -17,7 +17,7 @@ import org.idempiere.broadcast.BroadcastMsgUtil;
 import org.compiere.process.SvrProcess;
 
 /**
- * 
+ * Process to publish a broadcast message 
  * @author Vivek
  * @author Deepak Pansheriya
  *
@@ -29,7 +29,6 @@ public class PublishBrodcastMessage extends SvrProcess
     @Override
     protected void prepare()
     {
-    	// TODO Auto-generated method stub
     }
 
     @Override

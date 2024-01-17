@@ -185,7 +185,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 
 	/**
 	 * 	Set Currency Info
-	 *	@param C_Currency_ID currenct
+	 *	@param C_Currency_ID currency
 	 *	@param C_ConversionType_ID type
 	 *	@param CurrencyRate rate
 	 */

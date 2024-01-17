@@ -90,6 +90,7 @@ public class GLJournalGenerate extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -124,6 +125,7 @@ public class GLJournalGenerate extends SvrProcess
 	 *  @return Message
 	 *  @throws Exception
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("QSS_Journal_Generator_ID=" + p_QSS_JournalGenerator_ID
@@ -539,6 +541,11 @@ public class GLJournalGenerate extends SvrProcess
 		return "@OK@";
 	}	//	doIt
 
+	/**
+	 * @param sourceAmt
+	 * @param amtMultiplier
+	 * @param roundFactor
+	 */
 	private BigDecimal applyMultiplierAndFactor(BigDecimal sourceAmt, BigDecimal amtMultiplier, int roundFactor) {
 		if (amtMultiplier.compareTo(Env.ONE) != 0)
 			sourceAmt = sourceAmt.multiply(amtMultiplier, MathContext.UNLIMITED);

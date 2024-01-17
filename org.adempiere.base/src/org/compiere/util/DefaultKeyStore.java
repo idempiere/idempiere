@@ -29,9 +29,9 @@ import javax.crypto.SecretKey;
 import org.adempiere.base.IKeyStore;
 
 /**
+ * Default {@link IKeyStore} implementation
  * @author deepak
  * @author hengsin
- *
  */
 public class DefaultKeyStore implements IKeyStore {
 	

@@ -41,7 +41,7 @@ import org.compiere.util.KeyNamePair;
 
 /**
  * 
- * Headless implmentation of {@link IMiniTable}.<br/>
+ * Headless implementation of {@link IMiniTable}.<br/>
  * This support the use/test of some UI API (for e.g {@link Match} in headless environment (for e.g unit test).
  * @author hengsin
  *

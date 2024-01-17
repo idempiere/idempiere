@@ -53,7 +53,7 @@ public class ConfigOracle implements IDatabaseConfig
 	{
 	}	//	ConfigOracle
 
-	/** Discoverd TNS			*/
+	/** Discovered TNS			*/
 	private String[] 			p_discovered = null;
 	/** Discovered Database Name */
 	private String[] 			p_dbname = null;

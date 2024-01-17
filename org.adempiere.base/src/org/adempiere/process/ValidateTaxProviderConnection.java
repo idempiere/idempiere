@@ -23,7 +23,7 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.Msg;
 
 /**
- * Online validate tax provider connection
+ * Process to perform online validation of tax provider ({@link MTaxProvider} connection configuration.
  * @author Elaine
  *
  */

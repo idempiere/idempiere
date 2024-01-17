@@ -58,7 +58,7 @@ public class ChargeFormTest extends AbstractTestCase {
 		int elementValueId = charge.createElementValue(value, name, true);
 		assertTrue(elementValueId > 0, "Failed to create new account element record");
 		int chargeId = charge.createCharge(name, elementValueId);
-		assertTrue(chargeId > 0, "Failed to creaet new Charge record");
+		assertTrue(chargeId > 0, "Failed to create new Charge record");
 	}
 	
 	@Test

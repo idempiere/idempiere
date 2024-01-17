@@ -323,7 +323,7 @@ public class GridWindowVO implements Serializable
 	public String		AD_Window_UU = "";
 	/** Name				*/
 	public	String		Name = "";
-	/** Desription			*/
+	/** Description			*/
 	public	String		Description = "";
 	/** Help				*/
 	public	String		Help = "";

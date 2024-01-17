@@ -566,7 +566,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), fgCost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "");
 			// Assert that OnHand Qty for the item type finished good Product created
 			BigDecimal onHand = MStorageOnHand.getQtyOnHand(fgProdcut.get_ID(),DictionaryIDs.M_Warehouse.HQ.id, 0, getTrxName());
-			assertEquals(BD_2, onHand.setScale(2, RoundingMode.HALF_UP), "Storge for the Item Type Product Should not be Created");
+			assertEquals(BD_2, onHand.setScale(2, RoundingMode.HALF_UP), "Storage for the Item Type Product Should not be Created");
 
 		}
 		finally

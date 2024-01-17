@@ -43,12 +43,11 @@ import org.compiere.util.Util;
 public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7463584909438958260L;
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -60,7 +59,6 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -71,7 +69,6 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -81,7 +78,6 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 */
@@ -90,7 +86,6 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -115,7 +110,6 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -127,7 +121,6 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -192,6 +185,7 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 
 	/**
+	 * Get a copy of PO from cache using copy constructor
 	 * @param ctx context 
 	 * @param key
 	 * @return value for key
@@ -201,6 +195,7 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	}
 	
 	/**
+	 * Get a copy of PO from cache using copy constructor
 	 * @param ctx context 
 	 * @param key
 	 * @param trxName
@@ -238,7 +233,7 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 	 * Get PO from cache. A copy of the cached PO is return
 	 * @param key
 	 * @param copyOperator operator to call copy constructor
-	 * @return PO from cache (if there's match for key)
+	 * @return copy of PO from cache (if there's match for key)
 	 */
 	public V get(K key, UnaryOperator<V> copyOperator) {
 		V value = super.get(key);
@@ -249,6 +244,17 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 		return copy;
 	}
 
+	/**
+	 * Create a copy of value using copy constructor
+	 * @param ctx
+	 * @param value
+	 * @param trxName
+	 * @return copy of value or null
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@SuppressWarnings("unchecked")
 	private V copyOf(Properties ctx, V value, String trxName)
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -261,6 +267,16 @@ public class POCopyCache<K, V extends PO> extends CCache<K, V> {
 		return null;
 	}
 	
+	/**
+	 * Create a copy of value using copy constructor
+	 * @param ctx
+	 * @param value
+	 * @return copy of value or null
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@SuppressWarnings("unchecked")
 	private V copyOf(Properties ctx, V value)
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {

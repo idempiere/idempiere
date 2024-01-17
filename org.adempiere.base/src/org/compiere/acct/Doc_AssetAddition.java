@@ -18,7 +18,6 @@ import org.compiere.model.X_C_Project_Acct;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
-
 /**
  * Posting for {@link MAssetAddition} document. DOCBASETYPE_GLDocument.
  * @author Teo_Sarca, SC ARHIPAC SERVICE SRL

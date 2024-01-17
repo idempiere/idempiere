@@ -509,7 +509,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 
 	/**
 	 * This is unused.
-	 * The readonly proprty of a column should be set in
+	 * The readonly property of a column should be set in
 	 * the parent table.
 	 *
 	 * @param colIndex

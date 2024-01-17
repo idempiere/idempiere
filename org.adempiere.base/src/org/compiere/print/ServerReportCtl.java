@@ -168,6 +168,7 @@ public class ServerReportCtl {
 		}
 		jasperProcessInfo.setRecord_ID ( Record_ID );
 		jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+		jasperProcessInfo.setTransientObject(format);
 		ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 		ProcessInfoParameter pip;
 		if (printerName!=null && printerName.trim().length()>0) {

@@ -33,7 +33,7 @@ import org.compiere.model.I_AD_Message;
 import org.compiere.model.MSysConfig;
 
 /**
- *	Reads all Messages and stores them in a HashMap
+ *	Contain static methods to access AD_Message, AD_Element and its translations.
  *
  *  @author     Jorg Janke
  *  @version    $Id: Msg.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
@@ -52,7 +52,7 @@ public final class Msg
 	private static CLogger			s_log = CLogger.getCLogger (Msg.class);
 
 	/**
-	 * 	Get Message Object
+	 * 	Get the singleton Message instance
 	 *	@return Msg
 	 */
 	public static synchronized Msg get()
@@ -61,22 +61,23 @@ public final class Msg
 			s_msg = new Msg();
 		return s_msg;
 	}	//	get
-
 	
-	/**************************************************************************
-	 *	Constructor
+	/**
+	 *	Private constructor, use {@link #get()} to access the singleton instance 
 	 */
 	private Msg()
 	{
 	}	//	Mag
 
-	/**  The Map                    */
+	/**  Language:(Message Key:Message Text)            */
 	private Map<String,CCache<String,String>> m_languages 
 		= new HashMap<String, CCache<String,String>>();
 	
+	/** Language:(Element Column Name, Element Name) */
 	private Map<String,CCache<String,String>> m_elementNameCache 
 		= new HashMap<String,CCache<String,String>>();
 	
+	/** Language:(Element Column Name, Element Print Name) */
 	private Map<String,CCache<String,String>> m_elementPrintNameCache 
 		= new HashMap<String,CCache<String,String>>();
 
@@ -126,9 +127,9 @@ public final class Msg
 	}
 	
 	/**
-	 * Get language specific translation map for AD_Element
+	 * Get language specific translation map for AD_Element print name
 	 * @param ad_language
-	 * @return ad_element map
+	 * @return map of element column name:print name
 	 */
 	public synchronized CCache<String,String> getElementPrintNameMap (String ad_language)
 	{
@@ -145,12 +146,10 @@ public final class Msg
 		return retValue;
 	}
 
-
 	/**
-	 *	Init message HashMap.
-	 *	The initial call is from ALogin (ConfirmPanel init).
-	 *	The second from Env.verifyLanguage.
+	 *	Populate message HashMap.
 	 *  @param AD_Language Language
+	 *  @param msg cache map to append to
 	 *  @return Cache HashMap
 	 */
 	private CCache<String,String> initMsg (String AD_Language, CCache<String,String> msg)
@@ -215,6 +214,7 @@ public final class Msg
 	}	//	initMsg
 
 	/**
+	 * Add AD_Message record from result set to msg
 	 * @param rs
 	 * @param msg
 	 * @throws SQLException
@@ -235,7 +235,7 @@ public final class Msg
 	}
 	
 	/**
-	 *  Reset Message cache
+	 *  Reset/clear message cache
 	 */
 	public synchronized void reset()
 	{
@@ -277,10 +277,10 @@ public final class Msg
 	}   //  isLoaded
 
 	/**
-	 *  Lookup term
+	 *  Lookup translated text from message map
 	 *  @param AD_Language language
-	 *  @param text text
-	 *  @return translated term or null
+	 *  @param text message key
+	 *  @return translated message text or null
 	 */
 	private String lookup (String AD_Language, String text)
 	{
@@ -316,9 +316,8 @@ public final class Msg
 
 		return (String)langMap.get(text);
 	}   //  lookup
-
 	
-	/**************************************************************************
+	/**
 	 *	Get translated text for AD_Message
 	 *  @param  ad_language - Language
 	 *  @param	AD_Message - Message Key
@@ -392,7 +391,6 @@ public final class Msg
 			else
 			{
 				int start = pos + SEPARATOR.length();
-			//	int end = retStr.length();
 				retStr = retStr.substring (start);
 			}
 		}
@@ -424,7 +422,7 @@ public final class Msg
 	}   //  getMsg
 
 	/**
-	 *	Get clear text for AD_Message with parameters
+	 *	Get translated text for AD_Message with parameters
 	 *  @param  ctx Context to retrieve language
 	 *  @param AD_Message   Message key
 	 *  @param args         MessageFormat arguments
@@ -437,7 +435,7 @@ public final class Msg
 	}	//	getMsg
 
 	/**
-	 *	Get clear text for AD_Message with parameters
+	 *	Get translated text for AD_Message with parameters
 	 *  @param  language Language
 	 *  @param AD_Message   Message key
 	 *  @param args         MessageFormat arguments
@@ -450,7 +448,7 @@ public final class Msg
 	}	//	getMsg
 
 	/**
-	 *	Get clear text for AD_Message with parameters
+	 *	Get translated text for AD_Message with parameters
 	 *  @param ad_language  Language
 	 *  @param AD_Message   Message key
 	 *  @param args         MessageFormat arguments
@@ -472,8 +470,7 @@ public final class Msg
 		return retStr;
 	}	//	getMsg
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param language language
 	 * 	@param amount numeric amount (352.80)
@@ -528,26 +525,25 @@ public final class Msg
 		return sb.toString();
 	}	//	getAmtInWords
 	
-	/**************************************************************************
+	/**
 	 *  Get Translation for Element
 	 *  @param ad_language language
-	 *  @param ColumnName column name
+	 *  @param ColumnName element column name
 	 *  @param isSOTrx if false PO terminology is used (if exists)
-	 *  @return Name of the Column or "" if not found
+	 *  @return Translated Element Name or "" if not found
 	 */
 	public static String getElement (String ad_language, String ColumnName, boolean isSOTrx)
 	{
 		return getElement(ad_language, ColumnName, isSOTrx, false);
 	}
 
-
-	/**************************************************************************
+	/**
 	 *  Get Translation for Element
 	 *  @param ad_language language
-	 *  @param ColumnName column name
+	 *  @param ColumnName element column name
 	 *  @param isSOTrx if false PO terminology is used (if exists)
-	 *  @param isPrintName if true, will be used the PrintName instead of Name column
-	 *  @return Name/PrintName of the Column or "" if not found
+	 *  @param isPrintName if true, return element PrintName instead of element Name
+	 *  @return Translated Element Name/PrintName of the Column or "" if not found
 	 */
 	public static String getElement (String ad_language, String ColumnName, boolean isSOTrx, boolean isPrintName)
 	{
@@ -619,8 +615,8 @@ public final class Msg
 	/**
 	 *  Get Translation for Element using Sales terminology
 	 *  @param ctx context
-	 *  @param ColumnName column name
-	 *  @return Name of the Column or "" if not found
+	 *  @param ColumnName element column name
+	 *  @return Translated Element Name of the Column or "" if not found
 	 */
 	public static String getElement (Properties ctx, String ColumnName)
 	{
@@ -630,25 +626,25 @@ public final class Msg
 	/**
 	 *  Get Translation for Element
 	 *  @param ctx context
-	 *  @param ColumnName column name
+	 *  @param ColumnName element column name
 	 *  @param isSOTrx sales transaction
-	 *  @return Name of the Column or "" if not found
+	 *  @return Translated Element Name of the Column or "" if not found
 	 */
 	public static String getElement (Properties ctx, String ColumnName, boolean isSOTrx)
 	{
 		return getElement (Env.getAD_Language(ctx), ColumnName, isSOTrx);
 	}   //  getElement
 
-	/**************************************************************************
+	/**
 	 *	"Translate" text.
-	 *  <pre>{@code
+	 *  <pre>
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  }</pre>
+	 *  </pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
 	 *  @param isSOTrx sales order context
-	 *  @param text	Text - MsgText or Element Name
+	 *  @param text	Text - Message Value or Element Column Name
 	 *  @return translated text or original text if not found
 	 */
 	public static String translate(String ad_language, boolean isSOTrx, String text)
@@ -656,17 +652,17 @@ public final class Msg
 		return translate(ad_language, isSOTrx, text, false);
 	}
 
-	/**************************************************************************
+	/**
 	 *	"Translate" text.
-	 *  <pre>{@code
+	 *  <pre>
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name/PrintName
-	 *  }</pre>
+	 *  </pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
 	 *  @param isSOTrx sales order context
-	 *  @param text	Text - MsgText or Element Name
-	 *  @param isPrintName if true, will be used the PrintName instead of Name column
+	 *  @param text	Text - Message Value or Element Column Name
+	 *  @param isPrintName if true, return element PrintName instead of element Name
 	 *  @return translated text or original text if not found
 	 */
 	public static String translate(String ad_language, boolean isSOTrx, String text, boolean isPrintName)
@@ -693,15 +689,15 @@ public final class Msg
 		return text;
 	}	//	translate
 
-	/***
+	/**
 	 *	"Translate" text (SO Context).
-	 *  <pre>{@code
+	 *  <pre>
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  }</pre>
+	 *  </pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
-	 *  @param text	Text - MsgText or Element Name
+	 *  @param text	Text - Message Value or Element Column Name
 	 *  @return translated text or original text if not found
 	 */
 	public static String translate(String ad_language, String text)
@@ -711,12 +707,12 @@ public final class Msg
 
 	/**
 	 *	"Translate" text.
-	 *  <pre>{@code
+	 *  <pre>
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  }</pre>
+	 *  </pre>
 	 *  @param ctx  Context
-	 *  @param text	Text - MsgText or Element Name
+	 *  @param text	Text - Message Value or Element Column Name
 	 *  @return translated text or original text if not found
 	 */
 	public static String translate(Properties ctx, String text)
@@ -731,12 +727,12 @@ public final class Msg
 
 	/**
 	 *	"Translate" text.
-	 *  <pre>{@code
+	 *  <pre>
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  }</pre>
+	 *  </pre>
 	 *  @param language Language
-	 *  @param text     Text
+	 *  @param text Message Value or Element Column Name
 	 *  @return translated text or original text if not found
 	 */
 	public static String translate(Language language, String text)
@@ -784,7 +780,7 @@ public final class Msg
 	}   //  parseTranslation
 
 	/**
-	 * 
+	 * Is translation exists for text 
 	 * @param adLanguage
 	 * @param text
 	 * @return true if translation exists for text and adLanguage
@@ -810,6 +806,7 @@ public final class Msg
 		
 		return false;
 	}
+	
 	/**
 	 *  Get translated text message for AD_Message, ampersand cleaned (used to indicate shortcut)
 	 *  @param  ctx Context to retrieve language

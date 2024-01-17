@@ -25,8 +25,8 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 /**
- * Wrap a PO object to a given interface.
- * Example
+ * Wrap a PO object to a given interface.<br/>
+ * Example usage:
  * <pre>
  * public interface I_C_Invoice_Customized
  * {
@@ -48,10 +48,10 @@ public class POWrapper implements InvocationHandler
 {
 	/**
 	 * Create wrapper of type cl for po
-	 * @param <T>
+	 * @param <T> iDempiere model interface type
 	 * @param po
-	 * @param cl interface class
-	 * @return POWrapper instance
+	 * @param cl iDempiere model interface class
+	 * @return wrapped instance
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T create(Object po, Class<T> cl)
@@ -68,6 +68,7 @@ public class POWrapper implements InvocationHandler
 	}
 	
 	/**
+	 * Get wrapped PO instance
 	 * @param <T>
 	 * @param model
 	 * @return the wrapped PO

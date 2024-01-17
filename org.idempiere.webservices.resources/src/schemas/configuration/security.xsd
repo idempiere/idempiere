@@ -136,7 +136,7 @@
         <xs:attribute name="password" type="xs:string">
           <xs:annotation>
             <xs:documentation>
-            This attribute specifes the integrity password for the keystore.
+            This attribute specifies the integrity password for the keystore.
             This is not the password that unlock keys within the keystore.
             </xs:documentation>
           </xs:annotation>
@@ -262,7 +262,7 @@
               <xs:annotation>
                 <xs:documentation>
                 This attribute contains the name of the class implementing
-                password callback handler to unlock the keys withing the keystore. 
+                password callback handler to unlock the keys within the keystore. 
                 Alternative to keyPassword attribute.
                 </xs:documentation>
               </xs:annotation>

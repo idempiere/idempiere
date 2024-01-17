@@ -82,6 +82,7 @@ import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -1574,7 +1575,7 @@ public class DashboardController implements EventListener<Event> {
 	/**
 	 * Strip &lt;html&gt;, &lt;body&gt; and &lt;head&gt; tag
 	 * @param htmlString
-	 * @param all true to escpae &lt; and &gt;
+	 * @param all true to escape &lt; and &gt;
 	 * @return stripped htmlString
 	 */
 	private String stripHtml(String htmlString, boolean all) {
@@ -1652,7 +1653,7 @@ public class DashboardController implements EventListener<Event> {
 		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
 		File file = null;
 		if(process.getJasperReport() != null) {
-			file = runJasperReport(process, parameters);
+			file = runJasperReport(process, parameters, AD_PrintFormat_ID);
 			return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), -1);
 		}
 			
@@ -1665,7 +1666,7 @@ public class DashboardController implements EventListener<Event> {
 		return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), re.getPrintData() != null ? re.getPrintData().getRowCount(false) : 0);
 	}
 
-	private File runJasperReport(MProcess process, String parameters) {
+	private File runJasperReport(MProcess process, String parameters, int AD_PrintFormat_ID) {
 		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), 0, 0, null);
 		pInstance.setIsProcessing(true);
 		pInstance.saveEx();
@@ -1680,6 +1681,10 @@ public class DashboardController implements EventListener<Event> {
 			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+			if(AD_PrintFormat_ID > 0) {
+				MPrintFormat format = new MPrintFormat(Env.getCtx(), AD_PrintFormat_ID, null);
+				pi.setTransientObject(format);
+			}
 		
 			//	Report
 			ServerProcessCtl.process(pi, null);

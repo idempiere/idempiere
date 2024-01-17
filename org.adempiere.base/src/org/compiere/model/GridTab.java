@@ -858,7 +858,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	e.g. Column=UPPER(Name), Key=AD_Element_ID, Query=UPPER(AD_Element.Name) LIKE '%CUSTOMER%'
 		if (tableName == null)
 		{
-			if (log.isLoggable(Level.INFO)) log.info ("Not successfull - Column="
+			if (log.isLoggable(Level.INFO)) log.info ("Not successful - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
 			return query.getWhereClause(true);
@@ -2139,7 +2139,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MAttachment.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MAttachment.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getAttachmentID
 
 	/**
@@ -2160,7 +2161,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MChat.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MChat.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getCM_ChatID
 	
 	/**
@@ -2180,7 +2182,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MPostIt.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MPostIt.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getAD_PostIt_ID	
 	
 	/**
@@ -2191,7 +2194,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return false;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	hasLabel
 
 	/**

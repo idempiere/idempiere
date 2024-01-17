@@ -306,7 +306,7 @@ public class CPaper extends Paper
 			{
 				area = (MediaPrintableArea)atts[i];
 			}
-			else	//	unhandeled
+			else	//	unhandled
 				System.out.println(atts[i].getName() + " = " + atts[i] + " - " + atts[i].getCategory());
 		}
 		//

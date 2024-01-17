@@ -15,9 +15,8 @@
 package org.adempiere.exceptions;
 
 /**
- * 
+ * Exception raise when current quantity of a product's average costing record is zero
  * @author hengsin
- *
  */
 public class AverageCostingZeroQtyException extends AdempiereException {
 

@@ -318,7 +318,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         //Set preference width
         if( westWidth != null || eastWidth != null ){
         	
-        	//If both panels have prefered size check that the sum is not bigger than the browser
+        	//If both panels have preferred size check that the sum is not bigger than the browser
         	if( westWidth != null && eastWidth != null ){
             	ClientInfo browserInfo = getClientInfo();
         		int browserWidth = browserInfo.desktopWidth;

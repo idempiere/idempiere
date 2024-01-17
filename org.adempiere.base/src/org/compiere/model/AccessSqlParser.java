@@ -418,7 +418,7 @@ public class AccessSqlParser
 		}	//	TableInfo
 		
 		/**
-		 * 	Short Constuctor - no synonym
+		 * 	Short Constructor - no synonym
 		 *	@param tableName table
 		 */
 		public TableInfo (String tableName)

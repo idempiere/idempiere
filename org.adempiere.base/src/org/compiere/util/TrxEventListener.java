@@ -14,11 +14,25 @@
 package org.compiere.util;
 
 /**
+ * Transaction event listener interface
  * @author hengsin
- *
  */
 public interface TrxEventListener {
+	/**
+	 * After commit event
+	 * @param trx
+	 * @param success
+	 */
 	public void afterCommit(Trx trx, boolean success);
+	/**
+	 * After rollback event
+	 * @param trx
+	 * @param success
+	 */
 	public void afterRollback(Trx trx, boolean success);
+	/**
+	 * After close event
+	 * @param trx
+	 */
 	public void afterClose(Trx trx);
 }

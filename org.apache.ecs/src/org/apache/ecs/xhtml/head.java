@@ -47,7 +47,7 @@ public class head extends MultiPartElement
 	}
 
 	/**
-	 * Basic constructor. Use the set* methods to set the attibutes.
+	 * Basic constructor. Use the set* methods to set the attributes.
 	 */
 	public head ()
 	{
@@ -76,10 +76,10 @@ public class head extends MultiPartElement
 	}
 
 	/**
-	 * Sets the PROFILE="" attribue
+	 * Sets the PROFILE="" attribute
 	 * 
 	 * @param profile
-	 *            the url to one or more meta data profiles seperated by
+	 *            the url to one or more meta data profiles separated by
 	 *            whitespace
 	 */
 	public head setProfile (String profile)

@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.idempiere.fa.process;
 
-
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
@@ -29,11 +28,9 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Msg;
-
  
 /**
- *  Open Project.
- *  Opening project will automatically create asset and asset addition
+ *  Process to create project asset
  *
  *	@author zuhri utama
  */
@@ -52,6 +49,7 @@ public class ProjectCreateAsset extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -83,6 +81,7 @@ public class ProjectCreateAsset extends SvrProcess
 	 *  @return Message (translated text)
 	 *  @throws Exception if not successful
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		if (m_C_Project_ID == 0 || m_Product_ID == 0) {

@@ -85,7 +85,7 @@ public class TabEditor
 			mapGridField.put(gridField.getAD_Field_ID(), gridField);
 			MField field = new MField(Env.getCtx(), gridField.getAD_Field_ID(), null);
 			
-			// load translated values and ovewrite field with it
+			// load translated values and overwrite field with it
 			if (!isBaseLang) 
 			{
 				field.setName(field.get_Translation(MField.COLUMNNAME_Name, Env.getLanguage(Env.getCtx()).getAD_Language(), true));

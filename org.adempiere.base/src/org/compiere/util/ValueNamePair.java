@@ -17,7 +17,7 @@
 package org.compiere.util;
 
 /**
- *	(String) Value Name Pair
+ *	Value Name Pair (String key and name)
  *
  *  @author     Jorg Janke
  *  @version    $Id: ValueNamePair.java,v 1.2 2006/07/30 00:52:23 jjanke Exp $
@@ -25,14 +25,14 @@ package org.compiere.util;
 public final class ValueNamePair extends NamePair
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8315081335749462163L;
 	
 	public static final ValueNamePair EMPTY = new ValueNamePair("", "");
 
 	/**
-	 *	Construct KeyValue Pair
+	 *	Construct ValueNamePair Pair
 	 *  @param value value
 	 *  @param name string representation
 	 */
@@ -44,12 +44,12 @@ public final class ValueNamePair extends NamePair
 			m_value = "";
 	}   //  ValueNamePair
 
-	/** The Value       */
+	/** The Key Value       */
 	private String m_value = null;
 
 	/**
-	 *	Get Value
-	 *  @return Value
+	 *	Get Key Value
+	 *  @return Key Value
 	 */
 	public String getValue()
 	{
@@ -57,7 +57,7 @@ public final class ValueNamePair extends NamePair
 	}	//	getValue
 
 	/**
-	 *	Get ID
+	 *	Get String ID
 	 *  @return Value
 	 */
 	public String getID()
@@ -72,6 +72,7 @@ public final class ValueNamePair extends NamePair
 	 *  @param obj Object
 	 *  @return true, if equal
 	 */
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof ValueNamePair)
@@ -84,7 +85,6 @@ public final class ValueNamePair extends NamePair
 		}
 		return false;
 	}	//	equals
-
 
 	/**
 	 * Get the Object representation of the value
@@ -99,10 +99,11 @@ public final class ValueNamePair extends NamePair
 	 *  Return Hashcode of value
 	 *  @return hascode
 	 */
+	@Override
 	public int hashCode()
 	{
 		return m_value.hashCode();
 	}   //  hashCode
 
-}	//	KeyValuePair
+}
 

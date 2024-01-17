@@ -621,7 +621,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			MTable table = MTable.get(Env.getCtx(), m_tableName);
 			m_keyColumnName = table.getKeyColumns()[0];
 		} else {
-			// no field - the search editor is defined programatically
+			// no field - the search editor is defined programmatically
 			m_keyColumnName = getColumnName();
 			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
 		}

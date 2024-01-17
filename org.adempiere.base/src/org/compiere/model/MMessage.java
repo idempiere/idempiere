@@ -167,7 +167,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}	//	MMessage
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction

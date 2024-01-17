@@ -45,9 +45,8 @@ import org.idempiere.expression.logic.SimpleBooleanParser.QuotedTextContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.TextContext;
 
 /**
- * 
+ * Boolean expression visitor 
  * @author hengsin
- *
  */
 public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 

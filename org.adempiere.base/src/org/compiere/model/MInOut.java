@@ -897,6 +897,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 			pi.setRecord_ID ( getM_InOut_ID() );
 			pi.setIsBatch(true);
+			pi.setTransientObject(format);
 			
 			ServerProcessCtl.process(pi, null);
 			
@@ -2536,7 +2537,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			counter.setDropShip_User_ID(getDropShip_User_ID());
 		}
 
-		//	Refernces (Should not be required
+		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
 		counter.saveEx(get_TrxName());
 

@@ -121,7 +121,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private Row currentRow;
 	/** values of current row. updated in {@link #render(Row, Object[], int)}. **/
 	private Object[] currentValues;
-	/** true if currrent row is in edit mode **/
+	/** true if current row is in edit mode **/
 	private boolean editing = false;
 	/** index of current row **/
 	private int currentRowIndex = -1;

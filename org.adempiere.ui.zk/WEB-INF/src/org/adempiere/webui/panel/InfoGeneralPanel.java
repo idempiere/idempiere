@@ -458,7 +458,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			pstmt = null;
 		}
 
-		//	Miminum check
+		//	Minimum check
 		if (m_queryColumns.size() == 0)
 		{
 			Dialog.error(p_WindowNo, "Error", Msg.getMsg(Env.getCtx(),"NoQueryColumnsFound"));

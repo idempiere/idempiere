@@ -5,6 +5,8 @@ import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MRule;
 import org.compiere.model.MPInstance.PInstanceInfo;
+import org.compiere.print.MPrintFormat;
+import org.compiere.print.ReportEngine;
 import org.compiere.print.ServerReportCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -83,7 +85,14 @@ public class ServerProcessCtl implements Runnable {
 		{
 			try 
 			{ 
-				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU()); 
+				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU());
+				// Get PrintFormat
+				MPrintFormat format = (MPrintFormat)pi.getTransientObject();
+				if (format != null)
+				{
+					instance.updatePrintFormatAndLanguageIfEmpty(format);
+					ReportEngine.setDefaultReportTypeToPInstance(Env.getCtx(), instance, instance.getAD_PrintFormat_ID());
+				}
 			} 
 			catch (Exception e) 
 			{ 
@@ -301,7 +310,7 @@ public class ServerProcessCtl implements Runnable {
 
 	/**************************************************************************
 	 *  Start Java Process Class.
-	 *      instanciate the class implementing the interface ProcessCall.
+	 *      instantiate the class implementing the interface ProcessCall.
 	 *  The class can be a Server/Client class (when in Package
 	 *  org adempiere.process or org.compiere.model) or a client only class
 	 *  (e.g. in org.compiere.report)

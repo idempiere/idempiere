@@ -291,7 +291,7 @@ public class KeyStoreMgt
 	}
 	
 	/**
-	 * 	Get Distinguised Name
+	 * 	Get Distinguished Name
 	 * 	@param parent interactive dialog
 	 *	@return dname or null
 	 */
@@ -378,7 +378,7 @@ public class KeyStoreMgt
 	/**
 	 * 	Escape Commas
 	 *	@param in input string
-	 *	@return excaped string
+	 *	@return escaped string
 	 */
 	public static String escapeCommas(String in)
 	{

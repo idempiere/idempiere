@@ -17,7 +17,7 @@
 package org.compiere.util;
 
 /**
- *	Amount in Words.
+ *	Convert amount to words.
  *	See Msg.getAmtInWords	
  *  @author Jorg Janke
  *  @version $Id: AmtInWords.java,v 1.3 2006/07/30 00:54:36 jjanke Exp $

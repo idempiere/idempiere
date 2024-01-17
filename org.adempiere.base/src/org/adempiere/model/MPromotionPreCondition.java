@@ -19,20 +19,19 @@ import java.util.Properties;
 import org.compiere.model.X_M_PromotionPreCondition;
 
 /**
- *
+ * Extended model class for M_PromotionPreCondition
  * @author hengsin
- *
  */
 public class MPromotionPreCondition extends X_M_PromotionPreCondition {
 
 	private static final long serialVersionUID = 7344556244799964804L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param M_PromotionPreCondition_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_PromotionPreCondition_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPromotionPreCondition(Properties ctx, String M_PromotionPreCondition_UU, String trxName) {
         super(ctx, M_PromotionPreCondition_UU, trxName);
     }

@@ -104,7 +104,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 		MReportView m_Reportview = new MReportView(ctx.ctx, AD_ReportView_ID, getTrxName(ctx));
 
-		// Export Table if neccessary
+		// Export Table if necessary
 		ElementHandler tableHandler = packOut.getHandler(I_AD_Table.Table_Name);
 		try {
 			tableHandler.packOut(packOut, document, null, m_Reportview.getAD_Table_ID());

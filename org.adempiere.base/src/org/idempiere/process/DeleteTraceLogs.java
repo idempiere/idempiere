@@ -35,6 +35,9 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogFile;
 
+/**
+ * Process to delete old server log
+ */
 @org.adempiere.base.annotation.Process
 public class DeleteTraceLogs extends SvrProcess {
 

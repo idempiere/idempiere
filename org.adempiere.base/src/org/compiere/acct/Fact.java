@@ -34,7 +34,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- *  Accounting Fact
+ *  Accounting Fact for {@link Doc}.<br/>
+ *  Create and save one or more {@link FactLine} for an accounting document.
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: Fact.java,v 1.2 2006/07/30 00:53:33 jjanke Exp $

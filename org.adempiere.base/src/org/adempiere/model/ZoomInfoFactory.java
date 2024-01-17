@@ -24,7 +24,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 /**
- * 
+ * Static factory methods for zoom info
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
  */

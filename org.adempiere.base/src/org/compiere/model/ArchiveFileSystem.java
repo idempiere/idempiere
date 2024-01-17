@@ -91,7 +91,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				if(filePath!=null){
 					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
-					//just to be shure...
+					//just to be sure...
 					String replaceSeparator = File.separator;
 					if(!replaceSeparator.equals("/")){
 						replaceSeparator = "\\\\";

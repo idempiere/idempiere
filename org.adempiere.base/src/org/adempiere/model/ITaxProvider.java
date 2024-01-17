@@ -27,7 +27,6 @@ import org.compiere.process.ProcessInfo;
  * @author Elaine
  *
  * @contributor Murilo H. Torquato <muriloht@devcoffee.com.br>
- *
  */
 public interface ITaxProvider {
 		

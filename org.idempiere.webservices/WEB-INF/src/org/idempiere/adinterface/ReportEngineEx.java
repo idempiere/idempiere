@@ -46,7 +46,7 @@ public class ReportEngineEx { //extends  ReportEngine  {
 	 * 	Create EXCEL HTML File
 	 * 	@param file file
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null the default language is used to format nubers/dates
+	 *  @param language optional language - if null the default language is used to format numbers/dates
 	 * 	@return true if success
 	 */
 	public static boolean createEXCEL_HTML (ReportEngine re, Properties m_ctx, File file, boolean onlyTable, Language language)
@@ -93,7 +93,7 @@ public class ReportEngineEx { //extends  ReportEngine  {
 	 * 	Write EXCEL HTML to writer
 	 * 	@param writer writer
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null nubers/dates are not formatted
+	 *  @param language optional language - if null numbers/dates are not formatted
 	 * 	@return true if success
 	 */
 	public static boolean createEXCEL_HTML (ReportEngine re, Properties m_ctx, Writer writer, boolean onlyTable, Language language)

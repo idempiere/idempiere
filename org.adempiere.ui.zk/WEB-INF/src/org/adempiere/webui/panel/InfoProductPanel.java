@@ -1396,7 +1396,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
     	}
 
     	m_pAttributeWhere = null;
-    	// Query Product Attribure Instance
+    	// Query Product Attribute Instance
     	int row = contentPanel != null ? contentPanel.getSelectedRow() : -1;
 		if (component.equals(m_PAttributeButton) && row != -1)
 		{

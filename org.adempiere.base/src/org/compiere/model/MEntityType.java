@@ -28,7 +28,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
- * 	Enitity Type Model
+ * 	Entity Type Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MEntityType.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $

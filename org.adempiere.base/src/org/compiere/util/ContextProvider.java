@@ -19,14 +19,21 @@ package org.compiere.util;
 import java.util.Properties;
 
 /**
- * 
+ * Interface for iDempiere environment context provider
  * @author Low Heng Sin
- *
  */
 public interface ContextProvider {
 
+	/**
+	 * Get context reference
+	 * @return environment context reference
+	 */
 	public Properties getContext();
 	
+	/**
+	 * Display URL at client
+	 * @param url
+	 */
 	public void showURL(String url);
 	
 }

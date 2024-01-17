@@ -793,7 +793,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		
 		ArrayList<MRole> list = new ArrayList<MRole>();
 		// 2007-06-08, matthiasO.
-		// Extension of sql query so that not only roles with org acces for this user
+		// Extension of sql query so that not only roles with org access for this user
 		// are found but also roles which delegate org access to the user level where
 		// this user has access to the org in question
 		String sql = "SELECT * FROM AD_Role r " 
