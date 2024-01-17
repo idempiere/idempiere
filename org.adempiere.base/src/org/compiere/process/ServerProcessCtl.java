@@ -5,6 +5,8 @@ import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MRule;
 import org.compiere.model.MPInstance.PInstanceInfo;
+import org.compiere.print.MPrintFormat;
+import org.compiere.print.ReportEngine;
 import org.compiere.print.ServerReportCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -83,7 +85,14 @@ public class ServerProcessCtl implements Runnable {
 		{
 			try 
 			{ 
-				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU()); 
+				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU());
+				// Get PrintFormat
+				MPrintFormat format = (MPrintFormat)pi.getTransientObject();
+				if (format != null)
+				{
+					instance.updatePrintFormatAndLanguageIfEmpty(format);
+					ReportEngine.setDefaultReportTypeToPInstance(Env.getCtx(), instance, instance.getAD_PrintFormat_ID());
+				}
 			} 
 			catch (Exception e) 
 			{ 

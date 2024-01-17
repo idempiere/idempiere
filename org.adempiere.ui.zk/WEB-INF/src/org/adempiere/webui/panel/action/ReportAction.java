@@ -361,6 +361,7 @@ public class ReportAction implements EventListener<Event>
 			pi.setRecord_IDs(RecordIDs);
 			pi.setRecord_UUs(RecordUUs);
 			//pi.setIsBatch(true);
+			pi.setTransientObject(pf);
 			
 			if (export)
 			{
