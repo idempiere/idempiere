@@ -697,7 +697,23 @@ public class Util
         cal.set(Calendar.MILLISECOND, 0);
         return new Timestamp(cal.getTimeInMillis());
     }
-	
+
+	/**
+	 * Set time portion to zero and Compare then data part of two time stamp.
+	 * 
+	 * @param  timestamp1
+	 * @param  timestamp2
+	 * @return            the value {@code 0} if the two data part are equal;
+	 *                    a value less than {@code 0} if data part of
+	 *                    timestamp1 is before timestamp2;
+	 *                    and a value greater than {@code 0} if data part of
+	 *                    timestamp1 is after timestamp2.
+	 */
+	public static int compareDate(Timestamp timestamp1, Timestamp timestamp2)
+	{
+		return Util.removeTime(timestamp1).compareTo(Util.removeTime(timestamp2));
+	}
+
 	/**
      * Merge pdf files
      * @param pdfList list of pdf file to merge
