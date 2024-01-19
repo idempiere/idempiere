@@ -174,7 +174,6 @@ public class StatusBar extends Panel implements EventListener<Event>
     public void setStatusLine (String text, boolean error, ProcessInfoLog[] m_logs)
     {
     	pInfoLogs = m_logs;
-    	Div div = null;
     	
     	//detect duplicate call within the current execution cycle
        	Execution execution = Executions.getCurrent();
@@ -206,6 +205,8 @@ public class StatusBar extends Panel implements EventListener<Event>
     		Notification.show(buildNotificationText(m_statusText), "info", findTabpanel(this), "top_left", 2000, true);
     	}
     	
+    	Div div = buildProcessLogContent(m_logs);
+    	
     	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
     	if (!ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH))
     	{
@@ -229,7 +230,15 @@ public class StatusBar extends Panel implements EventListener<Event>
 			messageContainer.appendChild(label);
 			label.addEventListener(Events.ON_CLICK, this);
     	}
-    	
+    }
+
+    /**
+     * add document/record link from ProcessInfoLog to popup
+     * @param m_logs
+     * @return
+     */
+    private Div buildProcessLogContent(ProcessInfoLog[] m_logs) {
+    	Div div = null;
     	//add document/record link from ProcessInfoLog
     	if (m_logs != null) {
 			div = new Div();
@@ -251,8 +260,10 @@ public class StatusBar extends Panel implements EventListener<Event>
     	{
     		msgPopupCnt.appendChild(div);
     	}
+    	
+    	return div;
     }
-
+    
     /**
      * shorten statusText if exceed predefine max length of 80
      * @param statusText
