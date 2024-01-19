@@ -24,6 +24,7 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.adempiere.webui.component.Button;
@@ -167,12 +168,12 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			parentTextBox = new Textbox();
 			parentTextBox.setReadonly(true);
 			MTable parentTable = MTable.get(editor.getGridField().getGridTab().getAD_Table_ID());
-			Object parentRecordId;
+			Serializable parentRecordId;
 			if (parentTable.isUUIDKeyTable())
-				parentRecordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
+				parentRecordId = (Serializable) editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
 			else
 				parentRecordId = editor.getGridField().getGridTab().getRecord_ID();
-			parentTextBox.setValue(MLookup.getParentIdentifier(parentTable.getAD_Table_ID(), parentRecordId, tabNo, windowNo));
+			parentTextBox.setValue(MLookup.getIdentifier(parentTable.getAD_Table_ID(), parentRecordId, tabNo, windowNo));
 		}
 		
 		if (recordsEditor != null)

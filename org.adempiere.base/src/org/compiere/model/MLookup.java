@@ -996,17 +996,15 @@ public final class MLookup extends Lookup implements Serializable
 		return vnpCache;
 	}
 	
-
-
 	/**
 	 * Get Lookup
 	 * @param tableID
 	 * @param windowNo
 	 * @param tabNo
-	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo) {
-		return getRecordsLookup(tableID, false, windowNo, tabNo);
+		return getRecordsLookup(tableID, windowNo, tabNo, null);
 	}
 	
 	/**
@@ -1014,49 +1012,27 @@ public final class MLookup extends Lookup implements Serializable
 	 * @param tableID
 	 * @param windowNo
 	 * @param tabNo
-	 * @param keyColumn
-	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
+	 * @param keyColumn - override the default key column for the lookup
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo, String keyColumn) {
-		return getRecordsLookup(tableID, false, windowNo, tabNo, keyColumn);
-	}
-
-	/**
-	 * Get Lookup
-	 * @param tableID
-	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
-	 * @param windowNo
-	 * @param tabNo
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
-	 */
-	public static MLookup getRecordsLookup(int tableID, boolean tableBased, int windowNo, int tabNo) {
-		return getRecordsLookup(tableID, tableBased, windowNo, tabNo, null);
-	}
-	
-	/**
-	 * Get Lookup
-	 * @param tableID
-	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
-	 * @param windowNo
-	 * @param tabNo
-	 * @param keyColumn
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
-	 */
-	public static MLookup getRecordsLookup(int tableID, boolean tableBased, int windowNo, int tabNo, String keyColumn) {
 		if(tableID <= 0)	
 			return null;
 		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+		
 		// load key column
 		if(Util.isEmpty(keyColumn)) {
-			if (tableBased) {
-				String[] keyColumns = mTable.getKeyColumns();
-				keyColumn = keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
-			} else {				
+			String[] keyColumns = mTable.getKeyColumns();
+			// the table has a single key column
+			if(keyColumns != null && keyColumns.length == 1) 
+				keyColumn = keyColumns[0];
+			// fallback to UU
+			else
 				keyColumn = PO.getUUIDColumnName(mTable.getTableName());
-			}
-			if (Util.isEmpty(keyColumn))
-				return null;
 		}
+		
+		if (Util.isEmpty(keyColumn))
+			return null;
 
 		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
 
@@ -1070,7 +1046,7 @@ public final class MLookup extends Lookup implements Serializable
 	 * @param recordID
 	 * @return String
 	 */
-	public static String getIdentifier(int tableID, Object recordID) {
+	public static String getIdentifier(int tableID, Serializable recordID) {
 		return getIdentifier(tableID, recordID, 0, 0);
 	}
 	
@@ -1082,9 +1058,8 @@ public final class MLookup extends Lookup implements Serializable
 	 * @param tabNo
 	 * @return String
 	 */
-	public static String getIdentifier(int tableID, Object recordID, int windowNo, int tabNo) {
-		MLookup lookup = getRecordsLookup(tableID, windowNo, tabNo);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
+	public static String getIdentifier(int tableID, Serializable recordID, int windowNo, int tabNo) {
+		return getIdentifier(tableID, recordID, windowNo, tabNo, null);
 	}
 	
 	/**
@@ -1093,48 +1068,11 @@ public final class MLookup extends Lookup implements Serializable
 	 * @param recordID
 	 * @param windowNo
 	 * @param tabNo
-	 * @param keyColumn
+	 * @param keyColumn - override the default key column for the lookup
 	 * @return String
 	 */
-	public static String getIdentifier(int tableID, Object recordID, int windowNo, int tabNo, String keyColumn) {
+	public static String getIdentifier(int tableID, Serializable recordID, int windowNo, int tabNo, String keyColumn) {
 		MLookup lookup = getRecordsLookup(tableID, windowNo, tabNo, keyColumn);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
-	}
-
-	/**
-	 * Get Parent Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @return String
-	 */
-	public static String getParentIdentifier(int tableID, Object recordID) {
-		return getParentIdentifier(tableID, recordID, 0, 0);
-	}
-		
-	/**
-	 * Get Parent Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @param windowNo
-	 * @param tabNo
-	 * @return String
-	 */
-	public static String getParentIdentifier(int tableID, Object recordID, int windowNo, int tabNo) {
-		MLookup lookup = getRecordsLookup(tableID, true, windowNo, tabNo);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
-	}
-	
-	/**
-	 * Get Parent Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @param windowNo
-	 * @param tabNo
-	 * @param keyColumn
-	 * @return String
-	 */
-	public static String getParentIdentifier(int tableID, Object recordID, int windowNo, int tabNo, String keyColumn) {
-		MLookup lookup = getRecordsLookup(tableID, true, windowNo, tabNo, keyColumn);
 		return lookup != null ? lookup.getDisplay(recordID) : "";
 	}
 	

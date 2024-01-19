@@ -25,6 +25,8 @@
 **********************************************************************/
 package org.adempiere.webui.editor;
 
+import java.io.Serializable;
+
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Textbox;
@@ -263,7 +265,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			if(value != null && tableIDValue != null) {
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
 				if (tableID > 0) {
-					Object recordID = toKeyValue(value);
+					Serializable recordID = (Serializable) toKeyValue(value);
 					if(recordID != null && tableID > 0) {
 						MTable mTable = MTable.get(Env.getCtx(), tableID, null);
 						recordTextBox.setValue(MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, getKeyColumn(mTable)));
@@ -296,10 +298,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			return "";
 		if((tableIDValue != null) && (recordIDValue != null)) {
 			int tableID;
-			Object recordID;
+			Serializable recordID;
 			try {
 				tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				recordID = toKeyValue(recordIDValue);
+				recordID = (Serializable) toKeyValue(recordIDValue);
 			} catch (NumberFormatException e) {
 				return recordIDValue.toString();
 			}
@@ -319,10 +321,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			String key = gridTab.getWindowNo() + "|AD_Table_ID";
 			Object rowTableIdValue = gridRowCtx.get(key);
 			int rowTableID;
-			Object rowRecordID;
+			Serializable rowRecordID;
 			try {
 				rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-				rowRecordID = toKeyValue(value);
+				rowRecordID = (Serializable) toKeyValue(value);
 			} catch (NumberFormatException e) {
 				return value.toString();
 			}
