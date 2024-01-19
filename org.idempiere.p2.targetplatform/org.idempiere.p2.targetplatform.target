@@ -2,7 +2,7 @@
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
 <!-- when changing target name please change accordingly in the file utils_dev/oomph/idempiere.setup -->
-<target name="idempiere-240104" sequenceNumber="1688978991">
+<target name="idempiere-240104" sequenceNumber="1688978992">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.4"/>
@@ -146,7 +146,7 @@
       <unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js8_b01"/>
       <unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
       <unit id="org.krysalis.barcode4j" version="2.1.0"/>
-      <repository id="jasperstudio" location="https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0"/>
+      <repository id="jasperstudio" location="https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0"/>
     </location>
     <!-- com.google -->
     <location includeSource="true" missingManifest="generate" type="Maven">
