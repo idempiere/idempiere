@@ -205,7 +205,7 @@ public class StatusBar extends Panel implements EventListener<Event>
     		Notification.show(buildNotificationText(m_statusText), "info", findTabpanel(this), "top_left", 2000, true);
     	}
     	
-    	Div div = buildPopupContent(m_logs);
+    	Div div = buildProcessLogContent(m_logs);
     	
     	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
     	if (!ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH))
@@ -237,7 +237,7 @@ public class StatusBar extends Panel implements EventListener<Event>
      * @param m_logs
      * @return
      */
-    private Div buildPopupContent(ProcessInfoLog[] m_logs) {
+    private Div buildProcessLogContent(ProcessInfoLog[] m_logs) {
     	Div div = null;
     	//add document/record link from ProcessInfoLog
     	if (m_logs != null) {
