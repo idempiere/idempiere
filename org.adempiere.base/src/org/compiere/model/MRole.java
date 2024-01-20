@@ -467,11 +467,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		//
 		else if (is_ValueChanged("UserLevel"))
 			updateAccessRecords();
-		
-		//	Default Role changed
-		if (getDefaultRole() != null 
-			&& getDefaultRole().get_ID() == get_ID())
-			setDefaultRole(this);
+
 		return success;
 	}	//	afterSave
 	
