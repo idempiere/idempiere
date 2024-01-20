@@ -145,7 +145,7 @@ location orbit-2021-06-R20210602031627 "https://download.eclipse.org/tools/orbit
 	org.apache.commons.discovery	
 }	
 
-location jasperstudio "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
+location jasperstudio "https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0" {
     com.jaspersoft.studio.bundles.barbecue
     com.jaspersoft.studio.bundles.itext
     org.w3c.dom.svg.patch
