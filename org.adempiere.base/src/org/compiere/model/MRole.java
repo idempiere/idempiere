@@ -37,7 +37,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -65,10 +64,10 @@ import org.idempiere.cache.POCopyCache;
  */
 public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
-    /**
-	 * 
+	/**
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -3805541039490183196L;
+	private static final long serialVersionUID = -8937680640915708588L;
 
 	/**
 	 * 	Get role for current session/context
@@ -118,7 +117,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	private static void setDefaultRole(MRole defaultRole) {
 		Env.getCtx().remove(ROLE_KEY);
 		Env.getCtx().put(ROLE_KEY, defaultRole);
-		defaultRole.setDefaultRoleCacheListener();
 	}
 
 	/**
@@ -269,10 +267,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	public static final int			SYSTEM_USER_ID = USER_SYSTEM;
 	
 	private static final String ROLE_KEY = "org.compiere.model.DefaultRole";
-
-    /** CCache listener class to reload the default role */
-	private CCacheListener defaultRoleCacheListener = null;
-
+		
     /**
      * UUID based Constructor
      * @param ctx  Context
@@ -383,14 +378,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		this.m_parent = copy.m_parent != null ? new MRole(ctx, copy.m_parent, trxName) : null;
 		this.m_includedSeqNo = copy.m_includedSeqNo;
 		this.m_canAccess_Info_Product = copy.m_canAccess_Info_Product;
-	}
-
-	/**
-	 * Set the role cache listener when not set
-	 */
-	private void setDefaultRoleCacheListener() {
-		if (defaultRoleCacheListener == null)
-			defaultRoleCacheListener = new CCacheListener(Table_Name);
 	}
 
 	/**
@@ -3439,33 +3426,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
-	}
-
-	/**
-	 * CCache listener class to reload the default role 
-	 */
-	private static class CCacheListener extends CCache<String, Object> {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 2726872291294866031L;
-
-		protected CCacheListener(String tableName) {
-			super(tableName, tableName+"|CCacheListener", 0, false);
-		}
-
-		public int reset() {
-			getDefault(Env.getCtx(), true); // reload the default role
-			return super.reset();
-		}
-
-		@Override
-		public int reset(int recordId) {
-			if (recordId == Env.getAD_Role_ID(Env.getCtx()))
-				getDefault(Env.getCtx(), true); // reload the default role
-			return super.reset(recordId);
-		}
-
 	}
 
 }	//	MRole
