@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Util;
 
 /**
@@ -29,12 +31,12 @@ import org.compiere.util.Util;
  */
 public class MFormAccess extends X_AD_Form_Access
 {
-	/**
-	 * generated serial id 
-	 */
-	private static final long serialVersionUID = 7818255846843514899L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 904675604033766598L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Form_Access_UU  UUID key
@@ -93,5 +95,29 @@ public class MFormAccess extends X_AD_Form_Access
 		setAD_Role_ID (AD_Role_ID);
 	}	//	MFormAccess
 
-	
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
+
 }	//	MFormAccess

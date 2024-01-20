@@ -64,10 +64,10 @@ import org.idempiere.cache.POCopyCache;
  */
 public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -8937680640915708588L;
+	private static final long serialVersionUID = 7266911648463503849L;
 
 	/**
 	 * 	Get role for current session/context
@@ -115,8 +115,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * @param defaultRole
 	 */
 	private static void setDefaultRole(MRole defaultRole) {
-		Env.getCtx().remove(ROLE_KEY);
-		Env.getCtx().put(ROLE_KEY, defaultRole);
+		s_defaultrole.put(ROLE_KEY, defaultRole);
 	}
 
 	/**
@@ -124,7 +123,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * @return MRole
 	 */
 	private static MRole getDefaultRole() {
-		return (MRole) Env.getCtx().get(ROLE_KEY);
+		return s_defaultrole.get(ROLE_KEY);
 	}
 
 	/**
@@ -249,6 +248,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		
 	/** Role/User Cache			*/
 	private static POCopyCache<String,MRole> s_roles = new POCopyCache<String,MRole>(Table_Name, 5);
+	private static POCopyCache<String,MRole> s_defaultrole = new POCopyCache<String,MRole>(Table_Name, Table_Name, 1, 0, false, 1);
 	/** Log						*/ 
 	private static CLogger			s_log = CLogger.getCLogger(MRole.class);
 	

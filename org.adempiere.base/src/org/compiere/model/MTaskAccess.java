@@ -20,8 +20,14 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - Carlos Ruiz                                                       *
+ * - Carlos Ruiz - globalqss - bxservice                               *
  **********************************************************************/
+
+/**
+ *
+ * @author Carlos Ruiz - globalqss - bxservice
+ *
+ */
 
 package org.compiere.model;
 
@@ -30,46 +36,73 @@ import java.util.Properties;
 
 import org.compiere.Adempiere;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.Util;
 
-public class MDocumentActionAccess extends X_AD_Document_Action_Access {
-    /**
+public class MTaskAccess extends X_AD_Task_Access
+{
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7387829651626682825L;
+	private static final long serialVersionUID = -2652529697830798536L;
 
 	/**
      * UUID based Constructor
      * @param ctx  Context
-     * @param AD_Document_Action_Access_UU  UUID key
+     * @param AD_Task_Access_UU  UUID key
      * @param trxName Transaction
      */
-    public MDocumentActionAccess(Properties ctx, String AD_Document_Action_Access_UU, String trxName) {
-        super(ctx, AD_Document_Action_Access_UU, trxName);
+    public MTaskAccess(Properties ctx, String AD_Task_Access_UU, String trxName) {
+        super(ctx, AD_Task_Access_UU, trxName);
+		if (Util.isEmpty(AD_Task_Access_UU))
+			setInitialDefaults();
     }
 
 	/**
-	 * Standard Constructor
-	 * 
-	 * @param ctx     context
-	 * @param ignored -
-	 * @param trxName transaction
+	 * 	Standard Constructor
+	 *	@param ctx context
+	 *	@param ignored id=0
+	 *	@param trxName trx
 	 */
-	public MDocumentActionAccess(Properties ctx, int ignored, String trxName) {
+	public MTaskAccess (Properties ctx, int ignored, String trxName)
+	{
 		super(ctx, 0, trxName);
-		if (ignored != 0)
+		if (ignored == 0)
+			setInitialDefaults();
+		else
 			throw new IllegalArgumentException("Multi-Key");
-	} // MDocumentActionAccess
+	}	//	MTaskAccess
 
 	/**
-	 * MDocumentActionAccess
-	 * 
-	 * @param ctx
-	 * @param rs
-	 * @param trxName transaction
+	 * Set the initial defaults for a new record
 	 */
-	public MDocumentActionAccess(Properties ctx, ResultSet rs, String trxName) {
+	private void setInitialDefaults() {
+		setIsReadWrite (true);
+	}
+
+	/**
+	 * 	Load Constructor
+	 *	@param ctx context
+	 *	@param rs result set
+	 *	@param trxName transaction
+	 */
+	public MTaskAccess (Properties ctx, ResultSet rs, String trxName)
+	{
 		super(ctx, rs, trxName);
-	} // MDocumentActionAccess
+	}	//	MTaskAccess
+	
+	/**
+	 * 	Parent Constructor
+	 *	@param parent parent
+	 *	@param AD_Role_ID role id
+	 */
+	public MTaskAccess (MTask parent, int AD_Role_ID)
+	{
+		super (parent.getCtx(), 0, parent.get_TrxName());
+		MRole role = MRole.get(parent.getCtx(), AD_Role_ID);
+		setClientOrg(role);
+		setAD_Task_ID(parent.getAD_Task_ID());
+		setAD_Role_ID (AD_Role_ID);
+	}	//	MTaskAccess
 
 	/**
 	 * 	After Save
@@ -96,4 +129,4 @@ public class MDocumentActionAccess extends X_AD_Document_Action_Access {
 		return success;
 	}
 
-} // MDocumentActionAccess
+}	//	MTaskAccess
