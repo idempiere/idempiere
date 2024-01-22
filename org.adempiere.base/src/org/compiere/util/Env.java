@@ -851,8 +851,6 @@ public final class Env
 		return isAutoCommit(ctx);
 	}	//	isAutoCommit
 
-	
-	
 	/**
 	 * Is Show Technical Information 
 	 * @param ctx context
@@ -870,7 +868,6 @@ public final class Env
 		}
 		return false;
 	}	//	IsShowTechnicalInfOnHelp
-	
 
 	/**
 	 *	Is Auto New Record

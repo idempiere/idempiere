@@ -346,7 +346,7 @@ public class GridWindowVO implements Serializable
 	public ArrayList<GridTabVO>	Tabs = null;
 	/** Base Table		*/
 	public int 			AD_Table_ID = 0;
-	
+
 	/** Window Entity Type **/
 	public String		EntityType = null;
 

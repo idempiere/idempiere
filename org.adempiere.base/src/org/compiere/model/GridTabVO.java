@@ -273,7 +273,7 @@ public class GridTabVO implements Evaluatee, Serializable
 			}
 			
 			vo.EntityType = rs.getString("EntityType");
-			
+
 			vo.OrderByClause = rs.getString("OrderByClause");
 			if (vo.OrderByClause == null)
 				vo.OrderByClause = "";

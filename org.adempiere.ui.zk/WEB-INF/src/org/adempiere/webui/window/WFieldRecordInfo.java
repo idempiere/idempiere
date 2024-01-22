@@ -69,9 +69,9 @@ import org.zkoss.zul.South;
 public class WFieldRecordInfo extends Window implements EventListener<Event>
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 439310027130417727L;
+	private static final long serialVersionUID = 8544547290283904702L;
 
 	private int AD_Table_ID;
 	private int AD_Column_ID;
@@ -88,7 +88,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	 *  @param Record_ID
 	 *  @param Record_UU
 	 */
-	public WFieldRecordInfo (String title, int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,Object value)
+	public WFieldRecordInfo (String title, int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU, Object value)
 	{
 		super ();
 		this.setTitle(title);
@@ -115,7 +115,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		this.Record_ID = Record_ID;
 		this.Record_UU = Record_UU;
 		this.value = value;
-		
+
 		try
 		{
 			init ( dynInit(title) );
@@ -181,7 +181,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		Label l = new Label(label.toString());
 		l.setMultiline(true);
 		north.appendChild(l);
-		
+
 		Center center = new Center();
 		center.setParent(layout);
 		if (showTable)
@@ -420,7 +420,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		new WFieldRecordInfo(gridField.getColumnName(), 
 				gridField.getGridTab().getAD_Table_ID(), gridField.getAD_Column_ID(), 
 				gridField.getGridTab().getRecord_ID(),
-				gridField.getGridTab().getRecord_UU(),gridField.getValue());
+				gridField.getGridTab().getRecord_UU(), gridField.getValue());
 	}
 
 	/**

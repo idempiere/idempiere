@@ -80,10 +80,10 @@ public class GridField
 	implements Serializable, Evaluatee, Cloneable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -4496344553246662012L;
-	
+	private static final long serialVersionUID = -1301956809914059765L;
+
 	private static final Character SPECIAL_CASE_DEFAULT = '1';
 	private static final Character SQL_DEFAULT = '2';
 	private static final Character DEFAULT_LOGIC = '3';
@@ -1510,7 +1510,7 @@ public class GridField
 	{
 		return m_vo.Header;
 	}
-	
+
 	/**
 	 * Get EntityType
 	 * @return Window Entity Type
@@ -1519,7 +1519,7 @@ public class GridField
 	{
 		return m_vo.EntityType;
 	}
-	
+
 	/**
 	 * 	Get Display Type
 	 *	@return display type

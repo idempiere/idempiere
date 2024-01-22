@@ -2,7 +2,7 @@
 SELECT register_migration_script('202310061103_IDEMPIERE-3989.sql') FROM dual;
 
 -- Oct 6, 2023, 11:03:05 AM BRT
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,nextidfunc(200086,'N'),'2cca7f60-b49c-414d-bf75-7f6aad3d39a4',TO_TIMESTAMP('2023-10-06 11:03:05','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:03:05','YYYY-MM-DD HH24:MI:SS'),100,200008,'entitytype','f.entitytype',720)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217706,'2cca7f60-b49c-414d-bf75-7f6aad3d39a4',TO_TIMESTAMP('2023-10-06 11:03:05','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:03:05','YYYY-MM-DD HH24:MI:SS'),100,200008,'entitytype','f.entitytype',720)
 ;
 
 -- Oct 6, 2023, 11:03:12 AM BRT
@@ -14,7 +14,7 @@ CREATE OR REPLACE VIEW AD_Field_v(AD_Window_ID, AD_Tab_ID, AD_Field_ID, AD_Table
 ;
 
 -- Oct 6, 2023, 11:04:16 AM BRT
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,nextidfunc(200086,'N'),'fa44512f-c797-4fe4-8865-862a2a7bcfc7',TO_TIMESTAMP('2023-10-06 11:04:16','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:04:16','YYYY-MM-DD HH24:MI:SS'),100,200009,'entitytype','f.entitytype',730)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217707,'fa44512f-c797-4fe4-8865-862a2a7bcfc7',TO_TIMESTAMP('2023-10-06 11:04:16','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:04:16','YYYY-MM-DD HH24:MI:SS'),100,200009,'entitytype','f.entitytype',730)
 ;
 
 -- Oct 6, 2023, 11:04:21 AM BRT
@@ -26,7 +26,7 @@ CREATE OR REPLACE VIEW AD_Field_vt(AD_Language, AD_Window_ID, AD_Tab_ID, AD_Fiel
 ;
 
 -- Oct 6, 2023, 11:05:20 AM BRT
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,nextidfunc(200086,'N'),'af082e9d-35ca-4cf3-a66f-9dc156ef8d06',TO_TIMESTAMP('2023-10-06 11:05:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:05:20','YYYY-MM-DD HH24:MI:SS'),100,200011,'entitytype','t.entitytype',440)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217708,'af082e9d-35ca-4cf3-a66f-9dc156ef8d06',TO_TIMESTAMP('2023-10-06 11:05:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:05:20','YYYY-MM-DD HH24:MI:SS'),100,200011,'entitytype','t.entitytype',440)
 ;
 
 -- Oct 6, 2023, 11:05:28 AM BRT
@@ -34,7 +34,7 @@ CREATE OR REPLACE VIEW AD_Tab_v(AD_Tab_ID, AD_Window_ID, AD_Table_ID, Name, Desc
 ;
 
 -- Oct 6, 2023, 11:06:13 AM BRT
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,nextidfunc(200086,'N'),'ed2c20ca-cb52-4371-b28c-bb9c1bffaa90',TO_TIMESTAMP('2023-10-06 11:06:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:06:13','YYYY-MM-DD HH24:MI:SS'),100,200012,'entitytype','t.entitytype',450)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217709,'ed2c20ca-cb52-4371-b28c-bb9c1bffaa90',TO_TIMESTAMP('2023-10-06 11:06:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:06:13','YYYY-MM-DD HH24:MI:SS'),100,200012,'entitytype','t.entitytype',450)
 ;
 
 -- Oct 6, 2023, 11:06:17 AM BRT
@@ -42,7 +42,7 @@ CREATE OR REPLACE VIEW AD_Tab_vt(AD_Language, AD_Tab_ID, AD_Window_ID, AD_Table_
 ;
 
 -- Oct 6, 2023, 11:07:19 AM BRT
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,nextidfunc(200086,'N'),'bbf17571-7f5d-4557-a153-2a8af8342b94',TO_TIMESTAMP('2023-10-06 11:07:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:07:19','YYYY-MM-DD HH24:MI:SS'),100,200014,'entitytype','bt.entitytype',140)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217710,'bbf17571-7f5d-4557-a153-2a8af8342b94',TO_TIMESTAMP('2023-10-06 11:07:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-10-06 11:07:19','YYYY-MM-DD HH24:MI:SS'),100,200014,'entitytype','bt.entitytype',140)
 ;
 
 -- Oct 6, 2023, 11:07:23 AM BRT

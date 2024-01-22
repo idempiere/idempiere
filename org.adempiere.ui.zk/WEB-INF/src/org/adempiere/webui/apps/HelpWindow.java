@@ -169,7 +169,7 @@ public class HelpWindow extends Window {
 			tr.addElement(td);
 			td.addElement(WebDoc.NBSP);
 		}
-		
+
 		//window entity type information
 		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
 			tr = new tr();
@@ -552,7 +552,7 @@ public class HelpWindow extends Window {
 			tr.addElement(td);
 			td.addElement(WebDoc.NBSP);
 			// field tab entity type information
-		
+
 		return table;
 	}
 }

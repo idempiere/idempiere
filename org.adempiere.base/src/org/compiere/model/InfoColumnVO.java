@@ -40,11 +40,11 @@ import org.compiere.util.Evaluator;
  * @version $Id$
  */
 public class InfoColumnVO implements Serializable, Cloneable {
-
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 7401407425423442841L;
+	private static final long serialVersionUID = 304775780197602066L;
+
 	/** Properties */
 	private Properties ctx;
 	
@@ -119,7 +119,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	private String ValidationCode;
 	
 	private String EntityType;
-	
+
 	private MInfoColumn infoColumn;
 
 	/**
@@ -544,7 +544,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	public void setEntityType(String entityType) {
 		EntityType = entityType;
 	}
-	
+
 	/**
 	 * @return true if this is a range type column
 	 */

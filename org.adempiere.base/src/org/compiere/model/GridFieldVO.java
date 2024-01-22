@@ -504,7 +504,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		
 		return voT;
 	}   //  createParameter
-	
+
 	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
 			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID,
 			boolean IsMandatory, boolean IsEncrypted,String Placeholder)
@@ -745,7 +745,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	
 	/** EntityType **/
 	public String EntityType = null;
-	
+
 	/** Field ID 				*/
 	public int AD_Field_ID = 0;
 	
