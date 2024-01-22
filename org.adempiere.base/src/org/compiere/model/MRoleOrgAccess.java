@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -36,9 +38,9 @@ import org.compiere.util.Util;
 public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4664267788838719168L;
+	private static final long serialVersionUID = -3476937107774004286L;
 
 	/**
 	 * 	Get Organizational Access of Role
@@ -280,5 +282,30 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 			getClientName();
 		return m_orgName;
 	}	//	getOrgName
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MRoleOrgAccess

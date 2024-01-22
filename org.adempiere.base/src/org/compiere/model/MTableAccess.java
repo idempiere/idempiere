@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
@@ -31,12 +33,12 @@ import org.compiere.util.Msg;
  */
 public class MTableAccess extends X_AD_Table_Access
 {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -3747261579266442904L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4075182397260458949L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Table_Access_UU  UUID key
@@ -153,5 +155,30 @@ public class MTableAccess extends X_AD_Table_Access
 		}		
 		return m_tableName;
 	}	//	getTableName
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MTableAccess
