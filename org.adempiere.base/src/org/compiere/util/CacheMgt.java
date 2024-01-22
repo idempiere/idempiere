@@ -307,7 +307,7 @@ public class CacheMgt
 		CacheInterface[] instances = getInstancesAsArray();
 		for (CacheInterface stored : instances)
 		{
-			if (stored != null && stored instanceof CCache)
+			if (stored != null && stored instanceof CCache && stored.size() > 0)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
 				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
