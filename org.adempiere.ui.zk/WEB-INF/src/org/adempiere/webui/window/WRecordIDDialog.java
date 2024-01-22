@@ -150,8 +150,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		tableIDEditor.setValue(tableIDValue);
 		
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
-		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-		MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.getKeyColumn(mTable));
+		MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.isUseUUIDKey());
 		if(recordsLookup != null)
 			recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		
@@ -253,8 +252,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				recordsEditorLabel.detach();
 				recordsEditor.getComponent().detach();
 			}
-			MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-			MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.getKeyColumn(mTable));
+			MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.isUseUUIDKey());
 			if(recordsLookup != null) {
 				recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		    	labelsDiv.appendChild(recordsEditorLabel);

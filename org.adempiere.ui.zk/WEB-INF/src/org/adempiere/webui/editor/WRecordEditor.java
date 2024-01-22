@@ -42,7 +42,6 @@ import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
-import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -267,8 +266,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 				if (tableID > 0) {
 					Serializable recordID = (Serializable) toKeyValue(value);
 					if(recordID != null && tableID > 0) {
-						MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-						recordTextBox.setValue(MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, getKeyColumn(mTable)));
+						recordTextBox.setValue(MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, isUseUUIDKey()));
 					}
 				}
 			}
@@ -305,8 +303,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			} catch (NumberFormatException e) {
 				return recordIDValue.toString();
 			}
-			MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-			return MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, getKeyColumn(mTable));
+			return MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, isUseUUIDKey());
 		}
 		else {
 			return recordIDValue.toString();
@@ -328,8 +325,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			} catch (NumberFormatException e) {
 				return value.toString();
 			}
-			MTable mTable = MTable.get(Env.getCtx(), rowTableID, null);
-			return MLookup.getIdentifier(rowTableID, rowRecordID, tabNo, windowNo, getKeyColumn(mTable));
+			return MLookup.getIdentifier(rowTableID, rowRecordID, tabNo, windowNo, isUseUUIDKey());
 		} else {
 			return value.toString();
 		}
@@ -402,10 +398,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	}
 
 	/**
-	 * @param mTable Reference table
+	 * Use UUID as key column
 	 * @return Key column name
 	 */
-	public abstract String getKeyColumn(MTable mTable);
+	public abstract boolean isUseUUIDKey();
 
 	/**
 	 * Convert value to key value type
