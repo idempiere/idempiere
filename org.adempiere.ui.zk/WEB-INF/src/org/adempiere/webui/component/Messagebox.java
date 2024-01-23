@@ -263,6 +263,8 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setContentStyle("background-color:#ffffff;");
 		this.setPosition("left, top");
+
+		inputField.getComponent().addEventListener(Events.ON_OK, this);
 	}
 
 	/**
@@ -490,7 +492,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (event == null)
 			return;
 
-		if (event.getTarget() == btnOk)
+		if (event.getTarget() == btnOk || event.getTarget() == inputField.getComponent())
 		{
 			returnValue = OK;
 		}
