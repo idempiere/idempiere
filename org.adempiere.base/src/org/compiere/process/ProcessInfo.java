@@ -208,7 +208,10 @@ public class ProcessInfo implements Serializable
 	{
 		return downloadFiles;
 	}
-	
+	/**
+	 * add to list of file available for download after process end
+	 * @param file
+	 */
 	public void addDownloadFiles(File file)
 	{
 		downloadFiles.add(file);
