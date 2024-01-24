@@ -16,7 +16,6 @@ package org.adempiere.webui.apps;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Future;
@@ -51,7 +50,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
-import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
@@ -158,8 +156,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	/** Reference to process thread/task **/
 	private Future<?> future;
-	/** files for download by user **/
-	private List<File> downloadFiles;
 	/** true when UI have been locked, i.e busy **/
 	private boolean m_locked = false;
 	private String	m_AD_Process_UU = "";
@@ -1036,8 +1032,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			getProcessInfo().setPrintPreview(true);
 
 		lockUI(getProcessInfo());
-		
-		downloadFiles = new ArrayList<File>();
 
 		//use echo, otherwise lock ui wouldn't work
 		Clients.response(new AuEcho(this, isBackgroundJob() ? "runBackgroundJob" : "runProcess", this));
@@ -1147,13 +1141,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		future = null;
 		unlockUI(m_pi);
-		if (downloadFiles.size() > 0) {
-			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
-			downloadDialog.setPage(getPage());
-			downloadDialog.setTitle(m_pi.getTitle());
-			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
-		}
-		
 		if (m_disposeOnComplete)
 			dispose();
 	}
@@ -1252,9 +1239,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}, new Event("onAsk"));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @deprecated (since="12", forRemoval = true)
+	 */
 	@Override
 	public void download(File file) {
-		downloadFiles.add(file);
+		m_pi.addDownloadFiles(file);
 	}
 
 	/**
@@ -1357,14 +1348,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	public String getNotificationType()
 	{
 		return (String) notificationTypeField.getValue();
-	}
-	
-	/**
-	 * @return list of files for user download
-	 */
-	public List<File> getDownloadFiles()
-	{
-		return downloadFiles;
 	}
 	
 	/**
@@ -1484,7 +1467,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				if (sendEmail)
 				{
 					MClient client = MClient.get(m_ctx, AD_Client_ID);
-					client.sendEMailAttachments(AD_User_ID, process.get_Translation("Name", Env.getAD_Language(Env.getCtx())), m_pi.getSummary() + " " + m_pi.getLogInfo(), getDownloadFiles());
+					client.sendEMailAttachments(AD_User_ID, process.get_Translation("Name", Env.getAD_Language(Env.getCtx())), m_pi.getSummary() + " " + m_pi.getLogInfo(), m_pi.getDownloadFiles());
 				}
 				
 				if (createNotice)
@@ -1495,10 +1478,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					note.saveEx();
 					
 					MAttachment attachment = null;
-					if (getDownloadFiles().size() > 0)
+					if (m_pi.getDownloadFiles().size() > 0)
 					{
 						attachment = note.createAttachment();
-						for (File downloadFile : getDownloadFiles())
+						for (File downloadFile : m_pi.getDownloadFiles())
 							attachment.addEntry(downloadFile);						
 					}
 					String log = m_pi.getLogInfo(true);
@@ -1617,4 +1600,5 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		if (bOK != null)
 			bOK.focus();
 	}		
+
 }

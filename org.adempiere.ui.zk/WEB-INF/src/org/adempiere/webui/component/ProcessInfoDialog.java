@@ -232,6 +232,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			}				
 		}
 
+		AEnv.appendDownloadLinkForFiles(pi.getDownloadFiles().toArray(new File[0]), pnlMessage);
 	}
 
 	@Override
