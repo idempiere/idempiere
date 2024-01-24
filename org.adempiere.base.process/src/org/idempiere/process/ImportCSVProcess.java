@@ -152,7 +152,6 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 
 		ProcessInfo m_pi = getProcessInfo();
 		if( m_pi != null ){
-			m_pi.addDownloadFiles(outFile);
 			m_pi.setExport(true);
 			m_pi.setExportFile(outFile);
 			m_pi.setExportFileExtension("csv");
