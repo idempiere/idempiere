@@ -31,12 +31,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletRequest;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.component.DynamicMediaLink;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
@@ -74,6 +76,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -81,7 +84,9 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.InputElement;
 
 import com.lowagie.text.DocumentException;
@@ -992,5 +997,34 @@ public final class AEnv
 				detachInputElement(child);
 			}
 		}		
+	}
+	
+	/**
+	 * Construct a panel that includes links for downloading files, and attach this panel to the parent component. <br/>
+	 * In case of error show error message on link text
+	 * @param files
+	 * @param parent
+	 */
+	public static void appendDownloadLinkForFiles(File [] files, Component parent) {
+		if (files.length == 0)
+			return;
+		
+		// append link for download file
+		Vlayout fileDownloadPanel = new Vlayout();
+		fileDownloadPanel.setStyle("padding-top: 10px; padding-bottom: 10px;");
+		parent.appendChild(fileDownloadPanel);
+		for (File downloadFile : files) {
+			A downloadLink = null;
+			try {
+				AMedia media = new AMedia(downloadFile, MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(downloadFile), null);
+				downloadLink = new DynamicMediaLink();
+				((DynamicMediaLink)downloadLink).setMedia(media);
+				downloadLink.setStyle("margin: 5px;");
+				downloadLink.setLabel(media.getName());
+			} catch (FileNotFoundException e) {
+				downloadLink = new A(e.getMessage());
+			}
+			fileDownloadPanel.appendChild(downloadLink);
+		}
 	}
 }	//	AEnv
