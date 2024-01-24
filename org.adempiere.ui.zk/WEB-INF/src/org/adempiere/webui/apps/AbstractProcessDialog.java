@@ -1457,11 +1457,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
 					if (isReport && m_pi.getPDFReport() != null)
 					{
-						download(m_pi.getPDFReport());
+						m_pi.addDownloadFiles(m_pi.getPDFReport());
 					}
 					
 					if (m_pi.isExport() && m_pi.getExportFile() != null)
-						download(m_pi.getExportFile());										
+						m_pi.addDownloadFiles(m_pi.getExportFile());										
 				}
 				
 				if (sendEmail)

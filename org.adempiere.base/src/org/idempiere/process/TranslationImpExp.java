@@ -185,7 +185,7 @@ public class TranslationImpExp extends SvrProcess {
 				zipper.setProject(new Project());
 				zipper.setOwningTarget(new Target());
 				zipper.execute();
-				processUI.download(destZipFile);
+				getProcessInfo().addDownloadFiles(destZipFile);
 			}
 		} finally {
 			// Cleanup when temp folder

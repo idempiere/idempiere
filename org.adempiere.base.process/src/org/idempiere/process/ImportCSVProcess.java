@@ -150,10 +150,9 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		File outFile = csvImporter.fileImport(activeTab, childTabs, m_file_istream, Charset.forName(m_importTemplate.getCharacterSet()), p_ImportMode, processUI);
 		// TODO: Potential improvement - traverse the outFile and call addLog with the results
 
-		if (processUI != null)
-			processUI.download(outFile);
-		else if( getProcessInfo() != null ){
-			ProcessInfo m_pi = getProcessInfo();
+		ProcessInfo m_pi = getProcessInfo();
+		if( m_pi != null ){
+			m_pi.addDownloadFiles(outFile);
 			m_pi.setExport(true);
 			m_pi.setExportFile(outFile);
 			m_pi.setExportFileExtension("csv");
