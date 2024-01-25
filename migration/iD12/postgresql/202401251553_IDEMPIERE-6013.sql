@@ -10,10 +10,6 @@ INSERT INTO AD_Table (AD_Table_ID,Name,AD_Window_ID,TableName,LoadSeq,AccessLeve
 ;
 
 -- Jan 25, 2024, 3:53:34 PM CET
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_TableValRule',1000000,'N','N','Table AD_TableValRule','Y','Y',0,0,TO_TIMESTAMP('2024-01-25 15:53:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-01-25 15:53:33','YYYY-MM-DD HH24:MI:SS'),100,200486,'Y',1000000,1,200000,'7ef4b2a3-37e1-45f3-a70e-b97604e273cf')
-;
-
--- Jan 25, 2024, 3:53:34 PM CET
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,ReadOnlyLogic,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintName,FKConstraintType,IsHtml,IsPartitionKey) VALUES (216445,0.0,'Tenant','Tenant for this installation.','A Tenant is a company or a legal entity. You cannot share data between Tenants.',200415,'AD_Client_ID','@#AD_Client_ID@',10,'N','N','Y','N','N','N',30,0,0,'Y',TO_TIMESTAMP('2024-01-25 15:53:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-01-25 15:53:34','YYYY-MM-DD HH24:MI:SS'),100,102,'N','N','1=1','D','Y','N','N','Y','3da0fdb2-d027-4c60-af5c-7e44b5f0a1e1','N','N','N','ADClient_ADTableValRule','N','N','N')
 ;
 
