@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language>
+<language-addon>
+    <addon-name>datatables</addon-name>
+    <language-name>xul/html</language-name>
+	<javascript-module name="datatables" version="1.12.1.202401261100"/>
+</language-addon>
