@@ -479,7 +479,10 @@ public class Trx
 		//	Close Connection
 		try
 		{
+			// Closes any physical connection to the database
 			m_connection.abort(Runnable::run);
+			// return to pool manage (pool will validate and re-connect to database)
+			m_connection.close();
 			m_connection = null;
 			m_active = false;
 			fireAfterCloseEvent();
