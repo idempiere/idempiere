@@ -534,8 +534,8 @@ public class MoveClient extends SvrProcess {
 			p_errorList.add("Column " + tableName + "." + columnName +  " has different type in dictionary, external: " + refID + ", local: " + localColumn.getAD_Reference_ID());
 		}
 
-		// inform blocking if lengths are different
-		if (length != localColumn.getFieldLength()) {
+		// inform blocking if external length is bigger than local
+		if (length > localColumn.getFieldLength()) {
 			p_errorList.add("Column " + tableName + "." + columnName +  " has different length in dictionary, external: " + length + ", local: " + localColumn.getFieldLength());
 		}
 
@@ -1353,7 +1353,7 @@ public class MoveClient extends SvrProcess {
 		String uuidCol = PO.getUUIDColumnName(tableName);
 		MTable table = MTable.get(getCtx(), tableName);
 		String remoteUUID = null;
-		if (table.isUUIDKeyTable()) {
+		if (! table.isIDKeyTable()) {
 			remoteUUID = foreign_Key.toString();
 		} else {
 			StringBuilder sqlRemoteUUSB = new StringBuilder()
