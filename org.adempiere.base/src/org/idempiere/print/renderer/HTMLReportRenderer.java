@@ -85,6 +85,9 @@ import org.osgi.service.component.annotations.Component;
 import com.google.common.net.MediaType;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 
+/**
+ * HTML content renderer service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererConfiguration> {
 
@@ -151,9 +154,8 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 *  @param language optional language - if null numbers/dates are not formatted
 	 *  @param extension optional extension for html output
 	 *  @param isExport when isExport = true will don't embed resource dependent zk framework
-	 * 	@return true if success
 	 */
-	private boolean createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
+	private void createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
 	{
 		MPrintFormat printFormat = reportEngine.getPrintFormat();
 		PrintData printData = reportEngine.getPrintData();
@@ -639,11 +641,15 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			log.log(Level.SEVERE, "(w)", e);
 			throw new AdempiereException(e);
 		}
-		return true;
 	}	//	createHTML
 	
-	public static String compress(String src, boolean minify) {
-		
+	/**
+	 * Compress html content
+	 * @param src
+	 * @param minify
+	 * @return compressed content
+	 */
+	public static String compress(String src, boolean minify) {		
 		if(minify) {
 			HtmlCompressor compressor = new HtmlCompressor();
 		    compressor.setEnabled(true);
@@ -674,7 +680,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	}
 		
 	/**
-	 * build css for table from mapCssInfo
+	 * Append css for table from mapCssInfo
 	 * @param doc
 	 */
 	public static void appendInlineCss (XhtmlDocument doc, Map<CSSInfo, List<ColumnInfo>> mapCssInfo){
@@ -697,6 +703,11 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		appendInlineCss (doc, buildCssInline);
 	}
 	
+	/**
+	 * Append inline css content
+	 * @param doc
+	 * @param buildCssInline
+	 */
 	public static void appendInlineCss (XhtmlDocument doc, StringBuilder buildCssInline){
 		if (buildCssInline.length() > 0){
 			buildCssInline.insert(0, "<style>");
@@ -706,15 +717,15 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	}
 	
 	/**
-	 * create css info from formatItem, add all column has same formatItem in a list
+	 * Create css info from formatItem, add all column has same CSSInfo in a list
 	 * @param formatItem
 	 * @param index
 	 */
 	public static void addCssInfo (MPrintFormat printFormat, MPrintFormatItem formatItem, int index, Map<CSSInfo, List<ColumnInfo>> mapCssInfo){
 		CSSInfo cadidateCss = new CSSInfo(printFormat, formatItem);
-		if (mapCssInfo.containsKey(cadidateCss)){
+		if (mapCssInfo.containsKey(cadidateCss)) {
 			mapCssInfo.get(cadidateCss).add(new ColumnInfo(index, formatItem));
-		}else{
+		} else {
 			List<ColumnInfo> newColumnList = new ArrayList<ColumnInfo>();
 			newColumnList.add(new ColumnInfo(index, formatItem));
 			mapCssInfo.put(cadidateCss, newColumnList);
@@ -722,9 +733,8 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	}
 	
 	/**
-	 * Store info for make css rule
+	 * Store info for css rule
 	 * @author hieplq
-	 *
 	 */
 	public static class CSSInfo {
 		private Font font;		
@@ -768,7 +778,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		
 		/**
-		 * sum hashCode of partial
+		 * Sum hashCode of color and font
 		 */
 		@Override
 		public int hashCode() {
@@ -776,7 +786,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		
 		/**
-		 * equal only when same color and font
+		 * equal when same color and font
 		 */
 		@Override
 		public boolean equals(Object obj) {
@@ -789,10 +799,10 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		
 		/**
-		 * compare two object equal when both is null or result of equal
+		 * Compare two object equal when both is null or equal
 		 * @param obj1
 		 * @param obj2
-		 * @return
+		 * @return true if both is null or equal
 		 */
 		protected boolean compareObj(Object obj1, Object obj2) {
 			if (obj1 == null && obj2 != null)
@@ -806,8 +816,8 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		
 		/**
-		 * append a css rule to css class
-		 * @param cssBuild
+		 * Append a css rule to a css class
+		 * @param cssBuild css class builder
 		 * @param ruleName
 		 * @param ruleValue
 		 */
@@ -819,8 +829,8 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		
 		/**
-		 * build css rule
-		 * @return
+		 * Build css rule
+		 * @return css rule
 		 */
 		public String getCssRule (){
 			if (cssStr != null)
@@ -868,6 +878,11 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 	}
 	
+	/**
+	 * Get CSS font family
+	 * @param fontFamily Java font family
+	 * @return CSS font family
+	 */
 	private static String getCSSFontFamily(String fontFamily) {
 		if ("Dialog".equals(fontFamily) || "DialogInput".equals(fontFamily) || 	"Monospaced".equals(fontFamily))
 		{
@@ -882,6 +897,12 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		return null;
 	}
 	
+	/**
+	 * Set inline style of element
+	 * @param printData
+	 * @param element
+	 * @param style
+	 */
 	public static void setStyle(PrintData printData, MultiPartElement element, MStyle style) {
 		if (style == null || style.getAD_Style_ID() == 0)
 			return;
@@ -907,7 +928,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	}
 	
 	/**
-	 * store info of report column,
+	 * Store info of report column, <br/>
 	 * now just use index to create css selector, but for later maybe will construct a complex class name
 	 * @author hieplq
 	 *

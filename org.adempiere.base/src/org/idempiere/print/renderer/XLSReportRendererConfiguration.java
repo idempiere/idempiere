@@ -25,6 +25,9 @@ import java.io.File;
 
 import org.compiere.util.Language;
 
+/**
+ * Configuration for Excel (xls) content renderer
+ */
 public class XLSReportRendererConfiguration implements IReportRendererConfiguration {
 
 	public static final String ID = "XLS";
@@ -41,16 +44,28 @@ public class XLSReportRendererConfiguration implements IReportRendererConfigurat
 		return file;
 	}
 
+	/**
+	 * Set output file
+	 * @param file
+	 */
 	public XLSReportRendererConfiguration setOutputFile(File file) {
 		this.file = file;
 		return this;
 	}
-	
+
+	/**
+	 * Set content language
+	 * @param language
+	 */
 	public XLSReportRendererConfiguration setLanguage(Language language) {
 		this.language = language;
 		return this;
 	}
-	
+
+	/**
+	 * Get content language
+	 * @return content language
+	 */
 	public Language getLanguage() {
 		return language;
 	}

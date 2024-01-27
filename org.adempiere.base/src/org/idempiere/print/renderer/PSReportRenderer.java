@@ -40,6 +40,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.net.MediaType;
 
+/**
+ * Postscript content rendering service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class PSReportRenderer implements IReportRenderer<PSReportRendererConfiguration> {
 
@@ -92,11 +95,10 @@ public class PSReportRenderer implements IReportRenderer<PSReportRendererConfigu
 	}
 
 	/**
-	 * 	Write PostScript to output streasm
+	 * 	Write PostScript to output stream
 	 * 	@param os output stream
-	 * 	@return true if success
 	 */
-	private boolean createPS (ReportEngine reportEngine, OutputStream os)
+	private void createPS (ReportEngine reportEngine, OutputStream os)
 	{
 		try
 		{
@@ -107,7 +109,7 @@ public class PSReportRenderer implements IReportRenderer<PSReportRendererConfigu
 			if (spsfactories.length == 0)
 			{
 				log.log(Level.SEVERE, "(fos) - No StreamPrintService");
-				return false;
+				return;
 			}
 			//	just use first one - sun.print.PSStreamPrinterFactory
 			StreamPrintService sps = spsfactories[0].getPrintService(os);
@@ -126,7 +128,6 @@ public class PSReportRenderer implements IReportRenderer<PSReportRendererConfigu
 		{
 			log.log(Level.SEVERE, "(fos)", e);
 		}
-		return false;
 	}	//	createPS
 
 	@Override

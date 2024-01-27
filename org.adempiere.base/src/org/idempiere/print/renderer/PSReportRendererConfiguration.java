@@ -24,6 +24,9 @@ package org.idempiere.print.renderer;
 import java.io.File;
 import java.io.OutputStream;
 
+/**
+ * Configuration for postscript content renderer
+ */
 public class PSReportRendererConfiguration implements IReportRendererConfiguration {
 
 	public static final String ID = "PS";
@@ -40,6 +43,10 @@ public class PSReportRendererConfiguration implements IReportRendererConfigurati
 		return file;
 	}
 
+	/**
+	 * Set output file
+	 * @param file
+	 */
 	public PSReportRendererConfiguration setOutputFile(File file) {
 		this.file = file;
 		return this;
@@ -49,7 +56,11 @@ public class PSReportRendererConfiguration implements IReportRendererConfigurati
 	public OutputStream getOutputStream() {
 		return outputStream;
 	}
-	
+
+	/**
+	 * Set output stream
+	 * @param os
+	 */
 	public PSReportRendererConfiguration setOutputStream(OutputStream os) {
 		this.outputStream = os;
 		return this;

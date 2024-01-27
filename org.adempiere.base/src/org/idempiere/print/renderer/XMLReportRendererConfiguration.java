@@ -24,6 +24,9 @@ package org.idempiere.print.renderer;
 import java.io.File;
 import java.io.Writer;
 
+/**
+ * Configuration for XML content renderer
+ */
 public class XMLReportRendererConfiguration implements IReportRendererConfiguration {
 
 	public final static String ID = "XML";
@@ -40,6 +43,10 @@ public class XMLReportRendererConfiguration implements IReportRendererConfigurat
 		return file;
 	}
 
+	/**
+	 * Set output file
+	 * @param file
+	 */
 	public XMLReportRendererConfiguration setOutputFile(File file) {
 		this.file = file;
 		return this;
@@ -50,6 +57,10 @@ public class XMLReportRendererConfiguration implements IReportRendererConfigurat
 		return writer;
 	}
 
+	/**
+	 * Set output writer
+	 * @param writer
+	 */
 	public XMLReportRendererConfiguration setOutputWriter(Writer writer) {
 		this.writer = writer;
 		return this;

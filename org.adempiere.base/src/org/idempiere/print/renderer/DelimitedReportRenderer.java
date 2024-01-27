@@ -37,14 +37,15 @@ import org.compiere.print.ReportEngine;
 import org.compiere.print.layout.InstanceAttributeColumn;
 import org.compiere.print.layout.InstanceAttributeData;
 import org.compiere.print.layout.LayoutEngine;
-import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.util.Evaluator;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
-import org.compiere.util.Util;
 
+/**
+ * Abstract base class for renderer that output delimited text content.
+ * @param <C> Renderer configuration type
+ */
 public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererConfiguration> implements IReportRenderer<C> {
 
 	private static final CLogger log = CLogger.getCLogger(DelimitedReportRenderer.class);
@@ -178,7 +179,7 @@ public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererC
 							printColIndex++;
 							Object obj = iaColumn != null ? iaColumn.getPrintDataElement(row) : printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							String data = "";
-							if (obj == null || !isDisplayPFItem(printData, item)){
+							if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
 								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
@@ -257,13 +258,5 @@ public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererC
 			sb.append('"').append(buff).append('"');
 		else
 			sb.append(buff);
-	}
-	
-	private boolean isDisplayPFItem(PrintData printData, MPrintFormatItem item)
-	{
-		if(Util.isEmpty(item.getDisplayLogic()))
-			return true;
-		
-		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, printData), item.getDisplayLogic());
-	}
+	}	
 }

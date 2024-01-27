@@ -40,6 +40,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.net.MediaType;
 
+/**
+ * Excel open xml (xlsx) content rendering service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class XLSXReportRenderer implements IReportRenderer<XLSXReportRendererConfiguration> {
 
@@ -84,7 +87,8 @@ public class XLSXReportRenderer implements IReportRenderer<XLSXReportRendererCon
 	}
 
 	/**
-	 * Create ExcelX file
+	 * Create Excel open XML file
+	 * @param reportEngine
 	 * @param outFile output file
 	 * @param language
 	 * @throws Exception if error

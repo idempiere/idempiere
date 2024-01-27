@@ -25,17 +25,32 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.Writer;
 
+/**
+ * Interface for report renderer configuration
+ */
 public interface IReportRendererConfiguration {
 
+	/**
+	 * Get output file
+	 * @return output file
+	 */
 	default File getOutputFile() {
 		return null;
 		
 	}
 	
+	/**
+	 * Get output stream
+	 * @return output stream
+	 */
 	default OutputStream getOutputStream() {
 		return null;
 	}
 	
+	/**
+	 * Get output writer
+	 * @return output writer
+	 */
 	default Writer getOutputWriter() {
 		return null;
 	}

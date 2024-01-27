@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.zk.pivot;
 
 import java.io.BufferedReader;
@@ -88,9 +109,16 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 		}
 	}
 
+	/**
+	 * Write html content to writer
+	 * @param reportEngine
+	 * @param bw
+	 * @param lang
+	 * @param export
+	 */
 	private void createHTML(ReportEngine reportEngine, BufferedWriter bw, Language lang, boolean export) {
-		PrintData m_printData = reportEngine.getPrintData();
-		MPrintFormat m_printFormat = reportEngine.getPrintFormat();
+		PrintData printData = reportEngine.getPrintData();
+		MPrintFormat printFormat = reportEngine.getPrintFormat();
 		PrintWriter w = new PrintWriter(bw);
 		try
 		{
@@ -134,20 +162,20 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 
 			JSONArray ja = new JSONArray();
 			//	for all rows (-1 = header row)
-			for (int row = 0; row < m_printData.getRowCount(); row++)
+			for (int row = 0; row < printData.getRowCount(); row++)
 			{
 				JSONObject jo = new JSONObject();
-				m_printData.setRowIndex(row);
-				if (m_printData.isFunctionRow()) 
+				printData.setRowIndex(row);
+				if (printData.isFunctionRow()) 
 					continue;
 
 				//	for all columns
-				for (int col = 0; col < m_printFormat.getItemCount(); col++)
+				for (int col = 0; col < printFormat.getItemCount(); col++)
 				{
-					MPrintFormatItem item = m_printFormat.getItem(col);
+					MPrintFormatItem item = printFormat.getItem(col);
 					if (item.isPrinted())
 					{
-						Object obj = m_printData.getNodeByPrintFormatItem(item);
+						Object obj = printData.getNodeByPrintFormatItem(item);
 						if (obj instanceof PrintDataElement)
 						{
 							PrintDataElement pde = (PrintDataElement) obj;
@@ -257,6 +285,14 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 		return PivotReportRendererConfiguration.class;
 	}
 
+	/**
+	 * If isExport embed css content, otherwise embed css link
+	 * @param writer
+	 * @param isExport
+	 * @param csslink
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
 	private void appendStyle(PrintWriter writer, boolean isExport, String csslink) throws IOException, URISyntaxException{
 		if (isExport){
 			// embed extend css by content
@@ -271,6 +307,14 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 		}	
 	}
 
+	/**
+	 * If isExport embed script content, otherwise embed script link
+	 * @param writer
+	 * @param isExport
+	 * @param scriptlink
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
 	private void appendScript(PrintWriter writer, boolean isExport, String scriptlink) throws IOException, URISyntaxException{
 		if (isExport){
 			// embed extend css by content
@@ -285,6 +329,12 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 		}	
 	}
 	
+	/**
+	 * Read content from URL
+	 * @param url
+	 * @return content from URL
+	 * @throws IOException
+	 */
 	private StringBuilder readResource(URL url) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		InputStream is = url.openStream();

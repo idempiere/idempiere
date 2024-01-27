@@ -40,6 +40,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.net.MediaType;
 
+/**
+ * Excel (xls) content rendering service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class XLSReportRenderer implements IReportRenderer<XLSReportRendererConfiguration> {
 

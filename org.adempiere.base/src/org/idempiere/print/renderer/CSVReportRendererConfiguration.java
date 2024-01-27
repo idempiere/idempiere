@@ -26,6 +26,9 @@ import java.io.Writer;
 
 import org.compiere.util.Language;
 
+/**
+ * Configuration for comma separated content renderer
+ */
 public class CSVReportRendererConfiguration extends DelimitedReportRendererConfiguration {
 
 	public final static String ID = "CSV";

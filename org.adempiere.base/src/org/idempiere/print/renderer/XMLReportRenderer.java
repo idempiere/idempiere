@@ -38,6 +38,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.net.MediaType;
 
+/**
+ * XML content rendering service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class XMLReportRenderer implements IReportRenderer<XMLReportRendererConfiguration> {
 
@@ -90,24 +93,22 @@ public class XMLReportRenderer implements IReportRenderer<XMLReportRendererConfi
 	}
 
 	/**
-	 * 	Write XML to writer
+	 * 	Write XML content to writer
+	 *  @param reportEngine
 	 * 	@param writer writer
-	 * 	@return true if success
 	 */
-	public boolean createXML (ReportEngine reportEngine, Writer writer)
+	public void createXML (ReportEngine reportEngine, Writer writer)
 	{
 		try
 		{
 			reportEngine.getPrintData().createXML(new StreamResult(writer));
 			writer.flush();
 			writer.close();
-			return true;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(w)", e);
 		}
-		return false;
 	}	//	createXML
 
 	@Override

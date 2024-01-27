@@ -21,6 +21,6 @@
  **********************************************************************/
 
 /**
- * Provide interface and class for report viewer preview and export
+ * Provide interface and class for report viewer preview and export renderer
  */
 package org.idempiere.ui.zk.report;

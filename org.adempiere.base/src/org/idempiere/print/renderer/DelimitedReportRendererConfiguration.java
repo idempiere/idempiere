@@ -26,6 +26,9 @@ import java.io.Writer;
 
 import org.compiere.util.Language;
 
+/**
+ * Abstract base class for delimited content renderer configuration
+ */
 public abstract class DelimitedReportRendererConfiguration implements IReportRendererConfiguration {
 
 	private File file;

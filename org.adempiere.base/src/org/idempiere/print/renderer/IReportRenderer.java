@@ -23,13 +23,52 @@ package org.idempiere.print.renderer;
 
 import org.compiere.print.ReportEngine;
 
+/**
+ * Content rendering service for report engine.<br/>
+ * Implementation must be thread safe.
+ * @param <T> Renderer configuration type
+ */
 public interface IReportRenderer<T extends IReportRendererConfiguration> {
-
+	/**
+	 * Get id of renderer
+	 * @return renderer id (HTML, XLS, etc)
+	 */
 	String getId();
+	
+	/**
+	 * Get renderer name
+	 * @return renderer name
+	 */
 	String getName();
+	
+	/**
+	 * Get MIME content type (text/html, etc)
+	 * @return MIME content type
+	 */
 	String getContentType();
+	
+	/**
+	 * Get file extension (without dot)
+	 * @return file extension
+	 */
 	String getFileExtension();
+	
+	/**
+	 * Render content for report engine
+	 * @param reportEngine
+	 * @param configuration
+	 */
 	void renderReport(ReportEngine reportEngine, T configuration);
+	
+	/**
+	 * Is binary content
+	 * @return true if content is binary
+	 */
 	boolean isBinary();
+	
+	/**
+	 * Get configuration type
+	 * @return configuration type
+	 */
 	Class<T> getConfigurationType ();
 }

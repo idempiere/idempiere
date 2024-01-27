@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.zk.datatable;
 
 import java.awt.Font;
@@ -72,9 +93,9 @@ import com.google.common.net.MediaType;
 public class DatatableReportRenderer implements IReportRenderer<DatatableReportRendererConfiguration> {
 
 	private static final CLogger log = CLogger.getCLogger(DatatableReportRenderer.class);
-	
-	protected enum FunctionTypes { SUM, COUNT, MIN, MAX, AVG, DEVIATION, VARIANCE, GROUP_BY, ORDER_BY};
 	private static final String JS_DATA_IDENTIFIER = "JS_DataTable";
+
+	protected enum FunctionTypes {SUM, COUNT, MIN, MAX, AVG, DEVIATION, VARIANCE, GROUP_BY, ORDER_BY};
 	
 	public DatatableReportRenderer() {
 	}
@@ -142,9 +163,8 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	 *  @param language optional language - if null numbers/dates are not formatted
 	 *  @param extension optional extension for html output
 	 *  @param isExport when isExport = true will don't embed resource dependent zk framework
-	 * 	@return true if success
 	 */
-	private boolean createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
+	private void createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
 	{
 		MPrintFormat printFormat = reportEngine.getPrintFormat();
 		PrintData printData = reportEngine.getPrintData();
@@ -224,7 +244,9 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			boolean minify = MSysConfig.getBooleanValue(MSysConfig.HTML_REPORT_MINIFY, true, Env.getAD_Client_ID(Env.getCtx()));
 						
 			if (onlyTable)
+			{
 				w.print(HTMLReportRenderer.compress(table.toString(), minify));
+			}
 			else
 			{
 				doc = new XhtmlDocument();
@@ -258,9 +280,9 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 					doc.appendHead(jslink);
 				}
 				
-				appendExtraStyle(extension, isExport, doc);
+				appendStyles(doc, isExport);
 
-				appendExtraScript (extension, isExport, doc);
+				appendScripts (doc, isExport);
 
 				//FIXME Better implementation of Javascript
 				doc.appendHead("<script type=\"text/javascript\" charset=\"utf8\" src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js\"></script>");
@@ -287,7 +309,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 						printColIndex++;
 						HTMLReportRenderer.addCssInfo(printFormat, item, printColIndex, mapCssInfo);
 					}
-				}//IDEMPIERE-4113
+				}
 				HTMLReportRenderer.appendInlineCss(doc, mapCssInfo);
 				
 				StringBuilder styleBuild = new StringBuilder();
@@ -478,23 +500,23 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 							// Calculate DateTables Options
 							if(isDataTableFunctionColumn(item)) {
 								if(item.isOrderBy())
-									dataTableOptions.addColumnID(FunctionTypes.ORDER_BY, item.isDesc() ? dataTableOptions.DESC_OFFSET + printColIndex :  printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.ORDER_BY, item.isDesc() ? dataTableOptions.DESC_OFFSET + printColIndex :  printColIndex);
 								if(item.isGroupBy())
-									dataTableOptions.addColumnID(FunctionTypes.GROUP_BY, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.GROUP_BY, printColIndex);
 								if(item.isSummarized())
-									dataTableOptions.addColumnID(FunctionTypes.SUM, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.SUM, printColIndex);
 								if(item.isCounted())
-									dataTableOptions.addColumnID(FunctionTypes.COUNT, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.COUNT, printColIndex);
 								if(item.isMinCalc())
-									dataTableOptions.addColumnID(FunctionTypes.MIN, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.MIN, printColIndex);
 								if(item.isMaxCalc())
-									dataTableOptions.addColumnID(FunctionTypes.MAX, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.MAX, printColIndex);
 								if(item.isAveraged())
-									dataTableOptions.addColumnID(FunctionTypes.AVG, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.AVG, printColIndex);
 								if(item.isDeviationCalc())
-									dataTableOptions.addColumnID(FunctionTypes.DEVIATION, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.DEVIATION, printColIndex);
 								if(item.isVarianceCalc())
-									dataTableOptions.addColumnID(FunctionTypes.VARIANCE, printColIndex);
+									dataTableOptions.addPrintColumnIndex(FunctionTypes.VARIANCE, printColIndex);
 							}
 
 							if(item.getAD_Column_ID() > 0) {
@@ -724,10 +746,9 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "(w)", e);
+			log.log(Level.SEVERE, e.getMessage(), e);
 			throw new AdempiereException(e);
 		}
-		return true;
 	}	//	createHTML
 	
 	/** 
@@ -751,53 +772,57 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	
 	/**
 	 * If isExport, embed script content, otherwise embed script url
-	 * @param extension
-	 * @param isExport
 	 * @param doc
+	 * @param isExport
 	 * @throws IOException
 	 * @throws URISyntaxException 
 	 */
-	protected void appendExtraScript (IHTMLExtension extension, boolean isExport, XhtmlDocument doc) throws IOException, URISyntaxException{
+	private void appendScripts (XhtmlDocument doc, boolean isExport) throws IOException, URISyntaxException{
 		List<String> urls = Arrays.asList("~./js/datatables/jquery.min.js","~./js/datatables/jquery.floatThead.min.js"
 				,"~./js/datatables/datatables.js","~./js/datatables/jquery.dataTables.min.js","~./js/datatables/dataTables.rowGroup.min.js");		
 		if (isExport){
-			// embed extend script by content
+			// embed script by content
 			for (String extraScriptPath : urls){
 				URL url = getClass().getResource(extraScriptPath.replace("~./", "/web/"));
 				appendInlineScriptContent (doc, readResource(url));
 			}
 		} else {			
-			// embed extend script by link
+			// embed script by link
 			for (String extraScriptUrl : urls){
-				embedExtendScript (doc, Executions.encodeURL(extraScriptUrl));
+				embedScriptLink (doc, Executions.encodeURL(extraScriptUrl));
 			}
 		}
 	}
 
 	/**
-	 * if isExport, embed style content other embed style url
-	 * @param extension
-	 * @param isExport
+	 * If isExport, embed css content, otherwise embed css url
 	 * @param doc
+	 * @param isExport
 	 * @throws IOException
 	 * @throws URISyntaxException 
 	 */
-	protected void appendExtraStyle (IHTMLExtension extension, boolean isExport, XhtmlDocument doc) throws IOException, URISyntaxException{
+	private void appendStyles (XhtmlDocument doc, boolean isExport) throws IOException, URISyntaxException{
 		List<String> urls = Arrays.asList("~./js/datatables/datatables.css");		
 		if (isExport){
-			// embed extend css by content
+			// embed css by content
 			for (String extraStylePath : urls){
 				URL url = getClass().getResource(extraStylePath.replace("~./", "/web/"));
 				HTMLReportRenderer.appendInlineCss(doc, readResource(url));
 			}			
 		} else {
-			// embed extend css by link
+			// embed css by link
 			for (String extraStyleUrl : urls){
-				embedExtendStyle (doc, Executions.encodeURL(extraStyleUrl));
+				embedStyleLink (doc, Executions.encodeURL(extraStyleUrl));
 			}
 		}	
 	}
 
+	/**
+	 * Read contents from URL
+	 * @param url
+	 * @return contents from URL
+	 * @throws IOException
+	 */
 	private StringBuilder readResource(URL url) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		InputStream is = url.openStream();
@@ -811,11 +836,11 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	}
 
 	/**
-	 * embed script url into head tag
+	 * Embed script url into head tag
 	 * @param doc
 	 * @param scriptUrl
 	 */
-	protected void embedExtendScript (XhtmlDocument doc, String scriptUrl){
+	protected void embedScriptLink (XhtmlDocument doc, String scriptUrl){
 		script jslink = new script();
 		jslink.setLanguage("javascript");
 		jslink.setSrc(scriptUrl);
@@ -823,11 +848,11 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	}
 
 	/**
-	 * embed css url into head tag
+	 * Embed css url into head tag
 	 * @param doc
 	 * @param scriptUrl
 	 */
-	protected void embedExtendStyle (XhtmlDocument doc, String styleUrl){
+	protected void embedStyleLink (XhtmlDocument doc, String styleUrl){
 		link csslink = new link();
 		csslink.setType("text/css");
 		csslink.setRel("stylesheet");
@@ -836,11 +861,11 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	}
 
 	/**
-	 * embed script content into head tag
+	 * Embed script content into head tag
 	 * @param doc
 	 * @param buildScriptContent
 	 */
-	public void appendInlineScriptContent (XhtmlDocument doc, StringBuilder buildScriptContent){
+	private void appendInlineScriptContent (XhtmlDocument doc, StringBuilder buildScriptContent){
 		if (buildScriptContent.length() > 0){
 			buildScriptContent.insert(0, "<script type=\"text/javascript\">\n");
 			buildScriptContent.append("\n</script>");

@@ -27,6 +27,9 @@ import java.io.Writer;
 import org.compiere.print.IHTMLExtension;
 import org.compiere.util.Language;
 
+/**
+ * Configuration for HTML content renderer
+ */
 public class HTMLReportRendererConfiguration implements IReportRendererConfiguration {
 
 	private boolean onlyTable;
@@ -42,28 +45,52 @@ public class HTMLReportRendererConfiguration implements IReportRendererConfigura
 	public HTMLReportRendererConfiguration() {
 	}
 	
+	/**
+	 * Is only generate html table instead of html document
+	 * @return true if only generate html table instead of html document
+	 */
 	public boolean isOnlyTable() {
 		return onlyTable;
 	}
 
+	/**
+	 * Set only generate html table or html document
+	 * @param onlyTable
+	 */
 	public HTMLReportRendererConfiguration setOnlyTable(boolean onlyTable) {
 		this.onlyTable = onlyTable;
 		return this;
 	}
 
+	/**
+	 * Get HTML content extension
+	 * @return HTML content extension
+	 */
 	public IHTMLExtension getExtension() {
 		return extension;
 	}
 
+	/**
+	 * Set HTML content extension
+	 * @param extension
+	 */
 	public HTMLReportRendererConfiguration setExtension(IHTMLExtension extension) {
 		this.extension = extension;
 		return this;
 	}
 
+	/**
+	 * Is renderer support export
+	 * @return true if renderer support export
+	 */
 	public boolean isExport() {
 		return isExport;
 	}
 
+	/**
+	 * Set is renderer support export
+	 * @param isExport
+	 */
 	public HTMLReportRendererConfiguration setExport(boolean isExport) {
 		this.isExport = isExport;
 		return this;
@@ -74,6 +101,10 @@ public class HTMLReportRendererConfiguration implements IReportRendererConfigura
 		return file;
 	}
 
+	/**
+	 * Set output file
+	 * @param file
+	 */
 	public HTMLReportRendererConfiguration setOutputFile(File file) {
 		this.file = file;
 		return this;
@@ -84,16 +115,28 @@ public class HTMLReportRendererConfiguration implements IReportRendererConfigura
 		return writer;
 	}
 
+	/**
+	 * Set output writer
+	 * @param writer
+	 */
 	public HTMLReportRendererConfiguration setOutputWriter(Writer writer) {
 		this.writer = writer;
 		return this;
 	}
 
+	/**
+	 * Set content language
+	 * @param language
+	 */
 	public HTMLReportRendererConfiguration setLanguage(Language language) {
 		this.language = language;
 		return this;
 	}
-	
+
+	/**
+	 * Get content language
+	 * @return content language
+	 */
 	public Language getLanguage() {
 		return language;
 	}

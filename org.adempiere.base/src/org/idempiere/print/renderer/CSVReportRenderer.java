@@ -27,6 +27,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.net.MediaType;
 
+/**
+ * Comma separated content rendering service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class CSVReportRenderer extends DelimitedReportRenderer<CSVReportRendererConfiguration> {
 

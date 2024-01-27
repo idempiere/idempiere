@@ -26,6 +26,9 @@ import java.io.Writer;
 
 import org.compiere.util.Language;
 
+/**
+ * Configuration for tab delimited content renderer
+ */
 public class TabDelimitedReportRendererConfiguration extends DelimitedReportRendererConfiguration {
 
 	public static final String ID = "TXT";

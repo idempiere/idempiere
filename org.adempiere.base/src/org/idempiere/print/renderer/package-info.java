@@ -21,6 +21,6 @@
  **********************************************************************/
 
 /**
- * Provide interface and classes for rendering of iDempiere report.
+ * Provide interface and classes for report engine content rendering service
  */
 package org.idempiere.print.renderer;

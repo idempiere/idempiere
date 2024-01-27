@@ -26,6 +26,9 @@ import java.io.Writer;
 
 import org.compiere.util.Language;
 
+/**
+ * Configuration for semicolon separated content renderer
+ */
 public class SSVReportRendererConfiguration extends DelimitedReportRendererConfiguration {
 
 	public static final String ID = "SSV";

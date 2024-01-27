@@ -36,6 +36,9 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.net.MediaType;
 
+/**
+ * PDF content rendering service for report engine
+ */
 @Component(service = IReportRenderer.class, immediate = true)
 public class PDFReportRenderer implements IReportRenderer<PDFReportRendererConfiguration> {
 

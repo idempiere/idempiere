@@ -24,6 +24,9 @@ package org.idempiere.print.renderer;
 import java.io.File;
 import java.io.OutputStream;
 
+/**
+ * Configuration for PDF content renderer
+ */
 public class PDFReportRendererConfiguration implements IReportRendererConfiguration {
 
 	public static final String ID = "PDF";

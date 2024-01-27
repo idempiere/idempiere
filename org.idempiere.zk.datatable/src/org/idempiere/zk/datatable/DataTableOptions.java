@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.zk.datatable;
 
 import java.util.ArrayList;
@@ -37,11 +58,19 @@ public class DataTableOptions {
 	
 	private String locale;
 	
+	/**
+	 * @param locale
+	 */
 	public DataTableOptions(String locale) {
 		functionMap = new HashMap<>();
 		this.locale = locale;
 	}
 	
+	/**
+	 * Get datatables settings
+	 * @param path
+	 * @return json datatables settings
+	 */
 	public String getDataTableOptions(String path) {
 		StringBuilder dataOptions = new StringBuilder();
 		dataOptions.append(" { ");
@@ -88,6 +117,10 @@ public class DataTableOptions {
 		
 	}
 	
+	/**
+	 * Get group rendering function
+	 * @return group rendering function
+	 */
 	private String getRowGroupRendered() {
 		
 		ArrayList<Integer> groupByList = functionMap.get(FunctionTypes.GROUP_BY);
@@ -173,6 +206,10 @@ public class DataTableOptions {
 		return retValue.toString();
 	}
 	
+	/**
+	 * Get table footer aggregate rendering function
+	 * @return table footer aggregate rendering function
+	 */
 	private String getFootAggregateFunctions() {
 		
 		TreeMap<Integer, String[]> groupRowNamesMap = new TreeMap<>();
@@ -230,6 +267,10 @@ public class DataTableOptions {
 		
 	}
 	
+	/**
+	 * @param retValue
+	 * @param groupRowNamesMap
+	 */
 	private void setAggregateFunctions(StringBuilder retValue, TreeMap<Integer, String[]> groupRowNamesMap) {
 		
 		ArrayList<Integer> averageList = functionMap.get(FunctionTypes.AVG);
@@ -352,9 +393,13 @@ public class DataTableOptions {
 		}
 	}
 	
-	public void addColumnID(FunctionTypes type, Integer id) {
+	/**
+	 * @param type
+	 * @param id
+	 */
+	public void addPrintColumnIndex(FunctionTypes type, Integer id) {
 		ArrayList<Integer> list = functionMap.get(type);
-		if(list == null) {
+		if (list == null) {
 			list = new ArrayList<>();
 			functionMap.put(type, list);
 		}
@@ -362,6 +407,10 @@ public class DataTableOptions {
 		list.add(id);
 	}
 	
+	/**
+	 * Get group by json array
+	 * @return group by json array
+	 */
 	private String getGroupDataSrc() {
 		StringBuilder retValue = new StringBuilder();
 		ArrayList<Integer> groupByList = functionMap.get(FunctionTypes.GROUP_BY);
@@ -392,25 +441,44 @@ public class DataTableOptions {
 		return retValue.toString();
 	}
 	
-	
+	/**
+	 * Get order by json array
+	 * @return order by json array
+	 */
 	private String getOrderBy() {
 		String orderBy = orderListToJson(functionMap.get(FunctionTypes.ORDER_BY));
 		return orderBy;
 	}
 	
+	/**
+	 * Get last print column index
+	 * @return last print column index
+	 */
 	public Integer getPrintColLastIndex() {
 		return printColLastIndex;
 	}
 
+	/**
+	 * Set last print column index
+	 * @param printColLastIndex
+	 */
 	public void setPrintColLastIndex(Integer printColLastIndex) {
 		this.printColLastIndex = printColLastIndex;
 	}
 
+	/**
+	 * Get locale
+	 * @return locale
+	 */
 	public String getLocale() {
 		return locale;
 	}
 
-
+	/**
+	 * Convert orderByList to json array
+	 * @param orderByList
+	 * @return json array for orderByList
+	 */
 	private String orderListToJson(ArrayList<Integer> orderByList) {
 		if(orderByList == null)
 			return null;
