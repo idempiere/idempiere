@@ -3692,9 +3692,9 @@ public abstract class PO
 					&& !"Password".equals(p_info.getColumnName(i))
 					&& (insertLog.equalsIgnoreCase("Y")
 							|| (insertLog.equalsIgnoreCase("K")
-								&& (   p_info.getColumn(i).IsKey)
+								&& (   p_info.getColumn(i).IsKey
 									|| (   !p_info.hasKeyColumn()
-										&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))
+										&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName()))))))
 					)
 				{
 					// change log on new
