@@ -504,7 +504,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getKeyColumns
 	
 	/**
-	 * @return true if table has single key column and the key column name ends with _ID.
+	 * @return true if table has single key column and the key column name is the same as the table name plus _ID.
 	 */
 	public boolean isIDKeyTable()
 	{
