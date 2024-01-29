@@ -492,7 +492,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (event == null)
 			return;
 
-		if (event.getTarget() == btnOk || event.getTarget() == inputField.getComponent())
+		if (event.getTarget() == btnOk || (event.getTarget() == inputField.getComponent() && event.getName().equals(Events.ON_OK)))
 		{
 			returnValue = OK;
 		}
