@@ -40,14 +40,17 @@ import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
+ * Abstract base class for all test case
  * @author hengsin
- *
  */
+@ExtendWith(AbstractTestCase.MyBeforeAllCallback.class)
 public abstract class AbstractTestCase {
 
 	private Trx trx;
@@ -59,20 +62,13 @@ public abstract class AbstractTestCase {
 	protected final int GARDEN_WORLD_ADMIN_ROLE = 102;
 	protected final int GARDEN_WORLD_HQ_WAREHOUSE = 103;
 	
-	@BeforeAll
-	/**
-	 * setup for class
-	 */
-	static void setup() {
-		Adempiere.startup(false);
-	}
-
 	@BeforeEach
 	/**
 	 * Init for each test method
 	 * @param testInfo
 	 */
 	protected void init(TestInfo testInfo) {
+		System.out.println("Running " + testInfo.getDisplayName());
 		ServerContext.setCurrentInstance(new Properties());
 		
 		String trxName = Trx.createTrxName(getClass().getName()+"_");
@@ -229,5 +225,12 @@ public abstract class AbstractTestCase {
 	 * shutdown for class
 	 */
 	static void shutdown() {
+	}
+	
+	private static final class MyBeforeAllCallback implements BeforeAllCallback {
+		@Override
+		public void beforeAll(ExtensionContext context) throws Exception {
+			Adempiere.startup(false);
+		}		
 	}
 }
