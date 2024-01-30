@@ -120,9 +120,9 @@ public class Trx
 	/**
 	 * Start transaction timeout monitor (run every 5 minutes) 
 	 */
-	public static void startTrxMonitor()
+	public static void startTrxMonitor(long initialDelay, long delay, TimeUnit unit)
 	{
-		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
+		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, initialDelay, delay, unit);
 	}
 
 	/**

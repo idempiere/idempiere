@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
@@ -111,7 +112,7 @@ public final class Adempiere
 	/** Thread pool **/
 	private final static ScheduledThreadPoolExecutor threadPoolExecutor = createThreadPool();
 	static {
-		Trx.startTrxMonitor();
+		Trx.startTrxMonitor(5, 5, TimeUnit.MINUTES);
 	}
 	
 	 /** A list of event listeners for this component.	*/
