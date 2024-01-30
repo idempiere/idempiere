@@ -25,6 +25,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MBPartner;
@@ -373,4 +377,47 @@ public class DBTest extends AbstractTestCase
 			rollback();
 		}				
 	}
+	
+	public static Pattern REG_ACTIVE_CONNECT = Pattern.compile("# Busy Connections:\\s*(\\d+)\\s*,", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+	
+	public static int getNumConnectPerStatus (String poolStatus, Pattern patternStatus) {
+		int numActiveConn = -1;
+		try {
+			
+			Matcher regexMatcher = patternStatus.matcher(poolStatus);
+			if (regexMatcher.find()) {
+				String activeConnectionStr = regexMatcher.group(1);
+				numActiveConn = Integer.parseInt(activeConnectionStr);
+			}
+		} catch (PatternSyntaxException ex) {
+			// Syntax error in the regular expression
+		}
+		return numActiveConn;
+	}
+	
+	/**
+	 * test case to simulate transaction timeouts and ensure no open connections remain afterwards
+	 */
+	@Test
+	public void testTrxTimeout2() {
+		Trx.startTrxMonitor(30, 30, TimeUnit.SECONDS);// During testing, create a new and set the transaction monitor's scan timeout to a short duration.
+
+		int beforeActiveConnection = getNumConnectPerStatus(DB.getDatabase().getStatus(), REG_ACTIVE_CONNECT);
+		
+		Trx trx2 = Trx.get(Trx.createTrxName(), true);
+		trx2.setTimeout(10);// timeout after 10s
+		
+		DB.getSQLValueEx(trx2.getTrxName(), "SELECT 1 FROM DUAL");// to make transaction start
+		
+		try {
+			Thread.sleep(40000);//Wait for the transaction monitor to complete its task
+			
+			int afterActiveConnection = getNumConnectPerStatus(DB.getDatabase().getStatus(), REG_ACTIVE_CONNECT);
+			assertEquals(beforeActiveConnection, afterActiveConnection);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
