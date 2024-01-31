@@ -249,8 +249,9 @@ public interface IDesktop extends UIPart {
 	 * @param desc
 	 * @param help
 	 * @param otherContent
+	 * @param entityType
 	 */
-	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent);
+	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent, String entityType);
 
 	/**
 	 * update quick info (status line) in help/info panel
