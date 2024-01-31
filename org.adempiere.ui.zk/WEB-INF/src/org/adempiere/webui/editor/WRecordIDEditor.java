@@ -95,9 +95,8 @@ public class WRecordIDEditor extends WRecordEditor<Integer> {
 	}
 
 	@Override
-	protected String getKeyColumn(MTable mTable) {
-		String[] keyColumns = mTable.getKeyColumns();
-		return keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
+	public boolean isUseUUIDKey() {
+		return false;
 	}
 
 	@Override

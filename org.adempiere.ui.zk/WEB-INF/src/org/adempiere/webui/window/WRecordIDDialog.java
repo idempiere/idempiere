@@ -24,6 +24,7 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.adempiere.webui.component.Button;
@@ -38,6 +39,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -74,6 +76,14 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	private Object recordIDValue;
 	/** Current AD_Table_ID value from {@link #editor} */
 	private Integer tableIDValue;
+	/** Grid Tab */
+	GridTab gridTab;
+	/** Grid Field */
+	GridField gridField;
+	/** Window Number */
+	int windowNo;
+	/** Tab Number */
+	int tabNo;
 	
 	// UI components
 	private Div contentDiv;
@@ -97,7 +107,10 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		super();
 
 		this.editor = editor;
-
+		gridTab = editor.getGridField().getGridTab();
+		gridField = editor.getGridField();
+		tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
+		windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
 		if (editor.getAD_Table_ID() instanceof Integer) {
 			tableIDValue = (Integer) editor.getAD_Table_ID();
 		} else {
@@ -137,7 +150,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		tableIDEditor.setValue(tableIDValue);
 		
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
-		MLookup recordsLookup = editor.getRecordsLookup(tableID);
+		MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.isUseUUIDKey());
 		if(recordsLookup != null)
 			recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		
@@ -154,12 +167,12 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			parentTextBox = new Textbox();
 			parentTextBox.setReadonly(true);
 			MTable parentTable = MTable.get(editor.getGridField().getGridTab().getAD_Table_ID());
-			Object parentRecordId;
+			Serializable parentRecordId;
 			if (parentTable.isUUIDKeyTable())
-				parentRecordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
+				parentRecordId = (Serializable) editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
 			else
 				parentRecordId = editor.getGridField().getGridTab().getRecord_ID();
-			parentTextBox.setValue(editor.getParentIdentifier(parentTable.getAD_Table_ID(), parentRecordId));
+			parentTextBox.setValue(MLookup.getIdentifier(parentTable.getAD_Table_ID(), parentRecordId, tabNo, windowNo));
 		}
 		
 		if (recordsEditor != null)
@@ -239,7 +252,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				recordsEditorLabel.detach();
 				recordsEditor.getComponent().detach();
 			}
-			MLookup recordsLookup = editor.getRecordsLookup(tableID);
+			MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.isUseUUIDKey());
 			if(recordsLookup != null) {
 				recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		    	labelsDiv.appendChild(recordsEditorLabel);
