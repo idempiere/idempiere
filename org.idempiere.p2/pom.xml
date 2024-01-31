@@ -11,6 +11,7 @@
 	<packaging>eclipse-repository</packaging>
 	<properties>
 		<materializeProduct>package</materializeProduct>
+		<assembleRepository>package</assembleRepository>
 	</properties>
 	<build>
 		<plugins>
@@ -106,14 +107,14 @@
 						<goals>
 							<goal>assemble-repository</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${assembleRepository}</phase>
 					</execution>
 					<execution>
 						<id>default-archive-repository</id>
 						<goals>
 							<goal>archive-repository</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${assembleRepository}</phase>
 					</execution>
 				</executions>
 				<configuration>

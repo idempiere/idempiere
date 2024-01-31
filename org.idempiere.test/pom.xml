@@ -60,7 +60,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>execute-plugin-tests</id>
+						<id>default-test</id>
 						<goals>
 							<goal>test</goal>
 						</goals>
