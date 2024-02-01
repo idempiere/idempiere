@@ -1,0 +1,167 @@
+{
+    "processing": "Henter...",
+    "lengthMenu": "Vis _MENU_ linjer",
+    "zeroRecords": "Ingen linjer matcher s&oslash;gningen",
+    "info": "Viser _START_ til _END_ af _TOTAL_ linjer",
+    "infoEmpty": "Viser 0 til 0 af 0 linjer",
+    "infoFiltered": "(filtreret fra _MAX_ linjer)",
+    "paginate": {
+        "previous": "Forrige",
+        "last": "Sidste",
+        "first": "Første",
+        "next": "Næste"
+    },
+    "aria": {
+        "sortAscending": "Stigende sortering",
+        "sortDescending": "Faldende sortering"
+    },
+    "autoFill": {
+        "fill": "Fyld alle celler med <i>%d<i><\/i><\/i>",
+        "fillHorizontal": "Fyld celler horisontalt",
+        "fillVertical": "Fyld celler vertikalt",
+        "cancel": "Annuller"
+    },
+    "buttons": {
+        "copy": "Kopi",
+        "copyTitle": "Kopier til udklipsholder",
+        "csv": "CSV",
+        "excel": "Excel",
+        "pageLength": {
+            "-1": "Vis alle rækker",
+            "_": "Vis %d rækker"
+        },
+        "pdf": "PDF",
+        "print": "Udskriv",
+        "collection": "Samling",
+        "colvis": "Kolonne synlighed",
+        "colvisRestore": "Gendan synlighed",
+        "copyKeys": "Tryk ctrl eller u2318 + C for at kopiere data til udklipsholder.  For at fortryde, klik på denne besked eller tryk escape.",
+        "copySuccess": {
+            "1": "Kopieret en række til udklipsholder",
+            "_": "Kopieret %ds rækker til udklipsholder"
+        }
+    },
+    "emptyTable": "Ingen data tilgængelige i tabellen",
+    "infoThousands": ".",
+    "select": {
+        "cells": {
+            "1": "1 celle valgt",
+            "_": "%d celler valgt"
+        },
+        "columns": {
+            "1": "1 kolonne valgt",
+            "_": "%d kolonner valgt"
+        }
+    },
+    "thousands": ".",
+    "decimal": ".",
+    "search": "Søg",
+    "searchPanes": {
+        "clearMessage": "Fjern alle",
+        "collapse": {
+            "0": "Søgepanel",
+            "_": "Søgepanel (%d)"
+        },
+        "emptyPanes": "Ingen søgepaneler",
+        "loadMessage": "Henter søgepaneler",
+        "title": "Filter aktive - %d",
+        "count": "Antal",
+        "countFiltered": "Filtreret antal"
+    },
+    "datetime": {
+        "previous": "Forrige",
+        "next": "Næste",
+        "hours": "Timer",
+        "minutes": "Minutter",
+        "seconds": "Sekunder",
+        "unknown": "-"
+    },
+    "editor": {
+        "close": "Luk",
+        "create": {
+            "button": "Ny",
+            "title": "Opret ny række",
+            "submit": "Opret"
+        },
+        "edit": {
+            "button": "Ret",
+            "title": "Ret række",
+            "submit": "Opdater"
+        },
+        "remove": {
+            "button": "Slet",
+            "title": "Slet",
+            "submit": "Slet",
+            "confirm": {
+                "_": "Er du sikker på, at du vil slette %d rækker?",
+                "1": "Er du sikker på, at du vil slette 1 række?"
+            }
+        },
+        "error": {
+            "system": "En systemfejl er opstået (Mere information)"
+        },
+        "multi": {
+            "title": "Flere værdier",
+            "restore": "Fortryd ændringer"
+        }
+    },
+    "loadingRecords": "Henter...",
+    "searchBuilder": {
+        "add": "Tilføj betingelse",
+        "button": {
+            "0": "Søg",
+            "_": "Søg (%d)"
+        },
+        "clearAll": "Nulstil",
+        "condition": "Betingelse",
+        "conditions": {
+            "date": {
+                "after": "Efter",
+                "before": "Før",
+                "between": "Mellem",
+                "empty": "Tom",
+                "equals": "Lig med",
+                "not": "Ikke",
+                "notBetween": "Ikke mellem",
+                "notEmpty": "Ikke tom"
+            },
+            "number": {
+                "between": "Mellem",
+                "empty": "Tom",
+                "equals": "Lig med",
+                "gt": "Større end",
+                "lt": "Mindre end",
+                "lte": "Mindre end eller lig med",
+                "not": "Ikke",
+                "notBetween": "Ikke mellem",
+                "notEmpty": "Ikke tom",
+                "gte": "Større end eller lig medLig med eller større end"
+            },
+            "string": {
+                "contains": "Indeholder",
+                "empty": "Tom",
+                "endsWith": "Slutter med",
+                "equals": "Lig med",
+                "not": "Ikke",
+                "notEmpty": "Ikke tom",
+                "startsWith": "Starter med"
+            },
+            "array": {
+                "equals": "Lig med",
+                "empty": "Tom",
+                "contains": "Indeholder",
+                "not": "Ikke",
+                "notEmpty": "Ikke tom",
+                "without": "Indeholder ikke"
+            }
+        },
+        "data": "Data",
+        "deleteTitle": "Slet filtrerings regel",
+        "logicAnd": "Og",
+        "logicOr": "Eller",
+        "value": "Værdi",
+        "title": {
+            "_": "Brugerdefineret filtrering"
+        }
+    }
+}

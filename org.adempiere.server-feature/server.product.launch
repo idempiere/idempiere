@@ -448,7 +448,9 @@
         <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:false"/>
+        <setEntry value="org.idempiere.zk.datatable@default:false"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
+        <setEntry value="org.idempiere.zk.pivot@default:false"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
     <booleanAttribute key="tracing" value="false"/>

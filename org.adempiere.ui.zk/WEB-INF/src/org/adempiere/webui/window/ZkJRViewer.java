@@ -158,12 +158,12 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
-			new ExportFormat(PDF_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
-			new ExportFormat(HTML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileHTML"), HTML_FILE_EXT, HTML_MIME_TYPE),			
-			new ExportFormat(CSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), CSV_FILE_EXT, CSV_MIME_TYPE),
-			new ExportFormat(EXCEL_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), EXCEL_FILE_EXT, EXCEL_MIME_TYPE),
-			new ExportFormat(EXCEL_XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE),
-			new ExportFormat(SSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE)
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileHTML"), HTML_FILE_EXT, HTML_MIME_TYPE),			
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileCSV"), CSV_FILE_EXT, CSV_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileXLS"), EXCEL_FILE_EXT, EXCEL_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE)
 	};
 
 	private Center center;
