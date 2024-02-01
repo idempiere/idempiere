@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
@@ -68,7 +69,12 @@ public abstract class AbstractTestCase {
 	 * @param testInfo
 	 */
 	protected void init(TestInfo testInfo) {
-		System.out.println("Running " + testInfo.getDisplayName());
+		StringBuilder builder = new StringBuilder("Running ");
+		Optional<Class<?>> optional = testInfo.getTestClass();
+		if (optional.isPresent())
+			builder.append(optional.get().getName()).append(".");
+		builder.append(testInfo.getDisplayName());
+		System.out.println(builder.toString());
 		ServerContext.setCurrentInstance(new Properties());
 		
 		String trxName = Trx.createTrxName(getClass().getName()+"_");
