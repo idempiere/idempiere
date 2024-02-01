@@ -257,10 +257,12 @@ public class Translation implements IApplication
 				sql.append (haveWhere ? " AND " : " WHERE ").append ("o.IsCentrallyMaintained='N'");
 				haveWhere = true;
 			}
-			if (AD_Client_ID >= 0)
+			if (AD_Client_ID >= 0) {
 				sql.append(haveWhere ? " AND " : " WHERE ").append("o.AD_Client_ID=").append(AD_Client_ID);
+				haveWhere = true;
+			}
 
-			if (onlyCentralized)
+			if (onlyCentralized && keyColumn.endsWith("_ID"))
 				sql.append(haveWhere ? " AND " : " WHERE ").append(" o.").append(keyColumn).append("<=").append(MTable.MAX_OFFICIAL_ID).append(" AND o.IsActive = 'Y'");
 
 			sql.append(" ORDER BY t.").append(keyColumn);
@@ -323,15 +325,9 @@ public class Translation implements IApplication
 			// Close writer - teo_sarca [ 1705883 ] 
 			writer.close();
 		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-			return e.toString();
-		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "", e);
-			return e.toString();
+			throw new AdempiereException(e.getLocalizedMessage(), e);
 		}
 		finally
 		{

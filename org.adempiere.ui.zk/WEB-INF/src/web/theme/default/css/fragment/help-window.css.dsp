@@ -91,3 +91,10 @@
 .help-window-content-l tr:hover td {
   background-color: #eee; 
 }
+
+.help-window-entitytype-help {
+}
+.help-window-tab-entitytype-help {
+}
+.help-window-field-entitytype-help {
+}
