@@ -409,7 +409,6 @@ public class TablePartitionService implements ITablePartitionService {
 				where a.oid = b.refobjid
 				and b.objid = c.objid
 				and b.refobjid <> c.refobjid
-				and b.deptype = 'n'
 				and c.refobjid = d.oid
 				and d.relname = ?
 				and d.relkind = 'r'
