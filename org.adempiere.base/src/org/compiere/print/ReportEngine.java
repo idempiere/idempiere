@@ -1027,6 +1027,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}
 			}
 			uri = file.toURI();
+			fileName = file.getAbsolutePath();
 		}
 		catch (Exception e)
 		{
