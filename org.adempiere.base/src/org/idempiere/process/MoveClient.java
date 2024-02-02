@@ -441,6 +441,15 @@ public class MoveClient extends SvrProcess {
 	 */
 	private void validateExternalTable(String tableName) {
 		statusUpdate("Validating table " + tableName);
+
+		// if table is not present in target
+		// inform blocking as it has client data
+		MTable localTable = MTable.get(getCtx(), tableName);
+		if (localTable == null || localTable.getAD_Table_ID() <= 0) {
+			p_errorList.add("Table " + tableName + " doesn't exist");
+			return;
+		}
+
 		// if table doesn't have client data (taking into account include/exclude) in the source DB
 		// add to the list of tables to ignore
 		// ignore and continue with next table
@@ -469,14 +478,6 @@ public class MoveClient extends SvrProcess {
 			if (cntCD > 0 && "AD_Attribute_Value".equalsIgnoreCase(tableName)) {
 				throw new AdempiereUserError("Table " + tableName + " has data, migration not supported");
 			}
-		}
-
-		// if table is not present in target
-		// inform blocking as it has client data
-		MTable localTable = MTable.get(getCtx(), tableName);
-		if (localTable == null || localTable.getAD_Table_ID() <= 0) {
-			p_errorList.add("Table " + tableName + " doesn't exist");
-			return;
 		}
 
 		// for each source column
@@ -534,8 +535,8 @@ public class MoveClient extends SvrProcess {
 			p_errorList.add("Column " + tableName + "." + columnName +  " has different type in dictionary, external: " + refID + ", local: " + localColumn.getAD_Reference_ID());
 		}
 
-		// inform blocking if lengths are different
-		if (length != localColumn.getFieldLength()) {
+		// inform blocking if external length is bigger than local
+		if (length > localColumn.getFieldLength()) {
 			p_errorList.add("Column " + tableName + "." + columnName +  " has different length in dictionary, external: " + length + ", local: " + localColumn.getFieldLength());
 		}
 
@@ -1353,7 +1354,7 @@ public class MoveClient extends SvrProcess {
 		String uuidCol = PO.getUUIDColumnName(tableName);
 		MTable table = MTable.get(getCtx(), tableName);
 		String remoteUUID = null;
-		if (table.isUUIDKeyTable()) {
+		if (! table.isIDKeyTable()) {
 			remoteUUID = foreign_Key.toString();
 		} else {
 			StringBuilder sqlRemoteUUSB = new StringBuilder()

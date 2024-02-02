@@ -79,9 +79,9 @@ public class TablePartitionService implements ITablePartitionService {
 	private boolean renameOriginalTable(MTable table, String trxName, ProcessInfo processInfo) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("ALTER TABLE ").append(table.getTableName()).append(" RENAME TO ").append(getDefaultPartitionName(table));
-		int no = DB.executeUpdateEx(sql.toString(), trxName);
+		DB.executeUpdateEx(sql.toString(), trxName);
 		if (processInfo != null)
-			processInfo.addLog(0, null, null, no + " " + sql.toString());
+			processInfo.addLog(0, null, null, sql.toString());
 		return true;
 	}
 	
@@ -127,9 +127,9 @@ public class TablePartitionService implements ITablePartitionService {
 					StringBuilder alterStmt = new StringBuilder();
 					alterStmt.append("ALTER TABLE ").append(getDefaultPartitionName(table)).append(" ");
 					alterStmt.append("DROP CONSTRAINT ").append(constraint_name).append(" CASCADE");
-					int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+					DB.executeUpdateEx(alterStmt.toString(), trxName);
 					if (pi != null)
-						pi.addLog(0, null, null, no + " " + alterStmt.toString());
+						pi.addLog(0, null, null, alterStmt.toString());
 
 					List<String> lowerCasePartitionKeyColumnNames = new ArrayList<String>();
 					for (String partitionKeyColumnName : partitionKeyColumnNames)
@@ -149,9 +149,9 @@ public class TablePartitionService implements ITablePartitionService {
 					for (int x = 0; x < lowerCasePartitionKeyColumnNames.size(); x++)
 						alterStmt.append(", ").append(lowerCasePartitionKeyColumnNames.get(x));
 					alterStmt.append(")");
-					no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+					DB.executeUpdateEx(alterStmt.toString(), trxName);
 					if (pi != null)
-						pi.addLog(0, null, null, no + " " + alterStmt.toString());					
+						pi.addLog(0, null, null, alterStmt.toString());					
 				}
 			}
 		}
@@ -178,9 +178,9 @@ public class TablePartitionService implements ITablePartitionService {
 					alterStmt.append("ALTER TABLE ").append(table.getTableName()).append(" ");
 					alterStmt.append("ADD CONSTRAINT ").append(constraint_name).append(" ");
 					alterStmt.append(constraint_definition);
-					int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+					DB.executeUpdateEx(alterStmt.toString(), trxName);
 					if (pi != null)
-						pi.addLog(0, null, null, no + " " + alterStmt.toString());
+						pi.addLog(0, null, null, alterStmt.toString());
 				}
 			}
 		}
@@ -201,45 +201,25 @@ public class TablePartitionService implements ITablePartitionService {
 	private boolean migrateDBIndexes(MTable table, String trxName, ProcessInfo pi) {
 		String indexs =
 			"""
-				select indexname
+				select indexname, indexdef
 				from pg_indexes
 				where schemaname='adempiere'
 				and tablename=?;
 			""";
 		
-		String sql =
-			"""
-				select a.attname, i.indisunique 
-				from pg_index i 
-				join pg_attribute a on (a.attrelid=i.indexrelid) 
-				where i.indrelid::regclass = ?::regclass  
-				and i.indexrelid::regclass = ?::regclass
-				order by a.attnum;
-			""";
-		
-		Map<String, List<String>> indexMap = new HashMap<String, List<String>>();
-		Map<String, List<String>> uniqueMap = new HashMap<String, List<String>>();
+		Map<String, String> indexMap = new HashMap<String, String>();
+		Map<String, String> uniqueMap = new HashMap<String, String>();
 		try (PreparedStatement stmt = DB.prepareStatement(indexs, trxName)) {
 			stmt.setString(1, getDefaultPartitionName(table).toLowerCase());
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				String indexName = rs.getString(1);
-				boolean unique = false;
-				List<String> columns = new ArrayList<String>();
-				try(PreparedStatement stmt1 = DB.prepareStatement(sql, trxName)) {
-					stmt1.setString(1, getDefaultPartitionName(table).toLowerCase());
-					stmt1.setString(2, indexName);
-					ResultSet rs1 = stmt1.executeQuery();
-					while(rs1.next()) {
-						String columnName = rs1.getString(1);
-						unique = rs1.getBoolean(2);
-						columns.add(columnName.toLowerCase());
-					}
-				}
+				String indexdef = rs.getString(2);
+				boolean unique = indexdef.contains("UNIQUE INDEX");
 				if (unique)
-					uniqueMap.put(indexName, columns);
+					uniqueMap.put(indexName, indexdef);
 				else
-					indexMap.put(indexName, columns);
+					indexMap.put(indexName, indexdef);
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);
@@ -253,22 +233,19 @@ public class TablePartitionService implements ITablePartitionService {
 				continue;
 			
 			//unique index must include partition key column
-			List<String> columns = uniqueMap.get(indexName);
+			String indexdef = uniqueMap.get(indexName);
 			for(String partitionKey : partitionKeyColumnNames) {
-				if (!columns.contains(partitionKey.toLowerCase()))
-					columns.add(partitionKey.toLowerCase());
-			}
+				if (!indexdef.contains(partitionKey.toLowerCase()+",") && !indexdef.contains(partitionKey.toLowerCase()+")"))
+					indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+			}			
 			StringBuilder alter = new StringBuilder("DROP INDEX ").append(indexName);
 			DB.executeUpdateEx(alter.toString(), trxName);
-			alter = new StringBuilder("CREATE UNIQUE INDEX ")
-						.append(indexName)
-						.append(" ")
-						.append("ON ")
-						.append(table.getTableName())
-						.append("(")
-						.append(String.join(",", columns))
-						.append(")");
-			DB.executeUpdateEx(alter.toString(), trxName);
+			if (pi != null)
+				pi.addLog(0, null, null, alter.toString());
+			indexdef = indexdef.replace(" ON adempiere."+getDefaultPartitionName(table).toLowerCase()+" ", " ON adempiere."+table.getTableName().toLowerCase()+" ");
+			DB.executeUpdateEx(indexdef, trxName);
+			if (pi != null)
+				pi.addLog(0, null, null, indexdef);
 		}
 		
 		for(String indexName : indexMap.keySet()) {
@@ -277,18 +254,15 @@ public class TablePartitionService implements ITablePartitionService {
 			if (conindid != null && conindid.equalsIgnoreCase(indexName))
 				continue;
 			
-			List<String> columns = indexMap.get(indexName);
+			String indexdef = indexMap.get(indexName);
 			StringBuilder alter = new StringBuilder("DROP INDEX ").append(indexName);
 			DB.executeUpdateEx(alter.toString(), trxName);
-			alter = new StringBuilder("CREATE INDEX ")
-						.append(indexName)
-						.append(" ")
-						.append("ON ")
-						.append(table.getTableName())
-						.append("(")
-						.append(String.join(",", columns))
-						.append(")");
-			DB.executeUpdateEx(alter.toString(), trxName);
+			if (pi != null)
+				pi.addLog(0, null, null, alter.toString());
+			indexdef = indexdef.replace(" ON adempiere."+getDefaultPartitionName(table).toLowerCase()+" ", " ON adempiere."+table.getTableName().toLowerCase()+" ");
+			DB.executeUpdateEx(indexdef, trxName);
+			if (pi != null)
+				pi.addLog(0, null, null, indexdef);
 		}
 		return true;
 	}
@@ -317,9 +291,9 @@ public class TablePartitionService implements ITablePartitionService {
 		StringBuilder alterStmt = new StringBuilder();
 		alterStmt.append("ALTER TABLE ").append(table.getTableName()).append(" ");
 		alterStmt.append("ATTACH PARTITION ").append(getDefaultPartitionName(table)).append(" DEFAULT");
-		int no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+		DB.executeUpdateEx(alterStmt.toString(), trxName);
 		if (pi != null)
-			pi.addLog(0, null, null, no + " " + alterStmt.toString());
+			pi.addLog(0, null, null, alterStmt.toString());
 		
 		table.createTablePartition(getDefaultPartitionName(table), "DEFAULT", trxName, table.getPartitionKeyColumns(false).get(0));
 		
@@ -394,9 +368,9 @@ public class TablePartitionService implements ITablePartitionService {
 				
 				createStmt.append(" (").append(partitionKeyColumn.getColumnName()).append(")");
 				
-				int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+				DB.executeUpdateEx(createStmt.toString(), trxName);
 				if (processInfo != null)
-					processInfo.addLog(0, null, null, no + " " + createStmt.toString());
+					processInfo.addLog(0, null, null, createStmt.toString());
 				
 				if (!migrateDBContrainsts(table, trxName, processInfo))
 					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FailedMigrateDatabaseConstraints"));
@@ -406,6 +380,8 @@ public class TablePartitionService implements ITablePartitionService {
 				
 				if (!attachDefaultPartition(table, trxName, processInfo))
 					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FailedAttachDefaultPartition"));
+				
+				fixView(table, trxName, processInfo);
 				
 				return true;
 			}
@@ -418,6 +394,120 @@ public class TablePartitionService implements ITablePartitionService {
 		return false;
 	}
 	
+	/**
+	 * Re-create view after rename table
+	 * @param table
+	 * @param trxName
+	 * @param pi
+	 */
+	private void fixView(MTable table, String trxName, ProcessInfo pi) {
+		String views =
+			"""
+			with recursive depv(relname, viewoid, depth) as (
+			select distinct a.relname, a.oid, 1
+				from pg_class a, pg_depend b, pg_depend c, pg_class d, pg_namespace
+				where a.oid = b.refobjid
+				and b.objid = c.objid
+				and b.refobjid <> c.refobjid
+				and c.refobjid = d.oid
+				and d.relname = ?
+				and d.relkind = 'r'
+				and a.relkind = 'v'
+				and a.relnamespace = pg_namespace.oid
+				and pg_namespace.nspname = lower('adempiere')
+			  union all
+			select distinct dependee.relname, dependee.oid, depv.depth+1
+				from pg_depend 
+				join pg_rewrite on pg_depend.objid = pg_rewrite.oid 
+				join pg_class as dependee on pg_rewrite.ev_class = dependee.oid 
+				join pg_class as dependent on pg_depend.refobjid = dependent.oid 
+				join pg_attribute ON pg_depend.refobjid = pg_attribute.attrelid and pg_depend.refobjsubid = pg_attribute.attnum and pg_attribute.attnum > 0
+				join depv on dependent.relname = depv.relname
+				join pg_namespace on dependee.relnamespace = pg_namespace.oid
+			where pg_namespace.nspname = lower('adempiere')
+			)
+			select relname, viewoid, max(depth) from depv group by relname, viewoid order by 3 desc
+			""";
+		String defaultPartitionName = getDefaultPartitionName(table).toLowerCase();
+		String tableName = table.getTableName().toLowerCase();
+		List<String> viewTexts = new ArrayList<String>();
+		List<String> viewNames = new ArrayList<String>();
+		List<String> grants = new ArrayList<String>();
+		try(PreparedStatement stmt = DB.prepareStatement(views, trxName)) {
+			stmt.setString(1, defaultPartitionName);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				String viewName = rs.getString(1);
+				viewNames.add(viewName);
+				int oid = rs.getInt(2);
+				String viewText = DB.getSQLValueString(trxName, "SELECT pg_get_viewdef(?)", oid);
+				viewTexts.add(viewText);
+			}
+			
+			String grantSQL = 
+				"""
+				SELECT String_agg('grant ' || privilege_type || ' on ' || table_name || ' to "' || grantee || '"', '; ')
+				FROM information_schema.role_table_grants 
+				WHERE table_name=?	and table_schema='adempiere'
+				""";
+			for(int i = 0; i < viewNames.size(); i++) {
+				String viewName = viewNames.get(i);
+				try(PreparedStatement stmt1 = DB.prepareStatement(grantSQL, trxName)) {
+					stmt1.setString(1, viewName.toLowerCase());
+					ResultSet rs1 = stmt1.executeQuery();
+					while(rs1.next()) {
+						grants.add(rs1.getString(1));
+					}
+				}
+				StringBuilder dropStmt = new StringBuilder("DROP VIEW ").append(viewName);
+				DB.executeUpdateEx(dropStmt.toString(), trxName);
+				if (pi != null)
+					pi.addLog(0, null, null, dropStmt.toString());
+			}
+			
+			for(int i = viewNames.size()-1; i >=0; i--) {
+				String viewName = viewNames.get(i);
+				String viewText = viewTexts.get(i);
+				String grant = grants.get(i);
+				StringBuilder createStmt = new StringBuilder("CREATE OR REPLACE VIEW ").append(viewName).append(" AS ");
+				if (viewText.contains(" "+defaultPartitionName + " ")) {
+					viewText = viewText.replace(" "+defaultPartitionName+" ", " "+tableName+" ");
+				}
+				if (viewText.contains(" "+defaultPartitionName + "\n")) {
+					viewText = viewText.replace(" "+defaultPartitionName+"\n", " "+tableName+"\n");
+				}
+				if (viewText.contains(" "+defaultPartitionName + ".")) {
+					viewText = viewText.replace(" "+defaultPartitionName+".", " "+tableName+".");
+				}
+				if (viewText.contains("("+defaultPartitionName + " ")) {
+					viewText = viewText.replace("("+defaultPartitionName+" ", "("+tableName+" ");
+				}
+				if (viewText.contains("("+defaultPartitionName + "\n")) {
+					viewText = viewText.replace("("+defaultPartitionName+"\n", "("+tableName+"\n");
+				}
+				if (viewText.contains("("+defaultPartitionName + ".")) {
+					viewText = viewText.replace("("+defaultPartitionName+".", "("+tableName+".");
+				}
+				String operators = "=><+-*/|%^&#~!";
+				for (int j = 0; j < operators.length(); j++) {
+				    String find = operators.charAt(j)+defaultPartitionName + ".";
+				    String replace = operators.charAt(j)+tableName+".";
+					if (viewText.contains(find)) {
+						viewText = viewText.replace(find, replace);
+					}
+				}
+				
+				createStmt.append(viewText);
+				DB.executeUpdateEx(createStmt.toString(), trxName);
+				if (pi != null)
+					pi.addLog(0, null, null, "CREATE OR REPLACE VIEW "+viewName);
+				DB.executeUpdateEx(grant, trxName);
+			}
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}
+	}
+
 	/**
 	 * Get DB partition key definition
 	 * @param table
@@ -610,9 +700,9 @@ public class TablePartitionService implements ITablePartitionService {
 		StringBuilder alterStmt = new StringBuilder();
 		alterStmt.append("ALTER TABLE ").append(tableName).append(" ");
 		alterStmt.append("ATTACH PARTITION ").append(partition.getName()).append(" ").append(partition.getExpressionPartition());
-		no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+		DB.executeUpdateEx(alterStmt.toString(), trxName);
 		if (pi != null)
-			pi.addLog(0, null, null, no + " " + alterStmt.toString());
+			pi.addLog(0, null, null, alterStmt.toString());
 	}
 	
 	/**
@@ -653,9 +743,9 @@ public class TablePartitionService implements ITablePartitionService {
 					createStmt.append(subPartitionColumn.getColumnName());
 					createStmt.append(")");				
 				}
-				int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+				DB.executeUpdateEx(createStmt.toString(), trxName);
 				if (pi != null)
-					pi.addLog(0, null, null, no + " " + createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));				
+					pi.addLog(0, null, null, createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));				
 				if (subPartitionColumn != null) {
 					createSubDefaultPartition(table, subPartitionColumn, partition, pi, trxName);
 				}
@@ -700,9 +790,9 @@ public class TablePartitionService implements ITablePartitionService {
 						StringBuilder createStmt = new StringBuilder();
 						createStmt.append("CREATE TABLE ").append(subPartition.getName()).append(" (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ");
 						createStmt.append(subDefaultPartition).append(" INCLUDING ALL)");
-						int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+						DB.executeUpdateEx(createStmt.toString(), trxName);
 						if (pi != null)
-							pi.addLog(0, null, null, no + " " + createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));	
+							pi.addLog(0, null, null, createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));	
 						Object subValue = subValues.get(subPartition.getName());
 						moveDefaultPartitionDataForList(subPartition, subPartitionColumn, partition.getName(), subDefaultPartition, subValue, pi, trxName);
 					}
@@ -720,9 +810,9 @@ public class TablePartitionService implements ITablePartitionService {
 								StringBuilder createStmt = new StringBuilder();
 								createStmt.append("CREATE TABLE ").append(subPartition.getName()).append(" (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ");
 								createStmt.append(subDefaultPartition).append(" INCLUDING ALL)");
-								int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+								DB.executeUpdateEx(createStmt.toString(), trxName);
 								if (pi != null)
-									pi.addLog(0, null, null, no + " " + createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
+									pi.addLog(0, null, null, createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
 								moveDefaultPartitionDataForRange(subPartition, subPartitionColumn, partition.getName(), subDefaultPartition, rangePartitionInterval, pi, trxName);
 							}
 						}
@@ -814,9 +904,9 @@ public class TablePartitionService implements ITablePartitionService {
 		StringBuilder alterStmt = new StringBuilder();
 		alterStmt.append("ALTER TABLE ").append(tableName).append(" ");
 		alterStmt.append("ATTACH PARTITION ").append(partition.getName()).append(" ").append(partition.getExpressionPartition());
-		no = DB.executeUpdateEx(alterStmt.toString(), trxName);
+		DB.executeUpdateEx(alterStmt.toString(), trxName);
 		if (pi != null)
-			pi.addLog(0, null, null, no + " " + alterStmt.toString());
+			pi.addLog(0, null, null, alterStmt.toString());
 	}
 	
 	/**
@@ -850,9 +940,9 @@ public class TablePartitionService implements ITablePartitionService {
 				createStmt.append(subPartitionColumn.getColumnName());
 				createStmt.append(")");				
 			}
-			int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+			DB.executeUpdateEx(createStmt.toString(), trxName);
 			if (pi != null)
-				pi.addLog(0, null, null, no + " " + createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
+				pi.addLog(0, null, null, createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
 			
 			if (subPartitionColumn != null) {
 				createSubDefaultPartition(table, subPartitionColumn, partition, pi, trxName);
@@ -898,9 +988,9 @@ public class TablePartitionService implements ITablePartitionService {
 						StringBuilder createStmt = new StringBuilder();
 						createStmt.append("CREATE TABLE ").append(subPartition.getName()).append(" (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ");
 						createStmt.append(subDefaultPartition).append(" INCLUDING ALL)");
-						int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+						DB.executeUpdateEx(createStmt.toString(), trxName);
 						if (pi != null)
-							pi.addLog(0, null, null, no + " " + createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
+							pi.addLog(0, null, null, createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
 						Object subValue = subValues.get(subPartition.getName());
 						moveDefaultPartitionDataForList(subPartition, subPartitionColumn, partition.getName(), subDefaultPartition, subValue, pi, trxName);
 					}
@@ -918,9 +1008,9 @@ public class TablePartitionService implements ITablePartitionService {
 								StringBuilder createStmt = new StringBuilder();
 								createStmt.append("CREATE TABLE ").append(subPartition.getName()).append(" (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ");
 								createStmt.append(subDefaultPartition).append(" INCLUDING ALL)");
-								int no = DB.executeUpdateEx(createStmt.toString(), trxName);
+								DB.executeUpdateEx(createStmt.toString(), trxName);
 								if (pi != null)
-									pi.addLog(0, null, null, no + " " + createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
+									pi.addLog(0, null, null, createStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
 								moveDefaultPartitionDataForRange(subPartition, subPartitionColumn, partition.getName(), subDefaultPartition, rangePartitionInterval, pi, trxName);
 							}
 						}
@@ -944,16 +1034,16 @@ public class TablePartitionService implements ITablePartitionService {
 				.append(partition.getName()).append("_default_partition (").append(DB_PostgreSQL.NATIVE_MARKER).append("LIKE ")
 				.append(partition.getName())
 				.append(" INCLUDING ALL)");
-		int no = DB.executeUpdateEx(subStmt.toString(), trxName);
+		DB.executeUpdateEx(subStmt.toString(), trxName);
 		if (pi != null)
-			pi.addLog(0, null, null, no + " " + subStmt.toString());
+			pi.addLog(0, null, null, subStmt.toString());
 		subStmt = new StringBuilder("ALTER TABLE ")
 				.append(partition.getName())
 				.append(" ATTACH PARTITION ")
 				.append(partition.getName()).append("_default_partition DEFAULT ");
-		no = DB.executeUpdateEx(subStmt.toString(), trxName);
+		DB.executeUpdateEx(subStmt.toString(), trxName);
 		if (pi != null)
-			pi.addLog(0, null, null, no + " " + subStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
+			pi.addLog(0, null, null, subStmt.toString().replace(DB_PostgreSQL.NATIVE_MARKER, ""));
 		table.createTablePartition(partition.getName()+"_default_partition", "DEFAULT", trxName, subPartitionColumn, partition);
 	}
 
@@ -961,9 +1051,9 @@ public class TablePartitionService implements ITablePartitionService {
 	public boolean runPostPartitionProcess(MTable table, String trxName, ProcessInfo processInfo) {
 		StringBuilder stmt = new StringBuilder();
 		stmt.append("VACUUM ANALYZE ").append(table.getTableName());
-		int no = DB.executeUpdateEx(stmt.toString(), trxName);
+		DB.executeUpdateEx(stmt.toString(), trxName);
 		if (processInfo != null)
-			processInfo.addLog(0, null, null, no + " " + stmt.toString());
+			processInfo.addLog(0, null, null, stmt.toString());
 		return true;
 	}
 
@@ -1050,9 +1140,9 @@ public class TablePartitionService implements ITablePartitionService {
 					alter.append(table.getTableName()).append(" ");
 				}
 				alter.append("DETACH PARTITION ").append(partition.getName());
-				int no = DB.executeUpdateEx(alter.toString(), trxName);
+				DB.executeUpdateEx(alter.toString(), trxName);
 				if (processInfo != null)
-					processInfo.addLog(0, null, null, no + " " + alter.toString());
+					processInfo.addLog(0, null, null, alter.toString());
 				partition.setIsPartitionAttached(false);
 				partition.saveEx();
 			} else {
@@ -1079,9 +1169,9 @@ public class TablePartitionService implements ITablePartitionService {
 					 .append(partition.getExpressionPartition());
 				boolean success = true;
 				try {
-					int no = DB.executeUpdateEx(alter.toString(), trxName);
+					DB.executeUpdateEx(alter.toString(), trxName);
 					if (processInfo != null)
-						processInfo.addLog(0, null, null, no + " " + alter.toString());
+						processInfo.addLog(0, null, null, alter.toString());
 				} catch (RuntimeException e) {
 					success = false;
 					Trx.get(trxName, false).rollback();
@@ -1102,9 +1192,9 @@ public class TablePartitionService implements ITablePartitionService {
 					if (processInfo != null)
 						processInfo.addLog(0, null, null, no + " " + updateStmt.toString());
 					alter = new StringBuilder("DROP TABLE ").append(partition.getName());
-					no = DB.executeUpdateEx(alter.toString(), trxName);
+					DB.executeUpdateEx(alter.toString(), trxName);
 					if (processInfo != null)
-						processInfo.addLog(0, null, null, no + " " + alter.toString());
+						processInfo.addLog(0, null, null, alter.toString());
 					try {
 						Trx.get(trxName, false).commit(true);
 					} catch (SQLException e) {
