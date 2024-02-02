@@ -25,16 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MColumn;
+import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.LoginDetails;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Test {@link org.compiere.util.DB} class
@@ -291,4 +296,35 @@ public class DBTest extends AbstractTestCase
 		assertTrue(resultStr != null);
 	}
 	
+	@Test
+	public void testPostgreSQLSyncColumn() {
+		if (!DB.isPostgreSQL() || !DB.getDatabase().isNativeMode())
+			return;
+		
+		MTable table = MTable.get(MOrder.Table_ID);
+		MColumn column = table.getColumn("Description");
+		MColumn description = new MColumn(Env.getCtx(), column.getAD_Column_ID(), getTrxName());
+		description.setFieldLength(description.getFieldLength()+1);
+		description.saveEx();
+		
+		String error = null;
+		String sql = description.getSQLModify(table, false);
+		try {
+			DB.executeUpdateEx(sql, getTrxName());
+		} catch (Exception ex) {
+			error = ex.getMessage();
+		}
+		assertNull(error, error);
+	}
+
+	@Override
+	protected LoginDetails newLoginDetails(TestInfo testInfo) {
+		if (testInfo.getTestMethod().get().getName().equals("testPostgreSQLSyncColumn")) {
+			return new LoginDetails(DictionaryIDs.AD_Client.SYSTEM.id, 0, DictionaryIDs.AD_User.SUPER_USER.id, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id, 
+					DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id, new Timestamp(System.currentTimeMillis()), Language.getLanguage("en_US"));
+		} else {
+			return super.newLoginDetails(testInfo);
+		}
+	}
+
 }

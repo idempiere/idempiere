@@ -53,11 +53,11 @@ public abstract class AbstractTestCase {
 	private Trx trx;
 	private LoginDetails loginDetails;
 	
-	protected final int GARDEN_WORLD_CLIENT = 11;
-	protected final int GARDEN_WORLD_HQ_ORG = 11;
-	protected final int GARDEN_WORLD_ADMIN_USER = 101;
-	protected final int GARDEN_WORLD_ADMIN_ROLE = 102;
-	protected final int GARDEN_WORLD_HQ_WAREHOUSE = 103;
+	protected final int GARDEN_WORLD_CLIENT = DictionaryIDs.AD_Client.GARDEN_WORLD.id;
+	protected final int GARDEN_WORLD_HQ_ORG = DictionaryIDs.AD_Org.HQ.id;
+	protected final int GARDEN_WORLD_ADMIN_USER = DictionaryIDs.AD_User.GARDEN_ADMIN.id;
+	protected final int GARDEN_WORLD_ADMIN_ROLE = DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id;
+	protected final int GARDEN_WORLD_HQ_WAREHOUSE = DictionaryIDs.M_Warehouse.HQ.id;
 	
 	@BeforeAll
 	/**
