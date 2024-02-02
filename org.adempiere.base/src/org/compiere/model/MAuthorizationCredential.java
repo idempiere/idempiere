@@ -155,7 +155,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 			String preferred_username = null;
 			if (   ap.getAD_AuthorizationProvider_ID() == OAUTH2_AUTHORIZATION_PROVIDER_MICROSOFT
-				&& MSysConfig.getBooleanValue("OAUTH2_USE_ID_TOKEN_PREFERRED_USERNAME_ON_MICROSOFT_PROVIDER", true)) {
+				&& MSysConfig.getBooleanValue(MSysConfig.OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER, true)) {
 				/* Microsoft send the user email information in the id_token in preferred_username field in some cases */
 				if (id_token != null && id_token instanceof String) {
 					IdToken idtoken = IdToken.parse(tokenResponse.getFactory(), (String) tokenResponse.get("id_token"));
@@ -164,7 +164,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			}
 			if (   preferred_username == null
 				&& ap.getAD_AuthorizationProvider_ID() == OAUTH2_AUTHORIZATION_PROVIDER_MICROSOFT
-				&& MSysConfig.getBooleanValue("OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER", true)) {
+				&& MSysConfig.getBooleanValue(MSysConfig.OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER, true)) {
 				/* Microsoft send the user email information in the access_token in upn field in some cases */
 				Object access_token = tokenResponse.get("access_token");
 				if (access_token != null && access_token instanceof String) {

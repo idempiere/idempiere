@@ -1614,11 +1614,10 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		firstPage.width -= xOffset;
 		int yOffset = (int)m_position[AREA_CONTENT].y - m_content.y;
 		firstPage.y += yOffset;
-		firstPage.height -= yOffset+m_content.y;
+		firstPage.height -= yOffset;
 		Rectangle nextPages = new Rectangle(m_content);
 		nextPages.x += xOffset;
 		nextPages.width -= xOffset;
-		nextPages.height -= yOffset;
 		//	Column count
 		List<Integer> instanceAttributeList = new ArrayList<>();
 		List<MPrintFormatItem> instanceAttributeItems = new ArrayList<>();

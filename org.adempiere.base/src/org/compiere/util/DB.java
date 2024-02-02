@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -853,6 +854,10 @@ public final class DB
 			pstmt.setString(index, ((Boolean)param).booleanValue() ? "Y" : "N");
 		else if (param instanceof byte[])
 			pstmt.setBytes(index, (byte[]) param);
+		else if (param instanceof Clob)
+			pstmt.setClob(index, (Clob) param);
+		else if (param.getClass().getName().equals("oracle.sql.BLOB"))
+			pstmt.setObject(index, param);
 		else
 			throw new DBException("Unknown parameter type "+index+" - "+param);
 	}
