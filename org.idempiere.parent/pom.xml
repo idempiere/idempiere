@@ -12,7 +12,7 @@
 	<properties>
 		<revision>11.0.0-SNAPSHOT</revision>
 		<jdk.version>17</jdk.version>
-		<tycho.version>3.0.5</tycho.version>
+		<tycho.version>4.0.4</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
@@ -24,12 +24,12 @@
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.23</idempiere-equinox-url>
-		<idempiere-equinox-repository-id>eclipse-2022-03</idempiere-equinox-repository-id>
+		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.27</idempiere-equinox-url>
+		<idempiere-equinox-repository-id>eclipse-2023-03</idempiere-equinox-repository-id>
 		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-2021-06-R20210602031627</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
-		<extra.ui.install>org.eclipse.equinox.p2.director,org.idempiere.equinox.p2.director.feature.feature.group,org.idempiere.test.feature.feature.group</extra.ui.install>
+		<extra.iu.install>org.eclipse.equinox.p2.director,org.idempiere.equinox.p2.director.feature.feature.group</extra.iu.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<skipClean>false</skipClean>
     	<target.version>17</target.version>
