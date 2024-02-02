@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserPreference
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserPreference")
 public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240122L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -53,6 +55,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -66,6 +70,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -79,6 +85,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -271,6 +279,28 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isDetailedZoomAcross()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDetailedZoomAcross);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Technical Information on Help.
+		@param IsShowTechnicalInfOnHelp Show Technical Information on Help
+	*/
+	public void setIsShowTechnicalInfOnHelp (boolean IsShowTechnicalInfOnHelp)
+	{
+		set_Value (COLUMNNAME_IsShowTechnicalInfOnHelp, Boolean.valueOf(IsShowTechnicalInfOnHelp));
+	}
+
+	/** Get Show Technical Information on Help.
+		@return Show Technical Information on Help	  */
+	public boolean isShowTechnicalInfOnHelp()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowTechnicalInfOnHelp);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

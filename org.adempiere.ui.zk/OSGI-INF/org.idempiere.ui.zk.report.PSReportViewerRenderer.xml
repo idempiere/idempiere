@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.idempiere.ui.zk.report.PSReportViewerRenderer">
+   <service>
+      <provide interface="org.idempiere.ui.zk.report.IReportViewerRenderer"/>
+   </service>
+   <implementation class="org.idempiere.ui.zk.report.PSReportViewerRenderer"/>
+</scr:component>

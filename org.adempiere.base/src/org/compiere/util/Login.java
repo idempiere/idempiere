@@ -981,7 +981,7 @@ public class Login
 						at = "P|" + rs.getString(1);
 					  else
 						at = "P" + AD_Window_ID + "|" + rs.getString(1);
-					}else if ("P".equals(PreferenceFor)){ // preference for processs
+					}else if ("P".equals(PreferenceFor)){ // preference for process
 						// when apply for all window or all process format is "P0|0|m_Attribute; 
 						at = "P" + AD_Window_ID + "|" + AD_InfoWindow_ID + "|" + AD_Process_ID + "|" + rs.getString(1);
 					}else if ("I".equals(PreferenceFor)){ // preference for infoWindow

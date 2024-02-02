@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserPreference
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_UserPreference 
 {
@@ -176,6 +176,15 @@ public interface I_AD_UserPreference
 
 	/** Get Detailed Zoom Across	  */
 	public boolean isDetailedZoomAcross();
+
+    /** Column name IsShowTechnicalInfOnHelp */
+    public static final String COLUMNNAME_IsShowTechnicalInfOnHelp = "IsShowTechnicalInfOnHelp";
+
+	/** Set Show Technical Information on Help	  */
+	public void setIsShowTechnicalInfOnHelp (boolean IsShowTechnicalInfOnHelp);
+
+	/** Get Show Technical Information on Help	  */
+	public boolean isShowTechnicalInfOnHelp();
 
     /** Column name IsUseSimilarTo */
     public static final String COLUMNNAME_IsUseSimilarTo = "IsUseSimilarTo";
