@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
@@ -460,6 +461,16 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 				if (getDateAcct().before(getStatementDate())) {
 					setDateAcct(getStatementDate());
 					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+					if (isPostWithDateFromLine(getAD_Client_ID())) {
+						// because the accounting date changed we need to validate again if each line still lands in the same period
+						for (MBankStatementLine bl : getLines(false)) {
+							if (!bl.isDateConsistentIfUsedForPosting(getDateAcct())) {
+								throw new AdempiereException(
+										Msg.getMsg(getCtx(), "ParentCannotChange", new Object[] {Msg.getElement(getCtx(), "DateAcct")}) + " - " +
+										Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {bl.getLine()}));
+							}
+						}
+					}
 				}
 			}
 		}
