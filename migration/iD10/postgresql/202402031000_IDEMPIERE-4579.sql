@@ -93,7 +93,7 @@ begin
                           if i > 0 then
                              for j in reverse i .. 1 loop
                                 command := 'create or replace view ' || dropviews[j] || ' as ' || viewtext[j];
-			        raise notice 'executing -> %', 'create view ' || dropviews[j];
+			        raise notice 'executing -> %', 'create or replace view ' || dropviews[j] || '...';
 		                execute command;
                              end loop;
                           end if;
@@ -107,10 +107,10 @@ begin
 		if i > 0 then
 		   for j in reverse i .. 1 loop
 		     command := 'create or replace view ' || dropviews[j] || ' as ' || viewtext[j];
-		     raise notice 'executing -> %', 'create view ' || dropviews[j];
+		     raise notice 'executing -> %', 'create or replace view ' || dropviews[j] || '...';
 		     execute command;
 		     command := perms[j];
-		     raise notice 'executing -> %', 'grant ' || perms[j];
+		     raise notice 'executing -> %', command;
 		     execute command;
 		   end loop;
 		end if;
