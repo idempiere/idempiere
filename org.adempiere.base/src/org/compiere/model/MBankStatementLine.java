@@ -42,12 +42,12 @@ import org.compiere.util.Util;
  */
  public class MBankStatementLine extends X_C_BankStatementLine
  {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -4479911757321927051L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2604381588523683439L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param C_BankStatementLine_UU  UUID key
@@ -313,8 +313,17 @@ import org.compiere.util.Util;
 	 * @return true if not using date from statement line or header and line is in the same financial period
 	 */
 	public boolean isDateConsistentIfUsedForPosting() {
+		return isDateConsistentIfUsedForPosting(getParent().getDateAcct());
+	}
+
+	/**
+	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are in the same financial period
+	 * @param headerDateAcct
+	 * @return true if not using date from statement line or header and line is in the same financial period
+	 */
+	public boolean isDateConsistentIfUsedForPosting(Timestamp headerDateAcct) {
 		if (MBankStatement.isPostWithDateFromLine(getAD_Client_ID())) {
-			MPeriod headerPeriod = MPeriod.get(getCtx(), getParent().getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
+			MPeriod headerPeriod = MPeriod.get(getCtx(), headerDateAcct, getParent().getAD_Org_ID(), get_TrxName());
 			MPeriod linePeriod = MPeriod.get(getCtx(), getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
 
 			return headerPeriod != null && linePeriod != null && headerPeriod.getC_Period_ID() == linePeriod.getC_Period_ID();	
