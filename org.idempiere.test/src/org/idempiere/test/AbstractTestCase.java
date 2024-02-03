@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
@@ -40,14 +41,17 @@ import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
+ * Abstract base class for all test case
  * @author hengsin
- *
  */
+@ExtendWith(AbstractTestCase.MyBeforeAllCallback.class)
 public abstract class AbstractTestCase {
 
 	private Trx trx;
@@ -59,20 +63,18 @@ public abstract class AbstractTestCase {
 	protected final int GARDEN_WORLD_ADMIN_ROLE = DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id;
 	protected final int GARDEN_WORLD_HQ_WAREHOUSE = DictionaryIDs.M_Warehouse.HQ.id;
 	
-	@BeforeAll
-	/**
-	 * setup for class
-	 */
-	static void setup() {
-		Adempiere.startup(false);
-	}
-
 	@BeforeEach
 	/**
 	 * Init for each test method
 	 * @param testInfo
 	 */
 	protected void init(TestInfo testInfo) {
+		StringBuilder builder = new StringBuilder("Running ");
+		Optional<Class<?>> optional = testInfo.getTestClass();
+		if (optional.isPresent())
+			builder.append(optional.get().getName()).append(".");
+		builder.append(testInfo.getDisplayName());
+		System.out.println(builder.toString());
 		ServerContext.setCurrentInstance(new Properties());
 		
 		String trxName = Trx.createTrxName(getClass().getName()+"_");
@@ -229,5 +231,12 @@ public abstract class AbstractTestCase {
 	 * shutdown for class
 	 */
 	static void shutdown() {
+	}
+	
+	private static final class MyBeforeAllCallback implements BeforeAllCallback {
+		@Override
+		public void beforeAll(ExtensionContext context) throws Exception {
+			Adempiere.startup(false);
+		}		
 	}
 }
