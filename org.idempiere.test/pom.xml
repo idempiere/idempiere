@@ -58,6 +58,14 @@
 					<skipTests>${skipTests}</skipTests>
 					<providerHint>junit59</providerHint>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -117,10 +125,10 @@
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>
-                                                                <type>eclipse-plugin</type>
-                                                                <id>org.idempiere.tablepartition</id>
-                                                                <versionRange>0.0.0</versionRange>
-                                                        </requirement>
+								<type>eclipse-plugin</type>
+										<id>org.idempiere.tablepartition</id>
+										<versionRange>0.0.0</versionRange>
+								</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>
