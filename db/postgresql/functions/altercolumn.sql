@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION adempiere.altercolumn(tablename name, columnname name, datatype name, nullclause character varying, defaultclause character varying)
+CREATE OR REPLACE FUNCTION altercolumn(tablename name, columnname name, datatype name, nullclause character varying, defaultclause character varying)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$
