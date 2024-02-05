@@ -347,8 +347,6 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			idxdate = po.get_ColumnIndex("MovementDate");
 		} else if (   tableID == MRequisition.Table_ID) {
 			idxdate = po.get_ColumnIndex("DateDoc");
-		} else if (   tableID == MBankStatement.Table_ID) {
-			idxdate = po.get_ColumnIndex("StatementDate");
 		} else if (   tableID == MAllocationHdr.Table_ID
 				|| tableID == MMatchInv.Table_ID
 				|| tableID == MMatchPO.Table_ID) {

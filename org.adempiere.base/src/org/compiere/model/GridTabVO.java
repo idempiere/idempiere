@@ -272,6 +272,8 @@ public class GridTabVO implements Evaluatee, Serializable
 				vo.WhereClause += " (" + userDef.getWhereClause() + ")";
 			}
 			
+			vo.EntityType = rs.getString("EntityType");
+
 			vo.OrderByClause = rs.getString("OrderByClause");
 			if (vo.OrderByClause == null)
 				vo.OrderByClause = "";
@@ -552,7 +554,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	public int          Included_Tab_ID = 0;
 	/** Replication Type	*/
 	public String		ReplicationType = "L";
-
+	/** EntityType	*/
+	public String		EntityType = null;
 	/** Sort Tab			*/
 	public boolean		IsSortTab = false;
 	/** Column Sort			*/
@@ -663,6 +666,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsLookupOnlySelection, clone.IsLookupOnlySelection);
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsAllowAdvancedLookup, clone.IsAllowAdvancedLookup);
 
+		clone.EntityType = EntityType;
 		//
 		clone.IsSortTab = IsSortTab;
 		clone.AD_ColumnSortOrder_ID = AD_ColumnSortOrder_ID;

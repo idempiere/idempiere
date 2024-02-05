@@ -56,9 +56,9 @@ import org.compiere.util.WebDoc;
 public class GridWindow implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3342733142743698614L;
+	private static final long serialVersionUID = 4533195514781938417L;
 
 	/**
 	 * 	Get Grid Window
@@ -405,6 +405,15 @@ public class GridWindow implements Serializable
 	{
 		return m_vo.WindowType;
 	}	//	getWindowType
+
+	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
 
 	/**
 	 *	Is Transaction Window

@@ -54,6 +54,17 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum AD_Client {
+		GARDEN_WORLD(11),
+		SYSTEM(0);
+		
+		public final int id;
+		
+		private AD_Client(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum AD_Org {
 		GLOBAL(0),
 		HQ(11),
@@ -76,7 +87,8 @@ public final class DictionaryIDs {
 	public enum AD_Role {
 		GARDEN_WORLD_ADMIN(102),
 		GARDEN_WORLD_USER(103),
-		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001);
+		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001),
+		SYSTEM_ADMINISTRATOR(0);
 		
 		public final int id;
 
@@ -87,7 +99,8 @@ public final class DictionaryIDs {
 	
 	public enum AD_User {
 		GARDEN_ADMIN(101),
-		GARDEN_USER(102);
+		GARDEN_USER(102),
+		SUPER_USER(100);
 		
 		public final int id;
 

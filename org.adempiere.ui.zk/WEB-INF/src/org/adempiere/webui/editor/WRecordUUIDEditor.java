@@ -36,7 +36,6 @@ import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -96,8 +95,8 @@ public class WRecordUUIDEditor extends WRecordEditor<String> {
 	}
 
 	@Override
-	protected String getKeyColumn(MTable mTable) {
-		return PO.getUUIDColumnName(mTable.getTableName());		
+	public boolean isUseUUIDKey() {
+		return true;
 	}
 
 	@Override

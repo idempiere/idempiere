@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
@@ -329,7 +330,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			return DocAction.STATUS_Invalid;
 
 		//	Std Period open?
-		MPeriod.testPeriodOpen(getCtx(), getStatementDate(), getC_DocType_ID(), getAD_Org_ID());
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 		MBankStatementLine[] lines = getLines(true);
 		if (lines.length == 0)
 		{
@@ -457,7 +458,20 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			if (this.getProcessedOn().signum() == 0) {
 				setStatementDate(TimeUtil.getDay(0));
-				MPeriod.testPeriodOpen(getCtx(), getStatementDate(), getC_DocType_ID(), getAD_Org_ID());
+				if (getDateAcct().before(getStatementDate())) {
+					setDateAcct(getStatementDate());
+					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+					if (isPostWithDateFromLine(getAD_Client_ID())) {
+						// because the accounting date changed we need to validate again if each line still lands in the same period
+						for (MBankStatementLine bl : getLines(false)) {
+							if (!bl.isDateConsistentIfUsedForPosting(getDateAcct())) {
+								throw new AdempiereException(
+										Msg.getMsg(getCtx(), "ParentCannotChange", new Object[] {Msg.getElement(getCtx(), "DateAcct")}) + " - " +
+										Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {bl.getLine()}));
+							}
+						}
+					}
+				}
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -501,7 +515,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		//	Std Period open?
 		else
 		{
-			MPeriod.testPeriodOpen(getCtx(), getStatementDate(), getC_DocType_ID(), getAD_Org_ID());
+			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 			MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
 		}
 

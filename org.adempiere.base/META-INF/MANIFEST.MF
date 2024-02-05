@@ -66,6 +66,7 @@ Export-Package: bsh,
  org.idempiere.fa.service.api,
  org.idempiere.model,
  org.idempiere.print,
+ org.idempiere.print.renderer,
  org.idempiere.process
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"

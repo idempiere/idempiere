@@ -113,10 +113,10 @@ import org.zkoss.zul.West;
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {		
-	/**
-	 * generated serial id 
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 7189914859100400758L;
+	private static final long serialVersionUID = 1019213060161640026L;
 
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
@@ -1059,8 +1059,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	@Override
-	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent) {		
-		helpController.renderToolTip(hdr, desc, help, otherContent);
+	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent,String entityType) {		
+		helpController.renderToolTip(hdr, desc, help, otherContent, entityType);
 	}
 
 	@Override

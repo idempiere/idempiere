@@ -47,7 +47,7 @@ public class Document {
 	 * @param pageable
 	 * @param output
 	 */
-	private static void writePDF(Pageable pageable, OutputStream output)
+	public static void writePDF(Pageable pageable, OutputStream output)
 	{
 		try {
             final PageFormat pf = pageable.getPageFormat(0);
