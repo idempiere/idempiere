@@ -120,9 +120,9 @@ public class Trx
 	/**
 	 * Start transaction timeout monitor (run every 5 minutes) 
 	 */
-	public static void startTrxMonitor(long initialDelay, long delay, TimeUnit unit)
+	public static void startTrxMonitor()
 	{
-		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, initialDelay, delay, unit);
+		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
 	}
 
 	/**
@@ -479,8 +479,8 @@ public class Trx
 		//	Close Connection
 		try
 		{
-			// Closes any physical connection to the database
-			m_connection.abort(Runnable::run);
+			//rollback connection
+			m_connection.rollback();
 			// return to pool manage (pool will validate and re-connect to database)
 			m_connection.close();
 			m_connection = null;
@@ -830,7 +830,7 @@ public class Trx
 	}
 	
 	/** Transaction timeout monitor class */
-	static class TrxMonitor implements Runnable
+	public static class TrxMonitor implements Runnable
 	{
 
 		public void run()
