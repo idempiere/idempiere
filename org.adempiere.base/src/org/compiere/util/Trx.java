@@ -465,34 +465,25 @@ public class Trx
 	}
 	
 	/**
-	 * 	Rollback and End Transaction, Close Connection and Throws an Exception.<br/>
+	 * 	Rollback and close transaction.<br/>
 	 *  This is means to be called by the timeout monitor and developer usually shouldn't call this directly.
 	 *	@return true if success
 	 */
 	public boolean rollbackAndCloseOnTimeout() {
-		s_cache.remove(getTrxName());
-
-		//local
-		if (m_connection == null)
-			return true;
-
-		//	Close Connection
+		boolean success = false;
 		try
 		{
-			//rollback connection
-			m_connection.rollback();
-			// return to pool manage (pool will validate and re-connect to database)
-			m_connection.close();
-			m_connection = null;
-			m_active = false;
-			fireAfterCloseEvent();
+			rollback(true);
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, m_trxName, e);
 		}
-		log.config(m_trxName);
-		return true;
+		finally
+		{
+			success = close();
+		}
+		return success;
 	}
 
 	/**
