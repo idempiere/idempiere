@@ -18,7 +18,7 @@ DROP INDEX t_selection_key;
 
 ALTER TABLE t_selection ADD CONSTRAINT t_selection_pkey PRIMARY KEY (ad_pinstance_id, t_selection_id, t_selection_uu);
 
-ALTER TABLE t_selection_infowindow ADD t_selection_uu VARCHAR2(36 CHAR) DEFAULT '' NOT NULL;
+ALTER TABLE t_selection_infowindow ADD t_selection_uu VARCHAR2(36 CHAR) DEFAULT ' ' NOT NULL;
 
 ALTER TABLE t_selection_infowindow MODIFY t_selection_id DEFAULT 0;
 
