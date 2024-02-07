@@ -90,10 +90,10 @@ import org.zkoss.zul.Image;
  */
 public class RolePanel extends Window implements EventListener<Event>, Deferrable
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -1159253307008488232L;
+	private static final long serialVersionUID = -8077156023041816851L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -554,7 +554,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         		userPreference.setProperty(UserPreference.P_LANGUAGE, Env.getContext(m_ctx, UserPreference.LANGUAGE_NAME));
         	if (lstItemRole != null && lstItemRole.getValue() != null)
         		userPreference.setProperty(UserPreference.P_ROLE, (String) lstItemRole.getValue());
-        	userPreference.setProperty(UserPreference.P_CLIENT, (String) lstItemClient.getValue());
+        	if (lstItemClient != null && lstItemClient.getValue() != null)
+        		userPreference.setProperty(UserPreference.P_CLIENT, (String) lstItemClient.getValue());
         	if (lstItemOrg != null && lstItemOrg.getValue() != null)
         		userPreference.setProperty(UserPreference.P_ORG, (String) lstItemOrg.getValue());
         	if (lstItemWarehouse != null && lstItemWarehouse.getValue() != null)
@@ -728,15 +729,19 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         String eventName = event.getName();
         if(eventName.equals("onSelect"))
         {
-            if(eventCompId.equals(lstClient.getId())){            	
-            	updateRoleList();	
-            }                
+            if(eventCompId.equals(lstClient.getId())){
+            	checkMandatoryField(lstClient, lblClient);
+            	updateRoleList();
+            }
             else if(eventCompId.equals(lstRole.getId())) {
+            	checkMandatoryField(lstRole, lblRole);
             	setUserID();
                 updateOrganisationList();
             }
-            else if(eventCompId.equals(lstOrganisation.getId()))
+            else if(eventCompId.equals(lstOrganisation.getId())) {
+            	checkMandatoryField(lstOrganisation, lblOrganisation);
                 updateWarehouseList();
+            }
 			else if (eventCompId.equals(lstLanguage.getId()))
 			{
 				if (lstLanguage.getSelectedItem() == null)
@@ -847,18 +852,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	Comboitem lstItemWarehouse = lstWarehouse.getSelectedItem();
     	Comboitem lstItemLanguage = lstLanguage.getSelectedItem();
 
-        if(lstItemRole == null || lstItemRole.getValue() == null)
-        {
-        	throw new WrongValueException(lstRole, Msg.getMsg(m_ctx, "FillMandatory") + lblRole.getValue());
-        }
-        else if(lstItemClient == null || lstItemClient.getValue() == null)
-        {
-        	throw new WrongValueException(lstClient, Msg.getMsg(m_ctx, "FillMandatory") + lblClient.getValue());
-        }
-        else if(lstItemOrg == null || lstItemOrg.getValue() == null)
-        {
-        	throw new WrongValueException(lstOrganisation, Msg.getMsg(m_ctx, "FillMandatory") + lblOrganisation.getValue());
-        }
+    	checkMandatoryField(lstClient, lblClient);
+    	checkMandatoryField(lstRole, lblRole);
+    	checkMandatoryField(lstOrganisation, lblOrganisation);
         int orgId = 0, warehouseId = 0;
         orgId = Integer.parseInt((String)lstItemOrg.getValue());
         KeyNamePair orgKNPair = new KeyNamePair(orgId, lstItemOrg.getLabel());
@@ -929,7 +925,19 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		desktop.getSession().setAttribute(SSOUtils.ISCHANGEROLE_REQUEST, false);
     }
 
-    @Override
+    /**
+     * Check if the field is filled, throws WrongValueException if not
+     * @param lst
+     * @param lbl
+     */
+    private void checkMandatoryField(Combobox lst, Label lbl) {
+    	Comboitem item = lst.getSelectedItem();
+        if (item == null || item.getValue() == null) {
+        	throw new WrongValueException(lst, Msg.getMsg(m_ctx, "FillMandatory") + lbl.getValue());
+        }
+	}
+
+	@Override
 	public boolean isDeferrable() {
 		return false;
 	}
