@@ -2052,7 +2052,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		return;
 
     	String code = userQuery.getCode();
-    	if (code.startsWith("@SQL=")) {
+    	if (code.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			m_whereUserQuery = "(" + code.substring(code.indexOf("=")+1, code.length()) + ")";
 			if (log.isLoggable(Level.INFO))
 				log.log(Level.INFO, m_whereUserQuery);

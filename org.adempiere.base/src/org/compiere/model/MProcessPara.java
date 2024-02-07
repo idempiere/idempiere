@@ -358,12 +358,12 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 
 		//validate logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
-			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());
 			}
 		}
 		if (newRecord || is_ValueChanged(COLUMNNAME_DisplayLogic)) {
-			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith("@SQL=")) {
+			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getDisplayLogic());
 			}
 		}

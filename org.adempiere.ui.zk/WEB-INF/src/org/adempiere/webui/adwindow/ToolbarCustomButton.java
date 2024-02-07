@@ -17,6 +17,7 @@ import org.adempiere.base.IServiceHolder;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.ToolBarButton;
+import org.compiere.model.MColumn;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -120,7 +121,7 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 			return;
 
 		boolean visible = true;
-		if (displayLogic.startsWith("@SQL=")) {
+		if (displayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			ADWindow adwindow = ADWindow.get(windowNo);
 			if (adwindow == null)
 				return;
@@ -200,7 +201,7 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	private boolean validateLogic(String logic, int tabNo) {
 		boolean isValid = false;
 
-		if (logic.startsWith("@SQL="))
+		if (logic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, "");
 		}

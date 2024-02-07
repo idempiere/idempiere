@@ -580,7 +580,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()) {
 						String expr = rs.getString(mc.getColumnName());
-						if (expr.startsWith("@SQL=") || expr.startsWith("SQL="))
+						if (expr.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || expr.startsWith("SQL="))
 							continue;
 						try {
 							LogicEvaluator.validate(expr);

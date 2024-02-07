@@ -436,7 +436,7 @@ public class MLookupFactory
 				ZoomWindow = rs.getInt(8);
 				ZoomWindowPO = rs.getInt(9);
 				displayColumnSQL = rs.getString(11);
-				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && (displayColumnSQL.startsWith("@SQL=") || displayColumnSQL.startsWith("@SQLFIND=")))
+				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && (displayColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || displayColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX)))
 					displayColumnSQL = "NULL";
 				if (displayColumnSQL != null && displayColumnSQL.contains("@"))
 					displayColumnSQL = Env.parseContext(Env.getCtx(), -1, displayColumnSQL, false, true);
