@@ -405,12 +405,11 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				+ ": " + OldValue + " -> " + NewValue);
 		try
 		{
-			PO.setCrossTenantSafe();
 			MChangeLog cl = new MChangeLog(getCtx(), 
 				AD_ChangeLog_ID, TrxName, getAD_Session_ID(),
 				AD_Table_ID, AD_Column_ID, Record_ID, Record_UU, AD_Client_ID, AD_Org_ID,
 				OldValue, NewValue, event);
-			if (cl.save())
+			if (cl.saveCrossTenantSafe())
 				return cl;
 		}
 		catch (Exception e)
@@ -419,10 +418,6 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				+ ", AD_Session_ID=" + getAD_Session_ID()
 				+ ", AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID, e);
 			return null;
-		}
-		finally
-		{
-			PO.clearCrossTenantSafe();
 		}
 		log.log(Level.SEVERE, "AD_ChangeLog_ID=" + AD_ChangeLog_ID
 			+ ", AD_Session_ID=" + getAD_Session_ID()

@@ -81,7 +81,6 @@ import org.compiere.model.MRole;
 import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -1241,13 +1240,8 @@ public class DashboardController implements EventListener<Event> {
     				int PA_DashboardPreference_ID = Integer.parseInt(value.toString());
     				MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), PA_DashboardPreference_ID, null);
     				preference.setIsCollapsedByDefault(!panel.isOpen());
-    				try {
-    					PO.setCrossTenantSafe();
-    					if (!preference.save())
-    						logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
-    				} finally {
-    					PO.clearCrossTenantSafe();
-    				}
+					if (!preference.saveCrossTenantSafe())
+						logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
     			}
     			
     			//notify panel content component

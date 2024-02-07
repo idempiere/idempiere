@@ -2591,7 +2591,24 @@ public abstract class PO
 	/**
 	 * Update Value or create new record, used when writing a cross tenant record
 	 * @throws AdempiereException
-	 * @see #saveEx(String)
+	 * @see #save()
+	 */
+	public boolean saveCrossTenantSafe() {
+		boolean crossTenantSet = isSafeCrossTenant.get();
+		try {
+			if (!crossTenantSet)
+				PO.setCrossTenantSafe();
+			return save();
+		} finally {
+			if (!crossTenantSet)
+				PO.clearCrossTenantSafe();
+		}
+	}
+	
+	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @throws AdempiereException
+	 * @see #saveEx()
 	 */
 	public void saveCrossTenantSafeEx() {
 		boolean crossTenantSet = isSafeCrossTenant.get();

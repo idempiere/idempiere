@@ -19,7 +19,6 @@ import java.util.Properties;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MPreference;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -126,13 +125,8 @@ public final class UserPreference implements Serializable {
 					}
 					String oldValue = preference.getValue();
 					if (! value.equals(oldValue)) {
-						try {
-							PO.setCrossTenantSafe();
-							preference.setValue(value);
-							preference.saveEx();
-						} finally {
-							PO.clearCrossTenantSafe();
-						}
+						preference.setValue(value);
+						preference.saveCrossTenantSafeEx();
 					}
 				}
 			}
