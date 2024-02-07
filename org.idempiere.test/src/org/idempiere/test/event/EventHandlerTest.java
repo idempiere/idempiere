@@ -64,7 +64,6 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
-import org.compiere.model.PO;
 import org.compiere.model.X_I_BPartner;
 import org.compiere.model.X_I_Product;
 import org.compiere.process.DocAction;
@@ -331,13 +330,8 @@ public class EventHandlerTest extends AbstractTestCase {
 		MSysConfig sysconfig = new MSysConfig(Env.getCtx(), addressValidationSysConfigId, null);
 		String currentValue = sysconfig.getValue();
 		try {
-			try {
-				PO.setCrossTenantSafe();			
-				sysconfig.setValue("US");
-				sysconfig.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			sysconfig.setValue("US");
+			sysconfig.saveCrossTenantSafeEx();
 			
 			CacheMgt.get().reset();
 			
@@ -357,13 +351,8 @@ public class EventHandlerTest extends AbstractTestCase {
 			EventManager.getInstance().sendEvent(event);			
 			assertTrue(count.get()==1, "AddressValidationEventDelegate not call for MLocation Before Change Event");
 		} finally {
-			try {
-				PO.setCrossTenantSafe();			
-				sysconfig.setValue(currentValue);
-				sysconfig.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			sysconfig.setValue(currentValue);
+			sysconfig.saveCrossTenantSafeEx();
 		}
 	}
 	
