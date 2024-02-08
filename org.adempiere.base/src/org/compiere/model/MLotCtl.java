@@ -17,8 +17,12 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.Properties;
 
+import org.adempiere.exceptions.DBException;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -30,9 +34,9 @@ import org.compiere.util.Util;
 public class MLotCtl extends X_M_LotCtl
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -1020114756336617138L;
+	private static final long serialVersionUID = -5538987472159034317L;
 
     /**
      * UUID based Constructor
@@ -87,21 +91,66 @@ public class MLotCtl extends X_M_LotCtl
 	 */
 	public MLot createLot (int M_Product_ID)
 	{
-		StringBuilder name = new StringBuilder();
-		if (getPrefix() != null)
-			name.append(getPrefix());
-		int no = getCurrentNext();
-		name.append(no);
-		if (getSuffix() != null)
-			name.append(getSuffix());
-		//
-		no += getIncrementNo();
-		setCurrentNext(no);
-		saveEx();
-		//
-		MLot retValue = new MLot (this, M_Product_ID, name.toString());
-		retValue.saveEx();
-		return retValue;
+		//use optimistic locking and try 3 time
+		set_OptimisticLockingColumns(new String[]{COLUMNNAME_CurrentNext});
+		set_UseOptimisticLocking(true);
+		for(int i = 0; i < 3; i++)
+		{
+			this.load(get_TrxName());
+			//create savepoint for rollback (if in trx)
+			Trx trx = null;
+			Savepoint savepoint = null;
+			if (get_TrxName() != null)
+				trx = Trx.get(get_TrxName(), false);
+			if (trx != null) {
+				try {
+					savepoint = trx.setSavepoint(null);
+				} catch (SQLException e) {
+					throw new DBException(e);
+				}
+			}
+			try {
+				StringBuilder name = new StringBuilder();
+				if (getPrefix() != null)
+					name.append(getPrefix());
+				int no = getCurrentNext();
+				name.append(no);
+				if (getSuffix() != null)
+					name.append(getSuffix());
+				//
+				no += getIncrementNo();
+				setCurrentNext(no);
+				saveEx();
+				MLot retValue = new MLot (this, M_Product_ID, name.toString());
+				retValue.saveEx();
+				return retValue;
+			} catch (RuntimeException e) {
+				if (savepoint != null) {
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e1) {
+						throw new DBException(e1);
+					}
+					savepoint = null;
+				}
+				if (i == 2)
+					throw e;
+				//wait 500ms for other trx
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+				}
+			} finally {
+				if (savepoint != null) {
+					try {
+						trx.releaseSavepoint(savepoint);
+					} catch (SQLException e) {
+					}
+				}
+			}
+		}
+		//should never reach here
+		return null;
 	}	//	createLot
 
 }	//	MLotCtl
