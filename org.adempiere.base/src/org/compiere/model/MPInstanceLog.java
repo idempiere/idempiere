@@ -119,12 +119,16 @@ public class MPInstanceLog
 	 */
 	public MPInstanceLog (ResultSet rs) throws SQLException
 	{
-		setAD_PInstance_ID(rs.getInt("AD_PInstance_ID"));
-		setLog_ID(rs.getInt("Log_ID"));
-		setP_Date(rs.getTimestamp("P_Date"));
-		setP_ID(rs.getInt("P_ID"));
-		setP_Number(rs.getBigDecimal("P_Number"));
-		setP_Msg(rs.getString("P_Msg"));
+		setAD_PInstance_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_AD_PInstance_ID));
+		setLog_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_Log_ID));
+		setP_Date(rs.getTimestamp(X_AD_PInstance_Log.COLUMNNAME_P_Date));
+		setP_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_P_ID));
+		setP_Number(rs.getBigDecimal(X_AD_PInstance_Log.COLUMNNAME_P_Number));
+		setP_Msg(rs.getString(X_AD_PInstance_Log.COLUMNNAME_P_Msg));
+		setAD_Table_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_AD_Table_ID));
+		setRecord_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_Record_ID));
+		setPInstanceLogType(rs.getString(X_AD_PInstance_Log.COLUMNNAME_PInstanceLogType));
+		setAD_PInstance_Log_UU(rs.getString(X_AD_PInstance_Log.COLUMNNAME_AD_PInstance_Log_UU));
 	}	//	MPInstance_Log
 
 	private int m_AD_PInstance_ID;
