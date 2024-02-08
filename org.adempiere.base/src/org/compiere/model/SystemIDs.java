@@ -93,6 +93,7 @@ public class SystemIDs
 	public final static int PROCESS_AD_CHANGELOG_REDO = 307;
 	public final static int PROCESS_AD_NATIVE_SEQUENCE_ENABLE = 53156;
 	public final static int PROCESS_AD_TAB_CREATEFIELDS = 174;
+	public final static int PROCESS_C_BPARTNER_VALIDATE = 314;
 	public final static int PROCESS_C_INVOICE_GENERATE = 119;
 	public final static int PROCESS_C_INVOICE_GENERATE_MANUAL = 134;
 	public final static int PROCESS_C_INVOICE_GENERATERMA_MANUAL = 52002;
