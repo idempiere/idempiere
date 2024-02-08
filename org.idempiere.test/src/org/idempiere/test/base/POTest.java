@@ -43,10 +43,12 @@ import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MMessage;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.MProductionLine;
 import org.compiere.model.MTest;
 import org.compiere.model.POInfo;
 import org.compiere.util.DB;
@@ -552,5 +554,31 @@ public class POTest extends AbstractTestCase
 		file = new File(folderOr + fileName);
 		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
 		file.delete();
+	}
+	
+	@Test
+	public void testIsVirtualColumnMethods() {
+		//column sql with no prefix
+		MColumn column = MColumn.get(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_TestVirtualQty);
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+
+		//column sql with @SQLFIND= prefix
+		column = MColumn.get(Env.getCtx(), MProductionLine.Table_Name, "ProductType");
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		
+		//column sql with @SQL= prefix
+		column = MColumn.get(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_TestVirtualQty);
+		column = new MColumn(column);
+		column.setColumnSQL(MColumn.VIRTUAL_UI_COLUMN_PREFIX+column.getColumnSQL());
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
 	}
 }

@@ -64,6 +64,7 @@ import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MChart;
+import org.compiere.model.MColumn;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
@@ -1732,7 +1733,7 @@ public class DashboardController implements EventListener<Event> {
 					 if (paramValue == null
 							 || (paramValue != null && paramValue.length() == 0))
 						 value = null;
-					 else if (paramValue.startsWith("@SQL=")) {
+					 else if (paramValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 						 String sql = paramValue.substring(5);
 						 sql = Env.parseContext(Env.getCtx(), 0, sql, false, false);	//	replace variables
 						 if (!Util.isEmpty(sql)) {

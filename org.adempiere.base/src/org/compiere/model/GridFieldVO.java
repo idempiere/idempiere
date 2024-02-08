@@ -280,7 +280,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.IsQuickForm = "Y".equals(rs.getString ("IsQuickForm"));
 			{
 				vo.ColumnSQL = rs.getString("ColumnSQL");
-				if (vo.ColumnSQL != null && !vo.ColumnSQL.startsWith("@SQL=") && !vo.ColumnSQL.startsWith("@SQLFIND=") && vo.ColumnSQL.contains("@")) {
+				if (vo.ColumnSQL != null && !vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) && !vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX) && vo.ColumnSQL.contains("@")) {
 					// NOTE: cannot use window context because this is set globally on the query, not per record
 					vo.ColumnSQL = Env.parseContext(ctx, -1, vo.ColumnSQL, false, true);
 				}			

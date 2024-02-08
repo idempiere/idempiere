@@ -39,6 +39,7 @@ import org.adempiere.base.upload.UploadResponse;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MMailText;
 import org.compiere.model.MNote;
 import org.compiere.model.MOrgInfo;
@@ -683,7 +684,7 @@ public class Scheduler extends AdempiereServer
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
 			value = null;
-		else if (variable.startsWith("@SQL=")) {
+		else if (variable.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			String	defStr = "";
 			String sql = variable.substring(5);	//	w/o tag
 			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
