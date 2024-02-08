@@ -550,7 +550,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				boolean isDisplayed = rs.getString(4).equals("Y");
 				int AD_Reference_Value_ID = rs.getInt(5);
 				String columnSql = rs.getString(6);
-				if (columnSql != null && columnSql.length() > 0 && (columnSql.startsWith("@SQL=") || columnSql.startsWith("@SQLFIND=")))
+				if (columnSql != null && columnSql.length() > 0 && (columnSql.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || columnSql.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX)))
 					columnSql = "NULL";
 				if (columnSql != null && columnSql.contains("@"))
 					columnSql = Env.parseContext(Env.getCtx(), -1, columnSql, false, true);

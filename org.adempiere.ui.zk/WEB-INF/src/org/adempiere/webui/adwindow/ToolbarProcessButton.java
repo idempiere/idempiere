@@ -17,6 +17,7 @@ import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.compiere.model.I_AD_Process;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.Env;
@@ -189,7 +190,7 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	 */
 	private boolean validateLogic(String logic, int tabNo) {
 		boolean isValid = false;
-		if (logic.startsWith("@SQL=")) {
+		if (logic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, getColumnName());
 		} else {
 			isValid = Evaluator.evaluateLogic(this, logic);
