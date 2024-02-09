@@ -177,4 +177,54 @@ public class MAttributeSetTest extends AbstractTestCase {
 			mas.saveEx();
 		}
 	}
+
+	@Test
+	public void testGenerateLot() {
+		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, null);
+		Trx trx1 = Trx.get(Trx.createTrxName(), true);
+		Trx trx2 = Trx.get(Trx.createTrxName(), true);
+		AtomicReference<String>atomic1 = new AtomicReference<String>(null);
+		AtomicReference<String>atomic2 = new AtomicReference<String>(null);
+		try {
+			TrxRunnable runnable1 = (trxName -> {
+				MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trxName);
+				String lot1 = asi1.getLot(true, DictionaryIDs.M_Product.FERTILIZER_50.id);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				Trx.get(trxName, false).commit();
+				atomic1.set(lot1);					
+			});
+			TrxRunnable runnable2 = (trxName -> {
+				MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trx2.getTrxName());
+				String lot2 = asi2.getLot(true, DictionaryIDs.M_Product.FERTILIZER_50.id);
+				Trx.get(trxName, false).commit();
+				atomic2.set(lot2);
+			});
+			Thread t1 = new Thread(() -> {
+				Trx.run(trx1.getTrxName(), runnable1);
+			}) ;
+			Thread t2 = new Thread(() -> {
+				Trx.run(trx2.getTrxName(), runnable2);
+			});
+			t1.start();
+			t2.start();
+			try {
+				t1.join();
+			} catch (InterruptedException e) {
+			}
+			try {
+				t2.join();
+			} catch (InterruptedException e) {
+			}
+			assertNotNull(atomic1.get(), "Lot 1 not generated");
+			assertNotNull(atomic2.get(), "Lot 2 not generated");
+			assertNotEquals(atomic1.get(), atomic2.get(), "Duplicate lot generated");
+		} finally {
+			trx1.close();
+			trx2.close();
+		}			
+	}
+
 }
