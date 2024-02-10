@@ -116,8 +116,11 @@ public interface IProcessUI {
 	}
 
 	/**
-	 * add to list of file available for download after process end 
+	 * Add to list of file available for download after process end<br/> 
+	 * While this API is limited to processes with user interfaces, consider using {@link SvrProcess#addDownloadFile(File)} for broader support, <br/> 
+	 * as it move downloadFiles from {@link AbstractProcessDialog#downloadFiles} to {@link ProcessInfo#downloadFiles}
 	 * @param file
+	 * @deprecated (since="12", forRemoval = true)
 	 */
 	public void download(File file);
 

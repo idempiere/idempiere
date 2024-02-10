@@ -41,6 +41,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
+import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.MProcess;
 import org.compiere.model.MSysConfig;
@@ -523,6 +524,17 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				}
 				tr.appendChild(td);
 			}
+		}
+
+		if (MSysConfig.getBooleanValue(MSysConfig.PROCESS_SHOW_SEPARATE_DOWNLOAD_DIALOG, true)) {
+			if (getProcessInfo().getDownloadFiles().size() > 0 ){
+				MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(getProcessInfo().getDownloadFiles().toArray(new File[0]));
+				downloadDialog.setPage(getPage());
+				downloadDialog.setTitle(getProcessInfo().getTitle());
+				Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
+			}
+		}else {
+			AEnv.appendDownloadLinkForFiles(getProcessInfo().getDownloadFiles().toArray(new File[0]), infoResultContent);
 		}
 	}
 

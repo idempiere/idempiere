@@ -149,8 +149,7 @@ public class PackOutProcess extends SvrProcess
 			throw e;
 		}
 
-		if (processUI != null)
-			processUI.download(new File(exportFile));
+		getProcessInfo().addDownloadFiles(new File(exportFile));
 		
 		return "Exported="+processedCount + " File=" + exportFile;
 	}	//	doIt

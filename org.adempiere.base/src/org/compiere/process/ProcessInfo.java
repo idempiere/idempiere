@@ -192,9 +192,30 @@ public class ProcessInfo implements Serializable
 	private String showHelp = null;
 
 	private int m_AD_Scheduler_ID = 0;
+	/** 
+	 * Files for download by user <br/>
+	 * The file path for download is also stored in the {@link ProcessInfoLog#m_P_Msg} with the {@link ProcessInfoLog#getPInstanceLogType} set to {@link X_AD_PInstance_Log#PINSTANCELOGTYPE_FilePath} 
+	**/
+	private List<File> downloadFiles = new ArrayList<>();
 	
 	/** For scheduler: true to notify scheduler recipients with process execution result using AD_Scheduler.R_MailTexT_ID mail template (if define). Default is true. **/
 	private boolean isNotifyRecipients = true;
+
+	/**
+	 * @return list of files for user download
+	 */
+	public List<File> getDownloadFiles()
+	{
+		return downloadFiles;
+	}
+	/**
+	 * add to list of file available for download after process end
+	 * @param file
+	 */
+	public void addDownloadFiles(File file)
+	{
+		downloadFiles.add(file);
+	}
 	
 	public int getLanguageID() {
 		return languageID;

@@ -4359,7 +4359,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 		
 		
-		if (m_logs != null && m_logs.length > 0) {
+		if ((m_logs != null && m_logs.length > 0) || pi.getDownloadFiles().size() > 0) {
 			ProcessInfoDialog dialog = ProcessInfoDialog.showProcessInfo(pi, curWindowNo, getComponent(), false);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, e -> focusToActivePanel());
 		}
