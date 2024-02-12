@@ -883,7 +883,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		attachIFrame();
 		mediaVersion++;
 		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
-		String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+		String pdfJsUrl = AEnv.toPdfJsUrl(url);
 		iframe.setContent(null);
 		iframe.setSrc(pdfJsUrl);
 	}
