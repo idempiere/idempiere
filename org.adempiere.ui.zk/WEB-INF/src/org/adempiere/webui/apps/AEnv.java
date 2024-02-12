@@ -993,4 +993,21 @@ public final class AEnv
 			}
 		}		
 	}
+				
+	/**
+	 * Construct url to open pdfUrl with embedded pdf.js viewer from Mozilla
+	 * @param pdfUrl
+	 * @return pdf.js viewer url
+	 */
+	public static String toPdfJsUrl(String pdfUrl) {
+		String viewer = Executions.encodeURL("~./js/pdf.js/web/viewer.html?file=");
+		//remove context path
+		int index = viewer.indexOf("/zkau");
+		if (index >= 0) {
+			viewer = viewer.substring(index+1);
+		}
+		StringBuilder url = new StringBuilder(viewer);
+		url.append(pdfUrl);
+		return url.toString();
+	}
 }	//	AEnv

@@ -640,7 +640,7 @@ public class WAttachment extends Window implements EventListener<Event>
 					&& Medias.PDF_MIME_TYPE.equals(contentType)) {
 					mediaVersion++;
 					String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-					String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+					String pdfJsUrl = AEnv.toPdfJsUrl(url);
 					preview.setSrc(pdfJsUrl);
 				} else {
 					preview.setContent(media);

@@ -943,7 +943,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		try {
 			mediaVersion++;
 			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-			String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+			String pdfJsUrl = AEnv.toPdfJsUrl(url);
 			HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
 			if (url.startsWith(request.getContextPath() + "/"))
 				url = url.substring((request.getContextPath() + "/").length());
