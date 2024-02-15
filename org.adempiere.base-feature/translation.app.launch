@@ -45,7 +45,6 @@
         <setEntry value="com.google.http-client.google-http-client@default:default"/>
         <setEntry value="com.google.oauth-client@default:default"/>
         <setEntry value="com.google.zxing.core@default:default"/>
-        <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
         <setEntry value="com.zaxxer.HikariCP@default:default"/>
@@ -58,6 +57,7 @@
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
         <setEntry value="io.github.classgraph.classgraph@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
         <setEntry value="org.antlr.antlr4-runtime@default:default"/>
@@ -78,7 +78,8 @@
         <setEntry value="org.apache.geronimo.specs.geronimo-jms_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
-        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
+        <setEntry value="org.apache.logging.log4j.api@default:default"/>
+        <setEntry value="org.apache.logging.log4j.to-slf4j@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.xerces@default:default"/>
         <setEntry value="org.apache.xml.resolver@default:default"/>
@@ -101,7 +102,6 @@
         <setEntry value="org.eclipse.osgi.util@default:default"/>
         <setEntry value="org.eclipse.osgi@-1:true"/>
         <setEntry value="org.fusesource.hawtbuf.hawtbuf@default:default"/>
-        <setEntry value="org.jsr-305@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
         <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
@@ -142,7 +142,9 @@
         <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
+        <setEntry value="wrapped.net.sourceforge.barbecue.barbecue@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
+        <setEntry value="wrapped.org.apache.poi.poi-ooxml-lite@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>
