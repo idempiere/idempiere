@@ -781,8 +781,7 @@ public class Util
 	 * @return true if there is a directory org.adempiere.base within AdempiereHome or if there is a System property org.idempiere.developermode set to Y 
 	 */
 	public static boolean isDeveloperMode() {
-		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"))
-				|| (!Util.isEmpty(System.getProperty("org.idempiere.developermode")) && System.getProperty("org.idempiere.developermode").equals("Y"));
+		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base")) || "Y".equals(System.getProperty("org.idempiere.developermode"));
 	}
 
 }   //  Util
