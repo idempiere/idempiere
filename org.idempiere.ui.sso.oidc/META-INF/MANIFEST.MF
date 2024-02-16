@@ -17,7 +17,6 @@ Import-Package: javax.servlet;version="4.0.0",
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.adempiere.base;bundle-version="11.0.0",
  org.eclipse.core.runtime;bundle-version="3.24.100"
-Service-Component: OSGI-INF/org.idempiere.ui.sso.oidc.factory.OIDCServiceFactory.xml
 Bundle-ClassPath: lib/nimbus-jose-jwt.jar,
  lib/oauth2-oidc-sdk.jar,
  lib/json-smart.jar,
@@ -25,3 +24,4 @@ Bundle-ClassPath: lib/nimbus-jose-jwt.jar,
  lib/accessors-smart.jar,
  lib/content-type.jar,
  .
+Service-Component: OSGI-INF/org.idempiere.ui.sso.oidc.factory.OIDCServiceFactory.xml

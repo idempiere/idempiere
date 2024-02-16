@@ -1,4 +1,4 @@
-target "idempiere-230620"
+target "idempiere-12"
 
 with source configurePhase allEnvironments
 
@@ -17,13 +17,21 @@ location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.4" {
 }
 
 location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
+	// 2.3.3.v2021090100, dependency of com.sun.xml.ws.jaxws-rt_2.3.5, org.idempiere.webservices, 
+	// wrapped.org.apache.cxf.cxf-rt-ws-transfer_3.4.4
 	jakarta.xml.ws-api
+	// 2.7.2.v202109010034
 	org.atmosphere.runtime
+	// 30.1.1.jre_v202109010034, dependency of com.fasterxml.jackson.datatype.jackson-datatype-guava_2.12.4,
+	// com.google.http-client.google-http-client, com.google.oauth-client_1.31.5, org.passay_1.16.1  
 	com.google.guava
+	// 1.39.2.sp_1_v202109010034, dependency of com.google.oauth-client_1.31.5, wrapped.com.google.http-client.google-http-client-gson_1.39.2.sp1
 	com.google.http-client.google-http-client
+	// 1.2.18.v202109010034, dependency of com.sun.xml.bind.jaxb-impl_2.3.5, com.sun.xml.messaging.saaj.impl_1.5.3,
+	// org.apache.cxf.cxf-core_3.4.4
 	com.sun.xml.fastinfoset.FastInfoset
+	// 4.6.4, dependency of org.idempiere.felix.webconsole
 	org.apache.felix.webconsole
-	org.apache.poi.ooxml-schemas	
 }
 
 location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
@@ -51,7 +59,7 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.osgi.util.promise
 	org.osgi.util.pushstream
 	org.osgi.util.xml
-	//<< equinox framework starter kit
+	// equinox framework starter kit
 	org.apache.felix.gogo.command
 	org.apache.felix.gogo.runtime
 	org.apache.felix.gogo.shell
@@ -73,7 +81,6 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.eclipse.equinox.frameworkadmin
 	org.eclipse.equinox.frameworkadmin.equinox
 	org.eclipse.equinox.launcher
-	//org.eclipse.equinox.launcher.gtk.linux.x86
 	org.eclipse.equinox.p2.artifact.repository
 	org.eclipse.equinox.p2.console
 	org.eclipse.equinox.p2.core
@@ -91,7 +98,6 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.eclipse.equinox.preferences
 	org.eclipse.equinox.registry
 	org.eclipse.equinox.security
-	//org.eclipse.equinox.security.linux.x86
 	org.eclipse.equinox.simpleconfigurator
 	org.eclipse.equinox.simpleconfigurator.manipulator
 	org.eclipse.osgi.services
@@ -99,8 +105,8 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.sat4j.core
 	org.sat4j.pb
 	org.tukaani.xz
-	//<< equinox add-on
-	// feature for launcher all environment
+	// equinox add-on
+	// launcher feature for all environment
 	org.eclipse.equinox.executable.feature.group
 	org.eclipse.equinox.http.registry
 	org.eclipse.osgi.compatibility.state
@@ -123,7 +129,7 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.eclipse.jdt.core
 	org.eclipse.jdt.core.compiler.batch
 	org.eclipse.text	
-	//<< for test
+	// junit
 	org.opentest4j
 	org.apiguardian.api
 	org.junit
@@ -147,8 +153,5 @@ location orbit-2021-06-R20210602031627 "https://download.eclipse.org/tools/orbit
 }	
 
 location jasperstudio "https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0" {
-    com.jaspersoft.studio.bundles.barbecue
-    com.jaspersoft.studio.bundles.itext
-    org.w3c.dom.svg.patch
     org.krysalis.barcode4j
 }

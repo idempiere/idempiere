@@ -47,6 +47,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.print.renderer.IReportRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -175,6 +176,9 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 					MPrintFormatItem item = printFormat.getItem(col);
 					if (item.isPrinted())
 					{
+						var printName = item.getPrintName(lang);
+						if (Util.isEmpty(printName))
+							continue;
 						Object obj = printData.getNodeByPrintFormatItem(item);
 						if (obj instanceof PrintDataElement)
 						{
@@ -188,7 +192,7 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 
 							if (DisplayType.isNumeric(pde.getDisplayType()))
 								value=value.replace("�","").replace(",",".");
-							jo.append(item.getPrintName(lang), value);
+							jo.append(printName, value);
 						}			
 					}	//	for all columns
 				}

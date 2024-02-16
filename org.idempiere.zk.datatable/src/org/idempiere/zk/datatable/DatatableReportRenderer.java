@@ -409,9 +409,13 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				MPrintFormatItem item = printFormat.getItem(col);
 				if (item.isPrinted())
 				{
-					th th = new th();
-					tfoot.addElement(th);
-					th.setTagText(item.getPrintName(language));
+					var printName = item.getPrintName(language);
+					if (!Util.isEmpty(printName))
+					{
+						th th = new th();
+						tfoot.addElement(th);
+						th.setTagText(printName);
+					}
 				}
 			}
 			tfoot.output(w);

@@ -105,8 +105,6 @@
         <setEntry value="com.google.oauth-client@default:default"/>
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
-        <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
-        <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.istack.commons-runtime@default:default"/>
         <setEntry value="com.sun.mail.gimap@default:default"/>
@@ -171,11 +169,9 @@
         <setEntry value="org.apache.cxf.cxf-rt-bindings-soap@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-bindings-xml@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-databinding-jaxb@default:default"/>
-        <setEntry value="org.apache.cxf.cxf-rt-databinding-xmlbeans@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-frontend-jaxrs@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-frontend-jaxws@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-frontend-simple@default:default"/>
-        <setEntry value="org.apache.cxf.cxf-rt-rs-extension-providers@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-rs-service-description@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-security@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-transports-http@default:default"/>
@@ -194,8 +190,9 @@
         <setEntry value="org.apache.httpcomponents.core5.httpcore5@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
+        <setEntry value="org.apache.logging.log4j.api@default:default"/>
+        <setEntry value="org.apache.logging.log4j.to-slf4j@default:default"/>
         <setEntry value="org.apache.neethi@default:default"/>
-        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.batik@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.jaxen@default:default"/>
@@ -381,6 +378,7 @@
         <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
+        <setEntry value="wrapped.net.sourceforge.barbecue.barbecue@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-jaas@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-openwire-legacy@default:default"/>
@@ -388,6 +386,7 @@
         <setEntry value="wrapped.org.apache.cxf.cxf-rt-ws-transfer@default:default"/>
         <setEntry value="wrapped.org.apache.lucene.lucene-analyzers-common@default:default"/>
         <setEntry value="wrapped.org.apache.lucene.lucene-core@default:default"/>
+        <setEntry value="wrapped.org.apache.poi.poi-ooxml-lite@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>
