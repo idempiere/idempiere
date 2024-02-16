@@ -72,7 +72,7 @@ public class XLSReportViewerRenderer implements IReportViewerRenderer {
 
 	@Override
 	public boolean isExport() {
-		return false;
+		return true;
 	}
 
 	@Override
