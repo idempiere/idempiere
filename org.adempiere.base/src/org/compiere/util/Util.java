@@ -778,10 +778,10 @@ public class Util
 
 	/**
 	 * Is running from Eclipse
-	 * @return true if there is a directory org.adempiere.base within AdempiereHome (is the case when executed from Eclipse) 
+	 * @return true if there is a directory org.adempiere.base within AdempiereHome or if there is a System property org.idempiere.developermode set to Y 
 	 */
 	public static boolean isDeveloperMode() {
-		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
+		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base")) || "Y".equals(System.getProperty("org.idempiere.developermode"));
 	}
 
 }   //  Util
