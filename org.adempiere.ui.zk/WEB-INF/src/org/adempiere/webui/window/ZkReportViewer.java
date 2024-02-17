@@ -1470,7 +1470,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void cmd_refresh() {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
-		if(AD_Process_ID <= 0)
+		if(AD_Process_ID <= 0 || m_reportEngine.getPrintInfo().getRecord_ID() > 0)
 			this.cmd_report();
 		else
 			this.cmd_reRun(MProcess.SHOWHELP_RunSilently_TakeDefaults);
