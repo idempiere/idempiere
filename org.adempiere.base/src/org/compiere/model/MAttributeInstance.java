@@ -38,7 +38,6 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	 */
 	private static final long serialVersionUID = 5697542928282761922L;
 
-
     /**
      * UUID based Constructor
      * @param ctx  Context

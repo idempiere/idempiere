@@ -566,6 +566,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private void addAttributeLine (Rows rows, MAttribute attribute, boolean product, boolean readOnly)
 	{
+//		Env.setContext(Env.getCtx(), m_WindowNo, MAttribute.COLUMNNAME_M_Attribute_ID, attribute.getM_Attribute_ID());
 		if (log.isLoggable(Level.FINE)) log.fine(attribute + ", Product=" + product + ", R/O=" + readOnly);
 		
 		m_row++;
@@ -586,6 +587,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		else if (MAttribute.ATTRIBUTEVALUETYPE_Date.equals(attribute.getAttributeValueType()))
 		{
 			editor = WebEditorFactory.getEditor(getDateGridField(attribute), true);
+		}
+		else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+			editor = WebEditorFactory.getEditor(getMultiSelectionListTypeGridField(attribute), true);
 		}
 		else // Text Field
 		{
@@ -695,20 +699,39 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	/**
 	 * @param attribute
-	 * @return GridField for DisplayType.TableDir
+	 * @param displayType
+	 * @return GridField for given displayType
 	 */
-	public GridField getListTypeGridField(MAttribute attribute)
+	public GridField getGridFieldForDisplayType(MAttribute attribute, int displayType)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
-				"M_AttributeValue_ID", attribute.getName(), DisplayType.TableDir, 0, false, false, null);
-
+		        "M_AttributeValue_ID", attribute.getName(), displayType, 0, false, false, null);
+		
 		// Validation for List - Attribute Values
 		vo.ValidationCode = "M_AttributeValue.M_Attribute_ID=" + attribute.get_ID();
 		vo.lookupInfo.ValidationCode = vo.ValidationCode;
 		vo.lookupInfo.IsValidated = false;
 
 		return createGridField(attribute, vo);
+	} // getGridFieldForDisplayType
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.TableDir
+	 */
+	public GridField getListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.TableDir);
 	} // getListTypeGridField
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.ChosenMultipleSelectionTable
+	 */
+	public GridField getMultiSelectionListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.ChosenMultipleSelectionTable);
+	} // getMultiSelectionListTypeGridField
 
 	/**
 	 * Create GridField
