@@ -2863,10 +2863,25 @@ public class MPayment extends X_C_Payment
 			return false;
 		}
 
-		StringBuilder sql = new StringBuilder("SELECT 1 FROM C_BankStatement bs WHERE bs.AD_Client_ID = ? AND bs.DocStatus in ('CO', 'CL', 'IP', 'DR')")
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM C_BankStatement bs WHERE bs.AD_Client_ID = ?")
 		.append(" AND EXISTS (SELECT C_BankStatement_ID FROM C_BankStatementLine bsl WHERE bs.C_BankStatement_ID = bsl.C_BankStatement_ID AND bsl.C_Payment_ID = ?)");
 		if (DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_Client_ID(), getC_Payment_ID()) == 1) {
 			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnBankStatementLine@"); // ~ Can't reactivate / Payment is used on a bank statement
+			return false;
+		}
+
+		if (getC_BankTransfer_ID() > 0) {
+			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentIsPartOfBankTransfer@"); // ~ Can't reactivate / Payment is used in a bank transfer
+			return false;
+		}
+
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_DunningRunLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnDunningLine@"); // ~ Can't reactivate / Payment is used on a dunning run
+			return false;
+		}
+
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM R_Request WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnRequest@"); // ~ Can't reactivate / Payment is used on a request
 			return false;
 		}
 
