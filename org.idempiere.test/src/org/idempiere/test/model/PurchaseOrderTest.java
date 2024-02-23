@@ -885,13 +885,15 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		
 		MInfoWindow infoWindow = MInfoWindow.get(200024, trxName);	// Create lines from Invoice
 		String tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
-		String sql = "SELECT C_OrderLine_ID, CreditQty FROM " + tableName + " WHERE C_Order_ID=? ";
+		String sql = "SELECT C_OrderLine_ID, CreditQty, Qty FROM " + tableName + " WHERE C_Order_ID=? ";
 		List<Object> data = DB.getSQLValueObjectsEx(trxName, sql, order.getC_Order_ID());
-		assertEquals(data.size(), 2);
+		assertEquals(data.size(), 3);
 		int C_OrderLine_ID = ((BigDecimal) data.get(0)).intValue();
 		BigDecimal CreditQty = (BigDecimal) data.get(1);
+		BigDecimal Qty = (BigDecimal) data.get(2);
 		assertEquals(line.getC_OrderLine_ID(), C_OrderLine_ID);
 		assertEquals(new BigDecimal("2"), CreditQty);
+		assertEquals(new BigDecimal("0"), Qty);
 
 		MInvoiceLine creditMemoLine = new MInvoiceLine(creditMemo);
 		creditMemoLine.setOrderLine(line);
