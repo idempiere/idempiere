@@ -2859,29 +2859,29 @@ public class MPayment extends X_C_Payment
 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(getCtx(), getC_Payment_ID(), get_TrxName());
 		if (allocations.length > 0) {
-			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentWithAllocLine@"); // ~ Can't reactivate / Payment is allocated
+			m_processMsg = Msg.parseTranslation(getCtx(), "PaymentReactivationFailedAllocationLine");
 			return false;
 		}
 
 		StringBuilder sql = new StringBuilder("SELECT 1 FROM C_BankStatement bs WHERE bs.AD_Client_ID = ?")
 		.append(" AND EXISTS (SELECT C_BankStatement_ID FROM C_BankStatementLine bsl WHERE bs.C_BankStatement_ID = bsl.C_BankStatement_ID AND bsl.C_Payment_ID = ?)");
 		if (DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_Client_ID(), getC_Payment_ID()) == 1) {
-			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnBankStatementLine@"); // ~ Can't reactivate / Payment is used on a bank statement
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedBankStatementLine");
 			return false;
 		}
 
 		if (getC_BankTransfer_ID() > 0) {
-			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentIsPartOfBankTransfer@"); // ~ Can't reactivate / Payment is used in a bank transfer
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedBankTransfer");
 			return false;
 		}
 
 		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_DunningRunLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
-			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnDunningLine@"); // ~ Can't reactivate / Payment is used on a dunning run
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedDunningLine");
 			return false;
 		}
 
 		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM R_Request WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
-			m_processMsg = Msg.parseTranslation(getCtx(), "@UnableReactivate@ \n @PaymentOnRequest@"); // ~ Can't reactivate / Payment is used on a request
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedRequest");
 			return false;
 		}
 
