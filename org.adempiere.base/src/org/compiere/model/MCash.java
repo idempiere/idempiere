@@ -827,7 +827,7 @@ public class MCash extends X_C_Cash implements DocAction
 		return sb.toString ();
 	}	//	toString
 	
-	/*************************************************************************
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */

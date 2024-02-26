@@ -22,7 +22,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
+@Deprecated
 public class MWebMenu extends X_U_WebMenu
 {
     /**

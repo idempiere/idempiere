@@ -315,8 +315,7 @@ public class CConnection implements Serializable, Cloneable
 		return m_version;
 	}	//	getServerVersion
 
-
-	/*************
+	/**
 	 *  Get Database Host name
 	 *  @return db host name
 	 */
@@ -1199,8 +1198,6 @@ public class CConnection implements Serializable, Cloneable
 	{
 		return m_dbException;
 	}
-
-	/*************************************************************************/
 
 	/**
 	 *  Get Application Server Initial Context

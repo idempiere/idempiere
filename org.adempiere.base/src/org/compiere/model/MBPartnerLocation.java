@@ -220,7 +220,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		return sb.toString();
 	} // toString
 
-	/**************************************************************************
+	/**
 	 * Before Save. - Set Name
 	 * 
 	 * @param newRecord

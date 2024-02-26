@@ -30,7 +30,7 @@ import org.compiere.util.Env;
 
 /**
  * 	Product Cost Model.
- *	Summarizes Info in MCost
+ *	Summarizes Info in MCost.
  *	
  *  @author Jorg Janke
  *  @version $Id: ProductCost.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
@@ -122,15 +122,14 @@ public class ProductCost
 	}   //  setQty
 
 	/**
-	 * 	
+	 * Get quantity in storage UOM	
 	 * @return qty
 	 */
 	public BigDecimal getQty() 
 	{
 		return m_qty;
 	}
-	
-	
+		
 	/** Product Revenue Acct    */
 	public static final int ACCTTYPE_P_Revenue      = 1;
 	/** Product Expense Acct    */
@@ -181,9 +180,9 @@ public class ProductCost
 	public static final int ACCTTYPE_P_LandedCostClearing = 24;
 
 	/**
-	 *  Line Account from Product
+	 *  Get Account from Product
 	 *
-	 *  @param  AcctType see ACCTTYPE_* (1..8)
+	 *  @param AcctType see ACCTTYPE_* (1..8)
 	 *  @param as Accounting Schema
 	 *  @return Requested Product Account
 	 */
@@ -241,9 +240,9 @@ public class ProductCost
 	}   //  getAccount
 
 	/**
-	 *  Account from Default Product Category
+	 *  Get Account from Default Product Category
 	 *
-	 *  @param  AcctType see ACCTTYPE_* (1..8)
+	 *  @param AcctType see ACCTTYPE_* (1..8)
 	 *  @param as accounting schema
 	 *  @return Requested Product Account
 	 */
@@ -296,9 +295,8 @@ public class ProductCost
 			return null;
 		return MAccount.get(as.getCtx(), validCombination_ID);
 	}   //  getAccountDefault
-	
-	
-	/**************************************************************************
+		
+	/**
 	 *  Get Total Costs (amt*qty) in Accounting Schema Currency
 	 *  @param as accounting schema
 	 *  @param AD_Org_ID trx org
@@ -337,6 +335,7 @@ public class ProductCost
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("ProductCost[");
@@ -348,6 +347,7 @@ public class ProductCost
 	}	//	toString
 	
 	/**
+	 * Set M_AttributeSetInstance_ID
 	 * @param M_AttributeSetInstance_ID the m_M_AttributeSetInstance_ID to set
 	 */
 	public void setM_M_AttributeSetInstance_ID(int M_AttributeSetInstance_ID) {

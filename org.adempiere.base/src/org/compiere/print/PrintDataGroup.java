@@ -53,8 +53,7 @@ public class PrintDataGroup
 	/** Map of group_function column & function	*/
 	private HashMap<String,PrintDataFunction>	m_groupFunction = new HashMap<String,PrintDataFunction>();
 
-	
-	/**************************************************************************
+	/**
 	 * 	Add Group Column
 	 * 	@param AD_PrintFormatItem_ID group column
 	 */
@@ -64,8 +63,8 @@ public class PrintDataGroup
 	}	//	addGroup
 
 	/**
-	 * 	Get Grouyp Column Count.
-	 *  TOTAL is included as a column
+	 * 	Get Group Column Count.
+	 *  TOTAL is included as a column.
 	 * 	@return number of groups
 	 */
 	public int getGroupColumnCount()
@@ -74,9 +73,9 @@ public class PrintDataGroup
 	}	//	getGroupColumnCount
 
 	/**
-	 * 	Column has a function
+	 * 	Is group column
 	 * 	@param AD_PrintFormatItem_ID column or TOTAL
-	 * 	@return true if column has function
+	 * 	@return true if it is a group column 
 	 */
 	public boolean isGroupColumn (int AD_PrintFormatItem_ID)
 	{
@@ -87,7 +86,8 @@ public class PrintDataGroup
 	 * 	Check for Group Change
 	 * 	@param AD_PrintFormatItem_ID group column
 	 * 	@param value column value
-	 * 	@return null if no group change otherwise old value
+	 *  @param force
+	 * 	@return null if no group change, otherwise old value
 	 */
 	public Object groupChange (int AD_PrintFormatItem_ID, Object value, boolean force)
 	{
@@ -108,9 +108,8 @@ public class PrintDataGroup
 		m_groupMap.put(AD_PrintFormatItem_ID, newValue);
 		return null;
 	}	//	groupChange
-
 	
-	/**************************************************************************
+	/**
 	 * 	Add Function Column
 	 * 	@param AD_PrintFormatItem_ID column
 	 * 	@param function function
@@ -130,9 +129,9 @@ public class PrintDataGroup
 	}	//	addFunction
 
 	/**
-	 * 	Column has a function
+	 * 	Is function column
 	 * 	@param AD_PrintFormatItem_ID column
-	 * 	@return true if column has function
+	 * 	@return true if it is a function column
 	 */
 	public boolean isFunctionColumn (int AD_PrintFormatItem_ID)
 	{
@@ -140,9 +139,9 @@ public class PrintDataGroup
 	}	//	isFunctionColumn
 
 	/**
-	 * 	Get calculated functions of column
+	 * 	Get applicable functions of a group column
 	 *  @param groupId group column or TOTAL
-	 * 	@return array of functions
+	 * 	@return array of applicable functions
 	 */
 	public char[] getFunctions(int groupId)
 	{
@@ -169,15 +168,14 @@ public class PrintDataGroup
 		char[] retValue = new char[list.size()];
 		for (int i = 0; i < retValue.length; i++)
 			retValue[i] = list.get(i);
-	//	log.finest( "PrintDataGroup.getFunctions for " + columnName + "/" + retValue.length, new String(retValue));
 		return retValue;
 	}	//	getFunctions
 
 	/**
-	 * 	Column has a function
+	 * 	Is Column has a function
 	 * 	@param AD_PrintFormatItem_ID column
-	 *  @param function function
-	 * 	@return true if column has function
+	 *  @param function function constant (F_*)
+	 * 	@return true if column has a function
 	 */
 	public boolean isFunctionColumn (int AD_PrintFormatItem_ID, char function)
 	{
@@ -194,9 +192,8 @@ public class PrintDataGroup
 		}
 		return false;
 	}	//	isFunctionColumn
-
 	
-	/**************************************************************************
+	/**
 	 * 	Add Value to groups
 	 * 	@param functionColumnId function column
 	 * 	@param functionValue value
@@ -222,7 +219,7 @@ public class PrintDataGroup
 	 * 	Get Value
 	 * 	@param groupId group column (or TOTAL)
 	 * 	@param functionColumnId function column
-	 * 	@param function function
+	 * 	@param function function constant (F_*)
 	 * 	@return value
 	 */
 	public Serializable getValue (int groupId, int functionColumnId,
@@ -248,10 +245,11 @@ public class PrintDataGroup
 			pdf.reset();
 	}	//	reset
 	
-	/**************************************************************************
+	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		return toString(false);

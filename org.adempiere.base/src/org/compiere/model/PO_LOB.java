@@ -28,9 +28,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Trx;
 
 /**
- * 	Persistent Object LOB.
- * 	Allows to store LOB remotely
- * 	Currently Oracle specific!
+ * 	Helper class for saving and loading of LOB.
  *	
  *  @author Jorg Janke
  *  @version $Id: PO_LOB.java,v 1.2 2006/07/30 00:58:04 jjanke Exp $
@@ -38,7 +36,7 @@ import org.compiere.util.Trx;
 public class PO_LOB implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -325477490976139224L;
 
@@ -101,7 +99,6 @@ public class PO_LOB implements Serializable
 
 	/**
 	 * 	Save LOB.
-	 * 	see also org.compiere.session.ServerBean#updateLOB
 	 * 	@param trxName trx name
 	 *	@return true if saved
 	 */
@@ -238,12 +235,12 @@ public class PO_LOB implements Serializable
 		
 		return success;
 	}	//	save
-
 	
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("PO_LOB[");

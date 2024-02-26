@@ -77,9 +77,8 @@ public class MProductBOM extends X_M_Product_BOM
 	/** Static Logger					*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MProductBOM.class);
-
 	
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_Product_BOM_ID id

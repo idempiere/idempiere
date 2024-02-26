@@ -35,16 +35,16 @@ import org.compiere.util.Util;
 public class MTimeExpenseLine extends X_S_TimeExpenseLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3580618153284679385L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param S_TimeExpenseLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_TimeExpenseLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTimeExpenseLine(Properties ctx, String S_TimeExpenseLine_UU, String trxName) {
         super(ctx, S_TimeExpenseLine_UU, trxName);
 		if (Util.isEmpty(S_TimeExpenseLine_UU))
@@ -112,11 +112,10 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 
 	/**	Currency of Report			*/
 	private int m_C_Currency_Report_ID = 0;
-
 	
 	/**
 	 * 	Get Qty Invoiced
-	 *	@return entered or qty
+	 *	@return QtyInvoiced or Qty if QtyInvoiced is zero
 	 */
 	public BigDecimal getQtyInvoiced ()
 	{
@@ -128,7 +127,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 
 	/**
 	 * 	Get Qty Reimbursed
-	 *	@return entered or qty
+	 *	@return QtyReimbursed or Qty if QtyReimbursed is zero
 	 */
 	public BigDecimal getQtyReimbursed ()
 	{
@@ -137,11 +136,10 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			return getQty();
 		return bd;
 	}	//	getQtyReimbursed
-	
-	
+		
 	/**
 	 * 	Get Price Invoiced
-	 *	@return entered or invoice price
+	 *	@return PriceInvoiced or InvoicePrice if PriceInvoiced is zero 
 	 */
 	public BigDecimal getPriceInvoiced ()
 	{
@@ -153,7 +151,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	
 	/**
 	 * 	Get Price Reimbursed
-	 *	@return entered or converted amt
+	 *	@return PriceReimbursed or converted amt if PriceReimbursed is zero
 	 */
 	public BigDecimal getPriceReimbursed ()
 	{
@@ -162,8 +160,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			return getConvertedAmt();
 		return bd;
 	}	//	getPriceReimbursed
-	
-	
+		
 	/**
 	 * 	Get Approval Amt
 	 *	@return qty * converted amt
@@ -172,11 +169,10 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	{
 		return getQty().multiply(getConvertedAmt());
 	}	//	getApprovalAmt
-	
-	
+		
 	/**
 	 * 	Get C_Currency_ID of Report (Price List)
-	 *	@return currency
+	 *	@return C_Currency_ID of Report (if set) or C_Currency_ID of header
 	 */
 	public int getC_Currency_Report_ID()
 	{
@@ -196,7 +192,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	{
 		m_C_Currency_Report_ID = C_Currency_ID;
 	}	//	getC_Currency_Report_ID
-
 	
 	/**
 	 * 	Before Save.
@@ -204,6 +199,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -246,6 +242,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (success)
@@ -288,13 +285,13 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		}
 		return success;
 	}	//	afterSave
-	
-	
+		
 	/**
 	 * 	After Delete
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)
@@ -319,7 +316,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	
 	/**
 	 * 	Update Header.
-	 * 	Set Approved Amount
+	 * 	Set Approved Amount.
 	 */
 	private void updateHeader()
 	{

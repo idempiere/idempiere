@@ -16,12 +16,10 @@
  *****************************************************************************/
 package org.compiere.model;
 
-
 /**
  *  List all hardcoded ID used in the code
  *  @author Carlos Ruiz, Nicolas Micoud, ...
  */
-
 public class SystemIDs 
 {
 	public final static int COLUMN_AD_WF_ACTIVITY_AD_USER_ID = 10443;	

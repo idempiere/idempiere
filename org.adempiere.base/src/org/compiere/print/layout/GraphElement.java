@@ -27,11 +27,13 @@ import org.compiere.print.MPrintGraph;
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: GraphElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 public class GraphElement extends PrintElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1723609598698053387L;
 

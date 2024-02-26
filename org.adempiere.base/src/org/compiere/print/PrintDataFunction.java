@@ -25,7 +25,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
 /**
- * Print Data Function
+ * Print Data Function (Sum, Count, Average, etc) Node
  *
  * @author 	Jorg Janke
  * @version $Id: PrintDataFunction.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -41,7 +41,6 @@ public class PrintDataFunction
 	public PrintDataFunction ()
 	{
 	}	//	PrintDataFunction
-
 
 	/** The Sum				*/
 	private BigDecimal	m_sum = Env.ZERO;
@@ -74,7 +73,6 @@ public class PrintDataFunction
 	static public final char		F_VARIANCE = 'V';	//	sigma square
 	/** Deviation	*/
 	static public final char		F_DEVIATION = 'D';	//	sigma
-
 
 	/** Function Keys							*/
 	static private final char[]		FUNCTIONS = new char[]
@@ -126,7 +124,7 @@ public class PrintDataFunction
 
 	/**
 	 * 	Get Function Value
-	 *  @param function function
+	 *  @param function function constant (F_*)
 	 *  @return function value
 	 */
 	public Serializable getValue(char function)
@@ -200,6 +198,7 @@ public class PrintDataFunction
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("[")
@@ -212,11 +211,9 @@ public class PrintDataFunction
 		return sb.toString();
 	}	//	toString
 
-	/*************************************************************************/
-
 	/**
-	 * 	Get Function Symbol of function
-	 * 	@param function function
+	 * 	Get Symbol of function
+	 * 	@param function function constant (F_*)
 	 * 	@return function symbol
 	 */
 	static public String getFunctionSymbol (char function)
@@ -230,8 +227,8 @@ public class PrintDataFunction
 	}	//	getFunctionSymbol
 
 	/**
-	 * 	Get Function Name of function
-	 * 	@param function function
+	 * 	Get Name of function
+	 * 	@param function function constant (F_*)
 	 * 	@return function name
 	 */
 	static public String getFunctionName (char function)
@@ -246,9 +243,9 @@ public class PrintDataFunction
 
 	/**
 	 * Get DisplayType of function
-	 * @param function function
+	 * @param function function constant (F_*)
 	 * @param displayType columns display type
-	 * @return function name
+	 * @return display type for function
 	 */
 	static public int getFunctionDisplayType (char function, int displayType)
 	{

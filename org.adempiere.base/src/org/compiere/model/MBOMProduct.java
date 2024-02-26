@@ -77,7 +77,7 @@ public class MBOMProduct extends X_M_BOMProduct
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_BOMProduct_ID id

@@ -535,7 +535,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 				menues[i].setDescription(getDescription());
 				menues[i].saveEx();
 			}
-			MWFNode[] nodes = MWindow.getWFNodes(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
+			MWFNode[] nodes = MWFNode.getWFNodes(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
 			for (int i = 0; i < nodes.length; i++)
 			{
 				boolean changed = false;

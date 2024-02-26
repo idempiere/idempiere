@@ -26,32 +26,30 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
- *	User overrides for window model
+ *	User, role, organization or tenant overrides of window model
  *  @author Dirk Niemeyer, action42 GmbH
  *  @version $Id$
- *  
  */
 public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7542708120229671875L;
 	private static final Map<Integer, List<MUserDefWin>> m_fullMap = new HashMap<Integer, List<MUserDefWin>>();
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Win_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Win_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefWin(Properties ctx, String AD_UserDef_Win_UU, String trxName) {
         super(ctx, AD_UserDef_Win_UU, trxName);
     }
 
 	/**
 	 * 	Standard constructor.
-	 * 	You must implement this constructor for Adempiere Persistency
 	 *	@param ctx context
 	 *	@param ID the primary key ID
 	 *	@param trxName transaction
@@ -62,11 +60,7 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	}	//	MUserDefWin
 
 	/**
-	 * 	Optional Load Constructor.
-	 * 	You would use this constructor to load several business objects.
-	 *  <code>
-	 * 	SELECT * FROM MyModelExample WHERE ...
-	 *  </code> 
+	 * 	Load Constructor.
 	 *  @param ctx context
 	 *  @param rs result set
 	 *	@param trxName transaction
@@ -77,7 +71,7 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	}	//	MUserDefWin
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MUserDefWin(MUserDefWin copy) 
@@ -86,7 +80,7 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -96,7 +90,7 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -108,7 +102,7 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	}
 	
 	/**
-	 *  Get all MUserDefWin entries related to window
+	 *  Get all MUserDefWin entries for a window
 	 * 	@param ctx context
 	 *  @param window_ID window
 	 *  @return Array of MUserDefWin for window
@@ -149,11 +143,11 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Get best matching MUserDefWin for current window
-	 * the best match is cached
+	 * Get best matching MUserDefWin for a window, 
+	 * the best match is cached.
 	 * @param ctx
 	 * @param window_ID
-	 * @return best matching MUserDefWin
+	 * @return best matching MUserDefWin or null
 	 */
 	public static MUserDefWin getBestMatch (Properties ctx, int window_ID)
 	{
@@ -269,6 +263,4 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 		makeImmutable();
 		return this;
 	}
-
-
 }	//	MUserDefWin

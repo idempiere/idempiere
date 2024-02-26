@@ -495,9 +495,8 @@ public final class FactLine extends X_Fact_Acct
 		super.setM_Locator_ID (M_Locator_ID);
 		setAD_Org_ID(0);	//	reset
 	}   //  setM_Locator_ID
-
 	
-	/**************************************************************************
+	/**
 	 *  Set Location
 	 *  @param C_Location_ID location
 	 *  @param isFrom true - from, false - to.

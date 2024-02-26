@@ -57,8 +57,8 @@ import bsh.EvalError;
 import bsh.Interpreter;
 
 /**
- * Data Engine.
- * Creates SQL and loads data into PrintData (including totals/etc.)
+ * Data Engine.<br/>
+ * Creates SQL and loads data into PrintData (including totals/etc).
  *
  * @author 	Jorg Janke
  * @version 	$Id: DataEngine.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -77,7 +77,7 @@ import bsh.Interpreter;
  * @author Paul Bowden (phib)
  * 				<li> BF 2908435 Virtual columns with lookup reference types can't be printed
  *                   https://sourceforge.net/p/adempiere/bugs/2246/
- *  @contributor  Fernandinho (FAIRE)
+ * @contributor  Fernandinho (FAIRE)
  *  				- http://jira.idempiere.com/browse/IDEMPIERE-153
  */
 public class DataEngine
@@ -140,7 +140,7 @@ public class DataEngine
 
 	private Map<Object, Object> m_summarized = new HashMap<Object, Object>();
 
-	/**************************************************************************
+	/**
 	 * 	Load Data
 	 *
 	 * 	@param format print format
@@ -153,7 +153,7 @@ public class DataEngine
 		return getPrintData(ctx, format, query, false);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Load Data
 	 *
 	 * 	@param format print format
@@ -243,10 +243,9 @@ public class DataEngine
 		loadPrintData(pd, format);
 		return pd;
 	}	//	getPrintData
-
 	
-	/**************************************************************************
-	 * 	Create Load SQL and update PrintData Info
+	/**
+	 * 	Construct Load Data SQL and create new PrintData instance
 	 *
 	 * 	@param ctx context
 	 * 	@param format print format
@@ -806,7 +805,7 @@ public class DataEngine
 	}	//	getPrintDataInfo
 
 	/**
-	 *	Next Synonym.
+	 *	Next Synonym.<br/>
 	 * 	Creates next synonym A..Z AA..ZZ AAA..ZZZ
 	 */
 	private void synonymNext()
@@ -880,9 +879,8 @@ public class DataEngine
 		}
 		return tr;
 	}	//  getTableReference
-
 	
-	/**************************************************************************
+	/**
 	 * 	Load Data into PrintData
 	 * 	@param pd print data with SQL and ColumnInfo set
 	 *  @param format print format
@@ -1114,7 +1112,7 @@ public class DataEngine
 							}
                             // fix bug [ 1755592 ] Printing time in format
                             else if (pdc.getDisplayType() == DisplayType.DateTime)
-{
+                            {
                                 Timestamp datetime = rs.getTimestamp(counter++);
                                 pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), datetime, pdc.getDisplayType(), pdc.getFormatPattern());
                             }
@@ -1347,7 +1345,7 @@ public class DataEngine
 	}
 	
 	/**
-	 * Parse expression, replaces @tag@ with pdc values and/or execute functions
+	 * Parse expression, replaces @tag@ with column value (COL/) or pdc value (ACCUMULATE/ or LINE)
 	 * @param expression
 	 * @param pdc
 	 * @param pd
@@ -1425,26 +1423,20 @@ public class DataEngine
 
 		return outStr.toString();
 	}
-	
-	/*************************************************************************
-	 * 	Test
-	 * 	@param args args
+
+	/**
+	 * Get window no
+	 * @return window no
 	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startup(true);
-
-		@SuppressWarnings("unused")
-		DataEngine de = new DataEngine(Language.getLanguage("de_DE"));
-		MQuery query = new MQuery();
-		query.addRestriction("AD_Table_ID", MQuery.LESS, 105);
-	}
-
 	public int getWindowNo()
 	{
 		return m_windowNo;
 	}
 
+	/**
+	 * Set window no
+	 * @param windowNo
+	 */
 	public void setWindowNo(int windowNo)
 	{
 		this.m_windowNo = windowNo;

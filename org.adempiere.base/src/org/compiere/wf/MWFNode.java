@@ -805,4 +805,19 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Get workflow nodes with where clause.
+	 * @param ctx context
+	 * @param whereClause where clause w/o the WHERE keyword
+	 * @param trxName transaction
+	 * @return array of workflow nodes
+	 */
+	public static MWFNode[] getWFNodes (Properties ctx, String whereClause, String trxName)
+	{		
+		List<MWFNode> list = new Query(ctx,Table_Name,whereClause,trxName)
+		.list();
+		MWFNode[] retValue = new MWFNode[list.size()];
+		list.toArray (retValue);
+		return retValue;
+	}	//	getWFNodes
 }

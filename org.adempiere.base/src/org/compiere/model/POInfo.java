@@ -38,7 +38,7 @@ import org.compiere.util.Env;
 
 /**
  *  Persistent Object Info.
- *  Provides structural information
+ *  Provides structural information.
  *
  *  @author Jorg Janke
  *  @version $Id: POInfo.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
@@ -49,13 +49,12 @@ import org.compiere.util.Env;
 public class POInfo implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6346988499971159874L;
 
-	/** Used by Remote FinReport			*/
 	/**
-	 *  POInfo Factory
+	 *  POInfo Factory Method
 	 *  @param ctx context
 	 *  @param AD_Table_ID AD_Table_ID
 	 *  @return POInfo
@@ -66,11 +65,11 @@ public class POInfo implements Serializable
 	}
 	
 	/**
-	 *  POInfo Factory
+	 *  POInfo Factory Method
 	 *  @param ctx context
 	 *  @param AD_Table_ID AD_Table_ID
 	 *  @param trxName Transaction name
-	 *  @return POInfo
+	 *  @return POInfo instance
 	 */
 	public static synchronized POInfo getPOInfo (Properties ctx, int AD_Table_ID, String trxName)
 	{
@@ -91,7 +90,7 @@ public class POInfo implements Serializable
 	/** Cache of POInfo     */
 	private static CCache<Integer,POInfo>  s_cache = new CCache<Integer,POInfo>(I_AD_Table.Table_Name, "POInfo", 200, 0, false, 0);
 	
-	/**************************************************************************
+	/**
 	 *  Create Persistent Info
 	 *  @param ctx context
 	 *  @param AD_Table_ID AD_ Table_ID
@@ -102,7 +101,7 @@ public class POInfo implements Serializable
 		this(ctx, AD_Table_ID, baseLanguageOnly, null);
 	}
 	
-	/**************************************************************************
+	/**
 	 *  Create Persistent Info
 	 *  @param ctx context
 	 *  @param AD_Table_ID AD_ Table_ID
@@ -138,8 +137,8 @@ public class POInfo implements Serializable
 	private Boolean m_IsTranslated = null;
 
 	/**
-	 *  Load Table/Column Info
-	 * 	@param baseLanguage in English
+	 *  Load Table and Column Info
+	 * 	@param baseLanguage true to load data in base language
 	 *  @param trxName
 	 */
 	private void loadInfo (boolean baseLanguage, String trxName)
@@ -243,13 +242,14 @@ public class POInfo implements Serializable
 	 *  String representation
 	 *  @return String Representation
 	 */
+	@Override
 	public String toString()
 	{
 		return "POInfo[" + getTableName() + ",AD_Table_ID=" + getAD_Table_ID() + "]";
 	}   //  toString
 
 	/**
-	 *  String representation for index
+	 *  String representation for column
 	 * 	@param index column index
 	 *  @return String Representation
 	 */
@@ -280,7 +280,7 @@ public class POInfo implements Serializable
 
 	/**
 	 * 	Table has a Key Column
-	 *	@return true if has a key column
+	 *	@return true if table has a key column
 	 */
 	public boolean hasKeyColumn()
 	{
@@ -296,7 +296,7 @@ public class POInfo implements Serializable
 		return m_AccessLevel;
 	}	//	getAccessLevel
 	
-	/**************************************************************************
+	/**
 	 *  Get ColumnCount
 	 *  @return column count
 	 */
@@ -322,7 +322,7 @@ public class POInfo implements Serializable
 	/**
 	 *  Get Column Index
 	 *  @param AD_Column_ID column
-	 *  @return index of column with ColumnName or -1 if not found
+	 *  @return index of column with AD_Column_ID or -1 if not found
 	 */
 	public int getColumnIndex (int AD_Column_ID)
 	{
@@ -334,6 +334,7 @@ public class POInfo implements Serializable
 	}   //  getColumnIndex
 	
 	/**
+	 * Get AD_Column_ID
 	 * @param columnName
 	 * @return AD_Column_ID if found, -1 if not found
 	 */
@@ -348,9 +349,9 @@ public class POInfo implements Serializable
 	}
 
 	/**
-	 *  Get Column
-	 *  @param index index
-	 *  @return column
+	 *  Get Column Info
+	 *  @param index column index
+	 *  @return column info
 	 */
 	protected POInfoColumn getColumn (int index)
 	{
@@ -361,8 +362,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column Name
-	 *  @param index index
-	 *  @return ColumnName column name
+	 *  @param index column index
+	 *  @return column name
 	 */
 	public String getColumnName (int index)
 	{
@@ -373,8 +374,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column SQL or Column Name
-	 *  @param index index
-	 *  @return ColumnSQL column sql or name
+	 *  @param index column index
+	 *  @return column sql or column name
 	 */
 	public String getColumnSQL (int index)
 	{
@@ -390,7 +391,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Virtual?
-	 *  @param index index
+	 *  @param index column index
 	 *  @return true if column is virtual
 	 */
 	public boolean isVirtualColumn (int index)
@@ -403,7 +404,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Virtual DB?
-	 *  @param index index
+	 *  @param index column index
 	 *  @return true if column is virtual DB
 	 */
 	public boolean isVirtualDBColumn (int index)
@@ -412,7 +413,8 @@ public class POInfo implements Serializable
 			return true;
 		return m_columns[index].ColumnSQL != null 
 			&& m_columns[index].ColumnSQL.length() > 0
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
+			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
+			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualDBColumn
 
 	/**
@@ -445,7 +447,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column Label
-	 *  @param index index
+	 *  @param index column index
 	 *  @return column label
 	 */
 	public String getColumnLabel (int index)
@@ -457,7 +459,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column Description
-	 *  @param index index
+	 *  @param index column index
 	 *  @return column description
 	 */
 	public String getColumnDescription (int index)
@@ -469,7 +471,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column Class
-	 *  @param index index
+	 *  @param index column index
 	 *  @return Class
 	 */
 	public Class<?> getColumnClass (int index)
@@ -481,7 +483,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column Display Type
-	 *  @param index index
+	 *  @param index column index
 	 *  @return DisplayType
 	 */
 	public int getColumnDisplayType (int index)
@@ -493,7 +495,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column Default Logic
-	 *  @param index index
+	 *  @param index column index
 	 *  @return Default Logic
 	 */
 	public String getDefaultLogic (int index)
@@ -505,8 +507,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Mandatory
-	 *  @param index index
-	 *  @return true if column mandatory
+	 *  @param index column index
+	 *  @return true if column is mandatory
 	 */
 	public boolean isColumnMandatory (int index)
 	{
@@ -517,8 +519,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Updateable
-	 *  @param index index
-	 *  @return true if column updateable
+	 *  @param index column index
+	 *  @return true if column is updateable
 	 */
 	public boolean isColumnUpdateable (int index)
 	{
@@ -529,8 +531,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Set Column Updateable
-	 *  @param index index
-	 *  @param updateable column updateable
+	 *  @param index column index
+	 *  @param updateable
 	 */
 	public void setColumnUpdateable (int index, boolean updateable)
 	{
@@ -541,7 +543,7 @@ public class POInfo implements Serializable
 
 	/**
 	 * 	Set all columns updateable
-	 * 	@param updateable updateable
+	 * 	@param updateable
 	 */
 	public void setUpdateable (boolean updateable)
 	{
@@ -551,7 +553,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Lookup Column
-	 *  @param index index
+	 *  @param index column index
 	 *  @return true if it is a lookup column
 	 */
 	public boolean isColumnLookup (int index)
@@ -563,8 +565,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Lookup
-	 *  @param index index
-	 *  @return Lookup
+	 *  @param index column index
+	 *  @return Lookup or null
 	 */
 	public Lookup getColumnLookup (int index)
 	{
@@ -592,8 +594,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Key
-	 *  @param index index
-	 *  @return true if column is the key
+	 *  @param index column index
+	 *  @return true if column is a key column
 	 */
 	public boolean isKey (int index)
 	{
@@ -604,8 +606,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Parent
-	 *  @param index index
-	 *  @return true if column is a Parent
+	 *  @param index column index
+	 *  @return true if column is a Parent column
 	 */
 	public boolean isColumnParent (int index)
 	{
@@ -616,7 +618,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column Translated
-	 *  @param index index
+	 *  @param index column index
 	 *  @return true if column is translated
 	 */
 	public boolean isColumnTranslated (int index)
@@ -647,7 +649,7 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Is Column (data) Encrypted
-	 *  @param index index
+	 *  @param index column index
 	 *  @return true if column is encrypted
 	 */
 	public boolean isEncrypted (int index)
@@ -658,7 +660,8 @@ public class POInfo implements Serializable
 	}   //  isEncrypted
 
 	/**
-	 * @param index
+	 * Is column secure
+	 * @param index column index
 	 * @return true if column is secure
 	 */
 	public boolean isSecure(int index)
@@ -671,8 +674,7 @@ public class POInfo implements Serializable
 	/**
 	 * Is allowed logging on this column
 	 * 
-	 * @param index
-	 *            index
+	 * @param index column index
 	 * @return true if column is allowed to be logged
 	 */
 	public boolean isAllowLogging(int index) {
@@ -684,8 +686,7 @@ public class POInfo implements Serializable
 	/**
 	 * Is allowed copying this column
 	 * 
-	 * @param index
-	 *            index
+	 * @param index column index
 	 * @return true if column is allowed to be copied
 	 */
 	public boolean isAllowCopy(int index) {
@@ -696,8 +697,8 @@ public class POInfo implements Serializable
 
 	/**
 	 *  Get Column FieldLength
-	 *  @param index index
-	 *  @return field length
+	 *  @param index column index
+	 *  @return field length or 0
 	 */
 	public int getFieldLength (int index)
 	{
@@ -721,10 +722,10 @@ public class POInfo implements Serializable
 	}
 	
 	/**
-	 *  Validate Content
-	 *  @param index index
-	 * 	@param value new Value
-	 *  @return null if all valid otherwise error message
+	 *  Validate value 
+	 *  @param index column index
+	 * 	@param value value to validate
+	 *  @return null if valid, otherwise error message
 	 */
 	public String validate (int index, Object value)
 	{
@@ -879,14 +880,20 @@ public class POInfo implements Serializable
 	}
 
 	/**
-	 * 
-	 * @return if table save log
+	 * Is save changes to change log table
+	 * @return if table save change log
 	 */
 	public boolean isChangeLog()
 	{
 		return m_IsChangeLog;
 	}
 	
+	/**
+	 * Read object from ois (for serialization)
+	 * @param ois
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	private void readObject(ObjectInputStream ois)
 			throws ClassNotFoundException, IOException {
 	    // default deserialization

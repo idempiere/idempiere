@@ -20,21 +20,21 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /**
+ * Extended model class for AD_ToolBarButton
  * @author hengsin
- *
  */
 public class MToolBarButton extends X_AD_ToolBarButton {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7909388573996489685L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ToolBarButton_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ToolBarButton_UU  UUID key
+     * @param trxName Transaction
+     */
     public MToolBarButton(Properties ctx, String AD_ToolBarButton_UU, String trxName) {
         super(ctx, AD_ToolBarButton_UU, trxName);
     }
@@ -57,6 +57,12 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * Get process buttons (toolbar button with AD_Process_ID) of tab
+	 * @param AD_Tab_ID
+	 * @param trxName
+	 * @return array of toolbar button model
+	 */
 	public static MToolBarButton[] getProcessButtonOfTab(int AD_Tab_ID, String trxName) {
 		MToolBarButton[] buttons = new MToolBarButton[0];
 
@@ -72,6 +78,12 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		return buttons;
 	}
 
+	/**
+	 * Get toolbar buttons via action name
+	 * @param action action name
+	 * @param trxName
+	 * @return array of toolbar button model
+	 */
 	public static MToolBarButton[] getToolbarButtons(String action, String trxName) {
 		MToolBarButton[] buttons = new MToolBarButton[0];
 
@@ -87,6 +99,10 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		return buttons;
 	}
 	
+	/**
+	 * Get advanced window toolbar button (Action=W)
+	 * @return array of toolbar button model
+	 */
 	public static MToolBarButton[] getWindowAdvancedButtons() {
 		MToolBarButton[] buttons = new MToolBarButton[0];
 		
@@ -100,6 +116,10 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		return buttons;
 	}
 	
+	/**
+	 * Is search query button
+	 * @return true if it is search query button
+	 */
 	public boolean isSearchQueryComponent() {
 		return "b01e8ec6-1a3c-4f94-928b-4582e2c33f81".equals(getAD_ToolBarButton_UU());
 	}

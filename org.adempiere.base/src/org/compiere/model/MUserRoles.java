@@ -33,7 +33,7 @@ import org.compiere.util.Msg;
 public class MUserRoles extends X_AD_User_Roles
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2957269818448823135L;
 
@@ -74,20 +74,19 @@ public class MUserRoles extends X_AD_User_Roles
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MUserRoles.class);
-
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_User_Roles_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_User_Roles_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserRoles(Properties ctx, String AD_User_Roles_UU, String trxName) {
         super(ctx, AD_User_Roles_UU, trxName);
     }
 
-	/**************************************************************************
-	 * 	Persistence Constructor
+	/**
+	 * 	New Record Constructor
 	 *	@param ctx context
 	 *	@param ignored invalid
 	 *	@param trxName transaction

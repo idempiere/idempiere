@@ -23,9 +23,8 @@ import org.compiere.Adempiere;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Util;
 
-
 /**
- *	
+ *  Extended model class for AD_Window_Access
  *	
  *  @author Jorg Janke
  *  @version $Id: MWindowAccess.java,v 1.4 2006/07/30 00:54:54 jjanke Exp $
@@ -33,16 +32,16 @@ import org.compiere.util.Util;
 public class MWindowAccess extends X_AD_Window_Access
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7056606424817652079L;
 
 	/**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Window_Access_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Window_Access_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWindowAccess(Properties ctx, String AD_Window_Access_UU, String trxName) {
         super(ctx, AD_Window_Access_UU, trxName);
 		if (Util.isEmpty(AD_Window_Access_UU))

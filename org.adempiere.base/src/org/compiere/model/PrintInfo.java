@@ -19,7 +19,6 @@ package org.compiere.model;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Util;
 
-
 /**
  *	Print Info
  *	
@@ -29,7 +28,6 @@ import org.compiere.util.Util;
 public class PrintInfo
 {
 	/**
-	 * 	Process Archive Info
 	 *	@param pi process info
 	 */
 	public PrintInfo (ProcessInfo pi)
@@ -43,7 +41,6 @@ public class PrintInfo
 	
 	
 	/**
-	 * 	Document Archive Info
 	 *	@param Name name
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -55,7 +52,6 @@ public class PrintInfo
 	}
 
 	/**
-	 * 	Document Archive Info
 	 *	@param Name name
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record ID
@@ -72,7 +68,6 @@ public class PrintInfo
 	}	//	ArchiveInfo
 
 	/**
-	 * 	Report Archive Info
 	 *	@param Name name
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -83,7 +78,6 @@ public class PrintInfo
 	}
 
 	/**
-	 * 	Report Archive Info
 	 *	@param Name name
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record ID
@@ -97,7 +91,7 @@ public class PrintInfo
 		setRecord_UU(Record_UU);
 	}	//	PrintInfo
 	
-	boolean m_withDialog = false;
+	protected boolean m_withDialog = false;
 	private int m_copies = 1;
 	private boolean m_isDocumentCopy = false;
 	private String m_printerName = null;
@@ -110,8 +104,7 @@ public class PrintInfo
 	private int m_Record_ID = 0;
 	private String m_Record_UU = null;
 	private int m_C_BPartner_ID = 0;
-	
-	
+		
 	/**
 	 * 	Is this a Report
 	 *	@return true if report
@@ -130,15 +123,16 @@ public class PrintInfo
 	{
 		return m_C_BPartner_ID != 0;
 	}	//	isDocument
-	
-	
+		
 	/**
-	 * @return Returns the copies.
+	 * Get number of copies
+	 * @return number of copies.
 	 */
 	public int getCopies ()
 	{
 		return m_copies;
 	}
+	
 	/**
 	 * @param copies The copies to set.
 	 */
@@ -146,34 +140,43 @@ public class PrintInfo
 	{
 		m_copies = copies;
 	}
+	
 	/**
-	 * @return Returns the printerName.
+	 * Get printer name
+	 * @return printerName.
 	 */
 	public String getPrinterName ()
 	{
 		return m_printerName;
 	}
+	
 	/**
+	 * Set printer name
 	 * @param printerName The printerName to set.
 	 */
 	public void setPrinterName (String printerName)
 	{
 		m_printerName = printerName;
 	}
+	
 	/**
-	 * @return Returns the withDialog.
+	 * Is with print dialog
+	 * @return true if it is withDialog.
 	 */
 	public boolean isWithDialog ()
 	{
 		return m_withDialog;
 	}
+	
 	/**
+	 * Set is with print dialog
 	 * @param withDialog The withDialog to set.
 	 */
 	public void setWithDialog (boolean withDialog)
 	{
 		m_withDialog = withDialog;
 	}
+	
 	/**
 	 * @param isDocumentCopy The isDocument to set.
 	 */
@@ -181,63 +184,76 @@ public class PrintInfo
 	{
 		m_isDocumentCopy = isDocumentCopy;
 	}
+	
 	/**
-	 * 	Document Copy
+	 * 	Is Document Copy
 	 *	@return true if copy
 	 */
 	public boolean isDocumentCopy()
 	{
 		return m_isDocumentCopy;
-	}	//	isDocument
+	}
+	
 	/**
-	 * @return Returns the aD_Process_ID.
+	 * Get AD_Process_ID
+	 * @return AD_Process_ID.
 	 */
 	public int getAD_Process_ID ()
 	{
 		return m_AD_Process_ID;
 	}
+	
 	/**
-	 * @param process_ID The aD_Process_ID to set.
+	 * @param process_ID The AD_Process_ID to set.
 	 */
 	public void setAD_Process_ID (int process_ID)
 	{
 		m_AD_Process_ID = process_ID;
 	}
+	
 	/**
-	 * @return Returns the aD_Table_ID.
+	 * Get AD_Table_ID.
+	 * @return AD_Table_ID.
 	 */
 	public int getAD_Table_ID ()
 	{
 		return m_AD_Table_ID;
 	}
+	
 	/**
-	 * @param table_ID The aD_Table_ID to set.
+	 * @param table_ID The AD_Table_ID to set.
 	 */
 	public void setAD_Table_ID (int table_ID)
 	{
 		m_AD_Table_ID = table_ID;
 	}
+	
 	/**
-	 * @return Returns the c_BPartner_ID.
+	 * Get C_BPartner_ID
+	 * @return C_BPartner_ID.
 	 */
 	public int getC_BPartner_ID ()
 	{
 		return m_C_BPartner_ID;
 	}
+	
 	/**
-	 * @param partner_ID The c_BPartner_ID to set.
+	 * @param partner_ID The C_BPartner_ID to set.
 	 */
 	public void setC_BPartner_ID (int partner_ID)
 	{
 		m_C_BPartner_ID = partner_ID;
 	}
+	
 	/**
-	 * @return Returns the description.
+	 * Get description
+	 * @return description.
 	 */
 	public String getDescription ()
 	{
 		return m_Description;
 	}
+	
 	/**
 	 * @param description The description to set.
 	 */
@@ -245,13 +261,16 @@ public class PrintInfo
 	{
 		m_Description = description;
 	}
+	
 	/**
-	 * @return Returns the help.
+	 * Get help text
+	 * @return help text.
 	 */
 	public String getHelp ()
 	{
 		return m_Help;
 	}
+	
 	/**
 	 * @param help The help to set.
 	 */
@@ -259,8 +278,10 @@ public class PrintInfo
 	{
 		m_Help = help;
 	}
+	
 	/**
-	 * @return Returns the name.
+	 * Get name
+	 * @return name.
 	 */
 	public String getName ()
 	{
@@ -268,6 +289,7 @@ public class PrintInfo
 			return"Unknown";
 		return m_Name;
 	}
+	
 	/**
 	 * @param name The name to set.
 	 */
@@ -275,29 +297,35 @@ public class PrintInfo
 	{
 		m_Name = name;
 	}
+	
 	/**
-	 * @return Returns the record_ID.
+	 * Get Record_ID
+	 * @return Record_ID
 	 */
 	public int getRecord_ID ()
 	{
 		return m_Record_ID;
 	}
+	
 	/**
-	 * @param record_ID The record_ID to set.
+	 * @param record_ID The Record_ID to set.
 	 */
 	public void setRecord_ID (int record_ID)
 	{
 		m_Record_ID = record_ID;
 	}
+	
 	/**
+	 * Get Record_UU
 	 * @return Returns the record_UU.
 	 */
 	public String getRecord_UU ()
 	{
 		return m_Record_UU;
 	}
+	
 	/**
-	 * @param record_UU The record_UU to set.
+	 * @param record_UU The Record_UU to set.
 	 */
 	public void setRecord_UU (String record_UU)
 	{
@@ -308,6 +336,7 @@ public class PrintInfo
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("PrintInfo[");
