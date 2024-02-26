@@ -33,6 +33,14 @@ when detect side effect, fix to only apply for parameter window*/
 .report-option-container {
 	overflow-x: auto;
 }
+
+/* Chromium based browsers + Safari */
+@supports (not (-moz-appearance: none)) {
+	.report-option-container {
+		height: 100% !important;
+	}
+}
+
 .top-parameter-layout{
 	overflow: auto;
 	padding-bottom: 2vh;
