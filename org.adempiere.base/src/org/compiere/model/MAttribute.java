@@ -360,7 +360,7 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, multiSelectionValue, multiSelectionDisplayValue,
 					get_TrxName());
 		else
-			instance.setValueMultipleSelection(multiSelectionValue, multiSelectionDisplayValue);
+			instance.setMultiSelectValueAndDisplay(multiSelectionValue, multiSelectionDisplayValue);
 		instance.saveEx();
 	}// setMAttributeInstanceMultiSelection
 

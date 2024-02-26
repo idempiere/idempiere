@@ -177,7 +177,7 @@ public class MAttributeInstance extends X_M_AttributeInstance
 			String trxName)
 	{
 		this(ctx, M_Attribute_ID, M_AttributeSetInstance_ID, trxName);
-		setValueMultipleSelection(multiSelectValue, multiSelectDisplayValue);
+		setMultiSelectValueAndDisplay(multiSelectValue, multiSelectDisplayValue);
 	} // MAttributeInstance
 
 	/**
@@ -283,8 +283,8 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	 * @param value - comma separated IDs
 	 * @param displayValue - comma separated display values
 	 */
-	public void setValueMultipleSelection(String value, String displayValue) {
-		super.setValueMultipleSelection(value);
+	public void setMultiSelectValueAndDisplay(String value, String displayValue) {
+		setValueMultipleSelection(value);
 		setValue(displayValue);
 	}
 

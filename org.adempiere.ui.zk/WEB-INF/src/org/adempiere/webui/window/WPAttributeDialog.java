@@ -567,7 +567,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private void addAttributeLine (Rows rows, MAttribute attribute, boolean product, boolean readOnly)
 	{
-//		Env.setContext(Env.getCtx(), m_WindowNo, MAttribute.COLUMNNAME_M_Attribute_ID, attribute.getM_Attribute_ID());
 		if (log.isLoggable(Level.FINE)) log.fine(attribute + ", Product=" + product + ", R/O=" + readOnly);
 		
 		m_row++;
