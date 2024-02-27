@@ -24,6 +24,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -443,7 +445,8 @@ public class DataEngine
 					// Warning here: Oracle treats empty strings '' as NULL and the code below checks for wasNull on this column
 					.append("' '").append(" AS \"").append(pfiName).append("\",");
 					//
-					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, -1, pfiName, DisplayType.Text, FieldLength, orderName, isPageBreak);
+					int scriptDisplayType = getDisplayTypeFromPattern(formatPattern);
+					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, -1, pfiName, scriptDisplayType, FieldLength, orderName, isPageBreak);
 					synonymNext();
 				}
 				//	-- Parent, TableDir (and unqualified Search) --
@@ -804,6 +807,31 @@ public class DataEngine
 		}
 		return pd;
 	}	//	getPrintDataInfo
+
+	/**
+	 * Try to determine the display type from a pattern
+	 * - try a DecimalFormat if the pattern contains any of the characters # 0
+	 * - try a SimpleDateFormat if the pattern contains any of the characters y M d h H m s S
+	 * - otherwise (or if the format is not valid) return Text
+	 * @param pattern
+	 * @return DateTime for a SimpleDateFormat, Number for a DecimalFormat, otherwise Text
+	 */
+	private int getDisplayTypeFromPattern(String pattern) {
+		if (! Util.isEmpty(pattern, true)) {
+ 			if (pattern.matches(".*[#0].*")) {
+ 		        try {
+ 	                new DecimalFormat(pattern);
+ 	                return DisplayType.Number;
+	            } catch (Exception ex) {}
+ 			} else if (pattern.matches(".*[yMdhHmsS].*")) {
+	            try {
+		            new SimpleDateFormat(pattern);
+		            return DisplayType.DateTime;
+	            } catch (Exception ex) {}
+	        }
+		}
+        return DisplayType.Text;
+    }
 
 	/**
 	 *	Next Synonym.
