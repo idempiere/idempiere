@@ -68,8 +68,8 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import org.compiere.model.SystemIDs;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -78,6 +78,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -587,6 +588,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			editor = WebEditorFactory.getEditor(getDateGridField(attribute), true);
 		}
+		else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+			editor = WebEditorFactory.getEditor(getMultiSelectionListTypeGridField(attribute), true);
+		}
 		else // Text Field
 		{
 			editor = WebEditorFactory.getEditor(getStringGridField(attribute), true);
@@ -695,20 +699,39 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	/**
 	 * @param attribute
-	 * @return GridField for DisplayType.TableDir
+	 * @param displayType
+	 * @return GridField for given displayType
 	 */
-	public GridField getListTypeGridField(MAttribute attribute)
+	private GridField getGridFieldForDisplayType(MAttribute attribute, int displayType)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
-				"M_AttributeValue_ID", attribute.getName(), DisplayType.TableDir, 0, false, false, null);
-
+		        "M_AttributeValue_ID", attribute.getName(), displayType, 0, false, false, null);
+		
 		// Validation for List - Attribute Values
 		vo.ValidationCode = "M_AttributeValue.M_Attribute_ID=" + attribute.get_ID();
 		vo.lookupInfo.ValidationCode = vo.ValidationCode;
 		vo.lookupInfo.IsValidated = false;
 
 		return createGridField(attribute, vo);
+	} // getGridFieldForDisplayType
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.TableDir
+	 */
+	private GridField getListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.TableDir);
 	} // getListTypeGridField
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.ChosenMultipleSelectionTable
+	 */
+	private GridField getMultiSelectionListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.ChosenMultipleSelectionTable);
+	} // getMultiSelectionListTypeGridField
 
 	/**
 	 * Create GridField
@@ -749,6 +772,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			{
 				if (instance.getM_AttributeValue_ID() > 0)
 					editor.setValue(instance.getM_AttributeValue_ID());
+			}
+			else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+				if (!Util.isEmpty(instance.getValueMultipleSelection()))
+					editor.setValue(instance.getValueMultipleSelection());
 			}
 			else
 			{
@@ -1161,6 +1188,16 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				else if(MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attributes[i].getAttributeValueType()))
 				{
 					setEditorValue(mandatory, attributes[i], m_editors.get(i));
+				}
+				else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attributes[i].getAttributeValueType()))
+				{
+					WEditor editor = m_editors.get(i);
+					String value = editor.getValue() != null ? String.valueOf(editor.getValue()) : null;
+					String displayValue = editor.getDisplay() != null ? editor.getDisplay() : value;
+					if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
+					if (attributes[i].isMandatory() && (value == null || value.length() == 0))
+						mandatory += " - " + attributes[i].getName();
+					attributes[i].setMAttributeInstanceMultiSelection(m_M_AttributeSetInstance_ID, value, displayValue);
 				}
 				else
 				{
