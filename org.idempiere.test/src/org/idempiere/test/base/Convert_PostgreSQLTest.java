@@ -22,6 +22,7 @@ import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Unit testing for Convert_PostgreSQL. 
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @version 20061225
  */
 @Execution(ExecutionMode.SAME_THREAD)
+@Isolated
 public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	//private Convert_PostgreSQL convert = new Convert_PostgreSQL();
 	String sql;
