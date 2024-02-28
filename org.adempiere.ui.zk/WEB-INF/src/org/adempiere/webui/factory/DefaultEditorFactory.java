@@ -30,6 +30,7 @@ import org.adempiere.webui.editor.WFileDirectoryEditor;
 import org.adempiere.webui.editor.WFilenameEditor;
 import org.adempiere.webui.editor.WHtmlEditor;
 import org.adempiere.webui.editor.WImageEditor;
+import org.adempiere.webui.editor.WJsonEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WLocatorEditor;
 import org.adempiere.webui.editor.WNumberEditor;
@@ -240,6 +241,10 @@ public class DefaultEditorFactory implements IEditorFactory {
 		else if (displayType == DisplayType.RecordUU)
         {
         	editor = new WRecordUUIDEditor(gridField, tableEditor, editorConfiguration);
+        }
+		else if (displayType == DisplayType.JSON)
+        {
+        	editor = new WJsonEditor(gridField, tableEditor, editorConfiguration);
         }
         else
         {

@@ -66,6 +66,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMEZONE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_UUID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_JSON;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -196,8 +197,9 @@ public final class DisplayType
 	public static final int RecordID = REFERENCE_DATATYPE_RECORD_ID;
 	
 	public static final int RecordUU = REFERENCE_DATATYPE_RECORD_UU;
-	
 
+	public static final int JSON  = REFERENCE_DATATYPE_JSON;
+	
 	public static final int TimestampWithTimeZone = REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
 	
 	public static final int TimeZoneId = REFERENCE_DATATYPE_TIMEZONE;
@@ -972,6 +974,8 @@ public final class DisplayType
 				s_customDisplayTypeNegativeCache.put(customTypeKey, Boolean.TRUE);
 			}
 		}
+		else if (displayType == JSON)
+			return String.class;
 		//
 		return Object.class;
 	}   //  getClass
@@ -1044,7 +1048,9 @@ public final class DisplayType
 				return getDatabase().getNumericDataType()+"(10)";
 			else
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
-		}		
+		}
+		if (displayType == DisplayType.JSON)
+			return getDatabase().getJsonDataType();
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 		if (cache != null) {

@@ -536,7 +536,30 @@ public class DB_Oracle implements AdempiereDatabase
         }
         return result.toString();
     }   //  TO_NUMBER
+    
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast () {
+		return "parse_json(?)";
+	}
 
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as json
+	 */
+	public String TO_JSON (String value)
+	{
+		if (value == null)
+			return "NULL";
+
+		StringBuilder retValue = null;
+		retValue = new StringBuilder("parse_json(");
+		retValue.append(value);
+		retValue.append(")");
+		return retValue.toString();
+	}
 
     /**
      *  Get SQL Commands.
@@ -1025,6 +1048,11 @@ public class DB_Oracle implements AdempiereDatabase
 	@Override
 	public String getClobDataType() {
 		return "CLOB";
+	}
+	
+	@Override
+	public String getJsonDataType() {
+		return "JSON";
 	}
 
 	@Override
