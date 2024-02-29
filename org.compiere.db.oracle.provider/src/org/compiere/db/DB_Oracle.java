@@ -541,7 +541,7 @@ public class DB_Oracle implements AdempiereDatabase
 	 *	@return string with right casting for JSON inserts
 	 */
 	public String getJSONCast () {
-		return "parse_json(?)";
+		return "json(?)";
 	}
 
 	/**
@@ -555,7 +555,7 @@ public class DB_Oracle implements AdempiereDatabase
 			return "NULL";
 
 		StringBuilder retValue = null;
-		retValue = new StringBuilder("parse_json(");
+		retValue = new StringBuilder("json(");
 		retValue.append(value);
 		retValue.append(")");
 		return retValue.toString();
