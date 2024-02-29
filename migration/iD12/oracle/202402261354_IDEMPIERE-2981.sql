@@ -20,3 +20,7 @@ ALTER TABLE Test ADD JsonData JSON DEFAULT NULL
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208472,'JSON Data','The json field stores json data.',152,216570,'Y',100,310,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2024-02-26 13:56:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-02-26 13:56:08','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','e47ef529-71ba-4f9b-9014-b188e17e8ef4','Y',290,5)
 ;
 
+-- Feb 29, 2024, 1:52:50 PM CET
+UPDATE AD_Field SET NumLines=5,Updated=TO_TIMESTAMP('2024-02-29 13:52:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208472
+;
+
