@@ -1,6 +1,7 @@
 package org.adempiere.webui.editor;
 
 import org.compiere.model.GridField;
+import org.compiere.util.Util;
 
 
 public class WJsonEditor extends WStringEditor {
@@ -25,6 +26,14 @@ public class WJsonEditor extends WStringEditor {
         super(gridField, tableEditor, editorConfiguration);
         getComponent().setMultiline(true);
         setChangeEventWhenEditing(false);
+    }
+    
+    @Override
+    public void setValue(Object value) {
+    	super.setValue(value);
+    	
+    	if (value != null && !Util.isEmpty(value.toString()))
+    		getComponent().setValue(Util.prettifyJSONString(value.toString()));
     }
     
 }

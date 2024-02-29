@@ -24,3 +24,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 UPDATE AD_Field SET NumLines=5,Updated=TO_TIMESTAMP('2024-02-29 13:52:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208472
 ;
 
+-- Feb 29, 2024, 2:07:30 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Invalid JSON',0,0,'Y',TO_TIMESTAMP('2024-02-29 14:07:30','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-02-29 14:07:30','YYYY-MM-DD HH24:MI:SS'),100,200876,'InvalidJSON','D','a263376f-a12e-4943-92f1-7d7ce8a67a2b')
+;
+
