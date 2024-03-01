@@ -34,6 +34,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.AdempiereSystemError;
@@ -202,6 +203,8 @@ public class PackInApplicationActivator extends AbstractActivator{
 					statusUpdate(message);
 				}
 				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, client.getAD_Client_ID());
+				Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, SystemIDs.ROLE_SYSTEM);
+				Env.setContext(Env.getCtx(), Env.AD_USER_ID, SystemIDs.USER_SYSTEM);
 				try {
 				    // call 2pack
 					if (service != null) {
@@ -218,6 +221,8 @@ public class PackInApplicationActivator extends AbstractActivator{
 					return false;
 				} finally {
 					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+					Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, (String)null);
+					Env.setContext(Env.getCtx(), Env.AD_USER_ID, (String)null);
 				}
 				logger.warning(packinFile.getPath() + " installed");
 			}
