@@ -1,3 +1,9 @@
+-- IDEMPIERE-5943 Implement table partitioning support
+SELECT register_migration_script('202402041000_IDEMPIERE-5943.sql') FROM dual;
+
+DROP FUNCTION IF EXISTS altercolumn(name, name, name, character varying, character varying, name)
+;
+
 CREATE OR REPLACE FUNCTION altercolumn(tablename name, columnname name, datatype name, nullclause character varying, defaultclause character varying)
  RETURNS void
  LANGUAGE plpgsql
@@ -141,12 +147,3 @@ begin
    end if;
 end;
 $function$
-
-/*
-create table t_alter_column
-( tablename name, columnname name, datatype name, nullclause varchar(10), defaultclause varchar(200));
-
-create rule alter_column_rule as on insert to t_alter_column
-do instead select altercolumn(new.tablename, new.columnname, new.datatype, new.nullclause,
-new.defaultclause);
-*/

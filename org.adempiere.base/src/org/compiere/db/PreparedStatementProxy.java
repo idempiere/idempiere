@@ -15,6 +15,7 @@ package org.compiere.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
@@ -80,6 +81,11 @@ public class PreparedStatementProxy extends StatementProxy {
 			p_stmt = conn.prepareStatement(p_vo.getSql(), p_vo
 					.getResultSetType(), p_vo.getResultSetConcurrency());
 		} catch (Exception e) {
+			try {
+				this.close();
+			} catch (SQLException e1) {
+				// ignore
+			}
 			log.log(Level.SEVERE, p_vo.getSql(), e);
 			throw new DBException(e);
 		}

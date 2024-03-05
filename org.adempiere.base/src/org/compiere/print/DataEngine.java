@@ -1398,7 +1398,11 @@ public class DataEngine
 				Object tokenPDE = pd.getNode(token);
 				if (tokenPDE == null)
 					return "\"Item not found: " + token + "\"";
-				Object value = ((PrintDataElement)tokenPDE).getValue();
+				Object value;
+				if (token.endsWith("_ID") || token.endsWith("_UU"))
+					value = ((PrintDataElement)tokenPDE).getValueKey();
+				else
+					value = ((PrintDataElement)tokenPDE).getValue();
 				outStr.append(value);
 			}
 			else if (token.equals("LINE"))
