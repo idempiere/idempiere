@@ -65,7 +65,6 @@ import org.compiere.model.MAttributeValue;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLot;
 import org.compiere.model.MLotCtl;
-import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
 import org.compiere.model.SystemIDs;
@@ -85,8 +84,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
@@ -193,9 +190,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected Textbox fieldLotString = new Textbox();
 	protected Listbox fieldLot = new Listbox();
 	protected Button bLot = new Button(Msg.getMsg (Env.getCtx(), "New"));
-	//	Lot Popup
-	protected Menupopup 		popupMenu = new Menupopup();
-	protected Menuitem 			mZoom;
 	//	Ser No
 	protected Textbox fieldSerNo = new Textbox();
 	protected Button bSerNo = new Button(Msg.getMsg (Env.getCtx(), "New"));
@@ -462,16 +456,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 					LayoutUtils.addSclass("txt-btn", bLot);
 				}
 			}
-			//	Popup 
-			mZoom = new Menuitem(Msg.getMsg(Env.getCtx(), "Zoom"), ThemeManager.getThemeResource("images/Zoom16.png"));
-			if(ThemeManager.isUseFontIconForImage()) {
-				mZoom.setIconSclass("z-icon-Zoom");
-				mZoom.setImage("");
-			}
-
-			mZoom.addEventListener(Events.ON_CLICK, this);
-			popupMenu.appendChild(mZoom);
-			this.appendChild(popupMenu);
 		}	//	Lot
 
 		//	SerNo
@@ -875,11 +859,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			onCancel();
 		}
-		//	Zoom M_Lot
-		else if (e.getTarget() == mZoom)
-		{
-			cmd_zoom();
-		}
 		else
 			log.log(Level.SEVERE, "not found - " + e);
 	}	//	actionPerformed
@@ -1043,22 +1022,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			editor.setReadWrite(rw);
 		}	
 	}	//	cmd_newEdit
-
-	/**
-	 * 	Zoom M_Lot
-	 */
-	private void cmd_zoom()
-	{
-		int M_Lot_ID = 0;
-		ListItem pp = fieldLot.getSelectedItem();
-		if (pp != null)
-			M_Lot_ID = (Integer) pp.getValue();
-		MQuery zoomQuery = new MQuery("M_Lot");
-		zoomQuery.addRestriction("M_Lot_ID", MQuery.EQUAL, M_Lot_ID);
-		log.info(zoomQuery.toString());
-		//
-		//TODO: to port
-	}	//	cmd_zoom
 
 	/**
 	 *	Save Selection
