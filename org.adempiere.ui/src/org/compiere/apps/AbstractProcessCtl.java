@@ -331,13 +331,6 @@ public abstract class AbstractProcessCtl implements Runnable
 		else if(pi.getTransientObject() != null && pi.getTransientObject() instanceof MPrintFormat) {
 			return ((MPrintFormat) pi.getTransientObject()).getAD_PrintFormat_ID();
 		}
-		// find for table and process
-		if(pi.getAD_Process_ID() > 0 && pinstance.getAD_Table_ID() > 0) {
-			String sqlWhere = "JasperProcess_ID = ? AND AD_Table_ID = ?";
-			return new Query(Env.getCtx(), MPrintFormat.Table_Name, sqlWhere, null)
-					.setParameters(pi.getAD_Process_ID(), pinstance.getAD_Table_ID())
-					.firstId();
-		}
 		return -1;
 	}
 	
