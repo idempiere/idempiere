@@ -378,7 +378,7 @@ public final class LayoutUtils {
 	 * @param window
 	 * @param ownWindow
 	 * @param mask if mask = null, make new and return it
-	 * @return {@link Mask} objec for hiden mask when close window.
+	 * @return {@link Mask} object for hidden mask when close window.
 	 */
 	public static Mask showWindowWithMask(Window window, Component ownWindow, Mask mask){
 		if (mask == null){

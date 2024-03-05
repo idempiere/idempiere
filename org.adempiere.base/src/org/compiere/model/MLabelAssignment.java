@@ -87,10 +87,13 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	/**
 	 * Check if record has any label assigned
 	 * @param Table_ID
+	 * @param Record_ID
 	 * @param Record_UU
 	 * @return true if record has any label assigned
 	 */
-	public static boolean hasAnyAssignment(int Table_ID, String Record_UU) {
+	public static boolean hasAnyAssignment(int Table_ID, int Record_ID, String Record_UU) {
+		if (Util.isEmpty(Record_UU))
+			return hasAnyAssignment(Table_ID, Record_ID);
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_UU=?";
 		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
 		return counter > 0;

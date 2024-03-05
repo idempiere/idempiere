@@ -19,31 +19,31 @@ package org.compiere.wf;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.Adempiere;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Workflow_Access;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Util;
 
-
 /**
- *	Worflow Access Model
+ *	Extended Workflow Access Model for AD_Workflow_Access
  *	
  *  @author Jorg Janke
  *  @version $Id: MWorkflowAccess.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MWorkflowAccess extends X_AD_Workflow_Access
 {
-
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2598861248782340850L;
+	private static final long serialVersionUID = -4496940668011091889L;
 
-    /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Workflow_Access_UU  UUID key
-    * @param trxName Transaction
-    */
+	/**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Workflow_Access_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWorkflowAccess(Properties ctx, String AD_Workflow_Access_UU, String trxName) {
         super(ctx, AD_Workflow_Access_UU, trxName);
 		if (Util.isEmpty(AD_Workflow_Access_UU))
@@ -98,5 +98,30 @@ public class MWorkflowAccess extends X_AD_Workflow_Access
 		setAD_Workflow_ID(parent.getAD_Workflow_ID());
 		setAD_Role_ID (AD_Role_ID);
 	}	//	MWorkflowAccess
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MWorkflowAccess

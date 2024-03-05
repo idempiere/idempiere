@@ -194,7 +194,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
             	log.warning(msg);
             }
 
-            // Refresh the list on dependant fields
+            // Refresh the list on dependent fields
     		for (GridField dependentField : l_gridTab.getDependantFields(mField.getColumnName()))
     		{
     			//  if the field has a lookup

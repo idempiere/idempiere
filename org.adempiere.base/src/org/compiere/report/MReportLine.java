@@ -97,7 +97,7 @@ public class MReportLine extends X_PA_ReportLine
 		loadSources();
 	}	//	MReportLine
 
-	/**	Containt Sources				*/
+	/**	Contained Sources				*/
 	private MReportSource[]		m_sources = null;
 	/** Cache result					*/
 	private String				m_whereClause = null;

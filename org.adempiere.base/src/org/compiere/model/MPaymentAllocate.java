@@ -93,7 +93,7 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 	private MInvoice	m_invoice = null;
 	
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName trx

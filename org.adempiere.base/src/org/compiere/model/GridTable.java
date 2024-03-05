@@ -2157,7 +2157,7 @@ public class GridTable extends AbstractTableModel
 		//	Tab R/O
 		if (m_readOnly)
 		{
-			fireDataStatusEEvent("AccessCannotDelete", "", true);	//	previleges
+			fireDataStatusEEvent("AccessCannotDelete", "", true);	//	privileges
 			return false;
 		}
 

@@ -61,7 +61,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
- *  Abstract base class for posting document.
+ *  Abstract base class for posting of accounting document.
  *
  *  <pre>
  *  Table               Base Document Types (C_DocType.DocBaseType and AD_Reference_ID=183)

@@ -337,12 +337,12 @@ s in which a component is used.
     public static final String COLUMNNAME_QtyBOM = "QtyBOM";
 
 	/** Set Quantity.
-	  * Indicate the Quantity  use in this BOM
+	  * Indicate the Quantity use in this BOM
 	  */
 	public void setQtyBOM (BigDecimal QtyBOM);
 
 	/** Get Quantity.
-	  * Indicate the Quantity  use in this BOM
+	  * Indicate the Quantity use in this BOM
 	  */
 	public BigDecimal getQtyBOM();
 

@@ -64,10 +64,10 @@ import org.idempiere.cache.POCopyCache;
  */
 public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -8937680640915708588L;
+	private static final long serialVersionUID = 7266911648463503849L;
 
 	/**
 	 * 	Get role for current session/context
@@ -95,7 +95,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
 		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 
-		MRole defaultRole = getDefaultRole(); 
+		MRole defaultRole = getDefaultRole(ctx, AD_Role_ID, AD_User_ID); 
 		if (reload || defaultRole == null)
 		{
 			defaultRole = get (ctx, AD_Role_ID, AD_User_ID, reload);
@@ -124,7 +124,24 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * @return MRole
 	 */
 	private static MRole getDefaultRole() {
-		return (MRole) Env.getCtx().get(ROLE_KEY);
+		return getDefaultRole(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
+	}
+
+	/**
+	 * Get role for current session/context
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_User_ID
+	 * @return MRole
+	 */
+	private static MRole getDefaultRole(Properties ctx, int AD_Role_ID, int AD_User_ID) {
+		MRole role = (MRole) ctx.get(ROLE_KEY);
+		String key = AD_Role_ID + "_" + AD_User_ID;
+		if (! s_roles.containsKey(key)) {
+			ctx.remove(ROLE_KEY);
+			role = null;
+		}
+		return role;
 	}
 
 	/**
@@ -467,11 +484,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		//
 		else if (is_ValueChanged("UserLevel"))
 			updateAccessRecords();
-		
-		//	Default Role changed
-		if (getDefaultRole() != null 
-			&& getDefaultRole().get_ID() == get_ID())
-			setDefaultRole(this);
+
 		return success;
 	}	//	afterSave
 	
@@ -843,7 +856,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_User_ID());
-			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
+			pstmt.setInt(2, getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -875,7 +888,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_Role_ID());
-			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
+			pstmt.setInt(2, getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -2214,7 +2227,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (includes.size() == 0 && excludes.size() == 0)
 			return "";
 		if (includes.size() != 0 && excludes.size() != 0)
-			log.warning("Mixing Include and Excluse rules - Will not return values");
+			log.warning("Mixing Include and Exclude rules - Will not return values");
 		
 		StringBuilder where = new StringBuilder(" AND ");
 		if (includes.size() == 1)
@@ -2269,7 +2282,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (c == '.')
 		{
 			StringBuilder sb = new StringBuilder();
-			while (c != ' ' && c != ',' && c != '(')	//	delimeter
+			while (c != ' ' && c != ',' && c != '(')	//	delimiter
 			{
 				sb.insert(0, c);
 				c = mainSql.charAt(--offset);
@@ -2527,6 +2540,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				sb.append(keyColumnName).append(lockedIDs).append(") ");
 			}
 		}
+
+		for (MTableValRule tvr : MTableValRule.get(p_ctx, AD_Table_ID, Env.getAD_Client_ID(p_ctx), Env.getAD_Role_ID(p_ctx), Env.getAD_User_ID(p_ctx))) {
+			if (sb.length() > 0)
+				sb.append(" AND ");
+			String wherevr = Env.parseContext(p_ctx, 0, tvr.getCode(), false);
+			sb.append(" (").append(wherevr).append(") ");
+		}
+
 		//
 		return sb.toString();
 	}	//	getRecordWhere

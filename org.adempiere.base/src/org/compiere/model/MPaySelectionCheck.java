@@ -160,7 +160,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 			psl.saveEx();
 		} else {
 			// globalqss - CarlosRuiz - fix bug [ 1803054 ] Empty Remittance lines on payments
-			// look for existance of C_PaymentAllocate records
+			// look for existence of C_PaymentAllocate records
 			//	Allocate to multiple Payments based on entry
 			MPaymentAllocate[] pAllocs = MPaymentAllocate.get(payment);
 			if (pAllocs.length != 0) {

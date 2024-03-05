@@ -25,7 +25,7 @@ import org.osgi.service.http.HttpContext;
  * The Http Service also requires a ServletContext namespaced by each individual HttpContext. The ProxyContext provides support for the
  * attribute map of a ServletContext again namespaced by HttpContext as specified in the Http Service specification. The ContextAttributes
  * are reference counted so that when the HttpContext is no longer referenced the associated context attributes can be
- * garbage collected and the context temp dir deleteted.
+ * garbage collected and the context temp dir deleted.
  */
 public class ProxyContext {
 	private static final String JAVAX_SERVLET_CONTEXT_TEMPDIR = "javax.servlet.context.tempdir"; //$NON-NLS-1$
@@ -86,7 +86,7 @@ public class ProxyContext {
 	/**
 	 * deleteDirectory is a convenience method to recursively delete a directory
 	 * @param directory - the directory to delete.
-	 * @return was the delete succesful
+	 * @return was the delete successful
 	 */
 	protected static boolean deleteDirectory(File directory) {
 		if (directory.exists() && directory.isDirectory()) {

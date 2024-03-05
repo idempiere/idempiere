@@ -258,7 +258,7 @@ public abstract class Convert_SQL92 extends Convert {
 						.append(" ON (").append(second.getCondition());
 					joins.remove(j);                            //  remove from join list
 					fromAlias.remove(second.getJoinAlias());    //  remove from table list
-					//  additional join colums would come here
+					//  additional join columns would come here
 					newFrom.append(")");    //  close ON
 					//----
 					for (int k = i+1; k < joins.size(); k++)
@@ -281,7 +281,7 @@ public abstract class Convert_SQL92 extends Convert {
 								.append(" ON (").append(third.getCondition());
 							joins.remove(k);                            //  remove from join list
 							fromAlias.remove(third.getJoinAlias());     //  remove from table list
-							//  additional join colums would come here
+							//  additional join columns would come here
 							newFrom.append(")");    //  close ON
 						}
 						else if (trace)

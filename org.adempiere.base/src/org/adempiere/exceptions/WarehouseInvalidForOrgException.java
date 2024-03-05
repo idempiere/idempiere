@@ -15,7 +15,6 @@
  *****************************************************************************/
 package org.adempiere.exceptions;
 
-
 /**
  * Throw when there is no Warehouse for Organization.
  * @author victor.perez@e-evolution.com, www.e-evolution.com

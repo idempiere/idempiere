@@ -29,7 +29,7 @@ import java.util.Properties;
 public class MReplication extends X_AD_Replication
 {
 	/**
-	 * geneated serial id
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -562186299848949607L;
 

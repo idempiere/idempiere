@@ -32,7 +32,7 @@ import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Workflow Node Next - Transition
+ *	Extended Workflow Node Next model for AD_WF_NodeNext
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MWFNodeNext.java,v 1.3 2006/10/06 00:42:24 jjanke Exp $
@@ -40,16 +40,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5965306487040965994L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_WF_NodeNext_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_NodeNext_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWFNodeNext(Properties ctx, String AD_WF_NodeNext_UU, String trxName) {
         super(ctx, AD_WF_NodeNext_UU, trxName);
 		if (Util.isEmpty(AD_WF_NodeNext_UU))
@@ -57,7 +57,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
     }
 
 	/**
-	 * 	Standard Costructor
+	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_WF_NodeNext_ID id
 	 *	@param trxName transaction
@@ -105,7 +105,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	}	//	MWFNodeNext
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MWFNodeNext(MWFNodeNext copy) 
@@ -114,7 +114,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -124,7 +124,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -159,6 +159,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MWFNodeNext[");
@@ -171,11 +172,10 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 		sb.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
-	/*************************************************************************
+		
+	/**
 	 * 	Get Conditions
-	 * 	@param requery true if requery
+	 * 	@param requery true to reload from DB
 	 *	@return Array of Conditions
 	 */
 	public MWFNextCondition[] getConditions(boolean requery)
@@ -258,22 +258,21 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 		if (log.isLoggable(Level.FINE)) log.fine("isValidFor (" + ok + ") " + toString());
 		return ok;
 	}	//	isValidFor
-	
-	
+		
 	/**
 	 * 	Split Element is AND
-	 * 	@return Returns the from Split And.
+	 * 	@return true if this is from Split And.
 	 */
 	public boolean isFromSplitAnd()
 	{
 		if (m_fromSplitAnd != null)
 			return m_fromSplitAnd.booleanValue();
 		return false;
-	}	//	getFromSplitAnd
+	}	//	isFromSplitAnd
 
 	/**
 	 * 	Split Element is AND.
-	 * 	Set by MWFNode.loadNodes
+	 * 	Set by MWFNode.loadNodes.
 	 *	@param fromSplitAnd The from Split And
 	 */
 	public void setFromSplitAnd (boolean fromSplitAnd)
@@ -283,7 +282,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 
 	/**
 	 * 	Join Element is AND
-	 *	@return Returns the to Join And.
+	 *	@return true if this is to join and
 	 */
 	public boolean isToJoinAnd ()
 	{
@@ -317,7 +316,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 		return this;
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if it can be saved

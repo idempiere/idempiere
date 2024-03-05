@@ -188,6 +188,7 @@ public class GridWindowVO implements Serializable
 			vo.IsSOTrx = window.isSOTrx();
 			Env.setContext(ctx, WindowNo, "IsSOTrx", vo.IsSOTrx);
 			vo.AD_Window_UU = window.getAD_Window_UU();
+			vo.EntityType = window.getEntityType();
 		}
 		else
 		{
@@ -322,7 +323,7 @@ public class GridWindowVO implements Serializable
 	public String		AD_Window_UU = "";
 	/** Name				*/
 	public	String		Name = "";
-	/** Desription			*/
+	/** Description			*/
 	public	String		Description = "";
 	/** Help				*/
 	public	String		Help = "";
@@ -345,6 +346,9 @@ public class GridWindowVO implements Serializable
 	public ArrayList<GridTabVO>	Tabs = null;
 	/** Base Table		*/
 	public int 			AD_Table_ID = 0;
+
+	/** Window Entity Type **/
+	public String		EntityType = null;
 
 	/** Qyery				*/
 	public static final String	WINDOWTYPE_QUERY = "Q";
@@ -392,6 +396,7 @@ public class GridWindowVO implements Serializable
 			clone.IsSOTrx = IsSOTrx;
 			Env.setContext(ctx, windowNo, "IsSOTrx", clone.IsSOTrx);
 			clone.AD_Table_ID = AD_Table_ID;
+			clone.EntityType = EntityType;
 			Env.setContext(ctx, windowNo, "BaseTable_ID", clone.AD_Table_ID);
 			//
 			clone.Tabs = new ArrayList<GridTabVO>();

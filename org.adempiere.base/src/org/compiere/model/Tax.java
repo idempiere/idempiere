@@ -312,7 +312,7 @@ public class Tax
 			rs = null; pstmt = null;
 		}
 
-		//	Reverese for PO
+		//	Reverse for PO
 		if (!IsSOTrx)
 		{
 			int temp = billFromC_Location_ID;

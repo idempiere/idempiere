@@ -2094,7 +2094,7 @@ let Store = /*#__PURE__*/function () {
    * @type {object}
    * @property {object} [render] render object
    * @property {boolean} [render.lazy=true] Make to not render at initialization (enabled by default when bind element's visibility is hidden).
-   * @property {boolean} [render.observe=true] Observe bind element's visibility(`display` or `visiblity` inline css property or class value) & render when is visible automatically (for IEs, only works IE11+). When set to **false**, call [`.flush()`](./Chart.html#flush) to render.
+   * @property {boolean} [render.observe=true] Observe bind element's visibility(`display` or `visibility` inline css property or class value) & render when is visible automatically (for IEs, only works IE11+). When set to **false**, call [`.flush()`](./Chart.html#flush) to render.
    * @see [Demo](https://naver.github.io/billboard.js/demo/#ChartOptions.LazyRender)
    * @example
    *  render: {
@@ -2116,7 +2116,7 @@ let Store = /*#__PURE__*/function () {
    *  document.getElementById('chart').style.display = 'block';  // (b)
    *
    * @example
-   *	// chart won't be rendered and not observing bind element's visiblity changes
+   *	// chart won't be rendered and not observing bind element's visibility changes
    *  var chart = bb.generate({
    *     render: {
    *          lazy: true,
@@ -3508,7 +3508,7 @@ var tooltip_this = undefined;
    *          //   yAxis: Current y Axis position value or function(the value is given for axis based chart type only)
    *          // }
    *
-   *          // yAxis will work differently per data lenghts
+   *          // yAxis will work differently per data lengths
    *          // - a) Single data: `yAxis` will return `number` value
    *          // - b) Multiple data: `yAxis` will return a function with property value
    *
@@ -14055,7 +14055,7 @@ let AxisRenderer = /*#__PURE__*/function () {
         tick: axisShow ? params.config[prefix + "_tick_show"] : !1,
         text: axisShow ? params.config[prefix + "_tick_text_show"] : !1
       }; // // get the axis' tick position configuration
-    // tick visiblity
+    // tick visibility
     let $g;
     g.each(function () {
       var _this = this;
@@ -16944,7 +16944,7 @@ function smoothLines(el, type) {
    */
   data_xs: {},
   /**
-   * Set a format specifier to parse string specifed as x.
+   * Set a format specifier to parse string specified as x.
    * @name data․xFormat
    * @memberof Options
    * @type {string}
@@ -19848,7 +19848,7 @@ function getAttrTweenFn(fn) {
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned functino from .generateDrawCandlestick()
+   * @param {Function} drawFn Returned function from .generateDrawCandlestick()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -20046,7 +20046,7 @@ function getAttrTweenFn(fn) {
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned function from .getDrawShape() => .generateDrawBar()
+   * @param {Function} drawFn Returned function from .getDrawShape() => .generateDrawBar()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -20389,7 +20389,7 @@ function candlestick_objectSpread(e) { for (var r = 1, t; r < arguments.length; 
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned functino from .generateDrawCandlestick()
+   * @param {Function} drawFn Returned functino from .generateDrawCandlestick()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -20680,7 +20680,7 @@ function candlestick_objectSpread(e) { for (var r = 1, t; r < arguments.length; 
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned functino from .generateDrawCandlestick()
+   * @param {Function} drawFn Returned functino from .generateDrawCandlestick()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -23946,7 +23946,7 @@ extend(subchart, {
     }
   },
   /**
-   * Toggle the visiblity of subchart
+   * Toggle the visibility of subchart
    * - **NOTE:** for ESM imports, needs to import 'subchart' exports and instantiate it by calling `subchart()`.
    * @function subchart․toggle
    * @instance

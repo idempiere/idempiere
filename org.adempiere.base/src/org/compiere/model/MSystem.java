@@ -155,7 +155,7 @@ public class MSystem extends X_AD_System
 	}
 	
 	/**
-	 * 	Is LDAP Authentification defined
+	 * 	Is LDAP Authentication defined
 	 *	@return true if ldap defined
 	 */
 	public boolean isLDAP()
@@ -169,7 +169,7 @@ public class MSystem extends X_AD_System
 	}	//	isLDAP	
 	
 	/**
-	 * 	LDAP Authentification. Assumes that LDAP is defined.
+	 * 	LDAP Authentication. Assumes that LDAP is defined.
 	 *	@param userName user name
 	 *	@param password password
 	 *	@return true if ldap authenticated

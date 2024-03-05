@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeInstance
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_AttributeInstance 
 {
@@ -182,6 +182,19 @@ public interface I_M_AttributeInstance
 
 	/** Get Value Date	  */
 	public Timestamp getValueDate();
+
+    /** Column name ValueMultipleSelection */
+    public static final String COLUMNNAME_ValueMultipleSelection = "ValueMultipleSelection";
+
+	/** Set Value Multiple Selection.
+	  * Comma separated values.
+	  */
+	public void setValueMultipleSelection (String ValueMultipleSelection);
+
+	/** Get Value Multiple Selection.
+	  * Comma separated values.
+	  */
+	public String getValueMultipleSelection();
 
     /** Column name ValueNumber */
     public static final String COLUMNNAME_ValueNumber = "ValueNumber";

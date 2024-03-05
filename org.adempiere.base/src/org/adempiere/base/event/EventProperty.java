@@ -14,9 +14,8 @@
 package org.adempiere.base.event;
 
 /**
- *
+ * Value object for name based event property 
  * @author hengsin
- *
  */
 public class EventProperty {
 	public String name;

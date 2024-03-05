@@ -269,7 +269,7 @@ public class RModel implements Serializable
 	//  TableModel interface
 
 	/**
-	 *  Return Total mumber of rows
+	 *  Return Total number of rows
 	 *  @return row count
 	 */
 	public int getRowCount()

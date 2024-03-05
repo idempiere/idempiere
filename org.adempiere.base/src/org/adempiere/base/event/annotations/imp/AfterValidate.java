@@ -33,14 +33,13 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.annotations.EventTopic;
 
+/**
+ * Method annotation for after validate event
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.IMPORT_AFTER_VALIDATE)
-/**
- * 
- * @author hengsin
- * 
- */
 public @interface AfterValidate {
 
 }

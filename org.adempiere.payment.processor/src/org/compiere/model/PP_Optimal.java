@@ -156,7 +156,7 @@ public class PP_Optimal extends PaymentProcessor
 		AVSCodes.put("W", "Nine digit zip matches, address not");
 		AVSCodes.put("Z", "Five digit zip matches, address not");
 		AVSCodes.put("N", "No Part matches");
-		AVSCodes.put("U", "Address info unabailable");
+		AVSCodes.put("U", "Address info unavailable");
 		AVSCodes.put("R", "Retry");
 		AVSCodes.put("S", "AVS not supported");
 		AVSCodes.put("E", "AVS not supported for this industry");

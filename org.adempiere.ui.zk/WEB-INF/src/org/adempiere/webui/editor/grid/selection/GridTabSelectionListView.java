@@ -327,7 +327,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * deactive panel
+	 * deactivate panel
 	 */
 	public void deactivate() {
 	}

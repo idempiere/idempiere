@@ -267,8 +267,10 @@ public class FinReport extends SvrProcess
 				FinReportPeriod frp = new FinReportPeriod (rs.getInt(1), rs.getString(2),
 					rs.getTimestamp(3), rs.getTimestamp(4), rs.getTimestamp(5));
 				list.add(frp);
-				if (p_C_Period_ID == 0 && frp.inPeriod(today))
+				if (p_C_Period_ID == 0 && frp.inPeriod(today)) {
 					p_C_Period_ID = frp.getC_Period_ID();
+					break;
+				}
 			}
 		}
 		catch (Exception e)

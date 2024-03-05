@@ -74,6 +74,7 @@ public class TablePartitionTask {
 		
 		try 
 		{
+			table.set_TrxName(trxName);
 			addLog(Msg.getElement(Env.getCtx(), "TableName") + ": " + table.getTableName());
 			
 			List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(true);

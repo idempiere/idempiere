@@ -506,7 +506,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 			return false;
 		if (cmp.getClass().equals(this.getClass()))
 			return ((PO)cmp).get_ID() == get_ID();
-		return equals(cmp);
+		return super.equals(cmp);
 	}	//	equals
 
 	@Override

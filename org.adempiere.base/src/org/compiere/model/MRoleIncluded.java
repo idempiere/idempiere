@@ -30,6 +30,8 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 
 /**
@@ -38,12 +40,12 @@ import org.compiere.util.DB;
  */
 public class MRoleIncluded extends X_AD_Role_Included
 {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -3284165639631581484L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4101136698198494931L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Role_Included_UU  UUID key
@@ -83,6 +85,12 @@ public class MRoleIncluded extends X_AD_Role_Included
 		return true;
 	}
 	
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success)
 	{
@@ -105,6 +113,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 				throw new AdempiereException("Loop has detected "+roles);
 			}
 		}
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		//
 		return true;
 	}
@@ -119,7 +128,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 	 * @param trxName transaction name
 	 * @return true if loop detected. If you specified not null trace, you will have in that list the IDs from the loop
 	 */
-	// TODO: refactor this method and move into org.compiere.util.DB class because it's general and usefull of others too
+	// TODO: refactor this method and move into org.compiere.util.DB class because it's general and useful of others too
 	private static boolean hasLoop(String tableName, String idColumnName, String parentIdColumnName,
 			int nodeId, List<Integer> trace,
 			String trxName)
@@ -172,6 +181,18 @@ public class MRoleIncluded extends X_AD_Role_Included
 		}
 		//
 		return false;
+	}
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
 	}
 
 }

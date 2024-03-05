@@ -48,9 +48,8 @@ import org.compiere.util.Util;
  *  Generate Model Classes extending PO.
  *
  *  @author Jorg Janke
- *  @version $Id: GenerateModel.java,v 1.42 2005/05/08 15:16:56 jjanke Exp $
  *
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1781629 ] Don't use Env.NL in model class/interface generators
  * 				<li>FR [ 1781630 ] Generated class/interfaces have a lot of unused imports
  * 				<li>BF [ 1781632 ] Generated class/interfaces should be UTF-8
@@ -63,7 +62,7 @@ import org.compiere.util.Util;
  * 				<li>--
  * 				<li>FR [ 2848449 ] ModelClassGenerator: Implement model getters
  *					https://sourceforge.net/p/adempiere/feature-requests/812/
- * @author Victor Perez, e-Evolution
+ *  @author Victor Perez, e-Evolution
  * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
  */
 public class ModelClassGenerator

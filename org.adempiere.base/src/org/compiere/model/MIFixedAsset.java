@@ -287,7 +287,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 	private int m_A_Asset_Group_ID = 0;
 	
 	/**
-	 * set defauly asset group id 
+	 * set default asset group id 
 	 * @param A_Asset_Group_ID
 	 */
 	public void setDefault_Asset_Group_ID(int A_Asset_Group_ID) {

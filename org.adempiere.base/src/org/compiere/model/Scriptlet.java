@@ -429,7 +429,7 @@ public class Scriptlet
 
 	/**
 	 *  String Representation incl. Result
-	 *  @return Scipt
+	 *  @return Script
 	 */
 	public String toString()
 	{

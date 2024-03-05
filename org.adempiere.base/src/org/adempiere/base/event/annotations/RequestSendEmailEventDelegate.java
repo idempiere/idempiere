@@ -58,7 +58,7 @@ public abstract class RequestSendEmailEventDelegate extends EventDelegate {
 	}
 
 	/**
-	 * Override this to handle event
+	 * Override this to handle RequestSendEMail event
 	 * @param requestSendEMailEventData 
 	 */
 	protected abstract void onRequestSendEmail(RequestSendEMailEventData requestSendEMailEventData);

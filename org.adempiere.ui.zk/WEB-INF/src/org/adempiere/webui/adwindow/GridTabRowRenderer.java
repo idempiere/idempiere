@@ -121,7 +121,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private Row currentRow;
 	/** values of current row. updated in {@link #render(Row, Object[], int)}. **/
 	private Object[] currentValues;
-	/** true if currrent row is in edit mode **/
+	/** true if current row is in edit mode **/
 	private boolean editing = false;
 	/** index of current row **/
 	private int currentRowIndex = -1;
@@ -605,10 +605,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 								    			
     			if (editor.getComponent() instanceof AbstractComponent) {
+    				String entityTypeInf = Env.IsShowTechnicalInfOnHelp(Env.getCtx())?"this.fieldEntityType());":"'');";
     				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
         			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
         			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
-    				editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
+        			editor.getComponent().setWidgetOverride("fieldEntityType", HelpController.escapeJavascriptContent(gridPanelFields[i].getEntityType()));
+        			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp(),"+entityTypeInf);
     				((AbstractComponent)editor.getComponent()).addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, (t) -> {((AbstractComponent)t).setWidgetListener("onFocus", null);});
     			}
     			

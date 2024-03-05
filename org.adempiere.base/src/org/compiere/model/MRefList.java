@@ -354,7 +354,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	}
 
 	/**
-	 * 	Load Contructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result
 	 *	@param trxName transaction

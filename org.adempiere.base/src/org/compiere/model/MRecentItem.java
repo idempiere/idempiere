@@ -42,9 +42,9 @@ import org.osgi.service.event.Event;
 public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4298877865937943663L;
+	private static final long serialVersionUID = 6284848250030738141L;
 
 	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
 
@@ -172,17 +172,18 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	 * 	Get Recent Item from Cache using table+recordID (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID tableID
+	 *  @param Record_ID record ID
 	 *  @param Record_UU record UUID
 	 *	@return recent item
 	 */
-	public static synchronized MRecentItem get (Properties ctx, int AD_Table_ID, String Record_UU, int AD_User_ID)
+	public static synchronized MRecentItem get (Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, int AD_User_ID)
 	{
 		Iterator<MRecentItem> it = s_cache.values().iterator();
 		while (it.hasNext())
 		{
 			MRecentItem retValue = it.next();
 			if (retValue.getAD_Table_ID() == AD_Table_ID
-					&& retValue.getRecord_UU().equals(Record_UU)
+					&& ((retValue.getRecord_UU() != null && retValue.getRecord_UU().equals(Record_UU)) || retValue.getRecord_ID() == Record_ID)
 					&& retValue.getAD_User_ID() == AD_User_ID
 					&& retValue.getAD_Client_ID() == Env.getAD_Client_ID(ctx)
 					&& Env.getAD_Language(ctx).equals(Env.getAD_Language(retValue.getCtx()))
@@ -192,8 +193,14 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			}
 		}
 		//
-		MRecentItem retValue = new Query(ctx, Table_Name, "AD_Table_ID=? AND Record_UU=? AND AD_User_ID=? AND AD_Client_ID=?", null)
-			.setParameters(AD_Table_ID, Record_UU, AD_User_ID, Env.getAD_Client_ID(ctx))
+		MRecentItem retValue;
+		if (Record_UU != null)
+			retValue = new Query(ctx, Table_Name, "AD_Table_ID=? AND Record_UU=? AND AD_User_ID=? AND AD_Client_ID=?", null)
+					.setParameters(AD_Table_ID, Record_UU, AD_User_ID, Env.getAD_Client_ID(ctx))
+					.first();
+		else
+			retValue = new Query(ctx, Table_Name, "AD_Table_ID=? AND Record_ID=? AND AD_User_ID=? AND AD_Client_ID=?", null)
+			.setParameters(AD_Table_ID, Record_ID, AD_User_ID, Env.getAD_Client_ID(ctx))
 			.first();
 		if (retValue != null)
 		{
@@ -219,7 +226,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxSaved, 50, Env.getAD_Client_ID(ctx));
 		if (maxri <= 0)
 			return;
-		MRecentItem ric = get(ctx, AD_Table_ID, Record_UU, AD_User_ID);
+		MRecentItem ric = get(ctx, AD_Table_ID, Record_ID, Record_UU, AD_User_ID);
 		if (ric == null) {
 			MRecentItem ri = new MRecentItem(ctx, 0, null);
 			ri.setAD_Table_ID(AD_Table_ID);
@@ -281,8 +288,8 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	 * @param Record_UU
 	 * @param AD_User_ID
 	 */
-	public static void touchUpdatedRecord(Properties ctx, int AD_Table_ID, String Record_UU, int AD_User_ID) {
-		MRecentItem ri = get(ctx, AD_Table_ID, Record_UU, AD_User_ID);
+	public static void touchUpdatedRecord(Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, int AD_User_ID) {
+		MRecentItem ri = get(ctx, AD_Table_ID, Record_ID, Record_UU, AD_User_ID);
 		if (ri != null) {
 			DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
 			deleteExtraRecentItems(ctx, AD_User_ID);
@@ -402,13 +409,16 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	/**
 	 * Clear the label (to display) cache in a recent item instance.
 	 * @param AD_Table_ID
+	 * @param Record_ID
 	 * @param Record_UU
 	 */
-	public static synchronized void clearLabel(int AD_Table_ID, String Record_UU) {
+	public static synchronized void clearLabel(int AD_Table_ID, int Record_ID, String Record_UU) {
 		Iterator<MRecentItem> it = s_cache.values().iterator();
 		while (it.hasNext()) {
 			MRecentItem retValue = it.next();
-			if (retValue.getAD_Table_ID() == AD_Table_ID && retValue.getRecord_UU().equals(Record_UU)) {
+			if (   retValue.getAD_Table_ID() == AD_Table_ID
+				&& (   (Record_ID > 0 && retValue.getRecord_ID() == Record_ID)
+				    || (retValue.getRecord_UU() != null && retValue.getRecord_UU().equals(Record_UU)))) {
 				retValue.clearLabel();
 			}
 		}

@@ -134,7 +134,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	}	//	MInventoryLineMA
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName trx

@@ -18,11 +18,18 @@ package org.compiere.util;
 
 import java.io.Serializable;
 
+import org.compiere.db.CallableStatementProxy;
+import org.compiere.db.PreparedStatementProxy;
+import org.compiere.db.StatementProxy;
+
 /**
- *	Adempiere Statement Value Object
+ *	Statement Value Object for statement proxy.
  *	
  *  @author Jorg Janke
  *  @version $Id: CStatementVO.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
+ *  @see StatementProxy
+ *  @see PreparedStatementProxy
+ *  @see CallableStatementProxy
  */
 public class CStatementVO implements Serializable
 {

@@ -25,9 +25,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.*;
 
 /**
- *	Fill 1099 Extract (T_1099EXTRACT) with data from bpartner, bpartner location and invoices.
+ *	Process to Fill 1099 Extract (T_1099EXTRACT) with data from bpartner, bpartner location and invoices.
  *  @author Carlos Ruiz
- *  @version $Id: Fill1099Extract.java
  */
 @org.adempiere.base.annotation.Process
 public class Fill1099Extract extends SvrProcess

@@ -52,8 +52,7 @@ import org.compiere.util.Util;
  * 			<li>BF [ 1939010 ] Excel Export ERROR - java.sql.Date - integrated Mario Grigioni's fix
  * 			<li>BF [ 1974309 ] Exporting a report to XLS is not setting page format
  */
-public class PrintDataExcelExporter
-extends AbstractExcelExporter
+public class PrintDataExcelExporter extends AbstractExcelExporter
 {
 	//constant for form rendering
 	private static final int COLUMN_WIDTH_DIVISOR = 64;

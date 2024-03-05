@@ -652,7 +652,7 @@ public class ModelValidationEngine
 			{
 				//log the stack trace
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				// Exeptions are errors and should stop the document processing - teo_sarca [ 1679692 ]
+				// Exceptions are errors and should stop the document processing - teo_sarca [ 1679692 ]
 				String error = e.getLocalizedMessage();
 				if (error == null)
 					error = e.toString();
@@ -817,7 +817,7 @@ public class ModelValidationEngine
 			{
 				//log the stack trace
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				// Exeptions are errors and should stop the document processing - teo_sarca [ 1679692 ]
+				// Exceptions are errors and should stop the document processing - teo_sarca [ 1679692 ]
 				String error = e.getLocalizedMessage();
 				if (error == null)
 					error = e.toString();

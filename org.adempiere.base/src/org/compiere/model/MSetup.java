@@ -339,10 +339,6 @@ public final class MSetup
 
 		MUser clientUser = new MUser(m_ctx, 0, m_trx.getTrxName());
 
-		name = userClient;
-		if (name == null || name.length() == 0)
-			name = m_clientName + "Client";
-
 		name = userOrg;
 		if (name == null || name.length() == 0)
 			name = m_clientName + "Org";

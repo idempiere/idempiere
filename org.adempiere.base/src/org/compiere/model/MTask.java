@@ -59,7 +59,7 @@ public class MTask extends X_AD_Task
 	}	//	MTask
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx ctx
 	 *	@param rs result set
 	 *	@param trxName trx

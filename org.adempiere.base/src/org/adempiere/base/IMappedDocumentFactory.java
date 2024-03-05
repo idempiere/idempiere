@@ -53,9 +53,7 @@ public interface IMappedDocumentFactory {
 	public void removeMapping(String gaap, String tableName);
 
 	/**
-	 * 
-	 * parameter class for doc supplier
-	 *
+	 * Parameter class for doc supplier
 	 */
 	public final static class Parameter {
 		public MAcctSchema as;

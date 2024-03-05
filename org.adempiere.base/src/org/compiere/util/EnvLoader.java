@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
- *  Environment Loader - loads system environment variables int System.properties
+ *  Environment Loader - loads system environment variables in System.properties
  *
  *  @author Jorg Janke
  *  @version  $Id: EnvLoader.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $

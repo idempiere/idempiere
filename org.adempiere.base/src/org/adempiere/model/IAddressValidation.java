@@ -20,7 +20,6 @@ import org.compiere.model.MAddressTransaction;
 /**
  * Address validation interface
  * @author Elaine
- *
  */
 public interface IAddressValidation {
 	/**

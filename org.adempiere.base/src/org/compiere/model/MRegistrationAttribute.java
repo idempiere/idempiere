@@ -45,7 +45,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute implements
 
 	/**
 	 * 	Get All Asset Registration Attributes (not cached).
-	 * 	Refreshes Cache for direct addess
+	 * 	Refreshes Cache for direct address
 	 *	@param ctx context
 	 *	@return array of Registration Attributes
 	 */

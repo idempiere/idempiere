@@ -24,15 +24,16 @@ import java.io.Serializable;
  *  @author Jorg Janke
  *  @version $Id: NullParameter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
  */
+@Deprecated
 public class NullParameter implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5098594046699488306L;
 
 	/**
-	 * 	Cosntructor
+	 * 	Constructor
 	 *	@param type SQL Type java.sql.Types.*
 	 */
 	public NullParameter(int type)

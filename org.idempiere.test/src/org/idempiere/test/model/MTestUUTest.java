@@ -38,12 +38,15 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  *
  * @author Carlos Ruiz - globalqss - bxservice
  *
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public class MTestUUTest extends AbstractTestCase {
 
 	private static final String TestRecordInGardenWorld = "8858ecc2-cf1d-405f-987f-793536037e76";

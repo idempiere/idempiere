@@ -16,14 +16,14 @@ package org.idempiere.broadcast;
 import java.io.Serializable;
 
 /**
- * 
+ * Value object for broadcast message
  * @author Deepak Pansheriya
  *
  */
 public class BroadCastMsg implements Serializable {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7669279373526944539L;
 

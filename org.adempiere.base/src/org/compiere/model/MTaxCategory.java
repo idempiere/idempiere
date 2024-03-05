@@ -85,7 +85,7 @@ public class MTaxCategory extends X_C_TaxCategory
 	 */
 	public MTax getDefaultTax()
 	{
-		MTax m_tax = new MTax(getCtx(), 0, get_TrxName());
+		MTax m_tax = null;
 		
 		final String whereClause = COLUMNNAME_C_TaxCategory_ID+"=? AND "+ COLUMNNAME_IsDefault+"='Y'";
 		List<MTax> list = new Query(getCtx(), I_C_Tax.Table_Name, whereClause,  get_TrxName())

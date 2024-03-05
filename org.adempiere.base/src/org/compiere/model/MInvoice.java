@@ -70,7 +70,7 @@ import org.eevolution.model.MPPProductBOMLine;
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org
  *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  Modifications: Added RMA functionality (Ashley Ramdass)
- *  Modifications: Generate DocNo^ instead of using a new number whan an invoice is reversed (Diego Ruiz-globalqss)
+ *  Modifications: Generate DocNo^ instead of using a new number when an invoice is reversed (Diego Ruiz-globalqss)
  */
 public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 {
@@ -1629,6 +1629,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 			pi.setRecord_ID ( getC_Invoice_ID() );
 			pi.setIsBatch(true);
+			pi.setTransientObject(format);
 			
 			ServerProcessCtl.process(pi, null);
 			
@@ -1794,6 +1795,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		// Check if Order is Valid load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM C_InvoiceLine il "
+		    		+ " JOIN C_OrderLine ol ON (il.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE il.C_Invoice_ID=?", getC_Invoice_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
+		}
+		
 		//	Add up Amounts
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))

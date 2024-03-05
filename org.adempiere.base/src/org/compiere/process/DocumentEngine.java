@@ -1141,6 +1141,7 @@ public class DocumentEngine implements DocAction
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_ReActivate;
 					options[index++] = DocumentEngine.ACTION_Void;
 				}
 			}

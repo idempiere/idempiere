@@ -340,7 +340,7 @@ public class MUserQuery extends X_AD_UserQuery
 				get_Value(COLUMNNAME_AD_User_ID) == null) //Cannot save privately (user-specific) an already existing global query
 			return false;
 
-		return !getCode().startsWith("@SQL=");
+		return !getCode().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}
 	
 	/**
@@ -353,7 +353,7 @@ public class MUserQuery extends X_AD_UserQuery
         		getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) //Cannot modify a query from another client (e.g. System) 
 			return false;
 
-		return !getCode().startsWith("@SQL=");
+		return !getCode().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}
 
 }	//	MUserQuery

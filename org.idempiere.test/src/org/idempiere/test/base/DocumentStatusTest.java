@@ -143,7 +143,7 @@ public class DocumentStatusTest extends AbstractTestCase {
 		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), SystemIDs.USER_SUPERUSER,
 				DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN_NOT_ADVANCED.id, getTrxName());
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(invoiceDS),
-				"Niether User or Role Assignment match, Should not visible");
+				"Neither User or Role Assignment match, Should not visible");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(noticeDS), "No permission assigned, should visible to every one");
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(requestDS),
 				"Role assignment not matching, Should not visible");

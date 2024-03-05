@@ -28,13 +28,16 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-public class MDocumentActionAccess extends X_AD_Document_Action_Access {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -2036011342206732816L;
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 
+public class MDocumentActionAccess extends X_AD_Document_Action_Access {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7387829651626682825L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Document_Action_Access_UU  UUID key
@@ -67,5 +70,30 @@ public class MDocumentActionAccess extends X_AD_Document_Action_Access {
 	public MDocumentActionAccess(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	} // MDocumentActionAccess
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 } // MDocumentActionAccess

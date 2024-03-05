@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Util;
 
 /**
@@ -29,12 +31,12 @@ import org.compiere.util.Util;
  */
 public class MProcessAccess extends X_AD_Process_Access
 {
-	/**
-	 * generated serial id 
-	 */
-	private static final long serialVersionUID = -2468108979800832171L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7698694345394848144L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Process_Access_UU  UUID key
@@ -92,5 +94,30 @@ public class MProcessAccess extends X_AD_Process_Access
 		setAD_Process_ID (parent.getAD_Process_ID());
 		setAD_Role_ID (AD_Role_ID);
 	}	//	MProcessAccess
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MProcessAccess

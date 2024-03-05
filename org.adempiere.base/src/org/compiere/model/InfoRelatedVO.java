@@ -217,7 +217,7 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		if (Util.isEmpty(getDisplayLogic()))
 			return true;
 
-		if (getDisplayLogic().startsWith("@SQL=")) {
+		if (getDisplayLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			return Evaluator.parseSQLLogic(DisplayLogic, ctx, WindowNo, 0, infoRelated.toString());
 		}
 		Evaluatee evaluatee = new Evaluatee() {

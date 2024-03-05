@@ -26,10 +26,12 @@ package org.adempiere.base.event.annotations;
 
 import java.util.function.Function;
 
+import org.adempiere.base.AnnotationBasedEventManager;
 import org.osgi.service.event.Event;
 
 /**
- * Event handler that delegate to {@link EventDelegate} instance (create for each event call).
+ * Event handler that delegate to {@link EventDelegate} instance (create for each event call).<br/>
+ * This is use by {@link AnnotationBasedEventManager} and usually developer doesn't have to use this class directly.
  * @author hengsin
  *
  */

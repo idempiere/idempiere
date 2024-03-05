@@ -47,9 +47,9 @@ import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
 
 /**
- * 
+ * Abstract base class for annotation driven implementation of {@link IColumnCalloutFactory}.<br/>
+ * Subclass would override the {@link #getPackages()} method to provide the packages for {@link Callout} annotation scanning and discovery.
  * @author hengsin
- *
  */
 public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBasedFactory implements IColumnCalloutFactory {
 
