@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_AttributeInstance
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeInstance")
 public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240226L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
@@ -244,6 +244,22 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	public Timestamp getValueDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValueDate);
+	}
+
+	/** Set Value Multiple Selection.
+		@param ValueMultipleSelection Comma separated values.
+	*/
+	public void setValueMultipleSelection (String ValueMultipleSelection)
+	{
+		set_Value (COLUMNNAME_ValueMultipleSelection, ValueMultipleSelection);
+	}
+
+	/** Get Value Multiple Selection.
+		@return Comma separated values.
+	  */
+	public String getValueMultipleSelection()
+	{
+		return (String)get_Value(COLUMNNAME_ValueMultipleSelection);
 	}
 
 	/** Set Value.

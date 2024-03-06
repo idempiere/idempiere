@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_AttributeInstance
+/** Generated Interface for M_AttributeInstanceLine
  *  @author iDempiere (generated) 
  *  @version Release 12
  */
-public interface I_M_AttributeInstance 
+public interface I_M_AttributeInstanceLine 
 {
 
-    /** TableName=M_AttributeInstance */
-    public static final String Table_Name = "M_AttributeInstance";
+    /** TableName=M_AttributeInstanceLine */
+    public static final String Table_Name = "M_AttributeInstanceLine";
 
-    /** AD_Table_ID=561 */
-    public static final int Table_ID = 561;
+    /** AD_Table_ID=200416 */
+    public static final int Table_ID = 200416;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -91,20 +91,40 @@ public interface I_M_AttributeInstance
 	  */
 	public boolean isActive();
 
-    /** Column name M_Attribute_ID */
-    public static final String COLUMNNAME_M_Attribute_ID = "M_Attribute_ID";
+    /** Column name Line */
+    public static final String COLUMNNAME_Line = "Line";
 
-	/** Set Attribute.
-	  * Product Attribute
+	/** Set Line No.
+	  * Unique line for this document
 	  */
-	public void setM_Attribute_ID (int M_Attribute_ID);
+	public void setLine (int Line);
 
-	/** Get Attribute.
-	  * Product Attribute
+	/** Get Line No.
+	  * Unique line for this document
 	  */
-	public int getM_Attribute_ID();
+	public int getLine();
 
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
+    /** Column name M_AttributeInstanceLine_ID */
+    public static final String COLUMNNAME_M_AttributeInstanceLine_ID = "M_AttributeInstanceLine_ID";
+
+	/** Set Attribute Instance Values.
+	  * Selected attribute values of an attribute instance
+	  */
+	public void setM_AttributeInstanceLine_ID (int M_AttributeInstanceLine_ID);
+
+	/** Get Attribute Instance Values.
+	  * Selected attribute values of an attribute instance
+	  */
+	public int getM_AttributeInstanceLine_ID();
+
+    /** Column name M_AttributeInstanceLine_UU */
+    public static final String COLUMNNAME_M_AttributeInstanceLine_UU = "M_AttributeInstanceLine_UU";
+
+	/** Set M_AttributeInstanceLine_UU	  */
+	public void setM_AttributeInstanceLine_UU (String M_AttributeInstanceLine_UU);
+
+	/** Get M_AttributeInstanceLine_UU	  */
+	public String getM_AttributeInstanceLine_UU();
 
     /** Column name M_AttributeInstance_UU */
     public static final String COLUMNNAME_M_AttributeInstance_UU = "M_AttributeInstance_UU";
@@ -114,21 +134,6 @@ public interface I_M_AttributeInstance
 
 	/** Get M_AttributeInstance_UU	  */
 	public String getM_AttributeInstance_UU();
-
-    /** Column name M_AttributeSetInstance_ID */
-    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
-
-	/** Set Attribute Set Instance.
-	  * Product Attribute Set Instance
-	  */
-	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
-
-	/** Get Attribute Set Instance.
-	  * Product Attribute Set Instance
-	  */
-	public int getM_AttributeSetInstance_ID();
-
-	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_AttributeValue_ID */
     public static final String COLUMNNAME_M_AttributeValue_ID = "M_AttributeValue_ID";
@@ -160,52 +165,4 @@ public interface I_M_AttributeInstance
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name Value */
-    public static final String COLUMNNAME_Value = "Value";
-
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public void setValue (String Value);
-
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public String getValue();
-
-    /** Column name ValueDate */
-    public static final String COLUMNNAME_ValueDate = "ValueDate";
-
-	/** Set Value Date	  */
-	public void setValueDate (Timestamp ValueDate);
-
-	/** Get Value Date	  */
-	public Timestamp getValueDate();
-
-    /** Column name ValueMultipleSelection */
-    public static final String COLUMNNAME_ValueMultipleSelection = "ValueMultipleSelection";
-
-	/** Set Value Multiple Selection.
-	  * Comma separated values.
-	  */
-	public void setValueMultipleSelection (String ValueMultipleSelection);
-
-	/** Get Value Multiple Selection.
-	  * Comma separated values.
-	  */
-	public String getValueMultipleSelection();
-
-    /** Column name ValueNumber */
-    public static final String COLUMNNAME_ValueNumber = "ValueNumber";
-
-	/** Set Value.
-	  * Numeric Value
-	  */
-	public void setValueNumber (BigDecimal ValueNumber);
-
-	/** Get Value.
-	  * Numeric Value
-	  */
-	public BigDecimal getValueNumber();
 }

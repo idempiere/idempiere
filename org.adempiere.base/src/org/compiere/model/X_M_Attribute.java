@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Attribute
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Attribute")
 public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240221L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -207,6 +207,8 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 
 	/** AttributeValueType AD_Reference_ID=326 */
 	public static final int ATTRIBUTEVALUETYPE_AD_Reference_ID=326;
+	/** Chosen Multiple Selection List = CL */
+	public static final String ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList = "C";
 	/** Date = D */
 	public static final String ATTRIBUTEVALUETYPE_Date = "D";
 	/** List = L */

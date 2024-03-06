@@ -75,7 +75,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		m_language = Env.getLanguage(ctx);
 		if (Util.isEmpty(AD_PrintFormat_UU))
 			setInitialDefaults();
-		m_items = getItems();
     }
 
 	/**
@@ -90,7 +89,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		m_language = Env.getLanguage(ctx);
 		if (AD_PrintFormat_ID == 0)
 			setInitialDefaults();
-		m_items = getItems();
 	}	//	MPrintFormat
 
 	/**
@@ -107,9 +105,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 * Reload print format items from DB
 	 */
 	public void reloadItems() {
-		m_items = getItems();
-		if (is_Immutable() && m_items != null && m_items.length > 0)
-			Arrays.stream(m_items).forEach(e -> e.markImmutable());
+		m_items = null;
+		getItems();
+		if (is_Immutable() && getItems() != null && getItems().length > 0)
+			Arrays.stream(getItems()).forEach(e -> e.markImmutable());
 	}
 	
 	/**
@@ -122,7 +121,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	{
 		super(ctx, rs, trxName);
 		m_language = Env.getLanguage(ctx);
-		m_items = getItems();
 	}	//	MPrintFormat
 
 	/**
@@ -160,7 +158,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		this.m_tFormat = copy.m_tFormat != null ? new MPrintTableFormat(ctx, copy.m_tFormat, trxName) : null;
 	}
 	
-	/** Items							*/
+	/** Items - do not access directly - always use getItems()	*/
 	private MPrintFormatItem[]		m_items = null;
 	/** Translation View Language		*/
 	private String					m_translationViewLanguage = null;
@@ -201,11 +199,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	public int[] getOrderAD_Column_IDs()
 	{
 		HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();	//	SortNo - AD_Column_ID
-		for (int i = 0; i < m_items.length; i++)
+		for (int i = 0; i < getItems().length; i++)
 		{
 			//	Sort Order and Column must be > 0
-			if (m_items[i].getSortNo() != 0 && m_items[i].getAD_Column_ID() != 0)
-				map.put(Integer.valueOf(m_items[i].getSortNo()), Integer.valueOf(m_items[i].getAD_Column_ID()));
+			if (getItems()[i].getSortNo() != 0 && getItems()[i].getAD_Column_ID() != 0)
+				map.put(Integer.valueOf(getItems()[i].getSortNo()), Integer.valueOf(getItems()[i].getAD_Column_ID()));
 		}
 		//	Get SortNo and Sort them
 		Integer[] keys = new Integer[map.keySet().size()];
@@ -229,10 +227,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	public int[] getAD_Column_IDs()
 	{
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < m_items.length; i++)
+		for (int i = 0; i < getItems().length; i++)
 		{
-			if (m_items[i].getAD_Column_ID() != 0 && m_items[i].isPrinted())
-				list.add(Integer.valueOf(m_items[i].getAD_Column_ID()));
+			if (getItems()[i].getAD_Column_ID() != 0 && getItems()[i].isPrinted())
+				list.add(Integer.valueOf(getItems()[i].getAD_Column_ID()));
 		}
 		//	Convert
 		int[] retValue = new int[list.size()];
@@ -257,6 +255,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	private MPrintFormatItem[] getItems()
 	{
+		if (m_items != null)
+			return m_items;
 		ArrayList<MPrintFormatItem> list = new ArrayList<MPrintFormatItem>();
 		String sql = "SELECT * FROM AD_PrintFormatItem pfi "
 			+ "WHERE pfi.AD_PrintFormat_ID=? AND pfi.IsActive='Y'"
@@ -291,6 +291,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		//
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
+		m_items = retValue;
 		return retValue;
 	}	//	getItems
 
@@ -380,9 +381,9 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	public int getItemCount()
 	{
-		if (m_items == null)
+		if (getItems() == null)
 			return -1;
-		return m_items.length;
+		return getItems().length;
 	}	//	getItemCount
 
 	/**
@@ -393,9 +394,9 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	public MPrintFormatItem getItem (int index)
 	{
-		if (index < 0 || index >= m_items.length)
-			throw new ArrayIndexOutOfBoundsException("Index=" + index + " - Length=" + m_items.length);
-		return m_items[index];
+		if (index < 0 || index >= getItems().length)
+			throw new ArrayIndexOutOfBoundsException("Index=" + index + " - Length=" + getItems().length);
+		return getItems()[index];
 	}	//	getItem
 
 	/**
@@ -1389,9 +1390,9 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	@Deprecated
 	public MPrintFormat clone() throws CloneNotSupportedException {
 		MPrintFormat clone = (MPrintFormat) super.clone();
-		clone.m_items = m_items == null ? null : new MPrintFormatItem[m_items.length];
-		for(int i = 0; i < m_items.length; i++) {
-			clone.m_items[i] = m_items[i];
+		clone.m_items = getItems() == null ? null : new MPrintFormatItem[getItems().length];
+		for(int i = 0; i < getItems().length; i++) {
+			clone.m_items[i] = getItems()[i];
 		}
 		clone.m_tFormat = m_tFormat;
 		clone.m_language = Env.getLanguage(Env.getCtx());
@@ -1416,8 +1417,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			return this;
 		
 		makeImmutable();
-		if (m_items != null && m_items.length > 0)
-			Arrays.stream(m_items).forEach(e -> e.markImmutable());
+		if (getItems() != null && getItems().length > 0)
+			Arrays.stream(getItems()).forEach(e -> e.markImmutable());
 		if (m_tFormat != null)
 			m_tFormat.markImmutable();
 		return this;
