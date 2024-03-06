@@ -1211,4 +1211,117 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		creditMemo.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 	}
+	
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-6025
+	 * PO Line-1 Qty=3, Line-2 Qty=3
+	 * MR Line-1 Qty=3, Line-2 Qty=2
+	 * INV Line-1 Qty=3, Line-2 Qty=2
+	 * CM Line-2 Qty=1 (Line-1 should not be displayed. Line-2 should be displayed on Purchase Credit Memo > Create Lines From info window) 
+	 */
+	@Test
+	public void testDeferredMatchedPOCreditQtyMultiLine() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.ELM.id));
+		line1.setQty(new BigDecimal("3"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+		
+		MOrderLine line2 = new MOrderLine(order);
+		line2.setLine(20);
+		line2.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.OAK.id));
+		line2.setQty(new BigDecimal("3"));
+		line2.setDatePromised(today);
+		line2.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("3"));
+		receiptLine1.setQty(new BigDecimal("3"));
+		receiptLine1.saveEx();
+		
+		MInOutLine receiptLine2 = new MInOutLine(receipt);
+		receiptLine2.setOrderLine(line2, 0, new BigDecimal("2"));
+		receiptLine2.setQty(new BigDecimal("2"));
+		receiptLine2.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, order.getDateOrdered());
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine invoiceLine1 = new MInvoiceLine(invoice);
+		invoiceLine1.setOrderLine(line1);
+		invoiceLine1.setQty(new BigDecimal("3"));
+		invoiceLine1.saveEx();
+		
+		MInvoiceLine invoiceLine2 = new MInvoiceLine(invoice);
+		invoiceLine2.setOrderLine(line2);
+		invoiceLine2.setQty(new BigDecimal("3"));
+		invoiceLine2.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+
+		MInvoice creditMemo = new MInvoice(order, DictionaryIDs.C_DocType.AP_CREDIT_MEMO.id, order.getDateOrdered());
+		creditMemo.setDocStatus(DocAction.STATUS_Drafted);
+		creditMemo.setDocAction(DocAction.ACTION_Complete);
+		creditMemo.saveEx();
+		
+		MInfoWindow infoWindow = MInfoWindow.get(200024, trxName);	// Create lines from Invoice
+		String tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
+		String sql = "SELECT CreditQty, Qty FROM " + tableName + " WHERE C_Order_ID=? AND C_OrderLine_ID=?";
+		List<Object> data = DB.getSQLValueObjectsEx(trxName, sql, order.getC_Order_ID(), line1.getC_OrderLine_ID());
+		assertTrue(data == null);	// fully invoiced, should not appear in the create lines from info window
+		data = DB.getSQLValueObjectsEx(trxName, sql, order.getC_Order_ID(), line2.getC_OrderLine_ID());
+		assertEquals(data.size(), 2);
+		BigDecimal CreditQty = (BigDecimal) data.get(0);
+		BigDecimal Qty = (BigDecimal) data.get(1);
+		CreditQty = CreditQty.setScale(0);
+		Qty = Qty.setScale(0);
+		assertEquals(new BigDecimal("1"), CreditQty);
+		assertEquals(new BigDecimal("0"), Qty);
+
+		MInvoiceLine creditMemoLine = new MInvoiceLine(creditMemo);
+		creditMemoLine.setOrderLine(line2);
+		creditMemoLine.setQty(CreditQty);
+		creditMemoLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		creditMemo.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
+	}
 }
