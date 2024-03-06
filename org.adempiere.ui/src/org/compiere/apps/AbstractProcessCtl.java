@@ -23,13 +23,10 @@ import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstance.PInstanceInfo;
 import org.compiere.model.MRule;
-import org.compiere.model.Query;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportCtl;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
@@ -244,41 +241,21 @@ public abstract class AbstractProcessCtl implements Runnable
 
 		if (isJasper)
 		{
+			m_pi.setReportingProcess(true);
+			m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
+			startProcess();
 			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
-			int printFormatID = findPrintFormatForJasper(m_pi, pinstance);
-			if(printFormatID > 0) {
-				pinstance.setAD_PrintFormat_ID(printFormatID);
-				pinstance.saveEx();
-				m_pi.setSerializableObject(new MPrintFormat(Env.getCtx(), printFormatID, null));
-				m_pi.setReportingProcess(true);
-				//	Start Report	-----------------------------------------------
-				boolean ok = ReportCtl.start(m_processUI, windowno, m_pi, IsDirectPrint);
-				m_pi.setSummary(Msg.getCleanMsg(Env.getCtx(), "Report"), !ok);
-				String errmsg = pinstance.getErrorMsg();
-				if (Util.isEmpty(errmsg, true))
-					errmsg = "Rows=" + String.valueOf(m_pi.getRowCount());
-				else
-					errmsg += " Rows=" + m_pi.getRowCount();
-				pinstance.setErrorMsg(errmsg);
-				pinstance.saveEx();
-				unlock ();
-			}
-			else {
-				m_pi.setReportingProcess(true);
-				m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
-				startProcess();
-				if (m_pi.getReportType() != null)
-					pinstance.setReportType(m_pi.getReportType());
-				String errmsg = pinstance.getErrorMsg();
-				if (Util.isEmpty(errmsg, true))
-					errmsg = "Rows=" + String.valueOf(m_pi.getRowCount());
-				else
-					errmsg += " Rows=" + m_pi.getRowCount();
-				pinstance.setErrorMsg(errmsg);
-				pinstance.saveEx();
-				unlock();
-				return;
-			}
+			if (m_pi.getReportType() != null)
+				pinstance.setReportType(m_pi.getReportType());
+			String errmsg = pinstance.getErrorMsg();
+			if (Util.isEmpty(errmsg, true))
+				errmsg = "Rows=" + String.valueOf(m_pi.getRowCount());
+			else
+				errmsg += " Rows=" + m_pi.getRowCount();
+			pinstance.setErrorMsg(errmsg);
+			pinstance.saveEx();
+			unlock();
+			return;
 		}
 		
 		if (IsReport)
@@ -312,27 +289,6 @@ public abstract class AbstractProcessCtl implements Runnable
 			unlock();
 		}			//	*** Process submission ***
 	}   //  run
-
-	/**
-	 * Find Print Format for Jasper Report
-	 * @param pi
-	 * @param pinstance
-	 * @return AD_PrintFormat_ID or -1 if not found
-	 */
-	private int findPrintFormatForJasper(ProcessInfo pi, MPInstance pinstance) {
-		// from PInstance
-		if(pinstance.getAD_PrintFormat_ID() > 0) {
-			return pinstance.getAD_PrintFormat_ID();
-		}
-		// from Process Info
-		if(pi.getSerializableObject() != null && pi.getSerializableObject() instanceof MPrintFormat) {
-			return ((MPrintFormat) pi.getSerializableObject()).getAD_PrintFormat_ID();
-		}
-		else if(pi.getTransientObject() != null && pi.getTransientObject() instanceof MPrintFormat) {
-			return ((MPrintFormat) pi.getTransientObject()).getAD_PrintFormat_ID();
-		}
-		return -1;
-	}
 	
 	protected abstract void updateProgressWindowTimerEstimate(int estSeconds);
 

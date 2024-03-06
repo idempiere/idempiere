@@ -435,7 +435,8 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			HashMap<Integer, th> suppressMap = new HashMap<>();
 			
 			//	for all rows (-1 = header row)
-			for (int row = -1; row < printData.getRowCount(); row++)
+			int rowCount = printData != null ? printData.getRowCount() : 0;
+			for (int row = -1; row < rowCount; row++)
 			{
 				tr tr = new tr();
 				if (row != -1)

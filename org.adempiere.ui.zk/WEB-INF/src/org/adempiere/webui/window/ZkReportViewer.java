@@ -214,7 +214,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private ToolBarButton bReRun = new ToolBarButton();
 	private Iframe iframe;
 	
-	private Checkbox summary = new Checkbox();
+	private Checkbox summary;
 
 	protected AMedia media;
 	private int mediaVersion = 0;
@@ -245,6 +245,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 * SysConfig USE_ESC_FOR_TAB_CLOSING
 	 */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	/** Is Jasper Report */
+	private boolean isJasper = false;
 
 	/**
 	 * @param re
@@ -259,6 +261,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
 		m_reportEngine = re;
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
+		isJasper = re.getPrintFormat().getJasperProcess_ID() > 0;
 		if (!MRole.getDefault().isCanReport(m_AD_Table_ID))
 		{
 			Dialog.error(m_WindowNo, "AccessCannotReport", m_reportEngine.getName());
@@ -454,16 +457,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (toolbarPopup == null && client.isMultiLingualDocument())
 			toolBar.appendChild(new Separator("vertical"));
 		
-		summary.setText(Msg.getMsg(Env.getCtx(), "Summary"));		
-		summary.setChecked(m_reportEngine.isSummary());
-		if (toolbarPopup != null)
-		{
-			toolbarPopupLayout.appendChild(summary);
-		}
-		else
-		{
-			toolBar.appendChild(summary);
-			toolBar.appendChild(new Separator("vertical"));
+		if(!isJasper) {
+			summary = new Checkbox();
+			summary.setText(Msg.getMsg(Env.getCtx(), "Summary"));		
+			summary.setChecked(m_reportEngine.isSummary());
+			if (toolbarPopup != null)
+			{
+				toolbarPopupLayout.appendChild(summary);
+			}
+			else
+			{
+				toolBar.appendChild(summary);
+				toolBar.appendChild(new Separator("vertical"));
+			}
 		}
 		
 		bCustomize.setName("Customize");
@@ -699,13 +705,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Div linkDiv = new Div();
 		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
-
-		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData() != null ? m_reportEngine.getPrintData().getRowCount(false) : 0}));
-		rowCount.setStyle("float: right;");
-		linkDiv.appendChild(rowCount);
 		
-		south.appendChild(linkDiv);		
-		
+		if(!isJasper) {
+			rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData() != null ? m_reportEngine.getPrintData().getRowCount(false) : 0}));
+			rowCount.setStyle("float: right;");
+			linkDiv.appendChild(rowCount);
+			south.appendChild(linkDiv);		
+		}
 		//m_WindowNo
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
@@ -922,9 +928,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void dynInit()
 	{
-		summary.addActionListener(this);
-		summary.setStyle("font-size: 14px");
-		
+		if(summary != null) {
+			summary.addActionListener(this);
+			summary.setStyle("font-size: 14px");
+		}
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
 		revalidate();

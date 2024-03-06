@@ -163,7 +163,8 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 
 			JSONArray ja = new JSONArray();
 			//	for all rows (-1 = header row)
-			for (int row = 0; row < printData.getRowCount(); row++)
+			int rowCount = printData != null ? printData.getRowCount() : 0;
+			for (int row = -1; row < rowCount; row++)
 			{
 				JSONObject jo = new JSONObject();
 				printData.setRowIndex(row);

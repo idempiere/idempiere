@@ -251,7 +251,7 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	@Override
 	public int getRowCount()
 	{
-		return m_printData.getRowCount();
+		return m_printData != null ? m_printData.getRowCount() : 0;
 	}
 
 	@Override
