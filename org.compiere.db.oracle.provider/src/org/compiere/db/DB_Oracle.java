@@ -541,7 +541,7 @@ public class DB_Oracle implements AdempiereDatabase
 	 *	@return string with right casting for JSON inserts
 	 */
 	public String getJSONCast () {
-		return "json(?)";
+		return "?";
 	}
 
 	/**
@@ -551,14 +551,7 @@ public class DB_Oracle implements AdempiereDatabase
 	 */
 	public String TO_JSON (String value)
 	{
-		if (value == null)
-			return "NULL";
-
-		StringBuilder retValue = null;
-		retValue = new StringBuilder("json(");
-		retValue.append(value);
-		retValue.append(")");
-		return retValue.toString();
+		return value;
 	}
 
     /**
@@ -1052,7 +1045,7 @@ public class DB_Oracle implements AdempiereDatabase
 	
 	@Override
 	public String getJsonDataType() {
-		return "JSON";
+		return getVarcharDataType();
 	}
 
 	@Override
@@ -1100,6 +1093,8 @@ public class DB_Oracle implements AdempiereDatabase
 		//	Inline Constraint
 		if (column.getAD_Reference_ID() == DisplayType.YesNo)
 			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+		else if (column.getAD_Reference_ID() == DisplayType.JSON)
+			sql.append("CONSTRAINT ensure_json CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null
 		if (column.isMandatory())
