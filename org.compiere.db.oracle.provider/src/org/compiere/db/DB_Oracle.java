@@ -536,7 +536,23 @@ public class DB_Oracle implements AdempiereDatabase
         }
         return result.toString();
     }   //  TO_NUMBER
+    
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast () {
+		return "?";
+	}
 
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as json
+	 */
+	public String TO_JSON (String value)
+	{
+		return value;
+	}
 
     /**
      *  Get SQL Commands.
@@ -1026,6 +1042,11 @@ public class DB_Oracle implements AdempiereDatabase
 	public String getClobDataType() {
 		return "CLOB";
 	}
+	
+	@Override
+	public String getJsonDataType() {
+		return getClobDataType();
+	}
 
 	@Override
 	public String getTimestampDataType() {
@@ -1072,6 +1093,8 @@ public class DB_Oracle implements AdempiereDatabase
 		//	Inline Constraint
 		if (column.getAD_Reference_ID() == DisplayType.YesNo)
 			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+		else if (column.getAD_Reference_ID() == DisplayType.JSON)
+			sql.append("CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null
 		if (column.isMandatory())

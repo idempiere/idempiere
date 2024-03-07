@@ -66,6 +66,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMEZONE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_UUID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_JSON;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -196,8 +197,9 @@ public final class DisplayType
 	public static final int RecordID = REFERENCE_DATATYPE_RECORD_ID;
 	
 	public static final int RecordUU = REFERENCE_DATATYPE_RECORD_UU;
-	
 
+	public static final int JSON  = REFERENCE_DATATYPE_JSON;
+	
 	public static final int TimestampWithTimeZone = REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
 	
 	public static final int TimeZoneId = REFERENCE_DATATYPE_TIMEZONE;
@@ -409,7 +411,7 @@ public final class DisplayType
 	public static boolean isText(int displayType)
 	{
 		if (displayType == String || displayType == Text
-			|| displayType == TextLong || displayType == Memo
+			|| displayType == TextLong || displayType == JSON || displayType == Memo
 			|| displayType == FilePath || displayType == FileName
 			|| displayType == URL || displayType == PrinterName
 			|| displayType == SingleSelectionGrid || displayType == Color
@@ -588,7 +590,8 @@ public final class DisplayType
 	public static boolean isLOB (int displayType)
 	{
 		if (displayType == Binary
-			|| displayType == TextLong)
+			|| displayType == TextLong
+			|| (displayType == JSON && DB.isOracle()))
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -932,7 +935,7 @@ public final class DisplayType
 	 */
 	public static Class<?> getClass (int displayType, boolean yesNoAsBoolean)
 	{
-		if (isText(displayType) || displayType == List || displayType == Payment || displayType == RadiogroupList)
+		if (isText(displayType) || displayType == List || displayType == Payment || displayType == RadiogroupList || displayType == JSON)
 			return String.class;
 		else if (isID(displayType) || displayType == Integer)    //  note that Integer is stored as BD
 			return Integer.class;
@@ -972,6 +975,7 @@ public final class DisplayType
 				s_customDisplayTypeNegativeCache.put(customTypeKey, Boolean.TRUE);
 			}
 		}
+
 		//
 		return Object.class;
 	}   //  getClass
@@ -1044,7 +1048,9 @@ public final class DisplayType
 				return getDatabase().getNumericDataType()+"(10)";
 			else
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
-		}		
+		}
+		if (displayType == DisplayType.JSON)
+			return getDatabase().getJsonDataType();
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 		if (cache != null) {
@@ -1175,6 +1181,8 @@ public final class DisplayType
 			return "Text";
 		case TextLong:
 			return "TextLong";
+		case JSON:
+			return "JSON";
 		case Time:
 			return "Time";
 		case TimestampWithTimeZone:

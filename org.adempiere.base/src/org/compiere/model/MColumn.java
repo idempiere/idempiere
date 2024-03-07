@@ -380,7 +380,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 
 		int displayType = getAD_Reference_ID();
-		if (DisplayType.isLOB(displayType))	//	LOBs are 0
+		if (DisplayType.isLOB(displayType) || displayType == DisplayType.JSON)	//	LOBs are 0
 		{
 			if (getFieldLength() != 0)
 				setFieldLength(0);

@@ -115,7 +115,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7758079724744033518L;
+	private static final long serialVersionUID = 6591172659109078284L;
 
 	/* String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -3046,6 +3046,8 @@ public abstract class PO
 			{
 				if (value instanceof Timestamp && dt == DisplayType.Date)
 					sql.append("trunc(cast(? as date))");
+				else if (dt == DisplayType.JSON)
+					sql.append(DB.getJSONCast());
 				else
 					sql.append("?");
 				
@@ -3071,7 +3073,7 @@ public abstract class PO
 					} else {
 						params.add(encrypt(i,value));
 					}
-				}
+				} 
 				else
 				{
 					params.add(value);
@@ -3660,6 +3662,8 @@ public abstract class PO
 			{				
 				if (value instanceof Timestamp && dt == DisplayType.Date)
 					sqlValues.append("trunc(cast(? as date))");
+				else if (dt == DisplayType.JSON)
+					sqlValues.append(DB.getJSONCast());
 				else
 					sqlValues.append("?");
 							

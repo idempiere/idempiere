@@ -2106,6 +2106,7 @@ public class GridField
 		if (m_vo.displayType == DisplayType.Text 
 			|| m_vo.displayType == DisplayType.Memo
 			|| m_vo.displayType == DisplayType.TextLong
+			|| m_vo.displayType == DisplayType.JSON
 			|| m_vo.displayType == DisplayType.Binary
 			|| m_vo.displayType == DisplayType.RowID
 			|| isEncrypted())

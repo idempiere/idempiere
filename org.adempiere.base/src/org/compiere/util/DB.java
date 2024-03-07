@@ -2208,6 +2208,24 @@ public final class DB
 		//
 		return out.toString();
 	}	//	TO_STRING
+	
+	/**
+	 * 	Return string as JSON object for INSERT statements with correct precision
+	 *	@param value
+	 *	@return value as json
+	 */
+	public static String TO_JSON (String value)
+	{
+		return s_cc.getDatabase().TO_JSON(value);
+	}
+	
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public static String getJSONCast()
+	{
+		return s_cc.getDatabase().getJSONCast();
+	}
 
 	/**
 	 * Convenient method to close result set

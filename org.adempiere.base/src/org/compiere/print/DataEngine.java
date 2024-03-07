@@ -1140,7 +1140,7 @@ public class DataEngine
 									pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), Boolean.valueOf(b), pdc.getDisplayType(), pdc.getFormatPattern());
 								}
 							}
-							else if (pdc.getDisplayType() == DisplayType.TextLong)
+							else if (pdc.getDisplayType() == DisplayType.TextLong || (pdc.getDisplayType() == DisplayType.JSON && DB.isOracle()))
 							{
 								String value = "";
 								if ("java.lang.String".equals(rs.getMetaData().getColumnClassName(counter)))
