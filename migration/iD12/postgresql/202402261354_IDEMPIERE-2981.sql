@@ -6,7 +6,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Feb 26, 2024, 1:55:37 PM CET
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (216570,0,'JSON Data','The json field stores json data.',135,'JsonData',2000,'N','N','N','N','N',0,'N',200267,0,0,'Y',TO_TIMESTAMP('2024-02-26 13:55:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-02-26 13:55:36','YYYY-MM-DD HH24:MI:SS'),100,203924,'Y','N','D','N','N','N','Y','927b83df-d161-4332-ad44-8ffed99e8cf4','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (216570,0,'JSON Data','The json field stores json data.',135,'JsonData',0,'N','N','N','N','N',0,'N',200267,0,0,'Y',TO_TIMESTAMP('2024-02-26 13:55:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-02-26 13:55:36','YYYY-MM-DD HH24:MI:SS'),100,203924,'Y','N','D','N','N','N','Y','927b83df-d161-4332-ad44-8ffed99e8cf4','Y',0,'N','N','N','N')
 ;
 
 -- Feb 26, 2024, 1:55:55 PM CET
@@ -22,6 +22,6 @@ UPDATE AD_Field SET NumLines=5,Updated=TO_TIMESTAMP('2024-02-29 13:52:50','YYYY-
 ;
 
 -- Feb 29, 2024, 2:07:30 PM CET
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Invalid JSON',0,0,'Y',TO_TIMESTAMP('2024-02-29 14:07:30','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-02-29 14:07:30','YYYY-MM-DD HH24:MI:SS'),100,200876,'InvalidJSON','U','a263376f-a12e-4943-92f1-7d7ce8a67a2b')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Invalid JSON',0,0,'Y',TO_TIMESTAMP('2024-02-29 14:07:30','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-02-29 14:07:30','YYYY-MM-DD HH24:MI:SS'),100,200876,'InvalidJSON','D','a263376f-a12e-4943-92f1-7d7ce8a67a2b')
 ;
 

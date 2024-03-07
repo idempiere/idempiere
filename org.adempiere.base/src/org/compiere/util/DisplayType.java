@@ -411,7 +411,7 @@ public final class DisplayType
 	public static boolean isText(int displayType)
 	{
 		if (displayType == String || displayType == Text
-			|| displayType == TextLong || displayType == Memo
+			|| displayType == TextLong || displayType == JSON || displayType == Memo
 			|| displayType == FilePath || displayType == FileName
 			|| displayType == URL || displayType == PrinterName
 			|| displayType == SingleSelectionGrid || displayType == Color
@@ -590,7 +590,8 @@ public final class DisplayType
 	public static boolean isLOB (int displayType)
 	{
 		if (displayType == Binary
-			|| displayType == TextLong)
+			|| displayType == TextLong
+			|| (displayType == JSON && DB.isOracle()))
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -934,7 +935,7 @@ public final class DisplayType
 	 */
 	public static Class<?> getClass (int displayType, boolean yesNoAsBoolean)
 	{
-		if (isText(displayType) || displayType == List || displayType == Payment || displayType == RadiogroupList)
+		if (isText(displayType) || displayType == List || displayType == Payment || displayType == RadiogroupList || displayType == JSON)
 			return String.class;
 		else if (isID(displayType) || displayType == Integer)    //  note that Integer is stored as BD
 			return Integer.class;
@@ -974,8 +975,7 @@ public final class DisplayType
 				s_customDisplayTypeNegativeCache.put(customTypeKey, Boolean.TRUE);
 			}
 		}
-		else if (displayType == JSON)
-			return String.class;
+
 		//
 		return Object.class;
 	}   //  getClass
@@ -1181,6 +1181,8 @@ public final class DisplayType
 			return "Text";
 		case TextLong:
 			return "TextLong";
+		case JSON:
+			return "JSON";
 		case Time:
 			return "Time";
 		case TimestampWithTimeZone:

@@ -3,6 +3,9 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+
+import org.compiere.dbPort.Convert;
 import org.compiere.model.MTest;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -25,6 +28,7 @@ public class JsonFieldTest extends AbstractTestCase {
 		updated = testPO.save();
 		assertFalse(updated);
 		
+		testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 		String validJsonString = "{ \"name\": \"iDempiere\", \"id\": 100 }";
 		testPO.setJsonData(validJsonString);
 		updated = testPO.save();
@@ -39,6 +43,10 @@ public class JsonFieldTest extends AbstractTestCase {
 		updated = testPO.save();
 		assertTrue(updated);
 		
+		String fileName = Convert.getMigrationScriptFileName("testLogMigrationScript");
+		String folderPg = Convert.getMigrationScriptFolder("postgresql");
+		String folderOr = Convert.getMigrationScriptFolder("oracle");
+		
 		//Test inserting/updating with Values
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
 		testPO.setJsonData(validJsonString);
@@ -52,5 +60,11 @@ public class JsonFieldTest extends AbstractTestCase {
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "");
 
 		rollback();
+		File file = new File(folderPg + fileName);
+		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
+		file.delete();
+		file = new File(folderOr + fileName);
+		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
+		file.delete();
 	}
 }

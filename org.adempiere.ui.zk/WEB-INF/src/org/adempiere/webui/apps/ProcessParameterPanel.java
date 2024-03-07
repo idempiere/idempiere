@@ -1442,6 +1442,7 @@ public class ProcessParameterPanel extends Panel implements
 				if (displayType == DisplayType.Text 
 					|| displayType == DisplayType.Memo
 					|| displayType == DisplayType.TextLong
+					|| displayType == DisplayType.JSON
 					|| displayType == DisplayType.Binary
 					|| displayType == DisplayType.RowID
 					|| editor.getGridField().isEncrypted())
