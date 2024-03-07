@@ -167,7 +167,7 @@ public class TabCreateFields extends SvrProcess
 				}
 				if (column.getAD_Reference_ID() == DisplayType.Text) {
 					field.setNumLines(3);
-				} else if (column.getAD_Reference_ID() == DisplayType.TextLong) {
+				} else if (column.getAD_Reference_ID() == DisplayType.TextLong || column.getAD_Reference_ID() == DisplayType.JSON) {
 					field.setNumLines(5);
 				} else if (column.getAD_Reference_ID() == DisplayType.Memo) {
 					field.setNumLines(8);
