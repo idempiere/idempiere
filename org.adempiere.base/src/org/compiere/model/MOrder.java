@@ -1263,12 +1263,42 @@ public class MOrder extends X_C_Order implements DocAction
 					return false;
 			}
 		}
-		
+
+		// IDEMPIERE-6046 - verify if the locations pertain to the BP
+		if (is_new() || is_ValueChanged(COLUMNNAME_C_BPartner_ID)) {
+			if (getC_BPartner_Location_ID() > 0) {
+				MBPartnerLocation bpl = new MBPartnerLocation(getCtx(), getC_BPartner_Location_ID(), get_TrxName());
+				if (bpl.getC_BPartner_ID() != getC_BPartner_ID()) {
+					set_ValueNoCheck(COLUMNNAME_C_BPartner_Location_ID, null);
+				}
+			}
+			if (getAD_User_ID() > 0) {
+				MUser user = new MUser(getCtx(), getAD_User_ID(), get_TrxName());
+				if (user.getC_BPartner_ID() != getC_BPartner_ID()) {
+					set_Value(COLUMNNAME_AD_User_ID, null);
+				}
+			}
+		}
+		if (is_new() || is_ValueChanged(COLUMNNAME_Bill_BPartner_ID)) {
+			if (getBill_Location_ID() > 0) {
+				MBPartnerLocation bpl = new MBPartnerLocation(getCtx(), getBill_Location_ID(), get_TrxName());
+				if (bpl.getC_BPartner_ID() != getBill_BPartner_ID()) {
+					set_Value(COLUMNNAME_Bill_Location_ID, null);
+				}
+			}
+			if (getBill_User_ID() > 0) {
+				MUser user = new MUser(getCtx(), getBill_User_ID(), get_TrxName());
+				if (user.getC_BPartner_ID() != getBill_BPartner_ID()) {
+					setBill_User_ID(-1);
+				}
+			}
+		}
+
 		//	No Partner Info - set Template
 		if (getC_BPartner_ID() == 0)
 			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
 		if (getC_BPartner_Location_ID() == 0)
-			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
+			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
 		//	No Bill - get from Ship
 		if (getBill_BPartner_ID() == 0)
 		{
