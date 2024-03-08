@@ -17,6 +17,8 @@
 package org.compiere.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -186,15 +188,64 @@ public class WebEnv
 		//	Logging now initiated
 		if (log.isLoggable(Level.INFO)) log.info(info.toString());
 		//		
-		MClient client = MClient.get(Env.getCtx(), 0);
-		MSystem system = MSystem.get(Env.getCtx());
-		client.sendEMail(client.getRequestEMail(),
-			"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
-			"ServerInfo: " + context.getServerInfo(), null);
+
+		serverStartEMail(context);
 
 		return s_initOK;
 	}	//	initWeb
 
+	/*
+	 * Send an email when the server starts
+	 * @param context servlet context
+	 */
+	private static void serverStartEMail(ServletContext context) {
+
+		File file = new File (Adempiere.getAdempiereHome() + File.separator + "ServerStartEMail.properties");
+		System.out.println(file.getAbsolutePath());
+		Properties props = new Properties();
+		boolean mailSent = false;
+
+		MClient client = MClient.get(Env.getCtx(), 0);
+		MSystem system = MSystem.get(Env.getCtx());
+
+		if (file.exists() && file.isFile() && file.canRead()) {
+			FileInputStream fis = null;
+			try {
+				fis = new FileInputStream(file);
+				props.load(fis);
+
+				String recipient = props.getProperty("recipient");
+				if (Util.isEmpty(recipient) || !EMail.validate(recipient))
+					recipient = client.getRequestEMail();
+
+				String subject = props.getProperty("subject");
+				subject = subject.replace("#SYSTEM_NAME#", system.getName());
+				subject = subject.replace("#SERVER_NAME#", WebUtil.getServerName());
+
+				String message = props.getProperty("message");
+				message = message.replace("#SERVER_INFO#", context.getServerInfo());
+				message = message.replace("#ADEMPIERE_VERSION#", Adempiere.getVersion());
+
+				client.sendEMail(recipient, subject, message, null);
+
+				mailSent = true;
+
+			} catch (Exception e) {
+				log.warning("Can't send customized email when server starts: " + e.toString());
+			} finally {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		if (!mailSent)
+			client.sendEMail(client.getRequestEMail(),
+					"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
+					"ServerInfo: " + context.getServerInfo(), null);
+	}
 
 	/**************************************************************************
 	 *  Get Base Directory entry.
