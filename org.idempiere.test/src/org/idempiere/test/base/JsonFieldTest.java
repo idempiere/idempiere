@@ -6,12 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 
 import org.compiere.dbPort.Convert;
+import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MTest;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
+/**
+ * Tests for JSON data type
+ * Run Isolated because of migration script file management
+ */
+@Isolated
 public class JsonFieldTest extends AbstractTestCase {
 
 	/**
@@ -42,13 +49,10 @@ public class JsonFieldTest extends AbstractTestCase {
 		testPO.setJsonData(null);
 		updated = testPO.save();
 		assertTrue(updated);
-		
-		String fileName = Convert.getMigrationScriptFileName("testLogMigrationScript");
-		String folderPg = Convert.getMigrationScriptFolder("postgresql");
-		String folderOr = Convert.getMigrationScriptFolder("oracle");
-		
+
 		//Test inserting/updating with Values
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
+		Env.setContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment, "IDEMPIERE-02981 JsonFieldTest");
 		testPO.setJsonData(validJsonString);
 		updated = testPO.save();
 		assertTrue(updated);
@@ -59,7 +63,10 @@ public class JsonFieldTest extends AbstractTestCase {
 		
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "");
 
-		rollback();
+		String fileName = Convert.getGeneratedMigrationScriptFileName();
+		String folderPg = Convert.getMigrationScriptFolder("postgresql");
+		String folderOr = Convert.getMigrationScriptFolder("oracle");
+		Convert.closeLogMigrationScript();
 		File file = new File(folderPg + fileName);
 		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
 		file.delete();
