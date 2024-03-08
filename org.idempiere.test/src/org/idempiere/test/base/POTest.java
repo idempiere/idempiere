@@ -58,12 +58,16 @@ import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Tests for {@link org.compiere.model.PO} class.
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * @author hengsin
+ * 
+ * Run Isolated because of migration script file management
  */
+@Isolated
 public class POTest extends AbstractTestCase
 {
 	public static class MyTestPO extends MTest
@@ -512,9 +516,6 @@ public class POTest extends AbstractTestCase
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
 		Env.setContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment, "testLogMigrationScript");
 		assertTrue(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script Y/N value for MProduct");
-		String fileName = Convert.getMigrationScriptFileName("testLogMigrationScript");
-		String folderPg = Convert.getMigrationScriptFolder("postgresql");
-		String folderOr = Convert.getMigrationScriptFolder("oracle");
 		
 		MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, null);
 		lotLevel.setName("testLogMigrationScript");
@@ -548,6 +549,10 @@ public class POTest extends AbstractTestCase
 			lotLevel.deleteEx(true);
 		}
 		
+		String fileName = Convert.getGeneratedMigrationScriptFileName();
+		String folderPg = Convert.getMigrationScriptFolder("postgresql");
+		String folderOr = Convert.getMigrationScriptFolder("oracle");
+		Convert.closeLogMigrationScript();
 		File file = new File(folderPg + fileName);
 		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
 		file.delete();
