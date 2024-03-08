@@ -58,7 +58,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * generated serial id 
 	 */
-	private static final long serialVersionUID = -971225879649586290L;
+	private static final long serialVersionUID = -528009647661217241L;
 
 	/**
 	 * 	Get MColumn from Cache (immutable)
@@ -735,11 +735,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		MTable table = MTable.get(getAD_Table_ID());
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
-			StringBuilder indexName = new StringBuilder().append(getColumnName()).append("_idx");
-			if (indexName.length() > 30) {
-				indexName = new StringBuilder().append(getColumnName().substring(0, 25));
-				indexName.append("uuidx");
-			}
+
+			String indexName = validateUuIdxIndex(getColumnName(), new StringBuilder().append(getColumnName()).append("_idx").toString());
+
 			String constraintType;
 			if (table.isUUIDKeyTable())
 				constraintType = "PRIMARY KEY";
@@ -750,7 +748,21 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 		return "";
 	}	//	getConstraint
-	
+
+	/**
+	 * Get a correct Unique UU index name
+	 * @param columnName
+	 * @param indexName
+	 * @return validated indexName
+	 */
+	public static String validateUuIdxIndex(String columnName, String indexName) {
+
+		if (indexName.length() > 30)
+			return new StringBuilder(columnName.substring(0, 25)).append("uuidx").toString();
+
+		return indexName;
+	}
+
 	/**
 	 * 	String Representation
 	 *	@return info
