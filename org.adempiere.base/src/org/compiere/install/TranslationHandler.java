@@ -20,9 +20,11 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -172,7 +174,15 @@ public class TranslationHandler extends DefaultHandler
 			//	Where section
 			m_sql.append(" WHERE ");
 			if (m_curUUID != null) {
-				m_sql.append(PO.getUUIDColumnName(m_TableName)).append("=").append(DB.TO_STRING(m_curUUID));
+				MTable table = MTable.get(Env.getCtx(), m_TableName);
+				if (table.isIDKeyTable()) {
+					StringBuilder sql = new StringBuilder("SELECT ").append(m_TableName).append("_ID").append(" FROM ").append(m_TableName)
+							.append(" WHERE ").append(m_TableName).append("_UU =?");
+					int ID = DB.getSQLValueEx(null, sql.toString(), m_curUUID);
+					m_sql.append(m_TableName).append("_ID=").append(ID);
+				} else {
+					m_sql.append(PO.getUUIDColumnName(m_TableName)).append("=").append(DB.TO_STRING(m_curUUID));
+				}
 			} else {
 				m_sql.append(m_TableName).append("_ID=").append(m_curID);
 			}
