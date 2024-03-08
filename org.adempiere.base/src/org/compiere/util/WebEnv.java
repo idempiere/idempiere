@@ -17,8 +17,6 @@
 package org.compiere.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -48,6 +46,8 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.SystemIDs;
 
@@ -200,29 +200,26 @@ public class WebEnv
 	 */
 	private static void serverStartEMail(ServletContext context) {
 
-		File file = new File (Adempiere.getAdempiereHome() + File.separator + "ServerStartEMail.properties");
-		System.out.println(file.getAbsolutePath());
-		Properties props = new Properties();
 		boolean mailSent = false;
 
 		MClient client = MClient.get(Env.getCtx(), 0);
 		MSystem system = MSystem.get(Env.getCtx());
 
-		if (file.exists() && file.isFile() && file.canRead()) {
-			FileInputStream fis = null;
+		String recipient = MSysConfig.getValue("EMAIL_SERVER_START_RECIPIENT", 0, 0);
+		if (Util.isEmpty(recipient) || !EMail.validate(recipient))
+			recipient = client.getRequestEMail();
+
+		int mailtextID = MSysConfig.getIntValue("EMAIL_SERVER_START_MAILTEXT_ID", 0, 0);
+		if (mailtextID > 0) {
+
 			try {
-				fis = new FileInputStream(file);
-				props.load(fis);
-
-				String recipient = props.getProperty("recipient");
-				if (Util.isEmpty(recipient) || !EMail.validate(recipient))
-					recipient = client.getRequestEMail();
-
-				String subject = props.getProperty("subject");
+				MMailText mt = new MMailText(Env.getCtx(), mailtextID, null);
+				mt.setPO(client);
+				String subject = mt.getMailHeader();
 				subject = subject.replace("#SYSTEM_NAME#", system.getName());
 				subject = subject.replace("#SERVER_NAME#", WebUtil.getServerName());
 
-				String message = props.getProperty("message");
+				String message = mt.getMailText(true);
 				message = message.replace("#SERVER_INFO#", context.getServerInfo());
 				message = message.replace("#ADEMPIERE_VERSION#", Adempiere.getVersion());
 
@@ -232,12 +229,6 @@ public class WebEnv
 
 			} catch (Exception e) {
 				log.warning("Can't send customized email when server starts: " + e.toString());
-			} finally {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			}
 		}
 
