@@ -1262,12 +1262,44 @@ public class MOrder extends X_C_Order implements DocAction
 					return false;
 			}
 		}
-		
+
+		// IDEMPIERE-6046 - verify if the locations pertain to the BP
+		final String sqlBPIdFromLoc  = "SELECT C_BPartner_ID FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
+		final String sqlBPIdFromUser = "SELECT C_BPartner_ID FROM AD_User WHERE AD_User_ID=?";
+		if (is_new() || is_ValueChanged(COLUMNNAME_C_BPartner_ID)) {
+			if (getC_BPartner_Location_ID() > 0) {
+				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromLoc, getC_BPartner_Location_ID());
+				if (bpId != getC_BPartner_ID()) {
+					set_ValueNoCheck(COLUMNNAME_C_BPartner_Location_ID, null);
+				}
+			}
+			if (getAD_User_ID() > 0) {
+				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getAD_User_ID());
+				if (bpId != getC_BPartner_ID()) {
+					set_Value(COLUMNNAME_AD_User_ID, null);
+				}
+			}
+		}
+		if (is_new() || is_ValueChanged(COLUMNNAME_Bill_BPartner_ID)) {
+			if (getBill_Location_ID() > 0) {
+				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromLoc, getBill_Location_ID());
+				if (bpId != getBill_BPartner_ID()) {
+					set_Value(COLUMNNAME_Bill_Location_ID, null);
+				}
+			}
+			if (getBill_User_ID() > 0) {
+				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getBill_User_ID());
+				if (bpId != getBill_BPartner_ID()) {
+					setBill_User_ID(-1);
+				}
+			}
+		}
+
 		//	No Partner Info - set Template
 		if (getC_BPartner_ID() == 0)
 			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
 		if (getC_BPartner_Location_ID() == 0)
-			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
+			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
 		//	No Bill - get from Ship
 		if (getBill_BPartner_ID() == 0)
 		{
