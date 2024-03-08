@@ -46,6 +46,8 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.SystemIDs;
 
@@ -186,15 +188,55 @@ public class WebEnv
 		//	Logging now initiated
 		if (log.isLoggable(Level.INFO)) log.info(info.toString());
 		//		
-		MClient client = MClient.get(Env.getCtx(), 0);
-		MSystem system = MSystem.get(Env.getCtx());
-		client.sendEMail(client.getRequestEMail(),
-			"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
-			"ServerInfo: " + context.getServerInfo(), null);
+
+		serverStartEMail(context);
 
 		return s_initOK;
 	}	//	initWeb
 
+	/*
+	 * Send an email when the server starts
+	 * @param context servlet context
+	 */
+	private static void serverStartEMail(ServletContext context) {
+
+		boolean mailSent = false;
+
+		MClient client = MClient.get(Env.getCtx(), 0);
+		MSystem system = MSystem.get(Env.getCtx());
+
+		String recipient = MSysConfig.getValue("EMAIL_SERVER_START_RECIPIENT", 0, 0);
+		if (Util.isEmpty(recipient) || !EMail.validate(recipient))
+			recipient = client.getRequestEMail();
+
+		int mailtextID = MSysConfig.getIntValue("EMAIL_SERVER_START_MAILTEXT_ID", 0, 0);
+		if (mailtextID > 0) {
+
+			try {
+				MMailText mt = new MMailText(Env.getCtx(), mailtextID, null);
+				mt.setPO(client);
+				String subject = mt.getMailHeader();
+				subject = subject.replace("#SYSTEM_NAME#", system.getName());
+				subject = subject.replace("#SERVER_NAME#", WebUtil.getServerName());
+
+				String message = mt.getMailText(true);
+				message = message.replace("#SERVER_INFO#", context.getServerInfo());
+				message = message.replace("#ADEMPIERE_VERSION#", Adempiere.getVersion());
+
+				client.sendEMail(recipient, subject, message, null);
+
+				mailSent = true;
+
+			} catch (Exception e) {
+				log.warning("Can't send customized email when server starts: " + e.toString());
+			}
+		}
+
+		if (!mailSent)
+			client.sendEMail(client.getRequestEMail(),
+					"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
+					"ServerInfo: " + context.getServerInfo(), null);
+	}
 
 	/**************************************************************************
 	 *  Get Base Directory entry.
