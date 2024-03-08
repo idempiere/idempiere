@@ -83,10 +83,12 @@ public abstract class Convert
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (Convert.class);
 	
+    private static File fileOr = null;
     private static FileOutputStream fosScriptOr = null;
-    private static Writer writerOr;
+    private static Writer writerOr = null;
+    private static File filePg = null;
     private static FileOutputStream fosScriptPg = null;
-    private static Writer writerPg;
+    private static Writer writerPg = null;
 
     /**
 	 *  Set Verbose
@@ -471,7 +473,7 @@ public abstract class Convert
 					Files.createDirectories(Paths.get(folderPg));
 				}
 				if (fosScriptOr == null) {
-					File fileOr = new File(folderOr + fileName);
+					fileOr = new File(folderOr + fileName);
 					fosScriptOr = new FileOutputStream(fileOr, true);
 					writerOr = new BufferedWriter(new OutputStreamWriter(fosScriptOr, "UTF8"));
 					writerOr.append("-- ");
@@ -488,7 +490,7 @@ public abstract class Convert
 					pgStatement = r[0];
 				}
 				if (fosScriptPg == null) {
-					File filePg = new File(folderPg + fileName);
+					filePg = new File(folderPg + fileName);
 					fosScriptPg = new FileOutputStream(filePg, true);
 					writerPg = new BufferedWriter(new OutputStreamWriter(fosScriptPg, "UTF8"));
 					writerPg.append("-- ");
@@ -686,6 +688,50 @@ public abstract class Convert
 		w.append("\n;\n\n");
 		// flush stream - teo_sarca BF [ 1894474 ]
 		w.flush();
+	}
+
+	/**
+	 * Close the files for migration scripts, used just on Tests
+	 */
+	public static void closeLogMigrationScript() {
+		try {
+			if (writerOr != null) {
+				writerOr.flush();
+				writerOr.close();
+				writerOr = null;
+			}
+			if (writerPg != null) {
+				writerPg.flush();
+				writerPg.close();
+				writerPg = null;
+			}
+			if (fosScriptOr != null) {
+				fosScriptOr.flush();
+				fosScriptOr.close();
+				fosScriptOr = null;
+			}
+			if (fosScriptPg != null) {
+				fosScriptPg.flush();
+				fosScriptPg.close();
+				fosScriptPg = null;
+			}
+			fileOr = null;
+			filePg = null;
+		} catch (IOException e) {
+			// ignore
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Get the name of the migration script file
+	 * @return
+	 */
+	public static String getGeneratedMigrationScriptFileName() {
+		if (filePg != null) {
+			return filePg.getName();
+		}
+		return null;
 	}
 
 }   //  Convert

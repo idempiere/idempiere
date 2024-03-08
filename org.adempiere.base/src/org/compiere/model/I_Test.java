@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Test
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_Test 
 {
@@ -55,8 +55,8 @@ public interface I_Test
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -64,12 +64,12 @@ public interface I_Test
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -252,6 +252,19 @@ public interface I_Test
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name JsonData */
+    public static final String COLUMNNAME_JsonData = "JsonData";
+
+	/** Set JSON Data.
+	  * The json field stores json data.
+	  */
+	public void setJsonData (Object JsonData);
+
+	/** Get JSON Data.
+	  * The json field stores json data.
+	  */
+	public Object getJsonData();
 
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";

@@ -199,7 +199,18 @@ public interface AdempiereDatabase
 	 */
 	public String TO_NUMBER (BigDecimal number, int displayType);
 	
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as JSON
+	 */
+	public String TO_JSON (String value);
 	
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast ();
+		
 	/**
 	 * 	Get next sequence number in this Sequence
 	 *	@param Name Sequence name
@@ -420,6 +431,11 @@ public interface AdempiereDatabase
 	 * @return character large object data type name
 	 */
 	public String getClobDataType();
+	
+	/**
+	 * @return json object data type name
+	 */
+	public String getJsonDataType();
 	
 	/**
 	 * @return time stamp data type name

@@ -397,7 +397,8 @@ public class PoFiller{
 					setInteger(qName);
 				} else if (info.getColumnClass(index) == Timestamp.class) {
 					setTimestamp(qName);
-				}else if(DisplayType.TextLong == info.getColumnDisplayType(index)) {// export column from system have type is normal string, but import to system have this column but type is textlong (mean blob)
+				} else if(DisplayType.TextLong == info.getColumnDisplayType(index) || DisplayType.JSON == info.getColumnDisplayType(index)) {
+					// export column from system have type is normal string, but import to system have this column but type is text long (mean blob)
 					if (getStringValue (qName) != null && !isBlobOnPackinFile(qName)) {
 						setString(qName);
 					}else {
