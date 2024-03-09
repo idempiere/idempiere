@@ -43,6 +43,7 @@ import org.compiere.model.MPayment;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Post Allocation Documents.
@@ -192,6 +193,16 @@ public class Doc_AllocationHdr extends Doc
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		m_facts = new ArrayList<Fact>();
+		MAllocationHdr alloc = (MAllocationHdr) getPO();
+		if (as.isDeleteReverseCorrectPosting()
+			// check is date of both allocation same
+			&& ((alloc.getReversal_ID() > 0 && Util.compareDate(alloc.getDateAcct(), alloc.getReversal().getDateAcct()) == 0)
+			//Case of Alocation for original and reveresed invoice allocated to each other.
+			|| (p_lines.length == 2 && isReversalCorrectDocument((DocLine_Allocation) p_lines[0], (DocLine_Allocation) p_lines[1]))))
+		{
+			return m_facts;
+		}
+
 		invGainLossFactLines = new ArrayList<FactLine>();
 		payGainLossFactLines = new ArrayList<FactLine>();
 
@@ -537,6 +548,31 @@ public class Doc_AllocationHdr extends Doc
 		m_facts.add(fact);
 		return m_facts;
 	}   //  createFact
+	
+	/**
+	 * For Payment and Invoice, check that allocation lines are of the Reversal correct document
+	 * This is for identifying completed status allocation for reversed document allocation to each other
+	 * @param line1 DocLine_Allocation
+	 * @param line2 DocLine_Allocation
+	 */
+	private boolean isReversalCorrectDocument(DocLine_Allocation line1, DocLine_Allocation line2)
+	{
+		if (line1.getC_Payment_ID() != 0 && line2.getC_Payment_ID() != 0)
+		{
+			MPayment payment = new MPayment(getCtx(), line2.getC_Payment_ID(), getTrxName());
+			return payment.getReversal_ID() > 0
+					&& payment.getReversal_ID() == line1.getC_Payment_ID()
+						&& Util.compareDate(payment.getDateAcct(), payment.getReversal().getDateAcct()) == 0;
+		}
+		else if (line1.getC_Invoice_ID() != 0 || line2.getC_Invoice_ID() != 0)
+		{
+			MInvoice invoice = new MInvoice(getCtx(), line2.getC_Invoice_ID(), getTrxName());
+			return invoice.getReversal_ID() > 0
+					&& invoice.getReversal_ID() == line1.getC_Invoice_ID()
+						&& Util.compareDate(invoice.getDateAcct(), invoice.getReversal().getDateAcct()) == 0;
+		}
+		return false;
+	} // isReversalCorrectDocument
 
 	/** 
 	 * Verify if the posting involves two or more organizations
