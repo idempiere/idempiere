@@ -736,7 +736,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
 
-			String indexName = validateUuIdxIndex(getColumnName(), new StringBuilder().append(getColumnName()).append("_idx").toString());
+			String indexName = table.getUUIDIndexName();
 
 			String constraintType;
 			if (table.isUUIDKeyTable())
@@ -748,20 +748,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 		return "";
 	}	//	getConstraint
-
-	/**
-	 * Get a correct Unique UU index name
-	 * @param columnName
-	 * @param indexName
-	 * @return validated indexName
-	 */
-	public static String validateUuIdxIndex(String columnName, String indexName) {
-
-		if (indexName.length() > 30)
-			return new StringBuilder(columnName.substring(0, 25)).append("uuidx").toString();
-
-		return indexName;
-	}
 
 	/**
 	 * 	String Representation

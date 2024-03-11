@@ -240,7 +240,7 @@ public class CreateTable extends SvrProcess {
 		}
 		if (createColumn(table, elementUU.getColumnName()) > 0) {
 			// UUID Index and Constraint
-			MTableIndex tiuu = new MTableIndex(table, MColumn.validateUuIdxIndex(table.getTableName() + "_UU", table.getTableName() + "_uu_idx"));
+			MTableIndex tiuu = new MTableIndex(table, table.getUUIDIndexName());
 			tiuu.setIsCreateConstraint(true);
 			tiuu.setIsUnique(true);
 			tiuu.setIsKey(table.isUUIDKeyTable());

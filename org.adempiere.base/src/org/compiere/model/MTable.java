@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 4325276636597337437L;
+	private static final long serialVersionUID = 1001874000865829111L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -1075,4 +1075,18 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			tablePartitionNames.add(partition.getName());
 		return tablePartitionNames;
 	}
+
+	/**
+	 * Get the Unique UU Index name
+	 * @return indexName
+	 */
+	public String getUUIDIndexName() {
+
+		StringBuilder indexName = new StringBuilder().append(getTableName()).append("_UU_IDX");
+		if (indexName.length() > 30)
+			indexName = new StringBuilder().append(getTableName().substring(0, 25)).append("UUIDX");
+
+		return indexName.toString();
+	}
+
 }	//	MTable
