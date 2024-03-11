@@ -39,8 +39,6 @@ public class Strip
 	{
 	}   //  Strip
 
-	/*************************************************************************/
-
 	/**
 	 *  Strip a directory (and its subdirectories recursively)
 	 *  @param directory directory
@@ -69,7 +67,6 @@ public class Strip
 				strip (list[i], null);
 		}
 	}   //  stripDirectory
-
 
 	/**
 	 *  Strip infile to outfile
@@ -205,25 +202,4 @@ public class Strip
 		}
 		return true;
 	}   //  stripIt
-
-	/*************************************************************************/
-
-	/**
-	 *  Strip file in args
-	 *  @param args infile outfile
-	 */
-	public static void main(String[] args)
-	{
-		if (args.length == 0)
-		{
-			System.err.println("Syntax: Strip infile outfile");
-			System.exit(-1);
-		}
-		String p2 = null;
-		if (args.length > 1)
-			p2 = args[1];
-		//
-		new Strip().strip(args[0], p2);
-	}   //  main
-
 }   //  Strip

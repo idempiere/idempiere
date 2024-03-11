@@ -28,8 +28,8 @@ import java.text.AttributedString;
 import java.util.Properties;
 
 /**
- *	Grid Element.
- *  Simple Table with Rows/Columns, but no Headers
+ *	Grid Element.<br/>
+ *  Simple Table with Rows/Columns, but no Headers.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: GridElement.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $

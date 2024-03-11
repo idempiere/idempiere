@@ -88,14 +88,14 @@ import org.compiere.model.MLanguage;
 import org.compiere.model.MTable;
 
 /**
- *	System Display/Data Types.
+ *	Display/Data Types for field.
  *  <pre>
  *	SELECT AD_Reference_ID, Name FROM AD_Reference WHERE ValidationType = 'D'
  *  </pre>
  *  @author     Jorg Janke
  *  @version    $Id: DisplayType.java,v 1.6 2006/08/30 20:30:44 comdivision Exp $
  *
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1810632 ] PricePrecision error in InfoProduct (and similar)
  */
 public final class DisplayType
@@ -205,18 +205,18 @@ public final class DisplayType
 	public static final int TimeZoneId = REFERENCE_DATATYPE_TIMEZONE;
 
 	/**
-	 *	- New Display Type
+	 *	To New Display Type
 		INSERT INTO AD_REFERENCE
 		(AD_REFERENCE_ID, AD_CLIENT_ID,AD_ORG_ID,ISACTIVE,CREATED,CREATEDBY,UPDATED,UPDATEDBY,
 		NAME,DESCRIPTION,HELP, VALIDATIONTYPE,VFORMAT,ENTITYTYPE)
 		VALUES (35, 0,0,'Y',SysDate,0,SysDate,0,
 		'PAttribute','Product Attribute',null,'D',null,'D');
 	 *
-	 *  - org.compiere.model.MModel (??)
-	 *	- org.compiere.grid.ed.VEditor/Dialog
-	 *	- org.compiere.grid.ed.VEditorFactory
-	 *	- RColumn, WWindow
-	 *  add/check 0_cleanupAD.sql
+	 *	- org.adempiere.webui.editor.WEditor
+	 *	- org.adempiere.webui.factory.IEditorFactory (plugin) or org.adempiere.webui.factory.DefaultEditorFactory (core)
+	 *	- RColumn
+	 *  - *Exporter, *Importer
+	 *  - 2Pack
 	 */
 
 	//  See DBA_DisplayType.sql ----------------------------------------------
@@ -623,7 +623,7 @@ public final class DisplayType
 	}	//	isLOB
 
 	/**
-	 * 
+	 * Is timestamp with time zone type
 	 * @param displayType
 	 * @return true if displayType == TimestampWithTimeZone
 	 */
@@ -636,7 +636,7 @@ public final class DisplayType
 	}
 	
 	/**
-	 * 
+	 * Is chosen multiple selection type
 	 * @param displayType
 	 * @return true if displayType is a ChosenMultipleSelection
 	 */
@@ -648,7 +648,7 @@ public final class DisplayType
 	}
 	
 	/**
-	 * 
+	 * Is multiple selection type (chosen, single selection grid or multiple selection grid)
 	 * @param displayType
 	 * @return true if displayType is a multi ID string separated by commas
 	 */
@@ -660,7 +660,7 @@ public final class DisplayType
 				|| displayType == MultipleSelectionGrid);
 	}
 	
-	/**************************************************************************
+	/**
 	 *	Return Format for numeric DisplayType
 	 *  @param displayType Display Type (default Number)
 	 *  @param language Language
@@ -750,7 +750,7 @@ public final class DisplayType
 		return format;
 	}	//	getDecimalFormat
 
-	/**************************************************************************
+	/**
 	 *	Return Format for numeric DisplayType
 	 *  @param displayType Display Type (default Number)
 	 *  @param language Language
@@ -771,8 +771,7 @@ public final class DisplayType
 		return getNumberFormat (displayType, null);
 	}   //  getNumberFormat
 
-
-	/*************************************************************************
+	/**
 	 *	Return Date Format
 	 *  @return date format
 	 */
@@ -811,6 +810,7 @@ public final class DisplayType
 	{
 		return getDateFormat(displayType, language, null);
 	}
+	
 	/**
 	 *	Return format for date displayType
 	 *  @param displayType Display Type (default Date)
@@ -889,6 +889,11 @@ public final class DisplayType
 		return myLanguage.getDateFormat();		//	default
 	}	//	getDateFormat
 
+	/**
+	 * Set time zone to client time zone (if define)
+	 * @param dateFormat
+	 * @return
+	 */
 	private static SimpleDateFormat setTimeZone(SimpleDateFormat dateFormat) {
 		String timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
 		if (!Util.isEmpty(timezoneId, true))
@@ -921,14 +926,17 @@ public final class DisplayType
 		return new SimpleDateFormat (DEFAULT_TIMESTAMP_FORMAT);
 	}   //  getTimestampFormat_JDBC
 
+	/**
+	 * Get default time format
+	 * @return default time format
+	 */
 	static public SimpleDateFormat getTimeFormat_Default()
 	{
 		return new SimpleDateFormat (DEFAULT_TIME_FORMAT);
 	}   //  getTimeFormat_Default
 
 	/**
-	 *  Return Storage Class.
-	 *  (used for MiniTable)
+	 *  Get Java Class for display type.
 	 *  @param displayType Display Type
 	 *  @param yesNoAsBoolean - yes or no as boolean
 	 *  @return class Integer - BigDecimal - Timestamp - String - Boolean

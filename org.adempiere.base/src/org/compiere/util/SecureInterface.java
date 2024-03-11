@@ -25,7 +25,7 @@ import java.sql.Timestamp;
  * 	iDempiere interface for enryption, decryption.<br/>
  * 	To enable your own class, you need to set the property ADEMPIERE_SECURE 
  * 	when starting the client or server.<br/>
- *  The setting for the default class would be:
+ *  The setting for the default class would be:<br/>
  *  -DADEMPIERE_SECURE=org.compiere.util.Secure
  *	
  *  @author Jorg Janke
@@ -111,7 +111,7 @@ public interface SecureInterface
 	public Timestamp decrypt (Timestamp value,int AD_Client_ID);
 		
 	/**
-	 *  Digest string value.
+	 *  Digest string value.<br/>
 	 *  JavaScript version see - http://pajhome.org.uk/crypt/md5/index.html
 	 *
 	 *  @param value message
@@ -127,7 +127,7 @@ public interface SecureInterface
 	public boolean isDigest (String value);
 	
 	/**
-	 *  Convert String and salt to SHA-512 hash with iterations
+	 *  Convert String and salt to SHA-512 hash with iterations<br/>
 	 *  https://www.owasp.org/index.php/Hashing_Java
 	 *
 	 *  @param value message

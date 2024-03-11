@@ -65,7 +65,8 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
 
 /**
- *  System Environment and static variables.
+ *  Static constants for environment context attribute key.<br/>
+ *  Static methods for environment context and session manipulation.
  *
  *  @author     Jorg Janke
  *  @version    $Id: Env.java,v 1.3 2006/07/30 00:54:36 jjanke Exp $
@@ -145,6 +146,7 @@ public final class Env
 
 	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 
+	@Deprecated
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
@@ -182,12 +184,12 @@ public final class Env
 	}
 
 	/**
-	 *	Exit System
+	 *	Close session and reset environment upon exit/logout of system.
 	 *  @param status System exit status (usually 0 for no error)
 	 */
 	public static void exitEnv (int status)
 	{
-		//hengsin, avoid unncessary query of session when exit without log in
+		//avoid unnecessary query of session when exit without log in
 		if (DB.isConnected()) {
 			//	End Session
 			MSession session = MSession.get(Env.getCtx());	//	finish
@@ -217,12 +219,12 @@ public final class Env
 			session.logout();
 		}
 		//
-		reset(true);	// final cache reset
+		reset(true);
 		//
 	}
 
 	/**
-	 * 	Reset Cache
+	 * 	Reset envronment context
 	 * 	@param finalCall true to clear everything otherwise login data remains
 	 */
 	public static void reset (boolean finalCall)
@@ -292,7 +294,7 @@ public final class Env
 	}
 
 	/**
-	 * Replace the contents of the current session/process context.<br/>
+	 * Replace the contents of the current session/environment context.<br/>
 	 * Don't use this to setup a new session/process context, use ServerContext.setCurrentInstance instead.
 	 * @param ctx context
 	 */
@@ -385,7 +387,7 @@ public final class Env
 	}	//	setContext
 
 	/**
-	 *	Set Context for Window to Value
+	 *	Set Context for WindowNo to Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param context context key
@@ -404,7 +406,7 @@ public final class Env
 	}	//	setContext
 
 	/**
-	 *	Set Context for Window to Value
+	 *	Set Context for WindowNo to Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param context context key
@@ -436,7 +438,7 @@ public final class Env
 	}	//	setContext
 	
 	/**
-	 *	Set Context for Window to int Value
+	 *	Set Context for WindowNo to int Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param context context key
@@ -452,7 +454,7 @@ public final class Env
 	}	//	setContext
 
 	/**
-	 * Set context value for window and tab
+	 * Set context value for WindowNo and TabNo
 	 * @param ctx
 	 * @param WindowNo
 	 * @param TabNo
@@ -469,7 +471,7 @@ public final class Env
 	}	//	setContext
 
 	/**
-	 *	Set Context for Window to Y/N Value
+	 *	Set Context for WindowNo to Y/N Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param context context key
@@ -490,7 +492,7 @@ public final class Env
 	}
 
 	/**
-	 *	Set Context for Window and tab to Y/N Value
+	 *	Set Context for WindowNo and TabNo to Y/N Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param TabNo
@@ -503,7 +505,7 @@ public final class Env
 	}	//	setContext
 	
 	/**
-	 *	Set Context for Window and Tab to Value
+	 *	Set Context for WindowNo and TabNo to Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param TabNo tab no
@@ -540,7 +542,7 @@ public final class Env
 	}	//	setAutoCommit
 
 	/**
-	 *	Set Auto Commit for Window
+	 *	Set Auto Commit for WindowNo
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param autoCommit auto commit (save)
@@ -567,7 +569,7 @@ public final class Env
 	}	//	setAutoNew
 
 	/**
-	 *	Set Auto New Record for Window
+	 *	Set Auto New Record for WindowNo
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param autoNew auto new record
@@ -611,7 +613,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 *	Get Value of Context for Window.
+	 *	Get Value of Context for WindowNo.
 	 *	if not found global context if available and enabled
 	 *  @param ctx context
 	 *  @param WindowNo window
@@ -639,7 +641,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 *	Get Value of Context for Window.<br/>
+	 *	Get Value of Context for WindowNo.<br/>
 	 *	If not found, try global context.
 	 *  @param ctx context
 	 *  @param WindowNo window
@@ -652,7 +654,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 * Get Value of Context for Window and Tab.<br/>
+	 * Get Value of Context for WindowNo and TabNo.<br/>
 	 * If not found, try global context. <br/>
 	 * If TabNo is TAB_INFO, only tab's context will be checked.
 	 * @param ctx context
@@ -676,7 +678,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 * Get Value of Context for Window and Tab.<br/>
+	 * Get Value of Context for WindowNo and TabNo.<br/>
 	 * If not found, try global context.<br/>
 	 * If TabNo is TAB_INFO, only tab's context will be checked.
 	 * @param ctx context
@@ -692,7 +694,7 @@ public final class Env
 	}
 
 	/**
-	 * Get Value of Context for Window and Tab.<br/>
+	 * Get Value of Context for WindowNo and TabNo.<br/>
 	 * If not found, try global context. <br/>
 	 * If TabNo is TAB_INFO, only tab's context will be checked.
 	 * @param ctx context
@@ -742,7 +744,7 @@ public final class Env
 	}	//	getContextAsInt
 
 	/**
-	 *	Get Context and convert it to an integer (0 if error)
+	 *	Get Context for WindowNo and convert it to an integer (0 if error)
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param context context key
@@ -766,11 +768,11 @@ public final class Env
 	}	//	getContextAsInt
 
 	/**
-	 *	Get Context and convert it to an integer (0 if error)
+	 *	Get Context for WindowNo and convert it to an integer (0 if error)
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param context context key
-	 *  @param onlyWindow  if true, do not try global context if context key not found with window
+	 *  @param onlyWindow  if true, do not try global context if context key not found with WindowNo
 	 *  @return value or 0
 	 */
 	public static int getContextAsInt(Properties ctx, int WindowNo, String context, boolean onlyWindow)
@@ -791,7 +793,7 @@ public final class Env
 	}	//	getContextAsInt
 
 	/**
-	 *	Get Context and convert it to an integer (0 if error)
+	 *	Get Context for WindowNo and TabNo and convert it to an integer (0 if error)
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param TabNo tab no
@@ -831,7 +833,7 @@ public final class Env
 	}	//	isAutoCommit
 
 	/**
-	 *	Is Window AutoCommit (if not set use default)
+	 *	Is Window AutoCommit (if not set, use default)
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @return true if auto commit
@@ -885,7 +887,7 @@ public final class Env
 	}	//	isAutoNew
 
 	/**
-	 *	Is Window Auto New Record (if not set use default)
+	 *	Is Window Auto New Record (if not set, use default)
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @return true if auto new record
@@ -919,7 +921,7 @@ public final class Env
 	}	//	isSOTrx
 
 	/**
-	 *	Is Sales Order Trx
+	 *	Is Sales Order Trx for WindowNo
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @return true if SO (default)
@@ -945,7 +947,7 @@ public final class Env
 	}	//	getContextAsDate
 
 	/**
-	 *	Get Context and convert it to Timestamp.<br/>
+	 *	Get Context for WindowNo and convert it to Timestamp.<br/>
 	 *	If error return today's date.
 	 *  @param ctx context
 	 *  @param WindowNo window no
@@ -961,16 +963,6 @@ public final class Env
 		if (Util.isEmpty(s))
 			return new Timestamp(System.currentTimeMillis());
 
-		// BUG:3075946 KTU - Fix Thai Date
-		/*
-		//  timestamp requires time
-		if (s.trim().length() == 10)
-			s = s.trim() + " 00:00:00.0";
-		else if (s.indexOf('.') == -1)
-			s = s.trim() + ".0";
-
-		return Timestamp.valueOf(s);*/
-		
 		Date date = null;
 		try {
 			date = DisplayType.getTimestampFormat_Default().parse(s);
@@ -982,7 +974,6 @@ public final class Env
 		Timestamp timeStampDate = new Timestamp(date.getTime());
 		
 		return timeStampDate;
-		// KTU
 	}	//	getContextAsDate
 
 	/**
@@ -1102,7 +1093,7 @@ public final class Env
 	}	//	getPreference
 	
 	/**
-	 *  Check Base Language
+	 *  Is login language Base Language
 	 *  @param ctx context
 	 * 	@param tableName ignore
 	 * 	@return true if language value in ctx is base language
@@ -1113,10 +1104,10 @@ public final class Env
 	}	//	isBaseLanguage
 
 	/**
-	 *	Check Base Language
+	 *	Is AD_Language a Base Language
 	 * 	@param AD_Language language
 	 * 	@param tableName ignore
-	 * 	@return true if AD_Language is base language
+	 * 	@return true if AD_Language is a base language
 	 */
 	public static boolean isBaseLanguage (String AD_Language, String tableName)
 	{
@@ -1124,10 +1115,10 @@ public final class Env
 	}	//	isBaseLanguage
 
 	/**
-	 *	Check Base Language
+	 *	Is language a Base Language
 	 * 	@param language language
 	 * 	@param tableName ignore
-	 * 	@return true if language is base language
+	 * 	@return true if language is a base language
 	 */
 	public static boolean isBaseLanguage (Language language, String tableName)
 	{
@@ -1135,9 +1126,9 @@ public final class Env
 	}	//	isBaseLanguage
 
 	/**
-	 * 	Table is in Base Translation (AD)
+	 * 	Is Table in Base Translation (AD)
 	 *	@param tableName table
-	 *	@return true if base trl
+	 *	@return true if table is in base trl
 	 */
 	public static boolean isBaseTranslation (String tableName)
 	{
@@ -1311,7 +1302,7 @@ public final class Env
 	}
 	
 	/**
-	 *  Verify Language.
+	 *  Verify Language.<br/>
 	 *  Check that language is supported by the system.
 	 *  @param ctx might be updated with new AD_Language
 	 *  @param language language
@@ -1435,7 +1426,7 @@ public final class Env
 	}	//	getHeader
 
 	/**
-	 *	Clean up context for Window (i.e. delete it)
+	 *	Clean up context for WindowNo (i.e. delete it)
 	 *  @param ctx context
 	 *  @param WindowNo window
 	 */
@@ -1460,7 +1451,7 @@ public final class Env
 	}	//	clearWinContext
 
 	/**
-	 * Clean up context for Window Tab (i.e. delete it).
+	 * Clean up context for WindowNo and TabNo (i.e. delete it).<br/>
 	 * Please note that this method is not clearing the tab info context (i.e. _TabInfo).
 	 * @param ctx context
 	 * @param WindowNo window
@@ -1494,19 +1485,17 @@ public final class Env
 		ctx.clear();
 	}	//	clearContext
 
-
 	/**
-	 *	Parse Context replaces global or Window context @tag@ with actual value.
+	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
 	 *
-	 *  @tag@ are ignored otherwise "" is returned
 	 *  @param ctx context
 	 *	@param WindowNo	Number of Window
-	 *	@param value Message to be parsed
-	 *  @param onlyWindow if true, no defaults are used
+	 *	@param value Expression to be parsed
+	 *  @param onlyWindow if true, do not use global context value
 	 * 	@param ignoreUnparsable 
 	 *  If true, just skip context variable that's not resolvable. 
 	 *  If false, return "" if there are context variable that's not resolvable.  
-	 *	@return parsed message
+	 *	@return parsed expression
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow, boolean ignoreUnparsable)
@@ -1569,18 +1558,17 @@ public final class Env
 	}	//	parseContext
 	
 	/**
-	 *	Parse Context replaces global or Window context @tag@ with actual value.
+	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
 	 *
-	 *  @tag@ are ignored otherwise "" is returned
 	 *  @param ctx context
 	 *	@param WindowNo	Number of Window
 	 *	@param tabNo	Number of Tab
-	 *	@param value Message to be parsed
-	 *  @param onlyTab if true, only value from tabNo are used
+	 *	@param value Expression to be parsed
+	 *  @param onlyTab if true, only context for tabNo are used
 	 * 	@param ignoreUnparsable 
 	 *  If true, just skip context variable that's not resolvable. 
 	 *  If false, return "" if there are context variable that's not resolvable.
-	 *	@return parsed message
+	 *	@return parsed expression
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
 		boolean onlyTab, boolean ignoreUnparsable)
@@ -1655,13 +1643,13 @@ public final class Env
 	}	//	parseContext
 
 	/**
-	 *	Parse Context replaces global or Window context @tag@ with actual value.
+	 *	Parse expression and replaces global or Window context @tag@ with actual value.
 	 *
 	 *  @param ctx context
 	 *	@param	WindowNo	Number of Window
-	 *	@param	value		Message to be parsed
+	 *	@param	value		Expression to be parsed
 	 *  @param  onlyWindow  if true, no defaults are used
-	 *  @return parsed String or "" if not successful
+	 *  @return parsed expression or "" if not successful
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow)
@@ -1670,13 +1658,13 @@ public final class Env
 	}	//	parseContext
 	
 	/**
-	 *	Parse Context replaces global or Window context @tag@ with actual value.
+	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
 	 *
 	 *  @param ctx context
 	 *	@param	WindowNo	Number of Window
 	 *	@param	tabNo   	Number of Tab
-	 *	@param	value		Message to be parsed
-	 *  @param  onlyTab  	if true, no value from tabNo are used
+	 *	@param	value		Expression to be parsed
+	 *  @param  onlyTab  	if true, only context for tabNo are used
 	 *  @return parsed String or "" if not successful
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
@@ -1913,7 +1901,7 @@ public final class Env
 	}
 
 	/**
-	 *	Clean up context for Window (i.e. delete it)
+	 *	Clean up context for WindowNo (i.e. delete it)
 	 *  @param WindowNo window
 	 */
 	public static void clearWinContext(int WindowNo)
@@ -2049,7 +2037,7 @@ public final class Env
 	}
 
 	/**
-	 *  Get Window value object model
+	 *  Get AD_Window value object model
 	 *
 	 *  @param WindowNo  Window No
 	 *  @param AD_Window_ID window
@@ -2077,8 +2065,8 @@ public final class Env
 	}
 	
 	/**
-	 * Get process info instance
-	 * @param ctx
+	 * Get process info instance from context
+	 * @param ctx context
 	 * @return process info instance or null
 	 */
 	public static ProcessInfo getProcessInfo(Properties ctx)

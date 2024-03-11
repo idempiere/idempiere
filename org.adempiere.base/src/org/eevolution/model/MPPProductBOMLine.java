@@ -47,15 +47,15 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPPProductBOMLine extends X_PP_Product_BOMLine implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5942313871247489972L;
 	
-	MPPProductBOM m_bom = null;
+	protected MPPProductBOM m_bom = null;
 	
 	/**
-	 * Get all the Product BOM line for a Component
-	 * @param product Product
+	 * Get all the Product BOM line for a Component Product
+	 * @param product Component Product
 	 * @return list of MPPProductBOMLine
 	 */
 	public static List<MPPProductBOMLine> getByProduct(MProduct product) 
@@ -89,11 +89,11 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	}
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PP_Product_BOMLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PP_Product_BOMLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPPProductBOMLine(Properties ctx, String PP_Product_BOMLine_UU, String trxName) {
         super(ctx, PP_Product_BOMLine_UU, trxName);
     }
@@ -132,7 +132,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	} //	 MPPProductBOMLine
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPPProductBOMLine(MPPProductBOMLine copy) 
@@ -141,7 +141,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -151,7 +151,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -163,13 +163,19 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		this.m_bom = copy.m_bom != null ? new MPPProductBOM(ctx, copy.m_bom, trxName) : null;
 	}
 
+	/**
+	 * @param ctx
+	 * @param PP_Product_BOMLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPPProductBOMLine(Properties ctx, int PP_Product_BOMLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, PP_Product_BOMLine_ID, trxName, virtualColumns);
 	}
 
 	/**
-	 * Get Low Level of a Product
-	 * @return int low level
+	 * Get Low Level of parent Product
+	 * @return low level
 	 */
 	public int getLowLevel()
 	{
@@ -182,7 +188,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 
 	/**
 	 * get Parent BOM
-	 * @return
+	 * @return parent bom
 	 */
 	public MPPProductBOM getParent()
 	{
@@ -193,6 +199,10 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		return m_bom;
 	}
 	
+	/**
+	 * Get updateable copy of component product
+	 * @return
+	 */
 	public MProduct getProduct()
 	{
 		return MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
@@ -285,6 +295,11 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		return true;
 	}
 	
+	/**
+	 * Is BOM line valid for date
+	 * @param date
+	 * @return true if BOM line is valid for date
+	 */
 	public boolean isValidFromTo(Timestamp date)
 	{
 		Timestamp validFrom = getValidFrom();
@@ -297,12 +312,20 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		return true;
 	}
 	
+	/**
+	 * Is COMPONENTTYPE_By_Product
+	 * @return true if it is COMPONENTTYPE_By_Product
+	 */
 	public boolean isByProduct()
 	{
 		String componentType = getComponentType();
 		return COMPONENTTYPE_By_Product.equals(componentType);
 	}
 	
+	/**
+	 * Is COMPONENTTYPE_Co_Product
+	 * @return true if it is COMPONENTTYPE_Co_Product
+	 */
 	public boolean isCoProduct()
 	{
 		String componentType = getComponentType();
@@ -310,7 +333,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	}
 	
 	/**
-	 * Return absolute (unified) quantity value.
+	 * Return absolute (unified) quantity value.<br/>
 	 * If IsQtyPercentage then QtyBatch / 100 will be returned.
 	 * Else QtyBOM will be returned.
 	 * @param includeScrapQty if true, scrap qty will be used for calculating qty 
@@ -353,6 +376,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	}
 	
 	/**
+	 * Get UOM precision
 	 * @return UOM precision
 	 */
 	public int getPrecision()
@@ -361,6 +385,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	}
 	
 	/**
+	 * Get cost allocation percentage
 	 * @param fallback use QtyBOM/QtyPercentage if CostAllocationPerc is zero 
 	 * @return co-product cost allocation percent (i.e. -1/qty)
 	 */

@@ -22,7 +22,7 @@ import org.compiere.model.MWarehouse;
 import org.compiere.model.X_T_Replenish;
 
 /**
- * 	Custom Replenishment Interface
+ * 	Custom Product Replenishment Interface
  *	
  *  @author Jorg Janke
  *  @version $Id: ReplenishInterface.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -30,7 +30,7 @@ import org.compiere.model.X_T_Replenish;
 public interface ReplenishInterface
 {
 	/**
-	 * 	Return the Qty To Order
+	 * 	Get the Qty To Order
 	 *	@param wh warehouse
 	 *	@param replenish replenishment criterias
 	 *	@return qty to order

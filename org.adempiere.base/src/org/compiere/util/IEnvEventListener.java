@@ -23,6 +23,7 @@ package org.compiere.util;
 
 /**
  * Interface for environment event listener
+ * @see {@link Env}
  */
 public interface IEnvEventListener {
 

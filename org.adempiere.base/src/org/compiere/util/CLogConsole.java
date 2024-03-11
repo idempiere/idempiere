@@ -52,7 +52,6 @@ public class CLogConsole extends Handler
      */
     private void initialize()
     {
-    //	System.out.println("CLogConsole.initialize");
 		//	Set Writers
 		String encoding = getEncoding();
 		if (encoding != null)
@@ -87,6 +86,7 @@ public class CLogConsole extends Handler
      *	@throws SecurityException
      *	@throws java.io.UnsupportedEncodingException
      */
+    @Override
     public void setEncoding (String encoding)
 		throws SecurityException, java.io.UnsupportedEncodingException
 	{
@@ -96,13 +96,13 @@ public class CLogConsole extends Handler
 		initialize();
 	}	//	setEncoding
 
-
 	/**
 	 * 	Set Level
 	 *	@see java.util.logging.Handler#setLevel(java.util.logging.Level)
 	 *	@param newLevel new Level
 	 *	@throws java.lang.SecurityException
 	 */
+    @Override
 	public synchronized void setLevel (Level newLevel)
 		throws SecurityException
 	{
@@ -121,6 +121,7 @@ public class CLogConsole extends Handler
 	 *	@see java.util.logging.Handler#publish(java.util.logging.LogRecord)
 	 *	@param record log record
 	 */
+    @Override
 	public void publish (LogRecord record)
 	{
 		if (!isLoggable (record) || m_writerOut == null)
@@ -168,6 +169,7 @@ public class CLogConsole extends Handler
 	 *	Flush
 	 *	@see java.util.logging.Handler#flush()
 	 */
+    @Override
 	public void flush ()
 	{
 		try
@@ -196,6 +198,7 @@ public class CLogConsole extends Handler
 	 * @see java.util.logging.Handler#close()
 	 * @throws SecurityException
 	 */
+    @Override
 	public void close () throws SecurityException
 	{
 		if (m_writerOut == null)
@@ -240,6 +243,7 @@ public class CLogConsole extends Handler
 	 * 	String Representation
 	 *	@return info
 	 */
+    @Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("CLogConsole[");

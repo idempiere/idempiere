@@ -19,15 +19,17 @@ package org.compiere.process;
 import java.util.Properties;
 
 import org.adempiere.util.IProcessUI;
+import org.adempiere.util.ProcessUtil;
 import org.compiere.util.Trx;
 
 /**
- *  Interface for user started processes.
- *
- *  ProcessCtrl.startClass creates the Object and calls startProcess
+ *  Interface to start a server process.
+ *  <p>
+ *  ServerProcessCtl creates the Object and calls startProcess
  *  before executing the optional SQL procedure and Report.
  *
- *  see ProcessCtl#startClass
+ *  @see ServerProcessCtl
+ *  @see ProcessUtil
  *  @author     Jorg Janke
  *  @version    $Id: ProcessCall.java,v 1.3 2006/07/30 00:54:44 jjanke Exp $
  */
@@ -35,18 +37,16 @@ public interface ProcessCall
 {
 	/**
 	 *  Start the process.
-	 *  Called when pressing the ... button in ...
-	 *  It should only return false, if the function could not be performed
-	 *  as this causes the process to abort.
 	 *
 	 *  @param ctx  Context
 	 *  @param pi	Process Info
 	 *  @param trx	transaction
-	 *  @return true if the next process should be performed
+	 *  @return true if success
 	 */
 	public boolean startProcess (Properties ctx, ProcessInfo pi, Trx trx);
 
 	/**
+	 * Set process UI interface
 	 * @param processUI
 	 */
 	public void setProcessUI(IProcessUI processUI);

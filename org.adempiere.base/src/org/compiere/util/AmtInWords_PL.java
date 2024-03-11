@@ -25,7 +25,7 @@ package org.compiere.util;
  */
 public class AmtInWords_PL implements AmtInWords {
 	/**
-	 * AmtInWords_EN
+	 * AmtInWords_PL
 	 */
 	public AmtInWords_PL() {
 		super();
@@ -127,13 +127,14 @@ public class AmtInWords_PL implements AmtInWords {
 		return (prefix + soFar).trim ();
 	}	// convert
 
-	/***************************************************************************
+	/**
 	 * Get Amount in Words
 	 * 
 	 * @param amount
 	 *            numeric amount (352.80)
 	 * @return amount in words (three*five*two 80/100)
 	 */
+	@Override
 	public String getAmtInWords(String amount) throws Exception {
 		if (amount == null)
 			return amount;
@@ -176,12 +177,10 @@ public class AmtInWords_PL implements AmtInWords {
 	/**
 	 * Test
 	 * 
-	 * @param args
-	 *            ignored
+	 * @param args ignored
 	 */
 	public static void main(String[] args) {
 		AmtInWords_PL aiw = new AmtInWords_PL();
-		// aiw.print (".23"); Error
 		aiw.print("0.23");
 		aiw.print("1.23");
 		aiw.print("12.345");

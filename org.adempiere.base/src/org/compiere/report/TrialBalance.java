@@ -34,9 +34,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 
-
 /**
- *	Trial Balance
+ *	Trial Balance Report
  *	
  *  @author Jorg Janke
  *
@@ -103,11 +102,11 @@ public class TrialBalance extends SvrProcess
 		+ " M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID,C_LocTo_ID,"
 		+ " C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,"
 		+ " User1_ID, User2_ID, A_Asset_ID, Description, LevelNo, T_TrialBalance_UU)";
-
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		StringBuilder sb = new StringBuilder ("AD_PInstance_ID=")
@@ -273,19 +272,15 @@ public class TrialBalance extends SvrProcess
 			pstmt = null;
 		}
 	}	//	setDateAcct
-
 	
-	/**************************************************************************
-	 *  Perform process.
-	 *  @return Message to be translated
+	/**
+	 *  Insert reporting data to T_TrialBalance
+	 *  @return empty string
 	 */
 	protected String doIt()
 	{
 		createBalanceLine();
 		createDetailLines();
-
-	//	int AD_PrintFormat_ID = 134;
-	//	getProcessInfo().setTransientObject (MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false));
 
 		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
@@ -423,7 +418,7 @@ public class TrialBalance extends SvrProcess
 	}	//	createBalanceLine
 
 	/**
-	 * 	Create Beginning Balance Line
+	 * 	Create Detail Lines
 	 */
 	private void createDetailLines()
 	{

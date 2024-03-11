@@ -48,6 +48,5 @@ public interface CacheInterface
 	 * @param record_ID
 	 */
 	public void newRecord(int record_ID);
-	
-	
+		
 }	//	CacheInterface

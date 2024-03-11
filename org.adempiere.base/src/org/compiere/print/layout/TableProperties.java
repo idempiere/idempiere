@@ -27,8 +27,8 @@ package org.compiere.print.layout;
 import org.compiere.util.ValueNamePair;
 
 /**
+ * Layout properties of table
  * @author hengsin
- *
  */
 public class TableProperties {
 
@@ -40,7 +40,6 @@ public class TableProperties {
 	private String[] columnJustification;
 
 	/**
-	 * 
 	 * @param columnHeader
 	 * @param columnMaxWidth
 	 * @param columnMaxHeight
@@ -59,7 +58,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Get column headers
 	 * @return column headers
 	 */
 	public ValueNamePair[] getColumnHeader() {
@@ -67,7 +66,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Set column headers
 	 * @param columnHeader
 	 */
 	public void setColumnHeader(ValueNamePair[] columnHeader) {
@@ -75,7 +74,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Get max width of columns
 	 * @return max width for columns
 	 */
 	public int[] getColumnMaxWidth() {
@@ -83,7 +82,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Set max width of columns
 	 * @param columnMaxWidth
 	 */
 	public void setColumnMaxWidth(int[] columnMaxWidth) {
@@ -91,7 +90,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Get max height of columns
 	 * @return max height for columns
 	 */
 	public int[] getColumnMaxHeight() {
@@ -99,7 +98,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Set max height of columns
 	 * @param columnMaxHeight
 	 */
 	public void setColumnMaxHeight(int[] columnMaxHeight) {
@@ -107,7 +106,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Get fixed width of columns
 	 * @return fixed width option for columns
 	 */
 	public boolean[] getFixedWidth() {
@@ -115,7 +114,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Set fixed width of columns
 	 * @param fixedWidth
 	 */
 	public void setFixedWidth(boolean[] fixedWidth) {
@@ -123,7 +122,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Get suppress repeat setting of columns
 	 * @return suppress repeating value setting for columns
 	 */
 	public Boolean[] getColSuppressRepeats() {
@@ -131,7 +130,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Set suppress repeat setting of columns
 	 * @param colSuppressRepeats
 	 */
 	public void setColSuppressRepeats(Boolean[] colSuppressRepeats) {
@@ -139,7 +138,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Get justification setting of columns
 	 * @return justification setting for columns
 	 */
 	public String[] getColumnJustification() {
@@ -147,7 +146,7 @@ public class TableProperties {
 	}
 
 	/**
-	 * 
+	 * Set justification setting of columns
 	 * @param columnJustification
 	 */
 	public void setColumnJustification(String[] columnJustification) {

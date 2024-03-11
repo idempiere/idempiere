@@ -67,6 +67,7 @@ public class CLogFormatter extends Formatter
 	 *	@param record log record
 	 *	@return formatted string
 	 */
+	@Override
 	public String format (LogRecord record)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -90,7 +91,6 @@ public class CLogFormatter extends Formatter
 			tsStr = "_________________________";
 		}
 			
-
 		/**	Time/Error		*/
 		if (record.getLevel() == Level.SEVERE)
 		{	//		   12:12:12.123
@@ -133,9 +133,6 @@ public class CLogFormatter extends Formatter
 		if (parameters.length() > 0)
 			sb.append(" (").append(parameters).append(")");
 		
-		/**	Level			** 
-		sb.append(" ")
-			.append(record.getLevel().getLocalizedName());
 		/**	Thread			**/
 		if (record.getLongThreadID() != 10)
 			sb.append(" [").append(record.getLongThreadID()).append("]");
@@ -149,10 +146,11 @@ public class CLogFormatter extends Formatter
 
 	
     /**
-     * Return the header string for a set of formatted records.
+     * Get the header string for a set of formatted records.
      * @param   h  The target handler.
      * @return  header string
      */
+	@Override
     public String getHead(Handler h) 
     {
 		String className = h.getClass().getName();
@@ -168,10 +166,11 @@ public class CLogFormatter extends Formatter
     }	//	getHead
 
     /**
-     * Return the tail string for a set of formatted records.
+     * Get the tail string for a set of formatted records.
      * @param   h  The target handler.
      * @return  tail string
      */
+	@Override
     public String getTail(Handler h) 
     {
 		String className = h.getClass().getName();
@@ -188,8 +187,8 @@ public class CLogFormatter extends Formatter
     }	//	getTail
 	
     /**
-     * 	Set Format
-     *	@param shortFormat format
+     * 	Set using long or short Format
+     *	@param shortFormat true to use short format
      */
     public void setFormat (boolean shortFormat)
     {
@@ -230,7 +229,7 @@ public class CLogFormatter extends Formatter
     /**
      * 	Get Log Parameters
      *	@param record log record
-     *	@return parameters empty string or parameters
+     *	@return empty string or parameters
      */
     public static String getParameters (LogRecord record)
     {
@@ -251,7 +250,7 @@ public class CLogFormatter extends Formatter
     /**
      * 	Get Log Exception
      *	@param record log record
-     *	@return null if exists or string
+     *	@return null if not exists or exception trace text
      */
     public static String getExceptionTrace (LogRecord record)
     {
@@ -262,12 +261,6 @@ public class CLogFormatter extends Formatter
     	StringBuffer sb = new StringBuffer();
 	    try 
 	    {
-	    	/** Print Stack		**
-	        StringWriter sw = new StringWriter();
-	        PrintWriter pw = new PrintWriter(sw);
-	        thrown.printStackTrace(pw);
-	        pw.close();
-	        sb.append(sw.toString());
 	        /**	Create Stack	**/
 	        fillExceptionTrace(sb, "", thrown);
 	    } 
@@ -322,8 +315,8 @@ public class CLogFormatter extends Formatter
     }	//	fillExceptionTrace
 
 	/**
-	 * get the Prefix to write in file log from VM variable org.idempiere.FileLogPrefix
-	 * @return
+	 * Get the Prefix to write in file log from VM variable org.idempiere.FileLogPrefix
+	 * @return log prefix
 	 */
 	private String getPrefix()
 	{

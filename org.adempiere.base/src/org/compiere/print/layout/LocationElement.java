@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 import org.compiere.model.MLocation;
 
 /**
- *	Location/Address Element.
- *  Prints Addresses
+ *	Location/Address Element.<br/>
+ *  Print Address.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: LocationElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1888085 ] One line location field not working
  * 			<li>BF [ 1888094 ] PF: label and label suffix not working for location field
  * 			<li>BF [ 2695078 } Country is not translated on invoice
@@ -41,7 +41,7 @@ import org.compiere.model.MLocation;
 public class LocationElement extends GridElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6740297090803465288L;
 
@@ -54,6 +54,7 @@ public class LocationElement extends GridElement
 	 * @param isHeightOneLine
 	 * @param label
 	 * @param labelSuffix
+	 * @param language
 	 */
 	public LocationElement(Properties ctx, int C_Location_ID, Font font, Paint color,
 			boolean isHeightOneLine,
@@ -62,7 +63,6 @@ public class LocationElement extends GridElement
 		super(isHeightOneLine ? 1 : 10, 1);		//	max
 		setGap(0,0);
 		MLocation ml = MLocation.get (ctx, C_Location_ID, null);
-	//	log.fine("C_Location_ID=" + C_Location_ID);
 		if (ml != null)
 		{
 			int index = 0;

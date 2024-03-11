@@ -25,7 +25,7 @@ import org.compiere.model.X_PA_ReportColumn;
 import org.compiere.util.Util;
 
 /**
- *  Report Column Model
+ *  Financial Report Column Model
  *
  *  @author Jorg Janke
  *  @version $Id: MReportColumn.java,v 1.3 2006/08/03 22:16:52 jjanke Exp $
@@ -33,16 +33,16 @@ import org.compiere.util.Util;
 public class MReportColumn extends X_PA_ReportColumn
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2584173320087743126L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_ReportColumn_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_ReportColumn_UU  UUID key
+     * @param trxName Transaction
+     */
     public MReportColumn(Properties ctx, String PA_ReportColumn_UU, String trxName) {
         super(ctx, PA_ReportColumn_UU, trxName);
 		if (Util.isEmpty(PA_ReportColumn_UU))
@@ -81,10 +81,10 @@ public class MReportColumn extends X_PA_ReportColumn
 		super(ctx, rs, trxName);
 	}	//	MReportColumn
 
-	/**************************************************************************
+	/**
 	 * 	Get Column SQL Select Clause.
 	 * 	@param withSum with SUM() function
-	 * 	@return select clause - AmtAcctCR+AmtAcctDR/etc or "null" if not defined
+	 * 	@return column clause for select - AmtAcctCR+AmtAcctDR/etc or "null" if not defined
 	 */
 	public String getSelectClause (boolean withSum)
 	{
@@ -93,7 +93,6 @@ public class MReportColumn extends X_PA_ReportColumn
 		if (withSum)
 			sb.append("SUM(");
 		if (PAAMOUNTTYPE_BalanceExpectedSign.equals(amountType))
-		//	sb.append("AmtAcctDr-AmtAcctCr");
 			sb.append("acctBalance(Account_ID,AmtAcctDr,AmtAcctCr)");
 		else if ( PAAMOUNTTYPE_BalanceAccountedSign.equals(amountType) )
 			sb.append("AmtAcctDr-AmtAcctCr");
@@ -116,8 +115,8 @@ public class MReportColumn extends X_PA_ReportColumn
 	}	//	getSelectClause
 
 	/**
-	 * 	Is it Period Info ?
-	 * 	@return true if Period Amount Type
+	 * 	Is it PAPERIODTYPE_Period
+	 * 	@return true if PAPERIODTYPE_Period
 	 */
 	public boolean isPeriod()
 	{
@@ -128,8 +127,8 @@ public class MReportColumn extends X_PA_ReportColumn
 	}	//	isPeriod
 
 	/**
-	 * 	Is it Year Info ?
-	 * 	@return true if Year Amount Type
+	 * 	Is it PAPERIODTYPE_Year
+	 * 	@return true if PAPERIODTYPE_Year
 	 */
 	public boolean isYear()
 	{
@@ -140,8 +139,8 @@ public class MReportColumn extends X_PA_ReportColumn
 	}	//	isYear
 
 	/**
-	 * 	Is it Total Info ?
-	 * 	@return true if Year Amount Type
+	 * 	Is it PAPERIODTYPE_Total
+	 * 	@return true if PAPERIODTYPE_Total
 	 */
 	public boolean isTotal()
 	{
@@ -152,9 +151,9 @@ public class MReportColumn extends X_PA_ReportColumn
 	}	//	isTotalBalance
 
 	/**
-	 * Is it natural balance ?
+	 * Is it PAPERIODTYPE_Natural<br/>
 	 * Natural balance means year balance for profit and loss a/c, total balance for balance sheet account
-	 * @return true if Natural Balance Amount Type
+	 * @return true if Natural Balance Amount Type (PAPERIODTYPE_Natural)
 	 */
 	public boolean isNatural() {
 		String pt = getPAPeriodType();
@@ -218,15 +217,14 @@ public class MReportColumn extends X_PA_ReportColumn
 			if (log.isLoggable(Level.FINE)) log.fine("No Restrictions - No ID for EntityType=" + et);
 			return "";
 		}
-		
-		
+				
 		return " AND " + MReportTree.getWhereClause (getCtx(), PA_Hierarchy_ID, et, ID);
 	}	//	getWhereClause
 	
 	/**
-	 * Obtain where clause for the combination type
+	 * Get where clause for the combination type
 	 * @param PA_Hierarchy_ID
-	 * @return
+	 * @return where clause
 	 */
 	private String getWhereCombination(int PA_Hierarchy_ID) {
 		StringBuilder whcomb = new StringBuilder();
@@ -353,12 +351,12 @@ public class MReportColumn extends X_PA_ReportColumn
 
 		return whcomb.toString();
 	}
-
 	
 	/**
 	 * 	Get String Representation
 	 * 	@return	String Representation
 	 */
+	 @Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MReportColumn[")
@@ -379,7 +377,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	}	//	toString
 
 	/**
-	 * 	Calculation Type Range
+	 * 	Is Calculation Type Range
 	 *	@return true if range
 	 */
 	public boolean isCalculationTypeRange()
@@ -387,15 +385,15 @@ public class MReportColumn extends X_PA_ReportColumn
 		return CALCULATIONTYPE_AddRangeOp1ToOp2.equals(getCalculationType());
 	}
 	/**
-	 * 	Calculation Type Add
-	 *	@return true id add
+	 * 	Is Calculation Type Add
+	 *	@return true if add
 	 */
 	public boolean isCalculationTypeAdd()
 	{
 		return CALCULATIONTYPE_AddOp1PlusOp2.equals(getCalculationType());
 	}
 	/**
-	 * 	Calculation Type Subtract
+	 * 	Is Calculation Type Subtract
 	 *	@return true if subtract
 	 */
 	public boolean isCalculationTypeSubtract()
@@ -403,7 +401,7 @@ public class MReportColumn extends X_PA_ReportColumn
 		return CALCULATIONTYPE_SubtractOp1_Op2.equals(getCalculationType());
 	}
 	/**
-	 * 	Calculation Type Percent
+	 * 	Is Calculation Type Percent
 	 *	@return true if percent
 	 */
 	public boolean isCalculationTypePercent()
@@ -411,25 +409,26 @@ public class MReportColumn extends X_PA_ReportColumn
 		return CALCULATIONTYPE_PercentageOp1OfOp2.equals(getCalculationType());
 	}
 
-
 	/**
-	 * 	Column Type Calculation
+	 * 	Is Column Type Calculation
 	 *	@return true if calculation
 	 */
 	public boolean isColumnTypeCalculation()
 	{
 		return COLUMNTYPE_Calculation.equals(getColumnType());
 	}
+	
 	/**
-	 * 	Column Type Relative Period
+	 * 	Is Column Type Relative Period
 	 *	@return true if relative period
 	 */
 	public boolean isColumnTypeRelativePeriod()
 	{
 		return COLUMNTYPE_RelativePeriod.equals(getColumnType());
 	}
+	
 	/**
-	 * 	Column Type Segment Value
+	 * 	Is Column Type Segment Value
 	 *	@return true if segment value
 	 */
 	public boolean isColumnTypeSegmentValue()
@@ -522,17 +521,16 @@ public class MReportColumn extends X_PA_ReportColumn
 		}
 		return true;
 	}	//	beforeSave
-	/**************************************************************************
 
 	/**
-	 * 	Copy
+	 * 	Create a new Report Column instance from source
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID parent
 	 * 	@param AD_Org_ID parent
 	 * 	@param PA_ReportColumnSet_ID parent
-	 * 	@param source copy source
+	 * 	@param source source to copy from
 	 * 	@param trxName transaction
-	 * 	@return Report Column
+	 * 	@return new Report Column instance
 	 */
 	public static MReportColumn copy (Properties ctx, int AD_Client_ID, int AD_Org_ID, 
 		int PA_ReportColumnSet_ID, MReportColumn source, String trxName)

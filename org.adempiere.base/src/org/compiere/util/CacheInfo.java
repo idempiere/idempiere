@@ -212,6 +212,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Set server node address
 	 * @param address node address
 	 */
 	private void setNodeAddress(InetAddress address) {
@@ -219,6 +220,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Set server node id
 	 * @param id node id
 	 */
 	private void setNodeId(String id) {

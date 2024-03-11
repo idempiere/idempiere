@@ -132,10 +132,9 @@ public interface DocAction
 	 *	@return Document Status
 	 */
 	public String getDocStatus();
-	
-	
-	/*************************************************************************
-	 * 	Process document
+		
+	/**
+	 * 	Process document with document action
 	 *	@param action document action
 	 *	@return true if performed
 	 *	@throws Exception
@@ -147,58 +146,68 @@ public interface DocAction
 	 * 	@return true if success 
 	 */
 	public boolean unlockIt();
+	
 	/**
 	 * 	Invalidate Document
 	 * 	@return true if success 
 	 */
 	public boolean invalidateIt();
+	
 	/**
-	 *	Prepare Document
+	 *	Prepare Document for a document action
 	 * 	@return new status (In Progress or Invalid) 
 	 */
 	public String prepareIt();
+	
 	/**
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
 	public boolean  approveIt();
+	
 	/**
 	 * 	Reject Approval
 	 * 	@return true if success 
 	 */
 	public boolean rejectIt();
+	
 	/**
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
 	public String completeIt();
+	
 	/**
 	 * 	Void Document
 	 * 	@return true if success 
 	 */
 	public boolean voidIt();
+	
 	/**
 	 * 	Close Document
 	 * 	@return true if success 
 	 */
 	public boolean closeIt();
+	
 	/**
 	 * 	Reverse Correction
 	 * 	@return true if success 
 	 */
 	public boolean reverseCorrectIt();
+	
 	/**
 	 * 	Reverse Accrual
 	 * 	@return true if success 
 	 */
 	public boolean reverseAccrualIt();
+	
 	/** 
-	 * 	Re-activate
+	 * 	Re-activate (typically from Complete to In Progress)
 	 * 	@return true if success 
 	 */
 	public boolean reActivateIt();
 
-	/**************************************************************************
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
@@ -223,7 +232,7 @@ public interface DocAction
 	public File createPDF ();
 	
 	/**
-	 * 	Get Process Message
+	 * 	Get Process Message from last execution of a document action
 	 *	@return clear text message
 	 */
 	public String getProcessMsg ();
@@ -271,8 +280,8 @@ public interface DocAction
 	public boolean save();
 	
 	/**
-	 * 	Save throwing exception
-	 * @throws AdempiereException
+	 * Save throwing exception
+	 * @throws AdempiereException if save fail
 	 * @see #save()
 	 */
 	public void saveEx() throws AdempiereException;

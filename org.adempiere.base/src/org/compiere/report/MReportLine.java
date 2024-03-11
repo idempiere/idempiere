@@ -30,9 +30,8 @@ import org.compiere.model.X_PA_ReportLine;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
- *	Report Line Model
+ *	Financial Report Line Model
  *
  *  @author Jorg Janke
  *  @version $Id: MReportLine.java,v 1.3 2006/08/03 22:16:52 jjanke Exp $
@@ -40,7 +39,7 @@ import org.compiere.util.Util;
 public class MReportLine extends X_PA_ReportLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6310984172477566729L;
 
@@ -48,11 +47,11 @@ public class MReportLine extends X_PA_ReportLine
 	private Stroke				underline_Stroke;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_ReportLine_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_ReportLine_UU  UUID key
+     * @param trxName Transaction
+     */
     public MReportLine(Properties ctx, String PA_ReportLine_UU, String trxName) {
         super(ctx, PA_ReportLine_UU, trxName);
 		if (Util.isEmpty(PA_ReportLine_UU))
@@ -103,7 +102,7 @@ public class MReportLine extends X_PA_ReportLine
 	private String				m_whereClause = null;
 
 	/**
-	 * 	Load contained Sources
+	 * 	Load contained Sources (MReportSource)
 	 */
 	private void loadSources()
 	{
@@ -137,8 +136,8 @@ public class MReportLine extends X_PA_ReportLine
 	}	//	loadSources
 
 	/**
-	 * 	Get Sources
-	 * 	@return sources
+	 * 	Get Report Sources
+	 * 	@return report sources
 	 */
 	public MReportSource[] getSources()
 	{
@@ -156,7 +155,6 @@ public class MReportLine extends X_PA_ReportLine
 		for (int i = 0; i < m_sources.length; i++)
 			System.out.println("  - " + m_sources[i].toString());
 	}	//	list
-
 
 	/**
 	 * 	Get Source Column Name
@@ -190,11 +188,10 @@ public class MReportLine extends X_PA_ReportLine
 		return null;
 	}	//
 
-
 	/**
-	 * 	Get SQL Select Clause.
+	 * 	Get Column Clause for Select statement
 	 * 	@param withSum with SUM() function
-	 * 	@return select clause - AmtAcctCR+AmtAcctDR/etc or "null" if not defined
+	 * 	@return column clause for select - AmtAcctCR+AmtAcctDR/etc or "null" if not defined
 	 */
 	public String getSelectClause (boolean withSum)
 	{
@@ -226,8 +223,8 @@ public class MReportLine extends X_PA_ReportLine
 	}	//	getSelectClause
 
 	/**
-	 * 	Is it Period ?
-	 * 	@return true if Period Amount Type
+	 * 	Is it PAPERIODTYPE_Period ?
+	 * 	@return true if PAPERIODTYPE_Period
 	 */
 	public boolean isPeriod()
 	{
@@ -238,8 +235,8 @@ public class MReportLine extends X_PA_ReportLine
 	}	//	isPeriod
 
 	/**
-	 * 	Is it Year ?
-	 * 	@return true if Year Amount Type
+	 * 	Is it PAPERIODTYPE_Year ?
+	 * 	@return true if PAPERIODTYPE_Year
 	 */
 	public boolean isYear()
 	{
@@ -250,8 +247,8 @@ public class MReportLine extends X_PA_ReportLine
 	}	//	isYear
 
 	/**
-	 * 	Is it Total ?
-	 * 	@return true if Year Amount Type
+	 * 	Is it PAPERIODTYPE_Total ?
+	 * 	@return true if PAPERIODTYPE_Total
 	 */
 	public boolean isTotal()
 	{
@@ -262,9 +259,9 @@ public class MReportLine extends X_PA_ReportLine
 	}	//	isTotal
 	
 	/**
-	 * Is it natural balance ?
+	 * Is it natural balance (PAPERIODTYPE_Natural) ?
 	 * Natural balance means year balance for profit and loss a/c, total balance for balance sheet account
-	 * @return true if Natural Balance Amount Type
+	 * @return true if Natural Balance Amount Type (PAPERIODTYPE_Natural)
 	 */
 	public boolean isNatural()
 	{
@@ -325,7 +322,7 @@ public class MReportLine extends X_PA_ReportLine
 
 	/**
 	 * 	Has Posting Type
-	 *	@return true if posting
+	 *	@return true if posting type is not null
 	 */
 	public boolean isPostingType()
 	{
@@ -337,6 +334,7 @@ public class MReportLine extends X_PA_ReportLine
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MReportLine[")
@@ -413,13 +411,13 @@ public class MReportLine extends X_PA_ReportLine
 	{
 		return CALCULATIONTYPE_PercentageOp1OfOp2.equals(getCalculationType());
 	}
-
 	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (LINETYPE_SegmentValue.equals(getLineType()))
@@ -434,16 +432,15 @@ public class MReportLine extends X_PA_ReportLine
 		return true;
 	}	//	beforeSave
 	
-
-	/**************************************************************************
-	 * 	Copy
+	/**
+	 * 	Create new Report Line instance from source
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID parent
 	 * 	@param AD_Org_ID parent
 	 * 	@param PA_ReportLineSet_ID parent
-	 * 	@param source copy source
+	 * 	@param source source to copy from
 	 * 	@param trxName transaction
-	 * 	@return Report Line
+	 * 	@return new Report Line instance
 	 */
 	public static MReportLine copy (Properties ctx, int AD_Client_ID, int AD_Org_ID, 
 		int PA_ReportLineSet_ID, MReportLine source, String trxName)
@@ -460,7 +457,7 @@ public class MReportLine extends X_PA_ReportLine
 	/**
 	 * Get overline style 0 - none, 1 - single, 2 - double
 	 * 
-	 * @return int - Style No
+	 * @return int - overline style No
 	 */
 	public int getOverline( )
 	{
@@ -494,12 +491,12 @@ public class MReportLine extends X_PA_ReportLine
 				overline_Stroke = new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 1.0f, getPatternDashed(width), 0.0f);
 		}
 		return overline_Stroke;
-	} // getUnderine_Stroke
+	} // getOverlineStroke
 
 	/**
 	 * Get underline style 0 - none 1 - single 2 - double
 	 * 
-	 * @return int - Style No
+	 * @return underline style No
 	 */
 	public int getUnderline( )
 	{

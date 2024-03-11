@@ -34,7 +34,7 @@ import org.compiere.print.PrintData;
 import org.compiere.util.CLogger;
 
 /**
- *  Print Element
+ *  Abstract base class for Print Element
  *
  *  @author     Jorg Janke
  *  @version    $Id: PrintElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
@@ -45,7 +45,6 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5894090289966933777L;
-
 
 	/**
 	 *  Constructor
@@ -81,9 +80,8 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	private int m_rowIndex = -1;
 
 	private String m_pageLogic;
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Get Calculated Width
 	 * 	@return Width
 	 */
@@ -126,7 +124,6 @@ public abstract class PrintElement implements ImageObserver, Serializable
 
 	/**
 	 * 	Layout and Calculate Size
-	 * 	Set p_width and p_height
 	 * 	@return true if calculated
 	 */
 	protected abstract boolean calculateSize();
@@ -173,8 +170,8 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	}	//	setMaxWidth
 
 	/**
-	 * 	Set Location within page.
-	 * 	Called from LayoutEngine.layoutForm(), lauout(), createStandardFooterHeader()
+	 * 	Set Location within page.<br/>
+	 * 	Called from LayoutEngine.layoutForm(), layout(), createStandardFooterHeader()
 	 * 	@param pageLocation location within page
 	 */
 	public void setLocation (Point2D pageLocation)
@@ -194,20 +191,18 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	/**
 	 * 	Return Absolute Position
 	 * 	@param pageStart start of page
-	 * 	@return absolite position
+	 * 	@return absolute position
 	 */
 	protected Point2D.Double getAbsoluteLocation(Point2D pageStart)
 	{
 		Point2D.Double retValue = new Point2D.Double(
 			p_pageLocation.x + pageStart.getX(), p_pageLocation.y + pageStart.getY());
-	//	log.finest( "PrintElement.getAbsoluteLocation", "PageStart=" + pageStart.getX() + "/" + pageStart.getY()
-	//		+ ",PageLocaton=" + p_pageLocation.x + "/" + p_pageLocation.y + " => " + retValue.x + "/" + retValue.y);
 		return retValue;
 	}	//	getAbsoluteLocation
 
 	/**
 	 * 	Get relative Bounds of Element
-	 * 	@return bounds relative position on page
+	 * 	@return bounds 
 	 */
 	public Rectangle getBounds()
 	{
@@ -217,10 +212,10 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	}	//	getBounds
 
 	/**
-	 * 	Get Drill Down value
-	 * 	@param relativePoint relative Point
+	 * 	Get Drill Down Query
+	 * 	@param relativePoint point to find print element
 	 *  @param pageNo page number
-	 * 	@return null (subclasses overwrite)
+	 * 	@return null (subclass to overwrite)
 	 */
 	public MQuery getDrillDown (Point relativePoint, int pageNo)
 	{
@@ -228,19 +223,18 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	}	//	getDrillDown
 
 	/**
-	 * 	Get Drill Across value
-	 * 	@param relativePoint relative Point
+	 * 	Get Drill Across Query
+	 * 	@param relativePoint point to find print element
 	 *  @param pageNo page number
-	 * 	@return null (subclasses overwrite)
+	 * 	@return null (subclass to overwrite)
 	 */
 	public MQuery getDrillAcross (Point relativePoint, int pageNo)
 	{
 		return null;
 	}	//	getDrillAcross
-
 	
-	/**************************************************************************
-	 * 	Translate Context if required.
+	/**
+	 * 	Translate Content if required. <br/>
 	 *  If content is translated, the element needs to stay in the bounds
 	 *  of the originally calculated size and need to align the field.
 	 * 	@param ctx context
@@ -258,9 +252,8 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	{
 		return false;
 	}	//	translate
-
 	
-	/**************************************************************************
+	/**
 	 * 	Paint/Print.
 	 * 	@param g2D Graphics
 	 *  @param pageNo page number for multi page support (0 = header/footer)
@@ -269,9 +262,8 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	 *  @param isView true if online view (IDs are links)
 	 */
 	public abstract void paint (Graphics2D g2D, int pageNo, Point2D pageStart, Properties ctx, boolean isView);
-
 	
-	/**************************************************************************
+	/**
 	 * 	Image Observer
 	 * 	@param img image
 	 * 	@param infoflags Observer flags
@@ -281,6 +273,7 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	 * 	@param height image height
 	 * 	@return false if the infoflags indicate that the image is completely loaded; true otherwise
 	 */
+	@Override
 	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height)
 	{
 		//	copied from java.awt.component
@@ -341,8 +334,8 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	}	//	waitForLoad
 
 	/**
-	 * 	Get Detail Info from Sub-Class
-	 *	@return detail info
+	 * 	Get Detail Info
+	 *	@return detail info (empty string, subclass to overwrite)
 	 */
 	protected String getDetailInfo()
 	{
@@ -353,6 +346,7 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		String cn = getClass().getName();
@@ -366,41 +360,73 @@ public abstract class PrintElement implements ImageObserver, Serializable
 		return sb.toString();
 	}	//	toString
 
+	/**
+	 * Set current page
+	 * @param page
+	 */
 	public void setCurrentPage(Page page) 
 	{
 		m_currentPage = page;
 	}
 
+	/**
+	 * Get current page
+	 * @return page
+	 */
 	protected Page getCurrentPage()
 	{
 		return m_currentPage;
 	}
 
+	/**
+	 * Set print data
+	 * @param printData
+	 */
 	public void setPrintData(PrintData printData) 
 	{
 		m_printData = printData;
 	}
 	
+	/**
+	 * Get print data
+	 * @return print data
+	 */
 	public PrintData getPrintData() 
 	{
 		return m_printData;
 	}
 
+	/**
+	 * Set row index
+	 * @param row
+	 */
 	public void setRowIndex(int row) 
 	{
 		m_rowIndex = row;
 	}
 	
+	/**
+	 * Get row index
+	 * @return row index
+	 */
 	public int getRowIndex()
 	{
 		return m_rowIndex;
 	}
 
+	/**
+	 * Set page logic expression
+	 * @param displayLogic
+	 */
 	public void setPageLogic(String displayLogic) 
 	{
 		m_pageLogic = displayLogic;
 	}
 	
+	/**
+	 * Get page logic expression
+	 * @return page logic expression
+	 */
 	public String getPageLogic()
 	{
 		return m_pageLogic;

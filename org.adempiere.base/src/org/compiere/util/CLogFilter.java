@@ -50,10 +50,11 @@ public class CLogFilter implements Filter
 	}	//	CLogFilter
 
 	/**
-	 * 	Loggable - Don't log core java classes
+	 * 	Is Loggable - Don't log core java classes
 	 *	@param record log record
-	 *	@return true
+	 *	@return true if loggable
 	 */
+	@Override
 	public boolean isLoggable (LogRecord record)
 	{
 		String loggerName = record.getLoggerName();

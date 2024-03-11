@@ -41,7 +41,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 
 /**
- *  Financial Report Engine
+ *  Financial Report
  *
  *  @author Jorg Janke
  *	@author Armen Rizal, Goodwill Consulting
@@ -101,10 +101,10 @@ public class FinReport extends SvrProcess
 	/** The Report Lines				*/
 	private MReportLine[] 		m_lines;
 
-
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		StringBuilder sb = new StringBuilder ("Record_ID=")
@@ -226,7 +226,7 @@ public class FinReport extends SvrProcess
 	}	//	prepare
 
 	/**
-	 * 	Set Periods
+	 * 	Set Reporting Periods
 	 */
 	private void setPeriods()
 	{
@@ -293,10 +293,9 @@ public class FinReport extends SvrProcess
 		}
 	}	//	setPeriods
 
-	
-	/**************************************************************************
-	 *  Perform process.
-	 *  @return Message to be translated
+	/**
+	 *  Insert reporting data to T_Report
+	 *  @return empty string
 	 *  @throws Exception
 	 */
 	protected String doIt() throws Exception
@@ -362,8 +361,8 @@ public class FinReport extends SvrProcess
 		return "";
 	}	//	doIt
 
-	/**************************************************************************
-	 * 	For all columns (in a line) with relative period access
+	/**
+	 * 	Update value for all columns (in a line) with relative period access
 	 * 	@param line line
 	 */
 	private void insertLine (int line)
@@ -500,29 +499,29 @@ public class FinReport extends SvrProcess
 				}
 			}
 
-		//	Line Where
-		String s = m_lines[line].getWhereClause(p_PA_Hierarchy_ID);	//	(sources, posting type)
-		if (s != null && s.length() > 0)
-			select.append(" AND ").append(s);
-
-		//	Report Where
-		s = m_report.getWhereClause();
-		if (s != null && s.length() > 0)
-			select.append(" AND ").append(s);
-
-		//	PostingType
-		if (!m_lines[line].isPostingType())		//	only if not defined on line
-		{
-			String PostingType = m_columns[col].getPostingType();
-			if (PostingType != null && PostingType.length() > 0)
-				select.append(" AND PostingType='").append(PostingType).append("'");
-			// globalqss - CarlosRuiz
-			if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
-				if (m_columns[col].getGL_Budget_ID() > 0)
-					select.append(" AND GL_Budget_ID=" + m_columns[col].getGL_Budget_ID());
+			//	Line Where
+			String s = m_lines[line].getWhereClause(p_PA_Hierarchy_ID);	//	(sources, posting type)
+			if (s != null && s.length() > 0)
+				select.append(" AND ").append(s);
+	
+			//	Report Where
+			s = m_report.getWhereClause();
+			if (s != null && s.length() > 0)
+				select.append(" AND ").append(s);
+	
+			//	PostingType
+			if (!m_lines[line].isPostingType())		//	only if not defined on line
+			{
+				String PostingType = m_columns[col].getPostingType();
+				if (PostingType != null && PostingType.length() > 0)
+					select.append(" AND PostingType='").append(PostingType).append("'");
+				// globalqss - CarlosRuiz
+				if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
+					if (m_columns[col].getGL_Budget_ID() > 0)
+						select.append(" AND GL_Budget_ID=" + m_columns[col].getGL_Budget_ID());
+				}
+				// end globalqss
 			}
-			// end globalqss
-		}
 
 			if (m_columns[col].isColumnTypeSegmentValue())
 				select.append(m_columns[col].getWhereClause(p_PA_Hierarchy_ID));
@@ -553,8 +552,7 @@ public class FinReport extends SvrProcess
 		}
 	}	//	insertLine
 
-
-	/**************************************************************************
+	/**
 	 *	Line + Column calculation
 	 */
 	private void doCalculations()
@@ -848,7 +846,6 @@ public class FinReport extends SvrProcess
 				}
 			}
 		}	//	for all lines
-
 
 		//	for all columns		***********************************************
 		for (int col = 0; col < m_columns.length; col++)
@@ -1151,14 +1148,13 @@ public class FinReport extends SvrProcess
 			}
 
 		}
-
 	}
 
 	/**
 	 * 	Get List of PA_ReportLine_ID from .. to
 	 * 	@param fromID from ID
 	 * 	@param toID to ID
-	 * 	@return comma separated list
+	 * 	@return comma separated list of PA_ReportLine_ID
 	 */
 	private String getLineIDs (int fromID, int toID)
 	{
@@ -1220,8 +1216,7 @@ public class FinReport extends SvrProcess
 		return -1;
 	}	//	getColumnIndex
 
-	
-	/**************************************************************************
+	/**
 	 * 	Get Financial Reporting Period based on reporting Period and offset.
 	 * 	@param relativeOffset offset
 	 * 	@return reporting period
@@ -1274,15 +1269,14 @@ public class FinReport extends SvrProcess
 		return m_periods[index];
 	}	//	getPeriod
 
-	
-	/**************************************************************************
-	 *	Insert Detail Lines if enabled
+	/**
+	 *	Insert Detail Lines if enabled (isListSources=Y)
 	 */
 	private void insertLineDetail()
 	{
 		if (!m_report.isListSources())
 			return;
-		log.info("");
+		if(log.isLoggable(Level.INFO)) log.info("");
 
 		//	for all source lines
 		for (int line = 0; line < m_lines.length; line++)
@@ -1335,8 +1329,8 @@ public class FinReport extends SvrProcess
 	}	//	insertLineDetail
 
 	/**
-	 * 	Insert Detail Line per Source.
-	 * 	For all columns (in a line) with relative period access
+	 * 	Insert Detail Line per Source (call from {@link #insertLineDetail()}).<br/>
+	 * 	For all columns (in a line) with relative period access<br/>
 	 * 	- AD_PInstance_ID, PA_ReportLine_ID, variable, 0 - Level 1
 	 * 	@param line line
 	 */
@@ -1372,7 +1366,6 @@ public class FinReport extends SvrProcess
 			.append(m_lines[line].getPA_ReportLine_ID()).append(",")
 			.append(variable).append(",0,");
 		}
-		//
 				
 		if (p_DetailsSourceFirst) {
 			insert.append("-1 ");
@@ -1525,7 +1518,6 @@ public class FinReport extends SvrProcess
 				unionWhere.append(sb.toString ());
 			}
 		}
-		//
 
 		String s = m_report.getWhereClause();
 		if (s != null && s.length() > 0)
@@ -1593,7 +1585,7 @@ public class FinReport extends SvrProcess
 	}	//	insertLineSource
 
 	/**
-	 * 	Create Trx Line per Source Detail.
+	 * 	Create Trx Line per Source Detail (isListTrx=Y).<br/>
 	 * 	- AD_PInstance_ID, PA_ReportLine_ID, variable, Fact_Acct_ID - Level 2
 	 * 	@param line line
 	 * 	@param variable variable, e.g. Account_ID
@@ -1749,9 +1741,8 @@ public class FinReport extends SvrProcess
 		if (no == 0)
 			return;
 	}	//	insertLineTrx
-
 	
-	/**************************************************************************
+	/**
 	 *	Delete Unprinted Lines
 	 */
 	private void deleteUnprintedLines()
@@ -1770,7 +1761,9 @@ public class FinReport extends SvrProcess
 		}	//	for all lines
 	}	//	deleteUnprintedLines
 
-
+	/**
+	 * Update result with multiplier and rounding factor
+	 */
 	private void scaleResults() {
 
 		for (int column = 0; column < m_columns.length; column++) {
@@ -1821,7 +1814,7 @@ public class FinReport extends SvrProcess
 		
 	}
 	
-	/**************************************************************************
+	/**
 	 *	Get/Create PrintFormat
 	 * 	@return print format
 	 */
@@ -1991,7 +1984,7 @@ public class FinReport extends SvrProcess
 		return pf;
 	}	//	getPrintFormat
 
-	/****************************************************************************
+	/**
 	 * Get Financial Reporting Period To based on reporting Period and offset to.
 	 * 
 	 * @param relativeOffsetTo - offset TO

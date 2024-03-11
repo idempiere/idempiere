@@ -22,10 +22,10 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss                                           *
  **********************************************************************/
-
 package org.compiere.process;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
@@ -40,6 +40,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Process to rename a DB table.
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseTableRename extends SvrProcess {
 
@@ -64,7 +67,7 @@ public class DatabaseTableRename extends SvrProcess {
 	protected String doIt() throws Exception {
 		MTable table = new MTable(getCtx(), p_AD_Table_ID, get_TrxName());
 		String oldTableName = table.getTableName();
-		log.info(table.toString());
+		if (log.isLoggable(Level.INFO)) log.info(table.toString());
 		if (   Util.isEmpty(p_NewTableName, true)
 			|| p_NewTableName.toLowerCase().equals(oldTableName.toLowerCase())) {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@NotValid@: @NewTableName@")));

@@ -93,9 +93,9 @@ public class Evaluator
 	}   //  evaluateLogic
 
 	/**
-	 *  Parse String and add variables with @ to the list.
+	 *  Parse expression and add variables with @ to the list.
 	 *  @param list list to be added to
-	 *  @param parseString string to parse for variables
+	 *  @param parseString expression to parse for variables
 	 */
 	public static void parseDepends (ArrayList<String> list, String parseString)
 	{
@@ -125,12 +125,12 @@ public class Evaluator
 	}   //  parseDepends
 
 	/**
-	 * Evaluate a logic expression base on SQL
+	 * Evaluate a SQL logic expression (with @SQL= prefix)
 	 * @param sqlLogic
 	 * @param ctx
 	 * @param windowNo
 	 * @param tabNo
-	 * @param targetObjectName expression logic is evaluated for, that target object (purpose for logging) can be field name, toolbar button name,..
+	 * @param targetObjectName expression logic is evaluated for, that target object (for logging purpose) can be field name, toolbar button name,..
 	 * @return result of logic expression
 	 */
 	public static boolean parseSQLLogic(String sqlLogic, Properties ctx, int windowNo, int tabNo, String targetObjectName) {

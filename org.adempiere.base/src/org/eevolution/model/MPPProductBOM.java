@@ -41,7 +41,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5048325803007991296L;
 	/**	Cache						*/
@@ -71,7 +71,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	}
 
 	/**
-	 * get the Product BOM for a product
+	 * Get the Product BOM for a product
 	 * @param product
 	 * @return return List with MPPProductBOM
 	 */
@@ -232,30 +232,38 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		return null;
 	}
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PP_Product_BOM_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PP_Product_BOM_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPPProductBOM(Properties ctx, String PP_Product_BOM_UU, String trxName) {
         super(ctx, PP_Product_BOM_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param PP_Product_BOM_ID
+     * @param trxName
+     */
 	public MPPProductBOM(Properties ctx, int PP_Product_BOM_ID,String trxName)
 	{
 		super (ctx, PP_Product_BOM_ID, trxName);
 	}
 
-
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPPProductBOM(Properties ctx, ResultSet rs,String trxName)
 	{
 		super (ctx, rs,trxName);
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPPProductBOM(MPPProductBOM copy) 
@@ -264,7 +272,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -274,7 +282,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -286,12 +294,18 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		this.m_lines = copy.m_lines != null ? copy.m_lines.stream().map(e -> {return new MPPProductBOMLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
 	}
 
+	/**
+	 * @param ctx
+	 * @param PP_Product_BOM_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPPProductBOM(Properties ctx, int PP_Product_BOM_ID, String trxName, String... virtualColumns) {
 		super(ctx, PP_Product_BOM_ID, trxName, virtualColumns);
 	}
 
 	/**
-	 * 	Get BOM Lines valid date for Product BOM
+	 * 	Get valid BOM Lines for Product BOM
 	 *  @param valid Date to Validate
 	 * 	@return BOM Lines
 	 */
@@ -320,6 +334,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	
 	/**
 	 * 	Get BOM Lines for Product BOM
+	 *  @param reload true to re-load from DB
 	 * 	@return BOM Lines
 	 */
 	public  MPPProductBOMLine[] getLines(boolean reload)
@@ -339,6 +354,11 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		return this.m_lines.toArray(new MPPProductBOMLine[this.m_lines.size()]);
 	}	//	getLines    		
 	
+	/**
+	 * Is BOM valid for date
+	 * @param date
+	 * @return true if BOM is valid for date
+	 */
 	public boolean isValidFromTo(Timestamp date)
 	{
 		Timestamp validFrom = getValidFrom();
@@ -410,6 +430,9 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		return true;
 	}
 	
+	/**
+	 * Update IsBOM flag of product
+	 */
 	private void updateProduct()
 	{
 		int count = new Query(getCtx(), Table_Name, COLUMNNAME_M_Product_ID+"=?", get_TrxName())

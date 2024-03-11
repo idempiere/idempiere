@@ -14,25 +14,37 @@
 package org.compiere.print.util;
 
 /**
- * 
+ * Segment of swap file.<br/>
+ * Each segment contains a list of file pointer (offset) pointing to block of equivalent size (except the last block).
  * @author hengsin
- *
  */
 public class SwapFileSegment {
 	private final long[] offsets;
 	private final int lastBlockSize;
-	
+
+	/**
+	 * @param offsets
+	 * @param lastSize
+	 */
 	public SwapFileSegment(long[] offsets, int lastSize)
 	{
 		this.offsets = offsets;
 		this.lastBlockSize = lastSize;
 	}
 
+	/**
+	 * Get offsets
+	 * @return offsets
+	 */
 	public long[] getOffsets()
 	{
 		return offsets;
 	}
 	
+	/**
+	 * Get size of last block
+	 * @return size of last block
+	 */
 	public int getLastBlockSize()
 	{
 		return lastBlockSize;
