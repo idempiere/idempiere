@@ -2859,13 +2859,11 @@ public class MPayment extends X_C_Payment
 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(getCtx(), getC_Payment_ID(), get_TrxName());
 		if (allocations.length > 0) {
-			m_processMsg = Msg.parseTranslation(getCtx(), "PaymentReactivationFailedAllocationLine");
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedAllocationLine");
 			return false;
 		}
 
-		StringBuilder sql = new StringBuilder("SELECT 1 FROM C_BankStatement bs WHERE bs.AD_Client_ID = ?")
-		.append(" AND EXISTS (SELECT C_BankStatement_ID FROM C_BankStatementLine bsl WHERE bs.C_BankStatement_ID = bsl.C_BankStatement_ID AND bsl.C_Payment_ID = ?)");
-		if (DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_Client_ID(), getC_Payment_ID()) == 1) {
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_BankStatementLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
 			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedBankStatementLine");
 			return false;
 		}
@@ -2887,7 +2885,6 @@ public class MPayment extends X_C_Payment
 
 		MFactAcct.deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
 		setPosted(false);
-		deAllocate(true); 
 		setDocAction(DOCACTION_Complete);
 		setProcessed(false);
 
