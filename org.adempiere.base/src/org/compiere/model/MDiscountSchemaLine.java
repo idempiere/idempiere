@@ -107,11 +107,6 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 		return this;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

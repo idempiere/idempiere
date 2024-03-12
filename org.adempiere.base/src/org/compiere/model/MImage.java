@@ -398,7 +398,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 
 	
 	/**
-	 * 	Before Save
+	 * 	Ensure AD_Org_ID is 0.
 	 *	@param newRecord new
 	 *	@return true
 	 */

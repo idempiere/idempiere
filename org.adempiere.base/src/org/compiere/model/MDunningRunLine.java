@@ -264,7 +264,8 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	}	//	getC_CurrencyTo_ID
 	
 	/**
-	 * 	Before Save
+	 * 	Update amount (open, converted, total).<br/>
+	 *  Update collection status of invoice.
 	 *	@param newRecord new
 	 *	@return true
 	 */

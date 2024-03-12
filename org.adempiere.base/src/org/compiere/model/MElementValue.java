@@ -241,6 +241,10 @@ public class MElementValue extends X_C_ElementValue implements ImmutablePOSuppor
 		return sb.toString ();
 	}	//	toStringX
 			
+	/**
+	 * Ensure AD_Org_ID is 0.<br/>
+	 * Validate IsSummary and remove C_ValidCombination records if IsSummary=Y.
+	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

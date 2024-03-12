@@ -971,7 +971,8 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	}	//	getPO_DiscountSchema_ID
 	
 	/**
-	 * 	Before Save
+	 * 	Set default from BP Group (for new record or if C_BP_Group_ID has change)
+	 *  @see #setBPGroup(MBPGroup)
 	 *	@param newRecord new
 	 *	@return true
 	 */

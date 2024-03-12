@@ -543,14 +543,15 @@ public class MGoal extends X_PA_Goal
 	}	//	toString
 	
 	/**
-	 * 	Before Save
+	 *  Validate measure required if not Summary.<br/>
+	 * 	User/Role Check.
 	 *	@param newRecord new
 	 *	@return true
 	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Measure required if nor Summary
+		//	Measure required if not Summary
 		if (!isSummary() && getPA_Measure_ID() == 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "PA_Measure_ID"));

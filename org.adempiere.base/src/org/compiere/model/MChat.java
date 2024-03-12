@@ -251,7 +251,7 @@ public class MChat extends X_CM_Chat
 	}
 
 	/**
-	 * 	Before Save
+	 * 	Set Record_UU (if not set) from Record_ID.
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */

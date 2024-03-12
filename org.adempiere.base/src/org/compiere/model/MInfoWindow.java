@@ -372,6 +372,11 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return true;
 	}  // validate sql
 
+	/**
+	 * Validate FromClause can be parsed by {@link AccessSqlParser}.<br/>
+	 * Validate only one default per table.<br/>
+	 * Call {@link #validate()}.
+	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		AccessSqlParser parser = new AccessSqlParser("SELECT * FROM " + getFromClause());

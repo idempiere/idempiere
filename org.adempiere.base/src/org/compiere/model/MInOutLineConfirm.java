@@ -195,7 +195,7 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	}	//	beforeDelete
 	
 	/**
-	 * 	Before Save
+	 * 	Calculate Difference = Target - Confirmed - Scrapped
 	 *	@param newRecord new
 	 *	@return true
 	 */

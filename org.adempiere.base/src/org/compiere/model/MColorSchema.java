@@ -210,7 +210,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}	//	setDefault
 	
 	/**
-	 * 	Before Save
+	 * 	Ensure mark 1, 2, 3, 4 percent is in ascending order.
 	 *	@param newRecord new
 	 *	@return true
 	 */

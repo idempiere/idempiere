@@ -705,7 +705,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}	//	isTaxCorrectionWriteOff
 
 	/**
-	 * 	Before Save
+	 * 	Validate costing changes
 	 *	@param newRecord new
 	 *	@return true
 	 */

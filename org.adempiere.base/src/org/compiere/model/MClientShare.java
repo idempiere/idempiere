@@ -316,7 +316,7 @@ public class MClientShare extends X_AD_ClientShare
 	}	//	listChildRecords
 	
 	/**
-	 * 	Before Save
+	 * 	Ensure AD_Org_ID is 0
 	 *	@param newRecord new
 	 *	@return true
 	 */

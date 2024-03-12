@@ -563,7 +563,8 @@ public class MAttachment extends X_AD_Attachment
 	}
 
 	/**
-	 * 	Before Save
+	 * 	Set Record_UU (if not set) from Record_ID.<br/>
+	 *  Save attachment content ({@link #saveLOBData()}).
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */

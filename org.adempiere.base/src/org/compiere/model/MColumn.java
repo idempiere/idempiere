@@ -358,7 +358,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}	//	setIsEncrypted
 	
 	/**
-	 * 	Before Save
+	 * 	Validate column name, display type, min/max value, IsIdentifier, IsEncrypted, IsAllowCopy, 
+	 *  FormatPattern, IsKey, IsAllowLogging, ReadOnlyLogic and IsPartitionKey.<br/>
+	 *  Sync Terminology (AD_Element).
 	 *	@param newRecord new
 	 *	@return true
 	 */

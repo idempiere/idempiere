@@ -429,10 +429,10 @@ public class MConversionRate extends X_C_Conversion_Rate
 
 	
 	/**
-	 * 	Before Save.
-	 * 	- Same Currency
-	 * 	- Date Range Check
-	 * 	- Set To date to 2056
+	 * 	Validation:<br/>
+	 * 	- From Currency=To Currency<br/>
+	 * 	- Date Range Check<br/>
+	 * 	- Overlap of conversion rate
 	 *	@param newRecord new
 	 *	@return true if OK to save
 	 */
@@ -455,7 +455,6 @@ public class MConversionRate extends X_C_Conversion_Rate
 		//	Date Range Check
 		Timestamp from = getValidFrom();
 		if (getValidTo() == null) {
-			// setValidTo (TimeUtil.getDay(2056, 1, 29));	//	 no exchange rates after my 100th birthday
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ValidTo));
 			return false;
 		}

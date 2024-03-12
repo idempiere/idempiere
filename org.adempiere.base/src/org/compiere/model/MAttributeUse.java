@@ -69,7 +69,7 @@ public class MAttributeUse extends X_M_AttributeUse
 	}	//	MAttributeUse
 
 	/**
-	 * 	Before Save
+	 * 	Update SeqNo (if value is still 0)
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */

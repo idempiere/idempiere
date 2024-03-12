@@ -178,7 +178,7 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
     }
     
     /**
-	 * 	Before Save
+	 * 	Set BroadcastFrequency and LogAcknowledge.
 	 *	@param newRecord new
 	 *	@return save
 	 */

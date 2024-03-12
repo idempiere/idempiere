@@ -255,7 +255,8 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	}	//	createPDF
 	
 	/**
-	 * 	Before Save
+	 *  Set beginning balance (if not set yet).<br/>
+	 * 	Calculate ending balance.
 	 *	@param newRecord new
 	 *	@return true
 	 */

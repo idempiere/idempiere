@@ -308,13 +308,6 @@ public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 			return bd.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 		return BigDecimal.valueOf(0.90);
 	}	//	getCreditWatchRatio
-
-	
-	@Override
-	protected boolean beforeSave (boolean newRecord)
-	{
-		return true;
-	}
 	
 	/**
 	 * 	After Save

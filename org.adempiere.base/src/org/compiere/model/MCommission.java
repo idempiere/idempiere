@@ -151,7 +151,7 @@ public class MCommission extends X_C_Commission
 	}	//	copyLinesFrom
 
 	/**
-	 * Validations before saving record
+	 * Validate mandatory for charge or product.
 	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {

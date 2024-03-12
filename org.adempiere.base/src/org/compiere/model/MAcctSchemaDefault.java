@@ -152,7 +152,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	}	//	setValue
 
 	/**
-	 * 	Before Save
+	 * 	Make sure AD_Org_ID is 0.
 	 *	@param newRecord new
 	 *	@return true
 	 */

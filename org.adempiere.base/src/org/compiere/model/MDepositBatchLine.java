@@ -132,7 +132,8 @@ import org.compiere.util.Util;
 	}	//	setPayment
 
 	/**
-	 * 	Before Save
+	 *  Set Line No (if it is still 0).<br/>
+	 * 	Set DepositBatch_ID into C_Payment table.
 	 *	@param newRecord new
 	 *	@return true
 	 */

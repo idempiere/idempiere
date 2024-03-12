@@ -463,8 +463,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	}	//	getSerNoCharEnd
 		
 	/**
-	 * 	Before Save.<br/>
-	 * 	- set instance attribute flag
+	 * 	Set instance attribute flag
 	 *	@param newRecord new
 	 *	@return true
 	 */

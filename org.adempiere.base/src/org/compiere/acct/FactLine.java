@@ -924,7 +924,8 @@ public final class FactLine extends X_Fact_Acct
 
 	
 	/**
-	 * 	Before Save
+	 * 	Set default for account segment field (M_Product_ID, C_Campaign_ID, etc).<br/>
+	 *  Create Revenue Recognition for AR/AP Invoices.
 	 *	@param newRecord new
 	 *	@return true
 	 */

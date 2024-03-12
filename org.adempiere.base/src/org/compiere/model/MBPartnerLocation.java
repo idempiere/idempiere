@@ -221,10 +221,9 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	} // toString
 
 	/**
-	 * Before Save. - Set Name
+	 * Set Name
 	 * 
 	 * @param newRecord
-	 *            new
 	 * @return save
 	 */
 	@Override

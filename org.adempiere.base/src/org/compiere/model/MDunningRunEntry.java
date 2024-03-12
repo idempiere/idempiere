@@ -276,6 +276,9 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 		return retValue;
 	}	//	hasInvoices
 
+	/**
+	 * Update CreditStop and PaymentTerm of business partner.
+	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

@@ -511,11 +511,6 @@ public class MDistribution extends X_GL_Distribution
 		}
 	}	//	distribute
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

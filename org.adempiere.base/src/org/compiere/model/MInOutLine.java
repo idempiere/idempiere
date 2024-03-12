@@ -553,7 +553,15 @@ public class MInOutLine extends X_M_InOutLine
 	}	//	getAD_OrgTrx_ID
 
 	/**
-	 * 	Before Save
+	 * 	Validate MovementQty=0 for pending confirmation movement document.<br/>
+	 *  Set default locator (from product or warehouse) for product line.<br/>
+	 *  Validate locator is mandatory for product line.<br/>
+	 *  Set Line if it is still 0.<br/>
+	 *  Set default C_UOM_ID.<br/>
+	 *  Validate has order line or RMA line if IsSOTrx=Y.<br/>
+	 *  Validate locator type.<br/>
+	 *  Auto generate ASI lot if applicable.<br/>
+	 *  If MSysConfig.VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT=Y, validate order line and shipment line has same product id.
 	 *	@param newRecord new
 	 *	@return save
 	 */

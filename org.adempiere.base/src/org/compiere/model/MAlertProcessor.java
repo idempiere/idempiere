@@ -171,7 +171,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	}	//	getAlerts
 
 	/**
-	 * 	Before Save
+	 * 	Update DateNextRun (for new record or if schedule has change)
 	 *	@param newRecord new
 	 *	@return true
 	 */

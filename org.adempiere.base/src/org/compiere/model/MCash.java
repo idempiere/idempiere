@@ -318,7 +318,7 @@ public class MCash extends X_C_Cash implements DocAction
 	}	//	createPDF
 
 	/**
-	 * 	Before Save
+	 * 	Calculate Ending Balance
 	 *	@param newRecord
 	 *	@return true
 	 */

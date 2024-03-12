@@ -197,7 +197,7 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Before Save
+	 * 	Validate Only one Current Active BOM or Make_To_Order BOM.
 	 *	@param newRecord new
 	 *	@return true/false
 	 */

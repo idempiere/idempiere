@@ -179,6 +179,11 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		return retValue;
 	}
 
+	/**
+	 * Validate column name is valid DB identifier.<br/>
+	 * Sync Terminology (AD_Element).<br/>
+	 * Set SeqNoSelection (if it is still 0) for IsQueryCriteria=Y.
+	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		String error = Database.isValidIdentifier(getColumnName());

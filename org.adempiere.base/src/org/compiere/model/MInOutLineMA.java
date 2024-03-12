@@ -282,7 +282,7 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	}
 
 	/**
-	 * 	Before Save
+	 * 	Update DateMaterialPolicy for new record or new M_AttributeSetInstance_ID value.
 	 *	@param newRecord new
 	 *	@return save
 	 */

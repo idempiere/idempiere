@@ -115,7 +115,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	}	//	MAcctProcessor
 	
 	/**
-	 * 	Before Save
+	 * 	Update DateNextRun (for new record or if schedule has change)
 	 *	@param newRecord new
 	 *	@return true
 	 */

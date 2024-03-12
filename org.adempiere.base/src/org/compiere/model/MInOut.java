@@ -1294,7 +1294,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}
 	
 	/**
-	 * 	Before Save
+	 * 	Call {@link #setMovementType()}.<br/>
+	 *  Validate warehouse and document belongs to the same organization.<br/>
+	 *  Change DELIVERYRULE_Force to DELIVERYRULE_Availability if warehouse disallow negative inventory.<br/>
+	 *  Set ShipperAccount and FreightCharges for FREIGHTCOSTRULE_CustomerAccount.<br/>
+	 *  Default SalesRep_ID from order or RMA.<br/>
+	 *  Default C_DocType_ID from RMA DocType.C_DocTypeShipment_ID (if IsSOTrx=Y).
 	 *	@param newRecord new
 	 *	@return true or false
 	 */

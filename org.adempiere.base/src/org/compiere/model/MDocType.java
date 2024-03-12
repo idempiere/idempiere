@@ -305,17 +305,6 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}	//	getPrintName
 	
 	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
-	@Override
-	protected boolean beforeSave (boolean newRecord)
-	{
-		return true;
-	}	//	beforeSave
-	
-	/**
 	 * 	After Save
 	 *	@param newRecord new
 	 *	@param success success

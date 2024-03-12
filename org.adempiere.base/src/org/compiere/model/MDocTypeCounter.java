@@ -444,7 +444,8 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}	//	toString
 		
 	/**
-	 * 	Before Save
+	 * 	Ensure AD_Org_ID is 0. <br/>
+	 *  Call {@link #validate()}.
 	 *	@param newRecord new
 	 *	@return true
 	 */

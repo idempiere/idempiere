@@ -201,7 +201,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	
 	
 	/**
-	 *  Before Save
+	 *  Validate IBAN
 	 *	@param newRecord new record
 	 *	@return success  
 	 */

@@ -167,7 +167,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	}	//	isSystemMaintained
 	
 	/**
-	 * 	Before Save
+	 * 	Validation for system/official entity type
 	 *	@param newRecord new
 	 *	@return true if it can be saved
 	 */

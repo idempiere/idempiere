@@ -234,7 +234,8 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	}	//	getSwiftCode
 	
 	/**
-	 * 	Before Save
+	 * 	Encrypt Credit Card Number and Credit Card CVV.<br/>
+	 *  Validate IBAN.
 	 *	@param newRecord new
 	 *	@return true
 	 */

@@ -346,7 +346,8 @@ public class MAsset extends X_A_Asset {
 	}
 
 	/**
-	 * Before Save
+	 * Create ASI if not exist.<br/>
+	 * Update various status related flag
 	 * @param newRecord new
 	 * @return true
 	 */

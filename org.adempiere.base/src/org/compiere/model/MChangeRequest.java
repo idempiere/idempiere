@@ -108,7 +108,7 @@ public class MChangeRequest extends X_M_ChangeRequest
 	
 	
 	/**
-	 * 	Before Save
+	 * 	Derive ChangeNotice from BOM if defined
 	 *	@param newRecord new
 	 *	@return true/false
 	 */

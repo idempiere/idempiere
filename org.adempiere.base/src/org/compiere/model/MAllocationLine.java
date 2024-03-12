@@ -206,7 +206,8 @@ public class MAllocationLine extends X_C_AllocationLine
 	}	//	getInvoice
 	
 	/**
-	 * 	Before Save
+	 *  Disallow edit of C_BPartner_ID and C_Invoice_ID.<br/>
+	 * 	Default BPartner/Order from Invoice (if not set yet).
 	 *	@param newRecord
 	 *	@return save
 	 */

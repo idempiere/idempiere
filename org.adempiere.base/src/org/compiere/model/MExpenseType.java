@@ -84,7 +84,7 @@ public class MExpenseType extends X_S_ExpenseType
 	}	//	getProduct
 		
 	/**
-	 * 	beforeSave
+	 * 	Create new expense product for new record.
 	 *	@see org.compiere.model.PO#beforeSave(boolean)
 	 *	@param newRecord
 	 *	@return true

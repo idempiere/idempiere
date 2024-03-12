@@ -76,7 +76,7 @@ public class MForecastLine extends X_M_ForecastLine
 	}
 
 	/**
-	 * 	Before Save
+	 * 	Validate warehouse and line belongs to same organization.
 	 *	@param newRecord
 	 *	@return true if it can be saved
 	 */

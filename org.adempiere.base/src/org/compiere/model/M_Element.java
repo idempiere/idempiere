@@ -183,8 +183,8 @@ public class M_Element extends X_AD_Element
 		setEntityType (EntityType);	// U
 	}	//	M_Element
 	
-	/* (non-Javadoc)
-	 * @see org.compiere.model.PO#beforeSave(boolean)
+	/**
+	 * Validate column name is unique and is valid DB identifier.
 	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {

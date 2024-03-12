@@ -339,7 +339,8 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Before Save
+	 * 	Check Unique Costing Method.<br/>
+	 *  Ensure AD_Org_ID is 0.
 	 *	@param newRecord new
 	 *	@return true
 	 */

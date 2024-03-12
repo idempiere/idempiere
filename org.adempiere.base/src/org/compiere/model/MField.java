@@ -193,7 +193,8 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	}	//	setColumn
 	
 	/**
-	 * 	beforeSave
+	 * 	Sync Terminology (AD_Element).<br/>
+	 *  Validate IsAllowCopy, ReadOnlyLogic, DisplayLogic and MandatoryLogic.
 	 *	@see org.compiere.model.PO#beforeSave(boolean)
 	 *	@param newRecord
 	 *	@return

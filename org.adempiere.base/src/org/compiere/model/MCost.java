@@ -1688,7 +1688,8 @@ public class MCost extends X_M_Cost
 	}	//	getCostElement
 
 	/**
-	 * 	Before Save
+	 * 	Validate costing level configuration.
+	 *  Validate CurrentQty is positive for average costing. 
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */

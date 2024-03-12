@@ -299,10 +299,10 @@ public class MArchive extends X_AD_Archive {
 	}
 
 	/**
-	 * Before Save
+	 * Validate Binary Data is Mandatory.<br/>
+	 * Set Record_UU (if not set) from Record_ID.
 	 * 
 	 * @param newRecord
-	 *            new
 	 * @return true if can be saved
 	 */
 	@Override

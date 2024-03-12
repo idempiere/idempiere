@@ -328,8 +328,8 @@ public class MDashboardContent extends X_PA_DashboardContent
 		return emptyPara.toString();
     }
     
-    /*
-	 * 	Before Save
+    /**
+	 * 	Validate mandatory parameters
 	 *	@param newRecord new
 	 *	@return true if no error
 	 */

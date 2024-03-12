@@ -257,7 +257,8 @@ public class MDistributionLine extends X_GL_DistributionLine
 	}	//	setAmt
 	
 	/**
-	 * 	Before Save
+	 * 	Set Line (if it is 0).<br/>
+	 *  Validate Overwrite Settings.
 	 *	@param newRecord new
 	 *	@return true
 	 */

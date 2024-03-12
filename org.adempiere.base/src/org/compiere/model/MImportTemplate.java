@@ -113,6 +113,9 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 		copyPO(copy);
 	}
 	
+	/**
+	 * Validate character set
+	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Validate character set vs supported

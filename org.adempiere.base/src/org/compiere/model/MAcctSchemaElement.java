@@ -444,7 +444,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 	}   //  toString
 	
 	/**
-	 * Before Save
+	 * Validate IsMandatory setting.
 	 * @param newRecord new
 	 * @return true if it can be saved
 	 */

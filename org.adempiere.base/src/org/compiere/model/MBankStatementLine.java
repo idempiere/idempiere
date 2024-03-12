@@ -177,7 +177,9 @@ import org.compiere.util.Util;
 	}	//	addDescription
 	
 	/**
-	 * 	Before Save
+	 * 	Validate DateAcct.<br/>
+	 *  Calculate Charge Amount.<br/>
+	 *  Update LineNo (if value is still 0).
 	 *	@param newRecord new
 	 *	@return true
 	 */

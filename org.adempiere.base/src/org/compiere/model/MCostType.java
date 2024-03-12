@@ -78,7 +78,7 @@ public class MCostType extends X_M_CostType
 	}	//	toString
 	
 	/**
-	 * 	Before Save
+	 * 	Ensure AD_Org_ID is 0.
 	 *	@param newRecord new
 	 *	@return true
 	 */

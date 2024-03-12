@@ -111,7 +111,8 @@ public class MElement extends X_C_Element
 	
 	
 	/**
-	 * 	Before Save
+	 * 	Ensure AD_Org_ID is 0.<br/>
+	 *  Validate IsNaturalAccount and tree.
 	 *	@param newRecord new
 	 *	@return true
 	 */

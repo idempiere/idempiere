@@ -93,6 +93,9 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * Calculate Rate and To_Amt
+	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (!super.beforeSave(newRecord))
