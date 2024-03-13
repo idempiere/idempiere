@@ -188,10 +188,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
     }
 
     /**
-	 *  Start the process.
-	 *  It should only return false, if the function could not be performed
-	 *  as this causes the process to abort.
-	 *  author rlemeill
+	 *  Start the Jasper Report process.<br/>
+	 *  Setup context class loader and do the actual work in {@link #startProcess0(Properties, ProcessInfo, Trx)}.
+	 *  @author rlemeill
 	 *  @param ctx context
 	 *  @param pi standard process info
 	 *  @param trx
@@ -213,6 +212,13 @@ public class ReportStarter implements ProcessCall, ClientProcess
     	}
     }
         
+    /**
+     * Start running of Jasper Report process
+     * @param ctx
+     * @param pi
+     * @param trx
+     * @return true if success
+     */
     private boolean startProcess0(Properties ctx, ProcessInfo pi, Trx trx)
     {
     	processInfo = pi;
@@ -242,8 +248,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	        	}
 	        }
 	
-			HashMap<String, Object> params = new HashMap<String, Object>();	
-			addProcessParameters(AD_PInstance_ID, params, trxName);
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			if (AD_PInstance_ID > 0)
+				addProcessParameters(AD_PInstance_ID, params, trxName);
 			addProcessInfoParameters(params, pi.getParameter());
 	
 			File reportFile = null;
@@ -525,7 +532,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 					throw new AdempiereException(e.getMessage(), e);
 				}
 	    	}
-	    } else {
+	    } else if (!processInfo.isExport()) {
 		    if (jasperPrintList.size() == 1) {
 	            JRViewerProvider viewerLauncher = getViewerProvider();
 	            JasperPrint jasperPrint = jasperPrintList.get(0);
@@ -586,6 +593,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return archiveFile;
 	}
 
+	/**
+	 * Do batch export of JasperPrint
+	 * @param jasperPrint
+	 * @param batchExportList
+	 * @throws JRException
+	 */
 	private void doBatchExport(JasperPrint jasperPrint, List<File> batchExportList) throws JRException {
 		try
 		{
@@ -681,6 +694,15 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return jasperReport;
 	}
 
+	/**
+	 * Direct print
+	 * @param pi
+	 * @param printerName
+	 * @param printFormat
+	 * @param printInfo
+	 * @param jasperPrint
+	 * @throws JRException
+	 */
 	private void doDirectPrint(ProcessInfo pi, String printerName, MPrintFormat printFormat, PrintInfo printInfo,
 			JasperPrint jasperPrint) throws JRException {
 		// Get printer job
@@ -717,10 +739,25 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		exporter.exportReport();
 	}
 
+	/**
+	 * Perform export of JasperPrint
+	 * @param pi
+	 * @param jasperPrint
+	 * @param exportFileList
+	 * @throws JRException
+	 */
 	private void doExport(ProcessInfo pi, JasperPrint jasperPrint, List<File> exportFileList) throws JRException {
 		String ext = pi.getExportFileExtension();
+		
+		//export JasperPrint to process info
+		if ("JasperPrint".equalsIgnoreCase(ext)) {
+			pi.setInternalReportObject(jasperPrint);
+			return;
+		}
+				
 		if (ext == null)
 			ext = "pdf";
+		
 		try {						
 			File exportFile = File.createTempFile(makePrefix(jasperPrint.getName()), "." + ext);
 

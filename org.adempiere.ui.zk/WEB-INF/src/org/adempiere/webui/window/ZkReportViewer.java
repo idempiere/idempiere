@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import java.util.logging.Level;
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
@@ -89,12 +91,16 @@ import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.PrintInfo;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.print.ServerReportCtl;
+import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
@@ -104,6 +110,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 import org.idempiere.print.renderer.CSVReportRendererConfiguration;
 import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
 import org.idempiere.print.renderer.PDFReportRendererConfiguration;
@@ -142,6 +149,8 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
+
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  *	Report Viewer.
@@ -246,6 +255,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
+	private JasperPrintRenderer jasperPrintRenderer = null;
+	
 	/**
 	 * @param re
 	 * @param title
@@ -357,12 +368,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		ZKUpdateUtil.setWidth(toolBar, "100%");
 		
 		previewType.setMold("select");
-		for(String id : rendererMap.keySet()) {
-			IReportViewerRenderer renderer = rendererMap.get(id);
-			if (!renderer.isPreview(m_isCanExport))
-				continue;
-			previewType.appendItem(renderer.getPreviewLabel(), renderer.getId());
-		}
+		setupPreviewType();
 		
 		toolBar.appendChild(previewType);		
 		previewType.addEventListener(Events.ON_SELECT, this);
@@ -377,8 +383,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		else
 		{
     		//set default type
-    		type = m_reportEngine.getPrintFormat().isForm()
-    				// a42niem - provide explicit default and check on client/org specifics
+    		type = m_reportEngine.getPrintFormat().isForm() || m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0
     				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
     				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));    
 		}
@@ -623,8 +628,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
 			}
 		}
-			
-		
+					
 		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
 			bWizard.setIconSclass("z-icon-Wizard");
@@ -700,9 +704,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
 
-		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
-		rowCount.setStyle("float: right;");
+		rowCount = new Label();
+		rowCount.setStyle("float: right;");		
 		linkDiv.appendChild(rowCount);
+		if (m_reportEngine.getPrintData() != null)
+			rowCount.setText(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
 		
 		south.appendChild(linkDiv);		
 		
@@ -766,6 +772,36 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		setTabOnCloseHandler();
 	}
 
+	private void setupPreviewType() {
+		String selectedValue = null;
+		if (previewType.getItemCount() > 0) {
+			if (previewType.getSelectedIndex() >= 0) {
+				selectedValue = previewType.getSelectedItem().getValue();
+			}
+			previewType.getChildren().clear();
+		}
+		if (m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
+			for (ValueNamePair vnp : JasperPrintRenderer.getPreviewType(m_isCanExport)) {
+				ListItem li = previewType.appendItem(vnp.getName(), vnp.getValue());
+				if (selectedValue != null && selectedValue.equals(li.getValue()))
+					previewType.setSelectedItem(li);
+			}
+			if (summary != null)
+				summary.setVisible(false);
+		} else {
+			for(String id : rendererMap.keySet()) {
+				IReportViewerRenderer renderer = rendererMap.get(id);
+				if (!renderer.isPreview(m_isCanExport))
+					continue;
+				ListItem li = previewType.appendItem(renderer.getPreviewLabel(), renderer.getId());
+				if (selectedValue != null && selectedValue.equals(li.getValue()))
+					previewType.setSelectedItem(li);
+			}
+			if (summary != null)
+				summary.setVisible(true);
+		}		
+	}
+
 	/**
 	 * Set dummy onCloseHandler for parent tab
 	 */
@@ -810,10 +846,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	/**
 	 * Call from renderer runnable to show report output
 	 */
-	private void onPreviewReport() {
-		if(media == null)
-			return;
+	private void onPreviewReport() {		
 		try {
+			if(media == null) {
+				iframe.setSrc(null);
+				iframe.setContent(null);
+				reportLink.setHref("");
+				reportLink.setLabel("");
+				if (rowCount != null)
+					rowCount.setText("");
+				return;
+			}
+			
 			mediaVersion++;
 			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
 			String pdfJsUrl = AEnv.toPdfJsUrl(url);
@@ -1341,6 +1385,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (pp == null)
 			return;
 		
+		jasperPrintRenderer = null;
 		setTabOnCloseHandler();
 		//
 		MPrintFormat pf = null;
@@ -1384,7 +1429,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						}
 						else
 							return;
-//						Get Language from previous - thanks Gunther Hoppe 
+						//	Get Language from previous - thanks Gunther Hoppe 
 						if (m_reportEngine.getPrintFormat() != null)
 						{
 							setLanguage();
@@ -1392,7 +1437,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 						}
 						
-						m_reportEngine.setPrintFormat(pf);
+						if (m_reportEngine.getPrintFormat().getJasperProcess_ID() != pf.getJasperProcess_ID()) {
+							m_reportEngine.setPrintFormat(pf);
+							setupPreviewType();
+							if (m_reportEngine.getPrintFormat().getJasperProcess_ID() == 0) {
+								m_reportEngine.setQuery(m_reportEngine.getQuery());
+								m_reportEngine.getLayout();
+							}
+						} else {
+							m_reportEngine.setPrintFormat(pf);
+						}
 						m_reportEngine.initName();
 						postRenderReportEvent();
 					}
@@ -1434,7 +1488,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 								return;
 						} else
 							return;
-//						Get Language from previous - thanks Gunther Hoppe 
+						//	Get Language from previous - thanks Gunther Hoppe 
 						if (m_reportEngine.getPrintFormat() != null)
 						{
 							setLanguage();
@@ -1442,7 +1496,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 						}
 						m_reportEngine.initName();
-						m_reportEngine.setPrintFormat(pf);
+						if (m_reportEngine.getPrintFormat().getJasperProcess_ID() != pf.getJasperProcess_ID()) {
+							m_reportEngine.setPrintFormat(pf);
+							setupPreviewType();
+							if (m_reportEngine.getPrintFormat().getJasperProcess_ID() == 0) {
+								m_reportEngine.setQuery(m_reportEngine.getQuery());
+								m_reportEngine.getLayout();
+							}
+						} else {
+							m_reportEngine.setPrintFormat(pf);
+						}
 						postRenderReportEvent();
 					}
 					else {
@@ -1452,7 +1515,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			});
 		}
 		else {
-//			Get Language from previous - thanks Gunther Hoppe 
+			//	Get Language from previous - thanks Gunther Hoppe 
 			pf = MPrintFormat.get (Env.getCtx(), AD_PrintFormat_ID, true);
 			if (m_reportEngine.getPrintFormat() != null)
 			{
@@ -1460,7 +1523,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
 				pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 			}
-			m_reportEngine.setPrintFormat(pf);
+			if (m_reportEngine.getPrintFormat().getJasperProcess_ID() != pf.getJasperProcess_ID()) {
+				m_reportEngine.setPrintFormat(pf);
+				setupPreviewType();
+				if (m_reportEngine.getPrintFormat().getJasperProcess_ID() == 0) {
+					m_reportEngine.setQuery(m_reportEngine.getQuery());
+					m_reportEngine.getLayout();
+				}
+			} else {
+				m_reportEngine.setPrintFormat(pf);
+			}
 			postRenderReportEvent();
 		}
 	}	//	cmd_report
@@ -1848,11 +1920,35 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		@Override
 		protected void doRun() {
 			try {
-				viewer.m_reportEngine.initName();
-				List<String> archiveList = Arrays.asList(PDF_OUTPUT_TYPE, HTML_OUTPUT_TYPE, XLS_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
-				if (archiveList.contains(rendererId)) {
-					if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
-						log.warning("Cannot archive Document");
+				if (viewer.m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
+					if (viewer.jasperPrintRenderer == null) {
+						MPrintFormat format = viewer.m_reportEngine.getPrintFormat();
+						PrintInfo printInfo = viewer.m_reportEngine.getPrintInfo();
+						ProcessInfo jasperProcessInfo = new ProcessInfo (viewer.getTitle(), format.getJasperProcess_ID());
+						jasperProcessInfo.setRecord_ID (printInfo.getRecord_ID());
+						jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+						jasperProcessInfo.setSerializableObject(format);
+						ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
+						ProcessInfoParameter pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_FORMAT, format, null, null, null);
+						jasperPrintParams.add(pip);
+						pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_INFO, printInfo, null, null, null);
+						jasperPrintParams.add(pip);						
+						jasperProcessInfo.setParameter(jasperPrintParams.toArray(new ProcessInfoParameter[]{}));
+						jasperProcessInfo.setExport(true);
+						jasperProcessInfo.setExportFileExtension("JasperPrint");
+						ProcessCall pc = Core.getProcess("org.adempiere.report.jasper.ReportStarter");
+						pc.startProcess(Env.getCtx(), jasperProcessInfo, null);						
+						JasperPrint jasperPrint = (JasperPrint) jasperProcessInfo.getInternalReportObject();
+						viewer.jasperPrintRenderer = new JasperPrintRenderer(jasperPrint, viewer.getTitle());
+						viewer.jasperPrintRenderer.setRowCount(jasperProcessInfo.getRowCount());
+					}
+				} else {
+					viewer.m_reportEngine.initName();
+					List<String> archiveList = Arrays.asList(PDF_OUTPUT_TYPE, HTML_OUTPUT_TYPE, XLS_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
+					if (archiveList.contains(rendererId)) {
+						if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+							log.warning("Cannot archive Document");
+					}
 				}
 				viewer.createNewMedia(rendererId);
 			} catch (Exception e) {
@@ -1877,6 +1973,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	@Override
 	public AMedia getMedia(String contentType, String fileExtension) {
+		if (jasperPrintRenderer != null) {
+			return jasperPrintRenderer.getMedia(contentType, fileExtension);
+		}
+		
 		IReportViewerRenderer renderer = rendererMap.get(toRendererId(contentType, fileExtension));
 		
 		if (renderer.isSameContentForExportAndPreview() && media != null 
@@ -1887,12 +1987,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 
 	public AMedia getMedia(String rendererId) {
+		if (jasperPrintRenderer != null) {
+			return jasperPrintRenderer.getMedia(JasperPrintRenderer.getMIMEType(rendererId), JasperPrintRenderer.getFileExtension(rendererId));
+		}
 		IReportViewerRenderer renderer = rendererMap.get(rendererId);
 		return renderer != null ? renderer.renderMedia(this, false) : null;
 	}
 	
 	@Override
 	public ExportFormat[] getExportFormats() {
+		if (jasperPrintRenderer != null) {
+			return jasperPrintRenderer.getExportFormats();
+		}
 		return exportMap.keySet().toArray(new ExportFormat[0]);
 	}
 
@@ -1939,7 +2045,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 * Update Row Count label
 	 */
 	private void updateRowCount() {
-		if(rowCount != null)
-			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+		if(rowCount != null) {
+			if (jasperPrintRenderer != null) {
+				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {jasperPrintRenderer.getRowCount()}));
+			} else if (m_reportEngine.getPrintData() != null) {
+				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+			}
+		}
 	}
 }
