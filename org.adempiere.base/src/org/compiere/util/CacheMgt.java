@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -95,6 +97,9 @@ public class CacheMgt
 			}
 		} catch (Throwable t) {}
 	}
+	
+	/** List of tables that have been temporary suspended for cache reset operations, usually for batch update/insert/delete */
+	private final static Set<String> suspendedResetCacheTables = ConcurrentHashMap.newKeySet();
 	
 	/**
 	 * 	Register new CCache Instance.<br/>
@@ -257,6 +262,9 @@ public class CacheMgt
 	 */
 	public int reset (String tableName, int Record_ID)
 	{
+		if (suspendedResetCacheTables.contains(tableName))
+			return 0;
+		
 		return clusterReset(tableName, Record_ID);
 	}
 	
@@ -310,13 +318,11 @@ public class CacheMgt
 			if (stored != null && stored instanceof CCache && stored.size() > 0)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
-				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
+				if (cc.getTableName() != null && cc.getTableName().equalsIgnoreCase(tableName))
 				{
-					{
-						if (log.isLoggable(Level.FINE)) log.fine("(all) - " + stored);
-						total += stored.reset(Record_ID);
-						counter++;
-					}
+					if (log.isLoggable(Level.FINE)) log.fine("(all) - " + stored);
+					total += stored.reset(Record_ID);
+					counter++;
 				}
 			}
 		}
@@ -353,11 +359,9 @@ public class CacheMgt
 			if (stored != null && stored instanceof CCache)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
-				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
+				if (cc.getTableName() != null && cc.getTableName().equalsIgnoreCase(tableName))
 				{
-					{
-						stored.newRecord(Record_ID);
-					}
+					stored.newRecord(Record_ID);
 				}
 			}
 		}		
@@ -415,6 +419,9 @@ public class CacheMgt
 	}	//	toString	
 
 	public void newRecord(String tableName, int recordId) {
+		if (suspendedResetCacheTables.contains(tableName))
+			return;
+		
 		clusterNewRecord(tableName, recordId);
 	}
 	
@@ -490,4 +497,20 @@ public class CacheMgt
 		return m_tableNames.contains(tableName);
 	}
 
+	/**
+	 * Suspend cache reset operations for tableName (usually to improve performance for batch operations).<br/>
+	 * Caller must call {@link #resumeTableCacheReset(String)} later to clear the suspend cache reset flag.
+	 * @param tableName
+	 */
+	public void suspendTableCacheReset(String tableName) {
+		suspendedResetCacheTables.add(tableName);
+	}
+	
+	/**
+	 * Clear suspend cache reset flag for tableName
+	 * @param tableName
+	 */
+	public void resumeTableCacheReset(String tableName) {
+		suspendedResetCacheTables.remove(tableName);
+	}
 }	//	CCache
