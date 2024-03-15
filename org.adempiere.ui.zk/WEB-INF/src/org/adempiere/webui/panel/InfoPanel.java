@@ -2273,7 +2273,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	if (event.getClass().equals(MouseEvent.class)){
         		return;
         	}
-        	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0) {
+        	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0 && isLookup()) {
 				
         		contentPanel.setSelectedIndex(m_lastSelectedIndex);
 				
@@ -2298,9 +2298,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}
 				}
         	}
-        	onDoubleClick();
-        	contentPanel.repaint();
-        	m_lastSelectedIndex = -1;
+        	
+        	if (isLookup() || hasZoom()) 
+        	{
+	        	onDoubleClick();
+	        	contentPanel.repaint();
+	        	m_lastSelectedIndex = -1;
+        	}
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
         {

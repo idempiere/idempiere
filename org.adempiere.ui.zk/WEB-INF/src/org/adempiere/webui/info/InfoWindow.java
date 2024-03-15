@@ -372,6 +372,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				prepareTable();
 				processQueryValue();
 			}	
+			
+			if (!isLookup() && p_multipleSelection && hasEditable) 
+			{
+				//use only checkmark for selection of row
+				//with the default of select by clicking on any cell, the text selection mouse gesture will de-select a selected row
+				//note that this also disable the selection of text within the listbox
+				contentPanel.setNonselectableTags("*");
+			}
 		}
 		
 		if (ClientInfo.isMobile()) {
