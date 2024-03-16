@@ -168,7 +168,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			parentTextBox.setReadonly(true);
 			MTable parentTable = MTable.get(editor.getGridField().getGridTab().getAD_Table_ID());
 			Serializable parentRecordId;
-			if (parentTable.isUUIDKeyTable())
+			if (! parentTable.isIDKeyTable())
 				parentRecordId = (Serializable) editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
 			else
 				parentRecordId = editor.getGridField().getGridTab().getRecord_ID();
