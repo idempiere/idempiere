@@ -48,8 +48,6 @@ public class TableIDCallout implements IColumnCallout {
 	@Override	
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
 		// do not trigger change if the table didn't change
-		if (oldValue == null && value == null)
-			return null;
 		if (oldValue != null && value != null && oldValue.equals(value))
 			return null;
 
