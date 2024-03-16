@@ -811,7 +811,9 @@ public class MOrder extends X_C_Order implements DocAction
 			line.setQtyInvoiced(Env.ZERO);
 			line.setQtyReserved(Env.ZERO);
 			line.setQtyLostSales(Env.ZERO);
-			line.setQty(fromLines[i].getQtyEntered());
+			line.setQtyEntered(fromLines[i].getQtyEntered());
+			BigDecimal ordered = MUOMConversion.convertProductFrom (getCtx(), line.getM_Product_ID(), line.getC_UOM_ID(), line.getQtyEntered());
+			line.setQtyOrdered(ordered);
 			line.setDateDelivered(null);
 			line.setDateInvoiced(null);
 			line.setOrder(this);
