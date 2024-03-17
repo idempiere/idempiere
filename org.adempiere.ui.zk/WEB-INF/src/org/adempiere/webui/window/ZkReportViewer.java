@@ -1535,8 +1535,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			} else {
 				m_reportEngine.setPrintFormat(pf);
 			}
+			m_reportEngine.initName();
 			postRenderReportEvent();
 		}
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName()));
 	}	//	cmd_report
 
 	/**

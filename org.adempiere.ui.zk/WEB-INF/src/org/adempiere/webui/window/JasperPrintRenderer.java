@@ -121,7 +121,7 @@ public class JasperPrintRenderer {
 		mediaSuppliers.put(toMediaType(Medias.PDF_MIME_TYPE, Medias.PDF_FILE_EXT), () -> {
 			try {
 				createPDF();
-				return new AMedia(title+"."+Medias.PDF_FILE_EXT, Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE, pdfFile, true);			
+				return new AMedia(makePrefix(title)+"."+Medias.PDF_FILE_EXT, Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE, pdfFile, true);			
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -155,7 +155,7 @@ public class JasperPrintRenderer {
 				exporter.setExporterOutput(new SimpleHtmlExporterOutput(file));
 				exporter.setConfiguration(htmlConfig);
 		 	    exporter.exportReport();
-				return new AMedia(title+"."+Medias.HTML_FILE_EXT, Medias.HTML_FILE_EXT, Medias.HTML_MIME_TYPE, file, false);
+				return new AMedia(makePrefix(title)+"."+Medias.HTML_FILE_EXT, Medias.HTML_FILE_EXT, Medias.HTML_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -198,7 +198,7 @@ public class JasperPrintRenderer {
 					if (fos != null)
 						fos.close();
 				}
-				return new AMedia(title+"."+Medias.EXCEL_FILE_EXT, Medias.EXCEL_FILE_EXT, Medias.EXCEL_MIME_TYPE, file, true);
+				return new AMedia(makePrefix(title)+"."+Medias.EXCEL_FILE_EXT, Medias.EXCEL_FILE_EXT, Medias.EXCEL_MIME_TYPE, file, true);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -241,7 +241,7 @@ public class JasperPrintRenderer {
 					if (fos != null)
 						fos.close();
 				}
-				return new AMedia(title+"."+Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_MIME_TYPE, file, true);
+				return new AMedia(makePrefix(title)+"."+Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_MIME_TYPE, file, true);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -277,7 +277,7 @@ public class JasperPrintRenderer {
 					if (fos != null)
 						fos.close();
 				}	
-				return new AMedia(title+"."+Medias.CSV_FILE_EXT, Medias.CSV_FILE_EXT, Medias.CSV_MIME_TYPE, file, false);
+				return new AMedia(makePrefix(title)+"."+Medias.CSV_FILE_EXT, Medias.CSV_FILE_EXT, Medias.CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -316,7 +316,7 @@ public class JasperPrintRenderer {
 					if (fos != null)
 						fos.close();
 				}
-				return new AMedia(title+"."+Medias.SSV_FILE_EXT, Medias.SSV_FILE_EXT, Medias.CSV_MIME_TYPE, file, false);
+				return new AMedia(makePrefix(title)+"."+Medias.SSV_FILE_EXT, Medias.SSV_FILE_EXT, Medias.CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
