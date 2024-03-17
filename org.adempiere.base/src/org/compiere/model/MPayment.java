@@ -2171,9 +2171,11 @@ public class MPayment extends X_C_Payment
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
-			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
-			if (value != null)
-				setDocumentNo(value);
+			if (this.getProcessedOn().signum() == 0) {
+				String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
+				if (value != null)
+					setDocumentNo(value);
+			}
 		}
 	}
 
@@ -2855,8 +2857,38 @@ public class MPayment extends X_C_Payment
 		if (m_processMsg != null)
 			return false;	
 		
-		if (! reverseCorrectIt())
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+
+		MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+		if (allocations.length > 0) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedAllocationLine");
 			return false;
+		}
+
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_BankStatementLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedBankStatementLine");
+			return false;
+		}
+
+		if (getC_BankTransfer_ID() > 0) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedBankTransfer");
+			return false;
+		}
+
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_DunningRunLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedDunningLine");
+			return false;
+		}
+
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM R_Request WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedRequest");
+			return false;
+		}
+
+		MFactAcct.deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
+		setPosted(false);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
 
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
