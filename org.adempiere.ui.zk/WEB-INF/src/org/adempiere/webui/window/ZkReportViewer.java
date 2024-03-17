@@ -1095,6 +1095,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				 || (m_reportEngine.getPrintFormat().getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) != 0)
 				 || m_reportEngine.getPrintFormat().isForm()));
 		
+		updateRowCount();
+		
 		this.invalidate();
 	}	//	revalidate
 
@@ -1629,8 +1631,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		showBusyDialog();
 		setLanguage();
 		setPreviewType();
-		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
-		updateRowCount();
+		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);		
 	}
 
 	/**
@@ -2047,9 +2048,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private void updateRowCount() {
 		if(rowCount != null) {
 			if (jasperPrintRenderer != null) {
-				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {jasperPrintRenderer.getRowCount()}));
+				rowCount.setValue("");
 			} else if (m_reportEngine.getPrintData() != null) {
 				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+			} else {
+				rowCount.setValue("");
 			}
 		}
 	}

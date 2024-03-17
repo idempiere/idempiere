@@ -189,6 +189,7 @@ public class JasperPrintRenderer {
 						jasperPrintList = new ArrayList<>();
 						jasperPrintList.add(jasperPrint);
 					}
+					validateJasperPrintNameForExcelExporter(jasperPrintList);
 					exporterXLS.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
 					exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
 					exporterXLS.setConfiguration(xlsConfig);
@@ -231,6 +232,7 @@ public class JasperPrintRenderer {
 						jasperPrintList = new ArrayList<>();
 						jasperPrintList.add(jasperPrint);
 					}
+					validateJasperPrintNameForExcelExporter(jasperPrintList);
 					exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
 					exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
 					exporterXLSX.setConfiguration(xlsxConfig);
@@ -322,6 +324,18 @@ public class JasperPrintRenderer {
 					throw new RuntimeException(e);
 			}
 		});
+	}
+
+	/**
+	 * Replace characters from JasperPrint.Name that causes error for excel (xls & xlsx) export with _
+	 * @param jaspers
+	 */
+	private void validateJasperPrintNameForExcelExporter(List<JasperPrint> jaspers) {
+		for(JasperPrint jasper : jaspers) {
+			String name = makePrefix(jasper.getName());
+			if (!name.equals(jasper.getName()))
+				jasper.setName(name);
+		}
 	}
 
 	/**
