@@ -49,7 +49,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	private static final long serialVersionUID = -8111075325920938135L;
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20, 0, false, 0);
 	
 	/**
 	 * Get MTab from cache (immutable)

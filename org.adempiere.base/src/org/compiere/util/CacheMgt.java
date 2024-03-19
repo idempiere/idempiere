@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -134,7 +135,11 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(instance.getMaxSize()));
+			int maxSize = instance.getMaxSize();
+			if (maxSize > 0)
+				map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(maxSize));
+			else
+				map = new ConcurrentHashMap<K, V>();				
 		}		
 		return map;
 	}	//	register

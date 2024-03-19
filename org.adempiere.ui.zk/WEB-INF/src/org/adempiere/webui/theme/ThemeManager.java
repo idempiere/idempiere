@@ -172,7 +172,7 @@ public final class ThemeManager {
 	}
 
 	/** Theme Name:Boolean */
-	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, -1, false);
+	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, 0, false, 0);
 
 	/**
 	 * @return true if custom css ({theme}/css/fragment/custom.css.dsp) exists

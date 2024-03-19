@@ -54,7 +54,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	/**
 	 * MLanguage cache key by AD_Language value
 	 */
-	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, false);
+	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, 0, false, 0);
 
 	/**
 	 * 	Get Language Model from Language (immutable)
