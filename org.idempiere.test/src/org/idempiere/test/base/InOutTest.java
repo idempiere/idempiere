@@ -37,6 +37,7 @@ import org.compiere.acct.DocManager;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
@@ -54,6 +55,7 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
+import org.compiere.model.ProductCost;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_ShippingAcct;
 import org.compiere.model.X_M_ShippingProcessorCfg;
@@ -465,6 +467,15 @@ public class InOutTest extends AbstractTestCase {
 		assertTrue(po.get_ValueAsBoolean("Posted"));
 	}
 	
+	private void repostDocument(PO po) {
+		if (po.get_ValueAsBoolean("Posted")) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), po.getAD_Client_ID(), po.get_Table_ID(), po.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		po.load(getTrxName());
+		assertTrue(po.get_ValueAsBoolean("Posted"));
+	}
+	
 	@Test
 	public void testFreightCostRuleCustomerAccount() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
@@ -561,5 +572,82 @@ public class InOutTest extends AbstractTestCase {
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
 		assertTrue(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
+	}
+	
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5503
+	 */
+	public void testShipmentRePosting() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		
+		MOrder order = createSalseOrder(bpartner, currentDate, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
+		int plv = MPriceList.get(DictionaryIDs.M_PriceList.STANDARD.id).getPriceListVersion(currentDate).get_ID();
+		BigDecimal price = MProductPrice.get(Env.getCtx(), plv, product.get_ID(), getTrxName()).getPriceStd();
+		MOrderLine orderLine = createOrderLine(order, 10, product, new BigDecimal("1"), price);
+		completeDocument(order);
+		
+		MInOut delivery = createShipment(order, currentDate);
+					
+		MInOutLine deliveryLine = createInOutLine(delivery, orderLine, new BigDecimal("1"));
+		completeDocument(delivery);
+		postDocument(delivery);
+		
+		ProductCost pc = new ProductCost(Env.getCtx(), deliveryLine.getM_Product_ID(), deliveryLine.getM_AttributeSetInstance_ID(), getTrxName());
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		MAccount cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+		MAccount asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			
+		String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
+				+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + delivery.get_ID()
+				+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
+		int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+		assertTrue(ids.length > 0, "Failed to retrieve fact posting entries for shipment document");
+		boolean cogsFound = false;
+		boolean assetFound = false;
+		for (int id : ids) {
+			MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			if (cogs.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
+					assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR COGS");
+				}
+				cogsFound = true;
+			} else if (asset.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+					assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+				}
+				assetFound = true;
+			}
+		}
+		assertTrue(cogsFound, "No COGS posting found");
+		assertTrue(assetFound, "No Product Asset posting found");
+		
+		//re-post
+		repostDocument(delivery);
+		ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+		cogsFound = false;
+		assetFound = false;
+		for (int id : ids) {
+			MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			if (cogs.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
+					assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR COGS");
+				}
+				cogsFound = true;
+			} else if (asset.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+					assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+				}
+				assetFound = true;
+			}
+		}
+		assertTrue(cogsFound, "No COGS posting found");
+		assertTrue(assetFound, "No Product Asset posting found");
 	}
 }
