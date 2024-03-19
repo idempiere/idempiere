@@ -771,7 +771,7 @@ public class DocLine
 			MCostDetail cd = MCostDetail.get (Env.getCtx(), whereClause, 
 					get_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), p_po.get_TrxName());
 			if (cd != null)
-				return cd.getAmt();
+				return cd.getAmt().abs();
 		}
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK);
 	}   //  getProductCosts
