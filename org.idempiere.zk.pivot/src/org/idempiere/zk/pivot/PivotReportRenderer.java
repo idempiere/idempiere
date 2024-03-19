@@ -191,7 +191,7 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 							}							
 
 							if (DisplayType.isNumeric(pde.getDisplayType()))
-								value=value.replace("�","").replace(",",".");
+								value = pde.getValueAsString();
 							jo.append(printName, value);
 						}			
 					}	//	for all columns
