@@ -40,7 +40,7 @@ esac
 IDEMPIERE_USER=idempiere
 IDEMPIERE_HOME=/opt/idempiere-server
 # in case you manual install java by use zip or your linux distros, or your java provider have difference pattern of path, please update here
-JAVA_HOME=$(ls -r /usr/lib/jvm/java-1[1234]-openjdk*/bin/javac | head -1)
+JAVA_HOME=$(ls -r /usr/lib/jvm/java-1[7]-openjdk*/bin/javac | head -1)
 JAVA_HOME=$(dirname $( dirname "$JAVA_HOME") )
 SU=su
 export IDEMPIERE_HOME
