@@ -178,6 +178,19 @@ public interface I_C_UOM
 	  */
 	public int getStdPrecision();
 
+    /** Column name UNCEFACT */
+    public static final String COLUMNNAME_UNCEFACT = "UNCEFACT";
+
+	/** Set UN/CEFACT Code.
+	  * Code for Units of Measure used in International Trade
+	  */
+	public void setUNCEFACT (String UNCEFACT);
+
+	/** Get UN/CEFACT Code.
+	  * Code for Units of Measure used in International Trade
+	  */
+	public String getUNCEFACT();
+
     /** Column name UOMSymbol */
     public static final String COLUMNNAME_UOMSymbol = "UOMSymbol";
 
