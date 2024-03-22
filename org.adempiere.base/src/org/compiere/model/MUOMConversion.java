@@ -51,7 +51,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 1772365359514185604L;
+	private static final long serialVersionUID = -6477844604059539239L;
 
 	/**
 	 *	Convert qty to target UOM and round.
@@ -528,8 +528,12 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		for (int i = 0; i < rates.length; i++)
 		{
 			MUOMConversion rate = rates[i];
-			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
-				return rate.getMultiplyRate();
+			if (rate.getC_UOM_To_ID() == C_UOM_To_ID) {
+				if (rate.getMultiplyRate().compareTo(Env.ONE) >= 0)
+					return rate.getMultiplyRate();
+				else
+					return getOppositeRate(rate.getDivideRate(), 50); // get it with many decimals to minimize rounding issues
+			}
 		}
 		
 		//fall back to generic conversion
@@ -541,8 +545,12 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		for (int i = 0; i < conversions.size(); i++)
 		{
 			MUOMConversion rate = conversions.get(i);
-			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
-				return rate.getMultiplyRate();
+			if (rate.getC_UOM_To_ID() == C_UOM_To_ID) {
+				if (rate.getMultiplyRate().compareTo(Env.ONE) >= 0)
+					return rate.getMultiplyRate();
+				else
+					return getOppositeRate(rate.getDivideRate(), 50); // get it with many decimals to minimize rounding issues
+			}
 		}
 		return null;
 	}	//	getProductRateTo
@@ -897,6 +905,16 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 * @return opposite conversion rate
 	 */
 	public static BigDecimal getOppositeRate(BigDecimal rate) {
-		return Env.ONE.divide(rate, 12, RoundingMode.HALF_UP);
+		return getOppositeRate(rate, 12);
 	}
+
+	/**
+	 * Calculate opposite conversion rate, i.e calculate divide rate for multiply rate and vice versa.
+	 * @param rate
+	 * @return {@link BigDecimal}
+	 */
+	public static BigDecimal getOppositeRate(BigDecimal rate, int scale) {
+		return Env.ONE.divide(rate, scale, RoundingMode.HALF_UP);
+	}
+
 }	//	UOMConversion
