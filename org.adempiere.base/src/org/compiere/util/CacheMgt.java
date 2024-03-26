@@ -139,7 +139,11 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(instance.getMaxSize()));
+			int maxSize = instance.getMaxSize();
+			if (maxSize > 0)
+				map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(maxSize));
+			else
+				map = new ConcurrentHashMap<K, V>();				
 		}		
 		return map;
 	}	//	register

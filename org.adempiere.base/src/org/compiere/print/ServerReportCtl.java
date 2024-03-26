@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.print;
 
 import static org.compiere.model.SystemIDs.PROCESS_RPT_C_DUNNING;
@@ -27,8 +48,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 
-
-
+/**
+ * Controller for running of report at server
+ */
 public class ServerReportCtl {
 
 	/**
@@ -168,7 +190,7 @@ public class ServerReportCtl {
 		}
 		jasperProcessInfo.setRecord_ID ( Record_ID );
 		jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
-		jasperProcessInfo.setTransientObject(format);
+		jasperProcessInfo.setSerializableObject(format);
 		ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 		ProcessInfoParameter pip;
 		if (printerName!=null && printerName.trim().length()>0) {

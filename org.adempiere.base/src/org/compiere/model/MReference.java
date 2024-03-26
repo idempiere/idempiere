@@ -108,7 +108,7 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	}
 	
 	/**	Reference Cache				*/
-	private static ImmutableIntPOCache<Integer,MReference>	s_cache = new ImmutableIntPOCache<Integer,MReference>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MReference>	s_cache = new ImmutableIntPOCache<Integer,MReference>(Table_Name, 20, 0, false, 0);
 
 	/**
 	 * 	Get from Cache (immutable)

@@ -125,10 +125,10 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MTableScriptValidator> s_cache
-					= new ImmutableIntPOCache<Integer,MTableScriptValidator>(Table_Name, 20);
+					= new ImmutableIntPOCache<Integer,MTableScriptValidator>(Table_Name, 20, 0, false, 0);
 	/** Cache / Table Event			*/
 	private static CCache<MultiKey,List<MTableScriptValidator>> s_cacheTableEvent
-					= new CCache<MultiKey,List<MTableScriptValidator>>(null, Table_Name+"_TableEvent", 20, false);
+					= new CCache<MultiKey,List<MTableScriptValidator>>(null, Table_Name+"_TableEvent", 20, 0, false, 0);
 	
     /**
      * UUID based Constructor

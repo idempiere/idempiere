@@ -31,7 +31,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240319L;
 
     /** Standard Constructor */
     public X_C_UOM (Properties ctx, int C_UOM_ID, String trxName)
@@ -257,6 +257,22 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set UN/CEFACT Code.
+		@param UNCEFACT Code for Units of Measure used in International Trade
+	*/
+	public void setUNCEFACT (String UNCEFACT)
+	{
+		set_Value (COLUMNNAME_UNCEFACT, UNCEFACT);
+	}
+
+	/** Get UN/CEFACT Code.
+		@return Code for Units of Measure used in International Trade
+	  */
+	public String getUNCEFACT()
+	{
+		return (String)get_Value(COLUMNNAME_UNCEFACT);
 	}
 
 	/** Set Symbol.

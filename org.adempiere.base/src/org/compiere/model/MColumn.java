@@ -172,7 +172,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}	//	getColumnName
 	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, Table_Name, 20, 0, false, 0);
 	
     /**
      * UUID based Constructor

@@ -111,7 +111,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	}
 	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50, 0, false, 0);
 	
     /**
      * UUID based Constructor
