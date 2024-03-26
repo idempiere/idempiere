@@ -192,6 +192,24 @@ public interface I_AD_ImportTemplate
 	  */
 	public String getName();
 
+    /** Column name QuoteChar */
+    public static final String COLUMNNAME_QuoteChar = "QuoteChar";
+
+	/** Set Quote Char	  */
+	public void setQuoteChar (String QuoteChar);
+
+	/** Get Quote Char	  */
+	public String getQuoteChar();
+
+    /** Column name SeparatorChar */
+    public static final String COLUMNNAME_SeparatorChar = "SeparatorChar";
+
+	/** Set Separator Character	  */
+	public void setSeparatorChar (String SeparatorChar);
+
+	/** Get Separator Character	  */
+	public String getSeparatorChar();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

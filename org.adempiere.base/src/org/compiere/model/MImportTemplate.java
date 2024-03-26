@@ -196,7 +196,12 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 		int cnt = DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_ImportTemplate_ID(), roleID, roleID);
 		return cnt > 0;
 	}
-	
+
+	/**
+	 * Byte Order Mark character for UTF-8
+	 */
+	public static final String UTF8_BOM = "\uFEFF";
+
 	/**
 	 * Validate that InputStream header is CSVHeader or AliasCSVHeader.<br/>
 	 * If the header is AliasCSVHeader it replaces it with the CSVHeader so it can be
@@ -219,6 +224,8 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 			while ((line = reader.readLine()) != null) {
 				if (firstLine == null) {
 					firstLine = line;
+					if (firstLine.startsWith(UTF8_BOM))
+						firstLine = firstLine.substring(1);
 					/* Validate that m_file_istream header is CSVHeader or AliasCSVHeader */
 					if (   firstLine.equals(getCSVHeader())
 						|| firstLine.equals(getCSVAliasHeader())) {

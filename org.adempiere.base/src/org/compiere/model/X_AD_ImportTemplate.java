@@ -31,7 +31,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240326L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
@@ -45,6 +45,10 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setCharacterSet (null);
 			setCSVHeader (null);
 			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
         } */
     }
 
@@ -60,6 +64,10 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setCharacterSet (null);
 			setCSVHeader (null);
 			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
         } */
     }
 
@@ -75,6 +83,10 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setCharacterSet (null);
 			setCSVHeader (null);
 			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
         } */
     }
 
@@ -90,6 +102,10 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setCharacterSet (null);
 			setCSVHeader (null);
 			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
         } */
     }
 
@@ -297,4 +313,34 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Quote Char.
+		@param QuoteChar Quote Char
+	*/
+	public void setQuoteChar (String QuoteChar)
+	{
+		set_Value (COLUMNNAME_QuoteChar, QuoteChar);
+	}
+
+	/** Get Quote Char.
+		@return Quote Char	  */
+	public String getQuoteChar()
+	{
+		return (String)get_Value(COLUMNNAME_QuoteChar);
+	}
+
+	/** Set Separator Character.
+		@param SeparatorChar Separator Character
+	*/
+	public void setSeparatorChar (String SeparatorChar)
+	{
+		set_Value (COLUMNNAME_SeparatorChar, SeparatorChar);
+	}
+
+	/** Get Separator Character.
+		@return Separator Character	  */
+	public String getSeparatorChar()
+	{
+		return (String)get_Value(COLUMNNAME_SeparatorChar);
+	}
 }
