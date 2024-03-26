@@ -20,12 +20,11 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 import org.adempiere.base.Core;
 import org.compiere.model.SystemProperties;
@@ -212,7 +211,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		} 
 		
 		if (nullList == null) {
-			nullList = Collections.synchronizedSet(new HashSet<K>());
+			nullList = ConcurrentHashMap.newKeySet();
 		}
 	}	//	CCache
 
@@ -230,8 +229,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/** Vetoable Change Support	Name	*/
 	private static String		PROPERTYNAME = "cache"; 
 	
-	private final AtomicLong m_hit = new AtomicLong();
-	private final AtomicLong m_miss = new AtomicLong();
+	private final LongAdder m_hit = new LongAdder();
+	private final LongAdder m_miss = new LongAdder();
 	
 	/**
 	 * 	Get (table) Name
@@ -401,11 +400,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		V v = cache.get(key);
 		if (v == null)
 			if (nullList.contains(key))
-				m_hit.getAndAdd(1);
+				m_hit.add(1);
 			else
-				m_miss.getAndAdd(1);
+				m_miss.add(1);
 		else
-			m_hit.getAndAdd(1);
+			m_hit.add(1);
 		return v;
 	}	//	get
 
@@ -571,7 +570,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * @return cache hit count
 	 */
 	public long getHit() {
-		return m_hit.get();
+		return m_hit.longValue();
 	}
 	
 	/**
@@ -579,7 +578,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * @return cache miss count
 	 */
 	public long getMiss() {
-		return m_miss.get();
+		return m_miss.longValue();
 	}	
 	
 	/**

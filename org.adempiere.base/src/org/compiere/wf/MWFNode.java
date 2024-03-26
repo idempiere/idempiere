@@ -107,7 +107,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}
 	
 	/**	Cache						*/
-	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
+	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50, 0, false, 0);
 		
     /**
      * UUID based Constructor

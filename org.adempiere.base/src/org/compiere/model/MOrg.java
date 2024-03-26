@@ -110,7 +110,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	}	//	get
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50, 0, false, 0);
 		
     /**
      * UUID based Constructor
