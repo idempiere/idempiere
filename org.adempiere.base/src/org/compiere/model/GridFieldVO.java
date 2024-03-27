@@ -874,8 +874,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		int ad_Window_ID, int ad_Tab_ID,
 		boolean TabReadOnly)
 	{
-		GridFieldVO clone = null;
-		clone = (GridFieldVO) clone();
+		GridFieldVO clone = clone();
 		clone.ctx = ctx;
 		clone.WindowNo = windowNo;
 		clone.TabNo = tabNo;
