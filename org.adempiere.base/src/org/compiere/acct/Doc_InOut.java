@@ -219,8 +219,6 @@ public class Doc_InOut extends Doc
 								{
 									MInOutLineMA ma = mas[j];
 									BigDecimal QtyMA = ma.getMovementQty();
-									if (QtyMA.signum() != line.getQty().signum())
-										QtyMA = QtyMA.negate();
 									ProductCost pc = line.getProductCost();
 									pc.setQty(QtyMA);
 									pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
@@ -451,8 +449,6 @@ public class Doc_InOut extends Doc
 								{
 									MInOutLineMA ma = mas[j];
 									BigDecimal QtyMA = ma.getMovementQty();
-									if (QtyMA.signum() != line.getQty().signum())
-										QtyMA = QtyMA.negate();
 									ProductCost pc = line.getProductCost();
 									pc.setQty(QtyMA);
 									pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
@@ -964,8 +960,6 @@ public class Doc_InOut extends Doc
 									{
 										MInOutLineMA ma = mas[j];
 										BigDecimal QtyMA = ma.getMovementQty();
-										if (QtyMA.signum() != line.getQty().signum())
-											QtyMA = QtyMA.negate();
 										ProductCost pc = line.getProductCost();
 										pc.setQty(QtyMA);
 										pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
