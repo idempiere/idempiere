@@ -90,6 +90,7 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTaxProvider;
+import org.compiere.model.MTest;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.MZoomCondition;
 import org.compiere.model.ModelValidator;
@@ -745,6 +746,183 @@ public class CacheTest extends AbstractTestCase {
 			update.load((String)null);
 			update.setDescription(description);
 			update.saveEx();
+		}
+	}
+	
+	private static class MTestCache extends CCache<Integer, MTest> {
+		private static final long serialVersionUID = 1L;
+		private int resetCount = 0;
+		
+		public MTestCache(String name, int capacity) {
+			super(name, capacity);
+		}
+				
+		@Override
+		public int reset() {
+			resetCount++;
+			return super.reset();
+		}
+
+		@Override
+		public int reset(int recordId) {
+			resetCount++;
+			return super.reset(recordId);
+		}
+
+		@Override
+		public void newRecord(int record_ID) {
+			resetCount++;
+			super.newRecord(record_ID);
+		}
+		
+		public int getResetCount() {
+			return resetCount;
+		}
+		
+		public void clearResetCount() {
+			resetCount = 0;
+		}
+	};
+	
+	@Test
+	public void testSuspendCacheReset() {
+		MTest test1 = new MTest(Env.getCtx(), 0, getTrxName());
+		MTest test2 = new MTest(Env.getCtx(), 0, getTrxName());
+		MTest test3 = new MTest(Env.getCtx(), 0, getTrxName());
+		try {
+			MTestCache cache = new MTestCache(MTest.Table_Name, 10);
+			
+			//test insert and cache reset
+			test1.setName("test1");
+			test1.saveEx();
+			test2.setName("test2");
+			test2.saveEx();
+			test3.setName("test3");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}			
+			assertTrue(cache.getResetCount() > 0, "Cache reset count is zero");
+			
+			//test update and cache reset
+			
+			test1.setName("test1.1");
+			test1.saveEx();
+			test2.setName("test2.1");
+			test2.saveEx();
+			test3.setName("test3.1");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}			
+			assertTrue(cache.getResetCount() > 0, "Cache reset count is zero");
+			
+			//test update and cache reset after suspend reset call
+			
+			CacheMgt.get().suspendTableCacheReset(MTest.Table_Name);
+			
+			test1.setName("test1.2");
+			test1.saveEx();
+			test2.setName("test2.2");
+			test2.saveEx();
+			test3.setName("test3.2");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertTrue(cache.getResetCount() == 0, "Cache reset count is not zero with suspendTableCacheReset active");
+			
+			//test delete and cache reset after suspend reset call
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+						
+			test1.deleteEx(true);
+			test1 = null;
+			test2.deleteEx(true);
+			test2 = null;
+			test3.deleteEx(true);
+			test3 = null;
+					
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertTrue(cache.getResetCount() == 0, "Cache reset count is not zero with suspendTableCacheReset active");
+			
+			//test update and cache reset again after resume reset call
+			
+			CacheMgt.get().resumeTableCacheReset(MTest.Table_Name);
+			
+			test1 = new MTest(Env.getCtx(), 0, getTrxName());
+			test2 = new MTest(Env.getCtx(), 0, getTrxName());
+			test3 = new MTest(Env.getCtx(), 0, getTrxName());
+			
+			test1.setName("test1");
+			test1.saveEx();
+			test2.setName("test2");
+			test2.saveEx();
+			test3.setName("test3");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}			
+			assertTrue(cache.getResetCount() > 0, "Cache reset count is zero");
+			
+		} finally {
+			if (test1 != null && test1.get_ID() > 0)
+				test1.deleteEx(true);
+			if (test2 != null && test2.get_ID() > 0)
+				test2.deleteEx(true);
+			if (test3 != null && test3.get_ID() > 0)
+				test3.deleteEx(true);
+			
+			commit();
 		}
 	}
 }

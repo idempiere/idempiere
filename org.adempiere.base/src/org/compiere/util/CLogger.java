@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -58,16 +59,20 @@ public class CLogger extends Logger
     	if (result != null && result instanceof CLogger)
     		return (CLogger)result;
     	
-    	Logger packageLogger = null;
+    	Level packageLevel = null;
     	if (className.indexOf(".") > 0 && usePackageLevel)
     	{
     		String s = className.substring(0, className.lastIndexOf("."));
     		while(s.indexOf(".") > 0)
     		{
+    			packageLevel = CLogMgt.getFromLevelMap(s);
+    			if (packageLevel != null)
+    				break;
+    			
     			result = manager.getLogger(s);
-    			if (result != null && result instanceof CLogger)
+    			if (result != null && result instanceof CLogger cl)
     			{
-    	    		packageLogger = result;
+    	    		packageLevel = cl.getLevel();
     	    		break;
     			}
     			s = s.substring(0, s.lastIndexOf("."));
@@ -75,10 +80,17 @@ public class CLogger extends Logger
     	}
     	//
    	    CLogger newLogger = new CLogger(className, null);
-   	    if (packageLogger != null && packageLogger.getLevel() != null)
-   	    	newLogger.setLevel(packageLogger.getLevel());
+   	    Level fromPropertyFile = CLogMgt.getFromLevelMap(className);
+   	    if (fromPropertyFile != null)
+   	    	newLogger.setLevel(fromPropertyFile);
+   	    else if (packageLevel != null)
+   	    	newLogger.setLevel(packageLevel);
    	    else
    	    	newLogger.setLevel(CLogMgt.getLevel());
+   	    if (!newLogger.getUseParentHandlers()) 
+		{
+   	    	newLogger.setUseParentHandlers(true);
+		}
    	    manager.addLogger(newLogger);
     	return newLogger;
     }	//	getLogger
