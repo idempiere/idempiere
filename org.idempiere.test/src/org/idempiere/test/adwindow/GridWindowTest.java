@@ -34,6 +34,7 @@ import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.MField;
+import org.compiere.model.MSession;
 import org.compiere.model.MTab;
 import org.compiere.model.MUserDefField;
 import org.compiere.model.MUserDefTab;
@@ -77,7 +78,6 @@ public class GridWindowTest extends AbstractTestCase {
 				} else if (ccache.getName().equals(gridWindowVOCacheName)) {
 					gridWindowVOCache = ccache;
 				}
-				System.out.println(ccache.getName());
 			}			
 		}
 		
@@ -219,7 +219,7 @@ public class GridWindowTest extends AbstractTestCase {
 		
 		try {
 			//test with GARDEN_WORLD_ADMIN role
-			Env.setContext(Env.getCtx(), Env.AD_SESSION_ID, System.currentTimeMillis()+"");
+			MSession.create(Env.getCtx());
 			Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id);		
 			GridWindowVO windowVO = GridWindowVO.create(Env.getCtx(), 1, SystemIDs.WINDOW_TEST);
 			assertNotNull(windowVO.Tabs, "Failed to retrieve GridTabVOs");
@@ -246,7 +246,7 @@ public class GridWindowTest extends AbstractTestCase {
 			assertEquals(customFieldName, optional.get().Header, "Not getting custom header from MUserDefField");
 			
 			//test with GARDEN_WORLD_ADMIN_NOT_ADVANCED role
-			Env.setContext(Env.getCtx(), Env.AD_SESSION_ID, System.currentTimeMillis()+"");
+			MSession.create(Env.getCtx());
 			Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN_NOT_ADVANCED.id);
 			windowVO = GridWindowVO.create(Env.getCtx(), 1, SystemIDs.WINDOW_TEST);
 			assertNotNull(windowVO.Tabs, "Failed to retrieve GridTabVOs");
