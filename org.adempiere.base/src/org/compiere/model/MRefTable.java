@@ -116,7 +116,7 @@ public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 	}
 
 	/**	Ref Table Cache				*/
-	private static ImmutableIntPOCache<Integer,MRefTable>	s_cache = new ImmutableIntPOCache<Integer,MRefTable>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRefTable>	s_cache = new ImmutableIntPOCache<Integer,MRefTable>(Table_Name, 20, 0, false, 0);
 
 	/**
 	 * 	Get from Cache (immutable)

@@ -46,7 +46,7 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 8157805998814206274L;
 	/** Cache */
-	private static ImmutableIntPOCache<Integer, MMenu>	s_cache				= new ImmutableIntPOCache<Integer, MMenu>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer, MMenu>	s_cache				= new ImmutableIntPOCache<Integer, MMenu>(Table_Name, 50, 0, false, 0);
 
 	/**
 	 * Get Menu method from cache (immutable)

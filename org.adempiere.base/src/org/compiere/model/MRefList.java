@@ -48,7 +48,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = -2704284822855131148L;
 	/**	RefList Value Cache						*/
-	private static ImmutablePOCache<String,MRefList> s_ref_value_cache	= new ImmutablePOCache<String,MRefList>(Table_Name, 40);
+	private static ImmutablePOCache<String,MRefList> s_ref_value_cache	= new ImmutablePOCache<String,MRefList>(Table_Name, 40, 0, false, 0);
 
 	/**
 	 * 	Get Reference List 
@@ -320,7 +320,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	/**	Logger							*/
 	private static CLogger		s_log = CLogger.getCLogger (MRefList.class);
 	/** Value Cache						*/
-	private static CCache<String,String> s_cache = new CCache<String,String>(Table_Name, 20);
+	private static CCache<String,String> s_cache = new CCache<String,String>(Table_Name, 20, 0, false, 0);
 
     /**
      * UUID based Constructor

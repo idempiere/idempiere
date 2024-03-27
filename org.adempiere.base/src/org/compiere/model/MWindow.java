@@ -50,7 +50,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MWindow> s_cache = new ImmutableIntPOCache<Integer,MWindow>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MWindow> s_cache = new ImmutableIntPOCache<Integer,MWindow>(Table_Name, 20, 0, false, 0);
 
 	/**
 	 * 	Get Window from Cache (immutable)
