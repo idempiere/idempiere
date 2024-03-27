@@ -205,12 +205,6 @@ public class MAllocationLine extends X_C_AllocationLine
 		return m_invoice;
 	}	//	getInvoice
 	
-	/**
-	 *  Disallow edit of C_BPartner_ID and C_Invoice_ID.<br/>
-	 * 	Default BPartner/Order from Invoice (if not set yet).
-	 *	@param newRecord
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -218,6 +212,8 @@ public class MAllocationLine extends X_C_AllocationLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_AllocationHdr_ID"));
 			return false;
 		}
+		
+		// Disallow edit of business partner and invoice field
 		if (!newRecord  
 			&& (is_ValueChanged("C_BPartner_ID") || is_ValueChanged("C_Invoice_ID")))
 		{
@@ -225,7 +221,7 @@ public class MAllocationLine extends X_C_AllocationLine
 			return false;
 		}
 		
-		//	Set BPartner/Order from Invoice
+		// Set BPartner/Order from Invoice
 		if (getC_BPartner_ID() == 0 && getInvoice() != null)
 			setC_BPartner_ID(getInvoice().getC_BPartner_ID()); 
 		if (getC_Order_ID() == 0 && getInvoice() != null)
@@ -234,14 +230,11 @@ public class MAllocationLine extends X_C_AllocationLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	Before Delete
-	 *	@return true if reversed
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
 		setIsActive(false);
+		// Reverse allocation
 		processIt(true);
 		return true;
 	}	//	beforeDelete

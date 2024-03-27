@@ -46,7 +46,7 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5611033457579880793L;
-
+	/** AD_Client_ID:MUserDefInfo List */
 	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new HashMap<Integer, List<MUserDefInfo>>();
 	
     /**

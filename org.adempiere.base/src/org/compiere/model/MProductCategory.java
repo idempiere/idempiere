@@ -212,11 +212,6 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -228,15 +223,10 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create new accounting record (M_Product_Category_Acct)
 		if (newRecord && success)
 			insert_Accounting("M_Product_Category_Acct", "C_AcctSchema_Default", null);
 

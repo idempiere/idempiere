@@ -298,19 +298,13 @@ public class MArchive extends X_AD_Archive {
 		super.setBinaryData(BinaryData);
 	}
 
-	/**
-	 * Validate Binary Data is Mandatory.<br/>
-	 * Set Record_UU (if not set) from Record_ID.
-	 * 
-	 * @param newRecord
-	 * @return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Binary Data is Mandatory
 		byte[] data = super.getBinaryData();
 		if (data == null || data.length == 0)
 			return false;
+		// Set Record_UU from Record_ID
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());

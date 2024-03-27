@@ -68,6 +68,7 @@ public class MStatusLineUsedIn extends X_AD_StatusLineUsedIn
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// For one of table, window or info window
 		if (getAD_Table_ID() > 0) {
 			setAD_Window_ID(0);
 			setAD_Tab_ID(0);

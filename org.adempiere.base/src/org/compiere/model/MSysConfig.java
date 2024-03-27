@@ -800,19 +800,15 @@ public class MSysConfig extends X_AD_SysConfig
 		return dt;
 	}	
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);
 		
+		// Validate configuration level
 		if (getAD_Client_ID() != 0 || getAD_Org_ID() != 0) {
 			
-			// Get the configuration level from the System Record
+			// Get the configuration level from System client Record
 			String configLevel = null;
 			String sql = "SELECT ConfigurationLevel FROM AD_SysConfig WHERE Name=? AND AD_Client_ID = 0 AND AD_Org_ID = 0";
 			PreparedStatement pstmt = null;
@@ -836,10 +832,10 @@ public class MSysConfig extends X_AD_SysConfig
 			}
 			
 			if (configLevel == null) {
-				// not found for system
-				// if saving an org parameter - look config in client
+				// No System client record
+				// If saving with org parameter, find configuration level from client
 				if (getAD_Org_ID() != 0) {
-					// Get the configuration level from the System Record
+					// Get the configuration level from client record
 					sql = "SELECT ConfigurationLevel FROM AD_SysConfig WHERE Name=? AND AD_Client_ID = ? AND AD_Org_ID = 0";
 					try
 					{

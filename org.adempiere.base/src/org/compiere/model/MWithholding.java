@@ -64,15 +64,10 @@ public class MWithholding extends X_C_Withholding
 		super(ctx, rs, trxName);
 	}	//	MWithholding
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting record
 		if (newRecord && success)
 			insert_Accounting("C_Withholding_Acct", "C_AcctSchema_Default", null);
 

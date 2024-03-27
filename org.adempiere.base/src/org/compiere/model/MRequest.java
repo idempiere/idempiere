@@ -604,7 +604,7 @@ public class MRequest extends X_R_Request
 	}	//	isWebCanUpdate
 	
 	/**
-	 * 	Set Priority
+	 * 	Set Priority to C_BP_Group.PriorityBase or PriorityUser
 	 */
 	private void setPriority()
 	{
@@ -641,7 +641,8 @@ public class MRequest extends X_R_Request
 	}	//	setPriority
 	
 	/**
-	 * 	Set Confidential Type Entry
+	 * 	Set Confidential Type Entry.<br/>
+	 *  Validate new ConfidentialTypeEntry against current ConfidentialTypeEntry value.
 	 *	@param ConfidentialTypeEntry confidentiality
 	 */
 	@Override
@@ -720,11 +721,6 @@ public class MRequest extends X_R_Request
 		return null;
 	}	//	createPDF
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -732,6 +728,7 @@ public class MRequest extends X_R_Request
 		getRequestType();
 		if (newRecord || is_ValueChanged("R_RequestType_ID"))
 		{
+			// Update IsInvoiced and DateNextAction from request type
 			if (m_requestType != null)
 			{
 				if (isInvoiced() != m_requestType.isInvoiced())
@@ -740,7 +737,8 @@ public class MRequest extends X_R_Request
 					setDateNextAction(TimeUtil.addDays(new Timestamp(System.currentTimeMillis()), 
 						m_requestType.getAutoDueDateDays()));
 			}
-			//	Is Status Valid
+			// Validate current status against request type. 
+			// Reset to default if it is not valid.
 			if (getR_Status_ID() != 0)
 			{
 				MStatus sta = MStatus.get(getCtx(), getR_Status_ID());
@@ -750,13 +748,13 @@ public class MRequest extends X_R_Request
 			}
 		}
 
-		//	Request Status
+		//	Set default Request Status
 		if (getR_Status_ID() == 0)
 			setR_Status_ID();
 		//	Validate/Update Due Type
 		setDueType();
 		MStatus status = MStatus.get(getCtx(), getR_Status_ID());
-		//	Close/Open
+		// Set default for open, close and final close status
 		if (status != null)
 		{
 			if (status.isOpen())
@@ -773,7 +771,7 @@ public class MRequest extends X_R_Request
 				setProcessed(true);
 		}
 		
-		//	Confidential Info
+		// Set Confidential Type (from request type or set to default of public)
 		if (getConfidentialType() == null)
 		{
 			getRequestType();
@@ -786,6 +784,7 @@ public class MRequest extends X_R_Request
 			if (getConfidentialType() == null)
 				setConfidentialType(CONFIDENTIALTYPEENTRY_PublicInformation);
 		}
+		// Validate ConfidentialTypeEntry
 		if (getConfidentialTypeEntry() == null)
 			setConfidentialTypeEntry(getConfidentialType());
 		else
@@ -794,6 +793,7 @@ public class MRequest extends X_R_Request
 		//	Importance / Priority
 		setPriority();
 
+		// Set Record_UU from Record_ID
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());
@@ -817,19 +817,13 @@ public class MRequest extends X_R_Request
 			log.warning("Ignored - Tried to set SalesRep_ID to 0 from " + getSalesRep_ID());
 	}	//	setSalesRep_ID
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
 		
-		//	Create Update
+		//	Create Request Update record
 		if (newRecord && getResult() != null)
 		{
 			MRequestUpdate update = new MRequestUpdate(this);
@@ -847,6 +841,7 @@ public class MRequest extends X_R_Request
 			}
 			else
 			{
+				// Update change request record with request group change
 				MGroup oldG = MGroup.get(getCtx(), oldID);
 				MGroup newG = MGroup.get(getCtx(), getR_Group_ID());
 				if (oldG.getPP_Product_BOM_ID() != newG.getPP_Product_BOM_ID()

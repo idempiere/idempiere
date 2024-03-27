@@ -309,15 +309,10 @@ public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 		return BigDecimal.valueOf(0.90);
 	}	//	getCreditWatchRatio
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new record
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting records (C_BP_Group_Acct)
 		if (newRecord && success)
 			return insert_Accounting("C_BP_Group_Acct", "C_AcctSchema_Default", null);
 		return success;

@@ -131,12 +131,6 @@ import org.compiere.util.Util;
 		//
 	}	//	setPayment
 
-	/**
-	 *  Set Line No (if it is still 0).<br/>
-	 * 	Set DepositBatch_ID into C_Payment table.
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -166,12 +160,6 @@ import org.compiere.util.Util;
 		return true;
 	}	//	beforeSave
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -181,17 +169,13 @@ import org.compiere.util.Util;
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
 			return success;
 		updateHeader();
+		// Update C_Payment.C_DepositBatch_ID to null
 		if (getC_Payment_ID() != 0 )
 		{
 			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID= Null WHERE p.C_Payment_ID=?";

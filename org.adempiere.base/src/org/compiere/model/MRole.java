@@ -439,11 +439,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return max > 0 && noRecords > max;
 	}	//	isQueryMax
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
@@ -457,12 +452,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -470,10 +459,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return success;
 		if (newRecord && success)
 		{
-			//	Add Role to SuperUser
+			// Assign Role to SuperUser
 			MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
 			su.saveEx();
-			//	Add Role to User
+			// Assign Role to Created By user
 			if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
 			{
 				MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
@@ -488,11 +477,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	Executed after Delete operation.
-	 * 	@param success true if record deleted
-	 *	@return true if delete is a success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -503,7 +487,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	} 	//	afterDelete
 
 	/**
-	 * 	Create Access Records (delete existing access records prior to that)
+	 * 	Delete existing access records and create new access records
 	 *	@return info
 	 */
 	public String updateAccessRecords ()

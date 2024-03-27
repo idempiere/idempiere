@@ -139,10 +139,12 @@ public class MUserRoles extends X_AD_User_Roles
 		// IDEMPIERE-1410
 		if (! MRole.getDefault().isAccessAdvanced()) {
 			MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
+			// Disallow non-advanced role to edit advanced role record
 			if (role.isAccessAdvanced()) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 				return false;
 			}
+			// Disallow non-advanced role to remove assignment of advanced role to user
 			if (! newRecord && is_ValueChanged(COLUMNNAME_AD_Role_ID)) {
 				MRole oldrole = new MRole(getCtx(), get_ValueOldAsInt(COLUMNNAME_AD_Role_ID), get_TrxName());
 				if (oldrole.isAccessAdvanced()) {
@@ -158,6 +160,7 @@ public class MUserRoles extends X_AD_User_Roles
 	@Override
 	protected boolean beforeDelete() {
 		// IDEMPIERE-1410
+		// Can't delete advanced role if current login role is not an advanced role
 		if (! MRole.getDefault().isAccessAdvanced()) {
 			MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
 			if (role.isAccessAdvanced()) {

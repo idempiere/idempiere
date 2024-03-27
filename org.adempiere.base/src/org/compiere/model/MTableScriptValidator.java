@@ -196,6 +196,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		// Set SeqNo
 		if (getSeqNo() == 0)
 		{
 			final String sql = "SELECT COALESCE(MAX(SeqNo),0) + 10 FROM "+Table_Name

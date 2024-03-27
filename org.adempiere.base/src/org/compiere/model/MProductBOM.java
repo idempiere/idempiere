@@ -146,13 +146,7 @@ public class MProductBOM extends X_M_Product_BOM
 		return sb.toString();
 	}	//	toString
 
-	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)

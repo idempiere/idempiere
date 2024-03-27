@@ -381,13 +381,11 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.compiere.model.PO#beforeSave(boolean)
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		boolean b = super.beforeSave(newRecord);
 		if (b) {
+			// Validate product has only one active master BOM
 			if (BOMTYPE_CurrentActive.equals(getBOMType()) && BOMUSE_Master.equals(getBOMUse()) && isActive()) {
 				if (newRecord || is_ValueChanged(COLUMNNAME_BOMType) || is_ValueChanged(COLUMNNAME_BOMUse) 
 						|| is_ValueChanged(COLUMNNAME_IsActive) || is_ValueChanged(COLUMNNAME_M_Product_ID)) {
@@ -414,6 +412,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 			updateProduct();
 		}
 		
+		// Reset IsVerified flag of product
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (product.isBOM() && product.isVerified())
 		{

@@ -179,14 +179,4 @@ public class MRequestAction extends X_R_RequestAction
 		}
 	}	//	getChangeHTML
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
-	@Override
-	protected boolean beforeSave (boolean newRecord)
-	{
-		return true;
-	}	//	beforeSave
 }	//	MRequestAction

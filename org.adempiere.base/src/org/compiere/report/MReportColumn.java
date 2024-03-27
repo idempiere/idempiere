@@ -495,15 +495,10 @@ public class MReportColumn extends X_PA_ReportColumn
 		return null;
 	}	//	getCalculationType
 	
-	/**
-	 *	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
-		//	Validate Type
+		//	Validate Column Type
 		String ct = getColumnType();
 		if (ct.equals(COLUMNTYPE_RelativePeriod))
 		{

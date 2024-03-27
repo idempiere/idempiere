@@ -91,7 +91,8 @@ implements DocAction
 	}
 	
 	/**
-	 * Set C_Period_ID value from DateAcct
+	 * Set C_Period_ID value from DateAcct.<br/>
+	 * Throw exception if no period found for DateAcct.
 	 */
 	public void setC_Period_ID() 
 	{

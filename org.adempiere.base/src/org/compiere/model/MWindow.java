@@ -229,19 +229,14 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		return m_tabs;
 	}	//	getTabs
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		if (newRecord)	//	Add to all automatic roles
+		if (newRecord)	
 		{
+			// Create window access records for all automatic role
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");
 			for (int i = 0; i < roles.length; i++)
 			{
@@ -253,6 +248,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 			|| is_ValueChanged("Description") || is_ValueChanged("Help"))
 		{
+			// Update menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{
@@ -261,7 +257,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 				menues[i].setIsActive(isActive());
 				menues[i].saveEx();
 			}
-			//
+			// Update workflow node
 			MWFNode[] nodes = MWFNode.getWFNodes(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
 			for (int i = 0; i < nodes.length; i++)
 			{

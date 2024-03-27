@@ -432,13 +432,9 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 		return this;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if ok
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord) {
+		// Set SeqNo
 		if (getSeqNo() == 0)
 			setSeqNo(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(SeqNo), 0) + 10 FROM AD_ZoomCondition WHERE AD_Table_ID = ?", getAD_Table_ID()));
 

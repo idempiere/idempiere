@@ -285,14 +285,10 @@ public class MDepositBatch extends X_C_DepositBatch
 		return getDepositAmt();
 	}	//	getApprovalAmt
 			
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Remove reference from C_Payment
 		if (getC_DepositBatch_ID() != 0 )
 		{
 			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID= 0  WHERE p.C_DepositBatch_ID=?";			

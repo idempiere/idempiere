@@ -254,24 +254,20 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		return null;
 	}	//	createPDF
 	
-	/**
-	 *  Set beginning balance (if not set yet).<br/>
-	 * 	Calculate ending balance.
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getC_DocType_ID() <= 0) {
 			setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_BankStatement));
 		}
+		// Set beginning balance
 		if (! isProcessed() && getBeginningBalance().compareTo(Env.ZERO) == 0)
 		{
 			MBankAccount ba = getBankAccount();
 			ba.load(get_TrxName());
 			setBeginningBalance(ba.getCurrentBalance());
 		}
+		// Calculate ending balance
 		setEndingBalance(getBeginningBalance().add(getStatementDifference()));
 		return true;
 	}	//	beforeSave

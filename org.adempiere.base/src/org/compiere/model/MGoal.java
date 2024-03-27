@@ -542,12 +542,6 @@ public class MGoal extends X_PA_Goal
 		return sb.toString ();
 	}	//	toString
 	
-	/**
-	 *  Validate measure required if not Summary.<br/>
-	 * 	User/Role Check.
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -560,7 +554,7 @@ public class MGoal extends X_PA_Goal
 		if (isSummary() && getPA_Measure_ID() != 0)
 			setPA_Measure_ID(0);
 		
-		//	User/Role Check
+		//	Validate user and role
 		if ((newRecord || is_ValueChanged("AD_User_ID") || is_ValueChanged("AD_Role_ID"))
 			&& getAD_User_ID() != 0)
 		{
@@ -595,12 +589,6 @@ public class MGoal extends X_PA_Goal
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

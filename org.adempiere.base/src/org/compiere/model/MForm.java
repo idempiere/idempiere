@@ -123,12 +123,6 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -136,6 +130,7 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 			return success;
 		if (newRecord)
 		{
+			// Create form access record for login role
 			int AD_Role_ID = Env.getAD_Role_ID(getCtx());
 			MFormAccess pa = new MFormAccess(this, AD_Role_ID);
 			pa.saveEx();
@@ -144,6 +139,7 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 			|| is_ValueChanged("Description"))
 		{
+			// Update menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Form_ID=" + getAD_Form_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{

@@ -72,19 +72,16 @@ public class MPackageExp extends X_AD_Package_Exp
 		
 	}	//	MPackageExp
 		
-	/**
-	 * 	Before Delete
-	 *	@param success
-	 *	@return deleted
-	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
-	 String sql = "DELETE FROM AD_Package_Exp_Detail WHERE AD_Package_Exp_ID = "+ getAD_Package_Exp_ID();
+		// Delete AD_Package_Exp_Detail records
+		String sql = "DELETE FROM AD_Package_Exp_Detail WHERE AD_Package_Exp_ID = "+ getAD_Package_Exp_ID();
 	 
-	 int deleteSuccess = DB.executeUpdate(sql, get_TrxName());
-	 if (deleteSuccess == -1)
-		return false;
-	 return true;
+		int deleteSuccess = DB.executeUpdate(sql, get_TrxName());
+		if (deleteSuccess == -1)
+			return false;
+		return true;
 	}	//	afterDelete
 
 	/**

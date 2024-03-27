@@ -281,11 +281,6 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		return new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
 	}
 
-	/**
-	 * 	Update DateMaterialPolicy for new record or new M_AttributeSetInstance_ID value.
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -294,7 +289,7 @@ public class MInOutLineMA extends X_M_InOutLineMA
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}
-		//Set DateMaterialPolicy
+		// Set DateMaterialPolicy
 		if ((!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)) ||
 			(newRecord && getM_AttributeSetInstance_ID() > 0 && getDateMaterialPolicy() == null)) {
 			

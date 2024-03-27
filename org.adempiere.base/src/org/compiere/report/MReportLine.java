@@ -412,14 +412,10 @@ public class MReportLine extends X_PA_ReportLine
 		return CALCULATIONTYPE_PercentageOp1OfOp2.equals(getCalculationType());
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Reset CalculationType, Oper_1_ID and Oper_2_ID if line type is SegmentValue
 		if (LINETYPE_SegmentValue.equals(getLineType()))
 		{
 			if (getCalculationType() != null)

@@ -795,13 +795,6 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		return PERIODTYPE_StandardCalendarPeriod.equals(getPeriodType());
 	}	//	isStandardPeriod
 	
-	
-	/**
-	 * 	Before Save.
-	 * 	Truncate Dates
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -811,13 +804,13 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			setStartDate(TimeUtil.getDay(date));
 		else
 			return false;
-		//
+		
 		date = getEndDate();
 		if (date != null)
 			setEndDate(TimeUtil.getDay(date));
 		else
 			setEndDate(TimeUtil.getMonthLastDay(getStartDate()));
-		
+		// Validate EndDate > StartDate
 		if (getEndDate().before(getStartDate()))
 		{
 			SimpleDateFormat df = DisplayType.getDateFormat(DisplayType.Date);
@@ -825,6 +818,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			return false;
 		}
 		
+		// Validate the StartDate and EndDate range does not overlap with another period record
 		MYear year = new MYear(getCtx(), getC_Year_ID(), get_TrxName());
 		
 		Query query = MTable.get(getCtx(), "C_Period")
@@ -851,12 +845,6 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -864,7 +852,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			return success;
 		if (newRecord)
 		{
-		//	SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID=183
+			// Create new Period Control record for all DocBaseType
 			MDocType[] types = MDocType.getOfClient(getCtx());
 			int count = 0;
 			ArrayList<String> baseTypes = new ArrayList<String>();

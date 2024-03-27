@@ -243,6 +243,7 @@ public class MPackage extends X_M_Package
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		// Update weight from X_PackageLineWeight.LineWeight
 		if (getWeight() == null || getWeight().compareTo(BigDecimal.ZERO) == 0)
 		{
 			String sql = "SELECT SUM(LineWeight) FROM X_PackageLineWeight plw WHERE plw.M_Package_ID=?";
@@ -261,6 +262,7 @@ public class MPackage extends X_M_Package
 		if (!success)
 			return success;
 		
+		// Create new M_PackageMPS record for BoxCount
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT COUNT(*) FROM M_PackageMPS ");
 		sb.append("WHERE M_Package_ID = ?");

@@ -224,12 +224,6 @@ public class MClientShare extends X_AD_ClientShare
 		return getTable().getTableName();
 	}	//	getTableName
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -315,11 +309,6 @@ public class MClientShare extends X_AD_ClientShare
 		return info.toString();
 	}	//	listChildRecords
 	
-	/**
-	 * 	Ensure AD_Org_ID is 0
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

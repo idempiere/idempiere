@@ -786,11 +786,6 @@ public class MOrderLine extends X_C_OrderLine
 		return Env.ZERO;
 	}	//	getBase
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -806,7 +801,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (m_M_PriceList_ID == 0)
 			setHeaderInfo(getParent());
 		
-		//	R/O Check - Product/Warehouse Change
+		//	Validate change of warehouse, product or ASI
 		if (!newRecord 
 			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
 			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
@@ -815,35 +810,33 @@ public class MOrderLine extends X_C_OrderLine
 				return false;
 		}	//	Product Changed
 		
-		//	Charge
+		//	Charge line, set M_Product_ID to 0
 		if (getC_Charge_ID() != 0 && getM_Product_ID() != 0)
 				setM_Product_ID(0);
-		//	No Product
+		//	No Product, set M_AttributeSetInstance_ID to 0
 		if (getM_Product_ID() == 0)
 			setM_AttributeSetInstance_ID(0);
-		//	Product
-		else if (!isProcessed())	//	Set/check Product Price
+		else if (!isProcessed())	
 		{
-			//	Set Price if Actual = 0
+			//	Set Product Price
 			if (m_productPrice == null 
 				&&  Env.ZERO.compareTo(getPriceActual()) == 0
 				&&  Env.ZERO.compareTo(getPriceList()) == 0)
-				setPrice();
-			//	Check if on Price list
+				setPrice();			
 			if (m_productPrice == null)
 				getProductPricing(m_M_PriceList_ID);
 			// IDEMPIERE-1574 Sales Order Line lets Price under the Price Limit when updating
-			//	Check PriceLimit
+			// Enforce PriceLimit
 			boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
 			if (enforce && MRole.getDefault().isOverwritePriceLimit())
 				enforce = false;
-			//	Check Price Limit?
 			if (enforce && getPriceLimit() != Env.ZERO
 			  && getPriceActual().compareTo(getPriceLimit()) < 0)
 			{
 				log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 				return false;
 			}
+			// Check is product not on price list
 			int C_DocType_ID = getParent().getDocTypeID();
 			MDocType docType = MDocType.get(getCtx(), C_DocType_ID);
 			//
@@ -853,10 +846,10 @@ public class MOrderLine extends X_C_OrderLine
 			}
 		}
 
-		//	UOM
+		//	Set Default UOM
 		if (getC_UOM_ID() == 0)
 			setDefaultC_UOM_ID();
-		//	Qty Precision
+		//	Enforce Qty Precision
 		if (newRecord || is_ValueChanged("QtyEntered"))
 			setQtyEntered(getQtyEntered());
 		if (newRecord || is_ValueChanged("QtyOrdered"))
@@ -866,11 +859,11 @@ public class MOrderLine extends X_C_OrderLine
 		if (Env.ZERO.compareTo(getFreightAmt()) != 0)
 			setFreightAmt(Env.ZERO);
 
-		//	Set Tax
+		//	Set C_Tax_ID
 		if (getC_Tax_ID() == 0)
 			setTax();
 
-		//	Get Line No
+		//	Set Line No
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM C_OrderLine WHERE C_Order_ID=?";
@@ -879,7 +872,7 @@ public class MOrderLine extends X_C_OrderLine
 		}
 		
 		//	Calculations & Rounding
-		setLineNetAmt();	//	extended Amount with or without tax
+		setLineNetAmt();
 		setDiscount();
 
 		/* Carlos Ruiz - globalqss
@@ -892,7 +885,7 @@ public class MOrderLine extends X_C_OrderLine
 			}
 		}
 		
-		//sync qtyordered and qtylostsales for closed order
+		// Update QtyOrdered and QtyLostSales for closed order
 		if (!newRecord && DocAction.STATUS_Closed.equals(getParent().getDocStatus()) && is_ValueChanged(COLUMNNAME_QtyDelivered)
 			&& !getParent().is_ValueChanged(MOrder.COLUMNNAME_DocStatus)) {
 			if (getQtyOrdered().compareTo(getQtyDelivered()) > 0)
@@ -927,24 +920,22 @@ public class MOrderLine extends X_C_OrderLine
 			setC_UOM_ID (C_UOM_ID);
 	}
 	
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
-		//	R/O Check - Something delivered. etc.
+		// Can't delete if QtyDelivered is not 0
 		if (Env.ZERO.compareTo(getQtyDelivered()) != 0)
 		{
 			log.saveError("DeleteError", Msg.translate(getCtx(), "QtyDelivered") + "=" + getQtyDelivered());
 			return false;
 		}
+		// Can't delete if QtyInvoiced is not 0
 		if (Env.ZERO.compareTo(getQtyInvoiced()) != 0)
 		{
 			log.saveError("DeleteError", Msg.translate(getCtx(), "QtyInvoiced") + "=" + getQtyInvoiced());
 			return false;
 		}
+		// Can't delete if QtyReserved is not 0
 		if (Env.ZERO.compareTo(getQtyReserved()) != 0)
 		{
 			//	For PO should be On Order
@@ -952,18 +943,12 @@ public class MOrderLine extends X_C_OrderLine
 			return false;
 		}
 		
-		// UnLink All Requisitions
+		// Remove reference from requisition lines
 		MRequisitionLine.unlinkC_OrderLine_ID(getCtx(), get_ID(), get_TrxName());
 		
 		return true;
 	}	//	beforeDelete
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -971,7 +956,8 @@ public class MOrderLine extends X_C_OrderLine
 			return success;
 		if (getParent().isProcessed())
 			return success;
-		if (   newRecord
+		// Re-calculate order tax
+		if (newRecord
 			|| is_ValueChanged(MOrderLine.COLUMNNAME_C_Tax_ID)
 			|| is_ValueChanged(MOrderLine.COLUMNNAME_LineNetAmt)) {
 			MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
@@ -984,16 +970,12 @@ public class MOrderLine extends X_C_OrderLine
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
 			return success;
+		// Delete resource assignment record
 		if (getS_ResourceAssignment_ID() != 0)
 		{
 			MResourceAssignment ra = new MResourceAssignment(getCtx(), getS_ResourceAssignment_ID(), get_TrxName());

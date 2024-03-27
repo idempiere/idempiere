@@ -118,11 +118,6 @@ public class MRequestUpdate extends X_R_RequestUpdate
 		return MRefList.getListName(getCtx(), CONFIDENTIALTYPEENTRY_AD_Reference_ID, getConfidentialTypeEntry());
 	}	//	getConfidentialTextEntry
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

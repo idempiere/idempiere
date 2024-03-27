@@ -970,15 +970,10 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		return ii;
 	}	//	getPO_DiscountSchema_ID
 	
-	/**
-	 * 	Set default from BP Group (for new record or if C_BP_Group_ID has change)
-	 *  @see #setBPGroup(MBPGroup)
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Set default from BP Group (for new record or if C_BP_Group_ID has change)
 		if (newRecord || is_ValueChanged("C_BP_Group_ID"))
 		{
 			MBPGroup grp = getBPGroup();
@@ -992,12 +987,6 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -1005,9 +994,9 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 			return success;
 		if (newRecord)
 		{
-			//	Trees
+			//	Create Tree Record
 			insert_Tree(MTree_Base.TREETYPE_BPartner);
-			//	Accounting
+			//	Create Accounting Record
 			StringBuilder msgacc = new StringBuilder("p.C_BP_Group_ID=")
 					.append(getC_BP_Group_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
 							? "toRecordId('C_BP_Group',"+DB.TO_STRING(MBPGroup.get(getC_BP_Group_ID()).getC_BP_Group_UU())+")"
@@ -1018,7 +1007,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_BPartner);
 
-		//	Value/Name change
+		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord 
 			&& (is_ValueChanged("Value") || is_ValueChanged("Name"))){
 			StringBuilder msgacc = new StringBuilder("C_BPartner_ID=").append(getC_BPartner_ID());
@@ -1027,14 +1016,10 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_BPartner);
 		return success;

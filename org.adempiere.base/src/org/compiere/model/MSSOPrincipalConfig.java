@@ -59,6 +59,7 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		// Validate only one default SSO Principal Configuration
 		if (newRecord || is_ValueChanged(COLUMNNAME_IsDefault)|| is_ValueChanged(COLUMNNAME_IsActive))
 		{
 			if(!isActive())

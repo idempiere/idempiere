@@ -366,7 +366,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 		{
 			if (newRecord && success)
 			{
-				//use id as description when description is empty
+				// Use M_AttributeSetInstance_ID as description when description is empty
 				String desc = this.getDescription();
 				if (desc == null || desc.trim().length() == 0)
 				{

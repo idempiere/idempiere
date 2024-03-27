@@ -562,17 +562,12 @@ public class MAttachment extends X_AD_Attachment
 		return false;
 	}
 
-	/**
-	 * 	Set Record_UU (if not set) from Record_ID.<br/>
-	 *  Save attachment content ({@link #saveLOBData()}).
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (Util.isEmpty(getTitle()))
 			setTitle(NONE);
+		// Set Record_UU from Record_ID
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());

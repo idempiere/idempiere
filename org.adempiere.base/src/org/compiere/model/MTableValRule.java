@@ -198,11 +198,6 @@ public class MTableValRule extends X_AD_TableValRule implements ImmutablePOSuppo
 		return this;
 	}
 
-	/**
-	 * 	Called before Save for Pre-Save Operation
-	 * 	@param newRecord new record
-	 *	@return true if record can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getAD_Org_ID() > 0)

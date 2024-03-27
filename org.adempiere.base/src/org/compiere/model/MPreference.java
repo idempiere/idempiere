@@ -78,11 +78,6 @@ public class MPreference extends X_AD_Preference
 		setValue (Value);
 	}	//	MPreference
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

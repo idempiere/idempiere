@@ -379,11 +379,6 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		return sb.toString ();
 	}	//	toString
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// not advanced roles cannot add or modify reference types
@@ -395,20 +390,15 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		return true;
 	}
 	
-	/**
-	 * 	AfterSave
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Changed to Instance Attribute
+		//	Change from Non-Instance to Instance Attribute
 		if (!newRecord && is_ValueChanged("IsInstanceAttribute") && isInstanceAttribute())
 		{
+			// Update IsInstanceAttribute of parent M_AttributeSet (through M_AttributeUse) to Y
 			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas ")
 				.append("SET IsInstanceAttribute='Y' ")
 				.append("WHERE IsInstanceAttribute='N'")

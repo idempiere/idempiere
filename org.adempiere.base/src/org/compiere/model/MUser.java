@@ -437,7 +437,8 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	}	//	getValue
 
 	/**
-	 * 	Set Value - 7 bit lower case alpha numerics max length 8
+	 * 	Set Value - lower case alpha numerics and max length of 8.<br/>
+	 *  If Value is null, use LDAPUser or Name or the "noname" string instead.
 	 *	@param Value
 	 */
 	@Override
@@ -449,7 +450,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			Value = getName();
 		if (Value == null || Value.length () == 0)
 			Value = "noname";
-		//
+		// lower case alpha numerics and max length of 8
 		String result = cleanValue(Value);
 		if (result.length() > 8)
 		{
@@ -457,6 +458,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			String last = getName(Value, false);
 			if (last.length() > 0)
 			{
+				// Concatenate first character of first name and last name
 				String temp = last;
 				if (first.length() > 0)
 					temp = first.substring (0, 1) + last;
@@ -465,13 +467,14 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			else
 				result = cleanValue(first);
 		}
+		// Truncate to 8 character
 		if (result.length() > 8)
 			result = result.substring (0, 8);
 		super.setValue(result);
 	}	//	setValue
 	
 	/**
-	 * 	Clean Value
+	 * 	Convert value to lower case and remove non-digit and non-alphabet character
 	 *	@param value
 	 *	@return lower case cleaned value
 	 */
@@ -962,19 +965,14 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		return m_bpAccess;
 	}	//	getBPAccess
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	New Address invalidates verification
+		//	New Email Address invalidates previous email verification
 		if (!newRecord && is_ValueChanged("EMail"))
 			setEMailVerifyDate(null);
 
-		// IDEMPIERE-1409
+		// IDEMPIERE-1409 Validate Email
 		if (!Util.isEmpty(getEMail()) && (newRecord || is_ValueChanged("EMail"))) {
 			if (! EMail.validate(getEMail())) {
 				log.saveError("SaveError", Msg.getMsg(getCtx(), "InvalidEMailFormat") + Msg.getElement(getCtx(), COLUMNNAME_EMail) + " - [" + getEMail() + "]");
@@ -1139,12 +1137,10 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		}
 	}
 
-	/**
-	 * save new pass to history
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (getPassword() != null && getPassword().length() > 0 && (newRecord || is_ValueChanged("Password"))) {
+			// Save password history for password reuse rule
 			MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
 			if (pwdrule != null && pwdrule.getDays_Reuse_Password() > 0) {
 				boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);

@@ -377,14 +377,10 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 		return 0;
 	}	//	getDefaultR_Status_ID
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Set default request status category
 		if (getR_StatusCategory_ID() == 0)
 		{
 			MStatusCategory sc = MStatusCategory.getDefault(getCtx());

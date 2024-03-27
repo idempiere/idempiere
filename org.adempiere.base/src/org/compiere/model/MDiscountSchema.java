@@ -427,11 +427,6 @@ public class MDiscountSchema extends X_M_DiscountSchema implements ImmutablePOSu
 		return null;
 	}	//	calculateDiscount
 	
-	/**
-	 * 	Default valid from to today (if it is null)
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

@@ -304,18 +304,12 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return get_Translation (COLUMNNAME_PrintName, AD_Language);
 	}	//	getPrintName
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)
 		{
-			//	Add doctype/docaction access to all roles of client
+			// Create doctype/docaction access records for all roles of client
 			StringBuilder sqlDocAction = new StringBuilder("INSERT INTO AD_Document_Action_Access ")
 				.append("(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
 				.append("C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) ")
@@ -344,15 +338,10 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	Executed before Delete operation.
-	 *
-	 *	@return true if delete is a success
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
-		// delete access records
+		// Delete document action access records
 		StringBuilder msgdb = new StringBuilder("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=").append(get_ID());
 		int docactDel = DB.executeUpdate(msgdb.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_ID());

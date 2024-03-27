@@ -224,13 +224,12 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
-		//
 		// For Co/By Products, Qty should be always negative:
 		if (isCoProduct() && getQty(false).signum() >= 0)
 		{
 			throw new AdempiereException("@Qty@ > 0");
 		}
-		//
+
 		// Update Line#
 		if (getLine() <= 0)
 		{
@@ -249,14 +248,16 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		if (!success)
 			return false;
 
+		// Update LowLevel of product
 		int lowlevel = getLowLevel();
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (lowlevel > product.getLowLevel())
 		{
-			product.setLowLevel(lowlevel); //update lowlevel
+			product.setLowLevel(lowlevel);
 			product.saveEx();
 		}
 		
+		// Reset IsVerified flag of parent product
 		MPPProductBOM bom = getParent();
 		MProduct parentProduct = (MProduct) bom.getM_Product();
 		if (parentProduct.isVerified())

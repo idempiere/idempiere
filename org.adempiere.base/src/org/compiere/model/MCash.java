@@ -317,11 +317,6 @@ public class MCash extends X_C_Cash implements DocAction
 		return null;
 	}	//	createPDF
 
-	/**
-	 * 	Calculate Ending Balance
-	 *	@param newRecord
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

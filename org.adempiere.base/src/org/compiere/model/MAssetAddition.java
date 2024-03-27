@@ -475,7 +475,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	}
 	
 	/**
-	 *	Sets the AssetValueAmt from AssetSourceAmt using C_Currency_ID and C_ConversionRate_ID
+	 *	Set AssetValueAmt from AssetSourceAmt using C_Currency_ID and C_ConversionRate_ID
 	 */
 	private void setAssetValueAmt()
 	{
@@ -512,6 +512,9 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 	}
 	
+	/**
+	 * Set DateAcct to DateDoc if is still null
+	 */
 	@Override
 	public Timestamp getDateAcct()
 	{

@@ -164,11 +164,6 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 		return super.set_Value (columnName, value);
 	}	//	setValue
 	
-	/**
-	 * 	Make sure AD_Org_ID is 0.
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

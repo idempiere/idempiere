@@ -192,17 +192,10 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		setEntityType(column.getEntityType());
 	}	//	setColumn
 	
-	/**
-	 * 	Sync Terminology (AD_Element).<br/>
-	 *  Validate IsAllowCopy, ReadOnlyLogic, DisplayLogic and MandatoryLogic.
-	 *	@see org.compiere.model.PO#beforeSave(boolean)
-	 *	@param newRecord
-	 *	@return
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
-		//	Sync Terminology
+		//	Sync Terminology with AD_Element
 		if ((newRecord || is_ValueChanged("AD_Column_ID")) 
 			&& isCentrallyMaintained())
 		{
@@ -211,7 +204,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			setDescription (element.getDescription ());
 			setHelp (element.getHelp());
 		}
-		
+		// Reset IsAllowCopy to null if column is key, UUID, virtual or one of the 8 standard column (except AD_Org_ID)
 		if (getIsAllowCopy() != null) {
 			MColumn column = (MColumn) getAD_Column();
 			if (   column.isKey()
@@ -226,6 +219,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			if (getAD_Column().getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
 				setIsAllowCopy("Y");
 		}
+		// Reset AD_Reference_Value_ID, AD_Val_Rule_ID and IsToolbarButton if AD_Reference_ID is not fill
 		if (getAD_Reference_ID() <= 0) {
 			if (getAD_Reference_Value_ID()!=0)
 				setAD_Reference_Value_ID(0);
@@ -235,7 +229,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 				setIsToolbarButton(null);
 		}
 		
-		//validate logic expression
+		// Validate read only, display and mandatory logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());

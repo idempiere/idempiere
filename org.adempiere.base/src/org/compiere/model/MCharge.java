@@ -212,15 +212,10 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting records (C_Charge_Acct)
 		if (newRecord && success)
 			insert_Accounting("C_Charge_Acct", "C_AcctSchema_Default", null);
 

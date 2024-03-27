@@ -318,6 +318,7 @@ public class MUserQuery extends X_AD_UserQuery
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getAD_Tab_ID() > 0) {
+			// Set AD_Window_ID and AD_Table_ID from AD_Tab_ID
 			if (newRecord || is_ValueChanged(COLUMNNAME_AD_Tab_ID)) {
 				MTab tab = new MTab(getCtx(), getAD_Tab_ID(), get_TrxName());
 				setAD_Window_ID(tab.getAD_Window_ID());

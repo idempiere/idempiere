@@ -183,14 +183,10 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		return retValue;
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Disallow change of reference for encrypted and obscure field 
 		if (is_ValueChanged("AD_Reference_ID")) {
 			MField field = new MField(getCtx(), getAD_Field_ID(), get_TrxName());
 			MColumn column = (MColumn) field.getAD_Column();
@@ -199,13 +195,14 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 				return false;
 			}
 		}
+		// Clear AD_Reference_Value_ID, AD_Val_Rule_ID, IsToolbarButton if AD_Reference_ID is 0
 		if (getAD_Reference_ID() <= 0) {
 			setAD_Reference_Value_ID(0);
 			setAD_Val_Rule_ID(0);
 			setIsToolbarButton(null);
 		}
 		
-		//validate logic expression
+		// Validate read only, display and mandatory logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());

@@ -726,23 +726,16 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return to;
 	}	//	copyToClient
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if ok
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Order
+		// Reset SortNo, IsGroupBy and IsPageBreak if IsOrderBy=false
 		if (!isOrderBy())
 		{
 			setSortNo(0);
 			setIsGroupBy(false);
 			setIsPageBreak(false);
 		}
-		//	Rel Position
 		if (isRelativePosition())
 		{
 			setXPosition(0);
@@ -753,7 +746,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			setXSpace(0);
 			setYSpace(0);
 		}
-		//	Image
+		// Reset ImageIsAttached and ImageURL if IsImageField=true
 		if (isImageField())
 		{
 			setImageIsAttached(false);
@@ -767,7 +760,8 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			setScript(null);
 		}
 		
-		if(   !Util.isEmpty(getScript())
+		// Only advanced role can edit Script field
+		if(!Util.isEmpty(getScript())
 		   && is_ValueChanged(MPrintFormatItem.COLUMNNAME_Script)
 		   && !MRole.getDefault().isAccessAdvanced()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
@@ -777,12 +771,6 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -809,6 +797,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			if (log.isLoggable(Level.FINE)) log.fine("translations updated #" + no);
 		}
 		
+		// Update AD_PrintFormatItem_Trl.PrintName with m_newTranslationLabel
 		if (m_translationLabelChanged) {
 			String sql = "UPDATE AD_PrintFormatItem_Trl "
 					+ "SET PrintName = ? "

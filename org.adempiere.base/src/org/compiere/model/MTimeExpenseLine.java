@@ -193,12 +193,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		m_C_Currency_Report_ID = C_Currency_ID;
 	}	//	getC_Currency_Report_ID
 	
-	/**
-	 * 	Before Save.
-	 * 	Calculate converted amt
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -207,7 +201,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			return false;
 		}
 		
-		//	Calculate Converted Amount
+		//	Calculate Converted Amount from ExpenseAmt
 		if (newRecord || is_ValueChanged("ExpenseAmt") || is_ValueChanged("C_Currency_ID"))
 		{
 			if (getC_Currency_ID() == getC_Currency_Report_ID())
@@ -220,13 +214,14 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			}
 		}
 		
-		// calculate Line Net Amount
+		// Calculate Line Net Amount
 		if (newRecord || is_ValueChanged(COLUMNNAME_Qty) || is_ValueChanged(COLUMNNAME_ExpenseAmt))
 		{
 			BigDecimal lineNetAmt = getExpenseAmt().multiply(getQty());
 			setLineNetAmt(lineNetAmt);
 		}
 		
+		// Set expense, converted and line net amount to zero if IsTimeReport=Y
 		if (isTimeReport())
 		{
 			setExpenseAmt(Env.ZERO);
@@ -236,12 +231,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -254,11 +243,11 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 				int old_S_ResourceAssignment_ID = 0;
 				if (!newRecord)
 				{
+					// Delete previous resource assignment record
 					Object ii = get_ValueOld("S_ResourceAssignment_ID");
 					if (ii instanceof Integer)
 					{
-						old_S_ResourceAssignment_ID = ((Integer)ii).intValue();
-						//	Changed Assignment
+						old_S_ResourceAssignment_ID = ((Integer)ii).intValue();						
 						if (old_S_ResourceAssignment_ID != S_ResourceAssignment_ID
 							&& old_S_ResourceAssignment_ID != 0)
 						{
@@ -268,7 +257,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 						}
 					}
 				}
-				//	Sync Assignment
+				// Sync Resource Assignment (Qty and Description) 
 				if (S_ResourceAssignment_ID != 0)
 				{
 					MResourceAssignment ra = new MResourceAssignment (getCtx(), 
@@ -286,11 +275,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		return success;
 	}	//	afterSave
 		
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -302,7 +286,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			if (ii instanceof Integer)
 			{
 				int old_S_ResourceAssignment_ID = ((Integer)ii).intValue();
-				//	Deleted Assignment
+				//	Delete Previous Resource Assignment record
 				if (old_S_ResourceAssignment_ID != 0)
 				{
 					MResourceAssignment ra = new MResourceAssignment (getCtx(), 

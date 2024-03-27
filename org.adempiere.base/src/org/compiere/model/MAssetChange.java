@@ -65,11 +65,6 @@ public class MAssetChange extends X_A_Asset_Change
 		super (ctx, rs, trxName);
 	}	//	MInventoryLine
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

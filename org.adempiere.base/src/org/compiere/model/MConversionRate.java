@@ -427,32 +427,23 @@ public class MConversionRate extends X_C_Conversion_Rate
 		return sb.toString();
 	}	//	toString
 
-	
-	/**
-	 * 	Validation:<br/>
-	 * 	- From Currency=To Currency<br/>
-	 * 	- Date Range Check<br/>
-	 * 	- Overlap of conversion rate
-	 *	@param newRecord new
-	 *	@return true if OK to save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	From - To is the same
+		// Validate From and To currency not the same
 		if (getC_Currency_ID() == getC_Currency_ID_To())
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@C_Currency_ID@ = @C_Currency_ID@"));
 			return false;
 		}
-		//	Nothing to convert
+		// Multiply rate must > 0
 		if (getMultiplyRate().compareTo(Env.ZERO) <= 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@MultiplyRate@ <= 0"));
 			return false;
 		}
 
-		//	Date Range Check
+		// Validate ValidTo is not null and > ValidFrom
 		Timestamp from = getValidFrom();
 		if (getValidTo() == null) {
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ValidTo));
@@ -467,6 +458,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 			return false;
 		}
 
+		// Validate the ValidFrom to ValidTo range has no overlap with other conversion rate records
 		if (isActive()) {
 			String whereClause = "(? BETWEEN ValidFrom AND ValidTo OR ? BETWEEN ValidFrom AND ValidTo) "
 					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
@@ -495,6 +487,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (success && !recursiveCall) {
+			// Find reverse/reciprocal conversion rate record with reverse from and to currency
 			String whereClause = "ValidFrom=? AND ValidTo=? "
 					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
 					+ "AND C_ConversionType_ID=? "
@@ -506,7 +499,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 							getAD_Client_ID(), getAD_Org_ID())
 					.firstOnly();
 			if (reciprocal == null) {
-				// create reciprocal rate
+				// Create reverse/reciprocal conversion rate
 				reciprocal = new MConversionRate(getCtx(), 0, get_TrxName());
 				reciprocal.setValidFrom(getValidFrom());
 				reciprocal.setValidTo(getValidTo());

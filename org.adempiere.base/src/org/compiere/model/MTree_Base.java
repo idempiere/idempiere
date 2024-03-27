@@ -399,29 +399,27 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		return "NULL";
 	}	//	getSourceTableName
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (!isActive() || !isAllNodes())
 			setIsDefault(false);
 
+		// AD_Table_ID and Parent_Column_ID only use for CustomTable tree type
 		if (! TREETYPE_CustomTable.equals(getTreeType())) {
 			setAD_Table_ID(-1);
 			setParent_Column_ID(-1);
 		}
 		
+		// Validate that source table must have IsSummary column
 		String tableName = getSourceTableName(true);
 		MTable table = MTable.get(getCtx(), tableName);
 		if (! table.columnExistsInDB("IsSummary")) {
-			// IsSummary is mandatory column to have a tree
 			log.saveError("Error", "IsSummary column required for tree tables"); 
 			return false;
 		}
+		
+		// Set IsTreeDrivenByValue and IsValueDisplayed to false if table doesn't have Value column 
 		if (! table.columnExistsInDB("Value")) {
 			if (isTreeDrivenByValue()) {
 				// Value is mandatory column to have a tree driven by Value
@@ -436,19 +434,14 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		if (newRecord)	//	Base Node
+		if (newRecord)	
 		{
+			// Create tree node record
 			if (TREETYPE_BPartner.equals(getTreeType()))
 			{
 				MTree_NodeBP ndBP = new MTree_NodeBP(this, 0);

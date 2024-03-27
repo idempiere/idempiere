@@ -77,6 +77,7 @@ public class MAssetUse extends X_A_Asset_Use
 		int		total_unitsused = 0;	
 		p_A_Asset_ID = getA_Asset_ID();
 				
+		// Update total UseUnits of asset
 		String sql = "SELECT SUM(USEUNITS) FROM A_Asset_use WHERE A_Asset_ID=? and usedate <= getDate()";
 		total_unitsused = DB.getSQLValueEx(null, sql, getA_Asset_ID());
 		
@@ -85,6 +86,7 @@ public class MAssetUse extends X_A_Asset_Use
 		asset.setProcessing(false);	
 		asset.saveEx();
 				
+		// Record changes to asset
 		MAssetChange change = new MAssetChange (getCtx(), 0,null);
 			
 		change.setA_Asset_ID(p_A_Asset_ID);            

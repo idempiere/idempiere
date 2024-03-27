@@ -281,16 +281,13 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 		return loc;
 	}	//	getLocators
 	
-	/**
-	 * Before Save
-	 * @param newRecord new
-	 * @return success
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
-		/* Disallow Negative Inventory cannot be checked if there are storage records 
-		with negative onhand. */
+		/**
+		 *  Disallow Negative Inventory cannot be checked if there are storage records 
+		 *  with negative onhand. 
+		 */
 		if (is_ValueChanged("IsDisallowNegativeInv") && isDisallowNegativeInv())
 		{
 			String sql = "SELECT M_Product_ID FROM M_StorageOnHand s "+
@@ -306,6 +303,7 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 			}
 		}
 		
+		// Validate that AD_Org_ID is > 0
 		if (getAD_Org_ID() == 0)
 		{
 			int context_AD_Org_ID = Env.getAD_Org_ID(getCtx());
@@ -324,15 +322,10 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 		return true;
 	}
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting record
 		if (newRecord && success)
 			insert_Accounting("M_Warehouse_Acct", "C_AcctSchema_Default", null);
 		

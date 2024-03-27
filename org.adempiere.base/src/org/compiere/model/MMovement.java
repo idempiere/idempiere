@@ -205,11 +205,6 @@ public class MMovement extends X_M_Movement implements DocAction
 		return null;
 	}	//	createPDF
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

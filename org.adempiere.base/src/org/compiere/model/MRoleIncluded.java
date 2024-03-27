@@ -85,12 +85,6 @@ public class MRoleIncluded extends X_AD_Role_Included
 		return true;
 	}
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success)
 	{
@@ -99,6 +93,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 		//
 		if (newRecord || is_ValueChanged(COLUMNNAME_Included_Role_ID))
 		{
+			// Raise exception if there are loop
 			List<Integer> trace = new ArrayList<Integer>();
 			if (hasLoop(Table_Name, COLUMNNAME_Included_Role_ID, COLUMNNAME_AD_Role_ID, getIncluded_Role_ID(), trace, get_TrxName()))
 			{
@@ -113,6 +108,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 				throw new AdempiereException("Loop has detected "+roles);
 			}
 		}
+		// Reset role cache
 		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		//
 		return true;
@@ -183,13 +179,9 @@ public class MRoleIncluded extends X_AD_Role_Included
 		return false;
 	}
 
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
+		// Reset role cache
 		if (success)
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		return success;

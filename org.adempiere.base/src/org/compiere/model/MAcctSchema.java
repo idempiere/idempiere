@@ -704,11 +704,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			|| getTaxCorrectionType().equals(TAXCORRECTIONTYPE_Write_OffAndDiscount);
 	}	//	isTaxCorrectionWriteOff
 
-	/**
-	 * 	Validate costing changes
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
@@ -717,13 +713,14 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			setTaxCorrectionType(isDiscountCorrectsTax() 
 				? TAXCORRECTIONTYPE_Write_OffAndDiscount : TAXCORRECTIONTYPE_None);
 		checkCosting();
-		//	Check Primary
+		// AD_OrgOnly_ID must be 0 if this is primary accounting schema of tenant
 		if (getAD_OrgOnly_ID() != 0)
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID());
 			if (info.getC_AcctSchema1_ID() == getC_AcctSchema_ID())
 				setAD_OrgOnly_ID(0);
 		}
+		// Disallow costing level change if there are existing costing detail records
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) 
 		{
 			String products = getProductsWithCost();

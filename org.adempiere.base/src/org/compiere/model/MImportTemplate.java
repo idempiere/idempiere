@@ -113,15 +113,13 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 		copyPO(copy);
 	}
 	
-	/**
-	 * Validate character set
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		// Validate character set vs supported
+		// Set default character set (if not fill yet)
 		if (getCharacterSet() == null) {
 			setCharacterSet(Charset.defaultCharset().displayName());
 		}
+		// Validate character set is fill and supported by current JVM
 		if (getCharacterSet() == null || !Charset.isSupported(getCharacterSet())) {
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Invalid@ @CharacterSet@"));
 			return false;

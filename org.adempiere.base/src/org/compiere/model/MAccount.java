@@ -876,11 +876,6 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 		return ok;
 	}	//	validate
 	
-	/**
-	 * 	Update and validate combination
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

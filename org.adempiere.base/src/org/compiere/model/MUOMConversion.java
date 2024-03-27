@@ -811,15 +811,10 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	From - To is the same
+		// Validate From UOM and To UOM is not the same
 		if (getC_UOM_ID() == getC_UOM_To_ID())
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@C_UOM_ID@ = @C_UOM_To_ID@"));
@@ -828,28 +823,29 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		
 		if (getMultiplyRate() != null && getMultiplyRate().signum() != 0)
 		{
+			// Calculate divide rate from multiply rate
 			if (getDivideRate() == null || getDivideRate().signum() == 0)
 				setDivideRate(getOppositeRate(getMultiplyRate()));
 		}
 		else if (getDivideRate() != null && getDivideRate().signum() != 0)
 		{
+			// Calculate multiply rate from divide rate
 			if (getMultiplyRate() == null || getMultiplyRate().signum() == 0)
 				setMultiplyRate(getOppositeRate(getDivideRate()));
 		}
 		
-		//	Nothing to convert
+		// Error if there's no conversion rate
 		if (getMultiplyRate().compareTo(Env.ZERO) <= 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@MultiplyRate@ <= 0"));
 			return false;
 		}
-		//	Enforce Product UOM
+		//	Enforce Product UOM = Conversion UOM
 		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionUOMValidate, true, getAD_Client_ID()))
 		{
 			if (getM_Product_ID() != 0 
 				&& (newRecord || is_ValueChanged("M_Product_ID") || is_ValueChanged("C_UOM_ID")))
 			{
-				// Check of product must be in the same transaction as the conversion being saved
 				MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 				if (product.getC_UOM_ID() != getC_UOM_ID())
 				{
@@ -860,7 +856,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 			}
 		}
 
-		//	The Product UoM needs to be the smallest UoM - Multiplier must be < 0; Divider must be > 0
+		//	The Product UOM needs to be the smallest UOM - Multiply rate must be < 0; Divide rate must be > 0
 		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionRateValidate, true, getAD_Client_ID()))
 		{
 			if (getM_Product_ID() != 0 && getDivideRate().compareTo(Env.ONE) < 0)
