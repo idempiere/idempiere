@@ -166,6 +166,15 @@ public interface I_AD_ImportTemplate
 	  */
 	public String getDescription();
 
+    /** Column name ImportTemplateType */
+    public static final String COLUMNNAME_ImportTemplateType = "ImportTemplateType";
+
+	/** Set Import Template Type	  */
+	public void setImportTemplateType (String ImportTemplateType);
+
+	/** Get Import Template Type	  */
+	public String getImportTemplateType();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 

@@ -27,6 +27,13 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbookFactory;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -203,21 +210,31 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	public static final String UTF8_BOM = "\uFEFF";
 
 	/**
-	 * Validate that InputStream header is CSVHeader or AliasCSVHeader.<br/>
-	 * If the header is AliasCSVHeader it replaces it with the CSVHeader so it can be
-	 * processed.
+	 * - If needed preProcess the file when an Excel file and generate a CSV file, then<br/>
+	 * - Validate that InputStream header is CSVHeader or AliasCSVHeader.<br/>
+	 * - If the header is AliasCSVHeader it replaces it with the CSVHeader so it can be processed.<br/>
 	 * @param in input file
 	 * @return InputStream with the CSVHeader that can be processed by CsvMapReader
 	 */
 	public InputStream validateFile(InputStream in) {
-		// because the input stream cannot be reset we need to copy here the file to a new one (replacing the header if it's the alias)
+
+		if (   MImportTemplate.IMPORTTEMPLATETYPE_XLS.equals(getImportTemplateType())
+			|| MImportTemplate.IMPORTTEMPLATETYPE_XLSX.equals(getImportTemplateType())) {
+			try {
+				in = convertExcelToCSV(in);
+			} catch (Exception e) {
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ErrorConvertingXlsToCsv") + " -> " + e.getLocalizedMessage(), e);
+			}
+		}
+
+		// we copy here the file to a new one (replacing the header if it's the alias)
 		Charset charset = Charset.forName(getCharacterSet());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in, charset));
 		File tmpfile = null;
 		InputStream is = null;
 		BufferedWriter bw = null;
 		try {
-			tmpfile = File.createTempFile("CSVImportAction", "csv");
+			tmpfile = File.createTempFile("CSVImportAction", ".csv");
 			bw = new BufferedWriter(new FileWriter(tmpfile,charset));
 			String firstLine = null;
 			String line = null;
@@ -226,7 +243,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 					firstLine = line;
 					if (firstLine.startsWith(UTF8_BOM))
 						firstLine = firstLine.substring(1);
-					/* Validate that m_file_istream header is CSVHeader or AliasCSVHeader */
+					/* Validate that file header is CSVHeader or AliasCSVHeader */
 					if (   firstLine.equals(getCSVHeader())
 						|| firstLine.equals(getCSVAliasHeader())) {
 						bw.write(getCSVHeader());
@@ -263,6 +280,74 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 		}
 		return is;
 	}
+
+    /**
+     * Convert an Excel (XLS or XLSX) file to CSV 
+     * @param excelIs input stream containing XLS/XLSX
+     * @return input stream containing CSV
+     * @throws IOException
+     */
+    public InputStream convertExcelToCSV(InputStream excelIs) throws IOException {
+
+        Workbook workbook = null;
+		if (MImportTemplate.IMPORTTEMPLATETYPE_XLS.equals(getImportTemplateType())) {
+            HSSFWorkbookFactory xlsWbf = new HSSFWorkbookFactory();
+            workbook = xlsWbf.create(excelIs);
+		} else if (MImportTemplate.IMPORTTEMPLATETYPE_XLSX.equals(getImportTemplateType())) {
+            XSSFWorkbookFactory xlsxWbf = new XSSFWorkbookFactory();
+            workbook = xlsxWbf.create(excelIs);
+		} else {
+			// unexpected error
+			throw new AdempiereException("Wrong template type -> " + getImportTemplateType());
+		}
+        Sheet sheet = workbook.getSheetAt(0); // First sheet
+
+		File tmpfile = File.createTempFile("CSVImportActionConvert", ".csv");
+		Charset charset = Charset.forName(getCharacterSet());
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpfile, charset))) {
+            for (Row row : sheet) {
+            	boolean firstCell = true;
+            	for (int cn = 0; cn < row.getLastCellNum(); cn++) {
+            		Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                	if (firstCell) {
+                		firstCell = false;
+                	} else {
+                        bw.append(getSeparatorChar());
+                	}
+                	/* TODO: get the formula values based on the expected reference of the column instead of the spreadsheet itself */
+                    switch (cell.getCellType().equals(CellType.FORMULA) ? cell.getCachedFormulaResultType() : cell.getCellType()) {
+                        case STRING:
+                        	String value = cell.getStringCellValue();
+                        	boolean addQuotes = (value.contains(getQuoteChar()) || value.contains(getSeparatorChar()));
+                        	if (addQuotes)
+                        		bw.append(getQuoteChar());
+                            bw.append(value.replace(getQuoteChar(), getQuoteChar().concat(getQuoteChar())));
+                        	if (addQuotes)
+                        		bw.append(getQuoteChar());
+                            break;
+                        case BOOLEAN:
+                        	if (cell.getBooleanCellValue())
+                                bw.append("Y");
+                        	else
+                                bw.append("N");
+                            break;
+                        case NUMERIC:
+                            bw.append(Double.toString(cell.getNumericCellValue()));
+                            break;
+                        case BLANK:
+                            // Treat blank cells as empty strings
+                            break;
+                        default:
+                            throw new IllegalStateException("Unsupported cell type: " + cell.getCellType());
+                    }
+                }
+                bw.newLine();
+            }
+        }
+        workbook.close();
+        InputStream is = new FileInputStream(tmpfile);
+		return is;
+    }
 
 	@Override
 	public MImportTemplate markImmutable() {
