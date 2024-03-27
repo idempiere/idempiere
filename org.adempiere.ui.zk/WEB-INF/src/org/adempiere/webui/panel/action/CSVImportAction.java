@@ -352,7 +352,7 @@ public class CSVImportAction implements EventListener<Event>
 
 			String iMode = (String)importItem.getValue();
 			m_file_istream = theTemplate.validateFile(m_file_istream);
-			File outFile = theCSVImporter.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
+			File outFile = theCSVImporter.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset, iMode, theTemplate.getSeparatorChar(), theTemplate.getQuoteChar(), null);
 			winImportFile.onClose();
 			winImportFile = null;
 
