@@ -101,3 +101,7 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=130, XPosition=5,Updated=TO_TIMESTAMP
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','There was an error converting the Excel file to CSV',0,0,'Y',TO_TIMESTAMP('2024-03-27 12:26:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-03-27 12:26:13','YYYY-MM-DD HH24:MI:SS'),100,200878,'ErrorConvertingXlsToCsv','D','e36c4d43-93f8-4b45-bfcc-ec4e7fba72cd')
 ;
 
+-- Mar 27, 2024, 9:44:59 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','CSV Header Column not found -> {0}',0,0,'Y',TO_TIMESTAMP('2024-03-27 21:44:59','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-03-27 21:44:59','YYYY-MM-DD HH24:MI:SS'),100,200879,'CSVHeaderColumnNotFound','D','f3fdb148-1a0a-4c62-b8fa-55ab40e0e434')
+;
+
