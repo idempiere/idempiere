@@ -78,7 +78,6 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID),
 				"Action=? AND (AD_ToolbarButton_ID<=? OR ActionClassName IS NOT NULL) AND AD_Tab_ID IS NULL", trxName);
 		List<MToolBarButton> list = query.setParameters(action, MTable.MAX_OFFICIAL_ID)
-				.setOnlyActiveRecords(true)
 				.setOrderBy("CASE WHEN COALESCE(SeqNo,0)=0 THEN AD_ToolBarButton_ID ELSE SeqNo END").list();
 		if (list != null && !list.isEmpty()) {
 			buttons = list.toArray(buttons);
