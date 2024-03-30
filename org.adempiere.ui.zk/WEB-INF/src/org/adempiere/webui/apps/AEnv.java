@@ -24,11 +24,11 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
@@ -71,7 +71,6 @@ import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
 import org.zkoss.web.servlet.Servlets;
@@ -254,14 +253,11 @@ public final class AEnv
 	public static void logout()
 	{
 		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
-		synchronized (windowCache)
+		CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+		if (cache != null)
 		{
-			CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
-			if (cache != null)
-			{
-				cache.clear();
-				CacheMgt.get().unregister(cache);
-			}
+			cache.clear();
+			CacheMgt.get().unregister(cache);
 		}
 		windowCache.remove(sessionID);
 		//	End Session
@@ -301,7 +297,7 @@ public final class AEnv
 	private static final CLogger log = CLogger.getCLogger(AEnv.class);
 
 	/**	Register AD Window Cache */
-	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new HashMap<String, CCache<Integer,GridWindowVO>>();
+	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new ConcurrentHashMap<String, CCache<Integer,GridWindowVO>>();
 
 	/**
 	 *  Get VO for AD_Window
@@ -316,20 +312,17 @@ public final class AEnv
 		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
 		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
-		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
+		if (AD_Window_ID > 0)	//	try cache
 		{
-			synchronized (windowCache)
+			CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+			if (cache != null)
 			{
-				CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
-				if (cache != null)
+				mWindowVO = cache.get(AD_Window_ID);
+				if (mWindowVO != null)
 				{
-					mWindowVO = cache.get(AD_Window_ID);
-					if (mWindowVO != null)
-					{
-						mWindowVO = mWindowVO.clone(WindowNo);
-						if (log.isLoggable(Level.INFO))
-							log.info("Cached=" + mWindowVO);
-					}
+					mWindowVO = mWindowVO.clone(WindowNo);
+					if (log.isLoggable(Level.INFO))
+						log.info("Cached=" + mWindowVO);
 				}
 			}
 		}
@@ -340,18 +333,15 @@ public final class AEnv
 			if (log.isLoggable(Level.CONFIG))
 				log.config("create local");
 			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null && Ini.isCacheWindow())
+			if (mWindowVO != null)
 			{
-				synchronized (windowCache)
+				CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+				if (cache == null)
 				{
-					CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
-					if (cache == null)
-					{
-						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session|"+sessionID, 10);
-						windowCache.put(sessionID, cache);
-					}
-					cache.put(AD_Window_ID, mWindowVO);
+					cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session|"+sessionID, 10, 0, false, 0);
+					windowCache.put(sessionID, cache);
 				}
+				cache.put(AD_Window_ID, mWindowVO);
 			}
 		}	//	from Client
 		if (mWindowVO == null)

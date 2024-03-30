@@ -501,7 +501,9 @@ public final class Ini implements Serializable
 	/**
 	 * 	Cache Windows
 	 *	@return true if windows are cached
+	 *  @deprecated window is always cache for better performance
 	 */
+	@Deprecated
 	public static boolean isCacheWindow()
 	{
 		return getProperty (P_CACHE_WINDOW).equals("Y");

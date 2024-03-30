@@ -169,9 +169,9 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getDocValue
 	
 	/**	Single Cache					*/
-	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name, 20);
+	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name, 20, 0, false, 0);
 	/**	Document Value Cache			*/
-	private static final CCache<Integer,Map<Integer, MWorkflow[]>> s_cacheDocValue = new CCache<> (Table_Name, Table_Name+"|DocumentValue", 5) {
+	private static final CCache<Integer,Map<Integer, MWorkflow[]>> s_cacheDocValue = new CCache<> (Table_Name, Table_Name+"|DocumentValue", 5, 0, false, 0) {
 		/**
 		 * generated serial id
 		 */

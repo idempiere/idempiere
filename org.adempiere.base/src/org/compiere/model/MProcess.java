@@ -153,9 +153,9 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	}	//	getFromMenu
 
 	/**	Cache ID						*/
-	private static ImmutableIntPOCache<Integer,MProcess>	s_cache	= new ImmutableIntPOCache<Integer,MProcess>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MProcess>	s_cache	= new ImmutableIntPOCache<Integer,MProcess>(Table_Name, 20, 0, false, 0);
 	/**	Cache UUID						*/
-	private static ImmutablePOCache<String,MProcess>	s_cacheUU	= new ImmutablePOCache<String,MProcess>(Table_Name, Table_Name+"|AD_Process_UU", 20);
+	private static ImmutablePOCache<String,MProcess>	s_cacheUU	= new ImmutablePOCache<String,MProcess>(Table_Name, Table_Name+"|AD_Process_UU", 20, 0, false, 0);
 	
     /**
      * UUID based Constructor

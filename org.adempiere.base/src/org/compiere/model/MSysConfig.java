@@ -303,7 +303,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MSysConfig.class);
 	/** Cache			*/
-	private static CCache<String, String> s_cache = new CCache<String, String>(Table_Name, 40, 0);
+	private static CCache<String, String> s_cache = new CCache<String, String>(Table_Name, 40, 0, false, 0);
 	
 	/**
 	 * Get system configuration property of type string

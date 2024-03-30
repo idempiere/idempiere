@@ -114,8 +114,7 @@ public class MClientShare extends X_AD_ClientShare
 	}	//	load
 	
 	/**	Shared Info								*/
-	private static CCache<String,Boolean>	s_shares 
-		= new CCache<String,Boolean>(Table_Name, 10, 120);	//	2h
+	private static CCache<String,Boolean>	s_shares = new CCache<String,Boolean>(Table_Name, 10, 0, false, 0);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MClientShare.class);
 	

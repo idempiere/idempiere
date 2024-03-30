@@ -81,6 +81,15 @@ public class CLogMgt
 	}
 	
 	/**
+	 * Get from level map loaded from idempiere.properties
+	 * @param name class or package name
+	 * @return Level or null
+	 */
+	public static Level getFromLevelMap(String name) {
+		return levelMap.get(name);
+	}
+	
+	/**
 	 * 	Initialize Logging
 	 * 	@param isClient true if running as client
 	 */
@@ -170,6 +179,20 @@ public class CLogMgt
 	
 		mgr.removeConfigurationListener(configurationListener);
 		mgr.addConfigurationListener(configurationListener);
+		
+		//Set handler level to ALL. This let decision of level stop at the logger layer.
+		//This avoid complication with using parent handler where child logger level < root logger level.
+		try
+		{
+			Logger rootLogger = getRootLogger();
+			
+			Handler[] handlers = rootLogger.getHandlers();
+			for (int i = 0; i < handlers.length; i ++)
+			{
+				handlers[i].setLevel(Level.ALL);
+			}
+		}
+		catch (Exception e) {}		
 	}	//	initialize
 
 	/** Logger				*/
@@ -292,7 +315,7 @@ public class CLogMgt
 			{
 				for (Handler handler : handlers)
 				{
-					handler.setLevel(level);
+					handler.setLevel(Level.ALL);
 				}
 			}
 

@@ -37,7 +37,7 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 	private static final long serialVersionUID = -3617225890452735325L;
 	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MForm> s_cache = new ImmutableIntPOCache<Integer,MForm>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MForm> s_cache = new ImmutableIntPOCache<Integer,MForm>(Table_Name, 20, 0, false, 0);
 	
 	/**
 	 * 	Get MForm from Cache (immutable)

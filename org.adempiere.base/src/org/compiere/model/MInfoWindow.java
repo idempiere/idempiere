@@ -51,7 +51,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	private static final long serialVersionUID = -6793583766286122866L;
 
 	/**	Cache						*/
-	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
+	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20, 0, false, 0);
 	
     /**
      * UUID based Constructor
