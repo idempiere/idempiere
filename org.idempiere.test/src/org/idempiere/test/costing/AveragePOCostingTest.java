@@ -69,6 +69,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -585,15 +586,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, line1.getM_InOut_ID(), getTrxName());
 			doc.setC_BPartner_ID(line1.getParent().getC_BPartner_ID());
 			MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + line1.getM_InOut_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			assertTrue(ids.length > 0, "Failed to retrieve fact posting entries for shipment document");
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, line1.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> fas = query.list();					
+			assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 			boolean nirFound = false;
 			boolean assetFound = false;
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			for (MFactAcct fa : fas) {
 				if (asset.getAccount_ID() == fa.getAccount_ID()) {
 					if (line1.get_ID() == fa.getLine_ID()) {
 						assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR Asset");
@@ -665,15 +663,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			pc = new ProductCost(Env.getCtx(), shipmentLine.getM_Product_ID(), shipmentLine.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
 			asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + shipment.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			assertTrue(ids.length > 0, "Failed to retrieve fact posting entries for shipment document");
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			fas = query.list();
+			assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 			boolean cogsFound = false;
 			assetFound = false;
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			for (MFactAcct fa : fas) {
 				if (cogs.getAccount_ID() == fa.getAccount_ID()) {
 					if (shipmentLine.get_ID() == fa.getLine_ID()) {
 						assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
