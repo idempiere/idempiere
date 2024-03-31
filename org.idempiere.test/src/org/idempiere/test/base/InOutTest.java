@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -56,6 +57,7 @@ import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_ShippingAcct;
 import org.compiere.model.X_M_ShippingProcessorCfg;
@@ -274,12 +276,9 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> fas = query.list();
+				for (MFactAcct fa : fas) {
 					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
 						if (receiptLine.get_ID() == fa.getLine_ID()) {
 							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
@@ -344,12 +343,9 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(delivery.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + delivery.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, delivery.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> fas = query.list();
+				for (MFactAcct fa : fas) {
 					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
 						if (deliveryLine.get_ID() == fa.getLine_ID()) {
 							BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
@@ -419,7 +415,10 @@ public class InOutTest extends AbstractTestCase {
 		orderLine.setLine(line);
 		orderLine.setProduct(product);
 		orderLine.setQty(qty);
-		orderLine.setPrice(price);
+		if (price != null)
+			orderLine.setPrice(price);
+		else
+			orderLine.setPrice();
 		orderLine.saveEx();
 		return orderLine;
 	}
@@ -583,6 +582,15 @@ public class InOutTest extends AbstractTestCase {
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id);
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
+		// make sure there's cost for AZALEA_BUSH
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id);
+		MOrder purchaseOrder = createPurchaseOrder(vendor, currentDate, DictionaryIDs.M_PriceList.PURCHASE.id, DictionaryIDs.C_ConversionType.SPOT.id);
+		MOrderLine poLine = createOrderLine(purchaseOrder, 10, product, new BigDecimal("1"), null);
+		completeDocument(purchaseOrder);
+		MInOut receipt = createMMReceipt(purchaseOrder, currentDate);
+		createInOutLine(receipt, poLine, new BigDecimal("1"));
+		completeDocument(receipt);
+		
 		MOrder order = createSalseOrder(bpartner, currentDate, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
 		int plv = MPriceList.get(DictionaryIDs.M_PriceList.STANDARD.id).getPriceListVersion(currentDate).get_ID();
 		BigDecimal price = MProductPrice.get(Env.getCtx(), plv, product.get_ID(), getTrxName()).getPriceStd();
@@ -600,15 +608,12 @@ public class InOutTest extends AbstractTestCase {
 		MAccount cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
 		MAccount asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			
-		String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-				+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + delivery.get_ID()
-				+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-		int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-		assertTrue(ids.length > 0, "Failed to retrieve fact posting entries for shipment document");
+		Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, delivery.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+		List<MFactAcct> fas = query.list();
+		assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 		boolean cogsFound = false;
 		boolean assetFound = false;
-		for (int id : ids) {
-			MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+		for (MFactAcct fa : fas) {
 			if (cogs.getAccount_ID() == fa.getAccount_ID()) {
 				if (deliveryLine.get_ID() == fa.getLine_ID()) {
 					assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
@@ -628,11 +633,10 @@ public class InOutTest extends AbstractTestCase {
 		
 		//re-post
 		repostDocument(delivery);
-		ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+		fas = query.list();
 		cogsFound = false;
 		assetFound = false;
-		for (int id : ids) {
-			MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+		for (MFactAcct fa : fas) {
 			if (cogs.getAccount_ID() == fa.getAccount_ID()) {
 				if (deliveryLine.get_ID() == fa.getLine_ID()) {
 					assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
