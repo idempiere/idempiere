@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Accounting Fact Model
@@ -147,4 +148,19 @@ public class MFactAcct extends X_Fact_Acct
 		return acct;
 	}	//	getMAccount
 
+	private final static String recordIdWhereClause = "AD_Table_ID=? AND Record_ID=? AND C_AcctSchema_ID=?";
+	
+	/**
+	 * Create Fact_Acct query for table and record id
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param C_AcctSchema_ID
+	 * @param trxName
+	 * @return query
+	 */
+	public static final Query createRecordIdQuery(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName) {
+		Query query = new Query(Env.getCtx(), Table_Name, recordIdWhereClause, trxName);
+		return query.setParameters(AD_Table_ID, Record_ID, C_AcctSchema_ID);
+	}
+	
 }	//	MFactAcct
