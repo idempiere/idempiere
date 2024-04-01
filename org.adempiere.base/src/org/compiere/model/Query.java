@@ -39,6 +39,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -414,7 +415,7 @@ public class Query
 			}
 			if (rs.next())
 			{
-				throw new DBException("QueryMoreThanOneRecordsFound"); // TODO : translate
+				throw new DBException(Msg.getMsg(Env.getCtx(), "QueryMoreThanOneRecordsFound"));
 			}
 		}
 		catch (SQLException e)
@@ -494,7 +495,7 @@ public class Query
 			}
 			if (assumeOnlyOneResult && rs.next())
 			{
-				throw new DBException("QueryMoreThanOneRecordsFound"); // TODO : translate
+				throw new DBException(Msg.getMsg(Env.getCtx(), "QueryMoreThanOneRecordsFound"));
 			}
 		}
 		catch (SQLException e)
@@ -608,7 +609,7 @@ public class Query
 			}
 			if (rs.next())
 			{
-				throw new DBException("QueryMoreThanOneRecordsFound"); // TODO : translate
+				throw new DBException(Msg.getMsg(Env.getCtx(), "QueryMoreThanOneRecordsFound"));
 			}
 		}
 		catch (SQLException e)
