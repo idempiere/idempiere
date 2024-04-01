@@ -1140,9 +1140,6 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("");
-		//	No Partner Info - set Template
-		if (getC_BPartner_ID() == 0)
-			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 

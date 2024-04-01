@@ -1298,9 +1298,6 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
-		//	No Partner Info - set Template
-		if (getC_BPartner_ID() == 0)
-			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
 		//	No Bill - get from Ship
