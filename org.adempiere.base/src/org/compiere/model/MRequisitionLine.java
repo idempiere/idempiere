@@ -229,7 +229,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	}
 	
 	/**
-	 * 	Set Price
+	 * 	Set PriceActual to charge amount or standard product price
 	 */
 	public void setPrice()
 	{
@@ -275,11 +275,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		super.setLineNetAmt (lineNetAmt);
 	}	//	setLineNetAmt
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -287,23 +282,25 @@ public class MRequisitionLine extends X_M_RequisitionLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Requisition_ID"));
 			return false;
 		}
+		// Set Line
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_RequisitionLine WHERE M_Requisition_ID=?";
 			int ii = DB.getSQLValueEx (get_TrxName(), sql, getM_Requisition_ID());
 			setLine (ii);
 		}
-		//	Product & ASI - Charge
+		//	Set C_Charge_ID to 0 this is a product line
 		if (getM_Product_ID() != 0 && getC_Charge_ID() != 0)
 			setC_Charge_ID(0);
+		// Set M_AttributeSetInstance_ID to 0 if this is a charge line
 		if (getM_AttributeSetInstance_ID() != 0 && getC_Charge_ID() != 0)
 			setM_AttributeSetInstance_ID(0);
-		// Product UOM
+		// Default UOM to product UOM
 		if (getM_Product_ID() > 0 && getC_UOM_ID() <= 0)
 		{
 			setC_UOM_ID(getM_Product().getC_UOM_ID());
 		}
-		//
+		// Set price actual
 		if (getPriceActual().signum() == 0)
 			setPrice();
 		setLineNetAmt();
@@ -321,13 +318,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save.
-	 * 	Update Total on Header
-	 *	@param newRecord if new record
-	 *	@param success save was success
-	 *	@return true if saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -336,11 +326,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		return updateHeader();
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -356,12 +341,12 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	}
 
 	/**
-	 * 	Update Header (M_Requisition)
+	 * 	Update Header (M_Requisition) Total
 	 *	@return header updated
 	 */
 	private boolean updateHeader()
 	{
-		log.fine("");
+		if (log.isLoggable(Level.FINE)) log.fine("");
 		String sql = "UPDATE M_Requisition r"
 			+ " SET TotalLines="
 				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM M_RequisitionLine rl "

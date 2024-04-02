@@ -37,7 +37,7 @@ import org.compiere.util.Msg;
  */
 public class PO_Record
 {
-	/* Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
+	/** Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
 	private static final CCache<String, KeyNamePair[]> s_po_record_tables_cache = new CCache<>(null, "PORecordTables", 100, 120, false);
 
 	/**	Logger	*/
@@ -93,6 +93,8 @@ public class PO_Record
 
 	//IDEMPIERE-2060
 	/**
+	 * Delete dependent records.<br/>
+	 * This is model class implementation of the delete cascade option of foreign key constraint.
 	 * @param tableName
 	 * @param Record_IDorUU record ID (int) or UUID (String)
 	 * @param trxName
@@ -122,10 +124,11 @@ public class PO_Record
 	}
 
 	/**
+	 * Get dependent tables
 	 * @param refId AD_Reference_ID - Record_ID or Record_UU
 	 * @param tableName
 	 * @param trxName
-	 * @return
+	 * @return array of dependent tables (dependentTableId, dependentColumnName)
 	 */
 	private static KeyNamePair[] getTablesWithModelCascade(int refId, String tableName, String trxName) {
 		int refTableDirId;
@@ -180,7 +183,8 @@ public class PO_Record
 	}
 	
 	/**
-	 * If a referencing Record ID or Record UU exists to the deleted record, set it to NULL 
+	 * If a referencing Record ID or Record UU exists to the deleted record, set it to NULL.<br/>
+	 * This is model class implementation of the set null option of foreign key constraint. 
 	 * @param AD_Table_ID
 	 * @param Record_IDorUU record ID (int) or UUID (String)
 	 * @param trxName
@@ -231,7 +235,7 @@ public class PO_Record
 	}
 	
 	/**
-	 * 	An entry Exists for restrict table/record combination
+	 * 	Check if dependent records with delete restrict condition exists for a table/record combination.
 	 *	@param AD_Table_ID table
 	 *	@param Record_IDorUU record ID (int) or UUID (String)
 	 *	@param trxName transaction

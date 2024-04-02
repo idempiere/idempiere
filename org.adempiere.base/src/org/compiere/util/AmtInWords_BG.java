@@ -13,18 +13,17 @@
  *****************************************************************************/
 package org.compiere.util;
 
-
 /**
- *Amount in Words for Bulgarian
+ * Amount in Words for Bulgarian
  *        
- *@author Kostadin Mitev -The class is based on the AmtInWords_EN.java written by jjanke
- *@version $Id: AmtInWords_BG.java,v 0.1 2007/12/21 $
- *@version $Id: v, 0.2 2008/06/10 -Simplified. Changed to work with both a dot and a full stop as a separator and without a separator.
+ * @author Kostadin Mitev -The class is based on the AmtInWords_EN.java written by jjanke
+ * @version $Id: AmtInWords_BG.java,v 0.1 2007/12/21 $
+ * @version $Id: v, 0.2 2008/06/10 -Simplified. Changed to work with both a dot and a full stop as a separator and without a separator.
  */
 public class AmtInWords_BG implements AmtInWords
 {
         /**
-         *         AmtInWords_BG
+         * AmtInWords_BG
          */
         public AmtInWords_BG ()
         {
@@ -99,9 +98,9 @@ public class AmtInWords_BG implements AmtInWords
         };
 
         /**
-         *Convert Less Than One Thousand
-         *@param number
-         *@return amt
+         * Convert Less Than One Thousand
+         * @param number
+         * @return amt
          */
         private String convertLessThanOneThousand (int number,int w)
         {
@@ -129,9 +128,9 @@ public class AmtInWords_BG implements AmtInWords
         }        //convertLessThanOneThousand
 
         /**
-         *Convert
-         *@param number
-         *@return amt
+         * Convert
+         * @param number
+         * @return amt
          */
         private String convert (long number)
         {        
@@ -166,14 +165,14 @@ public class AmtInWords_BG implements AmtInWords
                 while (number > 0);
                 return (prefix + soFar).trim ();
         }        //convert
-
         
-        /**************************************************************************
-         *Get Amount in Words
-         *@param amount numeric amount (352.80)
-         *@return amount in words (three*five*two 80/100)
-         *@throws Exception
+        /**
+         * Get Amount in Words
+         * @param amount numeric amount (352.80)
+         * @return amount in words (three*five*two 80/100)
+         * @throws Exception
          */
+        @Override
         public String getAmtInWords (String amount) throws Exception
         {
                 if (amount == null)
@@ -198,8 +197,8 @@ public class AmtInWords_BG implements AmtInWords
         }        //getAmtInWords
 
         /**
-         *Test Print
-         *@param amt amount
+         * Test Print
+         * @param amt amount
          */
         private void print (String amt)
         {
@@ -214,8 +213,8 @@ public class AmtInWords_BG implements AmtInWords
         }        //print
         
         /**
-         *Test
-         *@param args ignored
+         * Test
+         * @param args ignored
          */
         public static void main (String[] args)
         {

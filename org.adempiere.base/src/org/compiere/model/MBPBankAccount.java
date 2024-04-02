@@ -233,32 +233,27 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 		return null;
 	}	//	getSwiftCode
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
 		//	maintain routing on bank level
 		if (isACH() && getBank() != null)
 			setRoutingNo(null);
-		//
+		// Encrypt Credit Card Number
 		if (getCreditCardNumber() != null)
 		{
 			String encrpytedCCNo = PaymentUtil.encrpytCreditCard(getCreditCardNumber());
 			if (!encrpytedCCNo.equals(getCreditCardNumber()))
 				setCreditCardNumber(encrpytedCCNo);
 		}
-		
+		// Encrypt CVV
 		if (getCreditCardVV() != null)
 		{
 			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
 			if (!encrpytedCvv.equals(getCreditCardVV()))
 				setCreditCardVV(encrpytedCvv);
 		}
-		
+		// Validate IBAN
 		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));

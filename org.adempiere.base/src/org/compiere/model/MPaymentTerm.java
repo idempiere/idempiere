@@ -410,14 +410,10 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		return sb.toString ();
 	}	//	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Validate FixMonthDay and FixMonthCutoff
 		if (isDueFixed())
 		{
 			int dd = getFixMonthDay();
@@ -434,6 +430,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			}
 		}
 		
+		// Validate NetDays is >= 0
 		if (Integer.signum(getNetDays()) < 0)
 		{
 			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NetDays@") + " " +

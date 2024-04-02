@@ -301,15 +301,10 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (log.isLoggable(Level.FINE)) log.fine(processed + " - #" + no);
 	}	//	setProcessed
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Changed from Not to Active
+		// Disallow re-activate of deactivated allocation
 		if (!newRecord && is_ValueChanged("IsActive") && isActive())
 		{
 			log.severe ("Cannot Re-Activate deactivated Allocations");
@@ -320,16 +315,13 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 
 	private List<Integer> m_bps_beforeDelete = new ArrayList<Integer>();
 
-	/**
-	 * 	Before Delete.
-	 *	@return true if acct was deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
 		String trxName = get_TrxName();
 		if (trxName == null || trxName.length() == 0)
 			log.warning ("No transaction");
+		// Check is period open and delete posting records (Fact_Acct)
 		if (isPosted())
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
@@ -340,9 +332,10 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		setIsActive(false);		//	updated DB for line delete/process
 		this.saveEx();
 
-		//	Unlink
+		// Load allocation lines (m_lines)
 		getLines(true);
 		
+		// Save allocation line BP into a list and delete allocation line records
 		m_bps_beforeDelete.clear();
 		for (int i = 0; i < m_lines.length; i++)
 		{
@@ -357,6 +350,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 
 	@Override
 	protected boolean afterDelete(boolean success) {
+		// Update balance of business partner (list of BP capture in beforeDelete)
 		if (success) {
 			for (int C_BPartner_ID : m_bps_beforeDelete) {
 				MBPartner bpartner = new MBPartner(Env.getCtx(), C_BPartner_ID, get_TrxName());
@@ -368,18 +362,6 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		return super.afterDelete(success);
 	}
 
-	/**
-	 * 	After Save
-	 *	@param newRecord
-	 *	@param success
-	 *	@return success
-	 */
-	@Override
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		return success;
-	}	//	afterSave
-	
 	/**
 	 * 	Process document
 	 *	@param processAction document action

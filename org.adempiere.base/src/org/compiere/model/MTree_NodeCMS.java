@@ -25,9 +25,8 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
-
 /**
- *	(Disk) Tree Node Model CM Stage
+ *	Tree Node Model CM Stage
  *	
  *  @author Jorg Janke
  *  @version $Id: MTree_NodeCMS.java,v 1.2 2006/07/30 00:58:36 jjanke Exp $
@@ -35,7 +34,7 @@ import org.compiere.util.DB;
 public class MTree_NodeCMS extends X_AD_TreeNodeCMS
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -8092902713429554718L;
 
@@ -115,11 +114,11 @@ public class MTree_NodeCMS extends X_AD_TreeNodeCMS
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodeCMS.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_TreeNodeCMS_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_TreeNodeCMS_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTree_NodeCMS(Properties ctx, String AD_TreeNodeCMS_UU, String trxName) {
         super(ctx, AD_TreeNodeCMS_UU, trxName);
     }

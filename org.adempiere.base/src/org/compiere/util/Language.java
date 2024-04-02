@@ -55,7 +55,7 @@ public class Language implements Serializable
 	private static final String  AD_Language_en_US = "en_US";
 	
 	/***
-	 *  System Languages.
+	 *  System Languages.<br/>
 	 *  If you want to add a language, use the method getLanguage which extends the array
 	 **/
 	private static List<Language> s_languages = new ArrayList<Language>();
@@ -516,7 +516,7 @@ public class Language implements Serializable
 	}   //  setDateFormat
 
 	/**
-	 *  Get (Short) Date Format.<br/>
+	 *  Get (Short) Date Format.
 	 *  @return date format MM/dd/yyyy - dd.MM.yyyy
 	 */
 	public synchronized SimpleDateFormat getDateFormat()

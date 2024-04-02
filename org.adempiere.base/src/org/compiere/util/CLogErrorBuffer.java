@@ -43,8 +43,7 @@ public class CLogErrorBuffer extends Handler
 	private static final String ERRORS_KEY = "org.compiere.util.CLogErrorBuffer.errors";
 	private static final String LOGS_KEY = "org.compiere.util.CLogErrorBuffer.logs";
 
-
-	/**************************************************************************
+	/**
 	 * 	Constructor
 	 */
 	public CLogErrorBuffer ()
@@ -71,13 +70,17 @@ public class CLogErrorBuffer extends Handler
 		setFilter(CLogFilter.get());
     }	//	initialize
 
+    /**
+     * Is add log record to environment context
+     * @return true if log record should be added to environment context
+     */
     private boolean isAddLogRecordToContext()
     {
     	return CLogMgt.getLevelAsInt() <= Level.INFO.intValue();
     }
     
     /**
-     * 	Issue Error
+     * 	Is Issue Error (Save to MIssue)
      *	@return true if issue error
      */
     public boolean isIssueError()
@@ -92,7 +95,7 @@ public class CLogErrorBuffer extends Handler
     }	//	isIssueError
 
     /**
-     * 	Set Issue Error
+     * 	Set Issue Error (Save to MIssue)
      *	@param issueError issue error
      */
     public void setIssueError(boolean issueError)
@@ -101,7 +104,7 @@ public class CLogErrorBuffer extends Handler
     }	//	setIssueError
 
 	/**
-	 *	Set Level.
+	 *	Set Level.<br/>
 	 *	Ignore OFF - and higher then FINE
 	 *	@see java.util.logging.Handler#setLevel(java.util.logging.Level)
 	 *	@param newLevel ignored

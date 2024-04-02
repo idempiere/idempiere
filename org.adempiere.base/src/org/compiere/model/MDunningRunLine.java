@@ -264,28 +264,29 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	}	//	getC_CurrencyTo_ID
 	
 	/**
-	 * 	Before Save
+	 * 	Update amount (open, converted, total).<br/>
+	 *  Update collection status of invoice.
 	 *	@param newRecord new
 	 *	@return true
 	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Set Amt
+		// Reset Amt and OpenAmt to 0 if both invoice and payment field is not fill
 		if (getC_Invoice_ID() == 0 && getC_Payment_ID() == 0)
 		{
 			setAmt(Env.ZERO);
 			setOpenAmt(Env.ZERO);
 		}
-		//	Converted Amt
+		// Calculate Converted Amt from OpenAmt
 		if (Env.ZERO.compareTo(getOpenAmt()) == 0)
 			setConvertedAmt (Env.ZERO);
 		else if (Env.ZERO.compareTo(getConvertedAmt()) == 0)
 			setConvertedAmt (MConversionRate.convert(getCtx(), getOpenAmt(), 
 				getC_CurrencyFrom_ID(), getC_CurrencyTo_ID(), getAD_Client_ID(), getAD_Org_ID()));
-		//	Total
+		// Calculate TotalAmt
 		setTotalAmt(getConvertedAmt().add(getFeeAmt()).add(getInterestAmt()));
-		//	Set Collection Status
+		// Update invoice with dunning level 
 		if (isProcessed() && getInvoice() != null)
 		{
 			I_C_DunningLevel level = getParent().getC_DunningLevel();
@@ -305,13 +306,6 @@ public class MDunningRunLine extends X_C_DunningRunLine
 		return true;
 	}	//	beforeSave
 	
-	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -321,11 +315,6 @@ public class MDunningRunLine extends X_C_DunningRunLine
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -336,8 +325,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Entry (C_DunningRunEntry).
-	 *	Calculate/update Amt/Qty.
+	 * 	Update Amt and Qty of Entry (C_DunningRunEntry) from Line (C_DunningRunLine)
 	 */
 	private void updateEntry()
 	{

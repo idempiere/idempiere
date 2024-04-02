@@ -442,7 +442,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getNextNodes
 
 	/**
-	 * 	Get The Nodes in Sequence Order
+	 * 	Get Nodes in Sequence Order
 	 * 	@param AD_Client_ID client
 	 * 	@return Nodes in sequence
 	 */
@@ -486,7 +486,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getNodesInOrder
 
 	/**
-	 * 	Add Nodes recursively (sibling first) to Ordered List
+	 * 	Add Nodes recursively (sibling first) to list
 	 *  @param list list to add to
 	 * 	@param AD_WF_Node_ID start node id
 	 * 	@param AD_Client_ID
@@ -669,11 +669,6 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		return sb.toString ();
 	} //	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -681,12 +676,6 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 *  After Save.
-	 *  @param newRecord new record
-	 *  @param success success
-	 *  @return true if save complete (if not overwritten true)
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -705,16 +694,17 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			}
 		}
 		
+		// Create workflow access record for login role
 		if (newRecord)
 		{
 			int AD_Role_ID = Env.getAD_Role_ID(getCtx());
 			MWorkflowAccess wa = new MWorkflowAccess(this, AD_Role_ID);
 			wa.saveEx();
 		}
-		//	Menu/Workflow
 		else if (is_ValueChanged("IsActive") || is_ValueChanged(COLUMNNAME_Name) 
 			|| is_ValueChanged(COLUMNNAME_Description))
 		{
+			// Update menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Workflow_ID=" + getAD_Workflow_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{
@@ -897,8 +887,8 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getDurationCalendarField
 	
 	/**
-	 * 	Validate workflow.
-	 * 	Sets Valid flag.
+	 * 	Validate workflow configuration.<br/>
+	 * 	Set IsValid flag.
 	 *	@return errors or ""
 	 */
 	public String validate()

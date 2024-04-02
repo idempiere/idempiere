@@ -195,7 +195,6 @@ public class CLogMgt
 		catch (Exception e) {}		
 	}	//	initialize
 
-
 	/** Logger				*/
 	private static Logger		log = Logger.getAnonymousLogger();
 	/** LOG Levels			*/
@@ -207,7 +206,7 @@ public class CLogMgt
 	private static final String NL = System.getProperty("line.separator");
 
 	/**
-	 * 	Get Handlers
+	 * 	Get Log Handlers
 	 *	@return handlers
 	 */
 	protected static Handler[] getHandlers()
@@ -218,7 +217,7 @@ public class CLogMgt
 	}	//	getHandlers
 
 	/**
-	 * 	Add Handler (to root logger)
+	 * 	Add Log Handler (to root logger)
 	 *	@param handler new Handler
 	 */
 	public static void addHandler(Handler handler)
@@ -232,7 +231,7 @@ public class CLogMgt
 	}	//	addHandler
 
 	/**
-	 * 	Set Formatter for all handlers
+	 * 	Set Formatter for all log handlers
 	 *	@param formatter formatter
 	 */
 	protected static void setFormatter (java.util.logging.Formatter formatter)
@@ -247,7 +246,7 @@ public class CLogMgt
 	}	//	setFormatter
 
 	/**
-	 * 	Set Filter for all handlers
+	 * 	Set Filter for all log handlers
 	 *	@param filter filter
 	 */
 	protected static void setFilter (Filter filter)
@@ -294,7 +293,7 @@ public class CLogMgt
 	}
 	
 	/**
-	 * 	Set Level for handlers
+	 * 	Set Level for log handlers
 	 *  @param loggerName optional partial logger name filter
 	 *	@param level log level
 	 */
@@ -385,7 +384,7 @@ public class CLogMgt
 	}
 
 	/**
-	 * 	Set JDBC Debug
+	 * 	Set JDBC Debug. Auto enable when log level is set to ALL.
 	 *	@param enable
 	 */
 	public static void setJDBCDebug(boolean enable)

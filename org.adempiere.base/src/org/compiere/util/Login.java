@@ -463,7 +463,7 @@ public class Login
 	}	//	getRoles
 	
 	/**
-	 *  Get Clients.
+	 *  Get Clients (AD_Client).
 	 *  <p>
 	 *  Sets Role info in context and loads its clients
 	 *  @param  role    role information
@@ -538,7 +538,7 @@ public class Login
 	}   //  getClients
 
 	/**
-	 *  Get Organizations.
+	 *  Get Organizations (AD_Org).
 	 *  <p>
 	 *  Sets Client info in context and loads organizations that the role has access to
 	 *  @param  rol role
@@ -1033,7 +1033,7 @@ public class Login
 	}// loadUserPreferences
 
 	/**
-	 *	Load Default Value for Table into Context.
+	 *	Load Default Value for Table into Context (IsDefault=Y, #ColumnName=Value).
 	 *  @param TableName table name
 	 *  @param ColumnName column name
 	 */
@@ -1074,6 +1074,7 @@ public class Login
 	
 	/**
 	 * 	Batch Login using Ini values
+	 * <pre>
 	 * 	<code>
 		Adempiere.startup(true);
 		Ini.setProperty(Ini.P_UID,"SuperUser");
@@ -1087,6 +1088,7 @@ public class Login
 		Login login = new Login(Env.getCtx());
 		login.batchLogin();
 	 * 	</code>
+	 *  </pre>
 	 * 	@param loginDate optional login date
 	 * 	@return true if logged in using Ini values
 	 */
@@ -1254,7 +1256,7 @@ public class Login
 	}	//	getPrincipal
 
 	/**
-	 * Get clients
+	 * Get clients (AD_Client)
 	 * @param app_user login id
 	 * @param app_pwd login password
 	 * @return list of accessible client
@@ -1277,12 +1279,12 @@ public class Login
 	}
 
 	/**
-	 *  Validate Client Login.
+	 *  Validate Client Login.<br/>
 	 *  Sets Context with login info.
 	 *  @param app_user user id
-	 *  @param app_pwd password
+	 *  @param app_pwd password, ignore for SSO login
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
-	 *  @param token validate the user with a token for SSO login.
+	 *  @param token token to validate SSO login user (app_user).
 	 *  @return client array or null if in error.
 	 */
 	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token) {
@@ -1630,7 +1632,7 @@ public class Login
 	}
 
 	/**
-	 * Get the tenant from the login text when using login prefix
+	 * Get the tenant from the login text when using login prefix (tenant/user)
 	 * @param app_user
 	 * @return tenant from app_user or null
 	 */
@@ -1758,7 +1760,7 @@ public class Login
 	}   //  getRoles
 	
 	/**
-	 * Get clients
+	 * Get clients (AD_Client)
 	 * @return clients
 	 */
     public KeyNamePair[] getClients() {		

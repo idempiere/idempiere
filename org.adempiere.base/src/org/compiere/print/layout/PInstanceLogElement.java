@@ -27,16 +27,22 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
+ * Print element for instance log
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1966406 ] Report Engine: AD_PInstance_Logs should be displayed
  */
 public class PInstanceLogElement extends GridElement {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8315529954507023182L;
 	private int m_effectiveRowCount = 0;
 	
+	/**
+	 * @param ctx
+	 * @param query
+	 * @param tFormat
+	 */
 	public PInstanceLogElement(Properties ctx, MQuery query, MPrintTableFormat tFormat)
 	{
 		super (calculateRowCount(query, ctx), 4);
@@ -70,12 +76,19 @@ public class PInstanceLogElement extends GridElement {
 	}
 	
 	/**
+	 * Get effective row count
 	 * @return number of rows effectively added
 	 */
 	public int getEffectiveRowCount() {
 		return m_effectiveRowCount;
 	}
 	
+	/**
+	 * Get number of row for instance log
+	 * @param query
+	 * @param ctx
+	 * @return number of row
+	 */
 	private static int calculateRowCount(MQuery query, Properties ctx) {
 		int AD_PInstance_ID = query.getAD_PInstance_ID();
 		if (AD_PInstance_ID > 0) {

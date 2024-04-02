@@ -747,23 +747,19 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isView() && isDeleteable())
 			setIsDeleteable(false);
-		//
+		// Validate table name is valid DB identifier
 		String error = Database.isValidIdentifier(getTableName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [TableName]");
 			return false;
 		}
 				
+		// Validate table partition configuration
 		if (is_ValueChanged(COLUMNNAME_IsPartition)) {
 			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
 			if (service == null) {
@@ -780,19 +776,13 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Sync Table ID
 		if(!isView()) {
+			// Create or update table sequence
 			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
 			if (seq == null || seq.get_ID() == 0)
 				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
@@ -802,6 +792,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				seq.saveEx();
 			}
 		}
+		// Reset logged table list
 		if (newRecord || is_ValueChanged(COLUMNNAME_IsChangeLog)) {
 			MChangeLog.resetLoggedList();
 		}

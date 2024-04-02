@@ -26,42 +26,42 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * User overrides for Info Window Model
+ * User, role, organization or tenant overrides of Info Window Model
  * @author Igor Pojzl, Cloudempiere
  * @version $Id$
  */
 public class MUserDefInfo extends X_AD_UserDef_Info {
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5611033457579880793L;
 
-	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new HashMap<Integer, List<MUserDefInfo>>();
+	/** AD_Client_ID:MUserDefInfo List */
+	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new ConcurrentHashMap<>();
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Info_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Info_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefInfo(Properties ctx, String AD_UserDef_Info_UU, String trxName) {
         super(ctx, AD_UserDef_Info_UU, trxName);
     }
 
 	/**
-	 * 	Standard constructor.
-	 * 	You must implement this constructor for Adempiere Persistency
+	 * Standard constructor.
 	 * @param ctx Context
 	 * @param AD_UserDef_Info_ID Primary Key ID
 	 * @param trxName Transaction name
@@ -71,11 +71,7 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	}
 
 	/**
-	 * 	Optional Load Constructor.
-	 * 	You would use this constructor to load several business objects.
-	 *  <code>
-	 * 	SELECT * FROM MyModelExample WHERE ...
-	 *  </code> 
+	 * Load Constructor.
 	 * @param ctx Context
 	 * @param rs Result set
 	 * @param trxName Transaction name
@@ -85,23 +81,21 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	}
 	
 	/**
-	 *  Get all MUserDefInfo entries related to info window
+	 *  Get all MUserDefInfo entries for an info window
 	 * 	@param ctx Context
 	 *  @param infowindow_ID Info window
-	 *  @return Array of MUserDefInfo for window
+	 *  @return Array of MUserDefInfo for info window
 	 */
 	private static MUserDefInfo[] getAll (Properties ctx, int infowindow_ID )
 	{
 		List<MUserDefInfo> fullList = null;
-		synchronized (m_fullMap) {
-			fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
-			if (fullList == null) {
-				fullList = new Query(ctx, MUserDefInfo.Table_Name, null, null)
-						.setOnlyActiveRecords(true)
-						.setClient_ID()
-						.list();
-				m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
-			}
+		fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
+		if (fullList == null) {
+			fullList = new Query(ctx, MUserDefInfo.Table_Name, null, null)
+					.setOnlyActiveRecords(true)
+					.setClient_ID()
+					.list();
+			m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
 		}
 				
 		if (fullList.size() == 0) {
@@ -126,11 +120,11 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	}	//getAll
 
 	/**
-	 * Get best matching MUserDefWin for current window
-	 * the best match is cached
+	 * Get best matching MUserDefInfo for an info window, 
+	 * the best match is cached.
 	 * @param ctx
 	 * @param infowindow_ID
-	 * @return best matching MUserDefWin
+	 * @return best matching MUserDefInfo or null
 	 */
 	public static MUserDefInfo getBestMatch (Properties ctx, int infowindow_ID)
 	{
@@ -229,17 +223,13 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		synchronized (m_fullMap) {
-			m_fullMap.remove(getAD_Client_ID());
-		}
+		m_fullMap.remove(getAD_Client_ID());
 		return true;
 	}
 	
 	@Override
 	protected boolean beforeDelete() {
-		synchronized (m_fullMap) {
-			m_fullMap.remove(getAD_Client_ID());
-		}
+		m_fullMap.remove(getAD_Client_ID());
 		return true;
 	}
 

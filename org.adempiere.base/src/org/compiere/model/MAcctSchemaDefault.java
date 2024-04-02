@@ -151,11 +151,6 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 		return super.set_Value (columnName, value);
 	}	//	setValue
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

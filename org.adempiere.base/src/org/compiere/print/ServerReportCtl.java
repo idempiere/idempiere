@@ -49,7 +49,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 
 /**
- * Controller for running of report at server
+ * Static method for running of report at server side
  */
 public class ServerReportCtl {
 
@@ -65,11 +65,11 @@ public class ServerReportCtl {
 	
 	/**
 	 * Start Document Print for Type with specified printer.
-	 * @param type
+	 * @param type report engine document type
 	 * @param customPrintFormat
 	 * @param Record_ID
 	 * @param printerName
-	 * @return
+	 * @return true if success
 	 */
 	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, String printerName)
 	{
@@ -228,12 +228,11 @@ public class ServerReportCtl {
 		}
 		re.print();
 	}
-	
-	
+		
 	/**
-	 *	Create Report.
-	 *	Called from ProcessCtl.
-	 *	- Check special reports first, if not, create standard Report
+	 *	Create Report.<br/>
+	 *	Called from ProcessCtl.<br/>
+	 *	- Check special reports first (via AD_ProcesS_ID), if not, create standard Report
 	 *
 	 *  @param pi process info
 	 *  @return true if created
@@ -283,8 +282,8 @@ public class ServerReportCtl {
 		}
 	}	//	create
 
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
@@ -296,8 +295,8 @@ public class ServerReportCtl {
 		return startStandardReport(pi);
 	}
 	
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit.<br>
 	 *  A report can be created from:
 	 *  <ol>
@@ -471,6 +470,5 @@ public class ServerReportCtl {
 		}
 		return true;
 	}	//	startFinReport
-	
-	
+		
 }

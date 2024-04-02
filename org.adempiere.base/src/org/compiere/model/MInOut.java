@@ -1293,20 +1293,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
         setMovementType(movementType); 
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true or false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if(newRecord || is_ValueChanged("C_DocType_ID")) {
 			setMovementType();
 		}
-		
+		// Validate warehouse and document belongs to the same organization
 		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
-		//	Warehouse Org
 		if (newRecord)
 		{
 			if (wh.getAD_Org_ID() != getAD_Org_ID())
@@ -1315,23 +1309,22 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				return false;
 			}
 		}
-
+		// Change DELIVERYRULE_Force to DELIVERYRULE_Availability if warehouse disallow negative inventory
 		boolean disallowNegInv = wh.isDisallowNegativeInv();
 		String DeliveryRule = getDeliveryRule();
 		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
 				(DeliveryRule == null || DeliveryRule.length()==0))
 			setDeliveryRule(DELIVERYRULE_Availability);
 
-        // Shipment/Receipt can have either Order/RMA (For Movement type)
+        // Shipment/Receipt must fill one of Order or RMA field, not both
         if (getC_Order_ID() != 0 && getM_RMA_ID() != 0)
         {
             log.saveError("OrderOrRMA", "");
             return false;
         }
-
+        // Set document type to C_DocTypeShipment_ID of RMA document type (sales transaction only)
         if (isSOTrx() && getM_RMA_ID() != 0)
         {
-            // Set Document and Movement type for this Receipt
             MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
             MDocType docType = MDocType.get(getCtx(), rma.getC_DocType_ID());
             setC_DocType_ID(docType.getC_DocTypeShipment_ID());
@@ -1339,6 +1332,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
                 
         if (newRecord && isSOTrx())
         {
+        	// Set ShipperAccount and FreightCharges 
         	if (MInOut.FREIGHTCOSTRULE_CustomerAccount.equals(getFreightCostRule()))
     		{
         		if (Util.isEmpty(getShipperAccount()))
@@ -1351,7 +1345,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
         			setFreightCharges(MInOut.FREIGHTCHARGES_Collect);
     		}
         }
-
+        // Set SalesRep_ID from order or RMA (original MInOut)
         if (getSalesRep_ID() == 0) {
         	if (getC_Order_ID() > 0) {
         		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
@@ -1366,18 +1360,13 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
+		// Propagate AD_Org_ID change to lines
 		if (is_ValueChanged("AD_Org_ID"))
 		{
 			final String sql = "UPDATE M_InOutLine ol"

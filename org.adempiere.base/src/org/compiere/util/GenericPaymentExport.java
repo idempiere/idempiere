@@ -178,7 +178,7 @@ public class GenericPaymentExport implements PaymentExport
 	}   //  exportToFile
 
 	/**
-	 *  Get Customer/Vendor Info.
+	 *  Get Customer/Vendor Info.<br/>
 	 *  Based on BP_ static variables.
 	 *  @param C_BPartner_ID BPartner
 	 *  @return info array

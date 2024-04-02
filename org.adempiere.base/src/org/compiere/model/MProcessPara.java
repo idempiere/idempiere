@@ -334,18 +334,13 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isCentrallyMaintained() && getAD_Element_ID() == 0)
 			setIsCentrallyMaintained(false);	// IDEMPIERE 109 - param without element can't be centrally maintained
 
-		//	Sync Terminology
+		//	Sync Terminology with AD_Element
 		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
 			&& getAD_Element_ID() != 0 && isCentrallyMaintained())
 		{
@@ -356,7 +351,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			setHelp (element.getHelp());
 		}
 
-		//validate logic expression
+		// Validate read only and display logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());
@@ -368,12 +363,14 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			}
 		}
 
+		// set IsShowNegateButton to true for report
 		if (newRecord && DisplayType.isChosenMultipleSelection(getAD_Reference_ID())) {
 			MProcess p = MProcess.get(getAD_Process_ID());
 			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getProcedureName()) && Util.isEmpty(p.getJasperReport()))
 				setIsShowNegateButton(true);
 		}
 
+		// Validate ValueMin for Date and Number
 		if (getValueMin() != null) {
 			try {
 				if (getAD_Reference_ID() == DisplayType.Date) { // Date
@@ -387,6 +384,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			}
 		}
 
+		// Validate ValueMax for Date and Number
 		if (getValueMax() != null) {
 			try {
 				if (getAD_Reference_ID() == DisplayType.Date) { // Date

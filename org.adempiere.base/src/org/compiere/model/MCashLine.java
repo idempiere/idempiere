@@ -286,10 +286,6 @@ public class MCashLine extends X_C_CashLine
 		return m_invoice;
 	}	//	getInvoice
 	
-	/**
-	 * 	Before Delete
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
@@ -306,11 +302,6 @@ public class MCashLine extends X_C_CashLine
 		return true;
 	}	//	beforeDelete
 
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -319,12 +310,6 @@ public class MCashLine extends X_C_CashLine
 		return updateHeader();
 	}	//	afterDelete
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -343,7 +328,7 @@ public class MCashLine extends X_C_CashLine
 			}
 		}
 		
-		//	Verify CashType
+		//	Set CashType
 		if (CASHTYPE_Invoice.equals(getCashType()) && getC_Invoice_ID() == 0)
 			setCashType(CASHTYPE_GeneralExpense);
 		if (CASHTYPE_BankAccountTransfer.equals(getCashType()) && getC_BankAccount_ID() == 0)
@@ -357,7 +342,7 @@ public class MCashLine extends X_C_CashLine
 			|| is_ValueChanged("C_BankAccount_ID");
 		if (verify)
 		{
-			//	Verify Currency
+			//	Set Currency
 			if (CASHTYPE_BankAccountTransfer.equals(getCashType())) 
 				setC_Currency_ID(getBankAccount().getC_Currency_ID());
 			else if (CASHTYPE_Invoice.equals(getCashType()))
@@ -377,11 +362,11 @@ public class MCashLine extends X_C_CashLine
 				setAD_Org_ID(getParent().getAD_Org_ID());
 		}
 		
-		// If CashType is not Bank Account Transfer, set C_BankAccount_ID to null - teo_sarca BF [ 1760240 ]
+		// If CashType is not Bank Account Transfer, set C_BankAccount_ID to null
 		if (!CASHTYPE_BankAccountTransfer.equals(getCashType()))
 			setC_BankAccount_ID(I_ZERO);
 
-		//	Get Line No
+		//	Set Line No
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM C_CashLine WHERE C_Cash_ID=?";
@@ -392,12 +377,6 @@ public class MCashLine extends X_C_CashLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord
-	 *	@param success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

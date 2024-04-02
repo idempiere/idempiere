@@ -162,6 +162,7 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		// Validate TimeSlotEnd > TimeSlotStart and both is fill
 		if (isTimeSlot())
 		{
 			Timestamp start = getTimeSlotStart();
@@ -184,7 +185,7 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 		if (!success)
 			return false;
 		
-		//	Update Products
+		//	Update Resource Products
 		if (!newRecord)
 		{
 			MProduct[] products = MProduct.get(getCtx(), "S_Resource_ID IN "

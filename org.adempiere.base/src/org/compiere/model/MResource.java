@@ -206,6 +206,7 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Create new resource product record for new resource record
 		if (newRecord)
 		{
 			if (getValue() == null || getValue().length() == 0)
@@ -213,7 +214,7 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 			m_product = new MProduct(this, getResourceType());
 			m_product.saveEx(get_TrxName());
 		}
-		//
+		
 		// Validate Manufacturing Resource
 		if (isManufacturingResource()
 				&& MANUFACTURINGRESOURCETYPE_Plant.equals(getManufacturingResourceType())
@@ -244,6 +245,8 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 		MProduct product = getProduct();
 		if (product != null && product.getM_Product_ID() > 0)
 		{
+			// Must remove resource reference before delete of product
+			// Otherwise, it will fail MProduct.beforeSave validation
 			product.setS_Resource_ID(0); // unlink resource
 			product.deleteEx(true);
 		}

@@ -18,6 +18,7 @@ package org.compiere.report;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
@@ -34,7 +35,6 @@ import org.compiere.util.Msg;
  * @author YvonneAw
  *
  */
-
 @org.adempiere.base.annotation.Process
 public class BankRegister extends SvrProcess
 {
@@ -43,13 +43,11 @@ public class BankRegister extends SvrProcess
 	/**	Bank Account Parameter				*/
 	private int					p_C_BankAccount_ID = 0;
 	/**	Period Parameter				*/
-	//private int					p_C_Period_ID = 0;
 	private Timestamp			p_DateAcct_From = null;
 	private Timestamp			p_DateAcct_To = null;
 	/**	BPartner Parameter				*/
 	private int					p_C_BPartner_ID = 0;
 
-	
 	/**	Parameter Where Clause			*/
 	private StringBuffer		m_parameterWhere = new StringBuffer();
 	
@@ -59,6 +57,7 @@ public class BankRegister extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		StringBuilder sb = new StringBuilder ("Record_ID=")
@@ -72,8 +71,6 @@ public class BankRegister extends SvrProcess
 				;
 			else if (name.equals("C_Bank_ID"))
 				p_C_Bank_ID = ((BigDecimal)para[i].getParameter()).intValue();
-			//else if (name.equals("C_Period_ID"))
-			//	p_C_Period_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("DateAcct"))
 			{
 				p_DateAcct_From = (Timestamp)para[i].getParameter();
@@ -121,17 +118,16 @@ public class BankRegister extends SvrProcess
 		}
 	}	//	setDateAcct
 
-	
-	
-	/**************************************************************************
-	 *  Perform process.
+	/**
+	 *  Insert report data to T_BankRegister
 	 *  @return Message to be translated
 	 */
+	@Override
 	protected String doIt()
 	{
 		createBalanceLine();
 		createDetailLines();
-		int AD_PrintFormat_ID = DB.getSQLValue(get_TrxName(), "Select AD_PrintFormat_ID from AD_PrintFormat Where name = 'Bank Register Report'");
+		int AD_PrintFormat_ID = DB.getSQLValueEx(get_TrxName(), "Select AD_PrintFormat_ID from AD_PrintFormat Where name = 'Bank Register Report' AND AD_Client_ID=?", getAD_Client_ID());
 		if (AD_PrintFormat_ID > 0) {
 			if (Ini.isClient())
 				getProcessInfo().setTransientObject (MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false));
@@ -139,7 +135,7 @@ public class BankRegister extends SvrProcess
 				getProcessInfo().setSerializableObject(MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false));
 		}
 
-		log.fine((System.currentTimeMillis() - m_start) + " ms");
+		if(log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
 	}	//	doIt
 
@@ -176,12 +172,12 @@ public class BankRegister extends SvrProcess
 			//
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		log.fine("#" + no);
-		log.finest(sb.toString());
+		if(log.isLoggable(Level.FINE)) log.fine("#" + no);
+		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}	//	createBalanceLine
 
 	/**
-	 * 	Create Beginning Balance Line
+	 * 	Create Transaction Detail Lines
 	 */
 	private void createDetailLines()
 	{

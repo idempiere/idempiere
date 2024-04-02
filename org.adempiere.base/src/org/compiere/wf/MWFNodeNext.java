@@ -316,14 +316,9 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 		return this;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		//	Get Line No
+		//	Set Line No
 		if (getSeqNo() == 0) {
 			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM AD_WF_NodeNext WHERE AD_WF_Node_ID=?";
 			int ii = DB.getSQLValue (get_TrxName(), sql, getAD_WF_Node_ID());

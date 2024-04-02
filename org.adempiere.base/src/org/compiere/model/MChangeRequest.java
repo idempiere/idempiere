@@ -106,23 +106,17 @@ public class MChangeRequest extends X_M_ChangeRequest
 		return null;
 	}	//	getRequests
 	
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Have at least one
+		// Must fill either one of Product BOM or Change Notice field.
 		if (getPP_Product_BOM_ID() == 0 && getM_ChangeNotice_ID() == 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@NotFound@: @M_BOM_ID@ / @M_ChangeNotice_ID@"));
 			return false;
 		}
 		
-		//	Derive ChangeNotice from BOM if defined
+		//	Set ChangeNotice from Product BOM
 		if (newRecord && getPP_Product_BOM_ID() != 0 && getM_ChangeNotice_ID() == 0)
 		{
 			MPPProductBOM bom = MPPProductBOM.get(getCtx(), getPP_Product_BOM_ID());

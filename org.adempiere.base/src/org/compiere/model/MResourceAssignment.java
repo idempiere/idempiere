@@ -102,14 +102,10 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 		return sb.toString();
 	}   //  toString
 
-	/**
-	 * 	Before Delete
-	 *	@return true if not confirmed
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
-		//	 allow to delete, when not confirmed
+		// Can't delete if assignment is confirm
 		if (isConfirmed())
 			return false;
 		

@@ -24,9 +24,9 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
 /**
- *	MPrintFormat Process.
- *  Performs Copy existing or Create from Table
- *  Called when pressing the Copy/Create button in Window Print Format
+ *	MPrintFormat Process.<br/>
+ *  Create new print format by copying from existing print format or from Table.<br/>
+ *  Called when pressing the Copy/Create button in Window Print Format.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFormatProcess.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -43,6 +43,7 @@ public class MPrintFormatProcess extends SvrProcess
 	/**
 	 *  Prepare - get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -69,6 +70,7 @@ public class MPrintFormatProcess extends SvrProcess
 	 * @return Message
 	 * @throws Exception
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		if (m_AD_Table_ID != null && m_AD_Table_ID.intValue() > 0)

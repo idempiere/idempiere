@@ -30,7 +30,7 @@ public interface IModelFactory {
 	 */
 	public Class<?> getClass (String tableName);
 
-	/**************************************************************************
+	/**
 	 * 	Get PO Class Instance
 	 *  @param tableName
 	 *	@param Record_ID record
@@ -39,7 +39,7 @@ public interface IModelFactory {
 	 */
 	public PO getPO (String tableName, int Record_ID, String trxName);
 
-	/**************************************************************************
+	/**
 	 * 	Get PO Class Instance
 	 *  @param tableName
 	 *	@param Record_UU record UUID

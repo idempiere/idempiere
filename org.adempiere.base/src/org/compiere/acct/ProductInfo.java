@@ -194,8 +194,6 @@ public class ProductInfo
 		return m_C_UOM_ID;
 	}   //  getC_UOM_ID
 
-	/*************************************************************************/
-
 	/**
 	 *  Set Quantity in Storage UOM
 	 *  @param qty quantity

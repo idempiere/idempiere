@@ -22,9 +22,8 @@ import java.util.Properties;
 import org.compiere.model.X_PA_Report;
 import org.compiere.util.Util;
 
-
 /**
- *  Report Model
+ *  Financial Report Model
  *
  *  @author Jorg Janke
  *  @version $Id: MReport.java,v 1.3 2006/08/03 22:16:52 jjanke Exp $
@@ -32,16 +31,16 @@ import org.compiere.util.Util;
 public class MReport extends X_PA_Report
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 1765138347185608173L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_Report_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_Report_UU  UUID key
+     * @param trxName Transaction
+     */
     public MReport(Properties ctx, String PA_Report_UU, String trxName) {
         super(ctx, PA_Report_UU, trxName);
 		if (Util.isEmpty(PA_Report_UU))
@@ -125,12 +124,11 @@ public class MReport extends X_PA_Report
 		return sb.toString();
 	}	//	getWhereClause
 
-	/*************************************************************************/
-
 	/**
 	 * 	String Representation
 	 * 	@return Info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MReport[")

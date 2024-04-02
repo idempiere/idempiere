@@ -46,17 +46,18 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
+ * Instance attribute data of attribute set instance
  * @author hengsin
- *
  */
 public class InstanceAttributeData {
 	private MPrintFormatItem item;
+	/** Attributes of attribute set instance */
 	private List<String> attributes;
+	/** List of attribute set instance (Attribute:Attribute Value) */
 	private List<Map<String, String>> attributeRows;
 	private int columnIndex;
 
 	/**
-	 * 
 	 * @param item
 	 * @param columnIndex
 	 */
@@ -66,7 +67,7 @@ public class InstanceAttributeData {
 	}
 
 	/**
-	 * 
+	 * Get attribute value at rowIndex 
 	 * @param rowIndex
 	 * @param attributeName
 	 * @return attribute value
@@ -81,7 +82,7 @@ public class InstanceAttributeData {
 	}
 
 	/**
-	 * 
+	 * Get print format item
 	 * @return {@link MPrintFormatItem}
 	 */
 	public MPrintFormatItem getPrintFormatItem() {
@@ -89,7 +90,7 @@ public class InstanceAttributeData {
 	}
 
 	/**
-	 * 
+	 * Get column index
 	 * @return column index
 	 */
 	public int getColumnIndex() {
@@ -97,7 +98,7 @@ public class InstanceAttributeData {
 	}
 
 	/**
-	 * 
+	 * List of instance attribute column
 	 * @return attribute columns
 	 */
 	public List<InstanceAttributeColumn> getColumns() {
@@ -110,7 +111,7 @@ public class InstanceAttributeData {
 	}
 
 	/**
-	 * 
+	 * Populate {@link #attributes} and {@link #attributeRows}
 	 * @param printData
 	 */
 	public void readAttributesData(PrintData printData) {
@@ -152,8 +153,8 @@ public class InstanceAttributeData {
 	}
 
 	/**
-	 * 
-	 * @param elements
+	 * Update table layout properties and print data matrix
+	 * @param elements print data matrix
 	 * @param tableProperties
 	 * @param columnOffset
 	 */

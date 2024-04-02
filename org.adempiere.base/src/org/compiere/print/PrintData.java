@@ -43,11 +43,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *	Print Data Structure.
- * 	Created by DataEngine
- *  A Structure has rows, which contain elements.
- *  Elements can be end nodes (PrintDataElements) or data structures (PrintData).
- *  The row data is sparse - i.e. null if not existing.
+ *	Print Data Structure.<br/>
+ * 	Created by DataEngine.<br/>
+ *  A Structure has rows, which contain elements.<br/>
+ *  Elements can be end nodes (PrintDataElements) or data structures (PrintData).<br/>
+ *  The row data is sparse - i.e. null if not existing.<br/>
  *  A Structure has optional meta info about content (PrintDataColumn).
  *
  * 	@author 	Jorg Janke
@@ -56,12 +56,11 @@ import org.w3c.dom.Element;
 public class PrintData implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3493453909439452289L;
 
 	/**
-	 * 	Data Parent Constructor
 	 * 	@param ctx context
 	 * 	@param name data element name
 	 */
@@ -75,7 +74,6 @@ public class PrintData implements Serializable
 	}	//	PrintData
 
 	/**
-	 * 	Data Parent Constructor
 	 * 	@param ctx context
 	 * 	@param name data element name
 	 *  @param nodes ArrayList with nodes (content not checked)
@@ -146,8 +144,6 @@ public class PrintData implements Serializable
 		return m_name;
 	}	//	getName
 
-	/*************************************************************************/
-
 	/**
 	 * 	Set optional Column Info
 	 * 	@param newInfo Column Info
@@ -206,6 +202,7 @@ public class PrintData implements Serializable
 	 * 	String representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("PrintData[");
@@ -216,11 +213,9 @@ public class PrintData implements Serializable
 		return sb.toString();
 	}	//	toString
 
-
-	
-	/**************************************************************************
-	 * 	Returns true if no Nodes in row
-	 * 	@return true if no Nodes in row
+	/**
+	 * 	Is with 0 rows or 0 nodes/columns
+	 * 	@return true if 0 rows or 0 nodes/columns
 	 */
 	public boolean isEmpty()
 	{
@@ -228,8 +223,8 @@ public class PrintData implements Serializable
 	}	//	isEmpty
 
 	/**
-	 * 	Return Number of nodes in row
-	 * 	@return number of nodes in row
+	 * 	Get Number of nodes/columns in row
+	 * 	@return number of nodes/columns in row
 	 */
 	public int getNodeCount()
 	{
@@ -238,14 +233,18 @@ public class PrintData implements Serializable
 		return m_matrix.getRowData().size();
 	}	//	getNodeCount
 
-	
+	/**
+	 * Add data row
+	 * @param functionRow
+	 * @param levelNo
+	 */
 	public void addRow (boolean functionRow, int levelNo)
 	{
 		addRow(functionRow, levelNo, new ArrayList<Serializable>());
 	}
 	
-	/**************************************************************************
-	 * 	Add Row
+	/**
+	 * 	Add Data Row
 	 *  @param functionRow true if function row
 	 * 	@param levelNo	Line detail Level Number 0=Normal
 	 */
@@ -315,8 +314,8 @@ public class PrintData implements Serializable
 	}	//	isFunctionRow
 
 	/**
-	 * 	Is the current Row a Function Row
-	 * 	@return true if function row
+	 * 	Is current Row a Function Row
+	 * 	@return true if current row is a function row
 	 */
 	public boolean isFunctionRow ()
 	{
@@ -324,8 +323,8 @@ public class PrintData implements Serializable
 	}	//	isFunctionRow
 
 	/**
-	 * 	Is the current Row a Function Row
-	 * 	@return true if function row
+	 * 	Is current Row a page break row
+	 * 	@return true if current row is a page break row
 	 */
 	public boolean isPageBreak ()
 	{
@@ -348,8 +347,8 @@ public class PrintData implements Serializable
 	}	//	isPageBreak
 
 	/**
-	 * 	PrintData has Level No
-	 * 	@param hasLevelNo true if sql contains LevelNo
+	 * 	Set PrintData has Level No
+	 * 	@param hasLevelNo true if sql includes LevelNo
 	 */
 	public void setHasLevelNo (boolean hasLevelNo)
 	{
@@ -357,8 +356,8 @@ public class PrintData implements Serializable
 	}	//	hasLevelNo
 
 	/**
-	 * 	PrintData has Level No
-	 * 	@return true if sql contains LevelNo
+	 * 	Is PrintData has Level No
+	 * 	@return true if sql includes LevelNo
 	 */
 	public boolean hasLevelNo()
 	{
@@ -367,7 +366,7 @@ public class PrintData implements Serializable
 
 	/**
 	 * 	Get Line Level Number for current row
-	 * 	@return line level no 0 = default
+	 * 	@return line level no, 0 = default
 	 */
 	public int getLineLevelNo ()
 	{
@@ -391,10 +390,8 @@ public class PrintData implements Serializable
 		return 0;
 	}	//	getLineLevel
 
-	/*************************************************************************/
-
 	/**
-	 * 	Add Parent node to Data Structure row
+	 * 	Add parent node to current row
 	 * 	@param parent parent
 	 */
 	public void addNode (PrintData parent)
@@ -410,7 +407,7 @@ public class PrintData implements Serializable
 	}	//	addNode
 
 	/**
-	 * 	Add node to Data Structure row
+	 * 	Add node to current row
 	 * 	@param node node
 	 */
 	public void addNode (PrintDataElement node)
@@ -426,7 +423,7 @@ public class PrintData implements Serializable
 	}	//	addNode
 
 	/**
-	 * 	Get Node with index in row
+	 * 	Get node with index in current row
 	 * 	@param index index
 	 * 	@return PrintData(Element) of index or null
 	 */
@@ -439,8 +436,8 @@ public class PrintData implements Serializable
 	}	//	getNode
 
 	/**
-	 * 	Get Node with Name in row
-	 * 	@param name name
+	 * 	Get node with name in current row
+	 * 	@param name node name
 	 * 	@return PrintData(Element) with Name or null
 	 */
 	public Object getNode (String name)
@@ -453,9 +450,10 @@ public class PrintData implements Serializable
 	}	//	getNode
 
 	/**
-	 * 	Get Node with AD_Column_ID in row
+	 * 	Get Node with AD_Column_ID in current row
 	 * 	@param AD_Column_ID AD_Column_ID
 	 * 	@return PrintData(Element) with AD_Column_ID or null
+	 *  @deprecated replace by {@link #getNodeByPrintFormatItemId(int)}
 	 */
 	@Deprecated
 	public Object getNode (Integer AD_Column_ID)
@@ -468,7 +466,7 @@ public class PrintData implements Serializable
 	}	//	getNode
 
 	/**
-	 * 
+	 * Get node with print format item id in current row
 	 * @param item
 	 * @return PrintData(Element) with AD_PrintFormatItem_ID or null
 	 */
@@ -478,7 +476,7 @@ public class PrintData implements Serializable
 	}
 	
 	/**
-	 * 	Get Node with AD_PrintFormatItem_ID in row
+	 * 	Get Node with AD_PrintFormatItem_ID in current row
 	 * 	@param AD_PrintFormatItem_ID AD_PrintFormatItem_ID
 	 * 	@return PrintData(Element) with AD_PrintFormatItem_ID or null
 	 */
@@ -492,7 +490,7 @@ public class PrintData implements Serializable
 	}	//	getNode
 	
 	/**
-	 * 	Get Primary Key in row
+	 * 	Get Primary Key node in current row
 	 * 	@return PK or null
 	 */
 	public PrintDataElement getPKey()
@@ -514,7 +512,7 @@ public class PrintData implements Serializable
 	}	//	getPKey
 
 	/**
-	 * 	Get Index of Node in Structure (not recursing) row
+	 * 	Get Index of Node in current row
 	 * 	@param columnName name
 	 * 	@return index or -1
 	 */
@@ -544,7 +542,7 @@ public class PrintData implements Serializable
 	}	//	getIndex
 
 	/**
-	 * 	Get Index of Node in Structure (not recursing) row
+	 * 	Get Index of Node in current row
 	 * 	@param AD_Column_ID AD_Column_ID
 	 * 	@return index or -1
 	 */
@@ -565,7 +563,7 @@ public class PrintData implements Serializable
 	}	//	getIndex
 
 	/**
-	 * 	Get Index of Node in Structure (not recursing) row
+	 * 	Get Index of Node in current row
 	 * 	@param AD_PrintFormatItem_ID AD_PrintFormatItem_ID
 	 * 	@return index or -1
 	 */
@@ -593,7 +591,7 @@ public class PrintData implements Serializable
 		return -1;
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Dump All Data - header and rows
 	 */
 	public void dump()
@@ -680,8 +678,7 @@ public class PrintData implements Serializable
 		}
 	}	//	dumpRow
 
-	
-	/**************************************************************************
+	/**
 	 * 	Get XML Document representation
 	 * 	@return XML document
 	 */
@@ -714,7 +711,7 @@ public class PrintData implements Serializable
 	}	//	getDocument
 
 	/**
-	 * 	Process PrintData Tree
+	 * 	Process PrintData Tree and append to XML document
 	 * 	@param pd Print Data
 	 * 	@param document document
 	 *  @param root element to add to
@@ -762,7 +759,6 @@ public class PrintData implements Serializable
 		}	//	rows
 	}	//	processTree
 
-
 	/**
 	 * 	Create XML representation to StreamResult
 	 * 	@param result StreamResult
@@ -806,9 +802,8 @@ public class PrintData implements Serializable
 		}
 		return true;
 	}	//	createXMLFile
-
 	
-	/**************************************************************************
+	/**
 	 *	Create PrintData from XML
 	 *	@param ctx context
 	 * 	@param input InputSource
@@ -833,7 +828,10 @@ public class PrintData implements Serializable
 		return pd;
 	}	//	parseXML
 
-
+	/**
+	 * Get MReportLine for current row
+	 * @return MReportLine
+	 */
 	public MReportLine getMReportLine()
 	{
 		List<Serializable> nodes = m_matrix.getRowData();
@@ -860,6 +858,12 @@ public class PrintData implements Serializable
 		return null;
 	} // getMReportLine
 
+	/**
+	 * Add row
+	 * @param functionRow
+	 * @param levelNo
+	 * @param reportLineID
+	 */
 	public void addRow(boolean functionRow, int levelNo, int reportLineID)
 	{
 		addRow(functionRow, levelNo);

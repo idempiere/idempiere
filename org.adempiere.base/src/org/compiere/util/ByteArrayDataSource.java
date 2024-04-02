@@ -112,8 +112,8 @@ public class ByteArrayDataSource
 	private static CLogger log = CLogger.getCLogger (ByteArrayDataSource.class);
 	
 	/**
-	 * 	Return an InputStream for the data.
-	 * 	@return inputstream
+	 * 	Get InputStream for the data.
+	 * 	@return input stream
 	 * 	@throws IOException
 	 */
 	public InputStream getInputStream ()
@@ -157,7 +157,7 @@ public class ByteArrayDataSource
 	}	//	setName
 
 	/**
-	 * 	Return Name or Class Name and Content Type
+	 * 	Get Name or Class Name and Content Type
 	 * 	@return dummy
 	 */
 	public String getName ()

@@ -27,9 +27,8 @@ import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 
 /**
- * 
+ * Default implementation of {@link SerializableMatrix} 
  * @author hengsin
- *
  */
 public class SerializableMatrixImpl<T extends Serializable> implements SerializableMatrix<T> {
 	/** default 4k block size **/
@@ -58,6 +57,9 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 	private SwapFile swapFile;
 	private String prefix;
 	
+	/**
+	 * @param name
+	 */
 	public SerializableMatrixImpl(String name) {
 		this.prefix = name;
 		int pageSize = MSysConfig.getIntValue(MSysConfig.REPORT_SWAP_MAX_ROWS, DEFAULT_SWAP_MAX_ROWS);
@@ -183,6 +185,10 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 		}
 	}
 	
+	/**
+	 * Write current page to swap file
+	 * @param currentPage
+	 */
 	private void pageout(Page currentPage) {
 		ByteArrayOutputStream bas = new ByteArrayOutputStream();
 		try {
@@ -205,6 +211,10 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 		}		
 	}
 
+	/**
+	 * Read page from swap file
+	 * @param index
+	 */
 	private void pagein(int index) {
 		SwapFileSegment segment = segments.get(index);
 		try {
@@ -226,6 +236,11 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 		}
 	}
 	
+	/**
+	 * Create file name prefix from name parameter
+	 * @param name
+	 * @return file name prefix
+	 */
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
@@ -239,6 +254,9 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 		return prefix.toString();
 	}
 	
+	/**
+	 * Page value object
+	 */
 	class Page {
 		protected int pageNo;
 		protected int first;

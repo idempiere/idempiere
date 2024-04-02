@@ -202,12 +202,13 @@ public class AmtInWords_FR implements AmtInWords
 		return (pluralForm ? result + "s" : result);
 	}	//	convert
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)

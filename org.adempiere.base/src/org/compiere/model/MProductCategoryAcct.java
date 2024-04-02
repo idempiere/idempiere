@@ -158,7 +158,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 	}
 	
 	/**
-	 * 	Check Costing Setup
+	 * 	Create cost element for costing method
 	 */
 	public void checkCosting()
 	{
@@ -167,12 +167,6 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 			MCostElement.getMaterialCostElement(this, getCostingMethod());
 	}	//	checkCosting
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -210,6 +204,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate CostingLevel change
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) {
 			String newCostingLevel = getCostingLevel();
 			String oldCostingLevel = (String) get_ValueOld(COLUMNNAME_CostingLevel);
@@ -218,6 +213,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 				newCostingLevel = schema.getCostingLevel();
 			if (oldCostingLevel == null)
 				oldCostingLevel = schema.getCostingLevel();
+			// Disallow costing level change if there are existing cost detail records
 			if (!newCostingLevel.equals(oldCostingLevel)) {
 				String products = getProductsWithCost();
 				if (!Util.isEmpty(products)) {

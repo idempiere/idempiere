@@ -125,13 +125,6 @@ public class MCommissionDetail extends X_C_CommissionDetail
 			setConvertedAmt(amt);
 	}	//	setConvertedAmt
 
-	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -142,11 +135,6 @@ public class MCommissionDetail extends X_C_CommissionDetail
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{

@@ -256,21 +256,17 @@ public class MDistributionLine extends X_GL_DistributionLine
 		m_qty = m_qty.divide(Env.ONEHUNDRED, RoundingMode.HALF_UP);
 	}	//	setAmt
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		//Set Line
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM GL_DistributionLine WHERE GL_Distribution_ID=?";
 			int ii = DB.getSQLValue (get_TrxName(), sql, getGL_Distribution_ID());
 			setLine (ii);
 		}
-		//	Reset not selected Overwrite
+		//	Reset corresponding field to 0 is IsOverwrite* is true
 		if (!isOverwriteAcct() && getAccount_ID() != 0)
 			setAccount_ID(0);
 		if (!isOverwriteActivity() && getC_Activity_ID() != 0)
@@ -298,13 +294,13 @@ public class MDistributionLine extends X_GL_DistributionLine
 		if (!isOverwriteUser2() && getUser2_ID() != 0)
 			setUser2_ID(0);
 		
-		//	Account Overwrite cannot be 0
+		//	Account_ID is mandatory if IsOverWriteAcct=Y
 		if (isOverwriteAcct() && getAccount_ID() == 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Account_ID@ = 0"));
 			return false;
 		}
-		//	Org Overwrite cannot be 0
+		//	Org_ID is mandatory if IsOverwriteOrg=Y
 		if (isOverwriteOrg() && getOrg_ID() == 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Org_ID@ = 0"));
@@ -313,17 +309,12 @@ public class MDistributionLine extends X_GL_DistributionLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Load m_parent
 		getParent();
 		m_parent.validate();
 		m_parent.saveEx();

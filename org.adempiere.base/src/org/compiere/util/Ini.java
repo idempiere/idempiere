@@ -34,12 +34,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.SystemProperties;
 
 /**
- *	Load and Save INI Settings from property file (idempiere.properties).<br/>
- *	Initiated in Adempiere.startup.<br/>
+ *	Load and Save Settings from property file (idempiere.properties).<br/>
+ *	Initiated in {@link Adempiere#startup(boolean)}
  *
  *  @author     Jorg Janke
  *  @version    $Id$
@@ -98,12 +99,7 @@ public final class Ini implements Serializable
 	/** UI Theme			*/
 	public static final String	P_UI_THEME =		"UITheme";
 
-	/** Flat Color UI
-	public static final String	P_UI_FLAT =			"UIFlat";
-	private static final boolean DEFAULT_UI_FLAT =	false;
-	*/
-
-	/** Auto Save			*/
+	/** Auto Commit			*/
 	public static final String  P_A_COMMIT =		"AutoCommit";
 	private static final boolean DEFAULT_A_COMMIT =	true;
 	/** Auto Login			*/
@@ -269,7 +265,7 @@ public final class Ini implements Serializable
 	}	//	loadProperties
 
 	/**
-	 *  Load INI parameters from filename.
+	 *  Load INI parameters from filename.<br/>
 	 *  Logger is on default level (INFO)
 	 *	@param filename to load
 	 *	@return true if first time
@@ -393,7 +389,7 @@ public final class Ini implements Serializable
 	 *	Return File Name of INI file
 	 *  <pre>
 	 *  Examples:
-	 *	    C:\WinNT\Profiles\jjanke\idempiere.properties
+	 *      C:\WinNT\Profiles\jjanke\idempiere.properties
 	 *      D:\idempiere\idempiere.properties
 	 *      idempiere.properties
 	 *  </pre>

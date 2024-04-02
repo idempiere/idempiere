@@ -73,7 +73,7 @@ public class PrintUtil
 	private static PrintRequestAttributeSet     s_prats = new HashPrintRequestAttributeSet();
 
 	/**
-	 *  Return Default Print Request Attributes
+	 *  Get Default Print Request Attributes
 	 *  @return PrintRequestAttributeSet
 	 */
 	public static PrintRequestAttributeSet getDefaultPrintRequestAttributes()
@@ -91,7 +91,7 @@ public class PrintUtil
 	}   //  getDefaultFlavor
 
 	/**
-	 * Get Print Services for all flavor and pratt
+	 * Get Print Services for all flavor and print request attributes
 	 * @return print services
 	 */
 	public static PrintService[] getAllPrintServices() 
@@ -100,7 +100,7 @@ public class PrintUtil
 	}
 	
 	/**
-	 *  Get Print Services for standard flavor and pratt
+	 *  Get Print Services for standard flavor and print request attributes
 	 *  @return print services
 	 */
 	public static PrintService[] getPrintServices ()
@@ -117,9 +117,8 @@ public class PrintUtil
 		return PrintServiceLookup.lookupDefaultPrintService();
 	}   //  getPrintServices
 
-
 	/**
-	 *  Return default PrinterJob
+	 *  Get default PrinterJob
 	 *  @return PrinterJob
 	 */
 	public static PrinterJob getPrinterJob()
@@ -128,8 +127,8 @@ public class PrintUtil
 	}   //  getPrinterJob
 
 	/**
-	 *  Return PrinterJob with selected printer name.
-	 *  @param printerName if null, get default printer (Ini)
+	 *  Get PrinterJob with selected printer name.
+	 *  @param printerName if null, get default printer (Ini.P_PRINTER)
 	 *  @return PrinterJob
 	 */
 	public static PrinterJob getPrinterJob (String printerName)
@@ -184,8 +183,6 @@ public class PrintUtil
 		return pj;
 	}   //  getPrinterJob
 	
-	/*************************************************************************/
-
 	/**
 	 * 	Print (async)
 	 * 	@param printerName optional printer name
@@ -223,7 +220,7 @@ public class PrintUtil
 	/**
 	 * 	Print Async
 	 *  @param pageable pageable
-	 *  @param prats print attribute set
+	 *  @param prats print request attribute set
 	 */
 	static public void print (Pageable pageable, PrintRequestAttributeSet prats)
 	{
@@ -235,7 +232,7 @@ public class PrintUtil
 	/**
 	 * 	Print
 	 * 	@param job printer job
-	 *  @param prats print attribute set
+	 *  @param prats print request attribute set
 	 *  @param withDialog if true shows Dialog
 	 *  @param waitForIt if false print async
 	 */
@@ -295,8 +292,8 @@ public class PrintUtil
 	}	//	printAsync
 
 	/**
-	 * 	Get Job Priority based on pages printed.
-	 *  The more pages, the lower the priority
+	 * 	Get Job Priority based on pages printed.<br/>
+	 *  The more pages, the lower the priority.
 	 * 	@param pages number of pages
 	 *  @param copies number of copies
 	 *  @param withDialog dialog gets lower priority than direct print
@@ -315,8 +312,6 @@ public class PrintUtil
 			priority = 100;
 		return new JobPriority(priority);
 	}	//	getJobPriority
-
-	/*************************************************************************/
 
 	/**
 	 * 	Dump Printer Job info
@@ -431,7 +426,7 @@ public class PrintUtil
 		}
 	}	//	dump
 
-	/**************************************************************************
+	/**
 	 * 	Create Print Form and Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
 	 *  Called from VSetup
@@ -442,10 +437,9 @@ public class PrintUtil
 		setupPrintForm(AD_Client_ID, (String)null);
 	}
 	
-	/**************************************************************************
-	 * 	Create Print Form and Print Formats for a new Client.
-	 *  - Order, Invoice, etc.
-	 *  Called from VSetup
+	/**
+	 * 	Create Print Form and Print Formats for a new Client.<br/>
+	 *  - Order, Invoice, etc.<br/>
 	 *  @param AD_Client_ID new Client
 	 *  @param trxName
 	 */
@@ -501,7 +495,7 @@ public class PrintUtil
 	/**
 	 * 	Update the PrintFormat Header lines with Reference to Child Print Format.
 	 * 	@param Header_ID AD_PrintFormat_ID for Header
-	 * 	@param Line_ID AD_PrintFormat_ID for Line
+	 * 	@param Line_ID AD_PrintFormat_ID for Child Print Format
 	 *  @param trxName
 	 */
 	static private void updatePrintFormatHeader (int Header_ID, int Line_ID, String trxName)

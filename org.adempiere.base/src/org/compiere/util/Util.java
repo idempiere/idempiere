@@ -123,7 +123,7 @@ public class Util
 
 	/**
 	 * Clean - Remove all white spaces
-	 * @param in in
+	 * @param in
 	 * @return cleaned string
 	 */
 	public static String cleanWhitespace (String in)
@@ -150,9 +150,9 @@ public class Util
 	}	//	cleanWhitespace
 
 	/**
-	 * Mask HTML content.
-	 * i.e. replace characters with &values;
-	 * CR is not masked
+	 * Mask HTML content.<br/>
+	 * i.e. replace characters with &values;<br/>
+	 * CR is not masked.
 	 * @param content content
 	 * @return masked content
 	 * @see #maskHTML(String, boolean)
@@ -163,7 +163,7 @@ public class Util
 	}	//	maskHTML
 	
 	/**
-	 * Mask HTML content.
+	 * Mask HTML content.<br/>
 	 * i.e. replace characters with &values;
 	 * @param content content
 	 * @param maskCR convert CR into <br>
@@ -236,7 +236,7 @@ public class Util
 	/**
 	 * Is String Empty or null
 	 * @param str string
-	 * @return true if &gt;= 1 char
+	 * @return true if str is empty or null
 	 */
 	public static boolean isEmpty (String str)
 	{
@@ -247,7 +247,7 @@ public class Util
 	 * Is String Empty or null
 	 * @param str string
 	 * @param trimWhitespaces trim whitespaces
-	 * @return true if &gt;= 1 char
+	 * @return true if str is empty or null
 	 */
 	public static boolean isEmpty (String str, boolean trimWhitespaces)
 	{
@@ -272,7 +272,7 @@ public class Util
 	}
 
 	/**
-	 * Find index of search character in str.
+	 * Find index of search character in str.<br/>
 	 * This ignores content in () and quoted text ('texts').
 	 * @param str string
 	 * @param search search character
@@ -284,7 +284,7 @@ public class Util
 	}   //  findIndexOf
 
 	/**
-	 *  Find index of search characters in str.
+	 *  Find index of search characters in str.<br/>
 	 *  This ignores content in () and quoted text ('texts').
 	 *  @param str string
 	 *  @param search1 first search character
@@ -319,10 +319,10 @@ public class Util
 	}   //  findIndexOf
 
 	/**
-	 *  Find index of search character in str.
+	 *  Find index of search string in str.<br/>
 	 *  This ignores content in () and quoted text ('texts')
 	 *  @param str string
-	 *  @param search search character
+	 *  @param search search string
 	 *  @return index or -1 if not found
 	 */
 	public static int findIndexOf (String str, String search)
@@ -479,7 +479,9 @@ public class Util
 	/**
 	 * Print Action and Input Map for component
 	 * @param comp  Component with ActionMap
+	 * @deprecated Swing client have been deprecated
 	 */
+	@Deprecated
 	public static void printActionInputMap (JComponent comp)
 	{
 		//	Action Map
@@ -556,9 +558,9 @@ public class Util
 	}   //  printActionInputMap
 
 	/**
-	 * Is 8 Bit
+	 * Is str a 8 Bit string
 	 * @param str string
-	 * @return true if string doesn't contains chars &gt; 255
+	 * @return true if str doesn't contains chars &gt; 255
 	 */
 	public static boolean is8Bit (String str)
 	{
@@ -576,7 +578,7 @@ public class Util
 	}	//	is8Bit
 	
 	/**
-	 * Clean Ampersand (used to indicate shortcut) 
+	 * Remove all Ampersand character (used to indicate shortcut in Swing client) 
 	 * @param in input
 	 * @return cleaned string
 	 */
@@ -755,9 +757,9 @@ public class Util
 	}
 
 	/**
-	 * Make filename safe (updating all unauthorized characters to safe ones)
+	 * Make filename safe (replace all unauthorized characters with safe ones)
 	 * @param input the filename to check
-	 * @returns the correct filename
+	 * @returns the corrected filename
 	 */
 	public static String setFilenameCorrect(String input) {
 		String output = Normalizer.normalize(input, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
@@ -775,7 +777,7 @@ public class Util
 	/**
 	 * Is value a valid UUID string
 	 * @param value
-	 * @return true if value is a uuid identifier
+	 * @return true if value is a UUID identifier
 	 */
 	public static boolean isUUID(String value)
 	{

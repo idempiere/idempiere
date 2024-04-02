@@ -14,16 +14,15 @@
 package org.compiere.util;
 
 /**
- *Amount in Words for Serbia.
+ * Amount in Words for Serbia.
  * @author Nikola Petkov -The class is based on the AmtInWords_EN.java written
  *         by jjanke
  */
 public class AmtInWords_SR
 	implements AmtInWords
 {
-
 	/**
-	 * AmtInWords_RS
+	 * AmtInWords_SR
 	 */
 	public AmtInWords_SR()
 	{
@@ -86,9 +85,9 @@ public class AmtInWords_SR
 	{"Devetnaest", "Devetnaest"}};
 
 	/**
-	 *Convert Less Than One Thousand
+	 * Convert Less Than One Thousand
 	 * @param number
-	 *@return amt
+	 * @return amt
 	 */
 	private String convertLessThanOneThousand(int number, int w)
 	{
@@ -119,9 +118,9 @@ public class AmtInWords_SR
 	} // convertLessThanOneThousand
 
 	/**
-	 *Convert
+	 * Convert
 	 * @param number
-	 *@return amt
+	 * @return amt
 	 */
 	private String convert(long number)
 	{
@@ -179,12 +178,13 @@ public class AmtInWords_SR
 		return (prefix + soFar).trim ();
 	} // convert
 
-	/**************************************************************************
-	 *Get Amount in Words
+	/**
+	 * Get Amount in Words
 	 * @param amount numeric amount (352.80)
-	 *@return amount in words (three*five*two 80/100)
-	 *@throws Exception
+	 * @return amount in words (three*five*two 80/100)
+	 * @throws Exception
 	 */
+	@Override
 	public String getAmtInWords(String amount)
 		throws Exception
 	{
@@ -212,7 +212,7 @@ public class AmtInWords_SR
 	} // getAmtInWords
 
 	/**
-	 *Test Print
+	 * Test Print
 	 * @param amt amount
 	 */
 	private void print(String amt)
@@ -228,7 +228,7 @@ public class AmtInWords_SR
 	} // print
 
 	/**
-	 *Test
+	 * Test
 	 * @param args ignored
 	 */
 	public static void main(String[] args)
@@ -259,5 +259,3 @@ public class AmtInWords_SR
 		aiw.print ("1 000 000 000 000 000 000,00");
 	} // main
 } // AmtInWords_RS
-
- 	  	 

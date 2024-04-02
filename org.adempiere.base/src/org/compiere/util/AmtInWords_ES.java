@@ -17,7 +17,7 @@
 package org.compiere.util;
 
 /**
- *	Spanish Amount in Words
+ *	Spanish Amount in Words (Spain)
  *
  *  @author Jorg Janke - http://www.rgagnon.com/javadetails/java-0426.html
  *  @translator Jordi Luna
@@ -117,10 +117,7 @@ public class AmtInWords_ES implements AmtInWords
 			number /= 10;
 		}
 		if (number == 0)
-		//return soFar;
-		// Begin e-Evolution ogi-cd
 			return tensNames[number % 10] + soFar; // e-Evolution ogi-cd
-		// End e-Evolution ogi-cd
 		if (number > 1)
 			soFar = "S" + soFar;
 		if (number == 1 && !soFar.equals(""))
@@ -207,13 +204,13 @@ public class AmtInWords_ES implements AmtInWords
 		return (prefix + soFar).trim ();
 	}	//	convert
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
@@ -269,8 +266,6 @@ public class AmtInWords_ES implements AmtInWords
 
 	public static void main(String[] args) throws Exception {
 		AmtInWords_ES aiw = new AmtInWords_ES();
-		// for (int i=0; i<=2147000000; i++)
-			// System.out.println(aiw.getAmtInWords(i+",00"));
 		System.out.println(aiw.getAmtInWords("9223372036854775807.99"));
 	}
 

@@ -69,6 +69,7 @@ public class MHouseKeeping extends X_AD_HouseKeeping {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate AD_Table_ID and TableName field
 		if (getAD_Table_ID() > 0) {
 			setTableName(null);
 		} else if (getTableName() != null) {

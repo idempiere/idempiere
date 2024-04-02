@@ -180,7 +180,7 @@ public final class DB
 	}	//	afterMigration
 
 	/**
-	 * 	Update Mail Settings for System Client and System User
+	 * 	Update Mail Settings for System Client and System User (idempiereEnv.properties)
 	 */
 	public static void updateMail()
 	{
@@ -308,6 +308,7 @@ public final class DB
 	}
 
 	/**
+	 * Is connected to DB.
 	 * @return true, if connected to database
 	 */
 	public static boolean isConnected()
@@ -359,7 +360,7 @@ public final class DB
 	
 	/**
 	 * Get auto or not auto commit connection from connection pool.<br/>
-	 * Usually you should use @{@link #getConnection()} instead to get auto commit connection 
+	 * Usually, developer should use @{@link #getConnection()} instead to get auto commit connection 
 	 * and use {@link Trx} to works with not autoCommit connection.
 	 * @param autoCommit
 	 * @return {@link Connection}
@@ -438,7 +439,8 @@ public final class DB
 
 	/**
 	 *	Create new Connection.<br/>
-	 *  The connection must be closed explicitly by the application.
+	 *  The connection must be closed explicitly by the caller.<br/>
+	 *  Usually, developer should not call this directly.
 	 *
 	 *  @param autoCommit auto commit
 	 *  @param trxLevel - Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_REPEATABLE_READ, or Connection.TRANSACTION_READ_COMMITTED.
@@ -508,7 +510,7 @@ public final class DB
 	}   //  getDatabase
 
 	/**
-	 * 	Do we have an Oracle DB ?
+	 * 	Is connected to Oracle DB  ?
 	 *	@return true if connected to Oracle
 	 */
 	public static boolean isOracle()
@@ -520,7 +522,7 @@ public final class DB
 	}	//	isOracle
 
 	/**
-	 * 	Do we have a PostgreSQL DB ?
+	 * 	Is connected to PostgreSQL DB ?
 	 *	@return true if connected to PostgreSQL
 	 */
 	public static boolean isPostgreSQL()
@@ -825,7 +827,7 @@ public final class DB
 	}
 
 	/**
-	 * Set PreparedStatement's parameter.
+	 * Set PreparedStatement's parameter.<br/>
 	 * Similar with calling <code>pstmt.setObject(index, param)</code>
 	 * @param pstmt
 	 * @param index
@@ -870,7 +872,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, String)} instead.
 	 *  @param sql
@@ -883,7 +885,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, String, int)} instead.
 	 *  @param sql
@@ -910,7 +912,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, String)} instead.
 	 *  @param sql
@@ -924,7 +926,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, String, int)} instead.
 	 *  @param sql
@@ -939,7 +941,7 @@ public final class DB
 	}
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, Object[], String)} instead.
 	 *  @param sql
@@ -953,7 +955,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, Object[], String, int)} instead.
 	 *  @param sql
@@ -968,7 +970,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, Object[], String)} instead.
 	 *  @param sql
@@ -983,7 +985,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, Object[], String, int)} instead.
 	 *  @param sql
@@ -999,7 +1001,7 @@ public final class DB
 	}	//	executeUpdate
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, Object[], String)} instead.
 	 *  @param sql
@@ -1014,7 +1016,7 @@ public final class DB
 	}
 
 	/**
-	 *	Execute Update.
+	 *	Execute Update.<br/>
 	 *  Saves "DBExecuteError" in Log.<br/>
 	 *  Developer is recommended to call {@link #executeUpdateEx(String, Object[], String, int)} instead.
 	 *  @param sql
@@ -1121,7 +1123,7 @@ public final class DB
 	}
 
 	/**
-	 *	Execute multiple Update statements.
+	 *	Execute multiple Update statements.<br/>
 	 *  Saves (last) "DBExecuteError" in Log.
 	 *  @param sql multiple sql statements separated by "; " SQLSTATEMENT_SEPARATOR
 	 * 	@param ignoreError if true, no execution error is reported
@@ -1249,7 +1251,7 @@ public final class DB
 	}	//	commit
 
 	/**
-	 * 	Get Row Set.
+	 * 	Get Row Set.<br/>
 	 * 	When a Rowset is closed, it also closes the underlying connection.
 	 *	@param sql
 	 *	@return row set or null
@@ -1824,7 +1826,7 @@ public final class DB
 	}	//	getIDsEx
 	
 	/**
-	 * 	Is Sales Order Trx.
+	 * 	Is Sales Order Trx.<br/>
 	 * 	Assumes Sales Order. Query IsSOTrx value of table with where clause
 	 *	@param TableName table
 	 *	@param whereClause where clause
@@ -2176,8 +2178,8 @@ public final class DB
 	/**
 	 *	Package Strings for SQL command in quotes.
 	 *  <pre>
-	 *		-	include in ' (single quotes)
-	 *		-	replace ' with ''
+	 *	    -	include in ' (single quotes)
+	 *	    -	replace ' with ''
 	 *  </pre>
 	 *  @param txt  String with text
 	 *  @param maxLength    Maximum Length of content or 0 to ignore
@@ -2528,6 +2530,7 @@ public final class DB
 	private static boolean m_isUUIDSupported = false;
 	
 	/**
+	 * Is DB support generate_uuid function
 	 * @return true if current db have working generate_uuid function. generate_uuid doesn't work on 64 bit postgresql
 	 * on windows yet.
 	 */
@@ -2558,6 +2561,7 @@ public final class DB
 	}
 
 	/**
+	 * Is table or view exists
 	 * @param tableName
 	 * @return true if table or view with name=tableName exists in db
 	 */

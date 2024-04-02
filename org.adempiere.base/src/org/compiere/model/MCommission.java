@@ -150,11 +150,9 @@ public class MCommission extends X_C_Commission
 		return count;
 	}	//	copyLinesFrom
 
-	/**
-	 * Validations before saving record
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Must fill one of charge or product field
 		if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
 			log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 			return false;

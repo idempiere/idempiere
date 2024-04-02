@@ -301,11 +301,6 @@ public class MRfQ extends X_C_RfQ
 		return null;
 	}	//	checkQuoteTotalAmtOnly
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

@@ -1207,11 +1207,6 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	private volatile static boolean recursiveCall = false;
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -1247,7 +1242,7 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
-		//	Warehouse Org
+		//	Validate warehouse and order document belong to the same organization
 		if (newRecord 
 			|| is_ValueChanged("AD_Org_ID") || is_ValueChanged("M_Warehouse_ID"))
 		{
@@ -1255,7 +1250,7 @@ public class MOrder extends X_C_Order implements DocAction
 				log.saveWarning("WarehouseOrgConflict", "");
 		}
 
-		//	Reservations in Warehouse
+		//	Validate change of warehouse against existing order line
 		if (!newRecord && is_ValueChanged("M_Warehouse_ID"))
 		{
 			MOrderLine[] lines = getLines(false,null);
@@ -1266,7 +1261,7 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
-		// IDEMPIERE-6046 - verify if the locations pertain to the BP
+		// Validate C_BPartner_Location_ID and AD_User_ID after edit of C_BPartner_ID
 		final String sqlBPIdFromLoc  = "SELECT C_BPartner_ID FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
 		final String sqlBPIdFromUser = "SELECT C_BPartner_ID FROM AD_User WHERE AD_User_ID=?";
 		if (is_new() || is_ValueChanged(COLUMNNAME_C_BPartner_ID)) {
@@ -1283,6 +1278,7 @@ public class MOrder extends X_C_Order implements DocAction
 				}
 			}
 		}
+		// Validate Bill_Location_ID and Bill_User_ID after edit of Bill_BPartner_ID
 		if (is_new() || is_ValueChanged(COLUMNNAME_Bill_BPartner_ID)) {
 			if (getBill_Location_ID() > 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromLoc, getBill_Location_ID());
@@ -1297,15 +1293,16 @@ public class MOrder extends X_C_Order implements DocAction
 				}
 			}
 		}
-
+		
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
-		//	No Bill - get from Ship
+		//	Default Bill_BPartner_ID to C_BPartner_ID
 		if (getBill_BPartner_ID() == 0)
 		{
 			setBill_BPartner_ID(getC_BPartner_ID());
 			setBill_Location_ID(getC_BPartner_Location_ID());
 		}
+		//	Default Bill_Location_ID to C_BPartner_Location_ID
 		if (getBill_Location_ID() == 0)
 			setBill_Location_ID(getC_BPartner_Location_ID());
 
@@ -1358,9 +1355,9 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		// IDEMPIERE-63
-		// for documents that can be reactivated we cannot allow changing 
-		// C_DocTypeTarget_ID or C_DocType_ID if they were already processed and isOverwriteSeqOnComplete
-		// neither change the Date if isOverwriteDateOnComplete
+		// If document have been processed, we can't change 
+		// C_DocTypeTarget_ID or C_DocType_ID if DocType.IsOverwriteSeqOnComplete=Y.
+		// Also, can't change DateDoc if DocType.IsOverwriteDateOnComplete=Y.
 		BigDecimal previousProcessedOn = (BigDecimal) get_ValueOld(COLUMNNAME_ProcessedOn);
 		if (! newRecord && previousProcessedOn != null && previousProcessedOn.signum() > 0) {
 			int previousDocTypeID = (Integer) get_ValueOld(COLUMNNAME_C_DocTypeTarget_ID);
@@ -1383,10 +1380,12 @@ public class MOrder extends X_C_Order implements DocAction
 		if (!newRecord && (is_ValueChanged(COLUMNNAME_M_PriceList_ID) || is_ValueChanged(COLUMNNAME_DateOrdered))) {
 			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM C_OrderLine WHERE C_Order_ID=? AND M_Product_ID>0", getC_Order_ID());
 			if (cnt > 0) {
+				// Disallow change of price list if there are existing order lines
 				if (is_ValueChanged(COLUMNNAME_M_PriceList_ID)) {
 					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangePl"));
 					return false;
 				}
+				// Validate price list is valid for updated DateInvoiced
 				if (is_ValueChanged(COLUMNNAME_DateOrdered)) {
 					MPriceList pList =  MPriceList.get(getCtx(), getM_PriceList_ID(), null);
 					MPriceListVersion plOld = pList.getPriceListVersion((Timestamp)get_ValueOld(COLUMNNAME_DateOrdered));
@@ -1407,6 +1406,7 @@ public class MOrder extends X_C_Order implements DocAction
 			return false;
 		}
 
+		// Validate payment term and update IsPayScheduleValid
 		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
 			recursiveCall = true;
 			try {
@@ -1423,19 +1423,13 @@ public class MOrder extends X_C_Order implements DocAction
 		return true;
 	}	//	beforeSave
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
-		// Propagate changes to not-completed/reversed/closed invoices
+		// Propagate changes to not completed/reversed/closed invoices
 		String propagateColsSysCfg = MSysConfig.getValue(MSysConfig.ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES,
 				"Description,POReference,PaymentRule,C_PaymentTerm_ID,DateAcct", getAD_Client_ID(), getAD_Org_ID());
 		if (!Util.isEmpty(propagateColsSysCfg, true)) {
@@ -1504,10 +1498,6 @@ public class MOrder extends X_C_Order implements DocAction
 		return true;
 	}	//	afterSave
 	
-	/**
-	 * 	Before Delete
-	 *	@return true of it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{

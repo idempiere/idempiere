@@ -119,6 +119,10 @@ public class HeaderFooter
 		return retValue;
 	}	//	getDrillDown
 
+	/**
+	 * Set current page
+	 * @param page
+	 */
 	public void setCurrentPage(Page page) 
 	{
 		m_currentPage = page;

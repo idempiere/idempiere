@@ -156,12 +156,6 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		setCommissionAmt(amt.add(qty));
 	}	//	calculateCommission
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -172,11 +166,6 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{

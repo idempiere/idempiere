@@ -34,15 +34,15 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.jfree.io.IOUtils;
 
-
 /**
- *	Archive Engine.
- *	Based on Settings on Client Level
- *	Keys set for
- *	- Menu Reports - AD_Report_ID
- *	- Win Report - AD_Table_ID
- *	- Documents - AD_Table_ID and Record_ID and C_Customer_ID 
- *	
+ *	Archive Engine.<br/>
+ *	Based on Settings on Client Level.
+ *  <pre>
+ *  Keys set for
+ *  - Menu Reports - AD_Report_ID
+ *  - Win Report - AD_Table_ID
+ *  - Documents - AD_Table_ID and Record_ID and C_Customer_ID 
+ *	</pre>
  *  @author Jorg Janke
  *  @version $Id: ArchiveEngine.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
@@ -158,8 +158,7 @@ public class ArchiveEngine
 			&& Document.isValid((Pageable)layout)
 			&& layout.getNumberOfPages() > 0);
 	}	//	isValid
-	
-	
+		
 	/**
 	 * 	Get Archive Engine
 	 *	@return engine
@@ -180,9 +179,8 @@ public class ArchiveEngine
 	private static CLogger log = CLogger.getCLogger(ArchiveEngine.class);
 	/** Singleton		*/
 	private volatile static ArchiveEngine s_engine = null;
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	ArchiveEngine
 	 */
 	private ArchiveEngine ()

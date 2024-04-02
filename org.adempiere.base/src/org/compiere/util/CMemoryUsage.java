@@ -50,7 +50,6 @@ public class CMemoryUsage extends MemoryUsage
 
 	/**	Format						*/
 	private static DecimalFormat s_format =	DisplayType.getNumberFormat(DisplayType.Integer);
-
 	
 	/**
 	 * 	Get Free (Committed-Used) Memory
@@ -109,6 +108,7 @@ public class CMemoryUsage extends MemoryUsage
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ();

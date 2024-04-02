@@ -664,14 +664,10 @@ public class MPayment extends X_C_Payment
 		return retValue;    //  Payment processed
 	}   //  startProcess
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Disallow changes to fields with financial implications if payment have been processed
 		if (isProcessed() && 
 			! is_ValueChanged(COLUMNNAME_Processed) &&
             (   is_ValueChanged(COLUMNNAME_C_BankAccount_ID)
@@ -687,7 +683,7 @@ public class MPayment extends X_C_Payment
 			log.saveError("PaymentAlreadyProcessed", Msg.translate(getCtx(), "C_Payment_ID"));
 			return false;
 		}
-		// @Trifon - CashPayments
+		// Validate that either cash book or bank account is mandatory depending on whether this is a cash book transaction
 		if ( isCashbookTrx()) {
 			// Cash Book Is mandatory
 			if ( getC_CashBook_ID() <= 0 ) {
@@ -701,9 +697,9 @@ public class MPayment extends X_C_Payment
 				return false;
 			}
 		}
-		// end @Trifon - CashPayments
 		
-		//	We have a charge
+		// Reset order, invoice, write off, discount, isOverUnderPayment, OverUnderAmt and IsPrepayment for new Charge payment 
+		// or after Charge have been changed
 		if (getC_Charge_ID() != 0) 
 		{
 			if (newRecord || is_ValueChanged("C_Charge_ID"))
@@ -716,8 +712,7 @@ public class MPayment extends X_C_Payment
 				setOverUnderAmt(Env.ZERO);
 				setIsPrepayment(false);
 			}
-		}
-		//	We need a BPartner
+		}		
 		else if (getC_BPartner_ID() == 0 && !isCashTrx())
 		{
 			if (getC_Invoice_ID() != 0)
@@ -730,7 +725,7 @@ public class MPayment extends X_C_Payment
 				return false;
 			}
 		}
-		//	Prepayment: No charge and order or project (not as acct dimension)
+		// Update IsPrepayment flag
 		if (newRecord 
 			|| is_ValueChanged("C_Charge_ID") || is_ValueChanged("C_Invoice_ID")
 			|| is_ValueChanged("C_Order_ID") || is_ValueChanged("C_Project_ID"))
@@ -747,7 +742,7 @@ public class MPayment extends X_C_Payment
 						|| (getC_Project_ID() != 0 && getC_Invoice_ID() == 0)));
 			}
 		}
-		
+		// Prepayment: reset write off, discount,IsOverUnderPayment and OverUnderAmt for new record or after change of order/project.
 		if (isPrepayment())
 		{
 			if (newRecord 
@@ -785,8 +780,7 @@ public class MPayment extends X_C_Payment
 				setAD_Org_ID(ba.getAD_Org_ID());
 		}
 		
-		// [ adempiere-Bugs-1885417 ] Validate BP on Payment Prepare or BeforeSave
-		// there is bp and (invoice or order)
+		// Validate C_BPartner_ID same as C_BPartner_ID from order and invoice
 		if (getC_BPartner_ID() != 0 && (getC_Invoice_ID() != 0 || getC_Order_ID() != 0)) {
 			if (getC_Invoice_ID() != 0) {
 				MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
@@ -803,7 +797,7 @@ public class MPayment extends X_C_Payment
 				}
 			}
 		}
-		
+		// Encrypt credit card number and cvv
 		if (isProcessed())
 		{
 			if (getCreditCardNumber() != null)
@@ -820,7 +814,7 @@ public class MPayment extends X_C_Payment
 					setCreditCardVV(encrpytedCvv);
 			}
 		}
-
+		// Validate IBAN
 		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
@@ -830,7 +824,7 @@ public class MPayment extends X_C_Payment
 				}
 			}
 		}
-
+		// Validate IsOverrideCurrencyRate and Currency Rate
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
@@ -863,6 +857,7 @@ public class MPayment extends X_C_Payment
 			}
 		}
 
+		// Clear credit card fields if tender type is not credit card
 		if (!isProcessed())
 		{
 			if (!TENDERTYPE_CreditCard.equals(getTenderType()))
