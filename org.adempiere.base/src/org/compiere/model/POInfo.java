@@ -836,8 +836,9 @@ public class POInfo implements Serializable
 	/**
 	 * Build SQL SELECT statement.
 	 * @param fullyQualified prefix column names with the table name
-	 * @param virtualColumns names of virtual columns to include along with the regular table columns - 
-	 *        if no value (or <code>null</code>) is provided then all declared virtual columns will be included.
+	 * @param virtualColumns names of virtual columns to include along with the regular table columns.<br/> 
+	 *        - if virtualColumns is null then all declared virtual columns will be included.<br/>
+	 *        - if virtualColumns is an empty string array (new String[] {}), no declared virtual columns will be included.
 	 * @return {@link StringBuilder} instance with the SQL statement.
 	 */
 	public StringBuilder buildSelect(boolean fullyQualified, String ... virtualColumns)
