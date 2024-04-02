@@ -26,10 +26,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
@@ -46,8 +46,9 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5611033457579880793L;
+
 	/** AD_Client_ID:MUserDefInfo List */
-	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new HashMap<Integer, List<MUserDefInfo>>();
+	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new ConcurrentHashMap<>();
 	
     /**
      * UUID based Constructor
@@ -88,15 +89,13 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	private static MUserDefInfo[] getAll (Properties ctx, int infowindow_ID )
 	{
 		List<MUserDefInfo> fullList = null;
-		synchronized (m_fullMap) {
-			fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
-			if (fullList == null) {
-				fullList = new Query(ctx, MUserDefInfo.Table_Name, null, null)
-						.setOnlyActiveRecords(true)
-						.setClient_ID()
-						.list();
-				m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
-			}
+		fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
+		if (fullList == null) {
+			fullList = new Query(ctx, MUserDefInfo.Table_Name, null, null)
+					.setOnlyActiveRecords(true)
+					.setClient_ID()
+					.list();
+			m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
 		}
 				
 		if (fullList.size() == 0) {
@@ -224,17 +223,13 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		synchronized (m_fullMap) {
-			m_fullMap.remove(getAD_Client_ID());
-		}
+		m_fullMap.remove(getAD_Client_ID());
 		return true;
 	}
 	
 	@Override
 	protected boolean beforeDelete() {
-		synchronized (m_fullMap) {
-			m_fullMap.remove(getAD_Client_ID());
-		}
+		m_fullMap.remove(getAD_Client_ID());
 		return true;
 	}
 

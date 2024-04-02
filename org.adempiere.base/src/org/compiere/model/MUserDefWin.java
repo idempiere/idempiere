@@ -16,10 +16,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -36,7 +36,7 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7542708120229671875L;
-	private static final Map<Integer, List<MUserDefWin>> m_fullMap = new HashMap<Integer, List<MUserDefWin>>();
+	private static final Map<Integer, List<MUserDefWin>> m_fullMap = new ConcurrentHashMap<>();
 
     /**
      * UUID based Constructor
@@ -110,15 +110,13 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	private static MUserDefWin[] getAll (Properties ctx, int window_ID )
 	{
 		List<MUserDefWin> fullList = null;
-		synchronized (m_fullMap) {
-			fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
-			if (fullList == null) {
-				fullList = new Query(ctx, MUserDefWin.Table_Name, null, null)
-						.setOnlyActiveRecords(true)
-						.setClient_ID()
-						.list();
-				m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
-			}
+		fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
+		if (fullList == null) {
+			fullList = new Query(ctx, MUserDefWin.Table_Name, null, null)
+					.setOnlyActiveRecords(true)
+					.setClient_ID()
+					.list();
+			m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
 		}
 		
 		if (fullList.size() == 0) {
@@ -241,17 +239,13 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		synchronized (m_fullMap) {
-			m_fullMap.remove(getAD_Client_ID());
-		}
+		m_fullMap.remove(getAD_Client_ID());
 		return true;
 	}
 	
 	@Override
 	protected boolean beforeDelete() {
-		synchronized (m_fullMap) {
-			m_fullMap.remove(getAD_Client_ID());
-		}
+		m_fullMap.remove(getAD_Client_ID());
 		return true;
 	}
 
