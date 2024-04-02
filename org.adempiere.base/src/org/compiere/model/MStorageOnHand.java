@@ -1057,14 +1057,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 					log.saveError("Error", new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), 
 							getM_AttributeSetInstance_ID(), getM_Locator_ID(), QtyOnHand.subtract(getQtyOnHand()), getQtyOnHand().negate()));
 					return false;
-				}
-				
-				if (getM_AttributeSetInstance_ID() > 0 && getQtyOnHand().signum() < 0)
-				{
-					log.saveError("Error", new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), 
-							getM_AttributeSetInstance_ID(), getM_Locator_ID(), QtyOnHand.subtract(getQtyOnHand()), getQtyOnHand().negate()));
-					return false;
-				}
+				}				
 			}
 		}
 
