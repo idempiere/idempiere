@@ -96,8 +96,6 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 		return DB.getSQLValue(null, sql, Env.getAD_Client_ID(ctx));
 	}	//	getDefault_UOM_ID
 
-	/*************************************************************************/
-
 	/**	UOM Cache				*/
 	protected static ImmutableIntPOCache<Integer,MUOM>	s_cache = new ImmutableIntPOCache<Integer,MUOM>(Table_Name, 30);
 
@@ -190,7 +188,7 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 *	Constructor.
 	 *	@param ctx context
 	 *  @param C_UOM_ID UOM ID
@@ -226,7 +224,7 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 	}	//	UOM
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MUOM(MUOM copy) 
@@ -235,7 +233,7 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -245,7 +243,7 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -260,6 +258,7 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("UOM[");
@@ -271,7 +270,7 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 	/**
 	 * 	Round qty
 	 *	@param qty quantity
-	 *	@param stdPrecision true if std precisison
+	 *	@param stdPrecision true to use std precision for rounding
 	 *	@return rounded quantity
 	 */
 	public BigDecimal round (BigDecimal qty, boolean stdPrecision)
@@ -285,39 +284,43 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 	}	//	round
 
 	/**
-	 * 	Second
+	 * 	Is Second
 	 *	@return true if UOM is second
 	 */
 	public boolean isSecond()
 	{
 		return X12_SECOND.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	Minute
+	 * 	Is Minute
 	 *	@return true if UOM is minute
 	 */
 	public boolean isMinute()
 	{
 		return X12_MINUTE.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	Hour
+	 * 	Is Hour
 	 *	@return true if UOM is hour
 	 */
 	public boolean isHour()
 	{
 		return X12_HOUR.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	Day
+	 * 	Is Day
 	 *	@return true if UOM is Day
 	 */
 	public boolean isDay()
 	{
 		return X12_DAY.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	WorkDay
+	 * 	Is Working Day
 	 *	@return true if UOM is work day
 	 */
 	public boolean isWorkDay()
@@ -325,31 +328,34 @@ public class MUOM extends X_C_UOM implements ImmutablePOSupport
 		return X12_DAY_WORK.equals(getX12DE355());
 	}
 	/**
-	 * 	Week
+	 * 	Is Week
 	 *	@return true if UOM is Week
 	 */
 	public boolean isWeek()
 	{
 		return X12_WEEK.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	Month
+	 * 	Is Month
 	 *	@return true if UOM is Month
 	 */
 	public boolean isMonth()
 	{
 		return X12_MONTH.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	WorkMonth
+	 * 	Is Working Month
 	 *	@return true if UOM is Work Month
 	 */
 	public boolean isWorkMonth()
 	{
 		return X12_MONTH_WORK.equals(getX12DE355());
 	}
+	
 	/**
-	 * 	Year
+	 * 	Is Year
 	 *	@return true if UOM is year
 	 */
 	public boolean isYear()

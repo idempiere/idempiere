@@ -254,11 +254,6 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 		return totalQty==null?Env.ZERO:totalQty.negate();
 	} //totalLineQty
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -267,7 +262,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Inventory_ID"));
 			return false;
 		}
-		//Set DateMaterialPolicy
+		// Set DateMaterialPolicy after change of M_AttributeSetInstance_ID
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
 			I_M_InventoryLine line = getM_InventoryLine();
 			

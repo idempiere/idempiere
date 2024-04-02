@@ -16,7 +16,7 @@ package org.adempiere.base;
 import javax.crypto.SecretKey;
 
 /**
- * Interface for key store 
+ * Interface for security key store 
  * @author deepak
  */
 public interface IKeyStore {

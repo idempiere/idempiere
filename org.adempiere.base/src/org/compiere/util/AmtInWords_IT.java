@@ -165,14 +165,14 @@ public class AmtInWords_IT implements AmtInWords
 		while (number > 0);
 		return (prefix + soFar).trim ();
 	}	//	convert
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80 or 352,80)
 	 * 	@return amount in words (TRECENTOCINQUANTADUE/80)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)

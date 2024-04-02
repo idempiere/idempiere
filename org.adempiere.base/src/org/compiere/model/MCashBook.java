@@ -198,15 +198,10 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting records (C_CashBook_Acct)
 		if (newRecord && success)
 			insert_Accounting("C_CashBook_Acct", "C_AcctSchema_Default", null);
 

@@ -220,13 +220,6 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		return sb.toString();
 	} // toString
 
-	/**************************************************************************
-	 * Before Save. - Set Name
-	 * 
-	 * @param newRecord
-	 *            new
-	 * @return save
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getC_Location_ID() == 0)
@@ -292,6 +285,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	} // makeUnique
 
 	/**
+	 * Create unique BP location name
 	 * @param address
 	 * @return unique BP location name for address
 	 */

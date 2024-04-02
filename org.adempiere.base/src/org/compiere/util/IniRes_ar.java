@@ -23,7 +23,6 @@ import java.util.ListResourceBundle;
  * @author      Jorg Janke
  * @version     $Id: IniRes_ar.java,v 1.2 2006/07/30 00:52:23 jjanke Exp $
  */
-
 public class IniRes_ar extends ListResourceBundle
 {
 	/** Translation Content     */

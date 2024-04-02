@@ -40,7 +40,9 @@ import org.compiere.model.MUser;
  *  UPDATE AD_User SET EMail=TRIM(EMail) WHERE Email&lt;&gt;TRIM(EMail)
  *  @author Jorg Janke
  *  @version $Id$
+ *  @deprecated
  */
+@Deprecated
 public class WebUser
 {
 	/**

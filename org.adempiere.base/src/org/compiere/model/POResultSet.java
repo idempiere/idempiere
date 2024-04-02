@@ -28,7 +28,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
 
 /**
- * Simple wrapper over jdbc resultset
+ * Simple wrapper over JDBC result set
  * @author Low Heng Sin
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1984834 ] Add POResultSet.hasNext convenient method
@@ -46,7 +46,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	private boolean closeOnError = true;
 
 	/**
-	 * Constructs the POResultSet.
+	 * Constructs the POResultSet.<br/>
 	 * By default, closeOnError option is false. You need to set it explicitly.
 	 * @param table
 	 * @param ps
@@ -62,7 +62,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	}
 	
 	/**
-	 * 
+	 * Is result set has next record
 	 * @return true if it has next, false otherwise
 	 * @throws DBException
 	 */
@@ -74,8 +74,8 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	}
 	
 	/**
-	 * 
-	 * @return PO or null if reach the end of resultset
+	 * Get next record
+	 * @return PO or null if reach the end of result set
 	 * @throws DBException
 	 */
 	@SuppressWarnings("unchecked")
@@ -118,7 +118,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	}
 
 	/**
-	 * Will be the {@link PreparedStatement} and {@link ResultSet} closed on any database exception
+	 * Will the {@link PreparedStatement} and {@link ResultSet} closed on any database exception
 	 * @return true if yes, false otherwise
 	 */
 	public boolean isCloseOnError() {
@@ -128,6 +128,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	/**
 	 * Release database resources.
 	 */
+	@Override
 	public void close() {
 		DB.close(this.resultSet, this.statement);
 		this.resultSet = null;

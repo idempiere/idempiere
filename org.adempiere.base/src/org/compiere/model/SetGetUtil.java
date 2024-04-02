@@ -15,7 +15,6 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  * Contributor(s): Teo Sarca, (tentative)                                     *
  *****************************************************************************/
-
 package org.compiere.model;
 
 import java.lang.reflect.Proxy;
@@ -38,7 +37,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
 
-
+/**
+ * Static utility methods for working with {@link SetGetModel} interface
+ */
 public class SetGetUtil
 {
 	/**		Static logger												*/
@@ -65,6 +66,14 @@ public class SetGetUtil
 	{
 		updateColumns(new SetGetModel[]{model}, columnNames, sql, params, trxName);
 	}
+	
+	/**
+	 * Update columns from the result of the given query.
+	 * @param model
+	 * @param columnNames
+	 * @param sql
+	 * @param trxName
+	 */
 	public static void updateColumns(SetGetModel model, String[] columnNames, String sql, String trxName)
 	{
 		updateColumns(new SetGetModel[]{model}, columnNames, sql, null, trxName);
@@ -106,7 +115,7 @@ public class SetGetUtil
 	}	//	updateColumns
 
 	/**
-	 * Update columns from the result of the given query.
+	 * Update columns from result set
 	 * 
 	 * @param models
 	 * @param columnNames
@@ -160,6 +169,13 @@ public class SetGetUtil
 		}
 	}	//	updateColumns
 
+	/**
+	 * Update columns from first row of result set
+	 * @param model
+	 * @param columnNames
+	 * @param rs
+	 * @throws SQLException
+	 */
 	public static void updateColumns(SetGetModel model, String[] columnNames, ResultSet rs)
 	throws SQLException
 	{
@@ -192,16 +208,16 @@ public class SetGetUtil
 	}	//	getColumnName
 
 	/**
-	 * Copy from the fields to.
-	 * The second object is not required to be in the same table.
-	 * The following fields are not copied: AD_Client_ID, AD_Org_ID, Created% Updated% IsActive.
+	 * Copy from the fields to.<br/>
+	 * The second object is not required to be in the same table.<br/>
+	 * The following fields are not copied: AD_Client_ID, AD_Org_ID, Created% Updated% IsActive.<br/>
 	 * If excludeFields includeFields and are null, then it will copy all the fields (which can be copied).
-	 * @ param to destination object
-	 * @ param object from source
-	 * @ param includeFields name fields to be excluded; null will be interpreted as String [0];
+	 * @param to destination object
+	 * @param from source
+	 * @param includeFields name fields to be excluded; null will be interpreted as String [0];
 	 * excludeFields includeFields and mutually exclusive, priority being includeFields;
 	 * If includeFields excludeFields are null and then copy all fields
-	 * @ param excludeFields name fields to be excluded, null will be interpreted as String [0]
+	 * @param excludeFields name fields to be excluded, null will be interpreted as String [0]
 	 * @return false if "to" or "from" is null, true otherwise
 	 */
 	public static boolean copyValues(PO to, PO from, String[] includeFields, String[] excludeFields)
@@ -212,20 +228,21 @@ public class SetGetUtil
 
 	/**
 	 * Copy all values from "from" to "to"
-	 * @return number of columns that were copied and were were also changed in object "from"
+	 * @return number of columns that were copied and were also changed in object "from"
 	 * @see #copyValues(PO, PO, String[], String[])
 	 */
 	public static int copyChangedValues(PO to, PO from)
 	{
 		return copyValues(to, from, null, null, true);
 	}
+	
 	/**
-	 * 
+	 * Copy values from "from" to "to"
 	 * @param to
 	 * @param from
 	 * @param includeFields
 	 * @param excludeFields
-	 * @param trackOnlyChanges counts only the fields that were changed from
+	 * @param trackOnlyChanges counts only the fields that were changed in from
 	 * 							(from.is_ValueChanged(int idx))
 	 * @return -1 the error or the number of heads that have been copied;
 	 *			if trackOnlyChanges = true then copied and include only the columns that have changed and "from"
@@ -337,11 +354,10 @@ public class SetGetUtil
 	}	//	copyValues
 
 	/**
-	 * Copy from the fields to the.
-	 * The two objects do not need to be in the same table.
-	 * @param to					destination object
-	 * @param from_tableName	source object table
-	 * @param from_id				source object ID
+	 * Update "to" with values from query
+	 * @param to				destination object
+	 * @param from_tableName	source table to query from
+	 * @param from_id			source record ID
 	 * @param includeFields	name fields to be excluded, null will be interpreted as String[0];
 	 * @see #updateColumns(SetGetModel, String[], String, String)  
 	 */
@@ -371,7 +387,7 @@ public class SetGetUtil
 	/**
 	 * Get Value as integer
 	 * @param	model
-	 * @param	name
+	 * @param	name column name
 	 * @return int value
 	 */
 	public static int get_AttrValueAsInt(SetGetModel model, String name)
@@ -385,7 +401,7 @@ public class SetGetUtil
 	/**
 	 * Get Value as Timestamp
 	 * @param	model
-	 * @param	name
+	 * @param	name column name
 	 * @return Timestamp value
 	 */
 	public static Timestamp get_AttrValueAsDate(SetGetModel model, String name)
@@ -399,7 +415,7 @@ public class SetGetUtil
 	/**
 	 * Get Value as BigDecimal
 	 * @param	model
-	 * @param	name
+	 * @param	name column name
 	 * @return BigDecimal or {@link BigDecimal#ZERO}
 	 */
 	public static BigDecimal get_AttrValueAsBigDecimal(SetGetModel model, String name)
@@ -413,7 +429,7 @@ public class SetGetUtil
 	/**
 	 * Get Value as Boolean
 	 * @param model
-	 * @param name
+	 * @param name column name
 	 * @return boolean value
 	 */
 	public static boolean get_AttrValueAsBoolean(SetGetModel model, String name)
@@ -431,7 +447,7 @@ public class SetGetUtil
 	/**
 	 * Get Value as String
 	 * @param model
-	 * @param name
+	 * @param name column name
 	 * @param valueIfNull value that will be returned if the value is null
 	 * @return String value
 	 */
@@ -446,7 +462,7 @@ public class SetGetUtil
 	/**
 	 * Set Attribute Value
 	 * @param model
-	 * @param name
+	 * @param name column name
 	 * @param value
 	 * @throws AdempiereException if it can not be set (error setting, attribute/column name not found).
 	 */
@@ -457,9 +473,10 @@ public class SetGetUtil
 	}
 	
 	/**
+	 * Is any of the column change
 	 * @param model
 	 * @param propertyNames
-	 * @return true if ANY of given properties had changed
+	 * @return true if ANY of given columns had changed
 	 */
 	public static boolean is_ValueChanged(SetGetModel model, String ... propertyNames)
 	{
@@ -677,6 +694,14 @@ public class SetGetUtil
 		}
 	}
 	
+	/**
+	 * Create new instance of "clazz" with the (ctx, 0, trxName) constructor.
+	 * @param <T>
+	 * @param ctx
+	 * @param clazz
+	 * @param trxName
+	 * @return new instance of "clazz"
+	 */
 	public static <T> T newInstance(Properties ctx, Class<T> clazz, String trxName)
 	{
 		try
@@ -690,6 +715,12 @@ public class SetGetUtil
 		}
 	}
 
+	/**
+	 * Append value to column (with " | " as separator between existing value and "value")
+	 * @param model
+	 * @param columnName
+	 * @param value
+	 */
 	public static void appendValue(SetGetModel model, String columnName, String value)
 	{
 		if (Util.isEmpty(value, true))
@@ -713,9 +744,9 @@ public class SetGetUtil
 	}
 	
 	/**
-	 * Get Info for given table and ID.
+	 * Get Info text for given table and ID. <br/>
 	 * This method calls {@link MLookupFactory#getLookup_TableDirEmbed(Language, String, String, String)} to
-	 * generate the info string.
+	 * generate the info text.
 	 * @param ctx context
 	 * @param tableName tablename
 	 * @param id record id
@@ -735,6 +766,9 @@ public class SetGetUtil
 		return docInfo;
 	}
 	
+	/**
+	 * SetGetModel wrapper class for GridTab
+	 */
 	private static class GridTab2SetGetModelWrapper implements SetGetModel
 	{
 		private final GridTab tab;

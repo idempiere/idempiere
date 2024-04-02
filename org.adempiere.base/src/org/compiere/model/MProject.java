@@ -404,18 +404,13 @@ public class MProject extends X_C_Project
 		return count;
 	}	//	copyPhasesFrom
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_User_ID() == -1)	//	Summary Project in Dimensions
 			setAD_User_ID(0);
 		
-		//	Set Currency
+		//	Set Currency from price list
 		if (is_ValueChanged("M_PriceList_Version_ID") && getM_PriceList_Version_ID() != 0)
 		{
 			MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID(), null);
@@ -426,26 +421,22 @@ public class MProject extends X_C_Project
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Create accounting and tree record
 		if (newRecord)
 		{
 			insert_Accounting("C_Project_Acct", "C_AcctSchema_Default", null);
 			insert_Tree(MTree_Base.TREETYPE_Project);
 		}
+		// Update driven by value tree
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_Project);
 
-		//	Value/Name change
+		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord 
 			&& (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "C_Project_ID=" + getC_Project_ID(), get_TrxName());
@@ -453,14 +444,10 @@ public class MProject extends X_C_Project
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_Project);
 		return success;

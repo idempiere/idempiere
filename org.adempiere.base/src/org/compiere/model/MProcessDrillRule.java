@@ -194,7 +194,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-
+		// Set AD_Table_ID from report view of process
 		if(newRecord || is_ValueChanged(MProcessDrillRule.COLUMNNAME_AD_Process_ID)) {
 			MProcess process = MProcess.get(getAD_Process_ID());
 			if(process != null && process.getAD_ReportView_ID() > 0) {

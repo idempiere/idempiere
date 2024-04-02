@@ -29,16 +29,15 @@ import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.expression.logic.LogicEvaluator;
 
-
 /**
- *	User overrides for field model
+ *	User, role, organization or tenant overrides for field model
  *  @author Dirk Niemeyer, action42 GmbH
  *  @version $Id$
  */
 public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2522038599257589829L;
 
@@ -46,18 +45,17 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	private static ImmutablePOCache<String,MUserDefField> s_cache = new ImmutablePOCache<String,MUserDefField>(Table_Name, 10);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Field_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Field_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefField(Properties ctx, String AD_UserDef_Field_UU, String trxName) {
         super(ctx, AD_UserDef_Field_UU, trxName);
     }
 
 	/**
 	 * 	Standard constructor.
-	 * 	You must implement this constructor for Adempiere Persistency
 	 *	@param ctx context
 	 *	@param ID the primary key ID
 	 *	@param trxName transaction
@@ -68,11 +66,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}	//	MyModelExample
 
 	/**
-	 * 	Optional Load Constructor.
-	 * 	You would use this constructor to load several business objects.
-	 *  <code>
-	 * 	SELECT * FROM MyModelExample WHERE ...
-	 *  </code> 
+	 * 	Load Constructor.
 	 *  @param ctx context
 	 *  @param rs result set
 	 *	@param trxName transaction
@@ -83,7 +77,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}	//	MyModelExample
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MUserDefField(MUserDefField copy) 
@@ -92,7 +86,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -102,7 +96,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -114,12 +108,12 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}
 	
 	/**
-	 * Get matching MUserDefField related to current field and user definition for window and tab
+	 * Get best matching MUserDefField for field, tab and window
 	 * @param ctx
 	 * @param AD_Field_ID
 	 * @param AD_Tab_ID
 	 * @param AD_Window_ID
-	 * @return
+	 * @return MUserDefField or null
 	 */
 	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID )
 	{
@@ -127,17 +121,16 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}
 
 	/**
-	 * Get matching MUserDefField related to current field and user definition for window and tab
+	 * Get best matching MUserDefField for field, tab and window
 	 * @param ctx
 	 * @param AD_Field_ID
 	 * @param AD_Tab_ID
 	 * @param AD_Window_ID
 	 * @param reload
-	 * @return
+	 * @return MUserDefField or null
 	 */
 	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID , boolean reload)
 	{
-
 		MUserDefWin userdefWin = MUserDefWin.getBestMatch(ctx, AD_Window_ID);
 		if (userdefWin == null)
 			return null;
@@ -190,13 +183,10 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		return retValue;
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Disallow change of reference for encrypted and obscure field 
 		if (is_ValueChanged("AD_Reference_ID")) {
 			MField field = new MField(getCtx(), getAD_Field_ID(), get_TrxName());
 			MColumn column = (MColumn) field.getAD_Column();
@@ -205,13 +195,14 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 				return false;
 			}
 		}
+		// Clear AD_Reference_Value_ID, AD_Val_Rule_ID, IsToolbarButton if AD_Reference_ID is 0
 		if (getAD_Reference_ID() <= 0) {
 			setAD_Reference_Value_ID(0);
 			setAD_Val_Rule_ID(0);
 			setIsToolbarButton(null);
 		}
 		
-		//validate logic expression
+		// Validate read only, display and mandatory logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());

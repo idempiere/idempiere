@@ -24,7 +24,6 @@ import java.util.Properties;
 
 import org.compiere.print.MPrintFormatItem;
 
-
 /**
  *	Line / Box Element
  *	
@@ -34,7 +33,7 @@ import org.compiere.print.MPrintFormatItem;
 public class BoxElement extends PrintElement
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -1956804687979601523L;
 
@@ -61,6 +60,7 @@ public class BoxElement extends PrintElement
 	 * 	Calculate Size
 	 *	@return true if calculated
 	 */
+	@Override
 	protected boolean calculateSize ()
 	{
 		p_width = 0;
@@ -78,6 +78,7 @@ public class BoxElement extends PrintElement
 	 *	@param ctx context
 	 *	@param isView true if Java
 	 */
+	@Override
 	public void paint (Graphics2D g2D, int pageNo, Point2D pageStart,
 		Properties ctx, boolean isView)
 	{

@@ -124,7 +124,8 @@ public class MLandedCost extends X_C_LandedCost
 	}	//	MLandedCost
 	
 	/**
-	 * 	Before Save
+	 * 	Check that one of M_Product_ID, M_InOut_ID or M_InOutLine_ID is fill.<br/>
+	 *  Ensure M_Product_ID is 0 if M_InOutLine_ID is fill.
 	 *	@param newRecord new
 	 *	@return true if ok
 	 */

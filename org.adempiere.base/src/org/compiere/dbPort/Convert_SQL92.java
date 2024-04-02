@@ -24,16 +24,15 @@ import org.compiere.util.Util;
 /***
  * Convert from oracle syntax to sql 92 standard
  * @author Low Heng Sin
- *
  */
 public abstract class Convert_SQL92 extends Convert {
 	
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (Convert_SQL92.class);
 	
-	/**************************************************************************
+	/**
 	 *  Convert Outer Join.<br/>
-	 *  Converting joins can be very complex when multiple tables/keys are involved.
+	 *  Converting joins can be very complex when multiple tables/keys are involved.<br/>
 	 *  The main scenarios supported are two tables with multiple key columns
 	 *  and multiple tables with single key columns.
 	 *  <pre>{@code

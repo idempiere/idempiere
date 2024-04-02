@@ -31,7 +31,7 @@ import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 
 /**
- *  Cache for table.
+ *  Default cache implementation, usually use for caching of table data.
  *	@param <K> Key 
  *	@param <V> Value
  *
@@ -300,6 +300,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	@return number of items cleared
 	 *	@see org.compiere.util.CacheInterface#reset()
 	 */
+	@Override
 	public int reset()
 	{
 		int no = cache.size()+nullList.size();
@@ -308,13 +309,12 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	reset
 
 	/**
-	 * 	Expire Cache if enabled
+	 * 	Reset Cache if expire duration is set and cache has expire
 	 */	
 	private void expire()
 	{
 		if (m_expire != 0 && m_timeExp < System.currentTimeMillis())
 		{
-		//	System.out.println ("------------ Expired: " + getName() + " --------------------");
 			reset();
 		}
 	}	//	expire
@@ -323,6 +323,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		return "CCache[" + m_name 
@@ -334,9 +335,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	toString
 
 	/**
-	 * 	Clear cache and calculate new expiry time
+	 * 	Clear cache and calculate new expire time
 	 *	@see java.util.Map#clear()
 	 */
+	@Override
 	public void clear()
 	{
 		if (m_changeSupport != null)
@@ -365,6 +367,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#containsKey(java.lang.Object)
 	 */
+	@Override
 	public boolean containsKey(Object key)
 	{
 		expire();
@@ -374,6 +377,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#containsValue(java.lang.Object)
 	 */
+	@Override
 	public boolean containsValue(Object value)
 	{
 		expire();
@@ -384,6 +388,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *  The return entry set exclude entries that contains null value
 	 *	@see java.util.Map#entrySet()
 	 */
+	@Override
 	public Set<Map.Entry<K,V>> entrySet()
 	{
 		expire();
@@ -414,6 +419,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *	@param value value
 	 *	@return previous value
 	 */
+	@Override
 	public V put (K key, V value)
 	{
 		expire();
@@ -432,6 +438,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	Put All
 	 *	@param m map
 	 */
+	@Override
 	public void putAll (Map<? extends K, ? extends V> m)
 	{
 		expire();
@@ -442,6 +449,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#isEmpty()
 	 */
+	@Override
 	public boolean isEmpty()
 	{
 		expire();
@@ -452,6 +460,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * The return key set excludes key that map to null value
 	 *	@see java.util.Map#keySet()
 	 */
+	@Override
 	public Set<K> keySet()
 	{
 		expire();
@@ -461,6 +470,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#size()
 	 */
+	@Override
 	public int size()
 	{
 		expire();
@@ -481,6 +491,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *  The return values collection exclude null value entries
 	 *	@see java.util.Map#values()
 	 */
+	@Override
 	public Collection<V> values()
 	{
 		expire();
@@ -509,7 +520,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		if (m_changeSupport != null && listener != null)
 			m_changeSupport.removeVetoableChangeListener(listener);
     }	//	removeVetoableChangeListener
-
 
 	@Override
 	public V remove(Object key) {
@@ -550,7 +560,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 
 	/**
-	 * 
+	 * Get maximum size of cache
 	 * @return max size of cache
 	 */
 	public int getMaxSize() {

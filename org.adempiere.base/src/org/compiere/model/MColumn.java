@@ -357,20 +357,17 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		setIsEncrypted (IsEncrypted ? "Y" : "N");
 	}	//	setIsEncrypted
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Validate column name is valid DB identifier
 		String error = Database.isValidIdentifier(getColumnName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
 			return false;
 		}
 
+		// Validate foreign key constraint name is valid DB identifier
 		if (! Util.isEmpty(getFKConstraintName())) {
 			error = Database.isValidIdentifier(getFKConstraintName());
 			if (!Util.isEmpty(error)) {
@@ -379,6 +376,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
+		// Validate field length
 		int displayType = getAD_Reference_ID();
 		if (DisplayType.isLOB(displayType) || displayType == DisplayType.JSON)	//	LOBs are 0
 		{
@@ -400,6 +398,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
+		// AD_Reference_Value_ID is mandatory for Table and TableUU display type
 		if ((displayType == DisplayType.Table || displayType == DisplayType.TableUU) && getAD_Reference_Value_ID() <= 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Reference_Value_ID"));
@@ -416,6 +415,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		
 		if (!isVirtualColumn() && getValueMax() != null && getValueMin() != null)
 		{
+			// Validate ValueMax > ValueMin 
 			try {
 				BigDecimal valueMax = new BigDecimal(getValueMax());
 				BigDecimal valueMin = new BigDecimal(getValueMin());
@@ -429,6 +429,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		
 		if (isIdentifier())
 		{
+			// Validate SeqNo is unique for identifier column
 			int cnt = DB.getSQLValue(get_TrxName(),"SELECT COUNT(*) FROM AD_Column "+
 					"WHERE AD_Table_ID=?"+
 					" AND AD_Column_ID!=?"+
@@ -442,7 +443,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 		
-		//	Virtual Column
+		// Set mandatory, updateable and identifier to false for Virtual Column
 		if (isVirtualColumn())
 		{
 			if (isMandatory())
@@ -452,12 +453,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			if ((isVirtualUIColumn() || isVirtualSearchColumn()) && isIdentifier())
 				setIsIdentifier(false);
 		}
-		//	Updateable
+		// Ensure Updateable is false for parent and key column
 		if (isParent() || isKey())
 			setIsUpdateable(false);
 		if (isAlwaysUpdateable() && !isUpdateable())
 			setIsAlwaysUpdateable(false);
-		//	Encrypted
+		// Validate Encrypted is set for appropriate type of column
 		String colname = getColumnName();
 		if (isEncrypted()) 
 		{
@@ -474,7 +475,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}	
 		
-		//	Sync Terminology
+		//	Sync Terminology with AD_Element
 		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
 			&& getAD_Element_ID() != 0)
 		{
@@ -495,7 +496,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				setIsAllowCopy(false);
 		}
 
-		// validate FormatPattern
+		// Validate FormatPattern for date and numeric column
 		String pattern = getFormatPattern();
 		if (! Util.isEmpty(pattern, true)) {
 			if (DisplayType.isNumeric(getAD_Reference_ID())) {
@@ -519,12 +520,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
-		// IDEMPIERE-4714
+		// Ensure logging is off for secure column
 		if (isSecure() && isAllowLogging()) {
 			setIsAllowLogging(false);
 		}
 
-		// IDEMPIERE-1615 Multiple key columns lead to data corruption or data loss
+		// Disallow having > 1 key column (For multi key table, use IsParent instead)
 		if ((is_ValueChanged(COLUMNNAME_IsKey) || is_ValueChanged(COLUMNNAME_IsActive)) && isKey() && isActive()) {
 			int cnt = DB.getSQLValueEx(get_TrxName(),
 					"SELECT COUNT(*) FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' AND AD_Column_ID!=? AND IsKey='Y'",
@@ -534,7 +535,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				return false;
 			}
 		}
-
+		
+		// Set SeqNoSelection
 		if (isSelectionColumn() && getSeqNoSelection() <= 0) {
 			int next = DB.getSQLValueEx(get_TrxName(),
 					"SELECT ROUND((COALESCE(MAX(SeqNoSelection),0)+10)/10,0)*10 FROM AD_Column WHERE AD_Table_ID=? AND IsSelectionColumn='Y' AND IsActive='Y'",
@@ -542,14 +544,14 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			setSeqNoSelection(next);
 		}
 
-		//validate readonly logic expression
+		// Validate readonly logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());
 			}
 		}
 
-		// IDEMPIERE-4911
+		// If this is column of translation table (_trl), validate field length is >= field length of the corresponding column in base table
 		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
 		String tableName = table.getTableName();
 		if (tableName.toLowerCase().endsWith("_trl")) {
@@ -567,6 +569,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			set_Value(COLUMNNAME_AD_InfoWindow_ID, null);
 		}
 
+		// Set field length of UUID column and validate that column name ends with _UU
 		if (DisplayType.isUUID(getAD_Reference_ID())) {
 			set_Value(COLUMNNAME_FieldLength, 36);
 			if (! getColumnName().endsWith("_UU")) {
@@ -575,6 +578,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 		
+		// YesNo display type - set mandatory and set default value (if empty)
 		if (getAD_Reference_ID() == DisplayType.YesNo) {
  			setIsMandatory(true);
 			if (Util.isEmpty(getDefaultValue(), true)) {
@@ -585,6 +589,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
  		}
 		
+		// Set SeqNoPartition
 		if (isActive() && isPartitionKey() && getSeqNoPartition() <= 0)
 		{
 			String sql = "SELECT COALESCE(MAX(SeqNoPartition),0)+10 AS DefaultValue FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' AND IsPartitionKey='Y'";
@@ -592,6 +597,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			setSeqNoPartition(ii);
 		}
 		
+		// Validate partition column changes
 		if (is_ValueChanged(COLUMNNAME_IsPartitionKey) 
 				|| is_ValueChanged(COLUMNNAME_PartitioningMethod)
 				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_IsActive))
@@ -612,12 +618,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -630,7 +630,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			MChangeLog.resetLoggedList();
 		}
 
-		// IDEMPIERE-4911
+		// IDEMPIERE-4911 Warn potential issues with IsTranslated
 		if (isTranslated()) {
 			MTable table = MTable.get(getAD_Table_ID());
 			String trlTableName = table.getTableName() + "_Trl";

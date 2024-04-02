@@ -237,9 +237,8 @@ public final class Fact
 	{
 		return m_acctSchema;
 	}	//	getAcctSchema
-
 	
-	/**************************************************************************
+	/**
 	 *	Are the lines Source Balanced
 	 *  @return true if source lines balanced
 	 */
@@ -273,7 +272,7 @@ public final class Fact
 	}	//	isSourceBalanced
 
 	/**
-	 *	Return Source Balance
+	 *	Get Source Balance Amount
 	 *  @return source balance
 	 */
 	protected BigDecimal getSourceBalance()
@@ -293,7 +292,7 @@ public final class Fact
 	 *  Only if Suspense Balancing is enabled and not a multi-currency document
 	 *  (double check as, otherwise the rule should not have fired). <br/>
 	 *  If not balanced, create balancing entry in currency of the document.
-	 *  @return FactLine
+	 *  @return Balancing FactLine or null
 	 */
 	public FactLine balanceSource()
 	{

@@ -186,12 +186,6 @@ public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 	}
 
 	@Override
-	protected boolean beforeSave (boolean newRecord)
-	{
-		return true;
-	}
-	
-	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if(!success)

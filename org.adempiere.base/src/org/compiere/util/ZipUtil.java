@@ -22,7 +22,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -162,6 +161,7 @@ public class ZipUtil
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		if (m_zipFile != null)
@@ -169,8 +169,7 @@ public class ZipUtil
 		return "ZipUtil";
 	}	//	toString
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Content as sorted String Array
 	 * 	@return content
 	 */
@@ -251,8 +250,7 @@ public class ZipUtil
 		return null;
 	}	//	getManifest
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Zip Entry
 	 * 	@param fileName zip/jar file
 	 * 	@param entryName entry
@@ -339,10 +337,10 @@ public class ZipUtil
 	}	//	getManifest
 
 	/**
-	 * 	Get Manifest
-	 * 	@param fileName jar file
-	 *  @param jarEntry jar entry
-	 * 	@return Manifest
+	 * 	Get jar entry
+	 * 	@param fileName jar file name
+	 *  @param jarEntry jar entry name
+	 * 	@return jar entry
 	 */
 	static public JarEntry getJarEntry (String fileName, String jarEntry)
 	{
@@ -355,9 +353,9 @@ public class ZipUtil
 	}	//	getManifest
 
 	/**
-	 * 	Dump Manifest to
+	 * 	Dump Manifest to standard out
 	 * 	@param fileName zip/jar file
-	 * 	 */
+	 */
 	static public void dumpManifest (String fileName)
 	{
 		Manifest mf = getManifest (fileName);
@@ -374,7 +372,7 @@ public class ZipUtil
 	 * 	Get Zip Entry time
 	 * 	@param fileName zip file
 	 * 	@param entryName entry
-	 * 	@return Time as String or null
+	 * 	@return Timestamp as String or null
 	 */
 	static public String getEntryTime (String fileName, String entryName)
 	{
@@ -386,7 +384,7 @@ public class ZipUtil
 	}	//	getEntryTime
 
 	/**
-	 * 	Get Fill name of jarfile in path
+	 * 	Get full name of jarfile in class path
 	 * 	@param jarFile name
 	 * 	@return full name or null if not found
 	 */
@@ -396,44 +394,9 @@ public class ZipUtil
 		String[] pathEntries = path.split(System.getProperty("path.separator"));
 		for (int i = 0; i < pathEntries.length; i++)
 		{
-		//	System.out.println(pathEntries[i]);
 			if (pathEntries[i].indexOf(jarFile) != -1)
 				return pathEntries[i];
 		}
 		return null;
 	}	//	findInPath
-
-	/**
-	 * 	Test
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		try
-		{
-			//	Get Jar File
-			JarFile jar = ZipUtil.getJar("CClient.jar");
-			if (jar == null)
-				jar = ZipUtil.getJar("CTools.jar");
-			if (jar == null)
-				return;
-
-		//	JarEntry je = jar.getJarEntry(JarFile.MANIFEST_NAME);
-		//	if (je != null)
-		//		System.out.println("Time " + new Date(je.getTime()));
-			Manifest mf = jar.getManifest();
-			if (mf != null)
-			{
-				Attributes atts = mf.getMainAttributes();
-				atts.getValue("Implementation-Vendor");
-				atts.getValue("Implementation-Version");
-				//
-			}
-		}
-		catch (IOException ex)
-		{
-			System.err.println(ex);
-		}
-	}
-
 }	//	ZipUtil

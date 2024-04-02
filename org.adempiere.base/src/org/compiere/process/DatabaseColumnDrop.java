@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss                                           *
  **********************************************************************/
-
 package org.compiere.process;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -33,6 +32,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Process to drop a DB table column.
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseColumnDrop extends SvrProcess {
 

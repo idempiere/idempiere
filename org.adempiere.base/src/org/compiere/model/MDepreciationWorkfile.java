@@ -128,12 +128,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return asset.getAssetServiceDate();
 	}
 	
-	/**
-	 *  After save
-	 *	@param	newRecord
-	 *  @param  success
-	 *	@return true on success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -149,15 +143,15 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("Entering: trxName=" + get_TrxName());
 		
-		// copy UseLife to A_Life
-		if (newRecord) { //@win: should only update only if newrecord
+		// Copy UseLife to A_Life
+		if (newRecord) { 
 			setA_Life_Period(getUseLifeMonths());
 			setA_Asset_Life_Years(getUseLifeYears());
 			setA_Life_Period_F(getUseLifeMonths_F());
 			setA_Asset_Life_Years_F(getUseLifeYears_F());
 		}
 		
-		// If it is fully amortized, change the state's FA
+		// If it is fully amortized, change asset status to deprecated
 		MAsset asset = getAsset(true);
 		if (MAsset.A_ASSET_STATUS_Activated.equals(asset.getA_Asset_Status())
 			&& isFullyDepreciated())
@@ -648,8 +642,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	private boolean m_buildDepreciation = false;
 	
 	/**
-	 * Build depreciation (A_Depreciation_Exp) entries. More exactly, is deleting not Processed entries
-	 * and create new ones again.
+	 * Build depreciation (A_Depreciation_Exp) entries.<br/>
+	 * More exactly, is deleting not Processed entries and create new ones again.<br/>
 	 * WARNING: IS NOT modifying workfile (this).
 	 */
 	public void buildDepreciation()

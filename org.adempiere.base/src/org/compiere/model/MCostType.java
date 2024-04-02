@@ -77,11 +77,6 @@ public class MCostType extends X_M_CostType
 		return sb.toString ();
 	}	//	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -90,13 +85,10 @@ public class MCostType extends X_M_CostType
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Disallow delete if cost type is use by accounting schema
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for (int i = 0; i < ass.length; i++)
 		{

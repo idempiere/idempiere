@@ -133,7 +133,7 @@ public class CLogger extends Logger
 	}	//	CLogger
 
 	/**
-	 *  Set and issue Error and save as ValueNamePair
+	 *  Set and issue Error and save as ValueNamePair (LAST_ERROR in environment context)
 	 *  @param AD_Message message key
 	 *  @param message clear text message
 	 *  @return true (to avoid removal of method)
@@ -144,7 +144,7 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Set and issue Error and save into context as ValueNamePair (LAST_EXCEPTION)
+	 *  Set and issue Error and save into context as ValueNamePair (LAST_EXCEPTION and LAST_ERROR in environment context)
 	 *  @param AD_Message message key
 	 *  @param ex exception
 	 *  @return true (to avoid removal of method)
@@ -156,7 +156,7 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Set and issue (if specified) Error and save as ValueNamePair
+	 *  Set and issue (if specified) Error and save as ValueNamePair (LAST_EXCEPTION and LAST_ERROR in environment context)
 	 *  @param AD_Message message key
 	 *  @param ex exception
 	 *  @param issueError if true will issue an error
@@ -169,8 +169,8 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Save exception as environment context's last exception. <br/>
-	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error.<br/>
+	 *  Save exception as environment context's last exception (LAST_EXCEPTION). <br/>
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error (LAST_ERROR).<br/>
 	 *  Issue/publish AD_Message and message as severe log message
 	 *  @param AD_Message message key
 	 *  @param message
@@ -184,8 +184,8 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Save exception as environment context's last exception. <br/>
-	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error.<br/>
+	 *  Save exception as environment context's last exception (LAST_EXCEPTION). <br/>
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error (LAST_ERROR).<br/>
 	 *  Issue/publish AD_Message and message as severe log message if issueError is true.  
 	 *  @param AD_Message message key
 	 *  @param message
@@ -200,7 +200,7 @@ public class CLogger extends Logger
 	}   //  saveError
 
 	/**
-	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error.<br/>
+	 *  Create ValueNamePair(AD_Message, message) and save into environment context as last error (LAST_ERROR).<br/>
 	 *  Issue/publish AD_Message and message as severe log message if issueError is true.
 	 *  @param AD_Message message key
 	 *  @param message clear text message
@@ -242,7 +242,7 @@ public class CLogger extends Logger
 	 * @param defaultMsg default message (used when there are no errors on stack)
 	 * @return error message, or defaultMsg if there is no error message saved
 	 * @see #retrieveError()
-	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
+	 * @author Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
 	public static String retrieveErrorString(String defaultMsg) {
 		ValueNamePair vp = retrieveError();
@@ -350,7 +350,7 @@ public class CLogger extends Logger
 	 * Get root cause
 	 * @param t
 	 * @return Throwable
-	 */
+	 */	
 	public static Throwable getRootCause(Throwable t)
 	{
 		Throwable cause = t;
@@ -365,6 +365,7 @@ public class CLogger extends Logger
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("CLogger[");

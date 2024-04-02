@@ -103,7 +103,7 @@ public class CacheMgt
 	
 	/**
 	 * 	Register new CCache Instance.<br/>
-	 *  This is use by {@link CCache} and developer usually shouldn't use this class directly.
+	 *  This is use by {@link CCache} and developer usually shouldn't call this directly.
 	 *	@param instance Cache
 	 *  @param distributed
 	 *	@return map for CCache
@@ -172,7 +172,7 @@ public class CacheMgt
 	}	//	unregister
 
 	/**
-	 * do a cluster wide cache reset 
+	 * Do a cluster wide cache reset 
 	 * @return number of deleted cache entries
 	 */
 	private int  clusterReset() {
@@ -180,7 +180,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset for tableName with recordId key
+	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName
 	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id   
@@ -220,7 +220,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset for tableName with recordId key
+	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName
 	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id   
@@ -239,7 +239,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset 
+	 * Do a cluster wide cache reset 
 	 * @return number of deleted cache entries
 	 */
 	public int reset() 
@@ -248,7 +248,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * 	do a cluster wide cache reset for tableName
+	 * 	Do a cluster wide cache reset for tableName
 	 * 	@param tableName table name
 	 * 	@return number of deleted cache entries
 	 */
@@ -258,7 +258,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset for tableName with recordId key
+	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName
 	 * @param Record_ID record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id
@@ -272,7 +272,7 @@ public class CacheMgt
 		return clusterReset(tableName, Record_ID);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Reset local Cache
 	 * 	@return number of deleted cache entries
 	 */
@@ -295,6 +295,7 @@ public class CacheMgt
 	}
 
 	/**
+	 * Get cache instances
 	 * @return cache instances
 	 */
 	public synchronized CacheInterface[] getInstancesAsArray() {
@@ -345,7 +346,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * 	Reset local Cache
+	 * 	New record notification for local cache instances
 	 * 	@param tableName table name
 	 * 	@param Record_ID record if applicable or 0 for all
 	 */
@@ -372,8 +373,8 @@ public class CacheMgt
 	}
 	
 	/**
-	 * 	Total Cached Elements
-	 *	@return count
+	 * 	Get Total Cached Elements
+	 *	@return total cache element count
 	 */
 	public int getElementCount()
 	{		
@@ -398,6 +399,7 @@ public class CacheMgt
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("CacheMgt[");
@@ -422,6 +424,11 @@ public class CacheMgt
 		return sb.toString ();
 	}	//	toString	
 
+	/**
+	 * New record notification
+	 * @param tableName
+	 * @param recordId
+	 */
 	public void newRecord(String tableName, int recordId) {
 		if (suspendedResetCacheTables.contains(tableName))
 			return;
@@ -430,8 +437,8 @@ public class CacheMgt
 	}
 	
 	/**
-	 * 
-	 * @return cache infos
+	 * Get info for cache instances
+	 * @return info for cache instances
 	 */
 	public List<CacheInfo> getCacheInfos() {
 		List<CacheInfo> infos = new ArrayList<>();
@@ -444,6 +451,11 @@ public class CacheMgt
 		return infos;
 	}
 	
+	/**
+	 * Map with max size
+	 * @param <K>
+	 * @param <V>
+	 */
 	private static class MaxSizeHashMap<K, V> extends LinkedHashMap<K, V> {
 	    /**
 		 * generated serial id
@@ -461,11 +473,17 @@ public class CacheMgt
 	    }
 	}
 	
+	/**
+	 * Start cache monitor for expire cache entries
+	 */
 	private static synchronized void startCacheMonitor()
 	{
 		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
 	}
 
+	/**
+	 * Cache monitor for expire cache entries
+	 */
 	private static class CacheMonitor implements Runnable
 	{
 
@@ -493,7 +511,7 @@ public class CacheMgt
 	}
 
 	/**
-	 * Is there a cache for this table name?
+	 * Is there a cache instance for this table name?
 	 * @param tableName
 	 * @return boolean
 	 */

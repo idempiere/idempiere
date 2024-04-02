@@ -177,11 +177,6 @@ public class MAlertRule extends X_AD_AlertRule
 		return file;
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -207,7 +202,7 @@ public class MAlertRule extends X_AD_AlertRule
 	}
 
 	/**
-	 * Update parent IsValid flag
+	 * Update parent (MAlert) IsValid flag
 	 * @return true if success
 	 */
 	private boolean updateParent() {

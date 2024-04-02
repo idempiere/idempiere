@@ -79,8 +79,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *  Persistent Object.
- *  Superclass for actual implementations
+ *  Abstract base class for Persistent Object.
  *
  *  @author Jorg Janke
  *  @version $Id: PO.java,v 1.12 2006/08/09 16:38:47 jjanke Exp $
@@ -112,16 +111,16 @@ public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6591172659109078284L;
 
-	/* String key to create a new record based in UUID constructor */
+	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
-	/** default timeout, 300 seconds **/
+	/** default query/statement timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
 
 	/**
@@ -142,7 +141,7 @@ public abstract class PO
 	/** Dictionary Maintained Entity Type		*/
 	static public final String ENTITYTYPE_Dictionary = "D";
 
-	/**************************************************************************
+	/**
 	 *  Create New Persistent Object
 	 *  @param ctx context
 	 */
@@ -152,7 +151,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create and Load existing Persistent Object
+	 *  Create or Load existing Persistent Object
 	 *  @param ctx context
 	 *  @param ID The unique ID of the object
 	 *  @param trxName transaction name
@@ -163,7 +162,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create and Load existing Persistent Object
+	 *  Create or Load existing Persistent Object
 	 *  @param ctx context
 	 *  @param UUID The unique UUID of the object
 	 *  @param trxName transaction name
@@ -174,7 +173,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 * Create and load existing Persistent Object
+	 * Create or load existing Persistent Object
 	 * @param ctx Context
 	 * @param ID Unique ID of the object
 	 * @param trxName Transaction name
@@ -186,7 +185,7 @@ public abstract class PO
 	}
 
 	/**
-	 * Create and load existing Persistent Object
+	 * Create or load existing Persistent Object
 	 * @param ctx Context
 	 * @param UUID Unique UUID of the object
 	 * @param trxName Transaction name
@@ -198,10 +197,9 @@ public abstract class PO
 	}
 
 	/**
-	 *  Create and Load existing Persistent Object.
+	 *  Create or Load existing Persistent Object.
 	 *  @param ctx context
-	 *  @param rs optional - load from current result set position (no navigation, not closed)
-	 *  	if null, a new record is created.
+	 *  @param rs optional - load from current result set position. If null, a new record is created.
 	 *  @param trxName transaction name
 	 */
 	public PO (Properties ctx, ResultSet rs, String trxName)
@@ -210,22 +208,22 @@ public abstract class PO
 	}	//	PO
 
 	/**
-	 *  Create and Load existing Persistent Object.
+	 *  Create or Load existing Persistent Object.
 	 *  <pre>
 	 *  You load
-	 * 		- an existing single key record with 	new PO (ctx, Record_ID)
-	 * 			or									new PO (ctx, Record_ID, trxName)
-	 * 			or									new PO (ctx, rs, get_TrxName())
-	 * 		- a new single key record with			new PO (ctx, 0)
-	 * 		- an existing multi key record with		new PO (ctx, rs, get_TrxName())
-	 * 		- a new multi key record with			new PO (ctx, null)
+	 *    - an existing single key record with   new PO (ctx, Record_ID)
+	 *           or                              new PO (ctx, Record_ID, trxName)
+	 *           or                              new PO (ctx, rs, trxName)
+	 *    - a new single key record with         new PO (ctx, 0)
+	 *    - an existing multi key record with    new PO (ctx, rs, trxName)
+	 *    - a new multi key record with          new PO (ctx, null)
 	 *  The ID for new single key records is created automatically,
 	 *  you need to set the IDs for multi-key records explicitly.
 	 *	</pre>
 	 *  @param ctx context
-	 *  @param ID the ID if 0, the record defaults are applied - ignored if re exists
+	 *  @param ID the ID or 0 to create new record. Ignore if rs is not null.
 	 *  @param trxName transaction name
-	 *  @param rs optional - load from current result set position (no navigation, not closed)
+	 *  @param rs optional - load from current result set position
 	 *  @param virtualColumns optional - names of virtual columns to load along with the regular table columns
 	 */
 	public PO (Properties ctx, int ID, String trxName, ResultSet rs, String ... virtualColumns)
@@ -252,22 +250,18 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create and Load existing Persistent Object.
+	 *  Create or Load existing Persistent Object.
 	 *  <pre>
-	 *  You load
-	 * 		- an existing single key record with 	new PO (ctx, Record_ID)
-	 * 			or									new PO (ctx, Record_ID, trxName)
-	 * 			or									new PO (ctx, rs, get_TrxName())
-	 * 		- a new single key record with			new PO (ctx, 0)
-	 * 		- an existing multi key record with		new PO (ctx, rs, get_TrxName())
-	 * 		- a new multi key record with			new PO (ctx, null)
-	 *  The ID for new single key records is created automatically,
+	 *  You load an existing record with       new PO (ctx, UUID)
+	 *        or                               new PO (ctx, UUID, trxName)
+	 *        or                               new PO (ctx, rs, trxName)
+	 *  The UUID for new records is created automatically,
 	 *  you need to set the IDs for multi-key records explicitly.
 	 *	</pre>
 	 *  @param ctx context
-	 *  @param UUID the UUID if "", the record defaults are applied - ignored if re exists
+	 *  @param UUID the UUID or "" to create new record. Ignore if rs is not null.
 	 *  @param trxName transaction name
-	 *  @param rs optional - load from current result set position (no navigation, not closed)
+	 *  @param rs optional - load from current result set position
 	 *  @param virtualColumns optional - names of virtual columns to load along with the regular table columns
 	 */
 	public PO (Properties ctx, String UUID, String trxName, ResultSet rs, String ... virtualColumns)
@@ -402,11 +396,10 @@ public abstract class PO
 	/** Access Level _CO 011	3	Client shared info	*/
 	public static final int ACCESSLEVEL_CLIENTORG = 3;
 
-
 	/**
-	 *  Initialize and return PO_Info
+	 *  Initialize and return POInfo
 	 *  @param ctx context
-	 *  @return POInfo
+	 *  @return Meta data of PO
 	 */
 	abstract protected POInfo initPO (Properties ctx);
 
@@ -420,6 +413,7 @@ public abstract class PO
 	 *  String representation
 	 *  @return String representation
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("PO[")
@@ -432,6 +426,7 @@ public abstract class PO
 	 * 	@param cmp comparator
 	 * 	@return true if ID the same
 	 */
+	@Override
 	public boolean equals (Object cmp)
 	{
 		if (cmp == null)
@@ -447,6 +442,7 @@ public abstract class PO
 		return super.equals(cmp);
 	}	//	equals
 	
+	@Override
 	public int hashCode()
 	{
 	  return 42; // any arbitrary constant will do
@@ -458,6 +454,7 @@ public abstract class PO
 	 *	@param o2 Object 2
 	 *	@return -1 if o1 &lt; o2
 	 */
+	@Override
 	public int compare (Object o1, Object o2)
 	{
 		if (o1 == null)
@@ -523,7 +520,7 @@ public abstract class PO
 	}   //  get_TableID
 
 	/**
-	 *  Return Single Key Record ID
+	 *  Get Single Key Record ID
 	 *  @return ID or 0
 	 */
 	public int get_ID()
@@ -535,7 +532,7 @@ public abstract class PO
 	}   //  getID
 
 	/**
-	 *  Return Deleted Single Key Record ID
+	 *  Get old Single Key Record ID
 	 *  @return ID or 0
 	 */
 	public int get_IDOld()
@@ -544,6 +541,7 @@ public abstract class PO
 	}   //  getID
 
 	/**
+	 * Get UUID
 	 * @return UUID value
 	 */
 	public String get_UUID() {
@@ -572,10 +570,10 @@ public abstract class PO
 		return log;
 	}	//	getLogger
 
-	/**************************************************************************
+	/**
 	 *  Get Value
-	 *  @param index index
-	 *  @return value
+	 *  @param index column index
+	 *  @return column value
 	 */
 	public final Object get_Value (int index)
 	{
@@ -597,7 +595,7 @@ public abstract class PO
 
 	/**
 	 *  Get Value as int
-	 *  @param index index
+	 *  @param index column index
 	 *  @return int value or 0
 	 */
 	public int get_ValueAsInt (int index)
@@ -672,8 +670,8 @@ public abstract class PO
 	}	//	get_ValueAsString
 
 	/**
-	 *  Get Value of Column
-	 *  @param AD_Column_ID column
+	 *  Get Value
+	 *  @param AD_Column_ID column id
 	 *  @return value or null
 	 */
 	public final Object get_ValueOfColumn (int AD_Column_ID)
@@ -689,8 +687,8 @@ public abstract class PO
 
 	/**
 	 *  Get Old Value
-	 *  @param index index
-	 *  @return value
+	 *  @param index column index
+	 *  @return old value
 	 */
 	public final Object get_ValueOld (int index)
 	{
@@ -705,7 +703,7 @@ public abstract class PO
 	/**
 	 *  Get Old Value
 	 *  @param columnName column name
-	 *  @return value or null
+	 *  @return old value or null
 	 */
 	public final Object get_ValueOld (String columnName)
 	{
@@ -743,7 +741,7 @@ public abstract class PO
 
 	/**
 	 *  Is Value Changed
-	 *  @param index index
+	 *  @param index column index
 	 *  @return true if changed
 	 */
 	public final boolean is_ValueChanged (int index)
@@ -777,9 +775,9 @@ public abstract class PO
 	}   //  is_ValueChanged
 
 	/**
-	 *  Return new - old.
-	 * 	- New Value if Old Value is null
-	 * 	- New Value - Old Value if Number
+	 *  Get new - old.<br/>
+	 * 	- New Value if Old Value is null<br/>
+	 * 	- New Value - Old Value if Number<br/>
 	 * 	- otherwise null
 	 *  @param index index
 	 *  @return new - old or null if not appropriate or not changed
@@ -816,9 +814,9 @@ public abstract class PO
 	}   //  get_ValueDifference
 
 	/**
-	 *  Return new - old.
-	 * 	- New Value if Old Value is null
-	 * 	- New Value - Old Value if Number
+	 *  Get new - old.<br/>
+	 * 	- New Value if Old Value is null<br/>
+	 * 	- New Value - Old Value if Number<br/>
 	 * 	- otherwise null
 	 *  @param columnName column name
 	 *  @return new - old or null if not appropriate or not changed
@@ -834,11 +832,10 @@ public abstract class PO
 		return get_ValueDifference (index);
 	}   //  get_ValueDifference
 
-
-	/**************************************************************************
+	/**
 	 *  Set Value
 	 *  @param ColumnName column name
-	 *  @param value value
+	 *  @param value value to set
 	 *  @return true if value set
 	 */
 	protected final boolean set_Value (String ColumnName, Object value)
@@ -846,11 +843,11 @@ public abstract class PO
 		return set_Value(ColumnName, value, true);
 	}
 	
-	/**************************************************************************
+	/**
 	 *  Set Value
 	 *  @param ColumnName column name
-	 *  @param value value
-	 *  @param checkWritable
+	 *  @param value value to set
+	 *  @param checkWritable true to check is column writable
 	 *  @return true if value set
 	 */
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
@@ -896,8 +893,8 @@ public abstract class PO
 	/**
 	 *  Set Value if updateable and correct class.
 	 *  (and to NULL if not mandatory)
-	 *  @param index index
-	 *  @param value value
+	 *  @param index column index
+	 *  @param value value to set
 	 *  @return true if value set
 	 */
 	protected final boolean set_Value (int index, Object value)
@@ -908,8 +905,8 @@ public abstract class PO
 	/**
 	 *  Set Value if updateable and correct class.
 	 *  (and to NULL if not mandatory)
-	 *  @param index index
-	 *  @param value value
+	 *  @param index column index
+	 *  @param value value to set
 	 *  @param checkWritable
 	 *  @return true if value set
 	 */
@@ -1067,9 +1064,13 @@ public abstract class PO
 		return true;
 	}   //  setValue
 
-	/* FR 2962094 - Finish implementation of weighted average costing
-	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds)
-	*/
+	/**
+	 * FR 2962094 - Finish implementation of weighted average costing. <br/>
+	 * Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds).
+	 * @param ColumnName update ProcessedOn if ColumnName is Processed
+	 * @param value new value of Processed column
+	 * @param oldValue old value of Processed column
+	 */
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
 		checkImmutable();
 		
@@ -1093,11 +1094,11 @@ public abstract class PO
 	}
 
 	/**
-	 *  Set Value w/o check (update, r/o, ..).
-	 * 	Used when Column is R/O
-	 *  Required for key and parent values
+	 *  Set Value w/o check (update, r/o, ..).<br/>
+	 * 	Used when Column is R/O.<br/>
+	 *  Required for key and parent values.
 	 *  @param ColumnName column name
-	 *  @param value value
+	 *  @param value value to set
 	 *  @return true if value set
 	 */
 	public final boolean set_ValueNoCheck (String ColumnName, Object value)
@@ -1106,11 +1107,11 @@ public abstract class PO
 	}   //  set_ValueNoCheck
 
 	/**
-	 *  Set Encrypted Value w/o check (update, r/o, ..).
-	 * 	Used when Column is R/O
-	 *  Required for key and parent values
+	 *  Set Encrypted Value w/o check (update, r/o, ..).<br/>
+	 * 	Used when Column is R/O.<br/>
+	 *  Required for key and parent values.<br/>
 	 *  @param ColumnName column name
-	 *  @param value value
+	 *  @param value value to set
 	 *  @return true if value set
 	 */
 	protected final boolean set_ValueNoCheckE (String ColumnName, Object value)
@@ -1132,7 +1133,7 @@ public abstract class PO
 	 * Set value of Column returning boolean
 	 * @param columnName
 	 * @param value
-	 *  @returns boolean indicating success or failure
+	 * @returns boolean indicating success or failure
 	 */
 	public final boolean set_ValueOfColumnReturningBoolean(String columnName, Object value)
 	{
@@ -1146,7 +1147,7 @@ public abstract class PO
 	/**
 	 *  Set Value of Column
 	 *  @param AD_Column_ID column
-	 *  @param value value
+	 *  @param value value to set
 	 */
 	public final void set_ValueOfColumn (int AD_Column_ID, Object value)
 	{
@@ -1157,7 +1158,7 @@ public abstract class PO
 	/**
 	 *  Set Value of Column
 	 *  @param AD_Column_ID column
-	 *  @param value value
+	 *  @param value value to set
 	 *  @returns boolean indicating success or failure
 	 */
 	public final boolean set_ValueOfColumnReturningBoolean (int AD_Column_ID, Object value)
@@ -1174,9 +1175,9 @@ public abstract class PO
 
 
 	/**
-	 * 	Set Custom Column
+	 * 	Set Custom Column (column not in AD_Column).
 	 *	@param columnName column
-	 *	@param value value
+	 *	@param value value to set
 	 */
 	public final void set_CustomColumn (String columnName, Object value)
 	{
@@ -1184,9 +1185,9 @@ public abstract class PO
 	}	//	set_CustomColumn
 
 	/**
-	 * 	Set Custom Column returning boolean
+	 * 	Set Custom Column (column not in AD_Column) returning boolean.
 	 *	@param columnName column
-	 *	@param value value
+	 *	@param value value to set
 	 *  @returns boolean indicating success or failure
 	 */
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
@@ -1222,7 +1223,7 @@ public abstract class PO
 	/**
 	 *  Set (numeric) Key Value
 	 *  @param ColumnName column name
-	 *  @param value value
+	 *  @param value value to set
 	 */
 	private void set_Keys (String ColumnName, Object value)
 	{
@@ -1238,8 +1239,7 @@ public abstract class PO
 		}	//	for all key columns
 	}	//	setKeys
 
-
-	/**************************************************************************
+	/**
 	 *  Get Column Count
 	 *  @return column count
 	 */
@@ -1250,7 +1250,7 @@ public abstract class PO
 
 	/**
 	 *  Get Column Name
-	 *  @param index index
+	 *  @param index column index
 	 *  @return ColumnName
 	 */
 	public String get_ColumnName (int index)
@@ -1260,7 +1260,7 @@ public abstract class PO
 
 	/**
 	 *  Get Column Label
-	 *  @param index index
+	 *  @param index column index
 	 *  @return Column Label
 	 */
 	protected String get_ColumnLabel (int index)
@@ -1270,7 +1270,7 @@ public abstract class PO
 
 	/**
 	 *  Get Column Description
-	 *  @param index index
+	 *  @param index column index
 	 *  @return column description
 	 */
 	protected String get_ColumnDescription (int index)
@@ -1280,8 +1280,8 @@ public abstract class PO
 
 	/**
 	 *  Is Column Mandatory
-	 *  @param index index
-	 *  @return true if column mandatory
+	 *  @param index column index
+	 *  @return true if column is mandatory
 	 */
 	protected boolean isColumnMandatory (int index)
 	{
@@ -1290,8 +1290,8 @@ public abstract class PO
 
 	/**
 	 *  Is Column Updateable
-	 *  @param index index
-	 *  @return true if column updateable
+	 *  @param index column index
+	 *  @return true if column is updateable
 	 */
 	protected boolean isColumnUpdateable (int index)
 	{
@@ -1300,7 +1300,7 @@ public abstract class PO
 
 	/**
 	 *  Set Column Updateable
-	 *  @param index index
+	 *  @param index column index
 	 *  @param updateable column updateable
 	 */
 	protected void set_ColumnUpdateable (int index, boolean updateable)
@@ -1319,7 +1319,7 @@ public abstract class PO
 
 	/**
 	 *  Get Column DisplayType
-	 *  @param index index
+	 *  @param index column index
 	 *  @return display type
 	 */
 	protected int get_ColumnDisplayType (int index)
@@ -1329,7 +1329,7 @@ public abstract class PO
 
 	/**
 	 *  Get Lookup
-	 *  @param index index
+	 *  @param index column index
 	 *  @return Lookup or null
 	 */
 	protected Lookup get_ColumnLookup(int index)
@@ -1348,10 +1348,10 @@ public abstract class PO
 	}   //  getColumnIndex
 
 	/**
-	 * 	Get Display Value of value
+	 * 	Get Display Text of column
 	 *	@param columnName columnName
 	 *	@param currentValue current value
-	 *	@return String value with "./." as null
+	 *	@return display text or "./." for null
 	 */
 	public String get_DisplayValue(String columnName, boolean currentValue)
 	{
@@ -1373,12 +1373,11 @@ public abstract class PO
 		return retValue;
 	}	//	get_DisplayValue
 
-
 	/**
-	 * 	Copy old values of From to new values of To.
-	 *  Does not copy Keys
-	 * 	@param from old, existing and unchanged PO
-	 *  @param to new, not saved PO
+	 * 	Copy old values of From to new values of To.<br/>
+	 *  Does not copy Keys.
+	 * 	@param from source PO
+	 *  @param to target PO
 	 * 	@param AD_Client_ID client
 	 * 	@param AD_Org_ID org
 	 */
@@ -1390,10 +1389,10 @@ public abstract class PO
 	}	//	copyValues
 
 	/**
-	 * 	Copy old values of From to new values of To.
-	 *  Does not copy Keys and AD_Client_ID/AD_Org_ID
-	 * 	@param from old, existing and unchanged PO
-	 *  @param to new, not saved PO
+	 * 	Copy old values of From to new values of To.<br/>
+	 *  Does not copy Keys and AD_Client_ID/AD_Org_ID.<br/>
+	 * 	@param from source PO
+	 *  @param to target PO
 	 */
 	public static void copyValues (PO from, PO to)
 	{
@@ -1438,8 +1437,7 @@ public abstract class PO
 		}	//	same class
 	}	//	copy
 
-
-	/**************************************************************************
+	/**
 	 *  Load record with ID
 	 * 	@param ID ID
 	 * 	@param trxName transaction name
@@ -1618,7 +1616,6 @@ public abstract class PO
 		return success;
 	}   //  load
 
-
 	/**
 	 * 	Load from the current position of a ResultSet
 	 * 	@param rs result set
@@ -1647,7 +1644,7 @@ public abstract class PO
 	 * Load column value coming from a {@link ResultSet}.
 	 * @param rs {@link ResultSet} with its position set according to the model class instance.
 	 * @param index Column index. Might not coincide with the index of the column within the {@link ResultSet}.
-	 * @return
+	 * @return true if loaded
 	 * @see #m_oldValues
 	 * @see POInfo#getColumnIndex(String)
 	 */
@@ -1741,7 +1738,7 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Load from HashMap
+	 * 	Get values from HashMap
 	 * 	@param hmIn hash map
 	 * 	@return true if loaded
 	 */
@@ -1803,6 +1800,9 @@ public abstract class PO
 		return success;
 	}	//	load
 
+	/**
+	 * Throw exception if PO is immutable.
+	 */
 	protected void checkImmutable() {
 		if (is_Immutable())
 		{
@@ -1811,7 +1811,7 @@ public abstract class PO
 	}
 
 	/**
-	 *  Create Hashmap with data as Strings
+	 *  Create hash map with column name as value and column value as value (converted to string)
 	 *  @return HashMap
 	 */
 	protected HashMap<String,String> get_HashMap()
@@ -1875,10 +1875,10 @@ public abstract class PO
 
 	/**
 	 *  Load data for custom Java type that has no build in implementation (images, ..).
-	 *  To be extended by sub-classes (default implementation just return null).
+	 *  To be implemented in sub-classes (default implementation is nop and just return null).
 	 *  @param rs result set
-	 *  @param index zero based index
-	 *  @return value value
+	 *  @param index column index
+	 *  @return value loaded value
 	 *  @throws SQLException
 	 */
 	protected Object loadSpecial (ResultSet rs, int index) throws SQLException
@@ -1888,17 +1888,16 @@ public abstract class PO
 	}   //  loadSpecial
 
 	/**
-	 *  Load is complete
+	 *  Call when load of PO is complete.<br/>
+	 *  Default implementation is nop, to be implemented in sub-classes that needed it.
 	 * 	@param success success
-	 *  To be extended by sub-classes
 	 */
 	protected void loadComplete (boolean success)
 	{
 	}   //  loadComplete
 
-
 	/**
-	 *	Load Defaults
+	 *	Load default value of columns.
 	 */
 	protected void loadDefaults()
 	{
@@ -1906,8 +1905,8 @@ public abstract class PO
 	}	//	loadDefaults
 
 	/**
-	 *  Set Default values.
-	 *  Client, Org, Created/Updated, *By, IsActive
+	 *  Set standard default values.<br/>
+	 *  Client, Org, Created/Updated, *By, IsActive, Processed, Processing and Posted.
 	 */
 	protected void setStandardDefaults()
 	{
@@ -1940,7 +1939,7 @@ public abstract class PO
 	}   //  setDefaults
 
 	/**
-	 * 	Set Key Info (IDs and KeyColumns).
+	 * Load Key Info (IDs and KeyColumns).
 	 */
 	private void setKeyInfo()
 	{
@@ -2033,10 +2032,9 @@ public abstract class PO
 			throw new IllegalStateException("No PK, UU nor FK - " + p_info.getTableName());
 	}	//	setKeyInfo
 
-
-	/**************************************************************************
-	 *  Are all mandatory Fields filled (i.e. can we save)?.
-	 *  Stops at first null mandatory field
+	/**
+	 *  Is all mandatory Fields filled (i.e. can we save)?.<br/>
+	 *  Stops at first null mandatory field.
 	 *  @return true if all mandatory fields are ok
 	 */
 	protected boolean isMandatoryOK()
@@ -2058,8 +2056,7 @@ public abstract class PO
 		return true;
 	}   //  isMandatoryOK
 
-
-	/**************************************************************************
+	/**
 	 * 	Set AD_Client
 	 * 	@param AD_Client_ID client
 	 */
@@ -2116,7 +2113,7 @@ public abstract class PO
 
 	/**
 	 * 	Overwrite Client Org if different
-	 *	@param po persistent object
+	 *	@param po source persistent object
 	 */
 	protected void setClientOrg (PO po)
 	{
@@ -2125,7 +2122,7 @@ public abstract class PO
 
 	/**
 	 * 	Set Active
-	 * 	@param active active
+	 * 	@param active
 	 */
 	public final void setIsActive (boolean active)
 	{
@@ -2200,14 +2197,20 @@ public abstract class PO
 	/** Cache for foreign keys */
 	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
+	/**
+	 * Get translated value for column
+	 * @param columnName
+	 * @param AD_Language
+	 * @return translated value
+	 */
 	public String get_Translation (String columnName, String AD_Language)
 	{
 		return get_Translation(columnName, AD_Language, false, true);
 	}
 
 	/**
-	 * Get Translation of column (if needed).
-	 * It checks if the base language is used or the column is not translated.
+	 * Get Translation of column (if needed).<br/>
+	 * It checks if the base language is used or the column is not translated.<br/>
 	 * If there is no translation then it fallback to original value.
 	 * @param columnName
 	 * @param AD_Language
@@ -2266,7 +2269,10 @@ public abstract class PO
 		return retValue;
 	}	//	get_Translation
 
-	/** Return the key used in the translation cache */
+	/** 
+	 * Get the key used in the translation cache
+	 * @return key used in the translation cache
+	 */
 	private String getTrlCacheKey(String columnName, String AD_Language) {
 		return get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
 	}
@@ -2274,6 +2280,7 @@ public abstract class PO
 	/**
 	 * Get Translation of column
 	 * @param columnName
+	 * @return translated text
 	 */
 	public String get_Translation (String columnName)
 	{
@@ -2285,6 +2292,7 @@ public abstract class PO
 	 * @param columnName
 	 * @param AD_Language
 	 * @param reload don't use cache, reload from DB
+	 * @return translated text
 	 */
 	public String get_Translation (String columnName, String AD_Language, boolean reload)
 	{
@@ -2322,16 +2330,16 @@ public abstract class PO
 		return true;
 	}	//	is_new
 
-	/*
+	/**
 	 * Classes which override save() method:
 	 * org.compiere.process.DocActionTemplate
 	 * org.compiere.model.MClient
 	 * org.compiere.model.MClientInfo
 	 * org.compiere.model.MSystem
 	 */
-	/**************************************************************************
-	 *  Update Value or create new record.
-	 * 	To reload call load() - not updated
+	/**
+	 *  Update or insert new record.<br/>
+	 * 	To reload call load().
 	 *  @return true if saved
 	 */
 	public boolean save()
@@ -2569,8 +2577,8 @@ public abstract class PO
 	}	//	save
 
 	/**
-	 * Update Value or create new record.
-	 * @throws AdempiereException
+	 * Update or insert new record.
+	 * @throws AdempiereException if save fail
 	 * @see #save()
 	 */
 	public void saveEx() throws AdempiereException
@@ -2589,7 +2597,7 @@ public abstract class PO
 	}
 
 	/**
-	 * Update Value or create new record, used when writing a cross tenant record
+	 * Update or insert new record, used when writing a cross tenant record.
 	 * @throws AdempiereException
 	 * @see #save()
 	 */
@@ -2606,8 +2614,8 @@ public abstract class PO
 	}
 	
 	/**
-	 * Update Value or create new record, used when writing a cross tenant record
-	 * @throws AdempiereException
+	 * Update or insert new record, used when writing a cross tenant record.
+	 * @throws AdempiereException if save fail
 	 * @see #saveEx()
 	 */
 	public void saveCrossTenantSafeEx() {
@@ -2623,9 +2631,9 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Finish Save Process
-	 *	@param newRecord new
-	 *	@param success success
+	 * 	Finish saving of PO to DB.
+	 *	@param newRecord true for new record
+	 *	@param success current save state
 	 *	@return true if saved
 	 */
 	private boolean saveFinish (boolean newRecord, boolean success)
@@ -2748,8 +2756,8 @@ public abstract class PO
 	}	//	saveFinish
 
 	/**
-	 *  Update Value or create new record.
-	 * 	To reload call load() - not updated
+	 *  Update or insert new record.<br/>
+	 * 	To reload call load().
 	 *	@param trxName transaction
 	 *  @return true if saved
 	 */
@@ -2759,6 +2767,11 @@ public abstract class PO
 		return save();
 	}	//	save
 
+	/**
+	 * Save for replication.
+	 * @param isFromReplication
+	 * @throws AdempiereException
+	 */
 	public void saveReplica (boolean isFromReplication) throws AdempiereException
 	{
 		checkImmutable();
@@ -2767,9 +2780,9 @@ public abstract class PO
 	}
 
 	/**
-	 * Update Value or create new record, used when writing a cross tenant record
+	 * Update or insert new record, used when writing a cross tenant record.
 	 * @param trxName transaction
-	 * @throws AdempiereException
+	 * @throws AdempiereException if save fail
 	 * @see #saveEx(String)
 	 */
 	public void saveCrossTenantSafeEx(String trxName) {
@@ -2785,9 +2798,9 @@ public abstract class PO
 	}
 
 	/**
-	 * Update Value or create new record.
+	 * Update or insert new record.
 	 * @param trxName transaction
-	 * @throws AdempiereException
+	 * @throws AdempiereException if save fail
 	 * @see #saveEx(String)
 	 */
 	public void saveEx(String trxName) throws AdempiereException
@@ -2797,7 +2810,7 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Is there a Change to be saved?
+	 * 	Is there changes to be saved?
 	 *	@return true if record changed
 	 */
 	public boolean is_Changed()
@@ -2815,8 +2828,9 @@ public abstract class PO
 	}	//	is_Change
 
 	/**
-	 * 	Called before Save for Pre-Save Operation
-	 * 	@param newRecord new record
+	 * 	Called before Save for Pre-Save Operation.<br/>
+	 *  Default implementation is nop, to be implemented in sub-classes that needed it.
+	 * 	@param newRecord true if it is a new record
 	 *	@return true if record can be saved
 	 */
 	protected boolean beforeSave(boolean newRecord)
@@ -2825,8 +2839,9 @@ public abstract class PO
 	}	//	beforeSave
 
 	/**
-	 * 	Called after Save for Post-Save Operation
-	 * 	@param newRecord new record
+	 * 	Called after Save for Post-Save Operation.<br/>
+	 *  Default implementation is nop, to be implemented in sub-classes that needed it.
+	 * 	@param newRecord true if it is a new record
 	 *	@param success true if save operation was success
 	 *	@return if save was a success
 	 */
@@ -2836,7 +2851,7 @@ public abstract class PO
 	}	//	afterSave
 
 	/**
-	 * 	Update Record directly
+	 * 	Update Record
 	 * 	@return true if updated
 	 */
 	protected boolean saveUpdate()
@@ -2847,12 +2862,18 @@ public abstract class PO
 	}   //  saveUpdate
 
 	/**
+	 * Is log SQL migration script.
 	 * @return true if sql migration script should be logged for changes to this PO instance
 	 */
 	private boolean isLogSQLScript() {
 		return Env.isLogMigrationScript(p_info.getTableName());
 	}
 
+	/**
+	 * Perform DB update
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @return true if success
+	 */
 	private boolean doUpdate(boolean withValues) {
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
@@ -3211,6 +3232,11 @@ public abstract class PO
 		}
 	}
 	
+	/**
+	 * Add where clause for optimistic locking
+	 * @param optimisticLockingParams
+	 * @param where
+	 */
 	private void addOptimisticLockingClause(List<Object> optimisticLockingParams, StringBuilder where) {
 		for(String oc : m_optimisticLockingColumns)
 		{
@@ -3264,7 +3290,7 @@ public abstract class PO
 	}
 
 	/**
-	 * 
+	 * Is this PO instance using optimistic locking
 	 * @return true if optimistic locking is enable
 	 */
 	public boolean is_UseOptimisticLocking() {
@@ -3275,7 +3301,7 @@ public abstract class PO
 	}
 	
 	/**
-	 * enable/disable optimistic locking
+	 * Enable/disable optimistic locking
 	 * @param enable
 	 */
 	public void set_UseOptimisticLocking(boolean enable) {
@@ -3283,7 +3309,7 @@ public abstract class PO
 	}
 	
 	/**
-	 * 
+	 * Get columns for optimistic locking
 	 * @return optimistic locking columns
 	 */
 	public String[] get_OptimisticLockingColumns() {
@@ -3291,21 +3317,25 @@ public abstract class PO
 	}
 
 	/**
-	 * set columns use for optimistic locking (auto add to where clause for update
-	 * and delete)
+	 * Set columns use for optimistic locking (auto add to where clause for update
+	 * and delete).
 	 * @param columns
 	 */
 	public void set_OptimisticLockingColumns(String[] columns) {
 		m_optimisticLockingColumns = columns;
 	}
 	
+	/**
+	 * Is using statement timeout for update operation
+	 * @return true if statement timeout is use
+	 */
 	private boolean isUseTimeoutForUpdate() {
 		return SystemProperties.isUseTimeoutForUpdate()
 			&& DB.getDatabase().isQueryTimeoutSupported();
 	}
 
 	/**
-	 *  Create New Record
+	 *  Insert New Record
 	 *  @return true if new record inserted
 	 */
 	private boolean saveNew()
@@ -3394,6 +3424,11 @@ public abstract class PO
 		return saveFinish (true, ok);
 	}   //  saveNew
 
+	/**
+	 * Perform insert operation
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @return true if success
+	 */
 	private boolean doInsert(boolean withValues) {
 		lobReset();
 
@@ -3477,6 +3512,7 @@ public abstract class PO
 
 	/**
 	 * Export data as insert SQL statement
+	 * @return SQL insert statement
 	 */
 	public String toInsertSQL() 
 	{
@@ -3772,8 +3808,8 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Get ID for new record during save.
-	 * 	You can overwrite this to explicitly set the ID
+	 * 	Get ID for new record during save.<br/>
+	 * 	You can overwrite this to explicitly set the ID.
 	 *	@return ID to be used or 0 for default logic
 	 */
 	protected int saveNew_getID()
@@ -3784,7 +3820,8 @@ public abstract class PO
 	}	//	saveNew_getID
 
 	/**
-	 * Call after ID have been assigned for new record
+	 * Call after ID have been assigned for new record.<br/>
+	 * Default implementation is nop, to be implemented in sub-classes that needed it.
 	 */
 	protected void saveNew_afterSetID()
 	{
@@ -3793,7 +3830,7 @@ public abstract class PO
 	
 	/**
 	 * 	Create Single/Multi Key Where Clause
-	 * 	@param withValues if true uses actual values otherwise ?
+	 * 	@param withValues if true uses column values, otherwise uses parameter binding (i.e with ?)
 	 * 	@return where clause
 	 */
 	public String get_WhereClause (boolean withValues) {
@@ -3801,8 +3838,8 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Create Single/Multi Key Where Clause
-	 * 	@param withValues if true uses actual values otherwise ?
+	 * 	Create Where Clause with UUID. If UUID is null, fall back to single/multi key where clause.
+	 * 	@param withValues if true uses column values, otherwise uses parameter binding (i.e with ?)
 	 *  @param uuID RecordUU
 	 * 	@return where clause
 	 */
@@ -3852,12 +3889,11 @@ public abstract class PO
 		return sb.toString();
 	}	//	getWhereClause
 
-
 	/**
 	 *  Save data for custom Java type that have no build in implementation.<br/>
 	 *  To be extended by sub-classes (default implementation just call value.toString()).
-	 *  @param value value
-	 *  @param index index
+	 *  @param value value to set
+	 *  @param index column index
 	 *  @return SQL code for INSERT VALUES clause
 	 */
 	protected String saveNewSpecial (Object value, int index)
@@ -3876,10 +3912,9 @@ public abstract class PO
 
 	/**
 	 * 	Encrypt data.
-	 * 	Not: LOB, special values/Objects
-	 *	@param index index
-	 *	@param xx data
-	 *	@return xx
+	 *	@param index column index
+	 *	@param xx data to encrypt
+	 *	@return encrypted data or xx if column is not encrypted
 	 */
 	private Object encrypt (int index, Object xx)
 	{
@@ -3892,10 +3927,10 @@ public abstract class PO
 	}	//	encrypt
 
 	/**
-	 * 	Decrypt data
-	 *	@param index index
-	 *	@param yy data
-	 *	@return yy
+	 * 	Decrypt data.
+	 *	@param index column index
+	 *	@param yy data to decrypt
+	 *	@return decrypted data or yy if column is not encrypted
 	 */
 	private Object decrypt (int index, Object yy)
 	{
@@ -3907,7 +3942,7 @@ public abstract class PO
 		return yy;
 	}	//	decrypt
 
-	/**************************************************************************
+	/**
 	 * 	Delete Current Record
 	 * 	@param force delete also processed records
 	 * 	@return true if deleted
@@ -4300,7 +4335,7 @@ public abstract class PO
 	/**
 	 * Delete Current Record
 	 * @param force delete also processed records
-	 * @throws AdempiereException
+	 * @throws AdempiereException if delete fail
 	 * @see #delete(boolean)
 	 */
 	public void deleteEx(boolean force) throws AdempiereException
@@ -4333,7 +4368,7 @@ public abstract class PO
 	 * Delete Current Record
 	 * @param force delete also processed records
 	 * @param trxName transaction
-	 * @throws AdempiereException
+	 * @throws AdempiereException if delete fail
 	 * @see {@link #deleteEx(boolean)}
 	 */
 	public void deleteEx(boolean force, String trxName) throws AdempiereException
@@ -4343,7 +4378,8 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Executed before Delete operation.
+	 * 	Execute before Delete operations.<br/>
+	 *  Default implementation is nop, to be implemented in sub-classes that needed it.
 	 *	@return true if record can be deleted
 	 */
 	protected boolean beforeDelete ()
@@ -4352,7 +4388,8 @@ public abstract class PO
 	} 	//	beforeDelete
 
 	/**
-	 * 	Executed after Delete operation.
+	 * 	Execute after Delete operations. <br/>
+	 *  Default implementation is nop, to be implemented in sub-classes that needed it.
 	 * 	@param success true if record deleted
 	 *	@return true if delete is a success
 	 */
@@ -4362,7 +4399,8 @@ public abstract class PO
 	} 	//	afterDelete
 
 	/**
-	 * 	Executed after the Delete operation is committed in the database.
+	 * 	Execute after the Delete operation have been committed to database.<br/>
+	 *  Default implementation is nop, to be implemented in sub-classes that needed it.
 	 *	@return true if post delete is a success
 	 */
 	protected boolean postDelete()
@@ -4620,7 +4658,7 @@ public abstract class PO
 	/**
 	 * 	Insert Accounting Records
 	 *	@param acctTableName accounting sub table
-	 *	@param acctBaseTable acct table to get data from
+	 *	@param acctBaseTable accounting base table to get data from
 	 *	@param whereClause optional where clause with alias "p" for acctBaseTable
 	 *	@return true if records inserted
 	 */
@@ -4887,7 +4925,14 @@ public abstract class PO
 		}
 	}	//	update_Tree
 
-	/** Returns the summary node from C_ElementValue with the corresponding value */
+	/** 
+	 * Get the summary node from C_ElementValue with the corresponding value
+	 * @param value
+	 * @param clientID
+	 * @param elementID
+	 * @param trxName
+	 * @return C_ElementValue_ID
+	 */
 	private int retrieveIdOfElementValue(String value, int clientID, int elementID, String trxName)
 	{
 		String sql = "SELECT C_ElementValue_ID FROM C_ElementValue WHERE IsSummary='Y' AND AD_Client_ID=? AND C_Element_ID=? AND Value=?";
@@ -4902,11 +4947,28 @@ public abstract class PO
 		return 0; // rootID
 	}
 
-	/** Returns the summary node with the corresponding value */
+	/** 
+	 * Get parent id with the corresponding value
+	 * @param value
+	 * @param tableName
+	 * @param clientID
+	 * @param trxName
+	 * @param parent id 
+	 */
 	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName) {
 		return retrieveIdOfParentValue(value, tableName, null, 0, clientID, trxName);
 	}
 
+	/**
+	 * Get parent id with the corresponding value
+	 * @param value value to match (partial/starting with or exact match)
+	 * @param tableName
+	 * @param linkCol optional link column name
+	 * @param linkID link id value, ignore if linkCol is null
+	 * @param clientID
+	 * @param trxName
+	 * @return parent id
+	 */
 	public static int retrieveIdOfParentValue(String value, String tableName, String linkCol, int linkID, int clientID, String trxName)
 	{
 		String sql = "SELECT " + tableName + "_ID FROM " + tableName + " WHERE IsSummary='Y'";
@@ -4966,8 +5028,11 @@ public abstract class PO
 		return no > 0;
 	}	//	delete_Tree
 
-	/**************************************************************************
-	 * 	Lock it.
+	/**
+	 * 	Lock record by update of processing column to Y (not using trx).<br/>
+	 *  The method do nothing if PO has no Processing column or existing value of Processing is Y.<br/>
+	 *  Note that this is just a logical lock and doesn't acquire real DB lock. To acquire real DB lock,
+	 *  use DB.getDatabase().forUpdate instead.
 	 * 	@return true if locked
 	 */
 	public boolean lock()
@@ -4994,8 +5059,8 @@ public abstract class PO
 	}	//	lock
 
 	/**
-	 * 	Get the Column Processing index
-	 * 	@return index or -1
+	 * 	Get column index of Processing column 
+	 * 	@return column index or -1
 	 */
 	private int get_ProcessingIndex()
 	{
@@ -5003,13 +5068,13 @@ public abstract class PO
 	}	//	getProcessingIndex
 
 	/**
-	 * 	UnLock it
+	 * 	UnLock record by update of processing column to N.<br/>
+	 *  The method do nothing if PO has no Processing column.<br/>
 	 * 	@param trxName transaction
 	 * 	@return true if unlocked (false only if unlock fails)
 	 */
 	public boolean unlock (String trxName)
 	{
-	//	log.warning(trxName);
 		int index = get_ProcessingIndex();
 		if (index != -1)
 		{
@@ -5056,10 +5121,9 @@ public abstract class PO
 		return m_trxName;
 	}	//	getTrx
 
-
-	/**************************************************************************
-	 * 	Get Attachments.
-	 * 	An attachment may have multiple entries
+	/**
+	 * 	Get Attachment.<br/>
+	 * 	An attachment is a zip archive with one or more entries.
 	 *	@return Attachment or null
 	 */
 	public MAttachment getAttachment ()
@@ -5068,8 +5132,8 @@ public abstract class PO
 	}	//	getAttachment
 
 	/**
-	 * 	Get Attachments
-	 * 	@param requery requery
+	 * 	Get Attachment
+	 * 	@param requery true to reload from DB
 	 *	@return Attachment or null
 	 */
 	public MAttachment getAttachment (boolean requery)
@@ -5080,8 +5144,8 @@ public abstract class PO
 	}	//	getAttachment
 
 	/**
-	 * 	Create/return Attachment for PO.
-	 * 	If not exist, create new
+	 * 	Create/return Attachment for PO.<br/>
+	 * 	If not exist, create new.
 	 *	@return attachment
 	 */
 	public MAttachment createAttachment()
@@ -5095,7 +5159,7 @@ public abstract class PO
 
 	/**
 	 * 	Do we have a Attachment of type
-	 * 	@param extension extension e.g. .pdf
+	 * 	@param extension file extension e.g. .pdf
 	 * 	@return true if there is a attachment of type
 	 */
 	public boolean isAttachment (String extension)
@@ -5115,7 +5179,7 @@ public abstract class PO
 	}	//	isAttachment
 
 	/**
-	 * 	Get Attachment Data of type
+	 * 	Get first Attachment Data of type
 	 * 	@param extension extension e.g. .pdf
 	 *	@return data or null
 	 */
@@ -5145,7 +5209,7 @@ public abstract class PO
 	}	//	isPdfAttachment
 
 	/**
-	 * 	Get PDF Attachment Data
+	 * 	Get first PDF Attachment Data
 	 *	@return data or null
 	 */
 	public byte[] getPdfAttachment()
@@ -5154,7 +5218,7 @@ public abstract class PO
 	}	//	getPDFAttachment
 
 	/**
-	 *  Dump where clause and column values
+	 *  Dump (with log level finest) where clause and column values 
 	 */
 	public void dump ()
 	{
@@ -5167,7 +5231,7 @@ public abstract class PO
 	}   //  dump
 
 	/**
-	 *  Dump column (index:columnName=oldValue (newValue))
+	 *  Dump (with log level finest) column (index:columnName=oldValue (newValue))
 	 *  @param index column index
 	 */
 	public void dump (int index)
@@ -5232,12 +5296,11 @@ public abstract class PO
 		return retValue;
 	}	//	getAllIDs
 
-
 	/**
-	 * 	Get Find parameter.
-	 * 	Convert to upper case and add % at the end
+	 * 	Convert query value.<br/>
+	 * 	Convert to upper case and add % at the end.
 	 *	@param query in string
-	 *	@return out string
+	 *	@return converted query value
 	 */
 	protected static String getFindParameter (String query)
 	{
@@ -5250,11 +5313,10 @@ public abstract class PO
 		return query.toUpperCase();
 	}	//	getFindParameter
 
-
-	/**************************************************************************
+	/**
 	 * 	Load LOB
 	 * 	@param value LOB
-	 * 	@return object
+	 * 	@return loaded LOB object
 	 */
 	private Object get_LOB (Object value)
 	{
@@ -5310,8 +5372,8 @@ public abstract class PO
 
 	/**
 	 * 	Prepare LOB save
-	 *	@param value value
-	 *	@param index index
+	 *	@param value LOB value
+	 *	@param index column index
 	 *	@param displayType display type
 	 */
 	private void lobAdd (Object value, int index, int displayType)
@@ -5326,7 +5388,7 @@ public abstract class PO
 
 	/**
 	 * 	Save LOB
-	 * 	@return true if saved or ok
+	 * 	@return true if saved ok
 	 */
 	private boolean lobSave ()
 	{
@@ -5347,7 +5409,7 @@ public abstract class PO
 	}	//	saveLOB
 
 	/**
-	 * 	Get Object xml representation as string
+	 * 	Get PO xml representation as string
 	 *	@param xml optional string buffer
 	 *	@return updated/new string buffer header is only added once
 	 */
@@ -5488,38 +5550,45 @@ public abstract class PO
 		return document;
 	}	//	getDocument
 
-	/* Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
+	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
 	private Doc m_doc;
 
 	/**
-	 *      Set the accounting document associated to the PO - for use in POST ModelValidator
-	 *      @param doc Document
+	 * Set the accounting document associated to the PO - for use in POST ModelValidator
+	 * @param doc Document
 	 */
 	public void setDoc(Doc doc) {
 		m_doc = doc;		
 	}
 
+	/**
+	 * Set replication flag
+	 * @param isFromReplication
+	 */
 	public void setReplication(boolean isFromReplication)
 	{
 		m_isReplication = isFromReplication;
 	}
 
+	/**
+	 * Is for replication
+	 * @return true if it is for replication
+	 */
 	public boolean isReplication()
 	{
 		return m_isReplication;
 	}
 
 	/**
-	 *      Set the accounting document associated to the PO - for use in POST ModelValidator
-	 *      @return Doc Document
+	 * Get the accounting document associated to the PO - for use in POST ModelValidator
+	 * @return Doc Document
 	 */
 	public Doc getDoc() {
 		return m_doc;
 	}
 
 	/**
-	 *  PO.setTrxName - set given trxName to an array of POs
-	 *  As suggested by teo in [ 1854603 ]
+	 *  Set given trxName to an array of POs
 	 */
 	public static void set_TrxName(PO[] lines, String trxName) {
 		for (PO line : lines)
@@ -5527,7 +5596,7 @@ public abstract class PO
 	}
 
 	/**
-	 * Get Integer Value
+	 * Get Value as int
 	 * @param columnName
 	 * @return int value
 	 */
@@ -5542,7 +5611,7 @@ public abstract class PO
 	}
 
 	/**
-	 * Get value as Boolean
+	 * Get value as boolean
 	 * @param columnName
 	 * @return boolean value
 	 */
@@ -5559,14 +5628,15 @@ public abstract class PO
 	}
 
 	 /**
-	 * @return uuid column name
-	 */
+	  * Get UUID column name
+	  * @return uuid column name
+	  */
 	public String getUUIDColumnName() {
 		return PO.getUUIDColumnName(get_TableName());
 	}
 
 	/**
-	 * 
+	 * Get UUID column name
 	 * @param tableName
 	 * @return uuid column name
 	 */
@@ -5621,6 +5691,12 @@ public abstract class PO
 		return clone;
 	}
 
+	/**
+	 * Read object from ois (for serialization)
+	 * @param ois
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	private void readObject(ObjectInputStream ois)
 			throws ClassNotFoundException, IOException {
 	    // default deserialization
@@ -5644,7 +5720,7 @@ public abstract class PO
 	}
 	
 	/**
-	 * 
+	 * Get attribute value
 	 * @param attributeName
 	 * @return attribute value
 	 */
@@ -5655,7 +5731,7 @@ public abstract class PO
 	}
 	
 	/**
-	 * 
+	 * Get attribute map
 	 * @return map of attributes
 	 */
 	public HashMap<String,Object> get_Attributes() {
@@ -5663,7 +5739,8 @@ public abstract class PO
 	}
 
 	/**
-	 * Turn on immutable check
+	 * Mark PO as immutable.<br/>
+	 * For PO that have been marked as immutable, {@link #checkImmutable()} will throw exception.
 	 */
 	protected void makeImmutable() {
 		if (is_Immutable()) 
@@ -5674,13 +5751,16 @@ public abstract class PO
 	}
 	
 	/**
-	 * 
+	 * Is PO immutable
 	 * @return true if PO is immutable, false otherwise
 	 */
 	public boolean is_Immutable() {
 		return m_isImmutable;
 	}
 	
+	/**
+	 * Check if last error (if exists) is caused by unique constraint/index.
+	 */
 	private void validateUniqueIndex()
 	{
 		ValueNamePair ppE = CLogger.retrieveError();
@@ -5715,32 +5795,49 @@ public abstract class PO
 		}
 	}
 
+	/**
+	 * Throw exception if session context is invalid
+	 */
 	private void checkValidContext() {
 		if (getCtx().isEmpty() && getCtx().getProperty(Env.AD_CLIENT_ID) == null)
 			throw new AdempiereException("Context lost");
 	}
 
-	/*
+	/**
 	 * To force a cross tenant safe read/write the client program must write code like this:
+	 * <pre>
 		try {
 			PO.setCrossTenantSafe();
 			// write here the Query.list or PO.saveEx that is cross tenant safe
 		} finally {
 			PO.clearCrossTenantSafe();
 		}
+	   </pre>
 	 */
 	private static ThreadLocal<Boolean> isSafeCrossTenant = new ThreadLocal<Boolean>() {
 		@Override protected Boolean initialValue() {
 			return Boolean.FALSE;
 		};
 	};
+	
+	/**
+	 * Turn on cross tenant safe thread local flag
+	 */
 	public static void setCrossTenantSafe() {
 		isSafeCrossTenant.set(Boolean.TRUE);
 	}
+	
+	/**
+	 * Clear cross tenant safe thread local flag
+	 */
 	public static void clearCrossTenantSafe() {
 		isSafeCrossTenant.set(Boolean.FALSE);
 	}
 
+	/**
+	 * Throw exception if this is a cross tenant operation and cross tenant safe flag is not turn on.
+	 * @param writing
+	 */
 	private void checkCrossTenant(boolean writing) {
 		if (isSafeCrossTenant.get())
 			return;
@@ -5765,15 +5862,15 @@ public abstract class PO
 	}
 
 	/**
-	 * Validate Foreign keys for cross tenant
-	 * to be called programmatically before saving in programs that can receive arbitrary values in IDs
-	 * This is an expensive operation in terms of database, use it wisely
-	 * 
+	 * Validate Foreign keys for cross tenant.</br>
+	 * To be called programmatically before saving in programs that can receive arbitrary values in IDs.<br/>
+	 * This is an expensive operation in terms of database, use it wisely.
+	 * <pre>
 	 * TODO: there is huge room for performance improvement, for example:
 	 * - caching the valid values found on foreign tables
 	 * - caching the column ID of the foreign column
 	 * - caching the systemAccess
-	 *  
+	 * </pre>
 	 * @return true if all the foreign keys are valid
 	 */
 	public boolean validForeignKeys() {
@@ -5829,7 +5926,8 @@ public abstract class PO
 	}
 
 	/**
-	 * Verify Foreign key based on AD_Table_ID+Record_ID for cross tenant
+	 * Verify Foreign key based on AD_Table_ID+Record_ID for cross tenant.<br/>
+	 * Throw exception if Record_ID reference is cross tenant and the cross tenant safe flag is not turn on.
 	 * @return true if all the foreign keys are valid
 	 */
 	private void checkRecordIDCrossTenant() {
@@ -5881,7 +5979,8 @@ public abstract class PO
 	}
 
 	/**
-	 * Verify Foreign key based on AD_Table_ID+Record_UU for cross tenant
+	 * Verify Foreign key based on AD_Table_ID+Record_UU for cross tenant.
+	 * Throw exception if Record_UU reference is cross tenant and the cross tenant safe flag is not turn on.
 	 * @return true if all the foreign keys are valid
 	 */
 	private void checkRecordUUCrossTenant() {
@@ -5933,8 +6032,8 @@ public abstract class PO
 	}
 
 	/**
-	 * Returns a list of indexes for the foreign columns, null if none
-	 * @return array of int indexes
+	 * Get foreign key columns
+	 * @return list of foreign key columns (Column Name, Reference Table Name)
 	 */
 	private List<ValueNamePair> getForeignColumnIdxs() {
 		List<ValueNamePair> retValue;
@@ -5967,8 +6066,8 @@ public abstract class PO
 	/**
 	 * Verify if a column exists
 	 * @param columnName
-	 * @param throwException - must throw an exception when the column doesn't exist
-	 * @return
+	 * @param throwException true to throw exception when the column doesn't exist
+	 * @return true if column exists
 	 */
 	public boolean columnExists(String columnName, boolean throwException) {
 		int idx = get_ColumnIndex(columnName);
@@ -5980,7 +6079,7 @@ public abstract class PO
 	/**
 	 * Verify if a column exists
 	 * @param columnName
-	 * @return boolean
+	 * @return true if column exists
 	 */
 	public boolean columnExists(String columnName) {
 		return columnExists(columnName, false);

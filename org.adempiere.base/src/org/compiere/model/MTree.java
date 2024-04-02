@@ -38,22 +38,20 @@ import org.compiere.util.Util;
 
 /**
  *  Builds Tree.
- *  Creates tree structure - maintained in VTreePanel
  *
  *  @author     Jorg Janke
  *  @version    $Id: MTree.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
 public class MTree extends MTree_Base
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8572653421094006917L;
 
 	/**
 	 *  Default Constructor.
-	 * 	Need to call loadNodes explicitly
+	 * 	Need to call loadNodes explicitly.
 	 * 	@param ctx context for security
 	 *  @param AD_Tree_ID   The tree to build
 	 *  @param trxName transaction
@@ -65,7 +63,7 @@ public class MTree extends MTree_Base
 
 	/**
 	 * Resultset constructor for model factory.
-	 * Need to call loadNodes explicitly
+	 * Need to call loadNodes explicitly.
 	 * @param ctx
 	 * @param rs
 	 * @param trxName
@@ -77,10 +75,10 @@ public class MTree extends MTree_Base
 
 	/**
 	 *  Construct and Load Tree
+	 *  @param ctx
 	 *  @param AD_Tree_ID   The tree to build
 	 *  @param editable     True, if tree can be modified
 	 *  - includes inactive and empty summary nodes
-	 * 	@param ctx context for security
 	 *	@param clientTree the tree is displayed on the java client (not on web)
 	 *  @param trxName transaction
 	 */
@@ -90,18 +88,45 @@ public class MTree extends MTree_Base
 		this (ctx, AD_Tree_ID, editable, clientTree, false, trxName, null, 0);
 	}   //  MTree
 
+	/**
+	 * @param ctx
+	 * @param AD_Tree_ID
+	 * @param editable
+	 * @param clientTree
+	 * @param trxName
+	 * @param linkColName
+	 * @param linkID
+	 */
 	public MTree (Properties ctx, int AD_Tree_ID, 
 			boolean editable, boolean clientTree, String trxName, String linkColName, int linkID)
 	{
 		this (ctx, AD_Tree_ID, editable, clientTree, false, trxName, linkColName, linkID);
 	}   //  MTree
 
+	/**
+	 * @param ctx
+	 * @param AD_Tree_ID
+	 * @param editable
+	 * @param clientTree
+	 * @param allNodes
+	 * @param trxName
+	 */
 	public MTree (Properties ctx, int AD_Tree_ID, 
 			boolean editable, boolean clientTree, boolean allNodes, String trxName)
 	{
 		this (ctx, AD_Tree_ID, editable, clientTree, allNodes, trxName, null, 0);
 	}   //  MTree
 
+	/**
+	 * @param ctx
+	 * @param AD_Tree_ID
+	 * @param editable
+	 * @param clientTree
+	 * @param allNodes
+	 * @param trxName
+	 * @param linkColName
+	 * @param linkID
+	 */
 	public MTree (Properties ctx, int AD_Tree_ID, 
 			boolean editable, boolean clientTree, boolean allNodes, String trxName, String linkColName, int linkID)
 	{
@@ -140,9 +165,9 @@ public class MTree extends MTree_Base
 	/**	Cache						*/
 	private static CCache<String,Integer> tree_cache	= new CCache<String,Integer>("AD_Tree_ID", 5);
 	
-	/**************************************************************************
-	 *  Get default (oldest) complete AD_Tree_ID for KeyColumn.
-	 *  Called from GridController
+	/**
+	 *  Get default (oldest) AD_Tree_ID for KeyColumn.
+	 *  Called from GridController.
 	 *  @param keyColumnName key column name, eg. C_Project_ID
 	 *  @param AD_Client_ID client
 	 *  @return AD_Tree_ID
@@ -238,10 +263,8 @@ public class MTree extends MTree_Base
 		return AD_Tree_ID;
 	}   //  getDefaultAD_Tree_ID
 
-
-
-	/*************************************************************************
-	 *  Load Nodes and Bar
+	/**
+	 * Load Nodes and Bar (Favourites)
 	 * @param AD_User_ID user for tree bar
 	 * @param linkColName 
 	 * @param linkID 
@@ -363,14 +386,13 @@ public class MTree extends MTree_Base
 		//  clean up
 		if (!m_editable && m_root.getChildCount() > 0)
 			trimTree();
-//		diagPrintTree();
 		if (CLogMgt.isLevelFinest() || m_root.getChildCount() == 0)
 			if (log.isLoggable(Level.FINE)) log.fine("ChildCount=" + m_root.getChildCount());
 	}   //  loadNodes
 
 	/**
 	 *  Add Node to Tree.
-	 *  If not found add to buffer
+	 *  If not found add to buffer.
 	 *  @param node_ID Node_ID
 	 *  @param parent_ID Parent_ID
 	 *  @param seqNo SeqNo
@@ -428,22 +450,21 @@ public class MTree extends MTree_Base
 			}
 		}
 	}   //  checkBuffer
-
 	
-	
-	/**************************************************************************
+	/**
 	 *  Get Node Detail.
-	 * 	Loads data into RowSet m_nodeRowSet
+	 *  <pre>
+	 *  Loads data into RowSet m_nodeRowSet
 	 *  Columns:
-	 * 	- ID
+	 *  - ID
 	 *  - Name
 	 *  - Description
 	 *  - IsSummary
 	 *  - ImageIndicator
-	 * 	- additional for Menu
-	 *  Parameter:
-	 *  - Node_ID
-	 *  The SQL contains security/access control
+	 *  - additional for Menu
+	 *  </pre>
+	 *  @param linkColName
+	 *  @param linkID
 	 */
 	private void getNodeDetails (String linkColName, int linkID)
 	{
@@ -567,7 +588,7 @@ public class MTree extends MTree_Base
 
 	/**
 	 *  Get Menu Node Details.
-	 *  As SQL contains security access, not all nodes will be found
+	 *  As SQL contains security access, not all nodes will be found.
 	 *  @param  node_ID     Key of the record
 	 *  @param  parent_ID   Parent ID of the record
 	 *  @param  seqNo       Sort index
@@ -690,9 +711,8 @@ public class MTree extends MTree_Base
 		}
 		return retValue;
 	}   //  getNodeDetails
-
 	
-	/**************************************************************************
+	/**
 	 *  Trim tree of empty summary nodes
 	 */
 	public void trimTree()
@@ -754,6 +774,7 @@ public class MTree extends MTree_Base
 	 *  String representation
 	 *  @return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MTree[");

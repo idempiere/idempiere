@@ -418,6 +418,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
 				return false;
 			}
+			// Set IsEndProduct flag
 			if ( productionParent.getM_Product_ID() == getM_Product_ID() && productionParent.getProductionQty().signum() == getMovementQty().signum())
 				setIsEndProduct(true);
 			else 
@@ -431,12 +432,14 @@ public class MProductionLine extends X_M_ProductionLine {
 				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
 				return false;
 			}
+			// Set IsEndProduct flag
 			if (plan.getM_Product_ID() == getM_Product_ID() && plan.getProductionQty().signum() == getMovementQty().signum())
 				setIsEndProduct(true);
 			else 
 				setIsEndProduct(false);
 		}
 		
+		// Create quality test results for end product with ASI
 		if ( isEndProduct() && getM_AttributeSetInstance_ID() != 0 )
 		{
 			String where = "M_QualityTest_ID IN (SELECT M_QualityTest_ID " +
@@ -453,6 +456,7 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 		}
 		
+		// Update movement quantity for non end product line
 		if ( !isEndProduct() )
 		{
 			setMovementQty(getQtyUsed().negate());
@@ -462,8 +466,7 @@ public class MProductionLine extends X_M_ProductionLine {
 	}
 	
 	@Override
-	protected boolean beforeDelete() {
-		
+	protected boolean beforeDelete() {		
 		deleteMA();
 		return true;
 	}

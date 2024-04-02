@@ -141,10 +141,7 @@ public class AmtInWords_PT implements AmtInWords
 			number /= 10;
 		}
 		if (number == 0)
-		//return soFar;
-		// Begin e-Evolution ogi-cd 		
 			return tensNames[number % 10] + soFar; // e-Evolution ogi-cd
-		// End e-Evolution ogi-cd
 		if (number > 1)
 			soFar = "s e" + soFar;
 		if (number == 1 && !soFar.equals(""))
@@ -174,10 +171,6 @@ public class AmtInWords_PT implements AmtInWords
 			prefix = "Menos";
 		}
 		
-		/*if ((number >= 1000000 && number < 2000000)
-				|| (number >= 1000000000 && number < 2000000000)){
-			prefix = "Um";
-		}*/
 		String soFar = "";
 		int place = 0;
 		do
@@ -247,6 +240,11 @@ public class AmtInWords_PT implements AmtInWords
 					.trim ();	
 	}	//	convert
 	
+	/**
+	 * @param amount
+	 * @return
+	 * @throws Exception
+	 */
 	public String getAmtInWords (BigDecimal amount) throws Exception
 	{	
 		amount = amount.setScale(2, RoundingMode.HALF_UP);
@@ -256,14 +254,14 @@ public class AmtInWords_PT implements AmtInWords
 		
 		return getAmtInWords(samount);
 	}
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
@@ -271,9 +269,7 @@ public class AmtInWords_PT implements AmtInWords
 		//
 		StringBuilder sb = new StringBuilder ();
     	int pos = amount.lastIndexOf ('.');    // Old
-	//	int pos = amount.lastIndexOf (',');  		
     	int pos2 = amount.lastIndexOf (',');   // Old		
-	//	int pos2 = amount.lastIndexOf ('.');
 		if (pos2 > pos)
 			pos = pos2;
 		String oldamt = amount;
@@ -282,7 +278,6 @@ public class AmtInWords_PT implements AmtInWords
 		String vlr = amount.replaceAll (",", ".");
 
 		int newpos = amount.lastIndexOf ('.');  // Old
-	//	int newpos = amount.lastIndexOf (',');
 		if (newpos == -1) newpos = amount.length();
 		BigDecimal reais =  new BigDecimal(amount.substring (0, newpos));
 		double valor = Double.parseDouble(vlr);

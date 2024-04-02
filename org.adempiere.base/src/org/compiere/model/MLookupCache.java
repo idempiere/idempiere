@@ -142,9 +142,8 @@ public class MLookupCache
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("WindowNo=" + WindowNo
 			+ " - " + startNo + " -> " + endNo);
 	}	//	cacheReset
-
 	
-	/**************************************************************************
+	/**
 	 *  Private constructor
 	 */
 	private MLookupCache()

@@ -11,7 +11,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
 package org.compiere.process;
 
 import java.math.BigDecimal;
@@ -100,6 +99,11 @@ public class CreateForeignKey extends SvrProcess {
 		return Msg.getMsg(getCtx(), "CreateForeignKeyProcessResult", new Object[] {countTable, countForeignKey, countError});
 	}
 	
+	/**
+	 * Find tables from DB meta data
+	 * @param md
+	 * @throws Exception
+	 */
 	private void processDatabase(DatabaseMetaData md) throws Exception 
 	{
 		String tableName = null;		
@@ -126,7 +130,14 @@ public class CreateForeignKey extends SvrProcess {
 		}
 
 	}
-	
+
+	/**
+	 * Find foreign keys from database meta data and synchronize it with foreign key settings in AD_Column
+	 * @param md
+	 * @param table
+	 * @param column foreign key column to synchronize or null to goes through all foreign key columns
+	 * @throws Exception
+	 */
 	private void processDatabaseTableColumn(DatabaseMetaData md, MTable table, MColumn column) throws Exception 
 	{		
 		Hashtable<String, DatabaseKey> htForeignKeys = new Hashtable<String, DatabaseKey>();

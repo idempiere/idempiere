@@ -179,14 +179,10 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 		return true;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_Activity);
 		return success;

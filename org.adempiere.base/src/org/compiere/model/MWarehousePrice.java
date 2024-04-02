@@ -27,10 +27,10 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	Product Warehouse Availability and Price Model.
- *	The Ownership (Client, Org) is determined by the Warehouse
- *	Active is determined if the product is discontinued (the product/price/warehouse need to be active)
- *	Created.. is determined by the price list version 
+ *	Product Warehouse Availability and Price Model.<br/>
+ *	The Ownership (Client, Org) is determined by the Warehouse.<br/>
+ *	Active is determined if the product is discontinued (the product/price/warehouse need to be active).<br/>
+ *	Created.. is determined by the price list version.<br/>
  *	
  *  @author Jorg Janke
  *  @version $Id: MWarehousePrice.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
@@ -38,10 +38,9 @@ import org.compiere.util.DB;
 public class MWarehousePrice extends X_RV_WarehousePrice
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4902324773162437140L;
-
 
 	/**
 	 * 	Find Products in Warehouse with Price
@@ -50,8 +49,8 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 	 *	@param M_Warehouse_ID mandatory warehouse
 	 *	@param Value optional value
 	 *	@param Name optional name
-	 *	@param UPC optional full match upc
-	 *	@param SKU optional full match ski
+	 *	@param UPC optional fully match upc
+	 *	@param SKU optional full match sku
 	 *	@param trxName transaction
 	 *	@return array of product prices and warehouse availability
 	 */
@@ -140,7 +139,7 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 	 *	@param Value optional value
 	 *	@param Name optional name
 	 *	@param UPC optional upc
-	 *	@param SKU optional ski
+	 *	@param SKU optional sku
 	 *	@param trxName transaction
 	 *	@return array of product prices and warehouse availability or null
 	 */
@@ -173,8 +172,8 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 	/**
 	 * 	Get MWarehouse Price
 	 *	@param product product
-	 *	@param M_PriceList_Version_ID plv
-	 *	@param M_Warehouse_ID wh
+	 *	@param M_PriceList_Version_ID
+	 *	@param M_Warehouse_ID
 	 *	@param trxName transaction
 	 *	@return warehouse price
 	 */
@@ -211,19 +210,18 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MWarehousePrice.class);
-
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param RV_WarehousePrice_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param RV_WarehousePrice_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWarehousePrice(Properties ctx, String RV_WarehousePrice_UU, String trxName) {
         super(ctx, RV_WarehousePrice_UU, trxName);
     }
 
-	/*************************************************************************
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -240,7 +238,7 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 	 */
 	public boolean isAvailable()
 	{
-		return getQtyAvailable().signum() == 1;	//	> 0
+		return getQtyAvailable().signum() == 1;
 	}	//	isAvailable
 
 }	//	MWarehousePrice

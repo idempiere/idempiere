@@ -36,32 +36,32 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * User overrides for Info Window Model
+ * User, role, organization or tenant overrides of Info Window Model
  * @author Igor Pojzl, Cloudempiere
  * @version $Id$
  */
 public class MUserDefInfo extends X_AD_UserDef_Info {
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5611033457579880793L;
 
+	/** AD_Client_ID:MUserDefInfo List */
 	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new ConcurrentHashMap<>();
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Info_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Info_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefInfo(Properties ctx, String AD_UserDef_Info_UU, String trxName) {
         super(ctx, AD_UserDef_Info_UU, trxName);
     }
 
 	/**
-	 * 	Standard constructor.
-	 * 	You must implement this constructor for Adempiere Persistency
+	 * Standard constructor.
 	 * @param ctx Context
 	 * @param AD_UserDef_Info_ID Primary Key ID
 	 * @param trxName Transaction name
@@ -71,11 +71,7 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	}
 
 	/**
-	 * 	Optional Load Constructor.
-	 * 	You would use this constructor to load several business objects.
-	 *  <code>
-	 * 	SELECT * FROM MyModelExample WHERE ...
-	 *  </code> 
+	 * Load Constructor.
 	 * @param ctx Context
 	 * @param rs Result set
 	 * @param trxName Transaction name
@@ -85,10 +81,10 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	}
 	
 	/**
-	 *  Get all MUserDefInfo entries related to info window
+	 *  Get all MUserDefInfo entries for an info window
 	 * 	@param ctx Context
 	 *  @param infowindow_ID Info window
-	 *  @return Array of MUserDefInfo for window
+	 *  @return Array of MUserDefInfo for info window
 	 */
 	private static MUserDefInfo[] getAll (Properties ctx, int infowindow_ID )
 	{
@@ -124,11 +120,11 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	}	//getAll
 
 	/**
-	 * Get best matching MUserDefWin for current window
-	 * the best match is cached
+	 * Get best matching MUserDefInfo for an info window, 
+	 * the best match is cached.
 	 * @param ctx
 	 * @param infowindow_ID
-	 * @return best matching MUserDefWin
+	 * @return best matching MUserDefInfo or null
 	 */
 	public static MUserDefInfo getBestMatch (Properties ctx, int infowindow_ID)
 	{

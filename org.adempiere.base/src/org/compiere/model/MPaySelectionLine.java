@@ -166,16 +166,11 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_PaySelection_ID"));
 			return false;
 		}
+		// Calculate difference amount
 		setDifferenceAmt(getOpenAmt().subtract(getPayAmt()).subtract(getDiscountAmt()).subtract(getWriteOffAmt()));
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -185,11 +180,6 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{

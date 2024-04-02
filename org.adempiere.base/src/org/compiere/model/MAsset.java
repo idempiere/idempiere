@@ -345,11 +345,6 @@ public class MAsset extends X_A_Asset {
 		setSerNo(asi.getSerNo());
 	}
 
-	/**
-	 * Before Save
-	 * @param newRecord new
-	 * @return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -358,13 +353,13 @@ public class MAsset extends X_A_Asset {
 		{
 			setA_Parent_Asset_ID(getA_Asset_ID());
 		}	
-		// Fix inventory number:
+		// Trim inventory number:
 		String invNo = getInventoryNo();
 		if(invNo != null)
 		{
 			setInventoryNo(invNo.trim());
 		}
-		// If no asset group, than set the default one:
+		// If no asset group, then set the default one:
 		if(getA_Asset_Group_ID() <= 0)
 		{
 			setA_Asset_Group_ID(MAssetGroup.getDefault_ID(SetGetUtil.wrap(this)));
@@ -378,8 +373,8 @@ public class MAsset extends X_A_Asset {
 					new String[]{MBPartnerLocation.COLUMNNAME_C_Location_ID}
 			);
 		}
-		//
-		// Create ASI if not exist:
+		
+		// Create new ASI if ASI is 0.
 		if (getM_Product_ID() > 0 && getM_AttributeSetInstance_ID() <= 0)
 		{
 			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
@@ -404,7 +399,6 @@ public class MAsset extends X_A_Asset {
 			return success;
 		}
 		
-		//
 		// Set parent
 		if(getA_Parent_Asset_ID() <= 0)
 		{
@@ -414,8 +408,7 @@ public class MAsset extends X_A_Asset {
 			if (log.isLoggable(Level.FINE)) log.fine("A_Parent_Asset_ID=" + getA_Parent_Asset_ID());
 		}
 		
-		//
-		// Set inventory number:
+		// Set InventoryNo to record id if it is null
 		String invNo = getInventoryNo();
 		if(invNo == null || invNo.trim().length() == 0)
 		{
@@ -424,21 +417,19 @@ public class MAsset extends X_A_Asset {
 			DB.executeUpdateEx("UPDATE A_Asset SET InventoryNo=" + DB.TO_STRING(invNo) + " WHERE A_Asset_ID=" + getA_Asset_ID(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("InventoryNo=" + getInventoryNo());
 		}
-		
-		
-		// If new record, create accounting and workfile
+				
+		// If new record, create accounting and depreciation work file
 		if (newRecord)
 		{
-			//@win: set value at asset group as default value for asset
+			// Set IsDepreciated and IsOwned from asset group
 			MAssetGroup assetgroup = new MAssetGroup(getCtx(), getA_Asset_Group_ID(), get_TrxName());
 			String isDepreciated = (assetgroup.isDepreciated()) ? "Y" : "N";
 			String isOwned = (assetgroup.isOwned()) ? "Y" : "N";
 			setIsDepreciated(assetgroup.isDepreciated());
 			setIsOwned(assetgroup.isOwned());
 			DB.executeUpdateEx("UPDATE A_Asset SET IsDepreciated='" + isDepreciated + "', isOwned ='" + isOwned + "' WHERE A_Asset_ID=" + getA_Asset_ID(), get_TrxName());
-			//end @win
 			
-			// for each asset group accounting create an asset accounting and a workfile too
+			// for each asset group accounting record, create a new asset accounting and depreciation work file record
 			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), getA_Asset_Group_ID(), null, get_TrxName()))
 			{			
 				if (assetgrpacct.getAD_Org_ID() == 0 || assetgrpacct.getAD_Org_ID() == getAD_Org_ID()) 
@@ -463,16 +454,14 @@ public class MAsset extends X_A_Asset {
 					// Change Log
 					MAssetChange.createAndSave(getCtx(), "CRT", new PO[]{this, assetwk, assetacct}, null);
 				}
-			}
-			
+			}			
 		}
 		else
 		{
 			MAssetChange.createAndSave(getCtx(), "UPD", new PO[]{this}, null);
 		}
 		
-		//
-		// Update child.IsDepreciated flag
+		// Update IsDepreciated flag of depreciation work file records
 		if (!newRecord && is_ValueChanged(COLUMNNAME_IsDepreciated))
 		{
 			final String sql = "UPDATE " + MDepreciationWorkfile.Table_Name
@@ -487,14 +476,14 @@ public class MAsset extends X_A_Asset {
 	@Override
 	protected boolean beforeDelete()
 	{
-		// delete addition
+		// Delete asset addition
 		{
 			String sql = "DELETE FROM "+MAssetAddition.Table_Name+" WHERE "+MAssetAddition.COLUMNNAME_Processed+"=? AND "+MAssetAddition.COLUMNNAME_A_Asset_ID+"=?";
 			int no = DB.executeUpdateEx(sql, new Object[]{false, getA_Asset_ID()}, get_TrxName());
 			if (log.isLoggable(Level.INFO)) log.info("@A_Asset_Addition@ @Deleted@ #" + no);
 		}
 		//
-		// update invoice line
+		// Reset asset fields of invoice line
 		{
 			final String sql = "UPDATE "+MInvoiceLine.Table_Name+" SET "
 										+" "+MInvoiceLine.COLUMNNAME_A_Asset_ID+"=?"

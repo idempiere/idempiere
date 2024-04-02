@@ -11,7 +11,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
 package org.compiere.process;
 
 import java.sql.DatabaseMetaData;
@@ -31,7 +30,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
 /**
- * Create table index (AD_TableIndex) process
+ * Synchronized table index (AD_TableIndex) with database meta data
  * @author Elaine
  *
  */
@@ -83,6 +82,11 @@ public class CreateTableIndex extends SvrProcess {
 		return Msg.getMsg(getCtx(), "CreateTableIndexProcessResult", new Object[] {countTable, countIndex, countError});
 	}
 	
+	/**
+	 * Find table indexes from database meta data
+	 * @param md
+	 * @throws Exception
+	 */
 	private void processDatabase(DatabaseMetaData md) throws Exception 
 	{
 		String tableName = null;		
@@ -104,6 +108,12 @@ public class CreateTableIndex extends SvrProcess {
 		rs.close();
 	}
 	
+	/**
+	 * Find table indexes from database meta data
+	 * @param md
+	 * @param table
+	 * @throws Exception
+	 */
 	private void processDatabaseTable(DatabaseMetaData md, MTable table) throws Exception 
 	{
 		Hashtable<String, DatabaseTableIndex> htIndexes = new Hashtable<String, DatabaseTableIndex>();
@@ -149,6 +159,13 @@ public class CreateTableIndex extends SvrProcess {
 		htIndexes = null;
 	}
 	
+	/**
+	 * Process table indexes discover from database meta data
+	 * @param md
+	 * @param table
+	 * @param htIndexes Map of Index Name:Index Meta Data
+	 * @throws Exception
+	 */
 	private void processTableIndex(DatabaseMetaData md, MTable table, Hashtable<String, DatabaseTableIndex> htIndexes) throws Exception 
 	{
 		String catalog = DB.getDatabase().getCatalog();
@@ -266,6 +283,9 @@ public class CreateTableIndex extends SvrProcess {
 		}
 	}
 	
+	/**
+	 * Value object for index meta data
+	 */
 	private class DatabaseTableIndex
 	{
 		private String indexName;

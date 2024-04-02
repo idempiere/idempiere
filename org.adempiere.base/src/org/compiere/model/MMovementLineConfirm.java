@@ -149,7 +149,7 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	}	//	isFullyConfirmed
 		
 	/**
-	 * 	Before Delete - do not allow delete
+	 * 	Do not allow delete
 	 *	@return false 
 	 */
 	@Override
@@ -158,11 +158,6 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 		return false;
 	}	//	beforeDelete
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

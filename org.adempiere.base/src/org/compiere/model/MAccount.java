@@ -627,7 +627,7 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 	}	//	isPassiva
 
 	/**
-	 * 	Set Value and Description and Fully Qualified Flag for Combination
+	 * 	Set Value(Combination) and Description and Fully Qualified Flag for Combination
 	 */
 	public void setValueDescription()
 	{
@@ -876,11 +876,7 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 		return ok;
 	}	//	validate
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		setValueDescription();

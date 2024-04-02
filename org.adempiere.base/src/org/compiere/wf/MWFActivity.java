@@ -445,7 +445,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 	/**
 	 * 	Is SO Trx
-	 *	@return SO Trx or of not found true
+	 *	@return SO Trx or if not found true
 	 */
 	public boolean isSOTrx()
 	{

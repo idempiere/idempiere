@@ -28,6 +28,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
+/**
+ * Process to create or update DB index from AD_TableIndex definition.
+ */
 @org.adempiere.base.annotation.Process
 public class TableIndexValidate extends SvrProcess {
 
@@ -48,6 +51,15 @@ public class TableIndexValidate extends SvrProcess {
 		return validateTableIndex(getCtx(), index, get_TrxName(), getProcessInfo());
 	}
 	
+	/**
+	 * Create or update DB index from AD_TableIndex definition.
+	 * @param ctx
+	 * @param index
+	 * @param trxName
+	 * @param pi
+	 * @return info text
+	 * @throws Exception
+	 */
 	public static String validateTableIndex(Properties ctx, MTableIndex index, String trxName, ProcessInfo pi) throws Exception 
 	{
 		Trx trx = Trx.get(trxName, true);

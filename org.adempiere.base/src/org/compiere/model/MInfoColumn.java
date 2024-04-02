@@ -181,26 +181,27 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate column name is valid DB identifier
 		String error = Database.isValidIdentifier(getColumnName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
 			return false;
 		}
-		// Sync Terminology
+		// Sync Terminology with AD_Element
 		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
 			&& getAD_Element_ID() != 0 && isCentrallyMaintained())
 		{
 			M_Element element = new M_Element (getCtx(), getAD_Element_ID (), get_TrxName());
 			setName (element.getName());
 		}
-
+		// Set SeqNoSelection
 		if (isQueryCriteria() && getSeqNoSelection() <= 0) {
 			int next = DB.getSQLValueEx(get_TrxName(),
 					"SELECT ROUND((COALESCE(MAX(SeqNoSelection),0)+10)/10,0)*10 FROM AD_InfoColumn WHERE AD_InfoWindow_ID=? AND IsQueryCriteria='Y' AND IsActive='Y'",
 					getAD_InfoWindow_ID());
 			setSeqNoSelection(next);
 		}
-
+		// Reset IsQueryAfterChange and IsMandatory to false if IsQueryCriteria is false  
 		if (!isQueryCriteria()) {
 			if (isQueryAfterChange())
 				setIsQueryAfterChange(false);
@@ -211,18 +212,15 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		return true;
 	}
 	
-	/**
-	 * when change field relate to sql, call valid from infoWindow
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (!success)
 			return success;
 	
-		// evaluate need valid
+		// Evaluate the need to re-validate info window
 		boolean isNeedValid = getParent().isValidateEachColumn() && (newRecord || is_ValueChanged (MInfoColumn.COLUMNNAME_SelectClause));
 		
-		// call valid of parent
+		// Validate info window
 		if (isNeedValid){
 			getParent().validate();
 			getParent().saveEx(get_TrxName());

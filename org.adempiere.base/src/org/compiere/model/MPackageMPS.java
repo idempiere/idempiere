@@ -84,13 +84,14 @@ public class MPackageMPS extends X_M_PackageMPS
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		// Set SeqNo
 		if (getSeqNo() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM M_PackageMPS WHERE M_Package_ID=?";
 			int ii = DB.getSQLValue (get_TrxName(), sql, getM_Package_ID());
 			setSeqNo(ii);
 		}
-		
+		// Update weight from X_PackageLineWeight.LineWeight
 		if (getWeight() == null || getWeight().compareTo(BigDecimal.ZERO) == 0)
 		{
 			String sql = "SELECT SUM(LineWeight) FROM X_PackageLineWeight plw WHERE plw.M_PackageMPS_ID=?";
@@ -106,6 +107,7 @@ public class MPackageMPS extends X_M_PackageMPS
 	@Override
 	protected boolean beforeDelete()
 	{
+		// Delete package lines
 		String sql = "DELETE FROM M_PackageLine WHERE M_PackageMPS_ID = ?";
 		DB.executeUpdate(sql, getM_PackageMPS_ID(), get_TrxName());
 		return true;

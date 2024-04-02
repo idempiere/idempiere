@@ -129,11 +129,9 @@ public class Join
 		return m_condition;
 	}   //  getCondition
 
-	/*************************************************************************/
-
 	/**
 	 *  Set Main Table Name.
-	 *  If table name equals alias, the alias is set to ""
+	 *  If table name equals alias, the alias is set to "".
 	 *  @param mainTable
 	 */
 	public void setMainTable(String mainTable)
@@ -176,8 +174,6 @@ public class Join
 	{
 		return m_joinTable;
 	}   //  getJoinTable
-
-	/*************************************************************************/
 
 	/**
 	 *  This Join is a condition of the first Join. <br/>

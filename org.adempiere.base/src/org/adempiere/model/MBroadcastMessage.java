@@ -177,11 +177,6 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
     	return false;
     }
     
-    /**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
     @Override
 	protected boolean beforeSave (boolean newRecord)
 	{

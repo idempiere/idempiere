@@ -76,11 +76,6 @@ public class MPOSPayment extends X_C_POSPayment
 		super(ctx, rs, trxName);
 	}	//	MPOSPayment
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

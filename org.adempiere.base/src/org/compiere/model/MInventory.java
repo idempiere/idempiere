@@ -294,12 +294,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		return null;
 	}	//	createPDF
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -308,7 +302,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_C_DocType_ID));
 			return false;
 		}
-		// IDEMPIERE-1887 can make inconsistent data from physical inventory window
+		// Disallow change of warehouse if there are inventory lines
 		if (!newRecord && is_ValueChanged(COLUMNNAME_M_Warehouse_ID)) {
 			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM M_InventoryLine WHERE M_Inventory_ID=?", getM_Inventory_ID());
 			if (cnt > 0) {
@@ -316,7 +310,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				return false;
 			}
 		}
-		
+		// Set document currency to primary accounting schema currency for cost adjustment document.
 		String docSubTypeInv = MDocType.get(getC_DocType_ID()).getDocSubTypeInv();
 		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
 		{

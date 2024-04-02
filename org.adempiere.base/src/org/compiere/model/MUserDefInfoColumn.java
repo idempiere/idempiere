@@ -34,30 +34,29 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- * User overrides for Info Window Column Model
+ * User, role, organization or tenant overrides of Info Window Column Model
  * @author Igor Pojzl, Cloudempiere
  * @version $Id$
  */
 public class MUserDefInfoColumn extends X_AD_UserDef_Info_Column {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4381444937794716616L;
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Info_Column_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Info_Column_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefInfoColumn(Properties ctx, String AD_UserDef_Info_Column_UU, String trxName) {
         super(ctx, AD_UserDef_Info_Column_UU, trxName);
     }
 
 	/**
 	 * 	Standard constructor.
-	 * 	You must implement this constructor for Adempiere Persistency
 	 *	@param ctx Context
 	 *	@param AD_UserDef_Info_Column_ID Primary key ID
 	 *	@param trxName Transaction name
@@ -67,11 +66,7 @@ public class MUserDefInfoColumn extends X_AD_UserDef_Info_Column {
 	}
 	
 	/**
-	 * 	Optional Load Constructor.
-	 * 	You would use this constructor to load several business objects.
-	 *  <code>
-	 * 	SELECT * FROM MyModelExample WHERE ...
-	 *  </code> 
+	 * 	Load Constructor.
 	 *  @param ctx Context
 	 *  @param rs Result set
 	 *	@param trxName Transaction Name
@@ -81,15 +76,14 @@ public class MUserDefInfoColumn extends X_AD_UserDef_Info_Column {
 	}
 	
 	/**
-	 * Get matching MUserDefInfoColumn related to current Info Column and user definition for Info window
+	 * Get best matching MUserDefInfoColumn for info window and info column
 	 * @param ctx
 	 * @param AD_InfoColumn_ID
 	 * @param AD_InfoWindow_ID
-	 * @return
+	 * @return MUserDefInfoColumn or null
 	 */
 	public static MUserDefInfoColumn get (Properties ctx, int AD_InfoColumn_ID, int AD_InfoWindow_ID )
 	{
-
 		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(ctx, AD_InfoWindow_ID);
 		if (userdefInfo == null)
 			return null;

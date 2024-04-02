@@ -24,25 +24,24 @@ import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- * Model class for Process Customizations
+ * User, role, organization or tenant overrides of process model
  *
  * @author raphael.gildo (devCoffee, www.devcoffee.com.br)
- *
  */
 public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSupport {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1599140293008534080L;
 	private static final Map<Integer, List<MUserDefProc>> m_fullMap = new ConcurrentHashMap<>();
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Proc_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Proc_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefProc(Properties ctx, String AD_UserDef_Proc_UU, String trxName) {
         super(ctx, AD_UserDef_Proc_UU, trxName);
     }
@@ -63,11 +62,10 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	 */
 	public MUserDefProc(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MUserDefProc(MUserDefProc copy) {
@@ -75,7 +73,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -84,7 +82,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -94,6 +92,12 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 		copyPO(copy);
 	}
 	
+	/**
+	 * Get all MUserDefProc records for a process 
+	 * @param ctx
+	 * @param processID
+	 * @return array of MUserDefProc record
+	 */
 	private static MUserDefProc[] getAll (Properties ctx, int processID)
 	{
 		List<MUserDefProc> fullList = null;
@@ -127,6 +131,12 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 		return list.toArray(new MUserDefProc[list.size()]);
 	}
 
+	/**
+	 * Get best matching MUserDefProc for a process
+	 * @param ctx
+	 * @param AD_Process_ID
+	 * @return MUserDefProc or null
+	 */
 	public static MUserDefProc getBestMatch (Properties ctx, int AD_Process_ID)
 	{
 		final int AD_Org_ID = Env.getAD_Org_ID(ctx);
@@ -213,7 +223,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	    }
 	}
 
-	//Cache of selected MUserDefProc entries 					**/
+	/** Cache of best matched MUserDefProc entries 					*/
 	private static ImmutablePOCache<String, MUserDefProc> s_cache = new ImmutablePOCache<String, MUserDefProc>(Table_Name, 3);	//  3 weights
 
 	@Override
