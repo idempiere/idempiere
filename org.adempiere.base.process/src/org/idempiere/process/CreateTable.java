@@ -442,6 +442,7 @@ public class CreateTable extends SvrProcess {
 	 * Create a column if it doesn't exist
 	 * @param table
 	 * @param columnName
+	 * @return AD_Column_ID just column is created, if the column already exists return -1
 	 */
 	private int createColumn(MTable table, String columnName) {
 		MColumn columnThatExists = getColumn(table, columnName);
