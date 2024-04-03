@@ -889,7 +889,9 @@ public class TablePartitionService implements ITablePartitionService {
 			
 		updateStmt.append(partitionKeyColumn.getColumnName()).append("=");						
 				
-		if (DisplayType.isText(partitionKeyColumn.getAD_Reference_ID()))
+		if (DisplayType.isText(partitionKeyColumn.getAD_Reference_ID()) || partitionKeyColumn.getAD_Reference_ID() == DisplayType.YesNo 
+			|| "EntityType".equals(partitionKeyColumn.getColumnName())
+			|| "AD_Language".equals(partitionKeyColumn.getColumnName()))
 			updateStmt.append("'").append(listValue).append("' ");
 		else
 			updateStmt.append(listValue).append(" ");
