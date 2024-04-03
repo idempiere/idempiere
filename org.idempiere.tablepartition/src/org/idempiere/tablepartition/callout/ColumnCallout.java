@@ -54,7 +54,7 @@ public class ColumnCallout implements IColumnCallout {
 				if (seqNo != null)
 					mTab.setValue("SeqNoPartition", null);
 			}
-		} else if ("RangePartitionInterval".equals(mField.getColumnName())) {
+		} else if ("RangePartitionInterval".equals(mField.getColumnName()) && value != null) {
 			MColumn column = MColumn.getCopy(Env.getCtx(), mTab.getRecord_ID(), null);
 			column.setRangePartitionInterval(value.toString());
 			String error = RangePartitionInterval.validateIntervalPattern(column);
