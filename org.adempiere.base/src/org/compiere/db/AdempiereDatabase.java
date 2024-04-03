@@ -42,7 +42,10 @@ public interface AdempiereDatabase
 	
 	/** default lock timeout, 60 seconds **/
 	static final int LOCK_TIME_OUT = 60;
-	
+
+	/* PostgreSQL restricts object names to 63 characters */
+	public final static int MAX_OBJECT_NAME_LENGTH = 63;
+
 	/**
 	 *  Get Database Name
 	 *  @return database short name

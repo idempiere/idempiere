@@ -717,9 +717,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	{
 		if (isKey()) {
 			StringBuilder constraintName;
-			if (tableName.length() > 26)
-				// Oracle restricts object names to 30 characters
-				constraintName = new StringBuilder(tableName.substring(0, 26)).append("_Key");
+			if (tableName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 4)
+				constraintName = new StringBuilder(tableName.substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 4)).append("_Key");
 			else
 				constraintName = new StringBuilder(tableName).append("_Key");
 			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(constraintName).append(" PRIMARY KEY (").append(getColumnName()).append(")");
@@ -735,9 +734,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		MTable table = MTable.get(getAD_Table_ID());
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
-
-			String indexName = table.getUUIDIndexName();
-
+			String indexName = MTable.getUUIDIndexName(tableName);
 			String constraintType;
 			if (table.isUUIDKeyTable())
 				constraintType = "PRIMARY KEY";
@@ -1291,8 +1288,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 							constraintName.append(columnName.replace("_", ""));
 							constraintName.append("_");
 							constraintName.append(table.getTableName().replace("_", ""));
-							if (constraintName.length() > 30)
-								constraintName = new StringBuilder(constraintName.substring(0, 30));
+							if (constraintName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
+								constraintName = new StringBuilder(constraintName.substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH));
 							fkConstraintName = constraintName.toString();
 							
 							int duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
@@ -1301,8 +1298,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 							{
 								loop++;
 								String suffix = "" + loop;
-								if (fkConstraintName.length() + suffix.length() > 30)
-									fkConstraintName = fkConstraintName.substring(0, fkConstraintName.length() - (fkConstraintName.length() + suffix.length() - 30));
+								if (fkConstraintName.length() + suffix.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
+									fkConstraintName = fkConstraintName.substring(0, fkConstraintName.length() - (fkConstraintName.length() + suffix.length() - AdempiereDatabase.MAX_OBJECT_NAME_LENGTH));
 								fkConstraintName = fkConstraintName + loop;
 								duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
 							}
