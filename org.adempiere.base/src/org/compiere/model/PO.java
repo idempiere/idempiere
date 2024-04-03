@@ -5645,11 +5645,11 @@ public abstract class PO
 
 		// easy case, just add suffix when the table name is shorter or equal than 27 chars
 		String columnName = tableName + "_UU";
-		if (columnName.length() <= 27) /* Old MAX_OBJECT_NAME_LENGTH */
+		if (columnName.length() <= 30) /* Old MAX_OBJECT_NAME_LENGTH */
 			return columnName;
 
 		// verify if oldColumnName exists
-		int i = columnName.length() - 27;
+		int i = columnName.length() - 30;
 		String oldColumnName = tableName.substring(0, tableName.length() - i) + "_UU";
 		MTable table = MTable.get(null, tableName);
 		if (table != null && table.columnExists(oldColumnName))
