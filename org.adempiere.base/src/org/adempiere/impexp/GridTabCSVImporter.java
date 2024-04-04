@@ -1348,10 +1348,10 @@ public class GridTabCSVImporter implements IGridTabImporter
 		}	
 	    
 		boolean checkParentKey = parentColumns.size()!=gridTab.getParentColumnNames().size();
-		if(isThereRow && logMsg==null && masterRecord!=null && checkParentKey){
+		if(isThereRow && logMsg==null && (masterRecord!=null||gridTab.getParentTab()!=null) && checkParentKey){
 			for(String linkColumn : gridTab.getParentColumnNames()){
 				String columnName = linkColumn;
-				Object setValue   = masterRecord.get_Value(linkColumn);
+				Object setValue   = masterRecord != null ? masterRecord.get_Value(linkColumn) : gridTab.getParentTab().getValue(linkColumn);
 		        //resolve missing key 
 				if(setValue==null){
 			       columnName = null;
@@ -1493,7 +1493,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if (gridTab.isDetail()){
 				for(String linkColumn : gridTab.getParentColumnNames()){
 					if(!pquery.getWhereClause().contains(linkColumn)){
-						Object value = masterRecord!=null?masterRecord.get_Value(linkColumn):null;
+						Object value = masterRecord!=null
+								    ? masterRecord.get_Value(linkColumn)
+									: gridTab.getParentTab() != null ? gridTab.getParentTab().getValue(linkColumn) : null;
 						//resolve key
 						if(value==null){
 						   String columnName = null;
