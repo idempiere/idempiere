@@ -57,6 +57,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
+import org.compiere.db.AdempiereDatabase;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -5567,9 +5568,21 @@ public abstract class PO
 	 * @return uuid column name
 	 */
 	public static String getUUIDColumnName(String tableName) {
+
+		// easy case, just add suffix when the table name is shorter or equal than 27 chars
 		String columnName = tableName + "_UU";
-		if (columnName.length() > 30) {
-			int i = columnName.length() - 30;
+		if (columnName.length() <= 30) /* Old MAX_OBJECT_NAME_LENGTH */
+			return columnName;
+
+		// verify if oldColumnName exists
+		int i = columnName.length() - 30;
+		String oldColumnName = tableName.substring(0, tableName.length() - i) + "_UU";
+		MTable table = MTable.get(null, tableName);
+		if (table != null && table.columnExists(oldColumnName))
+			return oldColumnName;
+
+		if (columnName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH) {
+			i = columnName.length() - AdempiereDatabase.MAX_OBJECT_NAME_LENGTH;
 			columnName = tableName.substring(0, tableName.length() - i) + "_UU";
 		}
 		return columnName;

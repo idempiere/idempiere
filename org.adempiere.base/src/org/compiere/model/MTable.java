@@ -65,9 +65,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTable extends X_AD_Table implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4325276636597337437L;
+	private static final long serialVersionUID = -167824144142429242L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -1084,4 +1084,18 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			tablePartitionNames.add(partition.getName());
 		return tablePartitionNames;
 	}
+
+	/**
+	 * Get the Unique UU Index name
+	 * @return indexName
+	 */
+	public static String getUUIDIndexName(String tableName) {
+
+		StringBuilder indexName = new StringBuilder().append(PO.getUUIDColumnName(tableName)).append("_idx");
+		if (indexName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
+			indexName = new StringBuilder().append(PO.getUUIDColumnName(tableName).substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 5)).append("uuidx");
+
+		return indexName.toString();
+	}
+
 }	//	MTable

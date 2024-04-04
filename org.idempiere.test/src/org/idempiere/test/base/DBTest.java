@@ -37,6 +37,7 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -463,6 +464,22 @@ public class DBTest extends AbstractTestCase
 		} finally {
 			future.cancel(true);
 		}
+	}
+
+	/**
+	 * Test max length of UUID column name and its index
+	 */
+	@Test
+	public void testUUIDColumnName() {
+		assertEquals(PO.getUUIDColumnName   ("MyTable"                                                      ), "MyTable_UU"                                                     );
+		assertEquals(PO.getUUIDColumnName   ("XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheName" ), "XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheName_UU");
+		assertEquals(PO.getUUIDColumnName   ("CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheName"), "CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheNam_UU");
+		assertEquals(MTable.getUUIDIndexName("MyTable"                                                      ), "MyTable_UU_idx"                                                 );
+		assertEquals(MTable.getUUIDIndexName("XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheName" ), "XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheNauuidx");
+		assertEquals(MTable.getUUIDIndexName("CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheName"), "CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheNuuidx");
+		assertEquals(MTable.getUUIDIndexName("XYCUSTOM_ThisIsAVeryLongTableNameWith55CharactersOnName"      ), "XYCUSTOM_ThisIsAVeryLongTableNameWith55CharactersOnName_UU_idx" );
+		assertEquals(MTable.getUUIDIndexName("XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName"     ), "XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName_UU_idx");
+		assertEquals(MTable.getUUIDIndexName("XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName"    ), "XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName_uuidx");
 	}
 	
 }
