@@ -15,6 +15,7 @@ package org.compiere.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -26,6 +27,7 @@ import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -45,7 +47,11 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.supercsv.io.CsvMapReader;
+import org.supercsv.io.ICsvMapReader;
+import org.supercsv.prefs.CsvPreference;
 
 /**
  *	Import Template Model
@@ -136,8 +142,14 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Invalid@ @CharacterSet@"));
 			return false;
 		}
-		if (is_new() || is_ValueChanged(COLUMNNAME_CSVHeader) || is_ValueChanged(COLUMNNAME_AD_Tab_ID))
-			calculateColumnTypes(); // this throws an Exception if there are wrong columns in the CSV Header
+		if (   is_new()
+			|| is_ValueChanged(COLUMNNAME_CSVHeader)
+			|| is_ValueChanged(COLUMNNAME_CSVAliasHeader)
+			|| is_ValueChanged(COLUMNNAME_CharacterSet)
+			|| is_ValueChanged(COLUMNNAME_SeparatorChar)
+			|| is_ValueChanged(COLUMNNAME_QuoteChar)
+			|| is_ValueChanged(COLUMNNAME_AD_Tab_ID))
+			calculateAndValidateColumnTypes(); // this throws an Exception if there are wrong columns in the CSV Header
 		return super.beforeSave(newRecord);
 	}
 
@@ -308,7 +320,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 			throw new AdempiereException("Wrong template type -> " + getImportTemplateType());
 		}
 
-		List<Integer> colTypes = calculateColumnTypes();
+		List<Integer> colTypes = calculateAndValidateColumnTypes();
 
 		Sheet sheet = workbook.getSheetAt(0); // First sheet
 
@@ -444,9 +456,62 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	 *   Any column can end with /K (can be ignored)
 	 * @return List of expected DisplayType for every column
 	 */
-	private List<Integer> calculateColumnTypes() {
+	private List<Integer> calculateAndValidateColumnTypes() {
 		List<Integer> retValue = new ArrayList<Integer>();
-		String[] csvHeaders = getCSVHeader().split(getSeparatorChar());
+
+		String delimiterChar = getSeparatorChar();
+		String quoteChar = getQuoteChar();
+		CsvPreference csvpref = new CsvPreference.Builder(quoteChar.charAt(0), delimiterChar.charAt(0), "\r\n" /* ignored */).build();
+		InputStream is = null;
+		List<String>csvHeaders = null;
+		ICsvMapReader mapReader = null;
+		try {
+			is = new ByteArrayInputStream( getCSVHeader().getBytes(getCharacterSet()));
+			InputStreamReader reader = new InputStreamReader(is);
+			mapReader = new CsvMapReader(reader, csvpref);
+			csvHeaders =  Arrays.asList(mapReader.getHeader(true));
+		} catch (IOException e) {
+			throw new AdempiereException(e);
+		} finally {
+			if (mapReader != null) {
+				try {
+					mapReader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if (csvHeaders == null || csvHeaders.size() == 0) {
+			throwCSVHeaderNotFound("");
+		}
+
+		// Validate that alias has the same number of columns as the header
+		if (! Util.isEmpty(getCSVAliasHeader())) {
+			InputStream isa = null;
+			List<String>csvAliasHeaders = null;
+			ICsvMapReader mapReaderAlias = null;
+			try {
+				isa = new ByteArrayInputStream( getCSVAliasHeader().getBytes(getCharacterSet()));
+				InputStreamReader reader = new InputStreamReader(isa);
+				mapReaderAlias = new CsvMapReader(reader, csvpref);
+				csvAliasHeaders =  Arrays.asList(mapReaderAlias.getHeader(true));
+			} catch (IOException e) {
+				throw new AdempiereException(e);
+			} finally {
+				if (mapReaderAlias != null) {
+					try {
+						mapReaderAlias.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			if (csvAliasHeaders == null || csvAliasHeaders.size() != csvHeaders.size()) {
+				throw new AdempiereException(Msg.getMsg(getCtx(), "CSVAliasHeaderNotValid"));
+			}
+		}
+
+		// Validate existence of each column and obtain the data type
 		MTab mainTab = MTab.get(getAD_Tab_ID());
 		MTable mainTable = MTable.get(mainTab.getAD_Table_ID());
 		for (String csvHeader : csvHeaders) {
