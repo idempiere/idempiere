@@ -766,7 +766,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         tabPanel.setStyle("height: 100%; width: 100%");
         tabPanel.appendChild(winAdvanced);
         tabPanel.setId("advancedSearch");
-        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced").replaceAll("&", ""), false, false);
+        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced"), false, false);
         initSimple();
         initAdvanced();
 
@@ -2053,11 +2053,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     	String code = userQuery.getCode();
     	if (code.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "SQL"));
 			m_whereUserQuery = "(" + code.substring(code.indexOf("=")+1, code.length()) + ")";
 			if (log.isLoggable(Level.INFO))
 				log.log(Level.INFO, m_whereUserQuery);
 			hideAdvanced();
     	} else {
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "Advanced"));
         	String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR));
 
             List<?> rowList = advancedPanel.getChildren();
