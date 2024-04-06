@@ -219,3 +219,7 @@ input[type="checkbox"]:focus
     right: 0px;
     top: 5px;
 }
+
+.attachment-dialog .z-north {
+	padding: 8px;
+}
