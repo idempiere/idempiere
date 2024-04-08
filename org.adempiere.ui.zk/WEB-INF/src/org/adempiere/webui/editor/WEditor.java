@@ -890,7 +890,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	public boolean isNullOrEmpty() {
 		Object value = getValue();
-		return value == null || value.toString().trim().length() == 0;
+		return value == null || value.toString().length() == 0;
 	}
 	
 	/**
