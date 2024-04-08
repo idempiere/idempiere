@@ -23,7 +23,6 @@ import java.util.TreeMap;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.ADTreePanel;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
@@ -182,13 +181,12 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		}				
 			}
 		});
+
+        ZKUpdateUtil.setHflex(cmbSearch, "1");
+        ZKUpdateUtil.setHflex(lblSearch, "0");
         
         addEventListener(ON_COMBO_SELECT_ECHO_EVENT, this);
         addEventListener(ON_POST_SELECT_TREEITEM_EVENT, this);
-        if (AEnv.isInternetExplorer())
-        {
-        	ZKUpdateUtil.setWidth(cmbSearch, "200px");
-        }
 
         layout.appendChild(lblSearch);
         layout.appendChild(cmbSearch);
