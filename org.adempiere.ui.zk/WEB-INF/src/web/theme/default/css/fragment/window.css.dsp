@@ -220,6 +220,10 @@ input[type="checkbox"]:focus
     top: 5px;
 }
 
+.attachment-dialog .z-north {
+	padding: 8px;
+}
+
 .quick-form.z-window .z-center-body > .z-div {
 	border: none; 
 	width: 100%; 

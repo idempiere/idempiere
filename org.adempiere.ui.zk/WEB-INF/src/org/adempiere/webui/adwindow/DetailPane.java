@@ -73,6 +73,7 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.LayoutRegion;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
@@ -708,7 +709,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     	
     	String labelText = buildLabelText(status);
     	if (error) {
-    		Clients.showNotification(buildNotificationText(status), "error", findTabpanel(this), "top_left", 3500, true);
+    		Component ref = isCollapsed(this) ? findTabpanel(this) : findTabpanel(messageContainer);
+    		Clients.showNotification(buildNotificationText(status), "error", ref, "top_left", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
@@ -733,6 +735,21 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     			tp.getRecordToolbar().dynamicDisplay();
     		}
     	}
+	}
+
+	/**
+	 * Is parent of detailPane in collapsed state
+	 * @param detailPane
+	 * @return true if parent of detailPane is in collapsed state
+	 */
+	private boolean isCollapsed(DetailPane detailPane) {
+		Component parent = detailPane.getParent();
+		while (parent != null) {
+			if (parent instanceof LayoutRegion lr)
+				return !lr.isOpen();
+			parent = parent.getParent();
+		}
+		return false;
 	}
 
 	/**
@@ -811,8 +828,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 * @param error
 	 * @param msg
 	 */
-	private void showPopup(boolean error, String msg) {		
-		Clients.showNotification(buildNotificationText(msg), "error", findTabpanel(this), "at_pointer", 3500, true);
+	private void showPopup(boolean error, String msg) {
+		Clients.showNotification(buildNotificationText(msg), "error", null, "at_pointer", 3500, true);
 	}
 	
 	/**
@@ -1065,7 +1082,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private Component findTabpanel(Component comp) {
 		Component parent = comp.getParent();
 		while (parent != null) {
-			if (parent instanceof Tabpanel)
+			if (parent instanceof org.adempiere.webui.component.Tabpanel)
 				return parent;
 			
 			parent = parent.getParent();
