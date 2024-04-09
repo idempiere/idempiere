@@ -740,7 +740,7 @@ public class DashboardController implements EventListener<Event> {
 			HtmlBasedComponent parentComponent, List<Component> components, Component zulComponent, ServerPushTemplate spt) throws Exception {
 		// HTML content
         String htmlContent = dashboardContent.get_ID() > 0 ? dashboardContent.get_Translation(MDashboardContent.COLUMNNAME_HTML) : null;
-        if(htmlContent != null)
+        if(!Util.isEmpty(htmlContent))
         {
             StringBuilder result = new StringBuilder("<html><head>");
 
