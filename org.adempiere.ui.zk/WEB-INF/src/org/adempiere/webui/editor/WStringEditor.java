@@ -221,8 +221,10 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        // Validate VFormat with regular expression
 	        if (!Util.isEmpty(vFormat) && vFormat.startsWith("~")) {
 	        	String regex = gridField.getVFormat().substring(1); // remove the initial ~
-	        	if (!newValue.matches(regex))
-	        		throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {regex}));
+	        	if (!newValue.matches(regex)) {
+	        		String msgregex = Msg.getMsg(Env.getCtx(), regex);
+	        		throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
+	        	}
 	        }
 
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
