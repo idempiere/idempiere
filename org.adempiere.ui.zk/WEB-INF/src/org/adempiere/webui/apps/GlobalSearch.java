@@ -102,7 +102,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
 		
 		Bandpopup popup = new Bandpopup();
-		ZKUpdateUtil.setWindowHeightX(popup, ClientInfo.get().desktopHeight-50);
+		ZKUpdateUtil.setWindowHeightX(popup, ClientInfo.get().desktopHeight-100);
 		bandbox.appendChild(popup);		
 		
 		tabbox = new Tabbox();
@@ -246,5 +246,21 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	 */
 	public void onClientInfo() {
 		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-50);	
+	}
+
+	/**
+	 * Set place holder text for global search input box
+	 * @param placeHolder
+	 */
+	public void setPlaceHolderText(String placeHolder) {
+		bandbox.setPlaceholder(placeHolder);
+	}
+	
+	/**
+	 * Set tooltip text for global search input box
+	 * @param tooltipText
+	 */
+	public void setTooltipText(String tooltipText) {
+		bandbox.setTooltiptext(tooltipText);
 	}
 }

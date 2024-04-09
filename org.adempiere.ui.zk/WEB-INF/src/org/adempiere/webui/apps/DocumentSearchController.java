@@ -104,9 +104,18 @@ public class DocumentSearchController implements EventListener<Event>{
 	private void onSearchDocuments(String searchString) {
 		list = new ArrayList<SearchResult>();
 		if (Util.isEmpty(searchString)) {
+			// No search string, show available transaction code
+			Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "TransactionCode IS NOT NULL", null);
+			List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).setOrderBy("TransactionCode").list();
+			for(MSearchDefinition definition : definitions) {
+				Label label = new Label("/"+definition.getTransactionCode() + " " + definition.getName());
+				label.setStyle("color: rgba(0,0,0,0.34)");
+				layout.appendChild(label);
+			}
 			return;
 		} 
 		
+		// Search and show results
 		List<SearchResult> list = doSearch(searchString);
 		if (list.size() > 0) {
     		Collections.sort(list, new Comparator<SearchResult>() {
@@ -146,7 +155,23 @@ public class DocumentSearchController implements EventListener<Event>{
 		final MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), true);
 				
 		selected = -1;
-		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "TransactionCode IS NULL", null);
+		
+		// Search with or without transaction code
+		StringBuilder whereClause = new StringBuilder();
+		String transactionCode = null;
+		if (searchString != null && searchString.startsWith("/") && searchString.indexOf(" ") > 1) {
+			// "/TransactionCode Search Text"
+			transactionCode = searchString.substring(1, searchString.indexOf(" "));
+			searchString = searchString.substring(searchString.indexOf(" ")+1);
+			whereClause.append("Upper(TransactionCode) = ?");
+		} else {
+			// Search with definition that doesn't use transaction code
+			whereClause.append("TransactionCode IS NULL");
+		}
+		
+		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, whereClause.toString(), null);
+		if (transactionCode != null)
+			query.setParameters(transactionCode.toUpperCase());
 		List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).list();		
 		for(MSearchDefinition msd : definitions) {
 			MTable table = new MTable(Env.getCtx(), msd.getAD_Table_ID(), null);
