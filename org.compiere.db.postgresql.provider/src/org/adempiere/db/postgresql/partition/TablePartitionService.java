@@ -235,8 +235,17 @@ public class TablePartitionService implements ITablePartitionService {
 			//unique index must include partition key column
 			String indexdef = uniqueMap.get(indexName);
 			for(String partitionKey : partitionKeyColumnNames) {
-				if (!indexdef.contains(partitionKey.toLowerCase()+",") && !indexdef.contains(partitionKey.toLowerCase()+")"))
-					indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+				if (!indexdef.contains(partitionKey.toLowerCase()+",") && !indexdef.contains(partitionKey.toLowerCase()+")")) {
+					int whereIndex = indexdef.toLowerCase().indexOf(" where ");
+					if (whereIndex > 0) {
+						String whereClause = indexdef.substring(whereIndex);
+						indexdef = indexdef.substring(0, whereIndex);
+						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+						indexdef = indexdef + whereClause;
+					} else {
+						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+					}
+				}
 			}			
 			StringBuilder alter = new StringBuilder("DROP INDEX ").append(indexName);
 			DB.executeUpdateEx(alter.toString(), trxName);
