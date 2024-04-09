@@ -84,7 +84,7 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 		PoExporter filler = new PoExporter(ctx, document, po);
 
 		List<String> excludes = defaultExcludeList(X_AD_Role_OrgAccess.Table_Name);
-		filler.export(excludes);
+		filler.export(excludes, true);
 	}
 
 	@Override
