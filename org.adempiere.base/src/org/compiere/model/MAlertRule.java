@@ -149,7 +149,7 @@ public class MAlertRule extends X_AD_AlertRule
 			throw new IllegalArgumentException("Parameter extension cannot be empty");
 		}
 		StringBuilder msgname = new StringBuilder(new SimpleDateFormat("yyyyMMddhhmm").format(new Timestamp(System.currentTimeMillis())))
-				.append("_").append(Util.stripDiacritics(getName().trim()));
+				.append("_").append(getName().trim());
 		String name = msgname.toString();
 		File file = null;
 		try
