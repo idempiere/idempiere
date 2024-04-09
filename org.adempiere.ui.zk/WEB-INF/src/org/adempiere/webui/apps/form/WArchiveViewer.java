@@ -41,7 +41,6 @@ import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -57,6 +56,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
@@ -64,6 +64,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.compiere.apps.form.Archive;
@@ -178,9 +179,9 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Listbox createdByQField = new Listbox();
 	private Label createdQLabel = new Label(Msg.translate(Env.getCtx(), "Created"));
 	/** Created date from field of query tab */
-	private Datebox createdQFrom = new Datebox();
+	private WDateEditor createdQFrom = new WDateEditor();
 	/** Created date to field of query tab */
-	private Datebox createdQTo = new Datebox();
+	private WDateEditor createdQTo = new WDateEditor();
 	
 	//Viewer Tab
 	/** Prior button of viewer tab */
@@ -457,8 +458,10 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			rows.appendChild(row);
 			row.appendChild(createdQLabel);
 			Hbox hbox = new Hbox();
-			hbox.appendChild(createdQFrom);
-			hbox.appendChild(createdQTo);
+			hbox.appendChild(createdQFrom.getComponent());
+			hbox.appendChild(createdQTo.getComponent());
+			DateRangeButton drb = (new DateRangeButton(createdQFrom, createdQTo));
+			hbox.appendChild(drb);
 			row.appendChild(hbox);
 			row.appendChild(new Space());
 			
