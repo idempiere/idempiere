@@ -223,3 +223,23 @@ input[type="checkbox"]:focus
 .attachment-dialog .z-north {
 	padding: 8px;
 }
+
+.quick-form.z-window .z-center-body > .z-div {
+	border: none; 
+	width: 100%; 
+	height:99%;
+}
+.quick-form.z-window .adtab-grid.z-row .z-cell {
+	border-top: 2px solid transparent; 
+	border-bottom: 2px solid transparent;
+}
+.quick-form.z-window .adtab-grid.z-row.current-row .z-cell {
+	border-top: 2px solid #6f97d2 !important; 
+	border-bottom: 2px solid #6f97d2 !important;
+}
+.quick-form.z-window .z-south-body > .z-div > .z-div {
+	height: 20px; 
+}
+.quick-form.z-window .z-south-body .confirm-panel {
+	padding-top: 9px; 
+}
