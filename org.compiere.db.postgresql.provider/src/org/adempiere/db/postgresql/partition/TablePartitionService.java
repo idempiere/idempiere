@@ -890,6 +890,7 @@ public class TablePartitionService implements ITablePartitionService {
 		updateStmt.append(partitionKeyColumn.getColumnName()).append("=");						
 				
 		if (DisplayType.isText(partitionKeyColumn.getAD_Reference_ID()) || partitionKeyColumn.getAD_Reference_ID() == DisplayType.YesNo 
+			|| DisplayType.isList(partitionKeyColumn.getAD_Reference_ID())
 			|| "EntityType".equals(partitionKeyColumn.getColumnName())
 			|| "AD_Language".equals(partitionKeyColumn.getColumnName()))
 			updateStmt.append("'").append(listValue).append("' ");
