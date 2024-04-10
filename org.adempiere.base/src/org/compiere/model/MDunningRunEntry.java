@@ -280,15 +280,16 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	protected boolean beforeSave (boolean newRecord)
 	{
 		I_C_DunningLevel level = getC_DunningLevel();
-		//	Set Amt
 		if (isProcessed ())
 		{
+			// Propagate Processed to Lines
 			MDunningRunLine[] theseLines = getLines();
 			for (int i=0;i<theseLines.length;i++) 
 			{
 				theseLines[i].setProcessed (true);
 				theseLines[i].saveEx(get_TrxName());
 			}
+			// Update CreditStop and PaymentTerm of business partner.
 			if (level.isSetCreditStop () || level.isSetPaymentTerm ()) 
 			{
 				MBPartner thisBPartner = MBPartner.get (getCtx(), getC_BPartner_ID());

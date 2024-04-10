@@ -93,7 +93,7 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 	private MInvoice	m_invoice = null;
 	
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName trx
@@ -137,14 +137,10 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 		return m_invoice.getC_BPartner_ID();
 	}	//	getC_BPartner_ID
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Check is payment already allocated to charge or invoice or order
 		MPayment payment = new MPayment (getCtx(), getC_Payment_ID(), get_TrxName());
 		if ((newRecord || is_ValueChanged("C_Invoice_ID"))
 			&& (payment.getC_Charge_ID() != 0 
@@ -155,6 +151,7 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 			return false;
 		}
 		
+		// Validate allocation amount = invoice amount
 		BigDecimal check = getAmount()
 			.add(getDiscountAmt())
 			.add(getWriteOffAmt())
@@ -167,7 +164,7 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 			return false;
 		}
 		
-		//	Org
+		//	Set organization from invoice
 		if (newRecord || is_ValueChanged("C_Invoice_ID"))
 		{
 			getInvoice();

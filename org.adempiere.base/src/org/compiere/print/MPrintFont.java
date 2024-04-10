@@ -17,14 +17,12 @@
 package org.compiere.print;
 
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFont;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -32,7 +30,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	AD_PrintFont Print Font Model
+ *	Print Font Model for AD_PrintFont
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFont.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -40,16 +38,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -613305916546183810L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_PrintFont_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PrintFont_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPrintFont(Properties ctx, String AD_PrintFont_UU, String trxName) {
         super(ctx, AD_PrintFont_UU, trxName);
 		if (Util.isEmpty(AD_PrintFont_UU))
@@ -76,13 +74,18 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 		setIsDefault(false);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPrintFont(Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MPrintFont(MPrintFont copy) 
@@ -91,7 +94,7 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -101,7 +104,7 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -115,8 +118,6 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 	
 	/** Font cached					*/
 	private Font 	m_cacheFont = null;
-
-	/*************************************************************************/
 
 	/**
 	 * 	Get Font
@@ -166,8 +167,6 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 		setCode(sb.toString());
 	}	//	setFont
 
-	/*************************************************************************/
-
 	/**
 	 * 	Create Font in Database and save
 	 * 	@param font font
@@ -192,6 +191,7 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MPrintFont[");
@@ -245,8 +245,6 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 		System.out.println(font);
 	}	//	dump
 
-	/*************************************************************************/
-
 	/** Cached Fonts						*/
 	static private ImmutableIntPOCache<Integer,MPrintFont> s_fonts = new ImmutableIntPOCache<Integer,MPrintFont>(Table_Name, 20);
 
@@ -281,30 +279,4 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 		return this;
 	}
 
-	/*************************************************************************/
-
-	/**
-	 * 	Seed Fonts
-	 * 	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		System.out.println("Available Fonts:");
-		String[] family = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-		for (int i = 0; i < family.length; i++)
-			System.out.println(" - " + family[i]);
-
-		org.compiere.Adempiere.startup(true);
-		MPrintFont pf = new MPrintFont(Env.getCtx(), 100, null);
-		dump( pf.getFont() );
-
-		//	Read All Fonts
-		int[] IDs = PO.getAllIDs ("AD_PrintFont", null, null);
-		for (int i = 0; i < IDs.length; i++)
-		{
-			pf = new MPrintFont(Env.getCtx(), IDs[i], null);
-			System.out.println(IDs[i] + " = " + pf.getFont());
-		}
-
-	}	//	main
 }	//	MPrintFont

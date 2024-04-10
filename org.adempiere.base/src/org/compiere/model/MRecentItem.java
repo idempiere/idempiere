@@ -42,9 +42,9 @@ import org.osgi.service.event.Event;
 public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4298877865937943663L;
+	private static final long serialVersionUID = 6284848250030738141L;
 
 	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
 
@@ -409,13 +409,16 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	/**
 	 * Clear the label (to display) cache in a recent item instance.
 	 * @param AD_Table_ID
+	 * @param Record_ID
 	 * @param Record_UU
 	 */
-	public static synchronized void clearLabel(int AD_Table_ID, String Record_UU) {
+	public static synchronized void clearLabel(int AD_Table_ID, int Record_ID, String Record_UU) {
 		Iterator<MRecentItem> it = s_cache.values().iterator();
 		while (it.hasNext()) {
 			MRecentItem retValue = it.next();
-			if (retValue.getAD_Table_ID() == AD_Table_ID && retValue.getRecord_UU().equals(Record_UU)) {
+			if (   retValue.getAD_Table_ID() == AD_Table_ID
+				&& (   (Record_ID > 0 && retValue.getRecord_ID() == Record_ID)
+				    || (retValue.getRecord_UU() != null && retValue.getRecord_UU().equals(Record_UU)))) {
 				retValue.clearLabel();
 			}
 		}

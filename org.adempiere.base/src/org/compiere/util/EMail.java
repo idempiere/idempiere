@@ -53,11 +53,11 @@ import org.compiere.model.MSysConfig;
 import com.sun.mail.smtp.SMTPMessage;
 
 /**
- *	EMail Object.
+ *	EMail delivery and receive support for iDempiere<br/>
+ *  <p>
  *	Resources:
- *	http://java.sun.com/products/javamail/index.html
- * 	http://java.sun.com/products/javamail/FAQ.html
- *
+ *	<li>http://java.sun.com/products/javamail/index.html
+ * 	<li>http://java.sun.com/products/javamail/FAQ.html
  *  <p>
  *  When I try to send a message, I get javax.mail.SendFailedException:
  * 		550 Unable to relay for my-address
@@ -72,18 +72,17 @@ import com.sun.mail.smtp.SMTPMessage;
 public final class EMail implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8982983766981221312L;
 
-	//use in server bean
+	/** HTML mail marker */
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
 	
-	//log last email send error message in context
+	/** log last email send error message in context */
 	public final static String EMAIL_SEND_MSG = "EmailSendMsg";
 	
 	/**
-	 *	Full Constructor
 	 *  @param client the client
 	 *  @param from Sender's EMail address
 	 *  @param to   Recipient EMail address
@@ -97,7 +96,6 @@ public final class EMail implements Serializable
 	}	//	EMail
 
 	/**
-	 *	Full Constructor
 	 *  @param client the client
 	 *  @param from Sender's EMail address
 	 *  @param to   Recipient EMail address
@@ -112,7 +110,6 @@ public final class EMail implements Serializable
 	}	//	EMail
 
 	/**
-	 *	Full Constructor
 	 *	@param ctx context
 	 *  @param smtpHost The mail server
 	 *  @param from Sender's EMail address
@@ -127,7 +124,6 @@ public final class EMail implements Serializable
 	}
 
 	/**
-	 *	Full Constructor
 	 *	@param ctx context
 	 *  @param smtpHost The mail server
 	 *  @param from Sender's EMail address
@@ -143,7 +139,6 @@ public final class EMail implements Serializable
 	}
 
 	/**
-	 *	Full Constructor
 	 *	@param ctx context
 	 *  @param smtpHost The mail server
 	 *  @param smtpPort
@@ -192,6 +187,10 @@ public final class EMail implements Serializable
 		m_smtpPort = smtpPort;
 	}
 
+	/**
+	 * Set acknowledgement for receipt (Disposition-Notification-To)
+	 * @param ar
+	 */
 	public void setAcknoledgmentReceipt(boolean ar) {
 		m_acknowledgementReceipt = ar;
 	}
@@ -243,7 +242,7 @@ public final class EMail implements Serializable
 	private boolean m_forceUseTenantSmtp = false; 
 
 	/**
-	 *	Send Mail direct
+	 *	Send Mail
 	 *	@return OK or error message
 	 */
 	public String send()
@@ -258,7 +257,7 @@ public final class EMail implements Serializable
 	}
 
 	/**
-	 *	Send Mail direct
+	 *	Send Mail
 	 *	@return OK or error message
 	 */
 	public String sendEx() throws Exception
@@ -267,7 +266,7 @@ public final class EMail implements Serializable
 	}
 
 	/**
-	 *	Send Mail direct
+	 *	Send Mail
 	 *	@return OK or error message
 	 * @throws Exception 
 	 */
@@ -311,7 +310,6 @@ public final class EMail implements Serializable
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");
 		//
-
 		boolean isOAuth2 = false;
 		if (m_auth != null)
 			isOAuth2 = m_auth.isOAuth2();
@@ -576,8 +574,8 @@ public final class EMail implements Serializable
 	}	//	getSentMsg
 
 	/**
-	 * 	Was sending the Msg OK
-	 *	@return msg == OK
+	 * 	Is send success
+	 *	@return msg == SENT_OK
 	 */
 	public boolean isSentOK()
 	{
@@ -604,7 +602,7 @@ public final class EMail implements Serializable
 	}	//	dumpMessage
 
 	/**
-	 * 	Get the message directly
+	 * 	Get the message 
 	 * 	@return mail message
 	 */
 	protected MimeMessage getMimeMessage()
@@ -631,8 +629,6 @@ public final class EMail implements Serializable
 		return null;
 	}	//	getMessageID
 
-	/**	Getter/Setter ********************************************************/
-
 	/**
 	 * 	Create Authenticator for User
 	 * 	@param username user name
@@ -648,7 +644,6 @@ public final class EMail implements Serializable
 		}
 		else
 		{
-		//	log.fine("setEMailUser: " + username + "/" + password);
 			m_auth = new EMailAuthenticator (username, password);
 		}
 		return m_auth;
@@ -852,8 +847,7 @@ public final class EMail implements Serializable
 		return m_replyTo;
 	}   //  getReplyTo
 
-
-	/**************************************************************************
+	/**
 	 *  Set Subject
 	 *  @param newSubject Subject
 	 */
@@ -875,7 +869,7 @@ public final class EMail implements Serializable
 	}   //  getSubject
 
 	/**
-	 *  Set Message
+	 *  Set Message Body
 	 *  @param newMessage message
 	 */
 	public void setMessageText (String newMessage)
@@ -914,8 +908,6 @@ public final class EMail implements Serializable
 			else
 				sb.append(c);
 		}
-	//	log.fine("IN  " + m_messageText);
-	//	log.fine("OUT " + sb);
 
 		return sb.toString();
 	}   //  getMessageCRLF
@@ -1142,8 +1134,7 @@ public final class EMail implements Serializable
 		}	//	multi=part
 	}	//	setContent
 
-
-	/**************************************************************************
+	/**
 	 *  Set SMTP Host or address
 	 *  @param newSmtpHost Mail server
 	 */
@@ -1174,7 +1165,7 @@ public final class EMail implements Serializable
 	}   //  isValid
 
 	/**
-	 *  Re-Check Info if valid to send EMail
+	 *  Re-Check Info is valid to send EMail
 	 * 	@param recheck if true check main variables
 	 *  @return true if email is valid and can be sent
 	 */
@@ -1226,6 +1217,7 @@ public final class EMail implements Serializable
 	}   //  isValid
 
 	/**
+	 * Get attachments
 	 * @return attachments array or empty array. This method will never return null.
 	 */
 	public Object[] getAttachments()
@@ -1239,6 +1231,7 @@ public final class EMail implements Serializable
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("EMail[");
@@ -1267,30 +1260,11 @@ public final class EMail implements Serializable
 		return true;
 	}
 
-	/**************************************************************************
-	 *  Test.
-	 *  java -cp CTools.jar;CClient.jar org.compiere.util.EMail main info@adempiere.org jjanke@adempiere.org "My Subject"  "My Message"
-	 * 	--
-	 * 	If you get SendFailedException: 550 5.7.1 Unable to relay for ..
-	 * 	Check:
-	 * 	- Does the SMTP server allow you to relay
-	 *    (Exchange: SMTP server - Access)
-	 *  - Did you authenticate (setEmailUser)
-	 *  @param args Array of arguments
+	/**
+	 * Set additional headers
+	 * @param name
+	 * @param value
 	 */
-	public static void main (String[] args)
-	{
-		org.compiere.Adempiere.startup(true);
-
-		if (args.length != 5)
-		{
-			System.out.println("Parameters: smtpHost from to subject message");
-			System.out.println("Example: java org.compiere.util.EMail mail.acme.com joe@acme.com sue@acme.com HiThere CheersJoe");
-			System.exit(1);
-		}
-		EMail email = new EMail(System.getProperties(), args[0], args[1], args[2], args[3], args[4]);
-		email.send();
-	}   //  main
 	public void setHeader(String name, String value) {
 		additionalHeaders.add(new ValueNamePair(value, name));
 	}
@@ -1312,6 +1286,10 @@ public final class EMail implements Serializable
 		return ia;
 	}
 
+	/**
+	 * Set is force the user of tenant SMTP configuration
+	 * @param forceTenantSmtp
+	 */
 	public void setForTenantSmtp(boolean forceTenantSmtp) {
 		m_forceUseTenantSmtp = forceTenantSmtp;	
 	}

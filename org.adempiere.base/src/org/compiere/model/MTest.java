@@ -117,10 +117,6 @@ public class MTest extends X_Test
 		super(ctx, Test_ID, trxName, virtualColumns);
 	}
 
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
@@ -128,11 +124,6 @@ public class MTest extends X_Test
 		return true;
 	}
 	
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -140,11 +131,7 @@ public class MTest extends X_Test
 		return success;
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("New=" + newRecord + " ***");

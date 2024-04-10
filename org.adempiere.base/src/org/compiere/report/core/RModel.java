@@ -24,24 +24,24 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 
 /**
- *  Report Model.
- *  Data is maintained in RModelData
+ *  Report Model.<br/>
+ *  Data is maintained in {@link RModelData}.
  *
  *  @author Jorg Janke
  *  @version  $Id: RModel.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
  *
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1778373 ] AcctViewer: data is not sorted proper
  */
 public class RModel implements Serializable
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1283407521250413019L;
 
 	/**
-	 *  Constructor. Creates RModelData
+	 *  Constructor. Create RModelData.
 	 *  @param TableName
 	 */
 	public RModel (String TableName)
@@ -64,9 +64,9 @@ public class RModel implements Serializable
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(RModel.class);
 
-	/**************************************************************************
-	 *  Get Column Display Name
-	 *  @param col
+	/**
+	 *  Get RColumn model
+	 *  @param col column index
 	 *  @return RColumn
 	 */
 	public RColumn getRColumn (int col)
@@ -77,7 +77,7 @@ public class RModel implements Serializable
 	}   //  getRColumn
 
 	/**
-	 * Get column by column name
+	 * Get RColumn by column name
 	 * @param columnName
 	 * @return column or null if not found
 	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
@@ -94,9 +94,8 @@ public class RModel implements Serializable
 		return null;
 	}
 
-
-	/**************************************************************************
-	 *  Add Column
+	/**
+	 *  Add Column (RColumn) to RModelData
 	 *  @param rc
 	 */
 	public void addColumn (RColumn rc)
@@ -105,9 +104,9 @@ public class RModel implements Serializable
 	}   //  addColumn
 
 	/**
-	 *  Add Column at Index
+	 *  Add RColumn to RModelData at Index
 	 *  @param rc
-	 *  @param index
+	 *  @param index column index
 	 */
 	public void addColumn (RColumn rc, int index)
 	{
@@ -124,8 +123,8 @@ public class RModel implements Serializable
 	}   //  addRow
 
 	/**
-	 *  Add Row at Index
-	 *  @param index
+	 *  Add new empty Row at Index to RModelData
+	 *  @param index row index
 	 */
 	public void addRow (int index)
 	{
@@ -134,8 +133,8 @@ public class RModel implements Serializable
 	}   //  addRow
 
 	/**
-	 *  Add Row
-	 *  @param l
+	 *  Add new Row to RModelData
+	 *  @param l column values for new row
 	 */
 	public void addRow (ArrayList<Object> l)
 	{
@@ -144,9 +143,9 @@ public class RModel implements Serializable
 	}   //  addRow
 
 	/**
-	 *  Add Row at Index
-	 *  @param l
-	 *  @param index
+	 *  Add Row at Index to RModelData
+	 *  @param l column values of new row
+	 *  @param index row index
 	 */
 	public void addRow (ArrayList<Object> l, int index)
 	{
@@ -177,9 +176,8 @@ public class RModel implements Serializable
 		return -1;
 	}   //  getColumnIndex
 
-
-	/**************************************************************************
-	 *  Query
+	/**
+	 *  Execute Query
 	 *  @param ctx
 	 *  @param whereClause
 	 *  @param orderClause
@@ -189,8 +187,7 @@ public class RModel implements Serializable
 		m_data.query (ctx, whereClause, orderClause);
 	}   //  query
 
-
-	/**************************************************************************
+	/**
 	 *  Set a group column
 	 *  @param columnName
 	 */
@@ -200,11 +197,11 @@ public class RModel implements Serializable
 	}   //  setGroup
 
 	/**
-	 *  Set a group column -
-	 *  if the group value changes, a new row in inserted
-	 *  performing the calculations set in setGroupFunction().
+	 *  Set a group column -<br/>
+	 *  If the group value changes, a new row is inserted
+	 *  for the calculations set in setGroupFunction().<br/>
 	 *  If you set multiple groups, start with the highest level
-	 *  (e.g. Country, Region, City)
+	 *  (e.g. Country, Region, City).<br/>
 	 *  The data is assumed to be sorted to result in meaningful groups.
 	 *  <pre>
 	 *  A AA 1
@@ -252,7 +249,7 @@ public class RModel implements Serializable
 	}   //  setFunction
 
 	/**
-	 *  Set Group Function -
+	 *  Set Group Function -<br/>
 	 *  for the column, set a function like FUNCTION_SUM, FUNCTION_COUNT, ...
 	 *  @param col   The column on which the function is performed
 	 *  @param function  The function
@@ -265,11 +262,10 @@ public class RModel implements Serializable
 		m_data.functions.put(Integer.valueOf(col), function);
 	}   //  setFunction
 
-	/*************************************************************************/
 	//  TableModel interface
-
+	
 	/**
-	 *  Return Total mumber of rows
+	 *  Return Total number of rows
 	 *  @return row count
 	 */
 	public int getRowCount()
@@ -287,9 +283,9 @@ public class RModel implements Serializable
 	}   //  getColumnCount
 
 	/**
-	 *  Get Column Display Name
+	 *  Get Column Display Name (Column Header)
 	 *  @param col index
-	 *  @return ColumnName
+	 *  @return Column Display Name (Column Header)
 	 */
 	public String getColumnName (int col)
 	{
@@ -303,7 +299,7 @@ public class RModel implements Serializable
 
 	/**
 	 *  Get Column Class
-	 *  @param col index
+	 *  @param col column index
 	 *  @return Column Class
 	 */
 	public Class<?> getColumnClass (int col)
@@ -338,10 +334,8 @@ public class RModel implements Serializable
 		//  invalid row
 		if (row < 0 || row >= m_data.rows.size())
 			return null;
-	//		throw new java.lang.IllegalArgumentException("Row invalid");
 		if (col < 0 || col >= m_data.cols.size())
 			return null;
-	//		throw new java.lang.IllegalArgumentException("Column invalid");
 		//
 		ArrayList<Object> myRow = (ArrayList<Object>)m_data.rows.get(row);
 		//  invalid column
@@ -399,8 +393,5 @@ public class RModel implements Serializable
 	public ArrayList<ArrayList<Object>> getRows() {
 		return m_data.rows;
 	}
-
-
-	/*************************************************************************/
 
 }   //  RModel

@@ -82,12 +82,6 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 		super(ctx, rs, trxName);
 	}	//	MRevenueRecognitionPlan
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -96,6 +90,8 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 			MRevenueRecognition rr = new MRevenueRecognition(getCtx(), getC_RevenueRecognition_ID(), get_TrxName());
 			if (rr.isTimeBased())
 			{
+				// Time base revenue recognition. 
+				// Create C_RevenueRecognition_Run records starting from C_InvoiceLine.RRStartDate or C_Invoice.DateInvoiced.
 				MInvoiceLine il = (MInvoiceLine) getC_InvoiceLine();
 
 				Calendar cal = Calendar.getInstance();
@@ -113,7 +109,6 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 				else if ( MRevenueRecognition.RECOGNITIONFREQUENCY_Year.equals(rr.getRecognitionFrequency()))
 					interval = 12;
 				
-
 				int periods = rr.getNoMonths();
 				BigDecimal amt = getTotalAmt().divide(new BigDecimal(periods + ""), RoundingMode.HALF_UP);
 				BigDecimal total = Env.ZERO;
@@ -146,8 +141,7 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 				}
 				
 				cal.set(Calendar.MONTH, 0);  // January
-				
-				
+								
 				for ( int i = 0; i <= periods - 1; i++ )
 				{
 					Calendar cal2 = Calendar.getInstance();
@@ -172,6 +166,7 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 			}
 			else
 			{
+				// Create C_RevenueRecognition_Run record from configured C_RevenueRecog_Service records
 				List<MRevenueRecogService> services = rr.getServicesList();
 				BigDecimal totalAmt = Env.ZERO;
 				MRevenueRecognitionRun last = null;

@@ -25,11 +25,10 @@
 package org.compiere.util;
 
 /**
- * Listener for cache reset event.
+ * Listener for cache reset event.<br/>
  * Note that this is ignore by CacheMgt if CCache implementation that implement this interface
  * doesn't return null for getTableName().
  * @author hengsin
- *
  */
 public interface CacheChangeListener {
 	/**

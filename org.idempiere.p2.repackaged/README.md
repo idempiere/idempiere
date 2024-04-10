@@ -17,8 +17,8 @@ Repackage osgi bundles to fix MANIFEST.MF issues
 * org.apache.felix:org.apache.felix.webconsole:4.6.4
   * Remove version constraint from Import-Package of javax.servlet.*. This make it run under Servlet 4.
 * com.google.guava:guava:30.1.1-jre
-  * Remove version constraint from Import-Package of javax.annotation. This remove depency to org.jsr305 that iDempeire doesn't use and causes conflict with jakarta.annotation bundle.
+  * Remove version constraint from Import-Package of javax.annotation. This remove dependency to org.jsr305 that iDempeire doesn't use and causes conflict with jakarta.annotation bundle.
 * com.google.http-client:google-http-client:1.39.2-sp.1
-  * Remove version constraint from Import-Package of javax.annotation. This remove depency to org.jsr305 that iDempeire doesn't use and causes conflict with jakarta.annotation bundle.
+  * Remove version constraint from Import-Package of javax.annotation. This remove dependency to org.jsr305 that iDempeire doesn't use and causes conflict with jakarta.annotation bundle.
 * org.apache.poi:poi-ooxml-schemas:4.1.2
   * Add missing org.apache.xmlbeans.impl.schema Import-Package.

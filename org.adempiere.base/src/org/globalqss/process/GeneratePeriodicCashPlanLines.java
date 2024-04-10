@@ -14,7 +14,6 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-
 package org.globalqss.process;
 
 import java.math.BigDecimal;
@@ -48,8 +47,9 @@ public class GeneratePeriodicCashPlanLines  extends SvrProcess {
 	private int p_C_CashPlan_ID = 0;
 
 	/**	Logger							*/
-	CLogger log = CLogger.getCLogger (getClass());
+	protected CLogger log = CLogger.getCLogger (getClass());
 
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -83,6 +83,7 @@ public class GeneratePeriodicCashPlanLines  extends SvrProcess {
 		p_C_CashPlan_ID = getRecord_ID();
 	}
 
+	@Override
 	protected String doIt() throws Exception
 	{
 		boolean usename = (p_Name != null && p_Name.trim().length() > 0);

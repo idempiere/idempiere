@@ -104,6 +104,7 @@ public class FinStatement extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		StringBuilder sb = new StringBuilder ("Record_ID=")
@@ -266,12 +267,11 @@ public class FinStatement extends SvrProcess
 		}
 	}	//	setDateAcct
 
-	
-	
-	/**************************************************************************
-	 *  Perform process.
+	/**
+	 *  Insert reporting data to T_ReportStatement
 	 *  @return Message to be translated
 	 */
+	@Override
 	protected String doIt()
 	{
 		createBalanceLine();
@@ -324,7 +324,7 @@ public class FinStatement extends SvrProcess
 	}	//	createBalanceLine
 
 	/**
-	 * 	Create Beginning Balance Line
+	 * 	Create Detail Lines
 	 */
 	private void createDetailLines()
 	{

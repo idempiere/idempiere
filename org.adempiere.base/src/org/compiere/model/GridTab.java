@@ -112,9 +112,9 @@ import org.compiere.util.ValueNamePair;
 public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3039046293468517959L;
+	private static final long serialVersionUID = 4560773843887883525L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -498,6 +498,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	getDisplayLogic
 
 	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
+
+	/**
 	 *  Get TableModel.
 	 *  <B>Do not directly communicate with the table model,
 	 *  but through the methods of this class.</B>
@@ -849,7 +858,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	e.g. Column=UPPER(Name), Key=AD_Element_ID, Query=UPPER(AD_Element.Name) LIKE '%CUSTOMER%'
 		if (tableName == null)
 		{
-			if (log.isLoggable(Level.INFO)) log.info ("Not successfull - Column="
+			if (log.isLoggable(Level.INFO)) log.info ("Not successful - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
 			return query.getWhereClause(true);
@@ -1158,6 +1167,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		for (int i = 0; i < getFieldCount(); i++)
 			processCallout(getField(i));
 		m_mTable.setChanged(false);		
+
+		if (getField("EntityType") != null && Env.getCtx().getProperty("EntityType") != null) {
+			setValue("EntityType", new MEntityType(Env.getCtx(),Integer.parseInt(Env.getCtx().getProperty("EntityType")), null).get_Value("EntityType"));
+		}
 
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_NEW));
 		return retValue;
@@ -2126,7 +2139,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MAttachment.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MAttachment.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getAttachmentID
 
 	/**
@@ -2147,7 +2161,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MChat.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MChat.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getCM_ChatID
 	
 	/**
@@ -2167,7 +2182,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return 0;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MPostIt.getID(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MPostIt.getID(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	getAD_PostIt_ID	
 	
 	/**
@@ -2178,7 +2194,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!canHaveAttachment())
 			return false;
 		String recordUU = m_mTable.getKeyUUID(m_currentRow);
-		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordUU);
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID, recordUU);
 	}	//	hasLabel
 
 	/**

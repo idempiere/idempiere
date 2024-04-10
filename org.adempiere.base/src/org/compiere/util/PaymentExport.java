@@ -32,13 +32,12 @@ import org.compiere.model.MPaySelectionCheck;
  */
 public interface PaymentExport
 {
-
-	/**************************************************************************
+	/**
 	 *  Export to File
 	 *  @param checks array of checks
 	 *  @param file file to export checks
 	 *  @return number of lines
-	 *
+	 *  <p>
 	 *  This method is preserved for backward compatibility (old non-OSGi way via fragment),
 	 *  new interfaces can leave this method unimplemented and must implement the other methods
 	 */
@@ -46,11 +45,13 @@ public interface PaymentExport
 		return exportToFile (checks, false, (String)null, file, err);
 	}
 
-	/**************************************************************************
+	/**
 	 *  Export to file
 	 *  @param checks array of checks
 	 *  @param depositBatch create deposit batch 
 	 *  @param file file to export checks
+	 *  @param paymentRule
+	 *  @param err
 	 *  @return number of lines
 	 */
 	public default int exportToFile (MPaySelectionCheck[] checks, boolean depositBatch, String paymentRule, File file, StringBuffer err) {

@@ -185,7 +185,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 
 	/**
 	 * 	Set Currency Info
-	 *	@param C_Currency_ID currenct
+	 *	@param C_Currency_ID currency
 	 *	@param C_ConversionType_ID type
 	 *	@param CurrencyRate rate
 	 */
@@ -294,12 +294,6 @@ public class MJournal extends X_GL_Journal implements DocAction
 		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -310,7 +304,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 				return false;
 			}
 		}
-		//	Imported Journals may not have date
+		// Set DateDoc to DateAcct or today date
 		if (getDateDoc() == null)
 		{
 			if (getDateAcct() == null)
@@ -326,7 +320,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		}
 		else if (!isProcessed())
 		{
-			//validate period
+			// Validate period for DateAcct
 			int C_Period_ID = MPeriod.getC_Period_ID(getCtx(), getDateAcct(), getAD_Org_ID());
 			if (C_Period_ID == 0)
 			{
@@ -342,17 +336,20 @@ public class MJournal extends X_GL_Journal implements DocAction
 			}
 		}
 
+		// Set GL_Category_ID from document type
 		if (getGL_Category_ID() == 0 && getC_DocType_ID() > 0)
 			setGL_Category_ID(MDocType.get(getCtx(), getC_DocType_ID()).getGL_Category_ID());
+		// Set C_AcctSchema_ID to primary accounting schema
 		if (getC_AcctSchema_ID() == 0)
 			setC_AcctSchema_ID(MClientInfo.get(getCtx(), getAD_Client_ID()).getC_AcctSchema1_ID());
+		// Set default currency conversion type
 		if (getC_ConversionType_ID() == 0)
 			setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
 
 		// IDEMPIERE-63
-		// for documents that can be reactivated we cannot allow changing 
-		// C_DocTypeTarget_ID or C_DocType_ID if they were already processed and isOverwriteSeqOnComplete
-		// neither change the Date if isOverwriteDateOnComplete
+		// If document have been processed, we can't change 
+		// C_DocTypeTarget_ID or C_DocType_ID if DocType.IsOverwriteSeqOnComplete=Y.
+		// Also, can't change DateDoc if DocType.IsOverwriteDateOnComplete=Y.
 		BigDecimal previousProcessedOn = (BigDecimal) get_ValueOld(COLUMNNAME_ProcessedOn);
 		if (! newRecord && previousProcessedOn != null && previousProcessedOn.signum() > 0) {
 			int previousDocTypeID = (Integer) get_ValueOld(COLUMNNAME_C_DocType_ID);
@@ -371,7 +368,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			}
 		}
 		
-		// Update DateAcct on lines - teo_sarca BF [ 1775358 ]
+		// Propagate DateAcct change to lines
 		if (is_ValueChanged(COLUMNNAME_DateAcct)) {
 			int no = DB.executeUpdate(
 					"UPDATE GL_JournalLine SET "+MJournalLine.COLUMNNAME_DateAcct+"=? WHERE GL_Journal_ID=?",
@@ -382,13 +379,6 @@ public class MJournal extends X_GL_Journal implements DocAction
 		return true;
 	}	//	beforeSave
 		
-	/**
-	 * 	After Save.
-	 * 	Update Batch Total
-	 *	@param newRecord true if new record
-	 *	@param success true if success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -397,11 +387,6 @@ public class MJournal extends X_GL_Journal implements DocAction
 		return updateBatch();
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success true if deleted
-	 *	@return true if success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -411,7 +396,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Batch total
+	 * 	Update Total DR and Total CR of journal batch
 	 *	@return true if ok
 	 */
 	protected boolean updateBatch()

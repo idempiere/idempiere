@@ -48,7 +48,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MCtxHelpMsg.class);
 	/** Context Help Message Cache				*/
-	private static ImmutablePOCache<String, MCtxHelpMsg> s_cache = new ImmutablePOCache<String, MCtxHelpMsg>(Table_Name, 10);
+	private static ImmutablePOCache<String, MCtxHelpMsg> s_cache = new ImmutablePOCache<String, MCtxHelpMsg>(Table_Name, 10, 0, false, 0);
 
     /**
      * UUID based Constructor

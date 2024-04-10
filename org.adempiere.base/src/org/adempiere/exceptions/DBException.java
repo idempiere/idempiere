@@ -28,7 +28,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
-
 /**
  * This RuntimeException is used to pass SQLException up the chain of calling
  * methods to determine what to do where needed.

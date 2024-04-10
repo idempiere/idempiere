@@ -182,7 +182,7 @@ public class CompiereService {
 	{
 		//  Get Login Info
 		String loginInfo = null;
-		//  Verify existence of User/Client/Org/Role and User's acces to Client & Org
+		//  Verify existence of User/Client/Org/Role and User's access to Client & Org
 
 		StringBuilder sql = new StringBuilder("SELECT u.Name || '@' || c.Name || '.' || o.Name AS Text")
 		.append(" FROM AD_User u, AD_Client c, AD_Org o, AD_Role r")

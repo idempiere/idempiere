@@ -64,8 +64,7 @@ public class MimeType
 	/** application/octet-stream			*/
 	public static String	BINARY = "application/octet-stream";
 	
-	
-	/**************************************************************************
+	/**
 	 *	MimeType
 	 *	@param extension extension (with dot)
 	 *	@param mimeType mime type
@@ -81,7 +80,6 @@ public class MimeType
 	/** MIME Type	*/
 	private String	m_mimeType	= null;
 	
-
 	/**
 	 * @return Returns the extension.
 	 */
@@ -113,18 +111,18 @@ public class MimeType
 	{
 		m_mimeType = mimeType;
 	}	//	setMimeType
-	
-	
+		
 	/**
 	 * 	String representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		return m_mimeType + "(" + m_extension + ")";
 	}	//	toString
 	
-	/**************************************************************************
+	/**
 	 * 	Mime / Content Type Map
 	 */
 	public static final String[][]	TYPES	= new String[][] { 

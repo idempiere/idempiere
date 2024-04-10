@@ -22,10 +22,10 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 
 /**
- * 	Adempiere Security Interface.
+ * 	iDempiere interface for enryption, decryption.<br/>
  * 	To enable your own class, you need to set the property ADEMPIERE_SECURE 
- * 	when starting the client or server.
- *  The setting for the default class would be:
+ * 	when starting the client or server.<br/>
+ *  The setting for the default class would be:<br/>
  *  -DADEMPIERE_SECURE=org.compiere.util.Secure
  *	
  *  @author Jorg Janke
@@ -37,7 +37,6 @@ public interface SecureInterface
 	public static final String	ADEMPIERE_SECURE = "ADEMPIERE_SECURE";
 	/** Default Class Name implementing SecureInterface	*/
 	public static final String	ADEMPIERE_SECURE_DEFAULT = "org.compiere.util.Secure";
-
 	
 	/** Clear Text Indicator xyz	*/
 	public static final String		CLEARVALUE_START = "xyz";
@@ -47,7 +46,6 @@ public interface SecureInterface
 	public static final String		ENCRYPTEDVALUE_START = "~";
 	/** Encrypted Text Indiactor ~	*/
 	public static final String		ENCRYPTEDVALUE_END = "~";
-
 	
 	/**
 	 *	Encryption.
@@ -66,65 +64,58 @@ public interface SecureInterface
 
 	/**
 	 *	Encryption.
-	 * 	The methods must recognize clear text values
 	 *  @param value clear value
 	 *  @param AD_Client_ID
-	 *  @return encrypted String
+	 *  @return encrypted integer value
 	 */
 	public Integer encrypt (Integer value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
-	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
 	 *  @param AD_Client_ID
-	 *  @return decrypted String
+	 *  @return decrypted integer value
 	 */
 	public Integer decrypt (Integer value,int AD_Client_ID);
 	
 	/**
 	 *	Encryption.
-	 * 	The methods must recognize clear text values
 	 *  @param value clear value
 	 *  @param AD_Client_ID
-	 *  @return encrypted String
+	 *  @return encrypted BigDecimal value
 	 */
 	public BigDecimal encrypt (BigDecimal value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
-	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
 	 *  @param AD_Client_ID
-	 *  @return decrypted String
+	 *  @return decrypted BigDecimal value
 	 */
 	public BigDecimal decrypt (BigDecimal value,int AD_Client_ID);
 
 	/**
 	 *	Encryption.
-	 * 	The methods must recognize clear text values
 	 *  @param value clear value
 	 *  @param AD_Client_ID
-	 *  @return encrypted String
+	 *  @return encrypted Timestamp value
 	 */
 	public Timestamp encrypt (Timestamp value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
-	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
 	 *  @param AD_Client_ID
-	 *  @return decrypted String
+	 *  @return decrypted Timestamp value
 	 */
 	public Timestamp decrypt (Timestamp value,int AD_Client_ID);
-	
-	
+		
 	/**
-	 *  Convert String to Digest.
+	 *  Digest string value.<br/>
 	 *  JavaScript version see - http://pajhome.org.uk/crypt/md5/index.html
 	 *
 	 *  @param value message
-	 *  @return HexString of message (length = 32 characters)
+	 *  @return HexString of digested message (length = 32 characters)
 	 */
 	public String getDigest (String value);
 
@@ -136,13 +127,13 @@ public interface SecureInterface
 	public boolean isDigest (String value);
 	
 	/**
-	 *  Convert String and salt to SHA-512 hash with iterations
+	 *  Convert String and salt to SHA-512 hash with iterations<br/>
 	 *  https://www.owasp.org/index.php/Hashing_Java
 	 *
 	 *  @param value message
 	 *  @return HexString of message (length = 128 characters)
-	 * @throws NoSuchAlgorithmException 
-	 * @throws UnsupportedEncodingException 
+	 *  @throws NoSuchAlgorithmException 
+	 *  @throws UnsupportedEncodingException 
 	 */
 	public String getSHA512Hash (int iterations, String value, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException;
 	

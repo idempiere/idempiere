@@ -35,7 +35,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	Import Format
+ *	Import implementation using {@link MImpFormat} and {@link MImpFormatRow}.
  *
  *  @author Jorg Janke
  *  @author Trifon Trifonov, Catura AG (www.catura.de)

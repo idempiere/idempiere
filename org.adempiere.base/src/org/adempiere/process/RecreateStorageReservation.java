@@ -18,7 +18,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- * Re-create storage reservation records (M_StorageReservation) if there are storage record with invalid reserverd/ordered qty.<br/>
+ * Re-create storage reservation records (M_StorageReservation) if there are storage record with invalid reserved/ordered qty.<br/>
  * Precautions: current code validate reservation makes via C_OrderLine only.
  */
 @org.adempiere.base.annotation.Process

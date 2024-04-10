@@ -108,7 +108,7 @@ public class MIssueSystem extends X_R_IssueSystem
         super(ctx, R_IssueSystem_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_IssueSystem_ID id

@@ -20,19 +20,18 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 import org.adempiere.base.Core;
 import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 
 /**
- *  Cache for table.
+ *  Default cache implementation, usually use for caching of table data.
  *	@param <K> Key 
  *	@param <V> Value
  *
@@ -42,12 +41,14 @@ import org.idempiere.distributed.ICacheService;
 public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4960404895430292476L;
 
+	/** Key:value map of cached items */
 	protected Map<K, V> cache = null;
 	
+	/** Set of key that has null value */
 	protected Set<K> nullList = null;
 
 	private String m_tableName;
@@ -59,6 +60,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/** Default cache expire time in minutes **/
 	public static final int DEFAULT_EXPIRE_MINUTE = getDefaultExpireMinute();
 	
+	/**
+	 * Get default expire minute from system property (fallback to 60)
+	 * @return default expire time in minute
+	 */
 	private static int getDefaultExpireMinute() 
 	{
 		try 
@@ -79,10 +84,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 
 	/**
-	 * Get the max size for the cache based on a system property
-	 * for example -DCache.MaxSize.AD_Column=15000 will set the max size for AD_Column
+	 * Get the max size for the cache based on a system property, 
+	 * for example -DCache.MaxSize.AD_Column=15000 will set the max size for AD_Column.
 	 * @param name
-	 * @return
+	 * @return max size for cache (-1 for no max size)
 	 */
 	private static int getCacheMaxSize(String name) 
 	{
@@ -103,28 +108,50 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		return -1;
 	}
 	
+	/**
+	 * @param name
+	 * @param initialCapacity
+	 */
 	public CCache (String name, int initialCapacity)
 	{
 		this(name, name, initialCapacity);
 	}
 	
+	/**
+	 * @param name
+	 * @param initialCapacity
+	 * @param expireMinutes
+	 */
 	public CCache (String name, int initialCapacity, int expireMinutes)
 	{
 		this(name, initialCapacity, expireMinutes, false);
 	}
 	
+	/**
+	 * @param name
+	 * @param initialCapacity
+	 * @param expireMinutes
+	 * @param distributed
+	 */
 	public CCache (String name, int initialCapacity, int expireMinutes, boolean distributed)
 	{
 		this(name, name, initialCapacity, expireMinutes, distributed);
 	}
 	
+	/**
+	 * @param name
+	 * @param initialCapacity
+	 * @param expireMinutes
+	 * @param distributed
+	 * @param maxSize
+	 */
 	public CCache (String name, int initialCapacity, int expireMinutes, boolean distributed, int maxSize)
 	{
 		this(name, name, initialCapacity, expireMinutes, distributed, maxSize);
 	}
 	
 	/**
-	 * 	Adempiere Cache - expires after 2 hours
+	 *  @param tableName
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity // ignored
 	 */
@@ -133,18 +160,31 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		this (tableName, name, initialCapacity, false);
 	}	//	CCache
 
+	/**
+	 * @param tableName
+	 * @param name
+	 * @param initialCapacity
+	 * @param distributed
+	 */
 	public CCache (String tableName, String name, int initialCapacity, boolean distributed)
 	{
 		this (tableName, name, initialCapacity, DEFAULT_EXPIRE_MINUTE, distributed);
 	}		
 	
+	/**
+	 * @param tableName
+	 * @param name
+	 * @param initialCapacity
+	 * @param expireMinutes
+	 * @param distributed
+	 */
 	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
 	{
 		this(tableName, name, initialCapacity, expireMinutes, distributed, CacheMgt.MAX_SIZE);
 	}
 	
 	/**
-	 * 	Adempiere Cache
+	 *  @param tableName
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity // ignored
 	 * 	@param expireMinutes expire after minutes (0=no expire)
@@ -171,7 +211,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		} 
 		
 		if (nullList == null) {
-			nullList = Collections.synchronizedSet(new HashSet<K>());
+			nullList = ConcurrentHashMap.newKeySet();
 		}
 	}	//	CCache
 
@@ -189,8 +229,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/** Vetoable Change Support	Name	*/
 	private static String		PROPERTYNAME = "cache"; 
 	
-	private final AtomicLong m_hit = new AtomicLong();
-	private final AtomicLong m_miss = new AtomicLong();
+	private final LongAdder m_hit = new LongAdder();
+	private final LongAdder m_miss = new LongAdder();
 	
 	/**
 	 * 	Get (table) Name
@@ -201,6 +241,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		return m_name;
 	}	//	getName
 
+	/**
+	 * Get table name
+	 * @return table name
+	 */
 	public String getTableName()
 	{
 		return m_tableName;
@@ -256,6 +300,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	@return number of items cleared
 	 *	@see org.compiere.util.CacheInterface#reset()
 	 */
+	@Override
 	public int reset()
 	{
 		int no = cache.size()+nullList.size();
@@ -264,13 +309,12 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	reset
 
 	/**
-	 * 	Expire Cache if enabled
+	 * 	Reset Cache if expire duration is set and cache has expire
 	 */	
 	private void expire()
 	{
 		if (m_expire != 0 && m_timeExp < System.currentTimeMillis())
 		{
-		//	System.out.println ("------------ Expired: " + getName() + " --------------------");
 			reset();
 		}
 	}	//	expire
@@ -279,6 +323,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		return "CCache[" + m_name 
@@ -290,9 +335,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	toString
 
 	/**
-	 * 	Clear cache and calculate new expiry time
+	 * 	Clear cache and calculate new expire time
 	 *	@see java.util.Map#clear()
 	 */
+	@Override
 	public void clear()
 	{
 		if (m_changeSupport != null)
@@ -317,11 +363,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		}
 		m_justReset = true;
 	}	//	clear
-
 	
 	/**
 	 *	@see java.util.Map#containsKey(java.lang.Object)
 	 */
+	@Override
 	public boolean containsKey(Object key)
 	{
 		expire();
@@ -331,6 +377,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#containsValue(java.lang.Object)
 	 */
+	@Override
 	public boolean containsValue(Object value)
 	{
 		expire();
@@ -341,6 +388,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *  The return entry set exclude entries that contains null value
 	 *	@see java.util.Map#entrySet()
 	 */
+	@Override
 	public Set<Map.Entry<K,V>> entrySet()
 	{
 		expire();
@@ -357,11 +405,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		V v = cache.get(key);
 		if (v == null)
 			if (nullList.contains(key))
-				m_hit.getAndAdd(1);
+				m_hit.add(1);
 			else
-				m_miss.getAndAdd(1);
+				m_miss.add(1);
 		else
-			m_hit.getAndAdd(1);
+			m_hit.add(1);
 		return v;
 	}	//	get
 
@@ -371,6 +419,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *	@param value value
 	 *	@return previous value
 	 */
+	@Override
 	public V put (K key, V value)
 	{
 		expire();
@@ -389,6 +438,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	Put All
 	 *	@param m map
 	 */
+	@Override
 	public void putAll (Map<? extends K, ? extends V> m)
 	{
 		expire();
@@ -399,6 +449,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#isEmpty()
 	 */
+	@Override
 	public boolean isEmpty()
 	{
 		expire();
@@ -409,6 +460,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * The return key set excludes key that map to null value
 	 *	@see java.util.Map#keySet()
 	 */
+	@Override
 	public Set<K> keySet()
 	{
 		expire();
@@ -418,6 +470,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#size()
 	 */
+	@Override
 	public int size()
 	{
 		expire();
@@ -438,6 +491,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *  The return values collection exclude null value entries
 	 *	@see java.util.Map#values()
 	 */
+	@Override
 	public Collection<V> values()
 	{
 		expire();
@@ -466,7 +520,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		if (m_changeSupport != null && listener != null)
 			m_changeSupport.removeVetoableChangeListener(listener);
     }	//	removeVetoableChangeListener
-
 
 	@Override
 	public V remove(Object key) {
@@ -507,7 +560,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 
 	/**
-	 * 
+	 * Get maximum size of cache
 	 * @return max size of cache
 	 */
 	public int getMaxSize() {
@@ -515,7 +568,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
-	 * 
+	 * Is cache distributed
 	 * @return true if cache is distributed (using hazelcast)
 	 */
 	public boolean isDistributed() {
@@ -523,23 +576,22 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
-	 * 
+	 * Get cache hit count
 	 * @return cache hit count
 	 */
 	public long getHit() {
-		return m_hit.get();
+		return m_hit.longValue();
 	}
 	
 	/**
-	 * 
+	 * Get cache miss count
 	 * @return cache miss count
 	 */
 	public long getMiss() {
-		return m_miss.get();
+		return m_miss.longValue();
 	}	
 	
 	/**
-	 * 
 	 * @return true if cache has expire
 	 */
 	public boolean isExpire() {

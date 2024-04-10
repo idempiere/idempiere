@@ -24,16 +24,15 @@ import org.compiere.util.Util;
 /***
  * Convert from oracle syntax to sql 92 standard
  * @author Low Heng Sin
- *
  */
 public abstract class Convert_SQL92 extends Convert {
 	
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (Convert_SQL92.class);
 	
-	/**************************************************************************
+	/**
 	 *  Convert Outer Join.<br/>
-	 *  Converting joins can be very complex when multiple tables/keys are involved.
+	 *  Converting joins can be very complex when multiple tables/keys are involved.<br/>
 	 *  The main scenarios supported are two tables with multiple key columns
 	 *  and multiple tables with single key columns.
 	 *  <pre>{@code
@@ -258,7 +257,7 @@ public abstract class Convert_SQL92 extends Convert {
 						.append(" ON (").append(second.getCondition());
 					joins.remove(j);                            //  remove from join list
 					fromAlias.remove(second.getJoinAlias());    //  remove from table list
-					//  additional join colums would come here
+					//  additional join columns would come here
 					newFrom.append(")");    //  close ON
 					//----
 					for (int k = i+1; k < joins.size(); k++)
@@ -281,7 +280,7 @@ public abstract class Convert_SQL92 extends Convert {
 								.append(" ON (").append(third.getCondition());
 							joins.remove(k);                            //  remove from join list
 							fromAlias.remove(third.getJoinAlias());     //  remove from table list
-							//  additional join colums would come here
+							//  additional join columns would come here
 							newFrom.append(")");    //  close ON
 						}
 						else if (trace)

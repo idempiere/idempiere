@@ -52,7 +52,7 @@ public interface Entities
     public final static String CEDIL    = "&#184;";   // cedilla
     public final static String SUP1     = "&#185;";   // superscript one
     public final static String ORDM     = "&#186;";   // ordinal indicator, masculine
-    public final static String RAQUO    = "&#187;";   // angle quotation mark, righ
+    public final static String RAQUO    = "&#187;";   // angle quotation mark, right
     public final static String FRAC14   = "&#188;";   // fraction one-quarter
     public final static String FRAC12   = "&#189;";   // fraction one-half
     public final static String FRAC34   = "&#190;";   // fraction three-quarters
@@ -66,12 +66,12 @@ public interface Entities
     public final static String AELIG    = "&#198;";   // capital AE diphthong (ligature)
     public final static String CCEDIL   = "&#199;";   // capital C, cedilla
     public final static String EGRAVE   = "&#200;";   // capital E, grave accent
-    public final static String EACUTE   = "&#201;";   // captial E, acute accent
+    public final static String EACUTE   = "&#201;";   // capital E, acute accent
     public final static String ECIRC    = "&#202;";   // capital E, circumflex accent
-    public final static String EMUL     = "&#203;";   // captial E, dieresis ur umlaut mark
+    public final static String EMUL     = "&#203;";   // capital E, dieresis ur umlaut mark
     public final static String IGRAVE   = "&#204;";   // capital I, grave accent
-    public final static String IACUTE   = "&#205;";   // captial I, acute accent
-    public final static String ICIRC    = "&#206;";   // captial I, circumflex accent
+    public final static String IACUTE   = "&#205;";   // capital I, acute accent
+    public final static String ICIRC    = "&#206;";   // capital I, circumflex accent
     public final static String IUML     = "&#207;";   // capital I, dieresis or umlaut mark
     public final static String ETH      = "&#208;";   // Eth, Icelandic
     public final static String NTILDE   = "&#209;";   // capital N, tilde
@@ -86,7 +86,7 @@ public interface Entities
     public final static String UACUTE   = "&#218;";   // capital U, acute accent
     public final static String UCIRC    = "&#219;";   // capital U, circumflex accent
     public final static String UUML     = "&#220;";   // capital U, dieresis or umlaut mark
-    public final static String YACUTE   = "&#221;";   // captial Y, acute accent
+    public final static String YACUTE   = "&#221;";   // capital Y, acute accent
     public final static String THORN    = "&#222;";   // capital THORN (icelandic)
     public final static String SZLIG    = "&#223;";   // small sharp s, German (sz ligature)
     public final static String aGRAVE   = "&#224;";   // small a, grave accent
@@ -122,10 +122,10 @@ public interface Entities
     public final static String thorn    = "&#254;";   // small thorn, Icelandic
     public final static String yUML     = "&#255;";   // small y, dieresis or umlaut mark
 
-    // Mathmatical, Greek and Symbolic characters
+    // Mathematical, Greek and Symbolic characters
 
     public final static String FNOF     = "&#402;";   // latin small f with hook
-    public final static String ALPHA    = "&#913;";   // greek capital letter aplha
+    public final static String ALPHA    = "&#913;";   // greek capital letter alpha
     public final static String BETA     = "&#914;";   // greek capital letter beta
     public final static String GAMMA    = "&#915;";   // greek capital letter gamma
     public final static String DELTA    = "&#916;";   // greek capital letter delta
@@ -149,7 +149,7 @@ public interface Entities
     public final static String CHI      = "&#935;";   // greek capital letter chi
     public final static String PSI      = "&#936;";   // greek capital letter psi
     public final static String OMEGA    = "&#937;";   // greek capital letter omega
-    public final static String alpha    = "&#945;";   // greek small letter aplha
+    public final static String alpha    = "&#945;";   // greek small letter alpha
     public final static String beta     = "&#946;";   // greek small letter beta
     public final static String gamma    = "&#947;";   // greek small letter gamma
     public final static String delta    = "&#948;";   // greek small letter delta
@@ -180,7 +180,7 @@ public interface Entities
 
     // Punctuation
 
-    public final static String BULL     = "&#8226;";  // bullet (small balck circle)
+    public final static String BULL     = "&#8226;";  // bullet (small black circle)
     public final static String HELLIP   = "&#8230;";  // horizontal ellipsis
     public final static String PRIME    = "&#8242;";  // prime
     public final static String PPRIME   = "&#8243;";  // double prime
@@ -209,7 +209,7 @@ public interface Entities
     public final static String DDARR    = "&#8559;";  // downwards double arrow
     public final static String HHARR    = "&#8560;";  // left right double arrow
 
-    // Mathmatical operators
+    // Mathematical operators
 
     public final static String FORALL   = "&#8704;";  // for all
     public final static String PART     = "&#8706;";  // partial
@@ -286,7 +286,7 @@ public interface Entities
     public final static String sCARON   = "&#353;";   // latin small letter s with caron
     public final static String YUML     = "&#376;";   // latin capital letter Y with diaeresis
 
-    // Spcaing Modifier letters
+    // Spacing Modifier letters
 
     public final static String CIRC     = "&#710;";   // modifier letter circumflex accent
     public final static String TILDE    = "&#732;";   // small tilde

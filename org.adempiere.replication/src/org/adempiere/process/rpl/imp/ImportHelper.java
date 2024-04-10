@@ -296,7 +296,7 @@ public class ImportHelper {
 		//  and set value of column!
 		for (MEXPFormatLine formatLine : formatLines) 
 		{
-			log.info("=================== Beginnig of Format Line ===============================");
+			log.info("=================== Beginning of Format Line ==============================");
 			if (log.isLoggable(Level.INFO)) log.info("formatLine: [" + formatLine.toString() + "]");			
 			//Get the value
 			Object value = getValueFromFormat(formatLine,po,rootElement,result,ReplicationType);
@@ -343,7 +343,7 @@ public class ImportHelper {
 			String xPath = null;
 			xPath = "" + line.getValue() + ""; 
 			
-			if (log.isLoggable(Level.INFO)) log.info("Seach for XML Element = " + xPath);
+			if (log.isLoggable(Level.INFO)) log.info("Search for XML Element = " + xPath);
 			Element referencedNode = XMLHelper.getElement(xPath, rootElement);
 			
 			if (log.isLoggable(Level.INFO)) log.info("referencedNode = " + referencedNode);

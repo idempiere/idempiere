@@ -37,7 +37,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 
 /**
- *	Adempiere Paper
+ *	Paper Configuration Model
  *
  *  Change log:
  *  <ul>
@@ -51,7 +51,7 @@ public class CPaper extends Paper
 {
 	/**
 	 * 	Constructor.
-	 *  Derive Paper from PageForamt
+	 *  Derive Paper properties from PageForamt
 	 * 	@param pf PageFormat
 	 */
 	public CPaper (PageFormat pf)
@@ -76,7 +76,7 @@ public class CPaper extends Paper
 
 	/**
 	 * 	Constructor.
-	 * 	Get Media Size from Default Language
+	 * 	Get Media Size from Default Language.
 	 *  @param landscape true if landscape, false if portrait
 	 */
 	public CPaper (boolean landscape)
@@ -86,7 +86,7 @@ public class CPaper extends Paper
 
 	/**
 	 * 	Constructor.
-	 * 	Get Media Size from Language,
+	 * 	Get Media Size from Language.
 	 *  @param language language to derive media size
 	 *  @param landscape true if landscape, false if portrait
 	 */
@@ -96,7 +96,7 @@ public class CPaper extends Paper
 	}	//	CPaper
 
 	/**
-	 * 	Detail Constructor 1/2 inch on all sides
+	 * 	Constructor with default of 1/2 inch on all sides.
 	 * 	@param mediaSize media size
 	 *  @param landscape true if landscape, false if portrait
 	 */
@@ -108,11 +108,11 @@ public class CPaper extends Paper
 	/**
 	 * 	Detail Constructor
 	 * 	@param mediaSize media size
+	 *  @param landscape true if landscape, false if portrait
 	 *  @param left x in 1/72 inch
 	 *  @param top y in 1/72 inch
-	 *  @param right right x in 1/72
-	 *  @param bottom bottom y in 1/72
-	 *  @param landscape true if landscape, false if portrait
+	 *  @param right right x in 1/72 inch
+	 *  @param bottom bottom y in 1/72 inch
 	 */
 	public CPaper (MediaSize mediaSize, boolean landscape,
 		double left, double top, double right, double bottom)
@@ -150,9 +150,16 @@ public class CPaper extends Paper
 	}	//	setMediaSize
 
 	/**
-	 * Get Media Size
+	 * Constructor with custom media size
+	 * @param x
+	 * @param y
+	 * @param units
+	 * @param landscape
+	 * @param left
+	 * @param top
+	 * @param right
+	 * @param bottom
 	 */
-	//AA Goodwill : Custom Paper Support
 	public CPaper (double x, double y, int units,
 			boolean landscape,
 			double left, double top, double right, double bottom)
@@ -188,15 +195,13 @@ public class CPaper extends Paper
 	//End Of AA Goodwill
 
 	/**
-	 * 	Get Media Size
-	 * 	@return media size
+	 * 	Get Media Size Name
+	 * 	@return media size name
 	 */
 	public MediaSizeName getMediaSizeName()
 	{
-		//AA Goodwill: Custom Paper Support
 		if(m_mediaSize == null)
 			return MediaSizeName.ISO_A4;
-		//End Of AA Goodwill
 		return m_mediaSize.getMediaSizeName();
 	}	//	getMediaSizeName
 
@@ -241,8 +246,6 @@ public class CPaper extends Paper
 		return m_landscape;
 	}	//	isLandscape
 
-	/*************************************************************************/
-
 	/**
 	 * 	Show Dialog and Set Paper
 	 *  @param job printer job
@@ -259,7 +262,7 @@ public class CPaper extends Paper
 	}	//	pageSetupDialog
 
 	/**
-	 *  Return Print Request Attributes
+	 *  Get Print Request Attributes
 	 *  @return PrintRequestAttributeSet
 	 */
 	public PrintRequestAttributeSet getPrintRequestAttributeSet()
@@ -306,7 +309,7 @@ public class CPaper extends Paper
 			{
 				area = (MediaPrintableArea)atts[i];
 			}
-			else	//	unhandeled
+			else	//	unhandled
 				System.out.println(atts[i].getName() + " = " + atts[i] + " - " + atts[i].getCategory());
 		}
 		//
@@ -314,11 +317,8 @@ public class CPaper extends Paper
 		setMediaPrintableArea(area);
 	}   //  getPrintRequestAttributes
 
-
-	/*************************************************************************/
-
 	/**
-	 * 	Get the Page Format for the Papaer
+	 * 	Get the Page Format for the Papar
 	 * 	@return Page Format
 	 */
 	public PageFormat getPageFormat()
@@ -332,12 +332,11 @@ public class CPaper extends Paper
 		return pf;
 	}	//	getPageFormat
 
-	/*************************************************************************/
-
 	/**
 	 * 	Get String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("CPaper[");
@@ -392,6 +391,7 @@ public class CPaper extends Paper
 	 * 	@param obj compare
 	 * 	@return true if equal
 	 */
+	@Override
 	public boolean equals (Object obj)
 	{
 		if (obj instanceof CPaper)
@@ -407,13 +407,12 @@ public class CPaper extends Paper
 		return false;
 	}	//	equals
 	
+	@Override
 	public int hashCode()
 	{
 	  assert false : "hashCode not designed";
 	  return 42; // any arbitrary constant will do
 	}
-
-	/*************************************************************************/
 
 	/**
 	 * 	Get Width in 1/72 inch
@@ -440,7 +439,7 @@ public class CPaper extends Paper
 	}
 
 	/**
-	 * 	Get Image Y in 1/72 inch
+	 * 	Get Printable Area Y in 1/72 inch
 	 * 	@param orientationCorrected correct for orientation
 	 * 	@return imagable Y
 	 */
@@ -452,7 +451,7 @@ public class CPaper extends Paper
 	}
 
 	/**
-	 * 	Get Image X in 1/72 inch
+	 * 	Get Printable Area X in 1/72 inch
 	 * 	@param orientationCorrected correct for orientation
 	 * 	@return imagable X
 	 */
@@ -464,7 +463,7 @@ public class CPaper extends Paper
 	}
 
 	/**
-	 * 	Get Image Height in 1/72 inch
+	 * 	Get Printable Area Height in 1/72 inch
 	 * 	@param orientationCorrected correct for orientation
 	 * 	@return imagable height
 	 */
@@ -475,7 +474,7 @@ public class CPaper extends Paper
 		return super.getImageableHeight();
 	}
 	/**
-	 * 	Get Image Width in 1/72 inch
+	 * 	Get Printable Area Width in 1/72 inch
 	 * 	@param orientationCorrected correct for orientation
 	 * 	@return imagable width
 	 */
@@ -488,7 +487,7 @@ public class CPaper extends Paper
 
 	/**
 	 * 	Get Margin
-	 * 	@param orientationCorrected correct for orientation
+	 * 	@param orientationCorrected correction for orientation
 	 * 	@return margin
 	 */
 	public Insets getMargin (boolean orientationCorrected)

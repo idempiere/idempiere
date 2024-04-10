@@ -184,9 +184,9 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}   //  getClientAcctSchema
 
 	/** Cache of Client AcctSchema Arrays		**/
-	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, false);	//  3 clients
+	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 0, false, 0);	//  3 clients
 	/**	Cache of AcctSchemas 					**/
-	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120);	//  3 accounting schemas
+	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 0, false, 0);	//  3 accounting schemas
 		
     /**
      * UUID based Constructor
@@ -704,11 +704,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			|| getTaxCorrectionType().equals(TAXCORRECTIONTYPE_Write_OffAndDiscount);
 	}	//	isTaxCorrectionWriteOff
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
@@ -717,13 +713,14 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			setTaxCorrectionType(isDiscountCorrectsTax() 
 				? TAXCORRECTIONTYPE_Write_OffAndDiscount : TAXCORRECTIONTYPE_None);
 		checkCosting();
-		//	Check Primary
+		// AD_OrgOnly_ID must be 0 if this is primary accounting schema of tenant
 		if (getAD_OrgOnly_ID() != 0)
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID());
 			if (info.getC_AcctSchema1_ID() == getC_AcctSchema_ID())
 				setAD_OrgOnly_ID(0);
 		}
+		// Disallow costing level change if there are existing costing detail records
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) 
 		{
 			String products = getProductsWithCost();

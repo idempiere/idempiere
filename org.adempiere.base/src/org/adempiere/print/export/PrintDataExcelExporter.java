@@ -52,8 +52,7 @@ import org.compiere.util.Util;
  * 			<li>BF [ 1939010 ] Excel Export ERROR - java.sql.Date - integrated Mario Grigioni's fix
  * 			<li>BF [ 1974309 ] Exporting a report to XLS is not setting page format
  */
-public class PrintDataExcelExporter
-extends AbstractExcelExporter
+public class PrintDataExcelExporter extends AbstractExcelExporter
 {
 	//constant for form rendering
 	private static final int COLUMN_WIDTH_DIVISOR = 64;
@@ -403,22 +402,22 @@ extends AbstractExcelExporter
 							font.setBold(true);
 							style.setFont(font);
 							cell.setCellStyle(style);
-							String value = Util.stripDiacritics(Msg.getMsg(getCtx(), "Parameter") + ":");
+							String value = Msg.getMsg(getCtx(), "Parameter") + ":";
 							cell.setCellValue(new HSSFRichTextString(value));
 						}
 						HSSFCell cell = row.createCell(1);
 						cell.setCellStyle(parameterStyle);
-						String value = Util.stripDiacritics(query.getInfoName(r));
+						String value = query.getInfoName(r);
 						cell.setCellValue(new HSSFRichTextString(value));
 						
 						cell = row.createCell(2);
 						cell.setCellStyle(parameterStyle);
-						value = Util.stripDiacritics(query.getInfoOperator(r));
+						value = query.getInfoOperator(r);
 						cell.setCellValue(new HSSFRichTextString(value));
 						
 						cell = row.createCell(3);
 						cell.setCellStyle(parameterStyle);
-						value = Util.stripDiacritics(query.getInfoDisplayAll(r));
+						value = query.getInfoDisplayAll(r);
 						cell.setCellValue(new HSSFRichTextString(value));
 					}
 				}

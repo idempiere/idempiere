@@ -350,7 +350,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		if(isProcessInIW){
 			// in case show process in info window, don't show checkbox window in value preference dialog.
 			// must set is checked to save current windowID (dummy) with value preference other it will save null, 
-			// make data conflic with case save for all window 
+			// make data conflict with case save for all window 
 			cbWindow.setChecked(true);
 		}else{
 			chlayout.appendChild(cbWindow);

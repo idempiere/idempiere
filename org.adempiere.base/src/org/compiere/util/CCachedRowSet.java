@@ -56,9 +56,8 @@ import javax.sql.rowset.spi.SyncProviderException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 
-
 /**
- *	Adempiere Cached Row Set Implementation
+ *	iDempiere Cached Row Set Implementation
  *	
  *  @author Jorg Janke
  *  @version $Id: CCachedRowSet.java,v 1.6 2006/07/30 00:54:36 jjanke Exp $
@@ -66,14 +65,15 @@ import org.compiere.db.Database;
 public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRowSet
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -233983261449861555L;
 
 	private CachedRowSet compositeCachedRowSet;
+	
 	/**
-	 * 	Get Cached Row Set.
-	 * 	Required due to Java Sun bug 393865
+	 * 	Get Cached Row Set.<br/>
+	 * 	Required due to Java Sun bug 393865.
 	 *	@return Cached Row Set
 	 *	@throws SQLException
 	 */
@@ -95,9 +95,9 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}	//	get
 	
 	/**
-	 * 	Get Row Set.
-	 * 	Read-Only, Scroll Insensitive
-	 * 	Need to set parameters and call  execute(Commection)
+	 * 	Get Row Set.<br/>
+	 * 	Read-Only, Scroll Insensitive.<br/>
+	 * 	Need to set parameters and call execute(Connection).
 	 *	@param sql sql
 	 *	@return row set
 	 *	@throws SQLException
@@ -108,14 +108,12 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 		crs.setConcurrency(ResultSet.CONCUR_READ_ONLY);
 		crs.setType(ResultSet.TYPE_SCROLL_INSENSITIVE);
 		crs.setCommand(sql);
-		//	Set Parameters
-	//	crs.execute(conn);
 		return crs;
 	}	//	get
 
 	/**
-	 * 	Get and Execute Row Set.
-	 * 	No parameters, Read-Only, Scroll Insensitive
+	 * 	Get and Execute Row Set.<br/>
+	 * 	No parameters, Read-Only, Scroll Insensitive.
 	 *	@param sql sql
 	 *	@param conn connection
 	 *	@param db database
@@ -156,9 +154,9 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}	//	get
 	
 	/**
-	 * 	Get Cached Row Set.
-	 * 	Required due to Java Sun bug 393865. 
-	 * 	Also, Oracle NUMBER returns scale -127 
+	 * 	Get Cached Row Set.<br/>
+	 * 	Required due to Java Sun bug 393865.<br/> 
+	 * 	Also, Oracle NUMBER returns scale -127 .
 	 * 	@param rs result set
 	 * 	@param db database 
 	 *	@return Cached Row Set
@@ -178,10 +176,8 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}	//	getRowSet
 	
 	/**
-	 * 	Get Cached Row Set.
-	 * 	Gets Database from DB
-	 * 	Required due to Java Sun bug 393865. 
-	 * 	Also, Oracle NUMBER returns scale -127 
+	 * 	Get Cached Row Set.<br/>
+	 *  Delegate to {@link #getRowSet(ResultSet, AdempiereDatabase)}.
 	 * 	@param rs result set
 	 *	@return Cached Row Set
 	 *	@throws SQLException
@@ -190,14 +186,12 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	{
 		return getRowSet(rs, DB.getDatabase());
 	}	//	getRowSet
-
 	
 	/**	Private Locale Marker	*/
 	private static Locale s_loc = null;
-	
-	
-	/**************************************************************************
-	 * 	Adempiere Cached RowSet
+		
+	/**
+	 * 	iDempiere Cached RowSet
 	 *	@throws java.sql.SQLException
 	 */
 	private CCachedRowSet() throws SQLException
@@ -206,36 +200,6 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 		
 		setSyncProvider("com.sun.rowset.providers.RIOptimisticProvider");
 	}	//	CCachedRowSet
-
-	
-	/**************************************************************************
-	 * 	Test
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		CachedRowSet rs = null;
-		try
-		{
-			Locale.setDefault(Locale.CANADA);
-			get();
-			System.out.println("OK 1");
-			get();
-			System.out.println("OK 1a");
-			rs = RowSetProvider.newFactory().createCachedRowSet();
-			System.out.println("OK 2");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			if (rs != null)
-				try {
-					rs.close();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-		}
-	}	//	main
 
 	@Override
 	public int getInt(int idx) throws SQLException {

@@ -30,6 +30,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
+/**
+ * Process to create or update DB view with view definition from AD_ViewComponent
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseViewValidate extends SvrProcess {
 
@@ -52,6 +55,15 @@ public class DatabaseViewValidate extends SvrProcess {
 		return validateDatabaseView(getCtx(), table, get_TrxName(), getProcessInfo());
 	}
 	
+	/**
+	 * Create or update DB view with view definition from AD_ViewComponent
+	 * @param ctx
+	 * @param table
+	 * @param trxName
+	 * @param pi
+	 * @return info message
+	 * @throws Exception if create/update view fail
+	 */
 	public static String validateDatabaseView(Properties ctx, MTable table, String trxName, ProcessInfo pi) throws Exception 
 	{		
 		Trx trx = Trx.get(trxName, true);

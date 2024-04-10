@@ -1487,8 +1487,6 @@ public class GridTable extends AbstractTableModel
 		return true;
 	}	//	needSave
 
-	/*************************************************************************/
-
 	/** Save OK - O		*/
 	public static final char	SAVE_OK = 'O';			//	the only OK condition
 	/** Save Error - E	*/
@@ -1939,8 +1937,6 @@ public class GridTable extends AbstractTableModel
 		return null;
 	}	//	getWhereClause
 	
-	/*************************************************************************/
-
 	/**
 	 *	Get Mandatory empty columns
 	 *  @param rowData row data
@@ -2023,7 +2019,6 @@ public class GridTable extends AbstractTableModel
 		return true;
 	}
 	
-	/*************************************************************************/
 	// IDEMPIERE-454 Easy import
 	private boolean m_importing = false;
 	private String m_trxName = null;
@@ -2157,7 +2152,7 @@ public class GridTable extends AbstractTableModel
 		//	Tab R/O
 		if (m_readOnly)
 		{
-			fireDataStatusEEvent("AccessCannotDelete", "", true);	//	previleges
+			fireDataStatusEEvent("AccessCannotDelete", "", true);	//	privileges
 			return false;
 		}
 

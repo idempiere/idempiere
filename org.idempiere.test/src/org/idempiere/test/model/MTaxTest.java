@@ -221,7 +221,7 @@ public class MTaxTest extends AbstractTestCase {
 			
 			//ensure match po have been posted
 			MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
-			assertNotNull(matchPOs, "Can't retrive match po for order line");
+			assertNotNull(matchPOs, "Can't retrieve match po for order line");
 			assertEquals(1, matchPOs.length, "Un-expected number of match po record for order line");
 			if (!matchPOs[0].isPosted())
 				DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MMatchPO.Table_ID, matchPOs[0].get_ID(), true, getTrxName());
@@ -366,7 +366,7 @@ public class MTaxTest extends AbstractTestCase {
 			
 			//ensure match po have been posted
 			MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
-			assertNotNull(matchPOs, "Can't retrive match po for order line");
+			assertNotNull(matchPOs, "Can't retrieve match po for order line");
 			assertEquals(1, matchPOs.length, "Un-expected number of match po record for order line");
 			if (!matchPOs[0].isPosted())
 				DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MMatchPO.Table_ID, matchPOs[0].get_ID(), true, getTrxName());

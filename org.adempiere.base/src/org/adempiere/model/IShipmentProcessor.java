@@ -21,7 +21,6 @@ import org.compiere.model.MShippingTransaction;
 /**
  * Online shipment processor interface
  * @author Low Heng Sin
- *
  */
 public interface IShipmentProcessor 
 {	

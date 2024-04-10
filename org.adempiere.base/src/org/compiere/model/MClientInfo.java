@@ -139,7 +139,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}
 	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MClientInfo> s_cache = new ImmutableIntPOCache<Integer,MClientInfo>(Table_Name, 2);
+	private static ImmutableIntPOCache<Integer,MClientInfo> s_cache = new ImmutableIntPOCache<Integer,MClientInfo>(Table_Name, 2, 0, false, 0);
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MClientInfo.class);
 	

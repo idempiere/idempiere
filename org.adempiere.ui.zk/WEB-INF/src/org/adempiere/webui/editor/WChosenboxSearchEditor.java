@@ -213,14 +213,16 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		if (lookup instanceof MLookup) 
 		{
 			MLookup mlookup = (MLookup) lookup;
-			if ("C_BPartner_ID".equals(mlookup.getLookupInfo().KeyColumn))
+			if ("C_BPartner_ID".equals(mlookup.getLookupInfo().KeyColumn)
+				|| (mlookup.getLookupInfo().KeyColumn != null && mlookup.getLookupInfo().KeyColumn.endsWith(".C_BPartner_ID")))
 			{
 				if (ThemeManager.isUseFontIconForImage())
 					imageUrl = "z-icon-BPartner";
 				else
 					imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 			}
-			else if ("M_Product_ID".equals(mlookup.getLookupInfo().KeyColumn))
+			else if ("M_Product_ID".equals(mlookup.getLookupInfo().KeyColumn)
+					|| (mlookup.getLookupInfo().KeyColumn != null && mlookup.getLookupInfo().KeyColumn.endsWith(".M_Product_ID")))
 			{
 				if (ThemeManager.isUseFontIconForImage())
 					imageUrl = "z-icon-Product";
@@ -621,7 +623,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			MTable table = MTable.get(Env.getCtx(), m_tableName);
 			m_keyColumnName = table.getKeyColumns()[0];
 		} else {
-			// no field - the search editor is defined programatically
+			// no field - the search editor is defined programmatically
 			m_keyColumnName = getColumnName();
 			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
 		}

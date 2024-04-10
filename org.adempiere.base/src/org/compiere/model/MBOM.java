@@ -196,19 +196,15 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true/false
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	BOM Type
+		// New record of BOM Type has change
 		if (newRecord || is_ValueChanged("BOMType"))
-		{
-			//	Only one Current Active
+		{			
 			if (getBOMType().equals(BOMTYPE_CurrentActive))
 			{
+				// Validate only one Current Active BOM
 				StringBuilder msgofp = new StringBuilder("BOMType='A' AND BOMUse='").append(getBOMUse()).append("' AND IsActive='Y'");
 				MBOM[] boms = getOfProduct(getCtx(), getM_Product_ID(), get_TrxName(),msgofp.toString());
 				if (boms.length == 0	//	only one = this 
@@ -221,9 +217,9 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 					return false;
 				}
 			}
-			//	Only one MTO
 			else if (getBOMType().equals(BOMTYPE_Make_To_Order))
 			{
+				// Validate only one Make_To_Order BOM.
 				MBOM[] boms = getOfProduct(getCtx(), getM_Product_ID(), get_TrxName(), 
 					"IsActive='Y'");
 				if (boms.length == 0	//	only one = this 

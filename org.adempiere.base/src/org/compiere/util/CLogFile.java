@@ -24,16 +24,15 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-
 /**
- *	idempiere Log File Handler
+ *	Handler that publish log record to server log file
  *
  *  @author Jorg Janke
  *  @version $Id: CLogFile.java,v 1.3 2006/07/30 00:54:35 jjanke Exp $
  */
 public class CLogFile extends Handler
 {
-	/**************************************************************************
+	/**
 	 *	Constructor
 	 *	@param idempiereHome idempiere home
 	 *	@param createLogDir create log directory if missing
@@ -71,7 +70,6 @@ public class CLogFile extends Handler
 	 */
 	private void initialize(String idempiereHome, boolean createLogDir, boolean isClient)
 	{
-	//	System.out.println("CLogFile.initialize");
 		//	Close Old File
 		if (m_writer != null)
 			close();
@@ -90,7 +88,6 @@ public class CLogFile extends Handler
 			reportError ("writer", ex, ErrorManager.OPEN_FAILURE);
 			m_writer = null;
 		}
-	//	System.out.println(getFileName());
 
     	//	Formatting
 		setFormatter(CLogFormatter.get());
@@ -211,7 +208,7 @@ public class CLogFile extends Handler
 	}	//	getFileNameDate
 
 	/**
-	 * 	Rotate Log when day changes
+	 * 	Rotate Log file when day changes
 	 *	@param time time
 	 */
 	private void rotateLog (long time)
@@ -223,14 +220,17 @@ public class CLogFile extends Handler
 	}	//	rotateLog
 
 	/**
-	 * 	Rotate Log
-	 * 	Called after Initialization
+	 * 	Rotate Log file.<br/>
+	 * 	Called after Initialization.
 	 */
 	public void rotateLog ()
 	{
 		initialize(m_idempiereHome, true, Ini.isClient());
 	}	//	rotateLog
 
+	/**
+	 * Re-use previous log file (if available).
+	 */
 	public void reopen()
 	{
 		if (m_previousFile != null && m_previousFile.exists() && m_file == null && m_writer == null) 
@@ -279,6 +279,7 @@ public class CLogFile extends Handler
 	 *	@param newLevel new Level
 	 *	@throws java.lang.SecurityException
 	 */
+	@Override
 	public synchronized void setLevel (Level newLevel)
 		throws SecurityException
 	{
@@ -288,10 +289,11 @@ public class CLogFile extends Handler
 	}	//	setLevel
 
 	/**
-	 * 	Publish
+	 * 	Publish log record
 	 *	@see java.util.logging.Handler#publish(java.util.logging.LogRecord)
 	 *	@param record log record
 	 */
+	@Override
 	public synchronized void publish (LogRecord record)
 	{
 		if (!isLoggable (record) || m_writer == null)
@@ -335,9 +337,10 @@ public class CLogFile extends Handler
 	}	//	publish
 
 	/**
-	 * 	Flush
+	 * 	Flush output
 	 *	@see java.util.logging.Handler#flush()
 	 */
+	@Override
 	public void flush ()
 	{
 		try
@@ -352,10 +355,11 @@ public class CLogFile extends Handler
 	}	//	flush
 
 	/**
-	 * 	Close
+	 * 	Close log file
 	 *	@see java.util.logging.Handler#close()
 	 *	@throws java.lang.SecurityException
 	 */
+	@Override	
 	public synchronized void close () throws SecurityException
 	{
 		if (m_writer == null)
@@ -393,6 +397,7 @@ public class CLogFile extends Handler
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("CLogFile[");
@@ -401,6 +406,13 @@ public class CLogFile extends Handler
 		return sb.toString ();
 	}	//	toString
 
+	/**
+	 * Get or create CLogFile handler.
+	 * @param create
+	 * @param idempiereHome
+	 * @param isClient
+	 * @return CLogFile handler
+	 */
 	public static CLogFile get(boolean create, String idempiereHome, boolean isClient) {
 		Handler[] handlers = CLogMgt.getHandlers();
 		for (Handler handler : handlers)

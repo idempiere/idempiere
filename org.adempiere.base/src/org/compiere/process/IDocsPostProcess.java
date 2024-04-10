@@ -29,14 +29,14 @@ import java.util.List;
 import org.compiere.model.PO;
 
 /**
- * 
+ * Interface for PO to provide list of PO to update ProcessedOn after Complete and for posting
+ * after posting of a PO record.
  * @author hengsin
- *
  */
 public interface IDocsPostProcess {
 	/**
-	 * 
-	 * @return List of doc to process after Complete
+	 * Get documents to process after Complete or after Posting
+	 * @return List of doc to process after Complete or after Posting
 	 */
 	public List<PO> getDocsPostProcess();
 }

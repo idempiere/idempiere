@@ -61,7 +61,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
- *  Abstract base class for posting document.
+ *  Abstract base class for posting of accounting document.
  *
  *  <pre>
  *  Table               Base Document Types (C_DocType.DocBaseType and AD_Reference_ID=183)
@@ -1144,8 +1144,6 @@ public abstract class Doc
 		return open;
 	}	//	isPeriodOpen
 
-	/*************************************************************************/
-
 	/**	Amount Type - Invoice - Gross   */
 	public static final int 	AMTTYPE_Gross   = 0;
 	/**	Amount Type - Invoice - Net   */
@@ -1221,8 +1219,6 @@ public abstract class Doc
 		}
 		return m_qty;
 	}   //  getQty
-
-	/*************************************************************************/
 
 	/**	Account Type - Invoice - Charge  */
 	public static final int 	ACCTTYPE_Charge         = 0;
@@ -2284,10 +2280,6 @@ public abstract class Doc
 		return 0;
 	}	//	getValue
 
-
-	/*************************************************************************/
-	//  To be overwritten by Subclasses
-
 	/**
 	 *  Load Document Details
 	 *  @return error message or null
@@ -2316,6 +2308,7 @@ public abstract class Doc
 	}
 	
 	/**
+	 * Get accounting schema
 	 * @return MAcctSchema
 	 */
 	protected MAcctSchema getAcctSchema() {
@@ -2323,6 +2316,7 @@ public abstract class Doc
 	}
 	
 	/**
+	 * Is posting of document should be deferred to next run of accounting posting
 	 * @return true if posting of document should be deferred to next run of accounting posting
 	 */
 	public boolean isDeferPosting() {

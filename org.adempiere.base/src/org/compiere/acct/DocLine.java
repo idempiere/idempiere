@@ -771,7 +771,14 @@ public class DocLine
 			MCostDetail cd = MCostDetail.get (Env.getCtx(), whereClause, 
 					get_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), p_po.get_TrxName());
 			if (cd != null)
-				return cd.getAmt();
+			{
+				BigDecimal amt = cd.getAmt();
+				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK);
+				if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
+					return amt.negate();
+				else
+					return amt;
+			}
 		}
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK);
 	}   //  getProductCosts

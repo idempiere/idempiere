@@ -40,13 +40,10 @@ import org.compiere.print.MPrintPaper;
 public class Language implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7039775951366180267L;
 
-	/**
-	 * 
-	 */
 	/**************************************************************************
 	 *  Languages
 	 *      http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt
@@ -58,7 +55,7 @@ public class Language implements Serializable
 	private static final String  AD_Language_en_US = "en_US";
 	
 	/***
-	 *  System Languages.
+	 *  System Languages.<br/>
 	 *  If you want to add a language, use the method getLanguage which extends the array
 	 **/
 	private static List<Language> s_languages = new ArrayList<Language>();
@@ -96,8 +93,8 @@ public class Language implements Serializable
 		return s_languages.get(index);
 	}   //  getLanguage
 
-	/**************************************************************************
-	 *  Get Language.
+	/**
+	 *  Get Language.<br/>
 	 * 	If language does not exist, create it on the fly assuming that it is valid
 	 *  @param langInfo either language (en) or locale (en-US) or display name
 	 *  @return Name (e.g. Deutsch)
@@ -182,6 +179,9 @@ public class Language implements Serializable
 		return s_baseLanguage;
 	}   //  getLanguage
 
+	/**
+	 * Set base language from AD_Language table
+	 */
 	private static void setBaseLanguage() {
 		isBaseLanguageSet = true;
 		String baselang = DB.getSQLValueStringEx(null, "SELECT AD_Language FROM AD_Language WHERE IsActive='Y' AND IsBaseLanguage = 'Y'");
@@ -190,6 +190,10 @@ public class Language implements Serializable
 		}
 	}
 
+	/**
+	 * Set baselang as base language
+	 * @param baselang
+	 */
 	public static void setBaseLanguage(String baselang) {
 		Language lang = getLanguage(baselang);
 		s_baseLanguage = lang;
@@ -229,9 +233,9 @@ public class Language implements Serializable
 	}   //  getBase
 
 	/**
-	 *  Get Supported Locale
+	 *  Get Locale from langInfo
 	 *  @param langInfo either language (en) or locale (en-US) or display name
-	 *  @return Supported Locale
+	 *  @return Locale
 	 */
 	public static Locale getLocale (String langInfo)
 	{
@@ -239,7 +243,7 @@ public class Language implements Serializable
 	}   //  getLocale
 
 	/**
-	 *  Get Supported Language
+	 *  Get Language from langInfo
 	 *  @param langInfo either language (en) or locale (en-US) or display name
 	 *  @return AD_Language (e.g. en-US)
 	 */
@@ -249,7 +253,7 @@ public class Language implements Serializable
 	}   //  getAD_Language
 
 	/**
-	 *  Get Supported Language
+	 *  Get Language code from locale
 	 *  @param locale Locale
 	 *  @return AD_Language (e.g. en-US)
 	 */
@@ -267,7 +271,7 @@ public class Language implements Serializable
 	}   //  getLocale
 
 	/**
-	 *  Get Language Name
+	 *  Get Language Name from langInfo
 	 *  @param langInfo either language (en) or locale (en-US) or display name
 	 *  @return Language Name (e.g. English)
 	 */
@@ -297,9 +301,8 @@ public class Language implements Serializable
 			retValue[i] = s_languages.get(i).getName();
 		return retValue;
 	}   //  getNames
-
 	
-	/**************************************************************************
+	/**
 	 *  Get Current Login Language
 	 *  @return login language
 	 */
@@ -320,9 +323,8 @@ public class Language implements Serializable
 			if (log.isLoggable(Level.CONFIG)) log.config(language.toString());
 		}
 	}   //  setLanguage
-
 	
-	/**************************************************************************
+	/**
 	 *  Define Language
 	 *  @param name - displayed value, e.g. English
 	 *  @param AD_Language - the code of system supported language, e.g. en_US
@@ -347,7 +349,7 @@ public class Language implements Serializable
 	}   //  Language
 
 	/**
-	 *  Define Language with A4 and default decimal point and date format
+	 *  Define Language with AD_Language and default decimal point and date format
 	 *  @param name - displayed value, e.g. English
 	 *  @param AD_Language - the code of system supported language, e.g. en_US
 	 *  (might be different than Locale - i.e. if the system does not support the language)
@@ -489,7 +491,7 @@ public class Language implements Serializable
 	}	//	isBaseLanguage
 
 	/**
-	 *  Set Date Pattern.
+	 *  Set Date Format Pattern.<br/>
 	 *  The date format is not checked for correctness
 	 *  @param javaDatePattern for details see java.text.SimpleDateFormat,
 	 *  format must be able to be converted to database date format by
@@ -515,8 +517,6 @@ public class Language implements Serializable
 
 	/**
 	 *  Get (Short) Date Format.
-	 *  The date format must parseable by org.compiere.grid.ed.MDocDate
-	 *  i.e. leading zero for date and month
 	 *  @return date format MM/dd/yyyy - dd.MM.yyyy
 	 */
 	public synchronized SimpleDateFormat getDateFormat()
@@ -559,7 +559,6 @@ public class Language implements Serializable
 
 	/**
 	 * 	Get Date Time Format.
-	 * 	Used for Display only
 	 *  @return Date Time format MMM d, yyyy h:mm:ss a z -or- dd.MM.yyyy HH:mm:ss z
 	 *  -or- j nnn aaaa, H' ?????? 'm' ????'
 	 */
@@ -567,13 +566,11 @@ public class Language implements Serializable
 	{
 		SimpleDateFormat retValue = (SimpleDateFormat)DateFormat.getDateTimeInstance
 			(DateFormat.MEDIUM, DateFormat.LONG, m_locale);
-	//	if (log.isLoggable(Level.FINER)) log.finer("Pattern=" + retValue.toLocalizedPattern() + ", Loc=" + retValue.toLocalizedPattern());
 		return retValue;
 	}	//	getDateTimeFormat
 
 	/**
 	 * 	Get Time Format.
-	 * 	Used for Display only
 	 *  @return Time format h:mm:ss z or HH:mm:ss z
 	 */
 	public SimpleDateFormat getTimeFormat()
@@ -583,7 +580,7 @@ public class Language implements Serializable
 	}	//	getTimeFormat
 
 	/**
-	 *  Get Database Date Pattern.
+	 *  Get Database Date Pattern.<br/>
 	 *  Derive from date pattern (make upper case and replace month as word with MM)
 	 *  @return date pattern
 	 */
@@ -621,6 +618,7 @@ public class Language implements Serializable
 	 *  String Representation
 	 *  @return string representation
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("Language=[");
@@ -636,6 +634,7 @@ public class Language implements Serializable
 	 * 	Hash Code
 	 * 	@return hashcode
 	 */
+	@Override
 	public int hashCode()
 	{
 		return m_AD_Language.hashCode();
@@ -647,6 +646,7 @@ public class Language implements Serializable
 	 * 	@param obj compare
 	 * 	@return true if AD_Language is the same
 	 */
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof Language)
@@ -657,19 +657,5 @@ public class Language implements Serializable
 		}
 		return false;
 	}	//	equals
-
 	
-	/**************************************************************************
-	 * 	Test
-	 * 	@param args ignored
-	 */
-	public static void main(String[] args)
-	{
-		System.out.println(Locale.TRADITIONAL_CHINESE);
-		System.out.println(Locale.TAIWAN);
-		System.out.println(Locale.SIMPLIFIED_CHINESE);
-		System.out.println(Locale.CHINESE);
-		System.out.println(Locale.PRC);
-	}
-
 }   //  Language

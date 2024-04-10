@@ -25,7 +25,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.util.Util;
 
 /**
- * Credit Manager for Order
+ * Credit Status Management for Order
  * 
  * @author Logilite Technologies
  * @since  June 25, 2023

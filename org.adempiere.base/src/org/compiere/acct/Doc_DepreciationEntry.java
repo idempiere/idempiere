@@ -11,7 +11,6 @@ import org.compiere.model.MDepreciationEntry;
 import org.compiere.model.MDepreciationExp;
 import org.compiere.util.Env;
 
-
 /**
  *  Posting for {@link MDepreciationEntry} document.
  *  @author Teo Sarca, SC ARHIPAC SERVICE SRL

@@ -136,7 +136,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 						if (media != null && iframe.getSrc() == null) {
 							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-							String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+							String pdfJsUrl = AEnv.toPdfJsUrl(url);
 							iframe.setSrc(pdfJsUrl);
 						}
 					}
@@ -286,7 +286,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			else
 			{
 				String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-				String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+				String pdfJsUrl = AEnv.toPdfJsUrl(url);
 				iframe.setContent(null);
 				iframe.setSrc(pdfJsUrl);
 			}

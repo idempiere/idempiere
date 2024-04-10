@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss - bxservice                               *
  **********************************************************************/
-
 package org.compiere.model;
 
 import org.compiere.util.Ini;
@@ -91,8 +90,8 @@ public class SystemProperties {
 	}
 
 	/**
-	 * Cache.MaxSize.[Table] allows to define a max size for cache specific for one table
-	 * for example -DCache.MaxSize.AD_Column=15000 will set the max size for AD_Column
+	 * Cache.MaxSize.[Table] allows to define a max size for cache specific for one table.<br/>
+	 * For example -DCache.MaxSize.AD_Column=15000 will set the max size for AD_Column
 	 * @return
 	 */
 	public static String getCacheMaxSizeTable(String tableName) {
@@ -100,7 +99,7 @@ public class SystemProperties {
 	}
 
 	/**
-	 * env.IDEMPIERE_HOME to define the home of iDempiere
+	 * env.IDEMPIERE_HOME to define the home of iDempiere server instance
 	 * @return
 	 */
 	public static String getEnvIdempiereHome() {
@@ -108,7 +107,7 @@ public class SystemProperties {
 	}
 
 	/**
-	 * IDEMPIERE_HOME to define the home of iDempiere
+	 * IDEMPIERE_HOME to define the home of iDempiere server instance
 	 * @return
 	 */
 	public static String getIdempiereHome() {
@@ -116,7 +115,7 @@ public class SystemProperties {
 	}
 
 	/**
-	 * IDEMPIERE_HOME to define the home of iDempiere
+	 * IDEMPIERE_HOME to define the home of iDempiere server instance
 	 * @return
 	 */
 	public static String setIdempiereHome(String idempiereHome) {
@@ -124,10 +123,10 @@ public class SystemProperties {
 	}
 
 	/**
-	 * Verify if the system manages properties in a more secure way
-	 * for Windows and swing client the properties are managed as always
-	 * for other systems (like Linux) the default is to manage it with more security
-	 * this can be overridden passing the parameter -DIDEMPIERE_SECURE_PROPERTIES=false to the JVM
+	 * Verify if the system manages properties in a more secure way.<br/>
+	 * For Windows and swing client the properties are managed as always.<br/>
+	 * For other systems (like Linux) the default is to manage it with more security.<br/>
+	 * This can be overridden passing the parameter -DIDEMPIERE_SECURE_PROPERTIES=false to the JVM.
 	 * @return
 	 */
 	public static boolean isSecureProperties() {
@@ -136,7 +135,7 @@ public class SystemProperties {
 	}
 
 	/**
-	 * LogLevel=SEVERE|WARNING|INFO|CONFIG|FINE|FINER|FINEST  Set the log level for the Pack In Folder application
+	 * LogLevel=SEVERE|WARNING|INFO|CONFIG|FINE|FINER|FINEST  Set the log level for the Pack In Folder application.
 	 * for example: LogLevel=INFO
 	 * @return
 	 */
@@ -169,7 +168,7 @@ public class SystemProperties {
 	}
 
 	/**
-	 * org.idempiere.db.debug.filter as a regular expression to filter the statements written in log
+	 * org.idempiere.db.debug.filter as a regular expression to filter the statements written in log.<br/>
 	 * for example: org.idempiere.db.debug.filter='(?i)(?s:.)*\bc_order\b(?s:.)*' will show all SQL related to c_order table
 	 * @return
 	 */

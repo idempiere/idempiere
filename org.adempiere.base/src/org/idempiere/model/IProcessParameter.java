@@ -27,9 +27,8 @@ package org.idempiere.model;
 import java.sql.Timestamp;
 
 /**
- *
+ * Process parameter interface
  * @author Peter Takacs, Cloudempiere
- *
  */
 public interface IProcessParameter {
 

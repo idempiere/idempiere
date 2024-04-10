@@ -75,14 +75,10 @@ public class MForecastLine extends X_M_ForecastLine
 		super(ctx, M_ForecastLine_ID, trxName, virtualColumns);
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Validate warehouse and line belongs to same organization.
 		if (newRecord 
 			|| is_ValueChanged("AD_Org_ID") || is_ValueChanged("M_Warehouse_ID"))
 		{	

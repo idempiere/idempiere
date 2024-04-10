@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
@@ -44,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4879268878721712444L;
+	private static final long serialVersionUID = -4149262106340017798L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -301,7 +303,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MSysConfig.class);
 	/** Cache			*/
-	private static CCache<String, String> s_cache = new CCache<String, String>(Table_Name, 40, 0);
+	private static CCache<String, String> s_cache = new CCache<String, String>(Table_Name, 40, 0, false, 0);
 	
 	/**
 	 * Get system configuration property of type string
@@ -798,19 +800,15 @@ public class MSysConfig extends X_AD_SysConfig
 		return dt;
 	}	
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);
 		
+		// Validate configuration level
 		if (getAD_Client_ID() != 0 || getAD_Org_ID() != 0) {
 			
-			// Get the configuration level from the System Record
+			// Get the configuration level from System client Record
 			String configLevel = null;
 			String sql = "SELECT ConfigurationLevel FROM AD_SysConfig WHERE Name=? AND AD_Client_ID = 0 AND AD_Org_ID = 0";
 			PreparedStatement pstmt = null;
@@ -834,10 +832,10 @@ public class MSysConfig extends X_AD_SysConfig
 			}
 			
 			if (configLevel == null) {
-				// not found for system
-				// if saving an org parameter - look config in client
+				// No System client record
+				// If saving with org parameter, find configuration level from client
 				if (getAD_Org_ID() != 0) {
-					// Get the configuration level from the System Record
+					// Get the configuration level from client record
 					sql = "SELECT ConfigurationLevel FROM AD_SysConfig WHERE Name=? AND AD_Client_ID = ? AND AD_Org_ID = 0";
 					try
 					{
@@ -902,6 +900,19 @@ public class MSysConfig extends X_AD_SysConfig
 			+", Client|Org="+getAD_Client_ID()+"|"+getAD_Org_ID()
 			+", EntityType="+getEntityType()
 			+"]";
+	}
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success && newRecord && ! getName().endsWith("_NOCACHE")) {
+			// Clear cache of AD_SysConfig
+			// This is to clear the cache of AD_SysConfig when creating a new record
+			// the reset cache is being called on PO when a record is changed or deleted, but not on new
+			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache holds a
+			//   String type, and CCache.reset(int) just call reset when the key is not an Integer
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+		}
+		return success;
 	}
 
 }	//	MSysConfig;

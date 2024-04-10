@@ -1717,28 +1717,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	}   //  getIntSelectedRowKey
 
 	/**
-     *  Get the keys of selected row/s based on layout defined in prepareTable
-     *  @deprecated
-     *  @return IDs if selection present
-     *  author ashley
+     *  Get the keys of selected rows
+     *  @return selected IDs or UUIDs
      */
-    protected ArrayList<Object> getSelectedRowKeys()
+    @SuppressWarnings("unchecked")
+	protected <T extends Serializable> List<T> getSelectedRowKeys()
     {
-        ArrayList<Object> selectedDataList = new ArrayList<Object>();
-        Collection<Object> lsKeyValueOfSelectedRow = getSelectedRowInfo().keySet();
-        if (lsKeyValueOfSelectedRow.size() == 0)
-        {
-            return selectedDataList;
-        }
-
-        if (p_multipleSelection)
-        {        	
-        	for (Object key : lsKeyValueOfSelectedRow){        		
-        		selectedDataList.add(key);
-        	}
-        }
-
-        return selectedDataList;
+    	List<T> selectedDataList = new ArrayList<>();
+		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
+			if(rowInfo.getValue().get(0) instanceof IDColumn idColumn)
+				selectedDataList.add((T)idColumn.getRecord_ID());
+			else if(rowInfo.getValue().get(0) instanceof UUIDColumn uuidColumn)
+				selectedDataList.add((T)uuidColumn.getRecord_UU());
+		}
+		return selectedDataList;
     }   //  getSelectedRowKeys
 
     /**
@@ -2281,7 +2273,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	if (event.getClass().equals(MouseEvent.class)){
         		return;
         	}
-        	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0) {
+        	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0 && isLookup()) {
 				
         		contentPanel.setSelectedIndex(m_lastSelectedIndex);
 				
@@ -2306,9 +2298,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}
 				}
         	}
-        	onDoubleClick();
-        	contentPanel.repaint();
-        	m_lastSelectedIndex = -1;
+        	
+        	if (isLookup() || hasZoom()) 
+        	{
+	        	onDoubleClick();
+	        	contentPanel.repaint();
+	        	m_lastSelectedIndex = -1;
+        	}
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
         {

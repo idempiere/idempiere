@@ -35,7 +35,7 @@ import org.compiere.model.PO;
 public class ImmutableIntPOCache<K, V extends PO & ImmutablePOSupport> extends ImmutablePOCache<Integer, V> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6605758049101851103L;
 

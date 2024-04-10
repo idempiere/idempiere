@@ -102,13 +102,14 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
+		// Encrypt credit card CVV
 		if (getCreditCardVV() != null)
 		{
 			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
 			if (!encrpytedCvv.equals(getCreditCardVV()))
 				setCreditCardVV(encrpytedCvv);
 		}
-		
+		// Validate IBAN
 		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));

@@ -108,7 +108,7 @@ public class QuickGridTabRowRenderer
 	private Row currentRow;
 	/** values of current row. updated in {@link #render(Row, Object[], int)}. **/
 	private Object[] currentValues;
-	/** true if currrent row is in edit mode **/
+	/** true if current row is in edit mode **/
 	private boolean editing = false;
 	public int currentRowIndex = -1;
 	/** AD window content part that own this renderer **/
@@ -673,7 +673,7 @@ public class QuickGridTabRowRenderer
 		int pgIndex = row >= 0 ? row % paging.getPageSize() : 0;
 		if (row != currentRowIndex || pgIndex != currentRowIndex) {
 			if (currentRow != null)
-				currentRow.setStyle(null);
+				LayoutUtils.removeSclass("current-row", currentRow);
 			if (grid.getRows().getChildren().size() <= 0) {
 				currentCell = null;
 				return;
@@ -681,7 +681,7 @@ public class QuickGridTabRowRenderer
 			gridTab.setCurrentRow(pgIndex + paging.getActivePage() * paging.getPageSize());
 			currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
 			currentRowIndex = gridTab.getCurrentRow();
-			currentRow.setStyle(CURRENT_ROW_STYLE);
+			LayoutUtils.addSclass("current-row", currentRow);
 		}
 		
 		setCurrentRow(currentRow);
@@ -774,7 +774,7 @@ public class QuickGridTabRowRenderer
 	{
 		int pgIndex = row >= 0 ? row % paging.getPageSize() : 0;
 		currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
-		currentRow.setStyle(QuickGridTabRowRenderer.CURRENT_ROW_STYLE);
+		LayoutUtils.addSclass("current-row", currentRow);
 		setCurrentRow(currentRow);
 	}
 

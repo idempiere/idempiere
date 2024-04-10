@@ -372,6 +372,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				prepareTable();
 				processQueryValue();
 			}	
+			
+			if (!isLookup() && p_multipleSelection && hasEditable) 
+			{
+				//use only checkmark for selection of row
+				//with the default of select by clicking on any cell, the text selection mouse gesture will de-select a selected row
+				//note that this also disable the selection of text within the listbox
+				contentPanel.setNonselectableTags("*");
+			}
 		}
 		
 		if (ClientInfo.isMobile()) {
@@ -551,7 +559,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 	
 	/**
-	 * Evaluate display logic of process info button and set visiblity of button. <br/>
+	 * Evaluate display logic of process info button and set visibility of button. <br/>
 	 */
 	protected void bindInfoProcessBt (){
 		if (infoProcessBtList == null){
@@ -796,7 +804,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				boolean isMandatory = !m_lookup && infoColumn.isMandatory() && infoColumn.isQueryCriteria();
 				GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), infoWindow.getAD_InfoWindow_ID(), 0,
 						columnName, infoColumn.getNameTrl(), infoColumn.getAD_Reference_ID(), 
-						infoColumn.getAD_Reference_Value_ID(), isMandatory, false, infoColumn.getPlaceHolderTrl());
+						infoColumn.getAD_Reference_Value_ID(), isMandatory, false, infoColumn.getPlaceHolderTrl(), infoColumn.getEntityType());
 				
 				if (infoColumn.getAD_Val_Rule_ID() > 0) {
 					vo.ValidationCode = infoColumn.getValidationCode();
@@ -2379,7 +2387,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				event.getTarget().getAttribute(ATT_INFO_PROCESS_KEY) != null){
 			
 			MProcess process = (MProcess)event.getTarget().getAttribute(ATT_INFO_PROCESS_KEY);
-			SessionManager.getAppDesktop().updateHelpTooltip(process.get_Translation(MProcess.COLUMNNAME_Name), process.get_Translation(MProcess.COLUMNNAME_Description), process.get_Translation(MProcess.COLUMNNAME_Help), null);
+			SessionManager.getAppDesktop().updateHelpTooltip(process.get_Translation(MProcess.COLUMNNAME_Name), process.get_Translation(MProcess.COLUMNNAME_Description), process.get_Translation(MProcess.COLUMNNAME_Help), null, process.getEntityType());
 		}
 		else if (event.getName().equals(Events.ON_FOCUS)) {
     		for (WEditor editor : editors)
@@ -2396,7 +2404,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     		if (selectedItem != null && selectedItem.getValue() != null){
     			MProcess selectedValue = (MProcess)selectedItem.getValue();
     			
-        		SessionManager.getAppDesktop().updateHelpTooltip(selectedValue.get_Translation(MProcess.COLUMNNAME_Name), selectedValue.get_Translation(MProcess.COLUMNNAME_Description), selectedValue.get_Translation(MProcess.COLUMNNAME_Help), null);
+        		SessionManager.getAppDesktop().updateHelpTooltip(selectedValue.get_Translation(MProcess.COLUMNNAME_Name), selectedValue.get_Translation(MProcess.COLUMNNAME_Description), selectedValue.get_Translation(MProcess.COLUMNNAME_Help), null, null);
     		}
     		    		
     	}else if (event.getName().equals(Events.ON_OK) && event.getTarget() != null){ // event when push enter at parameter

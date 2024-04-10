@@ -890,7 +890,7 @@ public class MCost extends X_M_Cost
 	 *	@param product product
 	 *	@param M_AttributeSetInstance_ID optional asi
 	 *	@param as acct schema
-	 *	@param AD_Org_ID optonal org
+	 *	@param AD_Org_ID optional org
 	 *	@return average invoice costs or null
 	 */
 	public static BigDecimal calculateAverageInv (MProduct product, int M_AttributeSetInstance_ID,
@@ -1688,7 +1688,8 @@ public class MCost extends X_M_Cost
 	}	//	getCostElement
 
 	/**
-	 * 	Before Save
+	 * 	Validate costing level configuration.
+	 *  Validate CurrentQty is positive for average costing. 
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */
@@ -1705,6 +1706,7 @@ public class MCost extends X_M_Cost
 			String CostingLevel = product.getCostingLevel(as);
 			if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
 			{
+				// AD_Org_ID and M_AttributeSetInstance_ID must be 0 for client costing level
 				if (getAD_Org_ID() != 0 || getM_AttributeSetInstance_ID() != 0)
 				{
 					log.saveError("CostingLevelClient", "");
@@ -1713,6 +1715,7 @@ public class MCost extends X_M_Cost
 			}
 			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
 			{
+				// M_AttributeSetInstance_ID must > 0 if costing level is batch lot
 				if (getM_AttributeSetInstance_ID() == 0
 					&& ce.isCostingMethod())
 				{
@@ -1724,20 +1727,22 @@ public class MCost extends X_M_Cost
 			}
 		}
 
-		//	Cannot enter calculated
+		//	Calculated cost element can't be entered manually by user
 		if (m_manual && ce != null && ce.isCalculated())
 		{
 			log.saveError("Error", Msg.getElement(getCtx(), "IsCalculated"));
 			return false;
 		}
-		//	Percentage
+		// Rules for Percentage field
 		if (ce != null)
 		{
+			// Reset Percent to 0 if cost element is material type or calculated
 			if (ce.isCalculated()
 				|| MCostElement.COSTELEMENTTYPE_Material.equals(ce.getCostElementType())
 				&& getPercent() != 0)
 				setPercent(0);
 		}
+		// Reset CurrentCostPrice, FutureCostPrice, CumulatedAmt and CumulatedQty to 0 if using Percent 
 		if (getPercent() != 0)
 		{
 			if (getCurrentCostPrice().signum() != 0)
@@ -1750,7 +1755,7 @@ public class MCost extends X_M_Cost
 				setCumulatedQty(Env.ZERO);
 		}
 		
-		//-ve current qty will break moving average costing
+		//Throw exception if CurrentQty have been updated to negative and cost element is average costing
 		if (ce!=null && (ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
 		{
 			if (getCurrentQty().signum() < 0)
@@ -1762,16 +1767,6 @@ public class MCost extends X_M_Cost
 		
 		return true;
 	}	//	beforeSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	@Override
-	protected boolean beforeDelete ()
-	{
-		return true;
-	}	//	beforeDelete
 
 	/**
 	 * Throw {@link AverageCostingNegativeQtyException} if cost element is average po or average invoice and currentQty &lt; 0.

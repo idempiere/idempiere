@@ -35,8 +35,12 @@ import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.I_R_MailText;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,6 +58,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
 
     private String oldValue;
+    private String vFormat = null;
 
 	private AbstractADWindowContent adwindowContent;
 
@@ -93,8 +98,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     {
         super(gridField.isAutocomplete() ? new Combobox() : new Textbox(), gridField, tableEditor, editorConfiguration);
 
-        if (gridField.getVFormat() != null && !gridField.getVFormat().isEmpty())
-        	getComponent().setWidgetListener("onBind", "jq(this).mask('" + gridField.getVFormat() + "');");
+        vFormat = gridField.getVFormat();
 
         init(gridField.getObscureType());
     }
@@ -114,8 +118,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     {
     	super(new Textbox(), columnName, null, null, mandatory, isReadOnly,isUpdateable);
 
-    	if (wVFormat != null &&  !wVFormat.isEmpty())
-    		getComponent().setWidgetListener("onBind", "jq(this).mask('" + wVFormat + "');");
+        vFormat = wVFormat;
 
     	init(obscureType);
     }
@@ -141,6 +144,9 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	 */
 	private void init(String obscureType)
     {
+        if (!Util.isEmpty(vFormat) && !vFormat.startsWith("~"))
+    		getComponent().setWidgetListener("onBind", "jq(this).mask('" + vFormat + "');");
+
 		setChangeEventWhenEditing (true);
 		if (gridField != null)
 		{
@@ -211,6 +217,16 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (!isStartEdit && oldValue == null && newValue == null) {
 	        	return;
 	        }
+
+	        // Validate VFormat with regular expression
+	        if (!Util.isEmpty(vFormat) && vFormat.startsWith("~")) {
+	        	String regex = gridField.getVFormat().substring(1); // remove the initial ~
+	        	if (!newValue.matches(regex)) {
+	        		String msgregex = Msg.getMsg(Env.getCtx(), regex);
+	        		throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
+	        	}
+	        }
+
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 	        
 	        changeEvent.setIsInitEdit(isStartEdit);

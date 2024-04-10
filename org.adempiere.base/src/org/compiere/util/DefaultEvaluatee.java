@@ -34,8 +34,8 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 
 /**
+ * Default {@link Evaluatee} implementation
  * @author hengsin
- *
  */
 public class DefaultEvaluatee implements Evaluatee {
 
@@ -43,10 +43,10 @@ public class DefaultEvaluatee implements Evaluatee {
 	private int m_WindowNo;
 	private int m_TabNo;
 
+	/** Cache for {@link #getColumnValue(MTable, String, String, int, String)} */
 	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 1, 2000);
 	
 	/**
-	 * 
 	 * @param gridTab
 	 * @param windowNo
 	 * @param tabNo
@@ -128,6 +128,15 @@ public class DefaultEvaluatee implements Evaluatee {
 		return value;
 	}
 
+	/**
+	 * Get value of foreignColumn from foreignTable
+	 * @param table
+	 * @param foreignTable
+	 * @param foreignColumn
+	 * @param id record id for foreign table
+	 * @param refValue default value
+	 * @return value from foreign table or default value
+	 */
 	private String getColumnValue(MTable table, String foreignTable, String foreignColumn, int id, String refValue) {
 		String key = foreignTable+"|"+id;
 		PO po = null;
@@ -165,6 +174,9 @@ public class DefaultEvaluatee implements Evaluatee {
 		return refValue;
 	}
 	
+	/**
+	 * CacheChangeListener for {@link DefaultEvaluatee#s_ReferenceCache}
+	 */
 	private static final class ReferenceCache extends CCache<String, PO> implements CacheChangeListener {
 
 		private static final long serialVersionUID = 6884795644185015913L;

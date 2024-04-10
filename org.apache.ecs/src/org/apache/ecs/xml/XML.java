@@ -129,7 +129,7 @@ public class XML extends MultiPartElement
 	}
 
 	/**
-	 * Add an element to the valuie of &lt;&gt;VALUE&lt;/&gt;
+	 * Add an element to the value of &lt;&gt;VALUE&lt;/&gt;
 	 * 
 	 * @param element
 	 *            the value of &lt;&gt;VALUE&lt;/&gt;
@@ -169,7 +169,7 @@ public class XML extends MultiPartElement
 	}
 
 	/**
-	 * Add an element to the valuie of &lt;&gt;VALUE&lt;/&gt;
+	 * Add an element to the value of &lt;&gt;VALUE&lt;/&gt;
 	 * 
 	 * @param element
 	 *            the value of &lt;&gt;VALUE&lt;/&gt;

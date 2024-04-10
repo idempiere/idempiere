@@ -65,11 +65,10 @@ import org.compiere.model.MAttributeValue;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLot;
 import org.compiere.model.MLotCtl;
-import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import org.compiere.model.SystemIDs;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -78,6 +77,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -85,8 +85,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
@@ -193,9 +191,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected Textbox fieldLotString = new Textbox();
 	protected Listbox fieldLot = new Listbox();
 	protected Button bLot = new Button(Msg.getMsg (Env.getCtx(), "New"));
-	//	Lot Popup
-	protected Menupopup 		popupMenu = new Menupopup();
-	protected Menuitem 			mZoom;
 	//	Ser No
 	protected Textbox fieldSerNo = new Textbox();
 	protected Button bSerNo = new Button(Msg.getMsg (Env.getCtx(), "New"));
@@ -462,16 +457,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 					LayoutUtils.addSclass("txt-btn", bLot);
 				}
 			}
-			//	Popup 
-			mZoom = new Menuitem(Msg.getMsg(Env.getCtx(), "Zoom"), ThemeManager.getThemeResource("images/Zoom16.png"));
-			if(ThemeManager.isUseFontIconForImage()) {
-				mZoom.setIconSclass("z-icon-Zoom");
-				mZoom.setImage("");
-			}
-
-			mZoom.addEventListener(Events.ON_CLICK, this);
-			popupMenu.appendChild(mZoom);
-			this.appendChild(popupMenu);
 		}	//	Lot
 
 		//	SerNo
@@ -544,7 +529,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			}
 		}
 
-		//	Attrribute Set Instance Description
+		//	Attribute Set Instance Description
 		Label label = new Label (Msg.translate(Env.getCtx(), "Description"));
 		fieldDescription.setText(m_masi.getDescription());
 		fieldDescription.setReadonly(true);
@@ -586,6 +571,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		else if (MAttribute.ATTRIBUTEVALUETYPE_Date.equals(attribute.getAttributeValueType()))
 		{
 			editor = WebEditorFactory.getEditor(getDateGridField(attribute), true);
+		}
+		else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+			editor = WebEditorFactory.getEditor(getMultiSelectionListTypeGridField(attribute), true);
 		}
 		else // Text Field
 		{
@@ -695,20 +683,39 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	/**
 	 * @param attribute
-	 * @return GridField for DisplayType.TableDir
+	 * @param displayType
+	 * @return GridField for given displayType
 	 */
-	public GridField getListTypeGridField(MAttribute attribute)
+	private GridField getGridFieldForDisplayType(MAttribute attribute, int displayType)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
-				"M_AttributeValue_ID", attribute.getName(), DisplayType.TableDir, 0, false, false, null);
-
+		        "M_AttributeValue_ID", attribute.getName(), displayType, 0, false, false, null);
+		
 		// Validation for List - Attribute Values
 		vo.ValidationCode = "M_AttributeValue.M_Attribute_ID=" + attribute.get_ID();
 		vo.lookupInfo.ValidationCode = vo.ValidationCode;
 		vo.lookupInfo.IsValidated = false;
 
 		return createGridField(attribute, vo);
+	} // getGridFieldForDisplayType
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.TableDir
+	 */
+	private GridField getListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.TableDir);
 	} // getListTypeGridField
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.ChosenMultipleSelectionTable
+	 */
+	private GridField getMultiSelectionListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.ChosenMultipleSelectionTable);
+	} // getMultiSelectionListTypeGridField
 
 	/**
 	 * Create GridField
@@ -749,6 +756,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			{
 				if (instance.getM_AttributeValue_ID() > 0)
 					editor.setValue(instance.getM_AttributeValue_ID());
+			}
+			else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+				if (!Util.isEmpty(instance.getValueMultipleSelection()))
+					editor.setValue(instance.getValueMultipleSelection());
 			}
 			else
 			{
@@ -874,11 +885,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
 			onCancel();
-		}
-		//	Zoom M_Lot
-		else if (e.getTarget() == mZoom)
-		{
-			cmd_zoom();
 		}
 		else
 			log.log(Level.SEVERE, "not found - " + e);
@@ -1045,22 +1051,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	}	//	cmd_newEdit
 
 	/**
-	 * 	Zoom M_Lot
-	 */
-	private void cmd_zoom()
-	{
-		int M_Lot_ID = 0;
-		ListItem pp = fieldLot.getSelectedItem();
-		if (pp != null)
-			M_Lot_ID = (Integer) pp.getValue();
-		MQuery zoomQuery = new MQuery("M_Lot");
-		zoomQuery.addRestriction("M_Lot_ID", MQuery.EQUAL, M_Lot_ID);
-		log.info(zoomQuery.toString());
-		//
-		//TODO: to port
-	}	//	cmd_zoom
-
-	/**
 	 *	Save Selection
 	 *	@return true if saved
 	 */
@@ -1161,6 +1151,16 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				else if(MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attributes[i].getAttributeValueType()))
 				{
 					setEditorValue(mandatory, attributes[i], m_editors.get(i));
+				}
+				else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attributes[i].getAttributeValueType()))
+				{
+					WEditor editor = m_editors.get(i);
+					String value = editor.getValue() != null ? String.valueOf(editor.getValue()) : null;
+					String displayValue = editor.getDisplay() != null ? editor.getDisplay() : value;
+					if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
+					if (attributes[i].isMandatory() && (value == null || value.length() == 0))
+						mandatory += " - " + attributes[i].getName();
+					attributes[i].setMAttributeInstanceMultiSelection(m_M_AttributeSetInstance_ID, value, displayValue);
 				}
 				else
 				{

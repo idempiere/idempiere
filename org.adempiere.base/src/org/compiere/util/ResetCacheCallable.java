@@ -17,13 +17,11 @@ import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 /**
- * 
+ * Callable to reset distributed cache nodes
  * @author hengsin
- *
  */
 public class ResetCacheCallable implements Callable<Integer>, Serializable 
 {
-
 	/**
 	 * generated serial id
 	 */
@@ -32,12 +30,19 @@ public class ResetCacheCallable implements Callable<Integer>, Serializable
 	private String tableName;
 	private int Record_ID;
 	
+	/**
+	 * @param tableName
+	 * @param Record_ID
+	 */
 	public ResetCacheCallable(String tableName, int Record_ID)
 	{
 		this.tableName = tableName;
 		this.Record_ID = Record_ID;
 	}
-	
+
+	/**
+	 * Reset cache of local cache nodes 
+	 */
 	@Override
 	public Integer call() throws Exception {
 		return CacheMgt.get().resetLocalCache(tableName, Record_ID);

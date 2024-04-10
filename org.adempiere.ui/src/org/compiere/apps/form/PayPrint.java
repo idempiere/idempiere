@@ -333,6 +333,7 @@ public class PayPrint {
 				ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
 				pi.setRecord_ID(check.get_ID());
 				pi.setIsBatch(true);
+				pi.setTransientObject(format);
 									
 				ServerProcessCtl.process(pi, null);
 				pdfFile = pi.getPDFReport();
@@ -385,6 +386,7 @@ public class PayPrint {
 					ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
 					pi.setRecord_ID(check.get_ID());
 					pi.setIsBatch(true);
+					pi.setTransientObject(format);
 					
 					ServerProcessCtl.process(pi, null);
 					pdfList.add(pi.getPDFReport());

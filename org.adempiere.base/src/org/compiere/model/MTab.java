@@ -49,7 +49,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	private static final long serialVersionUID = -8111075325920938135L;
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20, 0, false, 0);
 	
 	/**
 	 * Get MTab from cache (immutable)
@@ -224,14 +224,10 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 		return m_fields;
 	}	//	getFields
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Disallow change of table if there are existing field records
 		if (! newRecord && is_ValueChanged(COLUMNNAME_AD_Table_ID) && getFields(false, get_TrxName()).length > 0) {
 			log.saveError("Error", "Cannot change table if there are related fields");
 			return false;
@@ -241,7 +237,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 			setIsInsertRecord(false);
 		if (is_new() || is_ValueChanged(COLUMNNAME_AD_TabType))
 			setIsSortTab(AD_TABTYPE_Sort.equals(getAD_TabType())); // preserve this redundant flag for backward compatibility
-		//RF[2826384]
+		// AD_ColumnSortOrder_ID mandatory for sort tab
 		if(isSortTab())
 		{
 			if(getAD_ColumnSortOrder_ID() == 0)

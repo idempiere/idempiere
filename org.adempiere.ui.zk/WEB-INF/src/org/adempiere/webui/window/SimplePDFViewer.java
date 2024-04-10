@@ -15,6 +15,7 @@ package org.adempiere.webui.window;
 import java.io.InputStream;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
@@ -94,7 +95,7 @@ public class SimplePDFViewer extends Window {
 	protected void showMobileViewer(Iframe iframe) {
 		mediaVersion++;
 		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-		String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+		String pdfJsUrl = AEnv.toPdfJsUrl(url);
 		iframe.setSrc(pdfJsUrl);
 	}
 	

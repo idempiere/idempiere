@@ -41,6 +41,8 @@
 		<module>org.idempiere.printformat.editor</module>
 		<module>org.idempiere.zk.billboard</module>
 		<module>org.idempiere.zk.billboard.chart</module>
+		<module>org.idempiere.zk.datatable</module>
+		<module>org.idempiere.zk.pivot</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>

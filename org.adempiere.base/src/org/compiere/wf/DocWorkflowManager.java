@@ -29,9 +29,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
 
-
 /**
- *	Document Workflow Manager
+ *	Document Value Workflow Manager
  *	
  *  @author Jorg Janke
  *  @version $Id: DocWorkflowManager.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -39,7 +38,7 @@ import org.compiere.util.Evaluator;
 public class DocWorkflowManager implements DocWorkflowMgr
 {
 	/**
-	 * 	Get Document Workflow Manager
+	 * 	Get the singleton Document Workflow Manager instance
 	 *	@return mgr
 	 */
 	public static DocWorkflowManager get()
@@ -58,8 +57,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 	private volatile static DocWorkflowManager	s_mgr = null;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(DocWorkflowManager.class);
-	
-	
+		
 	/**
 	 * 	Doc Workflow Manager
 	 */
@@ -79,6 +77,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 	 *	@param AD_Table_ID table
 	 *	@return true if WF started
 	 */
+	@Override
 	public boolean process (PO document, int AD_Table_ID)
 	{
 		m_noCalled++;
@@ -119,7 +118,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 			}
 		
 			//	Start Workflow
-			log.fine(logic);
+			if (log.isLoggable(Level.FINE)) log.fine(logic);
 			int AD_Process_ID = PROCESS_AD_WORKFLOW_DOCVALUE;		//	HARDCODED
 			ProcessInfo pi = new ProcessInfo (wf.getName(), AD_Process_ID, 
 				AD_Table_ID, document.get_ID());
@@ -195,12 +194,12 @@ public class DocWorkflowManager implements DocWorkflowMgr
 
 		return retValue;
 	}	//	testStart
-	
-	
+		
 	/**
-	* 	String Representation
-	*	@return info
-	*/
+	 * 	String Representation
+	 *	@return info
+	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("DocWorkflowManager[");

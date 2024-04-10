@@ -27,6 +27,7 @@ import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.form.IQuickForm;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Columns;
@@ -1149,7 +1150,7 @@ public class QuickGridView extends Vbox
 		{
 			renderer.setCurrentCell(null);
 			renderer.setCurrentCell(0, 1, NAVIGATE_CODE);
-			renderer.getCurrentRow().setStyle(QuickGridTabRowRenderer.CURRENT_ROW_STYLE);
+			LayoutUtils.addSclass("current-row", renderer.getCurrentRow());
 		}
 		else if (event.getName().equals(EVENT_ON_CLICK_TO_NAVIGATE))
 		{
@@ -1158,8 +1159,7 @@ public class QuickGridView extends Vbox
 
 			renderer.setCurrentCell(row, col, NAVIGATE_CODE);
 
-			Row currntRow = renderer.getCurrentRow();
-			currntRow.setStyle(QuickGridTabRowRenderer.CURRENT_ROW_STYLE);
+			LayoutUtils.addSclass("current-row", renderer.getCurrentRow());
 		}
 		else if (event.getName().equals(EVENT_ON_SET_FOCUS_TO_FIRST_CELL))
 		{
@@ -1289,7 +1289,7 @@ public class QuickGridView extends Vbox
 	 * @param code cell navigation code
 	 * @param row
 	 * @param col 
-	 * @return true if save succesfully
+	 * @return true if save successful
 	 */
 	private boolean save(int code, int row, int col)
 	{

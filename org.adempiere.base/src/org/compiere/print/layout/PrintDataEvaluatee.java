@@ -24,7 +24,7 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Util;
 
 /**
- * 
+ * {@link Evaluatee} implementation for {@link PrintData}
  * @author hengsin
  *
  */
@@ -33,6 +33,10 @@ public class PrintDataEvaluatee implements Evaluatee {
 	private PrintData m_data;
 	private Page m_page;
 	
+	/**
+	 * @param page
+	 * @param data
+	 */
 	public PrintDataEvaluatee(Page page, PrintData data) {
 		m_data = data;
 		m_page = page;
@@ -113,6 +117,11 @@ public class PrintDataEvaluatee implements Evaluatee {
 		return value;
 	}
 	
+	/**
+	 * Is displayLogic has page expression
+	 * @param displayLogic
+	 * @return true if displayLogic has page expression
+	 */
 	public static boolean hasPageLogic(String displayLogic) {
 		if (Util.isEmpty(displayLogic, true))
 			return false;

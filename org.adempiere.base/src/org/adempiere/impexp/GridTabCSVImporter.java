@@ -116,11 +116,10 @@ public class GridTabCSVImporter implements IGridTabImporter
 	private File logFile;
 	private PrintWriter errFileW;
 	private PrintWriter logFileW;
-	
-	private CsvPreference csvpref = CsvPreference.STANDARD_PREFERENCE;
-	private String delimiter = String.valueOf((char) csvpref.getDelimiterChar());
-	private String quoteChar = String.valueOf((char) csvpref.getQuoteChar());
-	
+
+	private String delimiterChar = ",";
+	private String quoteChar = "\"";
+
 	//Trx
 	private Trx trx;
 	private String trxName;
@@ -131,11 +130,16 @@ public class GridTabCSVImporter implements IGridTabImporter
 	
 	@Override
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset , String importMode) {		
-		return fileImport(gridTab, childs, filestream, charset, importMode, null);
+		return fileImport(gridTab, childs, filestream, charset, importMode, null, null, null);
 	}//fileImport
 
 	@Override
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, IProcessUI processUI) {
+		return fileImport(gridTab, childs, filestream, charset, importMode, null, null, processUI);
+	}
+
+	@Override
+	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, String p_delimiterChar, String p_quoteChar, IProcessUI processUI) {
 
 		if(!gridTab.isInsertRecord() && isInsertMode())
 			throwAdempiereException("Insert record disabled for Tab");
@@ -146,6 +150,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 			m_import_mode = importMode;
 			errFile = new File(errFileName);
 			errFileW = new PrintWriter(errFile, charset.name());
+
+			if (p_delimiterChar != null)
+				delimiterChar = p_delimiterChar;
+			if (p_quoteChar != null)
+				quoteChar = p_quoteChar;
+			CsvPreference csvpref = new CsvPreference.Builder(quoteChar.charAt(0), delimiterChar.charAt(0), "\r\n" /* ignored */).build();
+
 			mapReader = new CsvMapReader(new InputStreamReader(filestream, charset), csvpref);
 			header =  Arrays.asList(mapReader.getHeader(true));  
 
@@ -178,7 +189,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			m_isError = false;
 			// write the header
 			String rawHeader = mapReader.getUntokenizedRow();
-			errFileW.write(rawHeader + delimiter + ERROR_HEADER + "\n");
+			errFileW.write(rawHeader + delimiterChar + ERROR_HEADER + "\n");
 			data = new ArrayList<Map<String, Object>>();
 			rawData = new ArrayList<String>();
 
@@ -191,7 +202,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				logFile = new File(logFileName);
 				logFileW = new PrintWriter(logFile, charset.name());
 				// write the header
-				logFileW.write(rawHeader + delimiter + LOG_HEADER + "\n");
+				logFileW.write(rawHeader + delimiterChar + LOG_HEADER + "\n");
 				// no errors found - process header and then details 
 				isMasterok = true; 
 				isDetailok = true;
@@ -226,11 +237,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 
 					if (!isMasterok && isDetail){
-						rawLine = rawLine + delimiter + quoteChar + Msg.getMsg(Env.getCtx(),"NotProcessed") + quoteChar + "\n";
+						rawLine = rawLine + delimiterChar + quoteChar + Msg.getMsg(Env.getCtx(),"NotProcessed") + quoteChar + "\n";
 						rowsTmpResult.add(rawLine);
 						continue;		 
 					}else if(isMasterok && isDetail && !isDetailok){
-						rawLine = rawLine + delimiter + quoteChar + "Record not proccesed due to detail record failure" + quoteChar + "\n";
+						rawLine = rawLine + delimiterChar + quoteChar + "Record not processed due to detail record failure" + quoteChar + "\n";
 						rowsTmpResult.add(rawLine);
 						continue;	 
 					}
@@ -249,7 +260,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					rowResult.append(recordResult);
 
 					// write
-					rawLine = rawLine + delimiter + quoteChar + rowResult.toString().replaceAll(delimiter, "") + quoteChar + "\n";
+					rawLine = rawLine + delimiterChar + quoteChar + rowResult.toString().replaceAll(delimiterChar, "") + quoteChar + "\n";
 					rowsTmpResult.add(rawLine);
 					
 					if( isSingleTrx() && isError() )
@@ -530,7 +541,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				rawData.add(rawLine);
 			}
 			// write
-			rawLine = rawLine + delimiter + quoteChar + errMsg.toString().replaceAll(quoteChar, "") + quoteChar + "\n";
+			rawLine = rawLine + delimiterChar + quoteChar + errMsg.toString().replaceAll(quoteChar, "") + quoteChar + "\n";
 			errFileW.write(rawLine);
 		}
 	}//preProcess
@@ -826,7 +837,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			wfProcess.setTransactionName(document.get_TrxName());  
 			MWFProcess wdPro = ProcessUtil.startWorkFlow(Env.getCtx(),wfProcess, AD_Workflow_ID);
 			if(wdPro == null) 
-			   return "Document action could not be proccesed"; 
+			   return "Document action could not be processed"; 
 			else if (wfProcess.isError())
 			   return "Document action error: "+wfProcess.getSummary();
 			else  	
@@ -1337,10 +1348,10 @@ public class GridTabCSVImporter implements IGridTabImporter
 		}	
 	    
 		boolean checkParentKey = parentColumns.size()!=gridTab.getParentColumnNames().size();
-		if(isThereRow && logMsg==null && masterRecord!=null && checkParentKey){
+		if(isThereRow && logMsg==null && (masterRecord!=null||gridTab.getParentTab()!=null) && checkParentKey){
 			for(String linkColumn : gridTab.getParentColumnNames()){
 				String columnName = linkColumn;
-				Object setValue   = masterRecord.get_Value(linkColumn);
+				Object setValue   = masterRecord != null ? masterRecord.get_Value(linkColumn) : gridTab.getParentTab().getValue(linkColumn);
 		        //resolve missing key 
 				if(setValue==null){
 			       columnName = null;
@@ -1412,7 +1423,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			return (new Optional(new ParseBigDecimal(new DecimalFormatSymbols(Language.getLoginLanguage().getLocale()))));
 		} else if (DisplayType.YesNo == field.getDisplayType()) {
 			return (new Optional(new ParseBool("y", "n")));
-		} else if (DisplayType.TextLong == field.getDisplayType()) {
+		} else if (DisplayType.TextLong == field.getDisplayType() || DisplayType.JSON == field.getDisplayType()) {
 			return (new Optional(new StrMinMax(1, Long.MAX_VALUE)));
 		} else if (DisplayType.isText(field.getDisplayType())) {
 			return (new Optional(new StrMinMax(1, field.getFieldLength())));
@@ -1482,7 +1493,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if (gridTab.isDetail()){
 				for(String linkColumn : gridTab.getParentColumnNames()){
 					if(!pquery.getWhereClause().contains(linkColumn)){
-						Object value = masterRecord!=null?masterRecord.get_Value(linkColumn):null;
+						Object value = masterRecord!=null
+								    ? masterRecord.get_Value(linkColumn)
+									: gridTab.getParentTab() != null ? gridTab.getParentTab().getValue(linkColumn) : null;
 						//resolve key
 						if(value==null){
 						   String columnName = null;
@@ -1747,4 +1760,5 @@ public class GridTabCSVImporter implements IGridTabImporter
 		       return -1;
 		}
     }
+
 }

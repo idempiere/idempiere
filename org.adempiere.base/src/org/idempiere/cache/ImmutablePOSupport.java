@@ -28,7 +28,7 @@ package org.idempiere.cache;
 import org.compiere.model.PO;
 
 /**
- * Model class that support immutable should implement this interface
+ * Model class that support immutable cache should implement this interface
  * @author hengsin
  *
  */

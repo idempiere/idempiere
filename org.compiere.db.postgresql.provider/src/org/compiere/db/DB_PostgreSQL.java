@@ -539,8 +539,31 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		}
 		return result.toString();
 	}	//	TO_NUMBER
+	
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast () {
+		return "CAST (? AS jsonb)";
+	}
+	
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as json
+	 */
+	public String TO_JSON (String value)
+	{
+		if (value == null)
+			return "NULL";
 
-
+		StringBuilder retValue = null;
+		retValue = new StringBuilder("CAST (");
+		retValue.append(value);
+		retValue.append(" AS jsonb)");
+		return retValue.toString();
+	}
+	
 	/**
 	 * 	Get SQL Commands
 	 *	@param cmdType CMD_*
@@ -1210,6 +1233,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	@Override
 	public String getClobDataType() {
 		return "TEXT";
+	}
+	
+	@Override
+	public String getJsonDataType() {
+		return "JSONB";
 	}
 
 	@Override

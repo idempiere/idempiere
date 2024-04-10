@@ -194,14 +194,10 @@ public class MRequisition extends X_M_Requisition implements DocAction
 			setM_PriceList_ID(defaultPL.getM_PriceList_ID());
 	}	//	setM_PriceList_ID()
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Set default price list
 		if (getM_PriceList_ID() == 0)
 			setM_PriceList_ID();
 		return true;

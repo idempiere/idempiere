@@ -33,7 +33,7 @@ import org.apache.ecs.xhtml.title;
 
 /**
 
-    This class creates a XhtmlFrameSetDocument container, for convience.
+    This class creates a XhtmlFrameSetDocument container, for convenience.
 
 
 
@@ -522,7 +522,7 @@ public class XhtmlFrameSetDocument implements Serializable,Cloneable
 
     {
 
-        // XhtmlFrameSetDocument is just a convient wrapper for html call html.output
+        // XhtmlFrameSetDocument is just a convenient wrapper for html call html.output
 
         html.output(out);
 
@@ -540,7 +540,7 @@ public class XhtmlFrameSetDocument implements Serializable,Cloneable
 
     {
 
-        // XhtmlFrameSetDocument is just a convient wrapper for html call html.output
+        // XhtmlFrameSetDocument is just a convenient wrapper for html call html.output
 
         html.output(out);
 

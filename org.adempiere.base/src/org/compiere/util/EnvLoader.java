@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
- *  Environment Loader - loads system environment variables int System.properties
+ *  Environment Loader - loads OS  environment variables into system properties
  *
  *  @author Jorg Janke
  *  @version  $Id: EnvLoader.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -31,7 +31,7 @@ public class EnvLoader
 	private static final boolean DEBUG = false;
 
 	/**
-	 *  Load System environment variables into System.properies
+	 *  Load OS environment variables into system properties (System.setProperty)
 	 *  <p>
 	 *  Prints error messages on System.err
 	 *  @param prefix String to prefix variable names
@@ -55,7 +55,7 @@ public class EnvLoader
 	}   //  load
 
 	/**
-	 *  Ger Environment variables
+	 *  Get OS Environment variables
 	 *  @param prefix String to prefix variable names
 	 *  @return Properties with prefixed system environment variables or null if not successful
 	 */
@@ -137,7 +137,6 @@ public class EnvLoader
 		while (st.hasMoreTokens())
 		{
 			String s = st.nextToken();
-		//	System.out.println(">" + s + "<");
 			int pos = s.indexOf('=');       //  first "="
 			if (pos > 0)
 				prop.setProperty(prefix + s.substring(0, pos), s.substring(pos+1));

@@ -191,7 +191,7 @@ public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSuppor
 	
 	/**
 	 * 	Create New Instance of SLA Criteria
-	 *	@return instanciated class
+	 *	@return instantiated class
 	 *	@throws Exception
 	 */
 	public SLACriteria newInstance() throws Exception

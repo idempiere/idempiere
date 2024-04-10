@@ -33,7 +33,6 @@ import org.compiere.model.MAssetDisposed;
 import org.compiere.model.MDocType;
 import org.compiere.util.Env;
 
-
 /**
  * Posting for {@link MAssetDisposed} document. DOCBASETYPE_GLDocument.
  * @author Teo_Sarca, SC ARHIPAC SERVICE SRL

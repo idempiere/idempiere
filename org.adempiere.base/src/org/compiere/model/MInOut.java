@@ -897,6 +897,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 			pi.setRecord_ID ( getM_InOut_ID() );
 			pi.setIsBatch(true);
+			pi.setTransientObject(format);
 			
 			ServerProcessCtl.process(pi, null);
 			
@@ -1292,20 +1293,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
         setMovementType(movementType); 
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true or false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if(newRecord || is_ValueChanged("C_DocType_ID")) {
 			setMovementType();
 		}
-		
+		// Validate warehouse and document belongs to the same organization
 		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
-		//	Warehouse Org
 		if (newRecord)
 		{
 			if (wh.getAD_Org_ID() != getAD_Org_ID())
@@ -1314,23 +1309,22 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				return false;
 			}
 		}
-
+		// Change DELIVERYRULE_Force to DELIVERYRULE_Availability if warehouse disallow negative inventory
 		boolean disallowNegInv = wh.isDisallowNegativeInv();
 		String DeliveryRule = getDeliveryRule();
 		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
 				(DeliveryRule == null || DeliveryRule.length()==0))
 			setDeliveryRule(DELIVERYRULE_Availability);
 
-        // Shipment/Receipt can have either Order/RMA (For Movement type)
+        // Shipment/Receipt must fill one of Order or RMA field, not both
         if (getC_Order_ID() != 0 && getM_RMA_ID() != 0)
         {
             log.saveError("OrderOrRMA", "");
             return false;
         }
-
+        // Set document type to C_DocTypeShipment_ID of RMA document type (sales transaction only)
         if (isSOTrx() && getM_RMA_ID() != 0)
         {
-            // Set Document and Movement type for this Receipt
             MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
             MDocType docType = MDocType.get(getCtx(), rma.getC_DocType_ID());
             setC_DocType_ID(docType.getC_DocTypeShipment_ID());
@@ -1338,6 +1332,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
                 
         if (newRecord && isSOTrx())
         {
+        	// Set ShipperAccount and FreightCharges 
         	if (MInOut.FREIGHTCOSTRULE_CustomerAccount.equals(getFreightCostRule()))
     		{
         		if (Util.isEmpty(getShipperAccount()))
@@ -1350,7 +1345,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
         			setFreightCharges(MInOut.FREIGHTCHARGES_Collect);
     		}
         }
-
+        // Set SalesRep_ID from order or RMA (original MInOut)
         if (getSalesRep_ID() == 0) {
         	if (getC_Order_ID() > 0) {
         		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
@@ -1365,18 +1360,13 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
+		// Propagate AD_Org_ID change to lines
 		if (is_ValueChanged("AD_Org_ID"))
 		{
 			final String sql = "UPDATE M_InOutLine ol"
@@ -1552,6 +1542,32 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		// Check if Order is Valid - load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM M_InOutLine iol "
+		    		+ " JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE iol.M_InOut_ID=?", getM_InOut_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
+		}
+		
+		// Check if RMA is Valid - load all M_RMA_ID and replace/remove M_RMA_ID if not valid
+		if (getM_RMA_ID() > 0) {
+		    int[] rmaIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT rmal.M_RMA_ID "
+		    		+ " FROM M_InOutLine iol "
+		    		+ " JOIN M_RMALine rmal ON (iol.M_RMALine_ID=rmal.M_RMALine_ID) "
+		    		+ " WHERE iol.M_InOut_ID=?", getM_InOut_ID());
+		    if (rmaIds.length == 1 && rmaIds[0] != getM_RMA_ID())
+		        setM_RMA_ID(rmaIds[0]);
+		    else if (rmaIds.length > 1)
+		        setM_RMA_ID(0);
+		}
+		
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))
 			setDocAction(DOCACTION_Complete);
@@ -2510,7 +2526,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			counter.setDropShip_User_ID(getDropShip_User_ID());
 		}
 
-		//	Refernces (Should not be required
+		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
 		counter.saveEx(get_TrxName());
 

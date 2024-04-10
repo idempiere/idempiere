@@ -56,10 +56,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Process to import or export translations
+ */
 @org.adempiere.base.annotation.Process
 public class TranslationImpExp extends SvrProcess {
-
-	// Process to import or export translations
+	
 	private String p_ImportOrExport;
 	private int p_AD_Client_ID;    // Client
 	private String p_AD_Language;

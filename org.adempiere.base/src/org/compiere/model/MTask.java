@@ -59,7 +59,7 @@ public class MTask extends X_AD_Task
 	}	//	MTask
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx ctx
 	 *	@param rs result set
 	 *	@param trxName trx
@@ -139,12 +139,6 @@ public class MTask extends X_AD_Task
 		return sb.toString ();
 	}	//	toString
 
-	/**
-	 *  After Save.
-	 *  @param newRecord new record
-	 *  @param success success
-	 *  @return true if save complete (if not overwritten true)
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -153,7 +147,7 @@ public class MTask extends X_AD_Task
 			return success;
 		if (! newRecord)
 		{
-			//	Menu/Workflow
+			//	Update Menu
 			if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 				|| is_ValueChanged("Description"))
 			{

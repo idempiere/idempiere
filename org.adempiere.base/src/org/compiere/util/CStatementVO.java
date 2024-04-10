@@ -18,11 +18,18 @@ package org.compiere.util;
 
 import java.io.Serializable;
 
+import org.compiere.db.CallableStatementProxy;
+import org.compiere.db.PreparedStatementProxy;
+import org.compiere.db.StatementProxy;
+
 /**
- *	Adempiere Statement Value Object
+ *	Statement Value Object for statement proxy.
  *	
  *  @author Jorg Janke
  *  @version $Id: CStatementVO.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
+ *  @see StatementProxy
+ *  @see PreparedStatementProxy
+ *  @see CallableStatementProxy
  */
 public class CStatementVO implements Serializable
 {
@@ -60,10 +67,12 @@ public class CStatementVO implements Serializable
 	private String 				m_sql;
 	/** Transaction Name **/
 	private String				m_trxName = null;	
+	
 	/**
 	 * 	String representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("CStatementVO[");
@@ -85,8 +94,6 @@ public class CStatementVO implements Serializable
 
 	/**
 	 * 	Set SQL.
-	 * 	Replace ROWID with TRIM(ROWID) for remote SQL
-	 * 	to convert into String as ROWID is not serialized
 	 *	@param sql sql
 	 */
 	public void setSql(String sql)
@@ -128,6 +135,7 @@ public class CStatementVO implements Serializable
 	}
 	
 	/**
+	 * Get transaction name
 	 * @return transaction name
 	 */
 	public String getTrxName() 

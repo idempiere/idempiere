@@ -142,11 +142,7 @@ public class AmtInWords_IN implements AmtInWords
 	  return appendTo.toString();
   }
 
-   
-   
-   static void saySimpleNumber(StringBuffer appendTo, int number) {
-	     
-		 
+   protected static void saySimpleNumber(StringBuffer appendTo, int number) {
          assert number < 1000 && number >= 0: "Must be between 0 and 1000";
 		 
          if (number < 12) {
@@ -190,13 +186,13 @@ public class AmtInWords_IN implements AmtInWords
                }
          }          
    }
-  
-	
-	/**************************************************************************
+  	
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 */
+    @Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)

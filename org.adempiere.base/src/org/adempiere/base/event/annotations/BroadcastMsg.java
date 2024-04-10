@@ -32,14 +32,13 @@ import java.lang.annotation.Target;
 
 import org.adempiere.base.event.IEventTopics;
 
+/**
+ * Method annotation for handling of broadcast message event 
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.BROADCAST_MESSAGE)
-/**
- * 
- * @author hengsin
- *
- */
 public @interface BroadcastMsg {
 
 }

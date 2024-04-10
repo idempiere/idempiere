@@ -32,14 +32,13 @@ import java.lang.annotation.Target;
 
 import org.adempiere.base.event.IEventTopics;
 
+/**
+ * Method annotation for handling of after login event 
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.AFTER_LOGIN)
-/**
- * 
- * @author hengsin
- * 
- */
 public @interface AfterLogin {
 
 }

@@ -34,8 +34,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /**
- *  Report Model Data - ValueObject.
- *  - Build SQL from RColumn info and Retrieve Data
+ *  Report Model Data - ValueObject.<br/>
+ *  - Build SQL from RColumn info and Retrieve Data<br/>
  *  - owned by RModel
  *
  *  @author Jorg Janke
@@ -61,7 +61,6 @@ public class RModelData
 	public ArrayList<Object>	rowsMeta = new ArrayList<Object>();
 	/** The Column Definitions          */
 	public ArrayList<RColumn>	cols = new ArrayList<RColumn>();
-
 
 	/** Table Name                      */
 	private String          m_TableName;
@@ -89,8 +88,8 @@ public class RModelData
 		cols.clear();
 	}   //  dispose
 
-	/**************************************************************************
-	 *  Query
+	/**
+	 *  Execute Query
 	 *  @param ctx
 	 *  @param  whereClause the SQL where clause (w/o the WHERE)
 	 *  @param  orderClause
@@ -181,14 +180,14 @@ public class RModelData
 	}   //  query
 
 	/**
-	 *  Process Data
-	 *  Copy data in m_rows to rows and perform functions
+	 *  Process Data.<br/>
+	 *  Copy data in m_rows to rows and perform functions.
 	 */
 	private void process()
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("Start Rows=" + m_rows.size());
 
-		//  Row level Funcions
+		//  Row level Functions
 		//  would come here
 
 		//  Group by Values
@@ -260,7 +259,6 @@ public class RModelData
 					groupBysValue[level] = row.get(idx);
 				else if (haveBreak[level])
 				{
-				//	log.fine( "GroupBy Change level=" + level + " col=" + idx + " - " + groupBysValue[level]);
 					//  create new row
 					ArrayList<Object> newRow = new ArrayList<Object>();
 					for (int c = 0; c < cols.size(); c++)
@@ -279,7 +277,6 @@ public class RModelData
 							{
 								if (c == funcCols[fc])
 								{
-								//	newRow.add("fc= " + fc + " gl=" + level + " " + funcFuns[fc]);
 									newRow.add(funcVals[fc][level]);
 									funcVals[fc][level] = Env.ZERO;
 									found = true;
@@ -354,8 +351,7 @@ public class RModelData
 		m_rows.clear();
 	}   //  process
 
-
-	/**************************************************************************
+	/**
 	 *  Is Row a Group Row
 	 *  @param row row index
 	 *  @return true, if group row

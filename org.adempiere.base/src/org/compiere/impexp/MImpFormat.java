@@ -26,7 +26,7 @@ import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.util.DB;
 
 /**
- *	Import Format Model 
+ *	Extended Import Format Model for AD_ImpFormat
  *	
  *  @author Jorg Janke
  *  @version $Id: MImpFormat.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $

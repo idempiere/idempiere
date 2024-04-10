@@ -68,7 +68,7 @@ import oracle.jdbc.OracleDriver;
  *  @version    $Id: DB_Oracle.java,v 1.7 2006/09/22 23:35:19 jjanke Exp $
  *  ---
  *  Modifications: Refactoring. Replaced Oracle Cache Manager with C3P0
- *  connection pooling framework for better and more efficient connnection handling
+ *  connection pooling framework for better and more efficient connection handling
  *
  *  @author Ashley Ramdass (Posterita)
  */
@@ -536,7 +536,23 @@ public class DB_Oracle implements AdempiereDatabase
         }
         return result.toString();
     }   //  TO_NUMBER
+    
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast () {
+		return "?";
+	}
 
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as json
+	 */
+	public String TO_JSON (String value)
+	{
+		return value;
+	}
 
     /**
      *  Get SQL Commands.
@@ -1026,6 +1042,11 @@ public class DB_Oracle implements AdempiereDatabase
 	public String getClobDataType() {
 		return "CLOB";
 	}
+	
+	@Override
+	public String getJsonDataType() {
+		return getClobDataType();
+	}
 
 	@Override
 	public String getTimestampDataType() {
@@ -1072,6 +1093,8 @@ public class DB_Oracle implements AdempiereDatabase
 		//	Inline Constraint
 		if (column.getAD_Reference_ID() == DisplayType.YesNo)
 			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+		else if (column.getAD_Reference_ID() == DisplayType.JSON)
+			sql.append("CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null
 		if (column.isMandatory())

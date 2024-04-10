@@ -35,13 +35,13 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6785430530028279055L;
 
 	/**
 	 * 	Add Node to correct tree
-	 *	@param ctx cpntext
+	 *	@param ctx session context
 	 *	@param treeType tree type
 	 *	@param Record_ID id
 	 *	@param trxName transaction
@@ -107,9 +107,8 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		}
 		return saved;	
 	}	//	addNode
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Get Node TableName
 	 *	@param treeType tree type
 	 *	@return node table name, e.g. AD_TreeNode
@@ -146,7 +145,7 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 
 	/**
 	 * 	Get Source TableName
-	 *	@param treeType tree typw
+	 *	@param treeType tree type
 	 *	@return source table name, e.g. AD_Org or null 
 	 */
 	public static String getSourceTableName(String treeType)
@@ -186,7 +185,6 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		else if (treeType.equals(TREETYPE_CMTemplate))
 			sourceTable = "CM_Template";
 		//	User Trees
-		// afalcone [Bugs #1837219]
 		else if (treeType.equals(TREETYPE_User1) || 
 				 treeType.equals(TREETYPE_User2) || 
 				 treeType.equals(TREETYPE_User3) || 
@@ -238,25 +236,23 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		}
 		return null;
 	}	//	get
-
 	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MTree_Base> s_cache = new ImmutableIntPOCache<Integer,MTree_Base>(Table_Name, 10);
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Tree_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Tree_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTree_Base(Properties ctx, String AD_Tree_UU, String trxName) {
         super(ctx, AD_Tree_UU, trxName);
 		if (Util.isEmpty(AD_Tree_UU))
 			setInitialDefaults();
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Tree_ID id
@@ -320,7 +316,7 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 	}	//	MTree_Base
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MTree_Base(MTree_Base copy) 
@@ -329,7 +325,7 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -339,7 +335,7 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -387,7 +383,6 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 			tableName += " t";
 		return tableName;
 	}	//	getSourceTableName
-
 	
 	/**
 	 * 	Get fully qualified Name of Action/Color Column
@@ -404,29 +399,27 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		return "NULL";
 	}	//	getSourceTableName
 	
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (!isActive() || !isAllNodes())
 			setIsDefault(false);
 
+		// AD_Table_ID and Parent_Column_ID only use for CustomTable tree type
 		if (! TREETYPE_CustomTable.equals(getTreeType())) {
 			setAD_Table_ID(-1);
 			setParent_Column_ID(-1);
 		}
 		
+		// Validate that source table must have IsSummary column
 		String tableName = getSourceTableName(true);
 		MTable table = MTable.get(getCtx(), tableName);
 		if (! table.columnExistsInDB("IsSummary")) {
-			// IsSummary is mandatory column to have a tree
 			log.saveError("Error", "IsSummary column required for tree tables"); 
 			return false;
 		}
+		
+		// Set IsTreeDrivenByValue and IsValueDisplayed to false if table doesn't have Value column 
 		if (! table.columnExistsInDB("Value")) {
 			if (isTreeDrivenByValue()) {
 				// Value is mandatory column to have a tree driven by Value
@@ -441,18 +434,14 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		if (newRecord)	//	Base Node
+		if (newRecord)	
 		{
+			// Create tree node record
 			if (TREETYPE_BPartner.equals(getTreeType()))
 			{
 				MTree_NodeBP ndBP = new MTree_NodeBP(this, 0);
@@ -487,7 +476,10 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		return this;
 	}
 
-	/** Returns true if should load all tree nodes immediately */
+	/** 
+	 * Is load all tree nodes immediately
+	 * @return true if tree will load all nodes immediately
+	 */
 	public static boolean isLoadAllNodesImmediately(int treeID, String trxName) {
 		return DB.getSQLValueStringEx(trxName, "SELECT IsLoadAllNodesImmediately FROM AD_Tree WHERE AD_Tree_ID = ?", treeID).equals("Y");
 	}

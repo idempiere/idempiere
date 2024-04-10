@@ -295,7 +295,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 
 	/**
 	 * Set value for Account element type
-	 * @param SeqNo squence
+	 * @param SeqNo sequence
 	 * @param Name name
 	 * @param C_Element_ID element
 	 * @param C_ElementValue_ID element value
@@ -443,16 +443,13 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		return msgreturn.toString();
 	}   //  toString
 	
-	/**
-	 * Before Save
-	 * @param newRecord new
-	 * @return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
 			setAD_Org_ID(0);
+		
+		// Validate IsMandatory configuration
 		String et = getElementType();
 		if (isMandatory() &&
 			(ELEMENTTYPE_UserElementList1.equals(et) || ELEMENTTYPE_UserElementList2.equals(et)
@@ -489,7 +486,8 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 				return false;
 			}
 		}
-		//
+		
+		// AD_Column_ID is mandatory for UserColumn1 and UserColumn2
 		if (getAD_Column_ID() == 0
 			&& (ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)))
 		{
@@ -499,18 +497,12 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * After Save
-	 * @param newRecord new
-	 * @param success success
-	 * @return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Default Value
+		//	Update existing valid combination records with mandatory element value (i.e replace null)
 		if (isMandatory() && is_ValueChanged(COLUMNNAME_IsMandatory))
 		{
 			if (ELEMENTTYPE_Activity.equals(getElementType()))
@@ -526,7 +518,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		//	Clear Cache
 		s_cache.clear();
 		
-		//	Resequence
+		//	Update Combination and Description of Account (C_ValidCombination)
 		if (newRecord || is_ValueChanged(COLUMNNAME_SeqNo)){
 			StringBuilder msguvd = new StringBuilder("AD_Client_ID=").append(getAD_Client_ID());
 			MAccount.updateValueDescription(getCtx(), msguvd.toString(), get_TrxName());
@@ -555,17 +547,12 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
 	}	//	updateData
 
-	/**
-	 * After Delete
-	 * @param success success
-	 * @return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
 			return success;
-		//	Update Account Info
+		//	Update Combination and Description of C_ValidCombination
 		StringBuilder msguvd = new StringBuilder("AD_Client_ID=").append(getAD_Client_ID());
 		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
 		//

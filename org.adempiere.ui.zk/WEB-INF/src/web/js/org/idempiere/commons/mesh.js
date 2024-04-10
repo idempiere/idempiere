@@ -46,7 +46,7 @@ zk.afterLoad('zul.mesh', function() {
         }
         return result;
       },
-      //workarond from https://tracker.zkoss.org/browse/ZK-5159
+      //workaround from https://tracker.zkoss.org/browse/ZK-5159
       bind_: function () {
 		this.$supers(zul.mesh.Frozen, 'bind_', arguments);
 		var p = this.parent,

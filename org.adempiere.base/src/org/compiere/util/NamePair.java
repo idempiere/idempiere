@@ -21,7 +21,7 @@ import java.text.Collator;
 import java.util.Comparator;
 
 /**
- *  Name Pair Interface
+ *  Abstract Name ID Pair class
  *
  *  @author     Jorg Janke
  *  @version    $Id: NamePair.java,v 1.3 2006/07/30 00:52:23 jjanke Exp $
@@ -29,7 +29,7 @@ import java.util.Comparator;
 public abstract class NamePair implements Comparator<Object>, Serializable, Comparable<Object>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8951176533385087242L;
 
@@ -58,16 +58,17 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 
 	/**
 	 *  Returns Key or Value as String
-	 *  @return String or null
+	 *  @return String ID or null
 	 */
 	public abstract String getID();
 
 	/**
-	 *	Comparator Interface (based on toString value)
+	 *	Compare o1 and o2 (based on toString value)
 	 *  @param o1 Object 1
 	 *  @param o2 Object 2
 	 *  @return compareTo value
 	 */
+	@Override
 	public int compare (Object o1, Object o2)
 	{
 		String s1 = o1 == null ? "" : o1.toString();
@@ -76,7 +77,7 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 	}	//	compare
 
 	/**
-	 *	Comparator Interface (based on toString value)
+	 *	Compare o1 and o2 (based on toString value) using Collator
 	 *  @param o1 Object 1
 	 *  @param o2 Object 2
 	 *  @return compareTo value
@@ -95,13 +96,14 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 	 *  @return  a negative integer, zero, or a positive integer as this object
 	 *		is less than, equal to, or greater than the specified object.
 	 */
+	@Override
 	public int compareTo (Object o)
 	{
 		return compare (this, o);
 	}	//	compareTo
 
 	/**
-	 * 	Comparable Interface (based on toString value)
+	 * 	Comparable Interface (based on toString value) using Collator
 	 *  @param   o the Object to be compared.
 	 *  @return  a negative integer, zero, or a positive integer as this object
 	 *		is less than, equal to, or greater than the specified object.
@@ -115,6 +117,7 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 	 *	To String - returns name
 	 *  @return Name
 	 */
+	@Override
 	public String toString()
 	{
 		return m_name;

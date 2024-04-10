@@ -16,9 +16,8 @@ package org.compiere.model;
 import java.util.EventObject;
 
 /**
- * 
+ * State change event for {@link GridTab}
  * @author Low Heng Sin
- *
  */
 public class StateChangeEvent extends EventObject {
 
@@ -29,7 +28,6 @@ public class StateChangeEvent extends EventObject {
 	private int eventType;
 
 	/**
-	 * 
 	 * @param source
 	 * @param eventType
 	 */
@@ -38,14 +36,25 @@ public class StateChangeEvent extends EventObject {
 		this.eventType = eventType;
 	}
 	
+	/** Event for refresh all rows */
 	public final static int DATA_REFRESH_ALL = 0;
+	/** Event for refresh of curent row */
 	public final static int DATA_REFRESH = 1;
+	/** Event for new row */
 	public final static int DATA_NEW = 2;
+	/** Event for delete of current row */
 	public final static int DATA_DELETE = 3;
+	/** Event for save */
 	public final static int DATA_SAVE = 4;
+	/** Event for undo changes */
 	public final static int DATA_IGNORE = 5;
+	/** Event for query */
 	public final static int DATA_QUERY = 6;
 	
+	/**
+	 * Get event type
+	 * @return event type (DATA_*)
+	 */
 	public int getEventType() {
 		return eventType;
 	}

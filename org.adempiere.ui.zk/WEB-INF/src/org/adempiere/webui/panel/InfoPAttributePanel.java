@@ -384,7 +384,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 
 	/**
 	 *	Get Attribute List
-	 *	@param M_Attribute_ID attribure
+	 *	@param M_Attribute_ID attribute
 	 *	@return [M_AttributeValue_ID:Name]
 	 */
 	private KeyNamePair[] getAttributeList(int M_Attribute_ID)

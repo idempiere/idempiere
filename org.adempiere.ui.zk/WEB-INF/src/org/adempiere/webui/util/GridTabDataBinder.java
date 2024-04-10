@@ -192,7 +192,7 @@ public class GridTabDataBinder implements ValueChangeListener {
 	 * @param recordId Record to clone
 	 * @param values Values to be assigned to clones for the specified column
 	 * @param trxName Transaction
-	 * @throws Exception If error is occured when loading the PO or saving clones
+	 * @throws Exception If error is occurred when loading the PO or saving clones
 	 * 
 	 * author ashley
 	 */

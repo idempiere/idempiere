@@ -88,7 +88,13 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 		this.abstractADWindowContent = abstractADWindowContent;
 		this.AD_Table_ID = AD_Table_ID;
 		this.Record_ID = Record_ID;
-		this.Record_UU = Record_UU;
+		if (Record_ID > 0 && Record_UU == null) {
+			MTable table = MTable.get(AD_Table_ID);
+			PO po = table.getPO(Record_ID, null);
+			this.Record_UU = po.get_UUID();
+		} else {
+			this.Record_UU = Record_UU;
+		}
 		setStyle("padding:0px 5px;");
 		addEventListener(LabelsSearchController.ON_POST_SELECT_LABELITEM_EVENT, this);		
 		update();

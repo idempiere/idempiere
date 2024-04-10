@@ -305,7 +305,6 @@ public class WAttachment extends Window implements EventListener<Event>
 
 
 		North northPanel = new North();
-		northPanel.setStyle("padding: 4px; background: #e8e8e8;");
 		northPanel.setCollapsible(false);
 		northPanel.setSplittable(false);
 
@@ -640,7 +639,7 @@ public class WAttachment extends Window implements EventListener<Event>
 					&& Medias.PDF_MIME_TYPE.equals(contentType)) {
 					mediaVersion++;
 					String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-					String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+					String pdfJsUrl = AEnv.toPdfJsUrl(url);
 					preview.setSrc(pdfJsUrl);
 				} else {
 					preview.setContent(media);

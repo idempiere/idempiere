@@ -217,7 +217,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private ArrayList<WEditor>          m_sEditorsTo = new ArrayList<WEditor>();
     /** Tab number for lookup and context */
     public static final int     TABNO = 99;
-    /** Max display lenght of Fields on simple search tab   */
+    /** Max display length of Fields on simple search tab   */
     public static final int     FIELDLENGTH = 20;
     /** AD_Tab_ID of calling tab */
     private int m_AD_Tab_ID = 0;
@@ -766,7 +766,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         tabPanel.setStyle("height: 100%; width: 100%");
         tabPanel.appendChild(winAdvanced);
         tabPanel.setId("advancedSearch");
-        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced").replaceAll("&", ""), false, false);
+        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced"), false, false);
         initSimple();
         initAdvanced();
 
@@ -2052,12 +2052,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		return;
 
     	String code = userQuery.getCode();
-    	if (code.startsWith("@SQL=")) {
+    	if (code.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "SQL"));
 			m_whereUserQuery = "(" + code.substring(code.indexOf("=")+1, code.length()) + ")";
 			if (log.isLoggable(Level.INFO))
 				log.log(Level.INFO, m_whereUserQuery);
 			hideAdvanced();
     	} else {
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "Advanced"));
         	String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR));
 
             List<?> rowList = advancedPanel.getChildren();
@@ -2370,7 +2372,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            if (parsedValue == null)
 	                continue;
 	            String infoDisplay = (value == null ? "" : value.toString());
-	            // When Atribute is set Field is null
+	            // When Attribute is set Field is null
 	            if(table.getSelectedItem() != null && !table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
 	            {
 		            if (field.isLookup())

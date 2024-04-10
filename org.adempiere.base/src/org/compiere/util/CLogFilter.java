@@ -20,9 +20,8 @@ import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-
 /**
- *	idempiere Log Filter
+ *	iDempiere Log Filter
  *	
  *  @author Jorg Janke
  *  @version $Id: CLogFilter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
@@ -43,7 +42,7 @@ public class CLogFilter implements Filter
 	/**	Singleton			*/
 	private static CLogFilter	s_filter = null;
 	
-	/**************************************************************************
+	/**
 	 * 	Constructor
 	 */
 	public CLogFilter ()
@@ -51,10 +50,11 @@ public class CLogFilter implements Filter
 	}	//	CLogFilter
 
 	/**
-	 * 	Loggable - Don't log core java classes
+	 * 	Is Loggable - Don't log core java classes
 	 *	@param record log record
-	 *	@return true
+	 *	@return true if loggable
 	 */
+	@Override
 	public boolean isLoggable (LogRecord record)
 	{
 		String loggerName = record.getLoggerName();
@@ -68,8 +68,6 @@ public class CLogFilter implements Filter
 		//
 		if (loggerName != null)
 		{
-		//	if (loggerName.toLowerCase().indexOf("focus") != -1)
-		//		return true;
 			if (loggerName.startsWith("sun.")
 				|| loggerName.startsWith("java.awt.")
 				|| loggerName.startsWith("javax.")

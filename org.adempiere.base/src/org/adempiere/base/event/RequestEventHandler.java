@@ -141,7 +141,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 				oldSalesRep_ID = ((Integer)oo).intValue();
 			if (oldSalesRep_ID != 0)
 			{
-				//  RequestActionTransfer - Request {0} was transfered by {1} from {2} to {3}
+				//  RequestActionTransfer - Request {0} was transferred by {1} from {2} to {3}
 				Object[] args = new Object[] {r.getDocumentNo(), 
 					MUser.getNameOfUser(AD_User_ID), 
 					MUser.getNameOfUser(oldSalesRep_ID),

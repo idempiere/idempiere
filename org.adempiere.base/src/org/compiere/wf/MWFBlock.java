@@ -24,13 +24,14 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Work Flow Commitment Block
  *	
  *  @author Jorg Janke
  *  @version $Id: MWFBlock.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
+ *  @deprecated not fully implemented, marked as inactive in dictionary
  */
+@Deprecated
 public class MWFBlock extends X_AD_WF_Block implements ImmutablePOSupport
 {
 	/**

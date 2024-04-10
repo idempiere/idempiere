@@ -116,6 +116,7 @@ implements DocAction
 		{
 			return false;
 		}
+		//Select MDepreciationExp records
 		if (!isProcessed() && (newRecord || is_ValueChanged(COLUMNNAME_DateAcct) || is_ValueChanged(COLUMNNAME_C_AcctSchema_ID)))
 		{
 			selectLines(); 
@@ -136,7 +137,8 @@ implements DocAction
 	}
 	
 	/**
-	 * Set period from DateAcct
+	 * Set period from DateAcct.<br/>
+	 * Throw exception if period not found for DateAcct.
 	 */
 	public void setC_Period_ID()
 	{
@@ -167,7 +169,7 @@ implements DocAction
 	}
 	
 	/**
-	 * Select/connect lines (MDepreciationExp) by setting A_Depreciation_Entry_ID to the id of this record.
+	 * Select MDepreciationExp records via DateAcct and C_AcctSchema_ID and set A_Depreciation_Entry_ID to the id of this record   
 	 */
 	private void selectLines()
 	{

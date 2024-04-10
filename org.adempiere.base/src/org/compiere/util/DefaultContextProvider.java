@@ -19,10 +19,11 @@ package org.compiere.util;
 import java.util.Properties;
 
 /**
- * 
+ * Default context provider for swing client 
  * @author Low Heng Sin
- *
+ * @deprecated Swing client have been deprecated
  */
+@Deprecated
 public class DefaultContextProvider implements ContextProvider {
 
 	/**	Logging								*/

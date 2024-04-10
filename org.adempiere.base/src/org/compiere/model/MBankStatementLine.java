@@ -42,12 +42,12 @@ import org.compiere.util.Util;
  */
  public class MBankStatementLine extends X_C_BankStatementLine
  {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -4479911757321927051L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2604381588523683439L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param C_BankStatementLine_UU  UUID key
@@ -176,11 +176,6 @@ import org.compiere.util.Util;
 		}
 	}	//	addDescription
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -197,19 +192,19 @@ import org.compiere.util.Util;
 			}
 		}
 
-		//	Calculate Charge = Statement - trx - Interest  
+		//	Calculate Charge = Statement - Trx - Interest  
 		BigDecimal amt = getStmtAmt();
 		amt = amt.subtract(getTrxAmt());
 		amt = amt.subtract(getInterestAmt());
 		if (amt.compareTo(getChargeAmt()) != 0)
 			setChargeAmt (amt);
-		//
+		// Charge is mandatory if charge amount is not zero
 		if (getChargeAmt().signum() != 0 && getC_Charge_ID() == 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "C_Charge_ID"));
 			return false;
 		}
-		// Un-link Payment if TrxAmt is zero - teo_sarca BF [ 1896880 ] 
+		// Reset Payment and Invoice field to 0 if TrxAmt is zero 
 		if (getTrxAmt().signum() == 0 && getC_Payment_ID() > 0)
 		{
 			setC_Payment_ID(I_ZERO);
@@ -223,7 +218,7 @@ import org.compiere.util.Util;
 			setLine (ii);
 		}
 		
-		//	Set References
+		//	Set business partner and invoice from payment
 		if (getC_Payment_ID() != 0 && getC_BPartner_ID() == 0)
 		{
 			MPayment payment = new MPayment (getCtx(), getC_Payment_ID(), get_TrxName());
@@ -231,6 +226,7 @@ import org.compiere.util.Util;
 			if (payment.getC_Invoice_ID() != 0)
 				setC_Invoice_ID(payment.getC_Invoice_ID());
 		}
+		// Set business partner from invoice
 		if (getC_Invoice_ID() != 0 && getC_BPartner_ID() == 0)
 		{
 			MInvoice invoice = new MInvoice (getCtx(), getC_Invoice_ID(), get_TrxName());
@@ -254,12 +250,6 @@ import org.compiere.util.Util;
 		return m_parent;
 	}	//	getParent
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -268,11 +258,6 @@ import org.compiere.util.Util;
 		return updateHeader();
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -313,8 +298,17 @@ import org.compiere.util.Util;
 	 * @return true if not using date from statement line or header and line is in the same financial period
 	 */
 	public boolean isDateConsistentIfUsedForPosting() {
+		return isDateConsistentIfUsedForPosting(getParent().getDateAcct());
+	}
+
+	/**
+	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are in the same financial period
+	 * @param headerDateAcct
+	 * @return true if not using date from statement line or header and line is in the same financial period
+	 */
+	public boolean isDateConsistentIfUsedForPosting(Timestamp headerDateAcct) {
 		if (MBankStatement.isPostWithDateFromLine(getAD_Client_ID())) {
-			MPeriod headerPeriod = MPeriod.get(getCtx(), getParent().getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
+			MPeriod headerPeriod = MPeriod.get(getCtx(), headerDateAcct, getParent().getAD_Org_ID(), get_TrxName());
 			MPeriod linePeriod = MPeriod.get(getCtx(), getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
 
 			return headerPeriod != null && linePeriod != null && headerPeriod.getC_Period_ID() == linePeriod.getC_Period_ID();	

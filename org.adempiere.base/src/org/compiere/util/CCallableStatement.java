@@ -18,9 +18,11 @@ package org.compiere.util;
 
 import java.sql.CallableStatement;
 
+import org.compiere.db.ProxyFactory;
+
 /**
- * 
- * Interface to wrap CallableStatement
+ * Interface to wrap CallableStatement.<br/>
+ * This is use by {@link ProxyFactory} and developer shouldn't use this class directly.
  * @author Low Heng Sin
  */
 public interface CCallableStatement extends CPreparedStatement, CallableStatement

@@ -31,6 +31,7 @@ import org.apache.ecs.xhtml.tr;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
+import org.compiere.model.MEntityType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.WebDoc;
@@ -168,6 +169,29 @@ public class HelpWindow extends Window {
 			tr.addElement(td);
 			td.addElement(WebDoc.NBSP);
 		}
+
+		//window entity type information
+		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
+			tr = new tr();
+			table.addElement(tr);
+			td = new td();
+			td.setClass("help-window-entitytype-help");
+			tr.addElement(td);
+
+			title = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ")
+					.append(MEntityType.get(Env.getCtx(), gridWindow.getEntityType()).getName());
+			title.append(" [ ").append(gridWindow.getEntityType()).append(" ]");
+			p p = new p().addElement(title.toString());
+			td.addElement(p);
+		}
+
+			tr = new tr();
+			table.addElement(tr);
+
+			td = new td();
+			tr.addElement(td);
+			td.addElement(WebDoc.NBSP);
+			// end window entity type information
 
 		tr = new tr();
 		table.addElement(tr);
@@ -347,6 +371,28 @@ public class HelpWindow extends Window {
 			td.addElement(WebDoc.NBSP);
 		}
 		
+		// tab entity type information
+		if(Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
+			tr = new tr();
+			table.addElement(tr);
+			td = new td();
+			td.setClass("help-window-tab-entitytype-help");
+			tr.addElement(td);
+
+			StringBuilder entityType = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ").append(MEntityType.get(Env.getCtx(), tab.getEntityType()).getName());
+			entityType.append(" [").append(tab.getEntityType()).append(" ]");
+			p p = new p().addElement(entityType.toString());
+			td.addElement(p);
+		}
+
+			tr = new tr();
+			table.addElement(tr);
+
+			td = new td();
+			tr.addElement(td);
+			td.addElement(WebDoc.NBSP);
+				// end tab entity type information
+		
 		return table;
 	}
 	
@@ -480,6 +526,33 @@ public class HelpWindow extends Window {
 			td.addElement(WebDoc.NBSP);
 		}
 		
+		// field entity type information
+		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx())) {
+			String eType = field.getEntityType();
+
+			MEntityType et = MEntityType.get(Env.getCtx(), eType.replace("**U**", ""));
+			if (et != null) {
+				tr = new tr();
+				table.addElement(tr);
+				td = new td();
+				td.setClass("help-window-field-entitytype-help");
+				tr.addElement(td);
+				StringBuilder entityType = new StringBuilder(Msg.getElement(Env.getCtx(), "EntityType")).append(": ")
+						.append(et.getName());
+				entityType.append(" [ ").append(eType).append(" ]");
+				p p = new p().addElement(entityType.toString());
+				td.addElement(p);
+			}
+		}
+
+			tr = new tr();
+			table.addElement(tr);
+
+			td = new td();
+			tr.addElement(td);
+			td.addElement(WebDoc.NBSP);
+			// field tab entity type information
+
 		return table;
 	}
 }

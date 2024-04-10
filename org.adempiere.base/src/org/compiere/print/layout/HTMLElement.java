@@ -24,21 +24,21 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
- *	HTML Form Print ELement.
+ *	HTML ELement.
+ *  <p>
  *  Restrictions:
- *  - Label is not printed
- * 	- Alighnment is ignored
- *
+ *  <ul>- Label is not printed</ul>
+ * 	<ul>- Alignment is ignored</ul>
+ *  
  * 	@author 	Jorg Janke
  * 	@version 	$Id: HTMLElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  */
 public class HTMLElement extends PrintElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7752468251586676726L;
-
 
 	/**
 	 * 	HTML String Constructor
@@ -55,9 +55,8 @@ public class HTMLElement extends PrintElement
 
 	/**	View for Printing						*/
 	private HTMLRenderer 	m_renderer;
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Layout and Calculate Size.
 	 * 	Set p_width and p_height
 	 * 	@return Size
@@ -80,36 +79,24 @@ public class HTMLElement extends PrintElement
 			else
 				p_height = p_maxHeight;
 		}
-	//	System.out.println("HTMLElement.calculate size - Width="
-	//		+ p_width + "(" + p_maxWidth + ") - Height=" + p_height + "(" + p_maxHeight + ")");
 		//
 		m_renderer.setAllocation((int)p_width, (int)p_height);
 		return true;
 	}	//	calculateSize
 
-	/*************************************************************************
-
 	/**
-	 * 	Paint/Print.
-	 *  Calculate actual Size.
-	 *  The text is printed in the topmost left position - i.e. the leading is below the line
+	 * 	Paint/Print.<br/>
+	 *  Calculate actual Size.<br/>
+	 *  The text is printed in the topmost left position - i.e. the leading is below the line.
 	 * 	@param g2D Graphics
-	 *  @param pageStart top left Location of page
 	 *  @param pageNo page number for multi page support (0 = header/footer) - ignored
+	 *  @param pageStart top left Location of page
 	 *  @param ctx print context
 	 *  @param isView true if online view (IDs are links)
 	 */
 	public void paint (Graphics2D g2D, int pageNo, Point2D pageStart, Properties ctx, boolean isView)
 	{
-		//	36.0/137.015625, Clip=java.awt.Rectangle[x=0,y=0,width=639,height=804], Translate=1.0/56.0, Scale=1.0/1.0, Shear=0.0/0.0
-	//	log.finest( "HTMLElement.paint", p_pageLocation.x + "/" + p_pageLocation.y
-	//		+ ", Clip=" + g2D.getClip()
-	//		+ ", Translate=" + g2D.getTransform().getTranslateX() + "/" + g2D.getTransform().getTranslateY()
-	//		+ ", Scale=" + g2D.getTransform().getScaleX() + "/" + g2D.getTransform().getScaleY()
-	//		+ ", Shear=" + g2D.getTransform().getShearX() + "/" + g2D.getTransform().getShearY());
-		//
 		Point2D.Double location = getAbsoluteLocation(pageStart);
-	//	log.finest( "HTMLElement.paint - PageStart=" + pageStart + ", Location=" + location);
 		//
 		Rectangle allocation = m_renderer.getAllocation();
 		g2D.translate(location.x, location.y);
@@ -132,8 +119,7 @@ public class HTMLElement extends PrintElement
 		return sb.toString();
 	}	//	toString
 
-
-	/**************************************************************************
+	/**
 	 * 	Is content HTML
 	 *	@param content content
 	 *	@return true if HTML

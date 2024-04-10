@@ -21,10 +21,13 @@ import java.sql.Statement;
 
 import javax.sql.RowSet;
 
+import org.compiere.db.ProxyFactory;
+
 /**
- * Interface to wrap and extend Statement
+ * Interface to wrap and extend Statement.<br/>
+ * This is use by {@link ProxyFactory} and developer shouldn't use this class directly.
  * @author Low Heng Sin
- *
+ * @see ProxyFactory
  */
 public interface CStatement extends Statement
 {
@@ -33,7 +36,6 @@ public interface CStatement extends Statement
 	 *	@return sql
 	 */
 	public String getSql();
-
 
 	/**
 	 * 	Execute Query
@@ -47,6 +49,7 @@ public interface CStatement extends Statement
 	 * @return boolean
 	 * @throws SQLException
 	 */
+	@Override
     public boolean isClosed() throws SQLException;
     
     /**

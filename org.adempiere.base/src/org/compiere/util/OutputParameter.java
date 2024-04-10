@@ -2,6 +2,7 @@ package org.compiere.util;
 
 import java.io.Serializable;
 
+@Deprecated
 public class OutputParameter implements Serializable {
 	/**
 	 * 

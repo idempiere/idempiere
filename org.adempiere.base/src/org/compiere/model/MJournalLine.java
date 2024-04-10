@@ -131,7 +131,7 @@ public class MJournalLine extends X_GL_JournalLine
 	
 	/**
 	 * 	Set Currency Info
-	 *	@param C_Currency_ID currenct
+	 *	@param C_Currency_ID currency
 	 *	@param C_ConversionType_ID type
 	 *	@param CurrencyRate rate
 	 */
@@ -295,11 +295,6 @@ public class MJournalLine extends X_GL_JournalLine
 		return acct.isDocControlled();
 	}	//	isDocControlled
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true 
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -310,8 +305,10 @@ public class MJournalLine extends X_GL_JournalLine
 
 		if (getAD_Org_ID() <= 0) //	Set Line Org to Doc Org if still not set 
 			setAD_Org_ID(getParent().getAD_Org_ID()); 
+		// Set Line
 		if (getLine() == 0)
 			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
+		// Set currency and conversion type from parent
 		if (getC_Currency_ID() == 0)
 			setC_Currency_ID(getParent().getC_Currency_ID());
 		if (getC_ConversionType_ID() == 0)
@@ -326,7 +323,7 @@ public class MJournalLine extends X_GL_JournalLine
 		}
 		fillDimensionsFromCombination();
 
-		//	Acct Amts
+		//	Set Acct Amts from Source Amts
 		BigDecimal rate = getCurrencyRate();
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
 		if (amt.scale() > getPrecision())
@@ -340,13 +337,6 @@ public class MJournalLine extends X_GL_JournalLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save.
-	 * 	Update Journal/Batch Total
-	 *	@param newRecord true if new record
-	 *	@param success true if success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -355,12 +345,6 @@ public class MJournalLine extends X_GL_JournalLine
 		return updateJournalTotal();
 	}	//	afterSave
 	
-	
-	/**
-	 * 	After Delete
-	 *	@param success true if deleted
-	 *	@return true if success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -371,7 +355,7 @@ public class MJournalLine extends X_GL_JournalLine
 
 	
 	/**
-	 * 	Update Journal and Batch Total
+	 * 	Update Journal and Journal Batch Total
 	 *	@return true if success
 	 */
 	protected boolean updateJournalTotal()
@@ -480,7 +464,7 @@ public class MJournalLine extends X_GL_JournalLine
 	}	//	getOrCreateCombination
 
 	/** 
-	 * Fill Accounting Dimensions from line valid combination. 
+	 * Fill Accounting Dimensions from valid combination. 
 	 */
 	protected void fillDimensionsFromCombination()
 	{

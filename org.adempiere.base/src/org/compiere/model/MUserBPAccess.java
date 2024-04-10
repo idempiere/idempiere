@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MUserBPAccess extends X_AD_UserBPAccess implements ImmutablePOSupport {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4549943360035715233L;
 

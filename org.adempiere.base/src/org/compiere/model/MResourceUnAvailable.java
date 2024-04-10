@@ -91,9 +91,10 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 
 	@Override
 	protected boolean beforeSave (boolean newRecord)
-	{
+	{		
 		if (getDateTo() == null)
 			setDateTo(getDateFrom());
+		// Validate DateFrom > DateTo
 		if (getDateFrom().after(getDateTo()))
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@DateTo@ > @DateFrom@"));

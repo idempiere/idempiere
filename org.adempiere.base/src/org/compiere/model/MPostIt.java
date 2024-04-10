@@ -128,7 +128,7 @@ public class MPostIt extends X_AD_PostIt
 	 * @param Table_ID
 	 * @param Record_ID
 	 * @return AD_PostIt_ID
- 	 * @deprecated Use {@link MPostIt#getID(int, String)} instead
+ 	 * @deprecated Use {@link MPostIt#getID(int, int, String)} instead
 	 */
 	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
@@ -139,22 +139,21 @@ public class MPostIt extends X_AD_PostIt
 
 	/**
 	 * @param Table_ID
+	 * @param Record_ID
 	 * @param Record_UU
 	 * @return AD_PostIt_ID
 	 */
-	public static int getID(int Table_ID, String Record_UU) {
+	public static int getID(int Table_ID, int Record_ID, String Record_UU) {
+		if (Util.isEmpty(Record_UU))
+			return getID(Table_ID, Record_ID);
 		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_UU=?";
 		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
 		return postItID;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Update Record_UU from Record_ID
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());

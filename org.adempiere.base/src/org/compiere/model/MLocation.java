@@ -506,7 +506,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 			return false;
 		if (cmp.getClass().equals(this.getClass()))
 			return ((PO)cmp).get_ID() == get_ID();
-		return equals(cmp);
+		return super.equals(cmp);
 	}	//	equals
 
 	@Override
@@ -715,17 +715,12 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 		return sb.toString();
 	}   //  toStringX
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
 			setAD_Org_ID(0);
-		//	Region Check
+		//	Check is country is using C_Region
 		if (getC_Region_ID() != 0)
 		{
 			if (m_c == null || m_c.getC_Country_ID() != getC_Country_ID())
@@ -735,6 +730,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 		} else {
 			setRegionName(null);
 		}
+		// Find and set C_City_ID
 		if (getC_City_ID() <= 0 && getCity() != null && getCity().length() > 0) {
 			int city_id = DB.getSQLValue(
 					get_TrxName(),
@@ -744,13 +740,13 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 				setC_City_ID(city_id);
 		}
 
-		//check city
+		// Check is C_City_ID mandatory and not fill
 		if (m_c != null && !m_c.isAllowCitiesOutOfList() && getC_City_ID()<=0) {
 			log.saveError("CityNotFound", Msg.translate(getCtx(), "CityNotFound"));
 			return false;
 		}
 		
-		//check city id
+		// Validate C_City_ID is valid
 		if (m_c != null && !m_c.isAllowCitiesOutOfList() && getC_City_ID() > 0) {
 			int city_id = DB.getSQLValue(get_TrxName(),
 										"SELECT C_City_ID "+
@@ -770,18 +766,12 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 
 	public final static String updateBPLocName = "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = ? AND IsPreserveCustomName = 'N'";
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Value/Name change in Account
+		//	Update Combination and Description of C_ValidCombination record
 		if (!newRecord
 			&& ("Y".equals(Env.getContext(getCtx(), "$Element_LF")) 
 				|| "Y".equals(Env.getContext(getCtx(), "$Element_LT")))
@@ -793,7 +783,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 			MAccount.updateValueDescription(getCtx(), msgup.toString(), get_TrxName());
 		}	
 		
-		//Update BP_Location name IDEMPIERE 417
+		// Update BP_Location name IDEMPIERE 417
 		if (get_TrxName().startsWith(PO.LOCAL_TRX_PREFIX)) { // saved without trx
 			int bplID = DB.getSQLValueEx(get_TrxName(), updateBPLocName, getC_Location_ID());
 			if (bplID>0)

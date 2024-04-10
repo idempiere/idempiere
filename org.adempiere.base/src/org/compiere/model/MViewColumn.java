@@ -25,19 +25,21 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
+/**
+ * Extended model class for AD_ViewColumn
+ */
 public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4049071242637196213L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ViewColumn_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ViewColumn_UU  UUID key
+     * @param trxName Transaction
+     */
     public MViewColumn(Properties ctx, String AD_ViewColumn_UU, String trxName) {
         super(ctx, AD_ViewColumn_UU, trxName);
     }
@@ -76,7 +78,7 @@ public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MViewColumn(MViewColumn copy) 
@@ -85,7 +87,7 @@ public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -95,7 +97,7 @@ public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -120,13 +122,9 @@ public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 		return sb.toString();
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate ColumnName is valid DB identifier
 		String error = Database.isValidIdentifier(getColumnName());
 		if (!Util.isEmpty(error)) {
 			if ( ! (getColumnName().startsWith("\"") && getColumnName().endsWith("\"")) ) { // quoted column is valid in views

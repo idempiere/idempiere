@@ -33,10 +33,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 
-
-
 /**
- *	Create a Export Format from a Window
+ *	Create a Export Format (EXP_Format) from a Window
  *	
  *  @author Victor Perez www.e-evolution.com
  *  @version $Id: ExportFormatGenerator.java,v 1.0 

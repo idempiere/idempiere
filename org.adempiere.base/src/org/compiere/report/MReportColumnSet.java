@@ -26,9 +26,8 @@ import org.compiere.model.X_PA_ReportColumnSet;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
- *  Report Column Set Model
+ *  Financial Report Column Set Model
  *
  *  @author Jorg Janke
  *  @version $Id: MReportColumnSet.java,v 1.3 2006/08/03 22:16:52 jjanke Exp $
@@ -36,16 +35,16 @@ import org.compiere.util.Util;
 public class MReportColumnSet extends X_PA_ReportColumnSet
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3496781398287709753L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_ReportColumnSet_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_ReportColumnSet_UU  UUID key
+     * @param trxName Transaction
+     */
     public MReportColumnSet(Properties ctx, String PA_ReportColumnSet_UU, String trxName) {
         super(ctx, PA_ReportColumnSet_UU, trxName);
 		if (!Util.isEmpty(PA_ReportColumnSet_UU))
@@ -65,6 +64,11 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 			loadColumns();
 	}	//	MReportColumnSet
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReportColumnSet (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
@@ -74,7 +78,7 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 	private MReportColumn[]	m_columns = null;
 
 	/**
-	 *	Load contained columns
+	 *	Load contained columns (MReportColumn)
 	 */
 	private void loadColumns()
 	{
@@ -128,12 +132,11 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 			System.out.println("- " + m_columns[i].toString());
 	}	//	list
 
-	/*************************************************************************/
-
 	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MReportColumnSet[")

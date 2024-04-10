@@ -38,6 +38,9 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 
+/**
+ * Support class for read only replica DB
+ */
 public class DBReadReplica {
 
 	private static String m_user = null;
@@ -236,6 +239,10 @@ public class DBReadReplica {
 
 	}
 
+	/**
+	 * Get read only connection from replica DB
+	 * @return connection
+	 */
 	public static Connection getConnectionRO() {
 		String replicaURLsConfig = MSysConfig.getValue(MSysConfig.DB_READ_REPLICA_URLS); // list of JDBC URLs separated by |
 		if (Util.isEmpty(replicaURLsConfig, true))

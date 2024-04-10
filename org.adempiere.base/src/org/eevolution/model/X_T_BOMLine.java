@@ -33,7 +33,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240116;
 
     /** Standard Constructor */
     public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName)
@@ -532,7 +532,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param QtyBOM Indicate the Quantity  use in this BOM
+		@param QtyBOM Indicate the Quantity use in this BOM
 	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
@@ -540,7 +540,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	}
 
 	/** Get Quantity.
-		@return Indicate the Quantity  use in this BOM
+		@return Indicate the Quantity use in this BOM
 	  */
 	public BigDecimal getQtyBOM()
 	{

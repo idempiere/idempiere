@@ -16,14 +16,13 @@ package org.compiere.model;
 import java.util.EventListener;
 
 /**
- * 
+ * Listener interface for {@link ServerStateChangeEvent}
  * @author Low Heng Sin
- *
  */
 public interface ServerStateChangeListener extends EventListener {
 
 	/**
-	 * 
+	 * Server state change event 
 	 * @param event
 	 */
 	public void stateChange(ServerStateChangeEvent event);

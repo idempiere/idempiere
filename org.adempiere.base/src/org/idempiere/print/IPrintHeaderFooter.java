@@ -32,7 +32,7 @@ import org.compiere.print.layout.HeaderFooter;
  */
 public interface IPrintHeaderFooter {
 	/***
-	 * 
+	 * Create report header and footer
 	 * @param m_format
 	 * @param m_headerFooter
 	 * @param m_header
@@ -42,13 +42,13 @@ public interface IPrintHeaderFooter {
 	public void createHeaderFooter(MPrintFormat m_format, HeaderFooter m_headerFooter, Rectangle m_header, Rectangle m_footer, MQuery m_query);
 	
 	/**
-	 * 
+	 * Get header height
 	 * @return header height
 	 */
 	public int getHeaderHeight();
 	
 	/**
-	 * 
+	 * Get footer height
 	 * @return footer height
 	 */
 	public int getFooterHeight();

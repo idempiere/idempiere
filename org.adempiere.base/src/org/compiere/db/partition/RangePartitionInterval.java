@@ -37,6 +37,9 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+/**
+ * Range interval for a partition column
+ */
 public class RangePartitionInterval {
 	private String columnName;
 	private String name;

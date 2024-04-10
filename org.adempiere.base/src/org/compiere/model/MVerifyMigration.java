@@ -37,16 +37,16 @@ import org.compiere.util.DB;
  */
 public class MVerifyMigration extends X_AD_VerifyMigration {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3950930035070040881L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_VerifyMigration_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_VerifyMigration_UU  UUID key
+     * @param trxName Transaction
+     */
     public MVerifyMigration(Properties ctx, String AD_VerifyMigration_UU, String trxName) {
         super(ctx, AD_VerifyMigration_UU, trxName);
     }
@@ -109,7 +109,7 @@ public class MVerifyMigration extends X_AD_VerifyMigration {
 	 * @param columnId
 	 * @param recordId
 	 * @param trxName
-	 * @return
+	 * @return true if mark as ignore
 	 */
 	public static boolean isIgnored(int changelogId, int tableId, int columnId, int recordId, String trxName) {
 		StringBuilder whereClause = new StringBuilder("IsIgnore='Y' AND IsActive='Y'");

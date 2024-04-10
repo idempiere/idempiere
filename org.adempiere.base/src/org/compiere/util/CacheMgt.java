@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +37,7 @@ import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 /**
- *  Adempiere Cache Management
+ *  iDempiere global Cache Manager
  *
  *  @author Jorg Janke
  *  @version $Id: CacheMgt.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
@@ -43,7 +45,7 @@ import org.idempiere.distributed.IClusterService;
 public class CacheMgt
 {
 	/**
-	 * 	Get Cache Management
+	 * 	Get global Cache Manager
 	 * 	@return Cache Manager
 	 */
 	public static synchronized CacheMgt get()
@@ -96,11 +98,15 @@ public class CacheMgt
 		} catch (Throwable t) {}
 	}
 	
-	/**************************************************************************
-	 * 	Create Cache Instance
+	/** List of tables that have been temporary suspended for cache reset operations, usually for batch update/insert/delete */
+	private final static Set<String> suspendedResetCacheTables = ConcurrentHashMap.newKeySet();
+	
+	/**
+	 * 	Register new CCache Instance.<br/>
+	 *  This is use by {@link CCache} and developer usually shouldn't call this directly.
 	 *	@param instance Cache
 	 *  @param distributed
-	 *	@return true if added
+	 *	@return map for CCache
 	 */
 	public synchronized <K,V>Map<K, V> register (CCache<K, V> instance, boolean distributed)
 	{
@@ -133,7 +139,11 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(instance.getMaxSize()));
+			int maxSize = instance.getMaxSize();
+			if (maxSize > 0)
+				map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(maxSize));
+			else
+				map = new ConcurrentHashMap<K, V>();				
 		}		
 		return map;
 	}	//	register
@@ -162,7 +172,7 @@ public class CacheMgt
 	}	//	unregister
 
 	/**
-	 * do a cluster wide cache reset 
+	 * Do a cluster wide cache reset 
 	 * @return number of deleted cache entries
 	 */
 	private int  clusterReset() {
@@ -170,7 +180,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset for tableName with recordId key
+	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName
 	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id   
@@ -210,7 +220,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset for tableName with recordId key
+	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName
 	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id   
@@ -229,7 +239,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset 
+	 * Do a cluster wide cache reset 
 	 * @return number of deleted cache entries
 	 */
 	public int reset() 
@@ -238,7 +248,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * 	do a cluster wide cache reset for tableName
+	 * 	Do a cluster wide cache reset for tableName
 	 * 	@param tableName table name
 	 * 	@return number of deleted cache entries
 	 */
@@ -248,7 +258,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * do a cluster wide cache reset for tableName with recordId key
+	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName
 	 * @param Record_ID record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id
@@ -256,10 +266,13 @@ public class CacheMgt
 	 */
 	public int reset (String tableName, int Record_ID)
 	{
+		if (suspendedResetCacheTables.contains(tableName))
+			return 0;
+		
 		return clusterReset(tableName, Record_ID);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Reset local Cache
 	 * 	@return number of deleted cache entries
 	 */
@@ -282,6 +295,7 @@ public class CacheMgt
 	}
 
 	/**
+	 * Get cache instances
 	 * @return cache instances
 	 */
 	public synchronized CacheInterface[] getInstancesAsArray() {
@@ -306,16 +320,14 @@ public class CacheMgt
 		CacheInterface[] instances = getInstancesAsArray();
 		for (CacheInterface stored : instances)
 		{
-			if (stored != null && stored instanceof CCache)
+			if (stored != null && stored instanceof CCache && stored.size() > 0)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
-				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
+				if (cc.getTableName() != null && cc.getTableName().equalsIgnoreCase(tableName))
 				{
-					{
-						if (log.isLoggable(Level.FINE)) log.fine("(all) - " + stored);
-						total += stored.reset(Record_ID);
-						counter++;
-					}
+					if (log.isLoggable(Level.FINE)) log.fine("(all) - " + stored);
+					total += stored.reset(Record_ID);
+					counter++;
 				}
 			}
 		}
@@ -334,7 +346,7 @@ public class CacheMgt
 	}
 	
 	/**
-	 * 	Reset local Cache
+	 * 	New record notification for local cache instances
 	 * 	@param tableName table name
 	 * 	@param Record_ID record if applicable or 0 for all
 	 */
@@ -352,19 +364,17 @@ public class CacheMgt
 			if (stored != null && stored instanceof CCache)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
-				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
+				if (cc.getTableName() != null && cc.getTableName().equalsIgnoreCase(tableName))
 				{
-					{
-						stored.newRecord(Record_ID);
-					}
+					stored.newRecord(Record_ID);
 				}
 			}
 		}		
 	}
 	
 	/**
-	 * 	Total Cached Elements
-	 *	@return count
+	 * 	Get Total Cached Elements
+	 *	@return total cache element count
 	 */
 	public int getElementCount()
 	{		
@@ -389,6 +399,7 @@ public class CacheMgt
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("CacheMgt[");
@@ -413,13 +424,21 @@ public class CacheMgt
 		return sb.toString ();
 	}	//	toString	
 
+	/**
+	 * New record notification
+	 * @param tableName
+	 * @param recordId
+	 */
 	public void newRecord(String tableName, int recordId) {
+		if (suspendedResetCacheTables.contains(tableName))
+			return;
+		
 		clusterNewRecord(tableName, recordId);
 	}
 	
 	/**
-	 * 
-	 * @return cache infos
+	 * Get info for cache instances
+	 * @return info for cache instances
 	 */
 	public List<CacheInfo> getCacheInfos() {
 		List<CacheInfo> infos = new ArrayList<>();
@@ -432,6 +451,11 @@ public class CacheMgt
 		return infos;
 	}
 	
+	/**
+	 * Map with max size
+	 * @param <K>
+	 * @param <V>
+	 */
 	private static class MaxSizeHashMap<K, V> extends LinkedHashMap<K, V> {
 	    /**
 		 * generated serial id
@@ -449,11 +473,17 @@ public class CacheMgt
 	    }
 	}
 	
+	/**
+	 * Start cache monitor for expire cache entries
+	 */
 	private static synchronized void startCacheMonitor()
 	{
 		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
 	}
 
+	/**
+	 * Cache monitor for expire cache entries
+	 */
 	private static class CacheMonitor implements Runnable
 	{
 
@@ -481,7 +511,7 @@ public class CacheMgt
 	}
 
 	/**
-	 * Is there a cache for this table name?
+	 * Is there a cache instance for this table name?
 	 * @param tableName
 	 * @return boolean
 	 */
@@ -489,4 +519,20 @@ public class CacheMgt
 		return m_tableNames.contains(tableName);
 	}
 
+	/**
+	 * Suspend cache reset operations for tableName (usually to improve performance for batch operations).<br/>
+	 * Caller must call {@link #resumeTableCacheReset(String)} later to clear the suspend cache reset flag.
+	 * @param tableName
+	 */
+	public void suspendTableCacheReset(String tableName) {
+		suspendedResetCacheTables.add(tableName);
+	}
+	
+	/**
+	 * Clear suspend cache reset flag for tableName
+	 * @param tableName
+	 */
+	public void resumeTableCacheReset(String tableName) {
+		suspendedResetCacheTables.remove(tableName);
+	}
 }	//	CCache

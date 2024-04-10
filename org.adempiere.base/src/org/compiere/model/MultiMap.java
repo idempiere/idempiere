@@ -39,7 +39,7 @@ import org.compiere.util.CLogger;
 public final class MultiMap<K,V> implements Map<K,V>, Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -947723044316916542L;
 
@@ -65,9 +65,10 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	private ArrayList<V>	m_values = null;
 
 	/**
-	 *  Return number of elements
+	 *  Get number of elements
 	 *  @return size
 	 */
+	@Override
 	public int size()
 	{
 		return m_keys.size();
@@ -77,6 +78,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 *  Is Empty
 	 *  @return true if empty
 	 */
+	@Override
 	public boolean isEmpty()
 	{
 		return (m_keys.size() == 0);
@@ -84,9 +86,10 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 
 	/**
 	 *  Contains Key
-	 *	@param key test key 
+	 *	@param key key value 
 	 *	@return true if key exist
 	 */
+	@Override
 	public boolean containsKey(Object key)
 	{
 		return m_keys.contains(key);
@@ -94,27 +97,29 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 
 	/**
 	 *  Contains Value
-	 *	@param value test value
+	 *	@param value element value
 	 *	@return true if value exists 
 	 */
+	@Override
 	public boolean containsValue(Object value)
 	{
 		return m_values.contains(value);
 	}   //  containsKey
 
 	/**
-	 *  Return ArrayList of Values of Key
+	 *  Get ArrayList of Values of Key
 	 *	@param key key 
 	 *	@return value
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public V get(Object key)
 	{
 		return (V)getValues(key);
 	}   //  get
 
 	/**
-	 *  Return ArrayList of Values of Key
+	 *  Get ArrayList of Values of Key
 	 *	@param key key 
 	 *	@return array list of values
 	 */
@@ -136,7 +141,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	}   //  getValues
 
 	/**
-	 *  Return ArrayList of Keys with Value
+	 *  Get ArrayList of Keys with Value
 	 *	@param value value 
 	 *	@return array list of keys 
 	 */
@@ -159,10 +164,11 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 
 	/**
 	 *  Put Key and Value
-	 * @param key 
-	 * @param value 
+	 *  @param key 
+	 *  @param value 
 	 *  @return always null
 	 */
+	@Override
 	public V put (K key, V value)
 	{
 		m_keys.add(key);
@@ -175,6 +181,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 *	@param key key
 	 * 	@return removed value 
 	 */
+	@Override
 	public V remove (Object key)
 	{
 		throw new java.lang.UnsupportedOperationException("Method remove() not implemented.");
@@ -184,6 +191,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 *  Put all
 	 * @param t 
 	 */
+	@Override
 	public void putAll(Map<? extends K,? extends V> t)
 	{
 		throw new java.lang.UnsupportedOperationException("Method putAll() not implemented.");
@@ -192,6 +200,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	/**
 	 *  Clear content
 	 */
+	@Override
 	public void clear()
 	{
 		m_keys.clear();
@@ -202,6 +211,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 *  Return HashSet of Keys
 	 *	@return key set 
 	 */
+	@Override
 	public Set<K> keySet()
 	{
 		HashSet<K> keys = new HashSet<K>(m_keys);
@@ -212,6 +222,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 *  Return Collection of values
 	 *	@return values 
 	 */
+	@Override
 	public Collection<V> values()
 	{
 		return m_values;
@@ -221,6 +232,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 * 	Get entry set - not implemented
 	 *	@return entry set 
 	 */
+	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		throw new java.lang.UnsupportedOperationException("Method entrySet() not implemented.");
@@ -231,21 +243,24 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 * 	@param o test object 
 	 *	@return true if equal 
 	 */
+	@Override
 	public boolean equals(Object o)
 	{
 		throw new java.lang.UnsupportedOperationException("Method equals() not implemented.");
 	}
 	
+	@Override
 	public int hashCode()
 	{
 	  assert false : "hashCode not designed";
 	  return 42; // any arbitrary constant will do
 	}
 
-	/**************************************************************************
+	/**
 	 *  Returns class name and number of entries
 	 *  @return info
 	 */
+	@Override
 	public String toString()
 	{
 		return "MultiMap #" + m_keys.size();

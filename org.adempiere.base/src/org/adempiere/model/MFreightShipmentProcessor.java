@@ -47,8 +47,14 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+/**
+ * Shipment processor implementation using configuration from {@link MFreight} 
+ */
 public class MFreightShipmentProcessor implements IShipmentProcessor {
 
+	/**
+	 * Get shipping rate from {@link MFreight}
+	 */
 	@Override
 	public boolean rateInquiry(Properties ctx, MShippingTransaction st, boolean isPriviledgedRate, String trxName) {
 

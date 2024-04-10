@@ -40,11 +40,11 @@ import org.compiere.util.Evaluator;
  * @version $Id$
  */
 public class InfoColumnVO implements Serializable, Cloneable {
-
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 7401407425423442841L;
+	private static final long serialVersionUID = 304775780197602066L;
+
 	/** Properties */
 	private Properties ctx;
 	
@@ -118,6 +118,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	
 	private String ValidationCode;
 	
+	private String EntityType;
+
 	private MInfoColumn infoColumn;
 
 	/**
@@ -162,6 +164,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		isAutocomplete = infoColumn.isAutocomplete();
 		SeqNo = infoColumn.getSeqNo();
 		AD_Val_Rule_ID = infoColumn.getAD_Val_Rule_ID();
+		EntityType = infoColumn.getEntityType();
 		if (infoColumn.getAD_Val_Rule_ID() > 0)
 			ValidationCode  = MValRule.get(ctx, infoColumn.getAD_Val_Rule_ID()).getCode();
 		// Range is supported only for Date and Numeric Reference Types + operator "=" must be selected
@@ -187,6 +190,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		userDef = MUserDefInfoColumn.get(vo.ctx,vo.AD_InfoColumn_ID, vo.AD_InfoWindow_ID);
 		if (userDef != null)
 		{
+			vo.EntityType = vo.EntityType + "**U**";
 			if (userDef.getName() != null)
 				vo.Name = userDef.getName();
 			if (userDef.get_Translation("Name") != null)
@@ -532,6 +536,15 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		return SeqNo;
 	}
 	
+
+	public String getEntityType() {
+		return EntityType;
+	}
+	
+	public void setEntityType(String entityType) {
+		EntityType = entityType;
+	}
+
 	/**
 	 * @return true if this is a range type column
 	 */

@@ -41,7 +41,7 @@ import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 
 /**
- *	String Form Print ELement.
+ *	String Print ELement.<br/>
  *  The input can be multiple lines. The first tab is expanded.
  *
  * 	@author 	Jorg Janke
@@ -50,13 +50,13 @@ import org.compiere.util.Util;
 public class StringElement extends PrintElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 239112399504036626L;
 
 	/**
-	 *	Standard Field Constructor.
-	 *  Created in LayoutEngine
+	 *	Standard Field Constructor.<br/>
+	 *  Created in LayoutEngine.
 	 *  @param inText text
 	 *  @param font font
 	 *  @param paint paint
@@ -120,8 +120,8 @@ public class StringElement extends PrintElement
 	}	//	StringElement
 
 	/**
-	 *	Field Constructor.
-	 *  Created in LayoutEngine
+	 *	Field Constructor.<br/>
+	 *  Created in LayoutEngine.
 	 *  @param content text or boolean
 	 *  @param font font
 	 *  @param paint paint
@@ -184,12 +184,11 @@ public class StringElement extends PrintElement
 		}
 	}	//	StringElement
 
-
-	/**	Actual Elements	- Viewer		*/
+	/**	Attributed String	- Viewer		*/
 	private AttributedString[]	m_string_view = null;
-	/** Actual Elements - Printer		*/
+	/** Attributed String - Printer		*/
 	private AttributedString[]	m_string_paper = null;
-	/**	To be translated String			*/
+	/**	Before translated String			*/
 	private String				m_originalString = null;
 	/** Font used						*/
 	private Font				m_font = null;
@@ -219,7 +218,7 @@ public class StringElement extends PrintElement
 	}	//	getOrig
 
 	/**
-	 * 	Translate Context if required
+	 * 	Translate Content if required.<br/>
 	 *  If content is translated, the element needs to stay in the bounds
 	 *  of the originally calculated size and need to align the field.
 	 * 	@param ctx context
@@ -245,10 +244,9 @@ public class StringElement extends PrintElement
 		m_string_view = m_string_paper;
 	}	//	translate
 
-
-	/**************************************************************************
-	 * 	Layout and Calculate Size.
-	 * 	Set p_width and p_height
+	/**
+	 * 	Layout and Calculate Size.<br/>
+	 * 	Set p_width and p_height.
 	 * 	@return Size
 	 */
 	protected boolean calculateSize()
@@ -317,13 +315,11 @@ public class StringElement extends PrintElement
 					continue;
 
 				LineBreakMeasurer measurer = new LineBreakMeasurer(iter, frc);
-			//	System.out.println("StringLength=" + m_originalString.length() + " MaxWidth=" + p_maxWidth + " MaxHeight=" + p_maxHeight);
 				while (measurer.getPosition() < iter.getEndIndex())
 				{
 					//	no need to expand tab space for limited space
 					layout = measurer.nextLayout(p_maxWidth);
 					float lineHeight = layout.getAscent() + layout.getDescent() + layout.getLeading();
-				//	System.out.println("  LineWidth=" + layout.getAdvance() + "  LineHeight=" + lineHeight);
 					if (p_maxHeight == -1f && i == 0)		//	one line only
 						p_maxHeight = lineHeight;
 					if (p_maxHeight == 0f || (p_height + lineHeight) <= p_maxHeight)
@@ -338,10 +334,7 @@ public class StringElement extends PrintElement
 				if (p_height < LayoutEngine.IMAGE_SIZE.height)
 					p_height = LayoutEngine.IMAGE_SIZE.height;
 			}
-		//	System.out.println("  Width=" + p_width + "  Height=" + p_height);
 		}
-	//	System.out.println("StringElement.calculate size - Width="
-	//		+ p_width + "(" + p_maxWidth + ") - Height=" + p_height + "(" + p_maxHeight + ")");
 
 		//	Enlarge Size when aligned and max size is given
 		if (p_FieldAlignmentType != null)
@@ -357,19 +350,15 @@ public class StringElement extends PrintElement
 				p_width = p_maxWidth;
 				//changed = true;
 			}
-		//	if (changed)
-		//		System.out.println("StringElement.calculate size - Width="
-		//			+ p_width + "(" + p_maxWidth + ") - Height=" + p_height + "(" + p_maxHeight + ")");
 		}
 		return true;
 	}	//	calculateSize
 
-
-	/**************************************************************************
-	 * 	Get Drill Down value
-	 * 	@param relativePoint relative Point
+	/**
+	 * 	Get Drill Down Query
+	 * 	@param relativePoint point to find print element
 	 *  @param pageNo page number (ignored)
-	 * 	@return if found query or null
+	 * 	@return drill down query or null
 	 */
 	public MQuery getDrillDown (Point relativePoint, int pageNo)
 	{
@@ -390,23 +379,20 @@ public class StringElement extends PrintElement
 	}	//	getDrillDown
 
 	/**
-	 * 	Get Drill Across value
+	 * 	Get Drill Across Query
 	 * 	@param relativePoint relative Point
 	 *  @param pageNo page number (ignored)
 	 * 	@return null - not implemented
 	 */
 	public MQuery getDrillAcross (Point relativePoint, int pageNo)
 	{
-	//	log.fine( "StringElement.getDrillAcross");
-	//	if (getBounds().contains(relativePoint));
 		return null;
 	}	//	getDrillAcross
 
-
-	/**************************************************************************
-	 * 	Paint/Print.
-	 *  Calculate actual Size.
-	 *  The text is printed in the topmost left position - i.e. the leading is below the line
+	/**
+	 * 	Paint/Print.<br/>
+	 *  Calculate actual Size.<br/>
+	 *  The text is printed in the topmost left position - i.e. the leading is below the line.
 	 * 	@param g2D Graphics
 	 *  @param pageStart top left Location of page
 	 *  @param pageNo page number for multi page support (0 = header/footer) - ignored
@@ -415,11 +401,6 @@ public class StringElement extends PrintElement
 	 */
 	public void paint (Graphics2D g2D, int pageNo, Point2D pageStart, Properties ctx, boolean isView)
 	{
-	//	log.finest( "StringElement.paint", "<" + m_originalString + "> " + p_pageLocation.x + "/" + p_pageLocation.y
-	//		+ ", Clip=" + g2D.getClip()
-	//		+ ", Translate=" + g2D.getTransform().getTranslateX() + "/" + g2D.getTransform().getTranslateY()
-	//		+ ", Scale=" + g2D.getTransform().getScaleX() + "/" + g2D.getTransform().getScaleY()
-	//		+ ", Shear=" + g2D.getTransform().getShearX() + "/" + g2D.getTransform().getShearY());
 		Point2D.Double location = getAbsoluteLocation(pageStart);
 		//
 		if (m_originalString != null)
@@ -511,8 +492,6 @@ public class StringElement extends PrintElement
 					if (width < lineWidth)
 						width = lineWidth;
 				}
-				//	log.finest( "StringElement.paint - No Limit - " + location.x + "/" + yPos
-				//		+ " w=" + layout.getAdvance() + ",h=" + lineHeight + ", Bounds=" + layout.getBounds());
 			}
 			//	Size Limits
 			else
@@ -538,7 +517,7 @@ public class StringElement extends PrintElement
 					float lineHeight = layout.getAscent() + layout.getDescent() + layout.getLeading();
 					if (p_maxHeight == -1f && i == 0)		//	one line only
 						p_maxHeight = lineHeight;
-					//	If we have hight left over
+					//	If we have height left over
 					if (p_maxHeight == 0f || (height + lineHeight) <= p_maxHeight)
 					{
 						yPen = (float)location.y + height + layout.getAscent();
@@ -573,8 +552,6 @@ public class StringElement extends PrintElement
 							layout.draw(g2D, xPen, yPen);
 						}
 						height += lineHeight;
-					//	log.finest( "StringElement.paint - Limit - " + xPen + "/" + yPen
-					//		+ " w=" + layout.getAdvance() + ",h=" + lineHeight + ", Align=" + p_FieldAlignmentType + ", Max w=" + p_maxWidth + ",h=" + p_maxHeight + ", Bounds=" + layout.getBounds());
 					}
 				}
 				width = p_maxWidth;
@@ -589,10 +566,10 @@ public class StringElement extends PrintElement
 	}	//	paint
 
 	/**
-	 * 	Get Tab Position.
+	 * 	Get Tab Position.<br/>
 	 *  The Tab position is relative to the string itself, not the absolute
 	 *  position; i.e. to have the same tab position on a page, strings need
-	 *  to start at the same position.
+	 *  to start at the same position.<br/>
 	 *  The Tab is rounded up to the next 30 dividable position.
 	 * 	@param xPos starting x position
 	 * 	@param length length of segment
@@ -611,6 +588,7 @@ public class StringElement extends PrintElement
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("StringElement[");

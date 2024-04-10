@@ -43,10 +43,12 @@ import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MMessage;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.MProductionLine;
 import org.compiere.model.MTest;
 import org.compiere.model.POInfo;
 import org.compiere.util.DB;
@@ -56,12 +58,16 @@ import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Tests for {@link org.compiere.model.PO} class.
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * @author hengsin
+ * 
+ * Run Isolated because of migration script file management
  */
+@Isolated
 public class POTest extends AbstractTestCase
 {
 	public static class MyTestPO extends MTest
@@ -510,9 +516,6 @@ public class POTest extends AbstractTestCase
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
 		Env.setContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment, "testLogMigrationScript");
 		assertTrue(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script Y/N value for MProduct");
-		String fileName = Convert.getMigrationScriptFileName("testLogMigrationScript");
-		String folderPg = Convert.getMigrationScriptFolder("postgresql");
-		String folderOr = Convert.getMigrationScriptFolder("oracle");
 		
 		MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, null);
 		lotLevel.setName("testLogMigrationScript");
@@ -546,11 +549,41 @@ public class POTest extends AbstractTestCase
 			lotLevel.deleteEx(true);
 		}
 		
+		String fileName = Convert.getGeneratedMigrationScriptFileName();
+		String folderPg = Convert.getMigrationScriptFolder("postgresql");
+		String folderOr = Convert.getMigrationScriptFolder("oracle");
+		Convert.closeLogMigrationScript();
 		File file = new File(folderPg + fileName);
 		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
 		file.delete();
 		file = new File(folderOr + fileName);
 		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
 		file.delete();
+	}
+	
+	@Test
+	public void testIsVirtualColumnMethods() {
+		//column sql with no prefix
+		MColumn column = MColumn.get(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_TestVirtualQty);
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+
+		//column sql with @SQLFIND= prefix
+		column = MColumn.get(Env.getCtx(), MProductionLine.Table_Name, "ProductType");
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		
+		//column sql with @SQL= prefix
+		column = MColumn.get(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_TestVirtualQty);
+		column = new MColumn(column);
+		column.setColumnSQL(MColumn.VIRTUAL_UI_COLUMN_PREFIX+column.getColumnSQL());
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
 	}
 }

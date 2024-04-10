@@ -21,7 +21,7 @@ import org.passay.PasswordData.HistoricalReference;
 import org.passay.PasswordData.Reference;
 
 /**
- * implement history password rule support hash password
+ * Implement history password rule support for hash password
  * @author hieplq
  *
  */

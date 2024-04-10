@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 /**
- *  Trace Information
+ *  Stack Trace utility methods
  *
  *  @author     Jorg Janke
  *  @version    $Id: Trace.java,v 1.2 2006/07/30 00:52:23 jjanke Exp $
@@ -102,7 +102,6 @@ public class Trace
 	public static void printStack (boolean adempiereOnly, boolean first9only)
 	{
 		Throwable t = new Throwable();
-	//	t.printStackTrace();
 		int counter = 0;
 		StackTraceElement[] elements = t.getStackTrace();
 		for (int i = 1; i < elements.length; i++)

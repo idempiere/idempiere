@@ -23,9 +23,8 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 
 /**
- * 
+ * Swap file for report data matrix
  * @author hengsin
- *
  */
 public class SwapFile
 {
@@ -36,11 +35,10 @@ public class SwapFile
 	private final int blockSize;
 	private final int minBlockToGrow;
 	private final LinkedList<Long> freeBlocks;
-	
-	
+		
 	/**
 	 * Creates a swap file.
-	 * 
+	 * <p>
 	 * The file name is generated automatically.
 	 * 
 	 * @param prefix the swap file prefix
@@ -121,6 +119,14 @@ public class SwapFile
 	}
 
 
+	/**
+	 * Write data to swap file
+	 * @param data
+	 * @param dataSize number of bytes to write
+	 * @param dataOffset offset of data to write
+	 * @param fileOffset file offset to start writing 
+	 * @throws IOException
+	 */
 	private synchronized void write(byte[] data, int dataSize, int dataOffset, long fileOffset) throws IOException
 	{
 		randomAccessFile.seek(fileOffset);
@@ -152,14 +158,20 @@ public class SwapFile
 		return data;
 	}
 
-
+	/**
+	 * Read data from swap file
+	 * @param data
+	 * @param dataOffset offset of data to read into
+	 * @param dataLength number of bytes to read
+	 * @param fileOffset file offset to start reading
+	 * @throws IOException
+	 */
 	private synchronized void read(byte[] data, int dataOffset, int dataLength, long fileOffset) throws IOException
 	{		
 		randomAccessFile.seek(fileOffset);
 		randomAccessFile.readFully(data, dataOffset, dataLength);
 	}
-	
-	
+		
 	/**
 	 * Frees an allocated area.
 	 * 
@@ -171,13 +183,16 @@ public class SwapFile
 		freeBlocks(segment.getOffsets());
 	}
 
+	/**
+	 * Verify swap file is open for read write access.
+	 * @throws RuntimeException if swap not open or not available
+	 */
 	private synchronized void verifyOpen() {
 		if (randomAccessFile == null) {
 			throw new RuntimeException("Swap file not open for read write access");
 		}
 	}
-	
-	
+		
 	/**
 	 * Closes and deletes the swap file.
 	 */
@@ -209,13 +224,18 @@ public class SwapFile
 		}
 	}
 
-
+	@Override
 	protected void finalize() throws Throwable //NOSONAR
 	{
 		dispose();
 	}
 
-
+	/**
+	 * Allocate free blocks
+	 * @param blockCount
+	 * @return List of free block pointer
+	 * @throws IOException
+	 */
 	private synchronized long[] allocateFreeBlocks(int blockCount) throws IOException
 	{
 		int growCount = blockCount - freeBlocks.size();
@@ -248,7 +268,10 @@ public class SwapFile
 		return offsets;
 	}
 
-
+	/**
+	 * Add list of file position pointer to the front of free block list
+	 * @param offsets
+	 */
 	private synchronized void freeBlocks(long []offsets)
 	{
 		for (int i = offsets.length - 1; i >= 0; --i)

@@ -33,9 +33,8 @@ import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- * Generate PDF document using iText (openpdf)
+ * Create PDF document from {@link Pageable} using iText (openpdf)
  * @author Low Heng Sin
- *
  */
 public class Document {
 
@@ -48,7 +47,7 @@ public class Document {
 	 * @param pageable
 	 * @param output
 	 */
-	private static void writePDF(Pageable pageable, OutputStream output)
+	public static void writePDF(Pageable pageable, OutputStream output)
 	{
 		try {
             final PageFormat pf = pageable.getPageFormat(0);

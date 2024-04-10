@@ -28,9 +28,12 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.adempiere.apps.graph.ChartBuilder;
 import org.compiere.model.MAccount;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MChart;
 import org.compiere.model.MColumn;
@@ -51,7 +54,6 @@ import org.jfree.chart.JFreeChart;
 
 /**
  * @author hengsin
- *
  */
 public class ColumnLookup implements BiFunction<String, Object, Object> {
 
@@ -67,8 +69,10 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 	@Override
 	public Object apply(String t, Object key) {
 		if (!Util.isEmpty(t, true) && key != null) {
+			//first, check whether it is tableName.columnName
 			String[] parts = t.split("[.]");
 			if (parts.length == 2) {
+				//expression syntax - tableName.columnName
 				String tableName = parts[0];
 				String columnName = parts[1];
 				MTable table = MTable.get(Env.getCtx(), tableName);
@@ -103,9 +107,14 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 						} else if (DisplayType.isDate(column.getAD_Reference_ID())) {
 							return DisplayType.getDateFormat(column.getAD_Reference_ID(), language).format((Date) key);
 						}
+					} else {
+						return "";
 					}
 				}
-			} else if (t.equalsIgnoreCase("location") && (key instanceof Number)) {
+			} 
+			
+			//check predefine prefix
+			if (t.equalsIgnoreCase("location") && (key instanceof Number)) {
 				return getLocation((Number) key);
 			} else if (t.equalsIgnoreCase("account") && (key instanceof Number)) {
 				return getAccountCombination((Number) key);
@@ -125,24 +134,91 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 			} else if (t.equalsIgnoreCase("YesNo") && (key instanceof String)) {
 				return getYesNoText((String) key);
 			} else if (t.toLowerCase().startsWith("chart/") && (key instanceof Number)) {
+				//expression syntax - chart/width/height
 				parts = t.split("[/]");
 				if (parts.length == 3) {
 					int width = 0;
 					int height = 0;
 					try {
 						width = Integer.parseInt(parts[1]);
-						height = Integer.parseInt(parts[1]);
+						height = Integer.parseInt(parts[2]);
 					} catch (Exception e) {}
 					if (width > 0 && height > 0) {
 						return getChartImage(((Number)key).intValue(), width, height);
 					}
 				}
 				return null;
+			} else if (t.toLowerCase().startsWith("attachment/")) {
+				return getAttachmentData(t, key);
 			}
 		}
 		return "";
 	}
 
+	/**
+	 * Get data of an attachment item
+	 * @param expression attachment/tableName/index or filename
+	 * @param key record id or record uuid
+	 * @return data of attachment item
+	 */
+	private Object getAttachmentData(String expression, Object key) {
+		String[] parts;
+		//record_id or record_uu
+		if ((key instanceof Number) || (key instanceof String)) {
+			parts = expression.split("[/]");
+			//expression syntax - attachment/table name/index or name
+			if (parts.length == 3) {
+				String tableName = parts[1];
+				MTable table = MTable.get(Env.getCtx(), tableName);
+				if (table != null) {
+					int recordId = (key instanceof Number) ? ((Number)key).intValue() : -1;
+					String recordUU = (key instanceof String) ? (String)key : null;
+					MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);
+					if (attachment != null && attachment.get_ID() > 0) {
+						//first, check whether is via index
+						int index = -1;
+						if (parts[2].trim().matches("[0-9]+")) {
+							try {
+								index = Integer.parseInt(parts[2]);
+							} catch (Exception e) {
+							}
+						}
+						if (index >= 0 && index < attachment.getEntryCount()) {
+							return attachment.getEntryData(index);
+						}
+						//try name
+						String toMatch = null;
+						if (parts[2].contains("*")) {
+							//wildcard match, for e.g a*.png
+							Pattern regex = Pattern.compile("[^*]+|(\\*)");
+							Matcher m = regex.matcher(parts[2]);
+							StringBuffer b= new StringBuffer();
+							while (m.find()) {
+							    if(m.group(1) != null) m.appendReplacement(b, ".*");
+							    else m.appendReplacement(b, "\\\\Q" + m.group(0) + "\\\\E");
+							}
+							m.appendTail(b);
+							toMatch = b.toString();
+						}
+						for(int i = 0; i < attachment.getEntryCount(); i++) {
+							if (toMatch != null && attachment.getEntryName(i) != null && attachment.getEntryName(i).matches(toMatch)) {
+								return attachment.getEntryData(i);
+							} else if (parts[2].equals(attachment.getEntryName(i))) {
+								return attachment.getEntryData(i);
+							}
+						}								
+					}							
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get description of MAttributeSetInstance
+	 * @param key
+	 * @return description of MAttributeSetInstance
+	 */
 	private Object getAttributeSetInstance(Number key) {
 		MAttributeSetInstance asi = new MAttributeSetInstance (Env.getCtx(), key.intValue(), null);
 		if (asi.getM_AttributeSetInstance_ID() > 0)
@@ -151,21 +227,43 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 			return "";
 	}
 
+	/**
+	 * Get locator Value
+	 * @param key
+	 * @return locator Value
+	 */
 	private Object getLocator(Number key) {
 		MLocator locator = MLocator.get(key.intValue());
 		return locator != null ? locator.toString() : "";
 	}
 
+	/**
+	 * Get account combination
+	 * @param key
+	 * @return account combination
+	 */
 	private Object getAccountCombination(Number key) {
 		MAccount account = MAccount.get(key.intValue());
 		return account != null ? account.getCombination() : "";
 	}
 
+	/**
+	 * Get location address
+	 * @param key
+	 * @return location address
+	 */
 	private Object getLocation(Number key) {
 		MLocation loc = MLocation.get(key.intValue());
 		return loc.toStringCR();
 	}
 
+	/**
+	 * Get chart image
+	 * @param id
+	 * @param width
+	 * @param height
+	 * @return chart image
+	 */
 	private Object getChartImage(int id, int width, int height) {
 		MChart mc = new MChart(Env.getCtx(), id, null);
 		if (mc.get_ID() == id) {
@@ -180,6 +278,11 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 		return null;
 	}
 
+	/**
+	 * Get yes no text
+	 * @param value
+	 * @return translated yes/no text
+	 */
 	private Object getYesNoText(String value) {
 		if (value.equals("Y")) {
 			return Msg.getMsg(language, "Yes");
@@ -190,11 +293,22 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 		}
 	}
 
+	/**
+	 * Get image from AD_Image
+	 * @param key
+	 * @return image from AD_Image
+	 */
 	private Object getImage(int key) {
 		MImage image = MImage.get(key);
 		return image != null ? image.getImage() : null;
 	}
 
+	/**
+	 * Get display text of multiple choice lookup column
+	 * @param column
+	 * @param key
+	 * @return display text of multiple choice lookup column
+	 */
 	private Object getMultiLookupDisplay(MColumn column, String key) {
 		MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), -1, column.getAD_Column_ID(), column.getAD_Reference_ID(), language, column.getColumnName(), 
 				column.getAD_Reference_Value_ID(), false, "");
@@ -203,6 +317,12 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 		return lookup.getDisplay(key);
 	}
 
+	/**
+	 * Get display text of lookup column
+	 * @param column
+	 * @param key
+	 * @return display text of lookup column
+	 */
 	private String getLookupDisplay(MColumn column, Number key) {
 		MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), -1, column.getAD_Column_ID(), column.getAD_Reference_ID(), language, column.getColumnName(), 
 				column.getAD_Reference_Value_ID(), false, "");

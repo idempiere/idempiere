@@ -38,7 +38,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- *	IDEMPIERE-4782
+ *	IDEMPIERE-4782 Multi-factor authentication
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
 @org.adempiere.base.annotation.Process

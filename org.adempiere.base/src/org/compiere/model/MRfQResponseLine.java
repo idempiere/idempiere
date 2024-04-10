@@ -180,11 +180,6 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 		return sb.toString ();
 	}	//	toString
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -203,12 +198,6 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 		return true;
 	}	//	beforeSave	
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{	
@@ -216,7 +205,9 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 			return success;
 		if (!isActive())
 		{
+			// Load m_qtys (if not loaded yet)
 			getQtys (false);
+			// Inactive C_RfQResponseLineQty records
 			for (int i = 0; i < m_qtys.length; i++)
 			{
 				MRfQResponseLineQty qty = m_qtys[i];

@@ -26,19 +26,21 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
+/**
+ * Extended model class for AD_ViewComponent
+ */
 public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1580063310233871896L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ViewComponent_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ViewComponent_UU  UUID key
+     * @param trxName Transaction
+     */
     public MViewComponent(Properties ctx, String AD_ViewComponent_UU, String trxName) {
         super(ctx, AD_ViewComponent_UU, trxName);
     }
@@ -77,7 +79,7 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MViewComponent(MViewComponent copy) 
@@ -86,7 +88,7 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -96,7 +98,7 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -112,8 +114,8 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 	private MViewColumn[]	m_columns = null;
 	
 	/**
-	 * Get columns
-	 * @param reload reload data
+	 * Get view columns
+	 * @param reload true to reload from DB
 	 * @return array of view column
 	 */
 	public MViewColumn[] getColumns(boolean reload)
@@ -135,9 +137,9 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 	}
 	
 	/**
-	 * Get SQL select
-	 * @param requery requery data
-	 * @param vCols array of view column
+	 * Get SQL select statement for view
+	 * @param requery true to reload from DB
+	 * @param vCols array of view columns
 	 * @return select statement
 	 */
 	public String getSelect(boolean requery, MViewColumn[] vCols)
@@ -151,7 +153,6 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 		
 		StringBuilder sb = new StringBuilder("SELECT ");
 		//
-
 		if (isDistinct())
 			sb.append("DISTINCT ");
 
@@ -209,8 +210,7 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 		
 		return sb.toString();
 	}
-	
-	
+		
 	@Override
 	public MViewComponent markImmutable() {
 		if (is_Immutable())

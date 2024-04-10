@@ -24,6 +24,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MReportView;
@@ -56,8 +59,8 @@ import bsh.EvalError;
 import bsh.Interpreter;
 
 /**
- * Data Engine.
- * Creates SQL and laods data into PrintData (including totals/etc.)
+ * Data Engine.<br/>
+ * Creates SQL and loads data into PrintData (including totals/etc).
  *
  * @author 	Jorg Janke
  * @version 	$Id: DataEngine.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -76,7 +79,7 @@ import bsh.Interpreter;
  * @author Paul Bowden (phib)
  * 				<li> BF 2908435 Virtual columns with lookup reference types can't be printed
  *                   https://sourceforge.net/p/adempiere/bugs/2246/
- *  @contributor  Fernandinho (FAIRE)
+ * @contributor  Fernandinho (FAIRE)
  *  				- http://jira.idempiere.com/browse/IDEMPIERE-153
  */
 public class DataEngine
@@ -139,7 +142,7 @@ public class DataEngine
 
 	private Map<Object, Object> m_summarized = new HashMap<Object, Object>();
 
-	/**************************************************************************
+	/**
 	 * 	Load Data
 	 *
 	 * 	@param format print format
@@ -152,7 +155,7 @@ public class DataEngine
 		return getPrintData(ctx, format, query, false);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Load Data
 	 *
 	 * 	@param format print format
@@ -242,10 +245,9 @@ public class DataEngine
 		loadPrintData(pd, format);
 		return pd;
 	}	//	getPrintData
-
 	
-	/**************************************************************************
-	 * 	Create Load SQL and update PrintData Info
+	/**
+	 * 	Construct Load Data SQL and create new PrintData instance
 	 *
 	 * 	@param ctx context
 	 * 	@param format print format
@@ -340,9 +342,9 @@ public class DataEngine
 				int AD_PrintFormatItem_ID = rs.getInt("AD_PrintFormatItem_ID");
 				String ColumnName = rs.getString(2);
 				String ColumnSQL = rs.getString(24);
-				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith("@SQLFIND="))
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX))
 					ColumnSQL = ColumnSQL.substring(9);
-				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith("@SQL="))
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 					ColumnSQL = "NULL";
 				if (ColumnSQL != null && ColumnSQL.contains("@"))
 					ColumnSQL = Env.parseContext(Env.getCtx(), m_windowNo, ColumnSQL, false, true);
@@ -424,9 +426,9 @@ public class DataEngine
 					//	=> (..) AS AName, Table.ID,
 					if (script != null && !script.isEmpty())
 					{
-						if (script.startsWith("@SQL="))
+						if (script.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 						{
-							script = "(" + script.replace("@SQL=", "").trim() + ")";
+							script = "(" + script.replace(MColumn.VIRTUAL_UI_COLUMN_PREFIX, "").trim() + ")";
 							script = Env.parseContext(Env.getCtx(), m_windowNo, script, false);
 						}
 						else
@@ -442,7 +444,8 @@ public class DataEngine
 					// Warning here: Oracle treats empty strings '' as NULL and the code below checks for wasNull on this column
 					.append("' '").append(" AS \"").append(pfiName).append("\",");
 					//
-					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, -1, pfiName, DisplayType.Text, FieldLength, orderName, isPageBreak);
+					int scriptDisplayType = getDisplayTypeFromPattern(formatPattern);
+					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, -1, pfiName, scriptDisplayType, FieldLength, orderName, isPageBreak);
 					synonymNext();
 				}
 				//	-- Parent, TableDir (and unqualified Search) --
@@ -696,8 +699,8 @@ public class DataEngine
 
 		if (columns.size() == 0)
 		{
-			log.log(Level.SEVERE, "No Colums - Delete Report Format " + reportName + " and start again");
-			if (log.isLoggable(Level.FINEST)) log.finest("No Colums - SQL=" + sql + " - ID=" + format.get_ID());
+			log.log(Level.SEVERE, "No Columns - Delete Report Format " + reportName + " and start again");
+			if (log.isLoggable(Level.FINEST)) log.finest("No Columns - SQL=" + sql + " - ID=" + format.get_ID());
 			return null;
 		}
 
@@ -805,7 +808,32 @@ public class DataEngine
 	}	//	getPrintDataInfo
 
 	/**
-	 *	Next Synonym.
+	 * Try to determine the display type from a pattern
+	 * - try a DecimalFormat if the pattern contains any of the characters # 0
+	 * - try a SimpleDateFormat if the pattern contains any of the characters y M d h H m s S
+	 * - otherwise (or if the format is not valid) return Text
+	 * @param pattern
+	 * @return DateTime for a SimpleDateFormat, Number for a DecimalFormat, otherwise Text
+	 */
+	private int getDisplayTypeFromPattern(String pattern) {
+		if (! Util.isEmpty(pattern, true)) {
+ 			if (pattern.matches(".*[#0].*")) {
+ 		        try {
+ 	                new DecimalFormat(pattern);
+ 	                return DisplayType.Number;
+	            } catch (Exception ex) {}
+ 			} else if (pattern.matches(".*[yMdhHmsS].*")) {
+	            try {
+		            new SimpleDateFormat(pattern);
+		            return DisplayType.DateTime;
+	            } catch (Exception ex) {}
+	        }
+		}
+        return DisplayType.Text;
+    }
+
+	/**
+	 *	Next Synonym.<br/>
 	 * 	Creates next synonym A..Z AA..ZZ AAA..ZZZ
 	 */
 	private void synonymNext()
@@ -879,9 +907,8 @@ public class DataEngine
 		}
 		return tr;
 	}	//  getTableReference
-
 	
-	/**************************************************************************
+	/**
 	 * 	Load Data into PrintData
 	 * 	@param pd print data with SQL and ColumnInfo set
 	 *  @param format print format
@@ -1093,7 +1120,7 @@ public class DataEngine
 									pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), Boolean.valueOf(b), pdc.getDisplayType(), pdc.getFormatPattern());
 								}
 							}
-							else if (pdc.getDisplayType() == DisplayType.TextLong)
+							else if (pdc.getDisplayType() == DisplayType.TextLong || (pdc.getDisplayType() == DisplayType.JSON && DB.isOracle()))
 							{
 								String value = "";
 								if ("java.lang.String".equals(rs.getMetaData().getColumnClassName(counter)))
@@ -1113,7 +1140,7 @@ public class DataEngine
 							}
                             // fix bug [ 1755592 ] Printing time in format
                             else if (pdc.getDisplayType() == DisplayType.DateTime)
-{
+                            {
                                 Timestamp datetime = rs.getTimestamp(counter++);
                                 pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), datetime, pdc.getDisplayType(), pdc.getFormatPattern());
                             }
@@ -1192,7 +1219,7 @@ public class DataEngine
 		//	Check last Group Change
 		if (m_group.getGroupColumnCount() > 1)	//	one is TOTAL
 		{
-			for (int i = pd.getColumnInfo().length-1; i >= 0; i--)	//	backwards (leaset group first)
+			for (int i = pd.getColumnInfo().length-1; i >= 0; i--)	//	backwards (last group first)
 			{
 				PrintDataColumn group_pdc = pd.getColumnInfo()[i];
 				if (!m_group.isGroupColumn(group_pdc.getAD_PrintFormatItem_ID()))
@@ -1346,7 +1373,7 @@ public class DataEngine
 	}
 	
 	/**
-	 * Parse expression, replaces @tag@ with pdc values and/or execute functions
+	 * Parse expression, replaces @tag@ with column value (COL/) or pdc value (ACCUMULATE/ or LINE)
 	 * @param expression
 	 * @param pdc
 	 * @param pd
@@ -1398,7 +1425,11 @@ public class DataEngine
 				Object tokenPDE = pd.getNode(token);
 				if (tokenPDE == null)
 					return "\"Item not found: " + token + "\"";
-				Object value = ((PrintDataElement)tokenPDE).getValue();
+				Object value;
+				if (token.endsWith("_ID") || token.endsWith("_UU"))
+					value = ((PrintDataElement)tokenPDE).getValueKey();
+				else
+					value = ((PrintDataElement)tokenPDE).getValue();
 				outStr.append(value);
 			}
 			else if (token.equals("LINE"))
@@ -1420,26 +1451,20 @@ public class DataEngine
 
 		return outStr.toString();
 	}
-	
-	/*************************************************************************
-	 * 	Test
-	 * 	@param args args
+
+	/**
+	 * Get window no
+	 * @return window no
 	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startup(true);
-
-		@SuppressWarnings("unused")
-		DataEngine de = new DataEngine(Language.getLanguage("de_DE"));
-		MQuery query = new MQuery();
-		query.addRestriction("AD_Table_ID", MQuery.LESS, 105);
-	}
-
 	public int getWindowNo()
 	{
 		return m_windowNo;
 	}
 
+	/**
+	 * Set window no
+	 * @param windowNo
+	 */
 	public void setWindowNo(int windowNo)
 	{
 		this.m_windowNo = windowNo;

@@ -51,12 +51,12 @@ import org.compiere.util.TrxEventListener;
 import org.osgi.service.event.Event;
 
 /**
- *  Server Process Template
+ *  Abstract base class for Server Process.
  *
  *  @author     Jorg Janke
  *  @version    $Id: SvrProcess.java,v 1.4 2006/08/10 01:00:44 jjanke Exp $
  *  
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1646891 ] SvrProcess - post process support
  * 			<li>BF [ 1877935 ] SvrProcess.process should catch all throwables
  * 			<li>FR [ 1877937 ] SvrProcess: added commitEx method
@@ -68,13 +68,16 @@ import org.osgi.service.event.Event;
 @org.adempiere.base.annotation.Process
 public abstract class SvrProcess implements ProcessCall
 {
+	/** Key to store process info as environment context attribute */
 	public static final String PROCESS_INFO_CTX_KEY = "ProcessInfo";
+	/** Key to store process UI as environment context attribute */
 	public static final String PROCESS_UI_CTX_KEY = "ProcessUI";
 	
+	/** buffer log */
 	private List<ProcessInfoLog> listEntryLog;  
 
 	/**
-	 * Add log to buffer, only process total success, flush buffer
+	 * Add log to buffer, buffer is flush after commit of process transaction
 	 * @param id
 	 * @param date
 	 * @param number
@@ -92,12 +95,11 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 *  Server Process.
+	 *  Server Process.<br/>
 	 * 	Note that the class is initiated by startProcess.
 	 */
 	public SvrProcess()
 	{
-	//	Env.ZERO.divide(Env.ZERO);
 	}   //  SvrProcess
 
 	private Properties  		m_ctx;
@@ -118,16 +120,13 @@ public abstract class SvrProcess implements ProcessCall
 	protected static String 	MSG_SaveErrorRowNotFound = "@SaveErrorRowNotFound@";
 	protected static String		MSG_InvalidArguments = "@InvalidArguments@";
 
-
 	/**
-	 *  Start the process.
-	 *  Calls the abstract methods <code>process</code>.
-	 *  It should only return false, if the function could not be performed
-	 *  as this causes the process to abort.
+	 *  Start the process.<br/>
+	 *  Calls the method <code>process</code>.<br/>
 	 *
 	 *  @param ctx      Context
 	 *  @param pi		Process Info
-	 *  @return true if the next process should be performed
+	 *  @return true if success
 	 * 	@see org.compiere.process.ProcessCall#startProcess(Properties, ProcessInfo, Trx)
 	 */
 	public final boolean startProcess (Properties ctx, ProcessInfo pi, Trx trx)
@@ -231,10 +230,9 @@ public abstract class SvrProcess implements ProcessCall
 		
 		return !m_pi.isError();
 	}   //  startProcess
-
 	
-	/**************************************************************************
-	 *  Process
+	/**
+	 *  Execute Process
 	 *  @return true if success
 	 */
 	private boolean process()
@@ -309,6 +307,11 @@ public abstract class SvrProcess implements ProcessCall
 		return success;
 	}   //  process
 
+	/**
+	 * Send OSGi event
+	 * @param topic
+	 * @return event object
+	 */
 	private Event sendProcessEvent(String topic) {
 		Event event = EventManager.newEvent(topic,
 				new EventProperty(EventManager.EVENT_DATA, m_pi),
@@ -320,7 +323,7 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 *  Prepare - e.g., get Parameters.
+	 *  Prepare process - e.g., get Parameters.
 	 *  <pre>{@code
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
@@ -338,11 +341,12 @@ public abstract class SvrProcess implements ProcessCall
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
 	 *  }</pre>
+	 *  @see Parameter
 	 */
 	abstract protected void prepare();
 
 	/**
-	 *  Perform process.
+	 *  Process implementation class will override this method to execution process actions.
 	 *  @return Message (variables are parsed)
 	 *  @throws Exception if not successful e.g.
 	 *  throw new AdempiereUserError ("@FillMandatory@  @C_BankAccount_ID@");
@@ -350,11 +354,11 @@ public abstract class SvrProcess implements ProcessCall
 	abstract protected String doIt() throws Exception;
 
 	/**
-	 * Post process actions (outside trx).
+	 * Post process actions (outside trx).<br/>
 	 * Please note that at this point the transaction is committed so
-	 * you can't rollback.
-	 * This method is useful if you need to do some custom work when 
-	 * the process complete the work (e.g. open some windows).
+	 * you can't rollback.<br/>
+	 * This method is useful if you need to do some custom work after 
+	 * the process committed the changes (e.g. open some windows).
 	 *  
 	 * @param success true if the process was success
 	 * @since 3.1.4
@@ -383,17 +387,16 @@ public abstract class SvrProcess implements ProcessCall
 	}
 	
 	/**
-	 * 	Rollback
+	 * 	Rollback transaction
 	 */
 	protected void rollback()
 	{
 		if (m_trx != null)
 			m_trx.rollback();
 	}	//	rollback
-	
-	
-	/**************************************************************************
-	 * 	Lock Object.
+		
+	/**
+	 * 	Lock PO.<br/>
 	 * 	Needs to be explicitly called. Unlock is automatic.
 	 *	@param po object
 	 *	@return true if locked
@@ -421,7 +424,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	isLocked
 
 	/**
-	 * 	Unlock Object.
+	 * 	Unlock PO.<br/>
 	 * 	Is automatically called at the end of process.
 	 *	@return true if unlocked or if there was nothing to unlock
 	 */
@@ -437,8 +440,7 @@ public abstract class SvrProcess implements ProcessCall
 		return success;
 	}	//	unlock
 
-
-	/**************************************************************************
+	/**
 	 *  Get Process Info
 	 *  @return Process Info
 	 */
@@ -448,7 +450,7 @@ public abstract class SvrProcess implements ProcessCall
 	}   //  getProcessInfo
 
 	/**
-	 *  Get Properties
+	 *  Get Context
 	 *  @return Properties
 	 */
 	public Properties getCtx()
@@ -475,7 +477,7 @@ public abstract class SvrProcess implements ProcessCall
 	}   //  getAD_PInstance_ID
 
 	/**
-	 *  Get Table_ID
+	 *  Get AD_Table_ID
 	 *  @return AD_Table_ID
 	 */
 	protected int getTable_ID()
@@ -558,8 +560,8 @@ public abstract class SvrProcess implements ProcessCall
 	}   //  getAD_User_ID
 
 	/**
-	 *  Get AD_User_ID
-	 *  @return AD_User_ID of Process owner
+	 *  Get AD_Client_ID of process info
+	 *  @return AD_Client_ID
 	 */
 	protected int getAD_Client_ID()
 	{
@@ -571,11 +573,10 @@ public abstract class SvrProcess implements ProcessCall
 		}
 		return m_pi.getAD_Client_ID().intValue();
 	}	//	getAD_Client_ID
-
 	
-	/**************************************************************************
-	 * 	Get Parameter
-	 *	@return parameter
+	/**
+	 * 	Get Parameters
+	 *	@return parameters
 	 */
 	protected ProcessInfoParameter[] getParameter()
 	{
@@ -588,10 +589,14 @@ public abstract class SvrProcess implements ProcessCall
 		return retValue;
 	}	//	getParameter
 
-
-	/**************************************************************************
-	 *  Add Log Entry with table name
-	 *  
+	/**
+	 * Add Log Entry with table name
+	 * @param id ID parameter, usually same as record id 
+	 * @param date
+	 * @param number
+	 * @param msg
+	 * @param tableId
+	 * @param recordId
 	 */
 	public void addLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
 	{
@@ -601,10 +606,10 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
 	}	//	addLog
 
-	/**************************************************************************
+	/**
 	 *  Add Log Entry
+	 *  @param id ID parameter, usually same as record id
 	 *  @param date date or null
-	 *  @param id record id or 0
 	 *  @param number number or null
 	 *  @param msg message or null
 	 */
@@ -626,7 +631,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	addLog
 
 	/**
-	 * Add buffer log to process info
+	 * Flush buffer log to process info
 	 */
 	private void flushBufferLog () {
 		if (listEntryLog == null)
@@ -689,7 +694,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	saveLog
 	
 	/**
-	 * 	Execute function
+	 * 	Call class method using Java reflection
 	 * 	@param className class
 	 * 	@param methodName method
 	 * 	@param args arguments
@@ -735,8 +740,8 @@ public abstract class SvrProcess implements ProcessCall
 	}   //  lock
 
 	/**
-	 *  Unlock Process Instance.
-	 *  Update Process Instance DB and write option return message
+	 *  Unlock Process Instance.<br/>
+	 *  Update Process Instance (AD_PInstance) and write message (ErrorMsg) and state (result).
 	 */
 	private void unlock ()
 	{
@@ -779,7 +784,7 @@ public abstract class SvrProcess implements ProcessCall
 	}   //  unlock
 
 	/**
-	 * Return the main transaction of the current process.
+	 * Get the main transaction of the current process.
 	 * @return the transaction name
 	 */
 	public String get_TrxName()
@@ -796,7 +801,7 @@ public abstract class SvrProcess implements ProcessCall
 	}
 	
 	/**
-	 * publish status update message
+	 * Publish status update message to client
 	 * @param message
 	 */
 	protected void statusUpdate(String message)
@@ -888,7 +893,7 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 * Tries to find all class attributes having the {@link Parameter} annotation.
+	 * Tries to find all class fields having the {@link Parameter} annotation.
 	 * @param clazz
 	 * @return a list of annotated fields
 	 */

@@ -33,7 +33,7 @@ import bsh.ParseException;
 import bsh.Parser;
 
 /**
- *  Script Model
+ *  Bean Shell Script Model
  *
  *  @author     Jorg Janke
  *  @version    $Id: Scriptlet.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
@@ -69,7 +69,6 @@ public class Scriptlet
 	public static final String      VARIABLE = "result";
 	/** Default Description Variable Name    */
 	public static final String      DESCRIPTION_VARIABLE = "description";
-
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Scriptlet.class);
@@ -115,11 +114,9 @@ public class Scriptlet
 	/** Description				*/
 	private Object      			m_description;
 
-	/*************************************************************************/
-
 	/**
-	 *  Execute Script
-	 *  Loads environment and saves result
+	 *  Execute Script.<br/>
+	 *  Loads environment and saves result.
 	 *  @return null or Exception
 	 */
 	public Exception execute()
@@ -166,6 +163,10 @@ public class Scriptlet
 		return null;
 	}   //  execute
 
+	/**
+	 * Validate script.
+	 * @throws ParseException
+	 */
 	public void validate() throws ParseException
 	{
 		Parser parser = new Parser(new StringReader(m_script));
@@ -211,8 +212,6 @@ public class Scriptlet
 		}
 	}   //  setEnvironment
 
-	/*************************************************************************/
-
 	/**
 	 *  Get Variable
 	 *  @return variable
@@ -223,8 +222,8 @@ public class Scriptlet
 	}   //  getVariable
 
 	/**
-	 *  Set Variable
-	 *  @param variable - if null set to VARIABLE
+	 *  Set Result Variable Name.
+	 *  @param variable - if null set to {@link #VARIABLE}
 	 */
 	public void setVariable(String variable)
 	{
@@ -295,7 +294,6 @@ public class Scriptlet
 	{
 		if (key == null || key.length() == 0)
 			return;
-	//	log.fine( "Scriptlet.setEnvironment " + key, stringValue);
 		if (stringValue == null)
 		{
 			m_ctx.remove(key);
@@ -374,10 +372,10 @@ public class Scriptlet
 	}   //  SetEnvironment
 
 	/**
-	 *  Convert Key
+	 *  Convert Context Key Name.
 	 *  # -> _
-	 *  @param key
-	 *  @return converted key
+	 *  @param key key name
+	 *  @return converted key name
 	 */
 	private String convertKey (String key)
 	{
@@ -385,7 +383,7 @@ public class Scriptlet
 	}   //  convertKey
 
 	/**
-	 *  Set Environment
+	 *  Set Environment Context
 	 *  @param ctx
 	 */
 	public void setEnvironment (HashMap<String,Object> ctx)
@@ -397,16 +395,15 @@ public class Scriptlet
 	}   //  setEnvironment
 
 	/**
-	 *  Get Environment
+	 *  Get Environment Context
 	 *  @return environment
 	 */
 	public HashMap<String,Object> getEnvironment()
 	{
 		return m_ctx;
 	}   //  getEnvironment
-
 	
-	/**************************************************************************
+	/**
 	 *  Get Result
 	 *  @param runIt if true, execute script
 	 *  @return result or null
@@ -418,7 +415,7 @@ public class Scriptlet
 		return m_result;
 	}   //  getResult
 
-	/**************************************************************************
+	/**
 	 *  Get Description
 	 *  @return description or null
 	 */
@@ -429,8 +426,9 @@ public class Scriptlet
 
 	/**
 	 *  String Representation incl. Result
-	 *  @return Scipt
+	 *  @return Script
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder(m_variable);

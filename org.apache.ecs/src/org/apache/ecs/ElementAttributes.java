@@ -108,7 +108,7 @@ public abstract class ElementAttributes extends GenericElement implements Attrib
     }
 
     /*
-        Do we surround attributes with qoutes?
+        Do we surround attributes with quotes?
     */
     public boolean getAttributeQuote()
     {
@@ -116,7 +116,7 @@ public abstract class ElementAttributes extends GenericElement implements Attrib
     }
 
     /**
-        Set wether or not we surround the attributes with quotes.
+        Set whether or not we surround the attributes with quotes.
     */
     public Element setAttributeQuote(boolean attribute_quote)
     {
@@ -190,7 +190,7 @@ public abstract class ElementAttributes extends GenericElement implements Attrib
     }
 
     /**
-        Tell the element if we want to filter its attriubtes.
+        Tell the element if we want to filter its attributes.
         @param filter_attribute_state do we want to filter the attributes of this element?
     */
     public Element setAttributeFilterState(boolean filter_attribute_state)

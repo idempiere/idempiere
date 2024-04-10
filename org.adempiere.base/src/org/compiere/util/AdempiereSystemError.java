@@ -16,11 +16,10 @@
  *****************************************************************************/
 package org.compiere.util;
 
-
 /**
- * 	Adempiere System Error.
+ * 	iDempiere System Error. <br/>
  * 	Error caused by invalid configurations, etc.
- * 	(No program error)
+ * 	(Not recoverable)
  *	
  *  @author Jorg Janke
  *  @version $Id: AdempiereSystemError.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
@@ -28,7 +27,7 @@ package org.compiere.util;
 public class AdempiereSystemError extends Exception
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 9111445784263763938L;
 
@@ -66,7 +65,8 @@ public class AdempiereSystemError extends Exception
 	private Object	m_detail = null;
 	
 	/**
-	 * @return Returns the detail.
+	 * Get detail
+	 * @return detail.
 	 */
 	public Object getDetail ()
 	{
@@ -74,6 +74,7 @@ public class AdempiereSystemError extends Exception
 	}
 	
 	/**
+	 * Set detail
 	 * @param detail The detail to set.
 	 */
 	public void setDetail (Object detail)
@@ -85,6 +86,7 @@ public class AdempiereSystemError extends Exception
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		super.toString();

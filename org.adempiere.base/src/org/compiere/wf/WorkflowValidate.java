@@ -22,9 +22,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Msg;
 
-
 /**
- *	Validate Workflow Process
+ *	Process to Validate Workflow
  *	
  *  @author Jorg Janke
  *  @version $Id: WorkflowValidate.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -37,16 +36,18 @@ public class WorkflowValidate extends SvrProcess
 	/**
 	 * 	Prepare
 	 */
+	@Override
 	protected void prepare ()
 	{
 		p_AD_Worlflow_ID = getRecord_ID();
 	}	//	prepare
 
 	/**
-	 * 	Process
+	 * 	Run Process
 	 *	@return info
 	 *	@throws Exception
 	 */
+	@Override
 	protected String doIt () throws Exception
 	{
 		MWorkflow wf = new MWorkflow(getCtx(), p_AD_Worlflow_ID, get_TrxName());

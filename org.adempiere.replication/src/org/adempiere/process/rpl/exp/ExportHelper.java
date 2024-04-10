@@ -254,7 +254,7 @@ public class ExportHelper {
 				// process single XML Attribute
 				// Create new element
 				Element newElement = outDocument.createElement(formatLine.getValue());
-				if (log.isLoggable(Level.INFO)) log.info("Format Line Seach key: "+ formatLine.getValue());
+				if (log.isLoggable(Level.INFO)) log.info("Format Line Search key: "+ formatLine.getValue());
 				if (formatLine.getAD_Column_ID() == 0) {
 					throw new Exception(Msg.getMsg (masterPO.getCtx(), "EXPColumnMandatory"));
 				}

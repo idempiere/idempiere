@@ -369,7 +369,7 @@ public class InventoryCountCreate extends SvrProcess
 	 * @param productCategoryId
 	 * @param categories
 	 * @param loopIndicatorId
-	 * @return comma seperated list of category ids
+	 * @return comma separated list of category ids
 	 * @throws AdempiereSystemError if a loop is detected
 	 */
 	private String getSubCategoriesString(int productCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) throws AdempiereSystemError {

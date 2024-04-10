@@ -315,7 +315,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
     private void initComponents()
     {
-        /** Initalise toolbar */
+        /** Initialise toolbar */
         toolbar = new ADWindowToolbar(this, getWindowNo());
         toolbar.setId("windowToolbar");
         toolbar.addListener(this);
@@ -748,7 +748,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 			else
 			{
-				logger.log(Level.SEVERE, "No implementaton for tab type " + type + " Found", new Exception("No implementaton for tab type " + type + " Found"));
+				logger.log(Level.SEVERE, "No implementation for tab type " + type + " Found", new Exception("No implementation for tab type " + type + " Found"));
 			}
 		}
 		else if (gTab.isSortTab())
@@ -2008,7 +2008,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         
         //update recent item
         if (changed && !readOnly && !toolbar.isSaveEnable() ) {
-        	if (!Util.isEmpty(tabPanel.getGridTab().getRecord_UU())) {
+        	if (!Util.isEmpty(tabPanel.getGridTab().getRecord_UU()) || tabPanel.getGridTab().getRecord_ID() > 0) {
             	if (adTabbox.getSelectedIndex() == 0 && !detailTab) {
             		MRecentItem.addModifiedField(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
             				adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx),
@@ -2858,7 +2858,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (wasChanged) {
 		    if (newRecord) {
-		    	if (!Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU())) {
+		    	if (!Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU()) || adTabbox.getSelectedGridTab().getRecord_ID() > 0) {
 		        	if (adTabbox.getSelectedIndex() == 0) {
 			        	MRecentItem.addModifiedField(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
 			        			adTabbox.getSelectedGridTab().getRecord_ID(), adTabbox.getSelectedGridTab().getRecord_UU(), Env.getAD_User_ID(ctx),

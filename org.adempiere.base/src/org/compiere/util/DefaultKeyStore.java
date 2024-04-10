@@ -29,9 +29,9 @@ import javax.crypto.SecretKey;
 import org.adempiere.base.IKeyStore;
 
 /**
+ * Default {@link IKeyStore} implementation
  * @author deepak
  * @author hengsin
- *
  */
 public class DefaultKeyStore implements IKeyStore {
 	
@@ -53,6 +53,9 @@ public class DefaultKeyStore implements IKeyStore {
 
 	private String algorithm;
 
+	/**
+	 * Load or create key store
+	 */
 	public DefaultKeyStore(){
 		File file = new File(Ini.getAdempiereHome(), IDEMPIERE_KEYSTORE_PROPERTIES);
 		if (file.exists()) {
@@ -92,6 +95,9 @@ public class DefaultKeyStore implements IKeyStore {
 		}
 	}
 
+	/**
+	 * Create key using legacy algorithm (DES)
+	 */
 	private void createLegacyKey() {
 		m_key = new javax.crypto.spec.SecretKeySpec
 				(new byte[] {100,25,28,-122,-26,94,-3,-26}, LEGACY_ALGORITHM);

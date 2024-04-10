@@ -30,7 +30,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IKeyStore;
 
 /**
- * Security Services.
+ * Default implementation of {@link SecureInterface} for encryption and decryption.
  * <p>
  * Change log:
  * <ul>
@@ -42,7 +42,7 @@ import org.adempiere.base.IKeyStore;
  */
 public class Secure implements SecureInterface
 {
-	/**************************************************************************
+	/**
 	 *	Hash checksum number
 	 *  @param key key
 	 *  @return checksum number
@@ -63,8 +63,7 @@ public class Secure implements SecureInterface
 		return retValue;
 	}	//	hash
 
-	
-	/**************************************************************************
+	/**
 	 *  Convert Byte Array to Hex String
 	 *  @param bytes bytes
 	 *  @return HexString
@@ -89,7 +88,6 @@ public class Secure implements SecureInterface
 		}
 		return buffer.toString();
 	}   //  convertToHexString
-
 
 	/**
 	 *  Convert Hex String to Byte Array
@@ -121,9 +119,8 @@ public class Secure implements SecureInterface
 		return null;
 	}   //  convertToHexString
 
-
-	/**************************************************************************
-	 * 	Adempiere Security
+	/**
+	 * 	iDempiere Security
 	 */
 	public Secure()
 	{
@@ -148,8 +145,6 @@ public class Secure implements SecureInterface
 		
 	}	//	initCipher
 
-	
-	
 	/**
 	 *	Encryption.
 	 *  @param value clear value
@@ -157,7 +152,7 @@ public class Secure implements SecureInterface
 	 *  @return encrypted String
 	 */
 	public String encrypt (String value,int AD_Client_ID)
- {
+	{
 		String clearText = value;
 		if (clearText == null)
 			clearText = "";
@@ -240,11 +235,10 @@ public class Secure implements SecureInterface
 	}	//	decrypt
 
 	/**
-	 *	Encryption.
-	 * 	The methods must recognize clear text values
+	 *	Not implemented, just return value as it is
 	 *  @param value clear value
 	 *  @param ad_client_id
-	 *  @return encrypted String
+	 *  @return integer value
 	 */
 	public Integer encrypt (Integer value,int ad_client_id)
 	{
@@ -252,10 +246,9 @@ public class Secure implements SecureInterface
 	}	//	encrypt
 
 	/**
-	 *	Decryption.
-	 * 	The methods must recognize clear text values
+	 *	Not implemented, just return value as it is
 	 *  @param value encrypted value
-	 *  @return decrypted String
+	 *  @return integer value
 	 */
 	public Integer decrypt (Integer value,int ad_client_id)
 	{
@@ -263,11 +256,10 @@ public class Secure implements SecureInterface
 	}	//	decrypt
 	
 	/**
-	 *	Encryption.
-	 * 	The methods must recognize clear text values
+	 *	Not implemented, just return value as it is
 	 *  @param value clear value
 	 *  @param ad_client_id
-	 *  @return encrypted String
+	 *  @return BigDecimal value
 	 */
 	public BigDecimal encrypt (BigDecimal value,int ad_client_id)
 	{
@@ -275,10 +267,9 @@ public class Secure implements SecureInterface
 	}	//	encrypt
 
 	/**
-	 *	Decryption.
-	 * 	The methods must recognize clear text values
+	 *	Not implemented, just return value as it is
 	 *  @param value encrypted value
-	 *  @return decrypted String
+	 *  @return Big decimal value
 	 */
 	public BigDecimal decrypt (BigDecimal value,int ad_client_id)
 	{
@@ -286,11 +277,10 @@ public class Secure implements SecureInterface
 	}	//	decrypt
 
 	/**
-	 *	Encryption.
-	 * 	The methods must recognize clear text values
+	 *	Not implemented, just return value as it is
 	 *  @param value clear value
 	 *  @param ad_client_id
-	 *  @return encrypted String
+	 *  @return Timestamp value
 	 */
 	public Timestamp encrypt (Timestamp value,int ad_client_id)
 	{
@@ -298,23 +288,21 @@ public class Secure implements SecureInterface
 	}	//	encrypt
 
 	/**
-	 *	Decryption.
-	 * 	The methods must recognize clear text values
+	 *	Not implemented, just return value as it is 	
 	 *  @param value encrypted value
-	 *  @return decrypted String
+	 *  @return Timestamp value
 	 */
 	public Timestamp decrypt (Timestamp value,int ad_client_id)
 	{
 		return value;
 	}	//	decrypt
-	
-	
+		
 	/**
-	 *  Convert String to Digest.
+	 *  Perform MD5 Digest of value
 	 *  JavaScript version see - http://pajhome.org.uk/crypt/md5/index.html
 	 *
-	 *  @param value message
-	 *  @return HexString of message (length = 32 characters)
+	 *  @param value text to digest
+	 *  @return HexString of digested message (length = 32 characters)
 	 */
 	public String getDigest (String value)
 	{
@@ -323,7 +311,6 @@ public class Secure implements SecureInterface
 			try
 			{
 				m_md = MessageDigest.getInstance("MD5");
-			//	m_md = MessageDigest.getInstance("SHA-1");
 			}
 			catch (NoSuchAlgorithmException nsae)
 			{
@@ -346,7 +333,6 @@ public class Secure implements SecureInterface
 		return convertToHexString(output);
 	}	//	getDigest
 
-
 	/**
 	 * 	Checks, if value is a valid digest
 	 *  @param value digest string
@@ -366,8 +352,8 @@ public class Secure implements SecureInterface
 	 *
 	 *  @param value message
 	 *  @return HexString of message (length = 128 characters)
-	 * @throws NoSuchAlgorithmException 
-	 * @throws UnsupportedEncodingException 
+	 *  @throws NoSuchAlgorithmException 
+	 *  @throws UnsupportedEncodingException 
 	 */
 	public String getSHA512Hash (int iterations, String value, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
@@ -388,6 +374,7 @@ public class Secure implements SecureInterface
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("Secure[");
@@ -397,7 +384,6 @@ public class Secure implements SecureInterface
 	}	//	toString
 	
 	/**
-	 * 
 	 * @return keystore
 	 */
 	public IKeyStore getKeyStore(){

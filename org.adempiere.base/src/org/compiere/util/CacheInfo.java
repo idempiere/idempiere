@@ -42,8 +42,8 @@ import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 /**
+ * Info value object for a register cache
  * @author hengsin
- *
  */
 public class CacheInfo implements Serializable {
 
@@ -64,7 +64,7 @@ public class CacheInfo implements Serializable {
 	private long miss;
 
 	/**
-	 * 
+	 * @param cache
 	 */
 	public CacheInfo(CCache<?, ?> cache) {
 		name = cache.getName();
@@ -78,6 +78,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Get register name of cache
 	 * @return the name
 	 */
 	public String getName() {
@@ -85,6 +86,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Get optional table name
 	 * @return the tableName
 	 */
 	public String getTableName() {
@@ -92,6 +94,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Get number of entries in cache
 	 * @return the size
 	 */
 	public int getSize() {
@@ -99,6 +102,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Get expire of individual entry in minutes (&lt;= 0 for no expire)
 	 * @return the expireMinutes
 	 */
 	public int getExpireMinutes() {
@@ -106,6 +110,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Get maximum number of cached items
 	 * @return the maxSize
 	 */
 	public int getMaxSize() {
@@ -113,6 +118,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Is cache support distribution to multiple iDempiere node
 	 * @return the distributed
 	 */
 	public boolean isDistributed() {
@@ -121,6 +127,7 @@ public class CacheInfo implements Serializable {
 
 	
 	/**
+	 * Get address of this server node
 	 * @return the nodeAddress
 	 */
 	public InetAddress getNodeAddress() {
@@ -128,6 +135,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
+	 * Get id of this server node
 	 * @return the nodeId
 	 */
 	public String getNodeId() {
@@ -135,7 +143,7 @@ public class CacheInfo implements Serializable {
 	}
 
 	/**
-	 * 
+	 * Get cache hit count
 	 * @return hit count
 	 */
 	public long getHit() {
@@ -143,7 +151,7 @@ public class CacheInfo implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * Get cache miss count
 	 * @return miss count
 	 */
 	public long getMiss() {
@@ -151,7 +159,7 @@ public class CacheInfo implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * Get info for all register cache
 	 * @param sortByName
 	 * @return cache infos
 	 */
@@ -203,10 +211,18 @@ public class CacheInfo implements Serializable {
 		}		
 	}
 
+	/**
+	 * Set server node address
+	 * @param address node address
+	 */
 	private void setNodeAddress(InetAddress address) {
 		nodeAddress = address;
 	}
 
+	/**
+	 * Set server node id
+	 * @param id node id
+	 */
 	private void setNodeId(String id) {
 		nodeId = id;
 	}
