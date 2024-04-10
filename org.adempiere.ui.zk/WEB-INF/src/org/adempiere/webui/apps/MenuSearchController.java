@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -95,6 +97,8 @@ public class MenuSearchController implements EventListener<Event>{
 	private ListModelList<MenuItem> fullModel;
 	/** true when controller is handling event from Star/Favourite button **/
 	private boolean inStarEvent;
+	
+	private String highlightText = null;
 
 	/** Event post from {@link #selectTreeitem(Object, Boolean)} **/
 	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
@@ -605,6 +609,14 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	/**
+	 * Set text to highlight
+	 * @param s
+	 */
+	public void setHighlightText(String s) {
+		highlightText = s;
+	}
+	
+	/**
 	 * {@link ListitemRenderer} for {@link #listbox}	 
 	 */
 	private class MenuItemRenderer implements ListitemRenderer<MenuItem>, ListitemRendererExt {
@@ -634,6 +646,33 @@ public class MenuSearchController implements EventListener<Event>{
 				cell.setImage(null);
 				cell.setIconSclass(data.getImage());
 			}
+			
+			// Highlight search text
+			if (!Util.isEmpty(highlightText, true) && data.getLabel().toLowerCase().contains(highlightText.toLowerCase())) {
+				// Space to maintain proper gap between icon and label
+				cell.setLabel(" ");
+				String label = data.getLabel();
+				String matchString = highlightText.toLowerCase();
+				int match = label.toLowerCase().indexOf(matchString);
+    			while (match >= 0) {
+    				if (match > 0) {
+    					cell.appendChild(new Label(label.substring(0, match)));
+    					Label l = new Label(label.substring(match, match+matchString.length()));
+    					LayoutUtils.addSclass("highlight", l);
+    					cell.appendChild(l);
+    					label = label.substring(match+matchString.length());
+    				} else {
+    					Label l = new Label(label.substring(0, matchString.length()));
+    					LayoutUtils.addSclass("highlight", l);
+    					cell.appendChild(l);
+    					label = label.substring(matchString.length());
+    				}
+    				match = label.toLowerCase().indexOf(matchString);
+    			}
+    			if (label.length() > 0)
+    				cell.appendChild(new Label(label));
+			}
+			
 			item.appendChild(cell);
 			cell.setTooltip(data.getDescription());
 			item.setValue(data);

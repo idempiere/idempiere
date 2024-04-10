@@ -95,7 +95,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
     	btnMenu.setIconSclass("z-icon-sitemap");
-    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
+    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")) + " Alt+M");
     	btnMenu.addEventListener(Events.ON_CLICK, this);
     	if (ClientInfo.isMobile()) {
     		LayoutUtils.addSclass("mobile", this);
@@ -131,6 +131,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	stub.getParent().insertBefore(globalSearch, stub);
     	stub.detach();
     	globalSearch.setId("menuLookup");
+    	globalSearch.setPlaceHolderText("Alt+G");
+    	globalSearch.setTooltipText("Alt+G");
 	}
 
 	@Override
@@ -154,16 +156,19 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 		} else if (Events.ON_CREATE.equals(event.getName())) {
 			onCreate();
 		}else if (event instanceof KeyEvent)
-		{
-			//alt+m for the menu
+		{			
 			KeyEvent ke = (KeyEvent) event;
-			if (ke.getKeyCode() == 77)
+			if (ke.getKeyCode() == 77) // alt+m for the menu
 			{
 				popMenu.open(btnMenu, "after_start");
 				popMenu.setFocus(true);
-			}else if (ke.getKeyCode() == 27) {
+			}
+			else if (ke.getKeyCode() == 27) // esc to close menu 
+			{ 
 				popMenu.close();
-			}else if (ke.getKeyCode() == 71) {
+			}
+			else if (ke.getKeyCode() == 71) // alt+g for the search 
+			{ 
 				globalSearch.setFocus(true);
 			}
 		} else if(event.getName().equals(ZoomEvent.EVENT_NAME)) {

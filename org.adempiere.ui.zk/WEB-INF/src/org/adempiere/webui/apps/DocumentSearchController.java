@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_AD_SearchDefinition;
@@ -38,6 +39,7 @@ import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -52,7 +54,9 @@ import org.zkoss.zul.Vlayout;
  *
  */
 public class DocumentSearchController implements EventListener<Event>{
-
+	
+	/** Style for transaction code guide or execution error */
+	private static final String MESSAGE_LABEL_STYLE = "color: rgba(0,0,0,0.34)";
 	/** {@link A} component attribute to hold reference to corresponding {@link #SEARCH_RESULT} **/
 	private static final String SEARCH_RESULT = "search.result";
 	/** onSearchDocuments event **/
@@ -64,6 +68,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	private ArrayList<SearchResult> list;
 	/** Current selected index of {@link #list} **/
 	private int selected = -1;
+	/** True when showing transaction code available */
+	private boolean showingGuide = false;
 
 	/**
 	 * default constructor
@@ -92,7 +98,12 @@ public class DocumentSearchController implements EventListener<Event>{
 	 * @param value
 	 */
 	public void search(String value) {
-		layout.getChildren().clear();
+		if (Util.isEmpty(value) || (value.startsWith("/") && value.indexOf(" ") < 0)) {
+			if (!showingGuide)
+				layout.getChildren().clear();
+		} else {
+			layout.getChildren().clear();
+		}
 		Events.echoEvent(ON_SEARCH_DOCUMENTS_EVENT, layout, value);
 	}
 	
@@ -103,12 +114,31 @@ public class DocumentSearchController implements EventListener<Event>{
 	 */
 	private void onSearchDocuments(String searchString) {
 		list = new ArrayList<SearchResult>();
-		if (Util.isEmpty(searchString)) {
+		if (Util.isEmpty(searchString) || (searchString.startsWith("/") && searchString.indexOf(" ") < 0)) {
+			// No search string, show available transaction code
+			if (!showingGuide) {
+				Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "TransactionCode IS NOT NULL", null);
+				List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).setOrderBy("TransactionCode").list();
+				for(MSearchDefinition definition : definitions) {
+					Label label = new Label("/"+definition.getTransactionCode() + " " + definition.getName());
+					label.setStyle(MESSAGE_LABEL_STYLE);
+					layout.appendChild(label);
+				}
+				showingGuide  = true;
+			}
 			return;
 		} 
+		showingGuide = false;
 		
+		// Search and show results
 		List<SearchResult> list = doSearch(searchString);
-		if (list.size() > 0) {
+				
+		if (list.size() == 1 && list.get(0).getRecordId() == -1) {
+			// DB error or query timeout
+			Label label = new Label(list.get(0).getLabel());
+			label.setStyle(MESSAGE_LABEL_STYLE);
+			layout.appendChild(label);
+		} else if (list.size() > 0) {
     		Collections.sort(list, new Comparator<SearchResult>() {
 				@Override
 				public int compare(SearchResult o1, SearchResult o2) {
@@ -118,20 +148,47 @@ public class DocumentSearchController implements EventListener<Event>{
 					return r;
 				}
 			});
+    		
+    		String matchString = searchString.toLowerCase();
+    		if (searchString != null && searchString.startsWith("/") && searchString.indexOf(" ") > 1) {
+    			// "/TransactionCode Search Text"
+    			matchString = searchString.substring(searchString.indexOf(" ")+1).toLowerCase();
+    		}
+    		
     		String windowName = null;
     		for(SearchResult result : list) {
     			if (windowName == null || !windowName.equals(result.getWindowName())) {
     				windowName = result.getWindowName();
     				Label label = new Label(windowName);
-    				label.setStyle("padding: 3px; font-weight: bold; display: inline-block;");
+    				LayoutUtils.addSclass("window-name", label);
     				layout.appendChild(label);
     			}
     			A a = new A();
     			a.setAttribute(SEARCH_RESULT, result);
-    			a.setLabel(result.getLabel());
     			layout.appendChild(a);
-    			a.setStyle("padding-left: 3px; display: inline-block;");
+    			LayoutUtils.addSclass("search-result", a);
     			a.addEventListener(Events.ON_CLICK, this);
+    			String label = result.getLabel();
+    			if (!Util.isEmpty(matchString, true)) {
+	    			int match = label.toLowerCase().indexOf(matchString);
+	    			while (match >= 0) {
+	    				if (match > 0) {
+	    					a.appendChild(new Label(label.substring(0, match)));
+	    					Label l = new Label(label.substring(match, match+matchString.length()));
+	    					LayoutUtils.addSclass("highlight", l);
+	    					a.appendChild(l);
+	    					label = label.substring(match+matchString.length());
+	    				} else {
+	    					Label l = new Label(label.substring(0, matchString.length()));
+	    					LayoutUtils.addSclass("highlight", l);
+	    					a.appendChild(l);
+	    					label = label.substring(matchString.length());
+	    				}
+	    				match = label.toLowerCase().indexOf(matchString);
+	    			}
+    			}
+    			if (label.length() > 0)
+    				a.appendChild(new Label(label));
     		}
     		layout.invalidate();
 		}
@@ -146,7 +203,23 @@ public class DocumentSearchController implements EventListener<Event>{
 		final MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), true);
 				
 		selected = -1;
-		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "TransactionCode IS NULL", null);
+		
+		// Search with or without transaction code
+		StringBuilder whereClause = new StringBuilder();
+		String transactionCode = null;
+		if (searchString != null && searchString.startsWith("/") && searchString.indexOf(" ") > 1) {
+			// "/TransactionCode Search Text"
+			transactionCode = searchString.substring(1, searchString.indexOf(" "));
+			searchString = searchString.substring(searchString.indexOf(" ")+1);
+			whereClause.append("Upper(TransactionCode) = ?");
+		} else {
+			// Search with definition that doesn't use transaction code
+			whereClause.append("TransactionCode IS NULL");
+		}
+		
+		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, whereClause.toString(), null);
+		if (transactionCode != null)
+			query.setParameters(transactionCode.toUpperCase());
 		List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).list();		
 		for(MSearchDefinition msd : definitions) {
 			MTable table = new MTable(Env.getCtx(), msd.getAD_Table_ID(), null);
@@ -270,7 +343,15 @@ public class DocumentSearchController implements EventListener<Event>{
 				list.add(result);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SearchResult result = new SearchResult();
+			result.setRecordId(-1);
+			if (DB.getDatabase().isQueryTimeout(e)) {				
+				result.setLabel(Msg.getMsg(Env.getCtx(), "Timeout"));								
+			} else {
+				result.setLabel(Msg.getMsg(Env.getCtx(), "DBExecuteError"));
+				e.printStackTrace();
+			}
+			list.add(result);
 		} finally {
 			DB.close(rs, pstmt);
 		}
