@@ -142,7 +142,7 @@ public class GridTable extends AbstractTableModel
 		boolean withAccessControl, boolean virtual)
 	{
 		super();
-		log.info(TableName);
+		if (log.isLoggable(Level.INFO)) log.info(TableName);
 		m_ctx = ctx;
 		m_AD_Table_ID = AD_Table_ID;
 		setTableName(TableName);
