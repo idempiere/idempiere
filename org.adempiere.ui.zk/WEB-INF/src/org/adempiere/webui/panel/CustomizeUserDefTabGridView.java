@@ -319,7 +319,8 @@ public class CustomizeUserDefTabGridView extends Panel
 		// Load from AD_Field
 		Query query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Field.AD_Tab_ID=? AND AD_Field.IsActive='Y'", null);
 		query.addJoinClause("LEFT JOIN AD_UserDef_Field u ON (AD_Field.AD_Field_ID=u.AD_Field_ID AND u.IsActive='Y' AND u.AD_UserDef_Tab_ID="+m_AD_UserDef_Tab_ID+")");
-		query.setOrderBy("Coalesce(u.SeqNoGrid,AD_Field.SeqNoGrid), Coalesce(u.Name,AD_Field.Name), Coalesce(u.SeqNo,AD_Field.SeqNo)");
+		query.setOrderBy("CASE WHEN Coalesce(u.SeqNoGrid,0) > 0 THEN u.SeqNoGrid ELSE AD_Field.SeqNoGrid END, Coalesce(u.Name,AD_Field.Name), "
+				+ "CASE WHEN Coalesce(u.SeqNo,0) > 0 THEN u.SeqNo ELSE AD_Field.SeqNo END");
 		query.setParameters(new Object [] {userDefTab.getAD_Tab_ID()});
 		query.setApplyAccessFilter(true);
 
@@ -519,38 +520,61 @@ public class CustomizeUserDefTabGridView extends Panel
 						userDefField.setIsDisplayedGrid("Y");
 					else
 						userDefField.setIsDisplayedGrid(null);
-					if (field.getSeqNoGrid() <= prevSeqNo)
+					int seqNo = userDefField.getSeqNoGrid() > 0 ? userDefField.getSeqNoGrid() : field.getSeqNoGrid();
+					if (seqNo <= prevSeqNo)
 					{
 						prevSeqNo += 5;
 						userDefField.setSeqNoGrid(prevSeqNo);
 					}
 					else
 					{
-						userDefField.setSeqNoGrid(0);
-						prevSeqNo = field.getSeqNoGrid();
+						if (i < yesModel.getSize()-1) 
+						{
+							ListElement next = (ListElement)yesModel.getElementAt(i+1);
+							MField nextField = MField.get(next.getKey());
+							MUserDefField nextUDF = pp.getUserDefField();
+							int nextSeqNo = nextUDF != null && nextUDF.getSeqNoGrid() > 0 ? nextUDF.getSeqNoGrid() : nextField.getSeqNoGrid();
+							if (seqNo >= nextSeqNo) {
+								prevSeqNo += 5;
+								userDefField.setSeqNoGrid(prevSeqNo);
+							}
+						}
 					}
+					prevSeqNo = userDefField.getSeqNoGrid() > 0 ? userDefField.getSeqNoGrid() : seqNo;
 					if (userDefField.is_Changed())
 						userDefField.saveEx(trx.getTrxName());
 				}
 				else
 				{				
-					if (!field.isDisplayedGrid() || field.getSeqNoGrid() <= prevSeqNo)
+					if (!field.isDisplayedGrid())
 					{
-						userDefField = new MUserDefField(Env.getCtx(), 0, null);
-						userDefField.setAD_UserDef_Tab_ID(m_AD_UserDef_Tab_ID);
-						userDefField.setAD_Field_ID(field.getAD_Field_ID());
-						if (!field.isDisplayedGrid())
-							userDefField.setIsDisplayedGrid("Y");
-						if (field.getSeqNoGrid() <= prevSeqNo)
-						{
-							prevSeqNo += 5;
-							userDefField.setSeqNoGrid(prevSeqNo);
-						}
-						userDefField.saveEx(trx.getTrxName());
+						prevSeqNo += 5;
+						newUserDefField(field, prevSeqNo, trx);
 					}
 					else
 					{
-						prevSeqNo = field.getSeqNoGrid();
+						int seqNo = field.getSeqNoGrid();
+						if (seqNo <= prevSeqNo)
+						{
+							prevSeqNo += 5;
+							newUserDefField(field, prevSeqNo, trx);
+						}
+						else
+						{
+							if (i < yesModel.getSize()-1) 
+							{
+								ListElement next = (ListElement)yesModel.getElementAt(i+1);
+								MField nextField = MField.get(next.getKey());
+								MUserDefField nextUDF = pp.getUserDefField();
+								int nextSeqNo = nextUDF != null && nextUDF.getSeqNoGrid() > 0 ? nextUDF.getSeqNoGrid() : nextField.getSeqNoGrid();
+								if (seqNo >= nextSeqNo) {
+									prevSeqNo += 5;
+									newUserDefField(field, prevSeqNo, trx);
+								} else {
+									prevSeqNo = seqNo;
+								}
+							}
+						}
 					}
 				}
 			}
@@ -570,7 +594,17 @@ public class CustomizeUserDefTabGridView extends Panel
 						userDefField.setAD_Field_ID(field.getAD_Field_ID());					
 					}
 					userDefField.setIsDisplayedGrid("N");
+					userDefField.setSeqNoGrid(0);
 					userDefField.saveEx(trx.getTrxName());
+				}
+				else if (userDefField != null)
+				{
+					if ("Y".equals(userDefField.getIsDisplayedGrid()))
+					{
+						userDefField.setIsDisplayedGrid(null);
+						userDefField.setSeqNoGrid(0);
+						userDefField.saveEx(trx.getTrxName());
+					}
 				}
 			}
 			
@@ -583,6 +617,23 @@ public class CustomizeUserDefTabGridView extends Panel
 			trx.close();
 		}
 	}	//	saveData
+
+	/**
+	 * Create and save new MUserDefField record
+	 * @param field
+	 * @param seqNoGrid
+	 * @param trx
+	 */
+	private void newUserDefField(MField field, int seqNoGrid, Trx trx) {
+		MUserDefField userDefField;
+		userDefField = new MUserDefField(Env.getCtx(), 0, null);
+		userDefField.setAD_UserDef_Tab_ID(m_AD_UserDef_Tab_ID);
+		userDefField.setAD_Field_ID(field.getAD_Field_ID());							
+		userDefField.setSeqNoGrid(seqNoGrid);
+		if (!field.isDisplayedGrid())
+			userDefField.setIsDisplayedGrid("Y");
+		userDefField.saveEx(trx.getTrxName());
+	}
 
 	/**
 	 * List Item
