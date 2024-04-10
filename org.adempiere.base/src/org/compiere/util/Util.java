@@ -671,24 +671,11 @@ public class Util
 	 * Strip diacritics from given string
 	 * @param s	original string
 	 * @return string without diacritics
+	 * @deprecated dummy method, not doing anything
 	 */
+	@Deprecated(forRemoval = true, since = "12")
 	public static String stripDiacritics(String s) {
-		/* JAVA5 behaviour */
 		return s;
-		/* JAVA6 behaviour *
-		if (s == null) {
-			return s;
-		}
-		String normStr = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
-		
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < normStr.length(); i++) {
-			char ch = normStr.charAt(i);
-			if (ch < 255)
-				sb.append(ch);
-		}
-		return sb.toString();
-		/* */
 	}
 
 	/**

@@ -446,22 +446,22 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 							font.setBold(true);
 							style.setFont(font);
 							cell.setCellStyle(style);
-							String value = Util.stripDiacritics(Msg.getMsg(getCtx(), "Parameter") + ":");
+							String value = Msg.getMsg(getCtx(), "Parameter") + ":";
 							cell.setCellValue(new XSSFRichTextString(value));
 						}
 						XSSFCell cell = row.createCell(1);
 						cell.setCellStyle(parameterStyle);
-						String value = Util.stripDiacritics(query.getInfoName(r));
+						String value = query.getInfoName(r);
 						cell.setCellValue(new XSSFRichTextString(value));
 						
 						cell = row.createCell(2);
 						cell.setCellStyle(parameterStyle);
-						value = Util.stripDiacritics(query.getInfoOperator(r));
+						value = query.getInfoOperator(r);
 						cell.setCellValue(new XSSFRichTextString(value));
 						
 						cell = row.createCell(3);
 						cell.setCellStyle(parameterStyle);
-						value = Util.stripDiacritics(query.getInfoDisplayAll(r));
+						value = query.getInfoDisplayAll(r);
 						cell.setCellValue(new XSSFRichTextString(value));
 					}
 				}

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.QuickGridView;
 import org.adempiere.webui.component.Borderlayout;
@@ -30,7 +31,6 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
@@ -102,6 +102,7 @@ public class WQuickForm extends Window implements IQuickForm
 		super();
 
 		this.setMode(Mode.POPUP);
+		LayoutUtils.addSclass("quick-form", this);
 		windowNo = SessionManager.getAppDesktop().registerWindow(this);
 		adWinContent = winContent;
 		onlyCurrentRows = m_onlyCurrentRows;
@@ -139,16 +140,13 @@ public class WQuickForm extends Window implements IQuickForm
 		// Center
 		Panel Center = new Panel();
 		Center.appendChild(quickGridView);
-		ZkCssHelper.appendStyle(Center, "border: none; width: 100%; height:99%; background: gainsboro;");
 
 		// South
 		Panel south = new Panel();
 
 		// Adding statusBar for Quick Form
 		south.appendChild(adWinContent.getStatusBarQF());
-		ZkCssHelper.appendStyle(adWinContent.getStatusBarQF(), "height: 20px; padding-bottom: 3px background: white");
 		south.appendChild(confirmPanel);
-		ZkCssHelper.appendStyle(confirmPanel, "height: 50px; padding-top: 9px; background: #9c9c9c;");
 
 		bSave.setEnabled(!gridTab.isReadOnly());
 		bDelete.setEnabled(!gridTab.isReadOnly());
