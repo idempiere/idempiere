@@ -67,7 +67,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -167824144142429242L;
+	private static final long serialVersionUID = -2459194178797758731L;
+
+	/**
+	 * 
+	 */
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -1096,6 +1100,20 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			indexName = new StringBuilder().append(PO.getUUIDColumnName(tableName).substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 5)).append("uuidx");
 
 		return indexName.toString();
+	}
+
+	private Boolean hasCustomTree = null;
+
+	/**
+	 * If the table has a custom tree defined
+	 * @return
+	 */
+	public boolean hasCustomTree() {
+		if (hasCustomTree == null) {
+			int exists = DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM AD_Tree WHERE TreeType=? AND AD_Table_ID=? AND IsActive='Y'", MTree_Base.TREETYPE_CustomTable, getAD_Table_ID());
+			hasCustomTree = Boolean.valueOf(exists == 1);
+		}
+		return hasCustomTree.booleanValue();
 	}
 
 	/**
