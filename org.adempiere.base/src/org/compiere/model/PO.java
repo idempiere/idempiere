@@ -2649,10 +2649,10 @@ public abstract class PO
 
 			// table with potential tree
 			if (get_ColumnIndex("IsSummary") >= 0) {
-				if (newRecord)
+				if (newRecord && getTable().hasCustomTree())
 					insert_Tree(MTree_Base.TREETYPE_CustomTable);
 				int idxValue = get_ColumnIndex("Value");
-				if (newRecord || (idxValue >= 0 && is_ValueChanged(idxValue)))
+				if (getTable().hasCustomTree() && (newRecord || (idxValue >= 0 && is_ValueChanged(idxValue))))
 					update_Tree(MTree_Base.TREETYPE_CustomTable);
 			}
 		}
@@ -2755,6 +2755,14 @@ public abstract class PO
 		
 		return success;
 	}	//	saveFinish
+
+	/**
+	 * Get the MTable object associated to this PO
+	 * @return MTable
+	 */
+	private MTable getTable() {
+		return MTable.get(getCtx(), get_TableName());
+	}
 
 	/**
 	 *  Update or insert new record.<br/>
@@ -4102,7 +4110,7 @@ public abstract class PO
 			{
 				//
 				deleteTranslations(localTrxName);
-				if (get_ColumnIndex("IsSummary") >= 0) {
+				if (get_ColumnIndex("IsSummary") >= 0 && getTable().hasCustomTree()) {
 					delete_Tree(MTree_Base.TREETYPE_CustomTable);
 				}
 
