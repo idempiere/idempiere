@@ -35,7 +35,6 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
-import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListModelTable;
@@ -52,11 +51,13 @@ import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -164,8 +165,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private Label lSort = new Label();
 	private Label lGroup = new Label();
 
-	private Datebox selDateFrom = new Datebox();
-	private Datebox selDateTo = new Datebox();
+	private WDateEditor selDateFrom = new WDateEditor();
+	private WDateEditor selDateTo = new WDateEditor();
 
 	private Checkbox selDocument = new Checkbox();
 	private Checkbox displayQty = new Checkbox();
@@ -327,9 +328,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		row = rows.newRow();
 		row.appendChild(lDate);
 		hlayout = new Hlayout();
-		hlayout.appendChild(selDateFrom);		
+		hlayout.appendChild(selDateFrom.getComponent());		
 		hlayout.appendChild(new Label(" - "));
-		hlayout.appendChild(selDateTo);
+		hlayout.appendChild(selDateTo.getComponent());
+		DateRangeButton drb = (new DateRangeButton(selDateFrom, selDateTo));
+		hlayout.appendChild(drb);
 		row.appendChild(hlayout);
 
 			// Organization
@@ -1193,8 +1196,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selTable.setEnabled(doc);
 		selRecord.setEnabled(doc);
 		//
-		selDateFrom.setEnabled(!doc);
-		selDateTo.setEnabled(!doc);
+		selDateFrom.setReadWrite(!doc);
+		selDateTo.setReadWrite(!doc);
 		selOrg.setEnabled(!doc);
 		selAcct.setEnabled(!doc);
 		sel1.setEnabled(!doc);

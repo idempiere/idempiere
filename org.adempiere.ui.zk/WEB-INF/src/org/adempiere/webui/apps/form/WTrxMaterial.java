@@ -43,6 +43,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.compiere.apps.form.TrxMaterial;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLookup;
@@ -54,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
@@ -225,7 +227,11 @@ public class WTrxMaterial extends TrxMaterial
 				row = rows.newRow();
 		}
 		row.appendCellChild(dateTLabel.rightAlign());
-		row.appendCellChild(dateTField.getComponent());
+		Hbox boxTo = new Hbox();
+		boxTo.appendChild(dateTField.getComponent());
+		DateRangeButton drb = (new DateRangeButton(dateFField, dateTField));
+		boxTo.appendChild(drb);
+		row.appendCellChild(boxTo);
 	}
 
 	/**
