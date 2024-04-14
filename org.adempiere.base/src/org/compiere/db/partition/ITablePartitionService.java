@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.compiere.db.partition;
 
+import java.util.Properties;
+
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_TablePartition;
@@ -99,4 +101,27 @@ public interface ITablePartitionService {
 	 * @param processInfo
 	 */
 	public void reattachPartition(MTable table, X_AD_TablePartition partition, String trxName, ProcessInfo processInfo);
+	
+	/**
+	 * Get default partition name for table
+	 * @param tableName
+	 * @return String default partition name for table
+	 */
+	public String getDefaultPartitionName(String tableName);
+	
+	/**
+	 * Parse table partition name
+	 * @param tableName
+	 * @param partitionCols
+	 * @return table partition name
+	 */
+	public String parsePartitionName(String tableName, Object[] partitionCols);
+	
+	/**
+	 * Get Partition Name of M_Product of the given level
+	 * @param tableName
+	 * @param level - 0 for the first-level partition, -1 for the lowest level
+	 * @return table partition name, or empty
+	 */
+	public String getPartitionName(Properties ctx, String tableName, int level, String trxName);
 }
