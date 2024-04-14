@@ -18,8 +18,6 @@ package org.compiere.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +28,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
-import org.compiere.Adempiere;
 import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Scheduler;
 
 /**
  *  iDempiere global Cache Manager
@@ -53,7 +54,6 @@ public class CacheMgt
 		if (s_cache == null)
 		{
 			s_cache = new CacheMgt();
-			startCacheMonitor();
 		}
 		return s_cache;
 	}	//	get
@@ -76,8 +76,6 @@ public class CacheMgt
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
 	/** Cache change listeners **/
 	private List<CacheChangeListener> m_listeners = new ArrayList<CacheChangeListener>();
-	/** Background monitor to clear expire cache */
-	private static final CacheMgt.CacheMonitor s_monitor = new CacheMgt.CacheMonitor();
 	/** Default maximum cache size **/
 	public static int MAX_SIZE = 1000;
 	static 
@@ -131,19 +129,34 @@ public class CacheMgt
 			ICacheService provider = Core.getCacheService();
 			if (provider != null)
 			{
+				// for better performance, do not use distributed cache if this is a stand alone instance
 				IClusterService clusterService = Core.getClusterService();
 				if (clusterService != null && !clusterService.isStandAlone())
 					map = provider.getMap(name);
 			}
 		}
 		
+		// not distributed cache or distributed cache service is not available
 		if (map == null)
 		{
 			int maxSize = instance.getMaxSize();
-			if (maxSize > 0)
-				map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(maxSize));
+			if (maxSize > 0 || instance.getExpireMinutes() > 0)
+			{
+				// cache with max size and/or expire minutes
+				Caffeine<Object, Object> builder = Caffeine.newBuilder();
+				if (maxSize > 0)
+					builder.maximumSize(maxSize);
+				if (instance.getExpireMinutes() > 0)					
+					builder.scheduler(Scheduler.systemScheduler())
+					 	   .expireAfterAccess(instance.getExpireMinutes(), TimeUnit.MINUTES);
+				Cache<K, V> cache = builder.build();
+				map = cache.asMap();
+			}
 			else
-				map = new ConcurrentHashMap<K, V>();				
+			{
+				// no max size, no expire minutes, use simple concurrent hash map for best performance
+				map = new ConcurrentHashMap<K, V>();
+			}
 		}		
 		return map;
 	}	//	register
@@ -451,65 +464,6 @@ public class CacheMgt
 		return infos;
 	}
 	
-	/**
-	 * Map with max size
-	 * @param <K>
-	 * @param <V>
-	 */
-	private static class MaxSizeHashMap<K, V> extends LinkedHashMap<K, V> {
-	    /**
-		 * generated serial id
-		 */
-		private static final long serialVersionUID = 5532596165440544235L;
-		private final int maxSize;
-
-	    public MaxSizeHashMap(int maxSize) {
-	        this.maxSize = maxSize;
-	    }
-
-	    @Override
-	    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-	        return maxSize <= 0 ? false : size() > maxSize;
-	    }
-	}
-	
-	/**
-	 * Start cache monitor for expire cache entries
-	 */
-	private static synchronized void startCacheMonitor()
-	{
-		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
-	}
-
-	/**
-	 * Cache monitor for expire cache entries
-	 */
-	private static class CacheMonitor implements Runnable
-	{
-
-		public void run()
-		{
-			CacheMgt instance = CacheMgt.get();
-			if (!instance.m_instances.isEmpty())
-			{
-				CacheInterface[] caches = instance.m_instances.toArray(new CacheInterface[0]);
-				for(int i = 0; i < caches.length; i++)
-				{
-					if (!(caches[i] instanceof CCache<?, ?>))
-						continue;
-					CCache<?, ?> cache = (CCache<?, ?>) caches[i];
-					if (cache.isDistributed() || cache.getExpireMinutes() <= 0)
-						continue;
-
-					if (cache.isExpire())
-					{
-						cache.reset();
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Is there a cache instance for this table name?
 	 * @param tableName

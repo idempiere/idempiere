@@ -341,4 +341,8 @@
          id="org.apache.logging.log4j.to-slf4j"
          version="0.0.0"/>
 
+   <plugin
+         id="com.github.ben-manes.caffeine"
+         version="0.0.0"/>
+
 </feature>

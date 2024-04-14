@@ -109,6 +109,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 */
@@ -118,6 +119,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -128,6 +130,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -139,6 +142,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -151,6 +155,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 *  Create new cache instance and register with {@link CacheMgt}
 	 *  @param tableName
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity // ignored
@@ -161,6 +166,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	CCache
 
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -172,6 +178,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}		
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -184,12 +191,15 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 *  Create new cache instance and register with {@link CacheMgt}
 	 *  @param tableName
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity // ignored
 	 * 	@param expireMinutes expire after minutes (0=no expire)
-	 *  @param distributed
-	 *  @param maxSize ignore if distributed=true
+	 *  @param distributed true if cache should be distributed across server nodes
+	 *  @param maxSize ignore if distributed=true (0=no max size)
+	 *  @see {@link CacheMgt#register(CCache, boolean)}
+	 *  @see {@link CacheMgt#unregister(CacheInterface)}
 	 */
 	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed, int maxSize)
 	{
@@ -309,17 +319,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	reset
 
 	/**
-	 * 	Reset Cache if expire duration is set and cache has expire
-	 */	
-	private void expire()
-	{
-		if (m_expire != 0 && m_timeExp < System.currentTimeMillis())
-		{
-			reset();
-		}
-	}	//	expire
-
-	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
@@ -370,7 +369,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public boolean containsKey(Object key)
 	{
-		expire();
 		return cache.containsKey(key) || nullList.contains(key);
 	}	//	containsKey
 
@@ -380,7 +378,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public boolean containsValue(Object value)
 	{
-		expire();
 		return cache.containsValue(value);
 	}	//	containsValue
 
@@ -391,7 +388,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public Set<Map.Entry<K,V>> entrySet()
 	{
-		expire();
 		return cache.entrySet();
 	}	//	entrySet
 
@@ -401,7 +397,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public V get(Object key)
 	{
-		expire();
 		V v = cache.get(key);
 		if (v == null)
 			if (nullList.contains(key))
@@ -422,7 +417,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public V put (K key, V value)
 	{
-		expire();
 		m_justReset = false;
 		if (value == null) {
 			cache.remove(key);
@@ -441,7 +435,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public void putAll (Map<? extends K, ? extends V> m)
 	{
-		expire();
 		m_justReset = false;
 		cache.putAll (m);
 	}	//	putAll
@@ -452,7 +445,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public boolean isEmpty()
 	{
-		expire();
 		return cache.isEmpty() && nullList.isEmpty();
 	}	// isEmpty
 
@@ -463,7 +455,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public Set<K> keySet()
 	{
-		expire();
 		return cache.keySet();
 	}	//	keySet
 
@@ -473,7 +464,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public int size()
 	{
-		expire();
 		return cache.size()+nullList.size();
 	}	//	size
 
@@ -494,7 +484,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public Collection<V> values()
 	{
-		expire();
 		return cache.values();
 	}	//	values
 
