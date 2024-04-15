@@ -34,7 +34,9 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MCostElement;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
@@ -1043,14 +1045,47 @@ public class Doc_Invoice extends Doc
 				if (!dr)
 					costAdjustmentAmt = costAdjustmentAmt.negate();
 	
-				boolean zeroQty = false;
+				BigDecimal amtAsset = Env.ZERO;
+				BigDecimal amtVariance = Env.ZERO;
 				if (costAdjustmentAmt.signum() != 0)
 				{
 					Trx trx = Trx.get(getTrxName(), false);
 					Savepoint savepoint = null;					
 					try {
 						savepoint = trx.setSavepoint(null);
-						BigDecimal costDetailAmt = costAdjustmentAmt;
+						
+						BigDecimal qty = lca.getQty();
+						amtVariance = Env.ZERO;
+						amtAsset = costAdjustmentAmt;
+						
+						if(X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod))
+						{
+							int AD_Org_ID = lca.getAD_Org_ID();
+							int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
+
+							if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+							{
+								AD_Org_ID = 0;
+								M_AttributeSetInstance_ID = 0;
+							}
+							else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+								M_AttributeSetInstance_ID = 0;
+							else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+								AD_Org_ID = 0;
+							
+							MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
+									AD_Org_ID);
+							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
+									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
+									M_AttributeSetInstance_ID, null);
+							if (c != null && c.getCurrentQty().compareTo(qty) < 0)
+							{//TODO test reposting of landed cost invoice
+								amtAsset = c.getCurrentQty().multiply(costAdjustmentAmt.divide(lca.getQty()));
+								amtVariance = costAdjustmentAmt.subtract(amtAsset);
+							}
+						}
+						
+						BigDecimal costDetailAmt = amtAsset;
 						//convert to accounting schema currency
 						if (getC_Currency_ID() != as.getC_Currency_ID())
 							costDetailAmt = MConversionRate.convert(getCtx(), costDetailAmt,
@@ -1076,8 +1111,7 @@ public class Doc_Invoice extends Doc
 					} catch (SQLException e) {
 						throw new RuntimeException(e.getLocalizedMessage(), e);
 					} catch (AverageCostingZeroQtyException e) {
-						zeroQty = true;
-						try {
+						try { //TODO test zero qty scenario
 							trx.rollback(savepoint);
 							savepoint = null;
 						} catch (SQLException e1) {
@@ -1110,8 +1144,9 @@ public class Doc_Invoice extends Doc
 						estimatedAmt = estimatedAmt.setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 					}
 					int compare = allocationAmt.compareTo(estimatedAmt);
-					if (compare > 0)
+					if (allocationAmt.compareTo(estimatedAmt)!=0)
 					{
+						// TODO test more order allocation then landed costing
 						drAmt = dr ? (reversal ? null : estimatedAmt): (reversal ? estimatedAmt : null);
 						crAmt = dr ? (reversal ? estimatedAmt : null): (reversal ? null : estimatedAmt);						
 						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
@@ -1120,33 +1155,38 @@ public class Doc_Invoice extends Doc
 						fl.setM_Product_ID(lca.getM_Product_ID());
 						fl.setQty(line.getQty());
 						
-						BigDecimal overAmt = allocationAmt.subtract(estimatedAmt);
-						drAmt = dr ? (reversal ? null : overAmt) : (reversal ? overAmt : null);
-						crAmt = dr ? (reversal ? overAmt : null) : (reversal ? null : overAmt);
-						account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-						fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
-						fl.setDescription(desc);
-						fl.setM_Product_ID(lca.getM_Product_ID());
-						fl.setQty(line.getQty());
-					}
-					else if (compare < 0)
-					{
-						drAmt = dr ? (reversal ? null : estimatedAmt) : (reversal ? estimatedAmt : null);
-						crAmt = dr ? (reversal ? estimatedAmt : null) : (reversal ? null : estimatedAmt);
-						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-						FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
-						fl.setDescription(desc);
-						fl.setM_Product_ID(lca.getM_Product_ID());
-						fl.setQty(line.getQty());
-						
-						BigDecimal underAmt = estimatedAmt.subtract(allocationAmt);
-						drAmt = dr ? (reversal ? underAmt : null) : (reversal ? null : underAmt);
-						crAmt = dr ? (reversal ? null : underAmt) : (reversal ? underAmt : null);
-						account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-						fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
-						fl.setDescription(desc);
-						fl.setM_Product_ID(lca.getM_Product_ID());
-						fl.setQty(line.getQty());
+						if (amtVariance.compareTo(Env.ZERO) != 0) {
+							if (amtVariance.compareTo(Env.ZERO) > 0) {
+								drAmt = dr ? (reversal ? null : amtVariance) : (reversal ? amtVariance : null);
+								crAmt = dr ? (reversal ? amtVariance : null) : (reversal ? null : amtVariance);
+							} else {
+								BigDecimal underAmt = amtVariance.negate();
+								drAmt = dr ? (reversal ? underAmt : null) : (reversal ? null : underAmt);
+								crAmt = dr ? (reversal ? null : underAmt) : (reversal ? underAmt : null);
+							}
+
+							account = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+							fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
+							fl.setDescription(desc);
+							fl.setM_Product_ID(lca.getM_Product_ID());
+							fl.setQty(line.getQty());
+						}
+
+						if (amtAsset.compareTo(Env.ZERO) != 0) {
+							if (amtAsset.compareTo(Env.ZERO) > 0) {
+								drAmt = dr ? (reversal ? null : amtAsset) : (reversal ? amtAsset : null);
+								crAmt = dr ? (reversal ? amtAsset : null) : (reversal ? null : amtAsset);
+							} else {
+								BigDecimal underAmt = amtAsset.negate();
+								drAmt = dr ? (reversal ? underAmt : null) : (reversal ? null : underAmt);
+								crAmt = dr ? (reversal ? null : underAmt) : (reversal ? underAmt : null);
+							}
+							account = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+							fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
+							fl.setDescription(desc);
+							fl.setM_Product_ID(lca.getM_Product_ID());
+							fl.setQty(line.getQty());
+						}
 					}
 					else
 					{
