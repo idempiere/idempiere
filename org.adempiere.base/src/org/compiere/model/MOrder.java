@@ -1765,6 +1765,9 @@ public class MOrder extends X_C_Order implements DocAction
 					freightLine.setQty(BigDecimal.ONE);
 					freightLine.setPrice(BigDecimal.ZERO);
 					freightLine.saveEx();
+				}else if(getLines(true,MOrderLine.COLUMNNAME_Line).length==0) { 
+					m_processMsg = "@ShippingProductOnly@"; 
+					return false; 
 				}
 			}
 		}
