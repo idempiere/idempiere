@@ -2,6 +2,6 @@
 <?pde version="3.8"?>
 <target name="idempiere-12-local-mirror">
 	<locations>
-		<location path="${project_loc}/target/target-platform-repository" type="Directory"/>
+		<location path="${project_loc:org.idempiere.p2.targetplatform}/target/target-platform-repository" type="Directory"/>
 	</locations>
 </target>
