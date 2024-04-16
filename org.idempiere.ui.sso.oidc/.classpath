@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/content-type.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/accessors-smart.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lang-tag.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/json-smart.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/oauth2-oidc-sdk.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/nimbus-jose-jwt.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
-			<attribute name="module" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="lib/nimbus-jose-jwt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/oauth2-oidc-sdk.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-smart.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lang-tag.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/accessors-smart.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/content-type.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
