@@ -3107,6 +3107,7 @@ public abstract class PO
 				&& !p_info.isEncrypted(i)		//	not encrypted
 				&& !p_info.isVirtualColumn(i)	//	no virtual column
 				&& !"Password".equals(columnName)
+				&& !session.isSkipChangeLogForUpdate(get_TableName())
 				)
 			{
 				Object oldV = m_oldValues[i];
