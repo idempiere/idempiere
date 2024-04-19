@@ -906,6 +906,16 @@ public class MOrderLine extends X_C_OrderLine
 			}
 		}
 		
+		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+		if (MOrder.DELIVERYVIARULE_Shipper.equals(getParent().getDeliveryViaRule()) && MOrder.FREIGHTCOSTRULE_FreightIncluded.equals(getParent().getFreightCostRule())
+			&& (   (getM_Product_ID() > 0 && getM_Product_ID() == ci.getM_ProductFreight_ID())
+				|| (getC_Charge_ID() > 0 && getC_Charge_ID() == ci.getC_ChargeFreight_ID())
+			   )
+		   ) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "FreightOrderLineNotAllowed"));
+			return false;
+		}
+		
 		return true;
 	}	//	beforeSave
 	
