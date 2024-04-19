@@ -85,7 +85,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	}	//	WFPanel
 
 	/**	Window No			*/
-	@SuppressWarnings("unused")
 	private int         m_WindowNo = 0;
 
 

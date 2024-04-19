@@ -9,4 +9,21 @@
 	</parent>
 	<artifactId>org.idempiere.p2.targetplatform</artifactId>
 	<packaging>eclipse-target-definition</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>default-mirror-target-platform</id>
+						<goals>
+							<goal>mirror-target-platform</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
