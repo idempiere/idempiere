@@ -13,7 +13,7 @@ billboard.GaugeRenderer = class {
         if (rendererOptions) {        	
         	if (rendererOptions["showNeedle"] && rendererOptions["showNeedle"] == true) {
         		showNeedle = true;
-        		gauge.title = "\n{=NEEDLE_VALUE}%";
+        		gauge.title = "\n"+wgt.getSeriesData()[1]+"%";
         		gauge.width = 20;
         		gauge.label = {
                 	format: function(_value, _ratio, id) { return id; }
@@ -69,6 +69,11 @@ billboard.GaugeRenderer = class {
                     value: wgt.getSeriesData()[1][0]
                 }
             };
+            if (rendererOptions["intervals"]) {
+				if (model.arc.needle.value > rendererOptions["intervals"][rendererOptions["intervals"].length-1]) {
+					model.arc.needle.value = rendererOptions["intervals"][rendererOptions["intervals"].length-1]+3;
+				}
+			}
             model.interaction = {
                 enabled: false
             };
