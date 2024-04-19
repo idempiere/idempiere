@@ -115,10 +115,12 @@ import org.compiere.util.ReplenishInterface;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.eevolution.model.CalloutBOM;
+import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -924,5 +926,24 @@ public class CacheTest extends AbstractTestCase {
 			
 			commit();
 		}
+	}
+	
+	@Test
+	public void testExpire() {
+		ImmutableIntPOCache<Integer,MProduct> cache	= new ImmutableIntPOCache<Integer,MProduct>(MProduct.Table_Name, 40, 1);	//1 minutes
+		cache.put(DictionaryIDs.M_Product.AZALEA_BUSH.id, new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, null));
+		cache.put(DictionaryIDs.M_Product.P_CHAIR.id, new MProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, null));
+		
+		for(int i = 0; i < 2; i++) {
+			assertNotNull(cache.get(DictionaryIDs.M_Product.P_CHAIR.id), "Unexpected expire of cache item after " + i + " access");
+			try {
+				Thread.sleep(35*1000); //35 seconds
+			} catch (InterruptedException e) {}
+		}
+		
+		assertNotNull(cache.get(DictionaryIDs.M_Product.P_CHAIR.id), "Cache item expire despite being access recently");
+		assertNull(cache.get(DictionaryIDs.M_Product.AZALEA_BUSH.id), "Cache item not expire despite not being access for more than 1 minutes");
+		
+		CacheMgt.get().unregister(cache);
 	}
 }

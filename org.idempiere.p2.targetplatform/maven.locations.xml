@@ -1513,4 +1513,11 @@ Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
     <!--for jdbc driver -->
+    <!-- cache (https://github.com/ben-manes/caffeine) -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+    	<groupId>com.github.ben-manes.caffeine</groupId>
+    	<artifactId>caffeine</artifactId>
+    	<version>3.1.8</version>
+    	<type>jar</type>
+    </location>
 </locations>
