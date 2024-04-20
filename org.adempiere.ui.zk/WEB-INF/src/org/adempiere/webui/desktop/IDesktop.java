@@ -49,11 +49,17 @@ public interface IDesktop extends UIPart {
 	public ClientInfo getClientInfo();
 
 	/**
-	 *
+	 * Launch menu item
 	 * @param nodeId
 	 */
 	public void onMenuSelected(int nodeId);
 
+	/**
+	 * Launch AD Window in new record mode
+	 * @param menuId
+	 */
+	public void onNewRecord(int menuId);
+	
 	/**
 	 *
 	 * @param window

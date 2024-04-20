@@ -219,6 +219,7 @@ public class SystemIDs
 	public final static int WINDOW_LOT = 257;
 	public final static int WINDOW_MATERIAL_RECEIPT = 184;
 	public final static int WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER = 223;
+	public final static int WINDOW_MENU = 105;
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_NOTICE = 193;
 	public final static int WINDOW_PAYMENTS_INTO_BATCH = 200031;
