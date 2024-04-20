@@ -20,18 +20,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.adempiere.util.Callback;
-import org.adempiere.webui.adwindow.ADTabpanel;
-import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.MenuSearchController;
-import org.adempiere.webui.desktop.AbstractDesktop;
-import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
-import org.compiere.model.MQuery;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
@@ -291,7 +285,8 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     }
     
     /**
-     * Handle onClick and onOk event
+     * Handle onClick and onOk event for menu tree item.<br/>
+     * The event from global search and application menu tree will be routed to here.
      * @param comp
      * @param eventData
      */
@@ -361,31 +356,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     private void onNewRecord(Treeitem selectedItem) {
     	try
         {
+    		if (getParent() instanceof Popup) {
+    			((Popup)getParent()).close();
+    		}
 			int menuId = Integer.parseInt((String)selectedItem.getValue());
-			MMenu menu = new MMenu(Env.getCtx(), menuId, null);
-			IDesktop desktop = SessionManager.getAppDesktop();
-			if (desktop instanceof AbstractDesktop)
-				((AbstractDesktop)desktop).setPredefinedContextVariables(menu.getPredefinedContextVariables());
-			
-    		MQuery query = new MQuery("");
-    		query.addRestriction("1=2");
-			query.setRecordCount(0);
-
-			if (getParent() instanceof Popup) {
-				((Popup)getParent()).close();
-			}
-			
-			SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {				
-				@Override
-				public void onCallback(ADWindow result) {
-					if(result == null)
-						return;
-		    					
-					result.getADWindowContent().onNew();
-					ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
-					adtabpanel.focusToFirstEditor(false);					
-				}
-			});			
+			SessionManager.getAppDesktop().onNewRecord(menuId);			
         }
         catch (Exception e)
         {

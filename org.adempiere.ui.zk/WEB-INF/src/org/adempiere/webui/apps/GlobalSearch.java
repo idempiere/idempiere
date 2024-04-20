@@ -101,8 +101,9 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.setCtrlKeys("#up#down");
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
 		bandbox.addEventListener(Events.ON_FOCUS, e -> {
-			if (!bandbox.isOpen())
-				bandbox.setOpen(true);
+			bandbox.setOpen(true);
+			if (Util.isEmpty(bandbox.getValue(), true) && tabbox.getSelectedIndex() == 0)
+				menuController.updateRecentItems();
 		});
 		
 		Bandpopup popup = new Bandpopup();
@@ -224,6 +225,8 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	        	}
         	}
         } else if (event.getName().equals(Events.ON_SELECT)) {
+        	if (tabbox.getSelectedIndex() == 0)
+        		menuController.updateRecentItems();
         	String value = (String) bandbox.getAttribute(LAST_ONCHANGING_ATTR);
         	if (value == null) {
         		value = bandbox.getValue();
@@ -254,7 +257,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	 * Handle client info event from browser.
 	 */
 	public void onClientInfo() {
-		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-50);	
+		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-100);	
 	}
 
 	/**
