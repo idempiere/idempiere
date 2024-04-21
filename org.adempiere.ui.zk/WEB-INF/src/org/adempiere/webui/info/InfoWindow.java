@@ -1797,8 +1797,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		Columns columns = new Columns();
 		parameterGrid.appendChild(columns);
 		noOfParameterColumn = getNoOfParameterColumns();
-		for(int i = 0; i < noOfParameterColumn; i++)
-			columns.appendChild(new Column());
+		for(int i = 0; i < noOfParameterColumn; i++) {
+			Column column = new Column();
+			if(i%2==0)
+				column.setWidth("10%");
+			columns.appendChild(column);
+		}
 		
 		Column column = new Column();
 		ZKUpdateUtil.setWidth(column, "100px");
