@@ -1797,15 +1797,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		Columns columns = new Columns();
 		parameterGrid.appendChild(columns);
 		noOfParameterColumn = getNoOfParameterColumns();
+		String labelWidth = ( 96 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
+		String fieldWidth = ( 96 * 2 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
 		for(int i = 0; i < noOfParameterColumn; i++) {
 			Column column = new Column();
-			if(i%2==0)
-				column.setWidth("10%");
+			if (i%2 == 0)
+				column.setWidth(labelWidth);
+			else
+				column.setWidth(fieldWidth);
 			columns.appendChild(column);
 		}
 		
 		Column column = new Column();
-		ZKUpdateUtil.setWidth(column, "100px");
+		ZKUpdateUtil.setWidth(column, "4%");
 		column.setAlign("right");
 		columns.appendChild(column);
 		
@@ -1848,9 +1852,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if (checkAND == null) {
 			if (parameterGrid.getRows() != null && parameterGrid.getRows().getFirstChild() != null) {
-				Row row = (Row) parameterGrid.getRows().getFirstChild();
+				Row row = (Row) parameterGrid.getRows().getLastChild();
 				int col = row.getChildren().size();
-				while (col < 6) {
+				if (col == getNoOfParameterColumns()) {
+					row = new Row();
+					parameterGrid.getRows().appendChild(row);
+					col = 0;
+				}
+				while (col < getNoOfParameterColumns()-1) {
 					row.appendChild(new Space());
 					col++;
 				}
@@ -1954,6 +1963,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	        editor.dynamicDisplay();
 	        editor.addValueChangeListener(this);
 	        editor.fillHorizontal();
+	        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "100%");
 	        if (editor instanceof WTableDirEditor)
 	        {
 	        	((WTableDirEditor) editor).setRetainSelectedValueAfterRefresh(false);
@@ -1964,6 +1974,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		        editor2.dynamicDisplay();
 		        editor2.addValueChangeListener(this);
 		        editor2.fillHorizontal();
+		        if (DisplayType.isDate(mField.getDisplayType())) {
+		        	// give space for the Date Range button
+			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "40%");
+			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "40%");
+		        } else {
+			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "50%");
+			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "50%");
+		        }
 	        }
         }
         Label label = editor.getLabel();
@@ -2040,15 +2058,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         	panel = (Row) parameterGrid.getRows().getLastChild();
         	if (panel.getChildren().size() == getNoOfParameterColumns())
         	{
-        		if (parameterGrid.getRows().getChildren().size() == 1) 
-        		{
-        			createAndCheckbox();
-					panel.appendChild(checkAND);
-        		}
-        		else
-        		{
-        			panel.appendChild(new Space());
-        		}
         		panel = new Row();
             	parameterGrid.getRows().appendChild(panel); 
         	}
@@ -2071,21 +2080,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         outerParent.setStyle("display: flex;");
         outerParent.appendChild(fieldEditor);
         if(fieldEditor2 != null) {
-		Label dash = new Label("-");
-			dash.setStyle("padding-left:3px;padding-right:3px;display:flex;align-items:center;");
-			outerParent.appendChild(dash);
+            outerParent.setStyle("display: flex; flex-wrap: wrap;");
         	outerParent.appendChild(fieldEditor2);
         	if(editor.getGridField() != null && DisplayType.isDate(editor.getGridField().getDisplayType())) {
         		DateRangeButton drb = (new DateRangeButton(editor, editor2));
         		outerParent.appendChild(drb);
-			drb.setDateButtonVisible(false);
-		}
-		if (fieldEditor instanceof InputElement && fieldEditor2 instanceof InputElement) {
-			((InputElement)fieldEditor).setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
-			((InputElement)fieldEditor2).setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
-		} else if (fieldEditor instanceof NumberBox && fieldEditor2 instanceof NumberBox) {
-			((NumberBox)fieldEditor).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
-			((NumberBox)fieldEditor2).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
+        	}
+        	if (fieldEditor instanceof InputElement && fieldEditor2 instanceof InputElement) {
+        		((InputElement)fieldEditor).setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
+        		((InputElement)fieldEditor2).setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
+        	} else if (fieldEditor instanceof NumberBox && fieldEditor2 instanceof NumberBox) {
+        		((NumberBox)fieldEditor).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
+        		((NumberBox)fieldEditor2).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
         	}
         }
         panel.appendChild(outerParent);
