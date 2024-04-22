@@ -29,21 +29,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import org.compiere.db.partition.ITablePartitionService;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Msg;
 
 public class MTablePartition extends X_AD_TablePartition {
 
 	/** Serial Version ID */
 	private static final long serialVersionUID = 1L;
-	
-	/**	Logger */
-	private static CLogger		s_log = CLogger.getCLogger (MTablePartition.class);
 
 	/**
 	 * @param ctx
@@ -95,19 +88,6 @@ public class MTablePartition extends X_AD_TablePartition {
 	}
 	
 	/**
-	 * Get Table Partition Service depending on the database in use
-	 * @param ctx
-	 * @return ITablePartitionService
-	 */
-	public static ITablePartitionService getTablePartitionService(Properties ctx) {
-		ITablePartitionService service = DB.getDatabase().getTablePartitionService();
-		if (service == null) {
-			s_log.log(Level.SEVERE,  "@Error@ " + Msg.getMsg(ctx, "DBAdapterNoTablePartitionSupport"));
-		}
-		return service;
-	}
-	
-	/**
 	 * Check if the given table partition exists for the table
 	 * @param tableName
 	 * @param partitionName
@@ -127,15 +107,14 @@ public class MTablePartition extends X_AD_TablePartition {
 		boolean returnVal = false;
 		StringBuilder sqlSelect = new StringBuilder();
 		sqlSelect.append("SELECT 1 FROM ")
-			.append(X_AD_TablePartition.Table_Name)
-			.append(" WHERE AD_Table_ID = ? AND Name ILIKE '")
-			.append(partitionName)
-			.append("' ");
+		    .append(X_AD_TablePartition.Table_Name)
+		    .append(" WHERE AD_Table_ID = ? AND UPPER(Name) LIKE UPPER(?) ");
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 		    ps = DB.prepareStatement(sqlSelect.toString(), trxName);
 		    ps.setInt(1,tableId);
+		    ps.setString(2, partitionName);
 		    rs = ps.executeQuery();
 		    if (rs.next()) {
 		        returnVal = true;
@@ -171,6 +150,8 @@ public class MTablePartition extends X_AD_TablePartition {
 	public static String[] getPartitionKeyColumns(Properties ctx, int tableId, String trxName) {
 	    String whereClause = "AD_Table_ID=? AND IsPartitionKey='Y'";
 	    List<MColumn> keyCols = new Query(ctx, MColumn.Table_Name, whereClause, trxName)
+	    		.setParameters(tableId)
+	    		.setOnlyActiveRecords(true)
 	            .setOrderBy("SeqNoPartition ASC")
 	            .list();
 

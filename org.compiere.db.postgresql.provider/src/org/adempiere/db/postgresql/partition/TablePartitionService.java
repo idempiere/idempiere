@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -40,7 +38,6 @@ import org.compiere.db.partition.RangePartitionColumn;
 import org.compiere.db.partition.RangePartitionInterval;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
-import org.compiere.model.MTablePartition;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_TablePartition;
 import org.compiere.process.ProcessInfo;
@@ -77,7 +74,11 @@ public class TablePartitionService implements ITablePartitionService {
 		return getDefaultPartitionName(table.getTableName());
 	}
 	
-	@Override
+	/**
+	 * Get default partition name for table
+	 * @param tableName
+	 * @return String default partition name for table
+	 */
 	public String getDefaultPartitionName(String tableName) {
 		return tableName + "_default_partition";
 	}
@@ -1235,37 +1236,5 @@ public class TablePartitionService implements ITablePartitionService {
 			}
 		}
 	}
-
-	@Override
-	public String parsePartitionName(String tableName, Object[] partitionCols) {
-		StringBuilder partitionName = new StringBuilder();
-		if(Util.isEmpty(tableName))
-			return "";
-		
-		partitionName.append(tableName);
-		for(Object partitionCol : partitionCols) {
-			String sPartitionCol = Objects.toString(partitionCol);
-			if(!Util.isEmpty(sPartitionCol)) {
-				partitionName.append("_").append(sPartitionCol);
-			}
-		}
-		
-		return partitionName.toString();
-	}
 	
-	@Override
-	public String getPartitionName(Properties ctx, String tableName, int level, String trxName) {
-		String[] partitionColsAll = MTablePartition.getPartitionKeyColumns(ctx, tableName, trxName);
-		if(level == -1) {
-			level = partitionColsAll.length-1;
-		}
-		else if(level < -1) {
-			return "";
-		}				
-		ArrayList<Object> partitionCols = new ArrayList<>();
-		for(int i = 0; i <= level; i++) {
-			partitionCols.add(partitionColsAll[i]);
-		}
-		return parsePartitionName(tableName, partitionCols.toArray());
-	}
 }
