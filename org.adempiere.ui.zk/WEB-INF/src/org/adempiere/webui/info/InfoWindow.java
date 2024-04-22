@@ -1912,7 +1912,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private int getRowSize(Row row) {
 		int cnt = 0;
 		for (Component comp : row.getChildren()) {
-			if (! (comp instanceof Menupopup) )
+			if (! (comp instanceof Menupopup || comp instanceof DateRangeButton) )
 				cnt++;
 		}
 		return cnt;
