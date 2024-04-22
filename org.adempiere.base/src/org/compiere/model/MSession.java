@@ -20,6 +20,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
@@ -439,6 +441,35 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+	
+	/** Set of table name to disable capture of update change log */
+	private Set<String> skipChangeLogForUpdateSet = ConcurrentHashMap.newKeySet();
+
+	/**
+	 * Add session flag to disable the capture of update change log for a table
+	 * @param tableName table name, case insensitive
+	 */
+	public void addSkipChangeLogForUpdate(String tableName) {
+		skipChangeLogForUpdateSet.add(tableName.toUpperCase());
+	}
+	
+	/**
+	 * Remove the session flag that disable the capture of update change log for a table.<br/>
+	 * After removal of the session flag, the logging decision is back to what have been configured at AD_Table and AD_Column level. 
+	 * @param tableName table name, case insensitive
+	 */
+	public void removeSkipChangeLogForUpdate(String tableName) {
+		skipChangeLogForUpdateSet.remove(tableName.toUpperCase());
+	}
+	
+	/**
+	 * Is skip the capture of update change log for this session
+	 * @param tableName table name, case insensitive
+	 * @return true if it is to skip the capture of update change log for this session
+	 */
+	public boolean isSkipChangeLogForUpdate(String tableName) {
+		return skipChangeLogForUpdateSet.contains(tableName.toUpperCase());
 	}
 }	//	MSession
 
