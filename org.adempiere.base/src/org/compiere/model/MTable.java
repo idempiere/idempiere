@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -1103,4 +1104,29 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return hasCustomTree.booleanValue();
 	}
 
+	/**
+	 * Get Partition Name of the table of the given level
+	 * @param tableName
+	 * @param primaryLevelOnly - if true, ignore the sub-partition, if exists
+	 * @return table partition name, or empty
+	 */
+	public static String getPartitionName(Properties ctx, String tableName, boolean primaryLevelOnly, String trxName) {
+		// collect partition key columns
+		String[] partitionColsAll = MTablePartition.getPartitionKeyColumns(ctx, tableName, trxName);
+		int level = primaryLevelOnly ? 1 : partitionColsAll.length;			
+		ArrayList<Object> partitionCols = new ArrayList<>();
+		for(int i = 0; i < level; i++) {
+			partitionCols.add(partitionColsAll[i]);
+		}
+		// parse partition name
+		StringBuilder partitionName = new StringBuilder();
+		partitionName.append(tableName);
+		for(Object partitionCol : partitionCols) {
+			String sPartitionCol = Objects.toString(partitionCol);
+			if(!Util.isEmpty(sPartitionCol)) {
+				partitionName.append("_").append(sPartitionCol);
+			}
+		}		
+		return partitionName.toString();
+	}
 }	//	MTable
