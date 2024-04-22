@@ -164,7 +164,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 4004251745919433247L;
+	private static final long serialVersionUID = 615852605072547785L;
 
 	private static final String ON_QUERY_AFTER_CHANGE = "onQueryAfterChange";
 	
@@ -1853,7 +1853,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (checkAND == null) {
 			if (parameterGrid.getRows() != null && parameterGrid.getRows().getFirstChild() != null) {
 				Row row = (Row) parameterGrid.getRows().getLastChild();
-				int col = row.getChildren().size();
+				int col = getRowSize(row);
 				if (col == getNoOfParameterColumns()) {
 					row = new Row();
 					parameterGrid.getRows().appendChild(row);
@@ -1908,7 +1908,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			identifiers = list;
 		}
 	}
-	
+
+	/**
+	 * Get number of children from the row except Menupopup
+	 * @param row
+	 * @return
+	 */
+	private int getRowSize(Row row) {
+		int cnt = 0;
+		for (Component comp : row.getChildren()) {
+			if (! (comp instanceof Menupopup) )
+				cnt++;
+		}
+		return cnt;
+	}
+
 	/**
 	 * evaluate display logic for input parameters
 	 */
@@ -2056,7 +2070,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         else
         {
         	panel = (Row) parameterGrid.getRows().getLastChild();
-        	if (panel.getChildren().size() == getNoOfParameterColumns())
+        	if (getRowSize(panel) == getNoOfParameterColumns())
         	{
         		panel = new Row();
             	parameterGrid.getRows().appendChild(panel); 
