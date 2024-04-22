@@ -1797,8 +1797,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		Columns columns = new Columns();
 		parameterGrid.appendChild(columns);
 		noOfParameterColumn = getNoOfParameterColumns();
-		String labelWidth = ( 96 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
-		String fieldWidth = ( 96 * 2 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
+		String labelWidth = ( 100 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
+		String fieldWidth = ( 100 * 2 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
 		for(int i = 0; i < noOfParameterColumn; i++) {
 			Column column = new Column();
 			if (i%2 == 0)
@@ -1807,11 +1807,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				column.setWidth(fieldWidth);
 			columns.appendChild(column);
 		}
-		
-		Column column = new Column();
-		ZKUpdateUtil.setWidth(column, "4%");
-		column.setAlign("right");
-		columns.appendChild(column);
 		
 		if (parameterGrid.getRows() != null)
 			parameterGrid.getRows().detach();
