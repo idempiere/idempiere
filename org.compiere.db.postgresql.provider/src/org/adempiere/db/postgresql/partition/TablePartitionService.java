@@ -1236,5 +1236,5 @@ public class TablePartitionService implements ITablePartitionService {
 			}
 		}
 	}
-	
+
 }
