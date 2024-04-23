@@ -37,7 +37,9 @@ Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
  org.compiere.db.postgresql.provider;bundle-version="12.0.0",
  org.idempiere.webservices;bundle-version="12.0.0",
  org.adempiere.ui.zk;bundle-version="12.0.0",
- org.adempiere.ui;bundle-version="12.0.0"
+ org.adempiere.ui;bundle-version="12.0.0",
+ wrapped.org.apache.poi.poi;bundle-version="5.2.2",
+ wrapped.org.apache.poi.poi-ooxml;bundle-version="5.2.2"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-17

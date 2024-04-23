@@ -133,6 +133,54 @@
 					</dependency-resolution>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>download-test-resource-poi-ooxml.xlsx</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<!--${url.file.srv}/database/11/Adempiere_pg.jar-->
+							<url>https://raw.githubusercontent.com/hieplq/binary.file/IDEMPIERE-6117/test/poi-ooxml.xlsx</url>
+							<unpack>false</unpack>
+							<outputDirectory>resources</outputDirectory>
+							<retries>5</retries>
+						</configuration>
+					</execution>
+					<execution>
+						<id>download-test-resource-poi-5.2.3</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<!--${url.file.srv}/database/11/Adempiere_pg.jar-->
+							<url>https://raw.githubusercontent.com/hieplq/binary.file/IDEMPIERE-6117/test/poi-5.2.3.jar</url>
+							<unpack>false</unpack>
+							<outputDirectory>resources</outputDirectory>
+							<retries>5</retries>
+						</configuration>
+					</execution>
+					<execution>
+						<id>download-test-resource-poi-ooxml-5.2.3</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<!--${url.file.srv}/database/11/Adempiere_pg.jar-->
+							<url>https://raw.githubusercontent.com/hieplq/binary.file/IDEMPIERE-6117/test/poi-ooxml-5.2.3.jar</url>
+							<unpack>false</unpack>
+							<outputDirectory>resources</outputDirectory>
+							<retries>5</retries>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
