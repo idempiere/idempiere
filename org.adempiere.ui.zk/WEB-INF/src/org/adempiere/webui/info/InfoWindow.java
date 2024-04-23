@@ -1985,8 +1985,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		        editor2.fillHorizontal();
 		        if (DisplayType.isDate(mField.getDisplayType())) {
 		        	// give space for the Date Range button
-			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "40%");
-			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "40%");
+			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "44%");
+			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "44%");
 		        } else {
 			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "50%");
 			        ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "50%");
