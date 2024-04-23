@@ -165,8 +165,7 @@ public class WebDoc
 		if (javaClient) {
 			m_head.addElement(new StoredHtmlSrc("STYLE", "org/compiere/images/standard.css"));
 		} else {
-			m_head.addElement(new link(WebEnv.getStylesheetURL(), link.REL_STYLESHEET, link.TYPE_CSS));
-			m_head.addElement(new script((Element)null, WebEnv.getBaseDirectory("/js/standard.js")));
+			m_head.addElement(new link("/resources/css/standard.css", link.REL_STYLESHEET, link.TYPE_CSS));
 		}
 		m_head.addElement(new meta().setHttpEquiv("Content-Type", "text/html; charset=UTF-8"));
 		m_head.addElement(new meta().setName("description", "iDempiere HTML UI"));
