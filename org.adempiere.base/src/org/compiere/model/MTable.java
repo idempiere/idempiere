@@ -1098,4 +1098,27 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return indexName.toString();
 	}
 
+	/**
+	 * Get Partition Name of the table of the given level
+	 * @param tableName
+	 * @param primaryLevelOnly - if true, ignore the sub-partition, if exists
+	 * @return table partition name, or empty
+	 */
+	public static String getPartitionName(Properties ctx, String tableName, boolean primaryLevelOnly, String trxName) {
+		if(Util.isEmpty(tableName))
+			return "";
+		
+		String[] partitionColsAll = MTablePartition.getPartitionKeyColumns(ctx, tableName, trxName);
+		
+		if(partitionColsAll.length == 0)
+			return tableName;
+		
+		int level = primaryLevelOnly ? 1 : partitionColsAll.length;
+		StringBuilder partitionName = new StringBuilder();
+		partitionName.append(tableName);
+		for(int i = 0; i < level; i++) {
+			partitionName.append("_").append(partitionColsAll[i]);
+		}
+		return partitionName.toString();
+	}
 }	//	MTable
