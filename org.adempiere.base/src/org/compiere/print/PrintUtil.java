@@ -447,6 +447,7 @@ public class PrintUtil
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Client_ID=" + AD_Client_ID);
 		Properties ctx = Env.getCtx();
+		Level level = CLogMgt.getLevel();
 		CLogMgt.enable(false);
 		//
 		//	Order Template
@@ -489,7 +490,7 @@ public class PrintUtil
 			UUIDGenerator.updateUUID(MColumn.get(ctx, X_AD_PrintForm.Table_Name, PO.getUUIDColumnName(X_AD_PrintForm.Table_Name)), trxName);
 		
 		//
-		CLogMgt.enable(true);
+		CLogMgt.setLevel(level);
 	}	//	createDocuments
 
 	/**

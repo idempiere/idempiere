@@ -24,16 +24,19 @@
  **********************************************************************/
 package org.idempiere.test.base;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.compiere.Adempiere;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogMgt;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
@@ -104,11 +107,13 @@ public class InitialClientSetupTest extends AbstractTestCase {
 			}
 		}
 		
+		CLogMgt.setLevel(Level.INFO);
 		ProcessInfo pi = new ProcessInfo(process.getName(), AD_Process_ID);
 		pi.setAD_PInstance_ID(pinstance.getAD_PInstance_ID());
 		process.processIt(pi, Trx.get(getTrxName(), false), false);
 		
 		assertTrue(!pi.isError(), pi.getSummary());
+		assertEquals(Level.INFO, CLogMgt.getLevel());
 		
 		rollback();
 	}
