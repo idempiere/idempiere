@@ -63,10 +63,24 @@ public class TablePartitionService implements ITablePartitionService {
 			""";
 		return DB.getSQLValueEx(trxName, sql, table.getTableName()) == 1;
 	}
-
-	private String getDefaultPartitionName(MTable table)
+	
+	/**
+	 * Get default partition name for table
+	 * @param table
+	 * @return String default partition name for table
+	 */
+	public String getDefaultPartitionName(MTable table)
 	{
-		return table.getTableName() + "_default_partition";
+		return getDefaultPartitionName(table.getTableName());
+	}
+	
+	/**
+	 * Get default partition name for table
+	 * @param tableName
+	 * @return String default partition name for table
+	 */
+	public String getDefaultPartitionName(String tableName) {
+		return tableName + "_default_partition";
 	}
 	
 	/**
