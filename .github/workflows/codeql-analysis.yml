@@ -40,6 +40,12 @@ jobs:
         java-version: '${{ env.java }}'
         distribution: ${{ env.java_distribution }}
 
+    # setup maven to 3.9 for tycho
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v5
+      with:
+        maven-version: 3.9.6
+
     # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -60,8 +66,8 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: |
-          ~/.m2
-        key: ${{ runner.os }}-maven-${{ env.branch_name }}
+          ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ env.branch_name }}-repository
 
     # run sonar on master only because sonar for PR come from other repository isn't support at moment (already on develop) 
     # https://stackoverflow.com/a/39720346
@@ -89,8 +95,8 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: |
-          ~/.m2
-        key: ${{ steps.cache-maven-material-restore.outputs.cache-primary-key }}
+          ~/.m2/repository
+        key: ${{ steps.cache-maven-material-restore.outputs.cache-primary-key }}-repository
 
   analyze_java_codeQL:
     name: Analyze java by code QL
@@ -108,6 +114,12 @@ jobs:
         java-version: '${{ env.java }}'
         distribution: ${{ env.java_distribution }}
 
+    # setup maven to 3.9 for tycho
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v5
+      with:
+        maven-version: 3.9.6
+
     # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -117,8 +129,8 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: |
-          ~/.m2
-        key: ${{ runner.os }}-maven-${{ env.branch_name }}
+          ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ env.branch_name }}-repository
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -140,8 +152,8 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: |
-          ~/.m2
-        key: ${{ steps.cache-maven-material-restore.outputs.cache-primary-key }}
+          ~/.m2/repository
+        key: ${{ steps.cache-maven-material-restore.outputs.cache-primary-key }}-repository
 
 
   analyze_javascript_codeQL:
