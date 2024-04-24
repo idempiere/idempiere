@@ -479,6 +479,7 @@ public class CLogMgt
 	/**
 	 * 	Enable/Disable logging (of handlers)
 	 *	@param enableLogging true if logging enabled
+	 *  @deprecated not recommended to use, problematic method to enable/disable the log globally 
 	 */
 	public static void enable (boolean enableLogging)
 	{
