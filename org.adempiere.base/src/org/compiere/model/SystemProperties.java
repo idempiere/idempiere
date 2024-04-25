@@ -54,6 +54,7 @@ public class SystemProperties {
 	private static final String PropertyFile = "PropertyFile";
 	private static final String PropertyHomeFile = "PropertyHomeFile";
 	private static final String TestOCI = "TestOCI";
+	private static final String TRACE_NULL_TRX_CONNECTION = "TRACE_NULL_TRX_CONNECTION";
 	private static final String ZK_THEME = MSysConfig.ZK_THEME;
 	private static final String ZkUnitTest = "ZkUnitTest";
 
@@ -255,6 +256,14 @@ public class SystemProperties {
 	 */
 	public static boolean isZkUnitTest() {
 		return "true".equals(System.getProperty(ZkUnitTest));
+	}
+
+	/**
+	 * TRACE_NULL_TRX_CONNECTION=true to allow tracing null transactions on idempiereMonitor
+	 * @return
+	 */
+	public static boolean isTraceNullTrxConnection() {
+		return "true".equals(System.getProperty(TRACE_NULL_TRX_CONNECTION));
 	}
 
 }
