@@ -260,6 +260,8 @@ public class SystemProperties {
 
 	/**
 	 * TRACE_NULL_TRX_CONNECTION=true to allow tracing null transactions on idempiereMonitor
+	 * WARNING! this setting can have a big performance impact, it is disabled by default
+	 *   use it with care in production just temporarily to trace problematic connection slowness or leaks
 	 * @return
 	 */
 	public static boolean isTraceNullTrxConnection() {

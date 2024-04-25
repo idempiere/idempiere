@@ -147,7 +147,7 @@ public class StatementProxy implements InvocationHandler {
 		}
 		finally
 		{
-			if (SystemProperties.isTraceNullTrxConnection() && p_vo.getTrxName() == null && nullTrxName != null)
+			if (nullTrxName != null && p_vo.getTrxName() == null)
 				Trx.unregisterNullTrx(nullTrxName);
 			if (log.isLoggable(Level.FINE) && logSql != null && logOperation != null)
 			{
