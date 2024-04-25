@@ -623,6 +623,34 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}	//	getPO
 
+	private static final ThreadLocal<Boolean> partialPOResultSet = new ThreadLocal<Boolean>();
+	
+	/**
+	 * Is result set of {@link #getPO(int, String)} call doesn't include all columns of the PO model.
+	 * @return true if result set of {@link #getPO(int, String)} call doesn't include all columns of the PO model.
+	 */
+	protected static final boolean isPartialPOResultSet() {
+		return partialPOResultSet.get() != null ? partialPOResultSet.get() : false;
+	}
+	
+	/**
+	 * 	Get PO Instance from result set that only include some of the columns of the PO model.
+	 *	@param rs result set
+	 *	@param trxName transaction
+	 *	@return immutable PO instance
+	 */
+	public final PO getPartialPO (ResultSet rs, String trxName)
+	{
+		try {
+			partialPOResultSet.set(Boolean.TRUE);
+			PO po = getPO(rs, trxName);
+			po.makeImmutable();
+			return po;
+		} finally {
+			partialPOResultSet.remove();
+		}
+	}
+	
 	/**
 	 * 	Get PO Instance from result set
 	 *	@param rs result set

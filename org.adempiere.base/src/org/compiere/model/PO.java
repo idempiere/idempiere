@@ -1627,7 +1627,7 @@ public abstract class PO
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
-		log.finest("(rs)");
+		if (log.isLoggable(Level.FINEST)) log.finest("(rs)");
 		loadedVirtualColumns.clear();
 		//  load column values
 		for (index = 0; index < size; index++)
@@ -1700,6 +1700,8 @@ public abstract class PO
 		{
 			if (p_info.isVirtualColumn(index)) {
 				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
+			} else if (MTable.isPartialPOResultSet()) {
+				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Partial PO, Column not loaded: " + columnName);
 			} else {
 				log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
 					+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)

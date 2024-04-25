@@ -44,6 +44,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	private T currentPO = null;
 	/** Should we close the statement and resultSet on any exception that occur ? */
 	private boolean closeOnError = true;
+	private boolean partialPO = false;
 
 	/**
 	 * Constructs the POResultSet.<br/>
@@ -87,7 +88,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 		}
 		try {
 			if ( resultSet.next() ) {
-				return (T) table.getPO(resultSet, trxName);
+				return (T) (partialPO ? table.getPartialPO(resultSet, trxName) : table.getPO(resultSet, trxName));
 			} else {
 				this.close(); // close it if there is no more data to read
 				return null;
@@ -134,5 +135,13 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 		this.resultSet = null;
 		this.statement = null;
 		currentPO = null;
+	}
+
+	/**
+	 * Set result set include all columns or is partial 
+	 * @param partialPO true if result set is partial
+	 */
+	public void setPartialPO(boolean partialPO) {
+		this.partialPO = partialPO;
 	}
 }
