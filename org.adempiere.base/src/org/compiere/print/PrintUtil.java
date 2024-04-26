@@ -47,11 +47,6 @@ import javax.print.attribute.standard.JobPriority;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JDialog;
 
-import org.adempiere.process.UUIDGenerator;
-import org.compiere.model.MColumn;
-import org.compiere.model.PO;
-import org.compiere.model.X_AD_PrintForm;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -453,8 +448,7 @@ public class PrintUtil
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Client_ID=" + AD_Client_ID);
 		Properties ctx = Env.getCtx();
-		CLogMgt.enable(false);
-		//
+
 		//	Order Template
 		int Order_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_HEADER_TEMPLATE, AD_Client_ID, trxName).get_ID();
 		int OrderLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_LINETAX_TEMPLATE, AD_Client_ID, trxName).get_ID();
@@ -475,27 +469,18 @@ public class PrintUtil
 		int Remittance_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE, AD_Client_ID, trxName).get_ID();
 		updatePrintFormatHeader(Remittance_PrintFormat_ID, RemittanceLine_PrintFormat_ID, trxName);
 
-	//	TODO: MPrintForm	
-
 		int AD_PrintForm_ID = DB.getNextID (AD_Client_ID, "AD_PrintForm", null);
-		String sql = "INSERT INTO AD_PrintForm(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_PrintForm_ID,"
+		StringBuilder sql = new StringBuilder("INSERT INTO AD_PrintForm(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_PrintForm_ID,AD_PrintForm_UU,"
 			+ "Name,Order_PrintFormat_ID,Invoice_PrintFormat_ID,Remittance_PrintFormat_ID,Shipment_PrintFormat_ID)"
-			//
-			+ " VALUES (" + AD_Client_ID + ",0,'Y',getDate(),0,getDate(),0," + AD_PrintForm_ID + ","
-			+ "'" + Msg.translate(ctx, "Standard") + "',"
-			+ Order_PrintFormat_ID + "," + Invoice_PrintFormat_ID + ","
-			+ Remittance_PrintFormat_ID + "," + Shipment_PrintFormat_ID + ")";
-		int no = DB.executeUpdate(sql, trxName);
+			+ " VALUES (")
+			.append(AD_Client_ID).append(",0,'Y',getDate(),0,getDate(),0,").append(AD_PrintForm_ID).append(",generate_uuid(),")
+			.append(DB.TO_STRING(Msg.translate(ctx, "Standard"))).append(",")
+			.append(Order_PrintFormat_ID).append(",").append(Invoice_PrintFormat_ID).append(",")
+			.append(Remittance_PrintFormat_ID).append(",").append(Shipment_PrintFormat_ID).append(")");
+		int no = DB.executeUpdateEx(sql.toString(), trxName);
 		if (no != 1)
 			log.log(Level.SEVERE, "PrintForm NOT inserted");
 
-		if (DB.isGenerateUUIDSupported())
-			DB.executeUpdateEx("UPDATE AD_PrintForm SET AD_PrintForm_UU=generate_uuid() WHERE AD_PrintForm_UU IS NULL", trxName);
-		else
-			UUIDGenerator.updateUUID(MColumn.get(ctx, X_AD_PrintForm.Table_Name, PO.getUUIDColumnName(X_AD_PrintForm.Table_Name)), trxName);
-		
-		//
-		CLogMgt.enable(true);
 	}	//	createDocuments
 
 	/**

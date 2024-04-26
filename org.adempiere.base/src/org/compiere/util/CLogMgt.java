@@ -451,17 +451,30 @@ public class CLogMgt
 	}	//	isLevelFine
 
 	/**
+	 * Save the current level when disabling log
+	 */
+	private static Level previousLevel = null;
+	/**
 	 * 	Enable/Disable logging (of handlers)
 	 *	@param enableLogging true if logging enabled
+	 *  @deprecated not recommended to use, problematic method to enable/disable the log globally 
 	 */
 	public static void enable (boolean enableLogging)
 	{
 		Logger rootLogger = getRootLogger();
 
 		if (enableLogging)
-			setLevel(rootLogger.getLevel());
+		{
+			if (previousLevel != null)
+				setLevel(previousLevel);
+			else
+				setLevel(rootLogger.getLevel());
+			reInit();
+			previousLevel = null;
+		}
 		else
 		{
+			previousLevel = rootLogger.getLevel();
 			setLevel(Level.OFF);
 		}
 	}	//	enable
