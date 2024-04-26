@@ -148,9 +148,9 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			boolean print = true;
 			if (filterPgDebug != null)
 				print = statement.matches(filterPgDebug);
-			// log.warning("Oracle -> " + oraStatement);
 			if (print) {
-				log.warning("Oracle -> " + sqlStatement);
+				if (SystemProperties.isDBDebugConvert())
+					log.warning("Oracle -> " + sqlStatement);
 				log.warning("PgSQL  -> " + statement);
 			}
 		}
