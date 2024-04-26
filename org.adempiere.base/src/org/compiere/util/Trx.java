@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.db.StatementProxy;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 
@@ -876,4 +877,40 @@ public class Trx
 			}, 2, TimeUnit.SECONDS);
 		}
 	}
+
+	/**
+	 * Register a null trx
+	 * @return
+	 */
+	public static String registerNullTrx() {
+		String nullTrxName = "NullTrx_" + UUID.randomUUID().toString();
+		Trx nullTrx = new Trx(nullTrxName);
+		nullTrx.trace = new Exception();
+		nullTrx.m_startTime = System.currentTimeMillis();
+		String displayName = null;
+		StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+		Optional<String> stackName = walker.walk(frames -> frames.map(
+				stackFrame -> stackFrame.getClassName() + "." +
+						stackFrame.getMethodName() + ":" +
+						stackFrame.getLineNumber())
+				.filter(f -> ! (f.startsWith(Trx.class.getName() + ".") || f.startsWith(StatementProxy.class.getName() + ".") || f.startsWith("jdk.proxy") || f.startsWith("org.compiere.util.DB.")))
+				.findFirst());
+		displayName = (stackName.orElse(null));
+		if (displayName != null)
+			nullTrx.setDisplayName(displayName);
+		s_cache.put(nullTrxName, nullTrx);
+		return nullTrxName;
+	}
+
+	/**
+	 * Unregister a null trx
+	 * @param nullTrxName
+	 */
+	public static void unregisterNullTrx(String nullTrxName) {
+		Trx nullTrx = s_cache.get(nullTrxName);
+		nullTrx.setDisplayName(null);
+		nullTrx.trace = null;
+		s_cache.remove(nullTrxName);
+	}
+
 }	//	Trx
