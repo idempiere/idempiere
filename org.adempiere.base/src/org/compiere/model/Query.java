@@ -394,7 +394,7 @@ public class Query
 	private <T extends PO> T getPO(ResultSet rs) {
 		T po;
 		if (selectColumns != null && selectColumns.length > 0)
-			po = (T)table.getPartialPO(rs, trxName);
+			po = (T)table.getPartialPO(rs, selectColumns, trxName);
 		else
 			po = (T)table.getPO(rs, trxName);
 		return po;
@@ -818,7 +818,7 @@ public class Query
 			rsPO.setCloseOnError(true);
 			if (selectColumns != null && selectColumns.length > 0)
 			{
-				rsPO.setPartialPO(true);
+				rsPO.setSelectColumns(selectColumns);
 			}
 			return rsPO;
 		}

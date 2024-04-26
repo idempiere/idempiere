@@ -623,31 +623,33 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}	//	getPO
 
-	private static final ThreadLocal<Boolean> partialPOResultSet = new ThreadLocal<Boolean>();
+	private static final ThreadLocal<String[]> partialPOResultSetColumns = new ThreadLocal<>();
 	
 	/**
-	 * Is result set of {@link #getPO(int, String)} call doesn't include all columns of the PO model.
-	 * @return true if result set of {@link #getPO(int, String)} call doesn't include all columns of the PO model.
+	 * Get columns included in result set of {@link #getPO(int, String)} call.<br/>
+	 * Use by {@link #getPartialPO(ResultSet, String[], String)}.
+	 * @return columns included in result set of {@link #getPO(int, String)} call
 	 */
-	protected static final boolean isPartialPOResultSet() {
-		return partialPOResultSet.get() != null ? partialPOResultSet.get() : false;
+	protected static final String[] getPartialPOResultSetColumns() {
+		return partialPOResultSetColumns.get();
 	}
 	
 	/**
 	 * 	Get PO Instance from result set that only include some of the columns of the PO model.
 	 *	@param rs result set
+	 * @param selectColumns 
 	 *	@param trxName transaction
 	 *	@return immutable PO instance
 	 */
-	public final PO getPartialPO (ResultSet rs, String trxName)
+	public final PO getPartialPO (ResultSet rs, String[] selectColumns, String trxName)
 	{
 		try {
-			partialPOResultSet.set(Boolean.TRUE);
+			partialPOResultSetColumns.set(selectColumns);
 			PO po = getPO(rs, trxName);
 			po.makeImmutable();
 			return po;
 		} finally {
-			partialPOResultSet.remove();
+			partialPOResultSetColumns.remove();
 		}
 	}
 	
