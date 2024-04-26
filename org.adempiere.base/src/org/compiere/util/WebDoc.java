@@ -162,11 +162,7 @@ public class WebDoc
 			return;
 		
 		//	css, js
-		if (javaClient) {
-			m_head.addElement(new StoredHtmlSrc("STYLE", "org/compiere/images/standard.css"));
-		} else {
-			m_head.addElement(new link("/resources/css/standard.css", link.REL_STYLESHEET, link.TYPE_CSS));
-		}
+		m_head.addElement(new link("/resources/css/idempiereMonitor.css", link.REL_STYLESHEET, link.TYPE_CSS));
 		m_head.addElement(new meta().setHttpEquiv("Content-Type", "text/html; charset=UTF-8"));
 		m_head.addElement(new meta().setName("description", "iDempiere HTML UI"));
 
@@ -183,13 +179,8 @@ public class WebDoc
 		//	Logo
 		m_topRight = new td().setAlign("right");
 		
-		if (javaClient) {
-			m_topRight.addElement(new img("res:org/compiere/images/iD10030.png")
+		m_topRight.addElement(new img("/webui/images/header-logo.png")
 			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
-		} else {
-			m_topRight.addElement(new img("/webui/images/header-logo.png")
-			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
-		}
 		m_topRow.addElement(m_topRight);
 		m_table.addElement(m_topRow);		
 		//
