@@ -110,6 +110,9 @@ public class Query
      * Number of records will be skipped on query run.
      */
     private int recordsToSkip;
+    
+    /** list of columns to include in select statement (optional) */
+    private String[] selectColumns;
 
 	/**
 	 * @param table
@@ -313,7 +316,6 @@ public class Query
 	 * @return PO List
 	 * @throws DBException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends PO> List<T> list() throws DBException
 	{
 		List<T> list = new ArrayList<T>();
@@ -327,7 +329,7 @@ public class Query
 			rs = createResultSet(pstmt);
 			while (rs.next ())
 			{
-				T po = (T)table.getPO(rs, trxName);
+				T po = getPO(rs);
 				list.add(po);
 			}
 		}
@@ -346,8 +348,7 @@ public class Query
 	 * Get first PO that match query criteria
 	 * @return first PO
 	 * @throws DBException
-	 */
-	@SuppressWarnings("unchecked")
+	 */	
 	public <T extends PO> T first() throws DBException
 	{
 		T po = null;
@@ -368,7 +369,7 @@ public class Query
 			rs = createResultSet(pstmt);
 			if (rs.next ())
 			{
-				po = (T)table.getPO(rs, trxName);
+				po = getPO(rs);
 			}
 		}
 		catch (SQLException e)
@@ -382,6 +383,22 @@ public class Query
 		}
 		return po;
 	}
+
+	/**
+	 * Get partial or full PO
+	 * @param <T>
+	 * @param rs
+	 * @return partial or full PO. 
+	 */
+	@SuppressWarnings("unchecked")
+	private <T extends PO> T getPO(ResultSet rs) {
+		T po;
+		if (selectColumns != null && selectColumns.length > 0)
+			po = (T)table.getPartialPO(rs, selectColumns, trxName);
+		else
+			po = (T)table.getPO(rs, trxName);
+		return po;
+	}
 	
 	/**
 	 * Get first PO that match query criteria.<br/>
@@ -390,7 +407,6 @@ public class Query
 	 * @throws DBException
 	 * @see {@link #first()}
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends PO> T firstOnly() throws DBException
 	{
 		T po = null;
@@ -411,7 +427,7 @@ public class Query
 			rs = createResultSet(pstmt);
 			if (rs.next())
 			{
-				po = (T)table.getPO(rs, trxName);
+				po = getPO(rs);
 			}
 			if (rs.next())
 			{
@@ -712,8 +728,7 @@ public class Query
 					public boolean tryAdvance(Consumer<? super T> action) {
 						try {
 							if(!finalRS.next()) return false;
-							@SuppressWarnings("unchecked")
-							final T newRec = (T)table.getPO(finalRS, trxName);
+							final T newRec = getPO(finalRS);
 							action.accept(newRec);
 							return true;
 						} catch(SQLException ex) {
@@ -801,6 +816,10 @@ public class Query
 			rs = createResultSet(pstmt);
 			rsPO = new POResultSet<T>(table, pstmt, rs, trxName);
 			rsPO.setCloseOnError(true);
+			if (selectColumns != null && selectColumns.length > 0)
+			{
+				rsPO.setSelectColumns(selectColumns);
+			}
 			return rsPO;
 		}
 		catch (SQLException e)
@@ -834,10 +853,17 @@ public class Query
 				throw new IllegalStateException("No POInfo found for AD_Table_ID="+table.getAD_Table_ID());
 			}
 			boolean isFullyQualified = !joinClauseList.isEmpty();
-			if(virtualColumns == null)
-				selectClause = info.buildSelect(isFullyQualified, noVirtualColumn);
+			if (selectColumns != null && selectColumns.length > 0)
+			{
+				selectClause = info.buildSelectForColumns(isFullyQualified, selectColumns);
+			}
 			else
-				selectClause = info.buildSelect(isFullyQualified, virtualColumns);
+			{
+				if(virtualColumns == null)
+					selectClause = info.buildSelect(isFullyQualified, noVirtualColumn);
+				else
+					selectClause = info.buildSelect(isFullyQualified, virtualColumns);
+			}
 		}
 		if (!joinClauseList.isEmpty()) 
 		{
@@ -1063,4 +1089,13 @@ public class Query
 		return this;
 	}
 
+	/**
+	 * Set the columns to include in select query.<br/>
+	 * Note that this doesn't effect {@link #iterate()}.
+	 * @param columns
+	 */
+	public Query selectColumns(String ...columns) {
+		this.selectColumns = columns;
+		return this;
+	}
 }

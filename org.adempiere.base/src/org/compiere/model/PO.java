@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -1627,7 +1628,7 @@ public abstract class PO
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
-		log.finest("(rs)");
+		if (log.isLoggable(Level.FINEST)) log.finest("(rs)");
 		loadedVirtualColumns.clear();
 		//  load column values
 		for (index = 0; index < size; index++)
@@ -1652,6 +1653,14 @@ public abstract class PO
 	private boolean loadColumn(ResultSet rs, int index) {
 		boolean success = true;
 		String columnName = p_info.getColumnName(index);
+		String[] selectColumns = MTable.getPartialPOResultSetColumns();
+		if (selectColumns != null && selectColumns.length > 0) {
+			Optional<String> optional = Arrays.stream(selectColumns).filter(e -> e.equalsIgnoreCase(columnName)).findFirst();
+			if (!optional.isPresent()) {
+				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Partial PO, Column not loaded: " + columnName);
+				return true;
+			}
+		}
 		Class<?> clazz = p_info.getColumnClass(index);
 		int dt = p_info.getColumnDisplayType(index);
 		try
