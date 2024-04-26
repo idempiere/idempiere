@@ -120,9 +120,15 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	 */
 	private void init() {
 
+		Runtime runtime = Runtime.getRuntime();
+		long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
 		System.runFinalization();
 		System.gc();
-		
+        try {Thread.sleep(100);} catch (InterruptedException e) {} // Give some time for GC to complete
+		long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
+		long freedMemory = usedMemoryAfter - usedMemoryBefore;
+		log.warning(String.format("Memory: total %,d, before gc: %,d, after gc %,d, freed by gc %,d bytes%n", runtime.totalMemory(), usedMemoryBefore, usedMemoryAfter, freedMemory));
+
 		this.setPosition("center");
 		this.setTitle(ThemeManager.getBrowserTitle());
 		this.setSclass("popup-dialog about-window");
