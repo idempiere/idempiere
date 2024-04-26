@@ -442,6 +442,8 @@ public class QueryTest extends AbstractTestCase {
 	public void testPartialPO() {
 		Query query = new Query(Env.getCtx(), MProduct.Table_Name, MProduct.COLUMNNAME_M_Product_ID + "=?", getTrxName());
 		MProduct product = query.setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).first();
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNotNull(product.getProductType());
@@ -449,6 +451,8 @@ public class QueryTest extends AbstractTestCase {
 		assertFalse(product.is_Immutable());
 		
 		product = query.selectColumns(MProduct.COLUMNNAME_Name, MProduct.COLUMNNAME_Value).setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).first();
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNull(product.getProductType());
@@ -456,6 +460,8 @@ public class QueryTest extends AbstractTestCase {
 		assertTrue(product.is_Immutable());
 		
 		product = query.selectColumns().setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).first();
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNotNull(product.getProductType());
@@ -464,6 +470,8 @@ public class QueryTest extends AbstractTestCase {
 		
 		List<MProduct> list = query.selectColumns(MProduct.COLUMNNAME_Name, MProduct.COLUMNNAME_Value).setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).list();
 		product = list.get(0);
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNull(product.getProductType());
@@ -471,6 +479,8 @@ public class QueryTest extends AbstractTestCase {
 		assertTrue(product.is_Immutable());
 		
 		product = query.selectColumns(MProduct.COLUMNNAME_Name, MProduct.COLUMNNAME_Value).setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).firstOnly();
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNull(product.getProductType());
@@ -478,6 +488,8 @@ public class QueryTest extends AbstractTestCase {
 		assertTrue(product.is_Immutable());
 		
 		product = (MProduct) query.selectColumns(MProduct.COLUMNNAME_Name, MProduct.COLUMNNAME_Value).setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).scroll().next();
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNull(product.getProductType());
@@ -486,6 +498,8 @@ public class QueryTest extends AbstractTestCase {
 		
 		Stream<MProduct> stream = query.selectColumns(MProduct.COLUMNNAME_Name, MProduct.COLUMNNAME_Value).setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id).stream();
 		product = stream.findFirst().get();
+		assertTrue(product.getM_Product_ID() > 0);
+		assertTrue(product.getAD_Client_ID() > 0);
 		assertNotNull(product.getName());
 		assertNotNull(product.getValue());
 		assertNull(product.getProductType());

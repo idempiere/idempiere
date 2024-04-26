@@ -883,6 +883,25 @@ public class POInfo implements Serializable
 	}
 
 	/**
+	 * Is column should always be loaded for partial loading of PO
+	 * @param columnIndex
+	 * @return true if column should always be loaded for partial loading of PO
+	 */
+	protected boolean isColumnAlwaysLoadedForPartialPO(int columnIndex)
+	{
+		String columnName = getColumnName(columnIndex);
+		boolean isKey = isKey(columnIndex);
+		boolean isUUID = columnName.equals(PO.getUUIDColumnName(m_TableName));
+		// Always load key, uuid and standard columns
+		if (isKey || isUUID || columnName.equalsIgnoreCase("ad_client_id") || columnName.equalsIgnoreCase("ad_org_id")
+				|| columnName.equalsIgnoreCase("isactive") || columnName.equalsIgnoreCase("created") || columnName.equalsIgnoreCase("createdby")
+				|| columnName.equalsIgnoreCase("updated") || columnName.equalsIgnoreCase("updatedby"))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
 	 * Build SQL SELECT statement for columns.
 	 * @param fullyQualified prefix column names with the table name
 	 * @return {@link StringBuilder} instance with the SQL statement.
@@ -892,17 +911,11 @@ public class POInfo implements Serializable
 		StringBuilder sql = new StringBuilder("SELECT ");
 		int size = getColumnCount();
 		int count = 0;
-		String uuid = PO.getUUIDColumnName(m_TableName);
 		for (int i = 0; i < size; i++)
 		{
 			String columnName = getColumnName(i);
-			boolean virtual = isVirtualColumn(i);
-			boolean isKey = isKey(i);
-			boolean isUUID = columnName.equals(uuid);
-			//always include key, uuid and standard columns
-			if (!isKey && !isUUID && !columnName.equalsIgnoreCase("ad_client_id") && !columnName.equalsIgnoreCase("ad_org_id")
-				&& !columnName.equalsIgnoreCase("isactive") && !columnName.equalsIgnoreCase("created") && !columnName.equalsIgnoreCase("createdby")
-				&& !columnName.equalsIgnoreCase("updated") && !columnName.equalsIgnoreCase("updatedby"))
+			boolean virtual = isVirtualColumn(i);			
+			if (!isColumnAlwaysLoadedForPartialPO(i))
 			{
 				Optional<String> optional = Arrays.stream(columns).filter(e -> e.equalsIgnoreCase(columnName)).findFirst();
 				if (!optional.isPresent())
