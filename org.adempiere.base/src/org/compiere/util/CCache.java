@@ -369,6 +369,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public boolean containsKey(Object key)
 	{
+		if (key == null)
+			return false;
 		return cache.containsKey(key) || nullList.contains(key);
 	}	//	containsKey
 
@@ -378,6 +380,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public boolean containsValue(Object value)
 	{
+		if (value == null)
+			return false;
 		return cache.containsValue(value);
 	}	//	containsValue
 
@@ -397,6 +401,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public V get(Object key)
 	{
+		if (key == null)
+			return null;
 		V v = cache.get(key);
 		if (v == null)
 			if (nullList.contains(key))

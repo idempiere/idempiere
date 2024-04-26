@@ -24,6 +24,7 @@
  **********************************************************************/
 package org.idempiere.test.performance;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -946,4 +947,16 @@ public class CacheTest extends AbstractTestCase {
 		
 		CacheMgt.get().unregister(cache);
 	}
+
+	@Test
+	public void testNullKey() {
+		CCache<String, String> testCache = new CCache<String, String>(null, "Test_Cache", 10, 60, false);
+		assertThatNoException().isThrownBy(() -> testCache.get(null));
+		assertThatNoException().isThrownBy(() -> testCache.containsKey(null));
+		assertThatNoException().isThrownBy(() -> testCache.containsValue(null));
+		assertFalse(testCache.containsValue(null));
+		testCache.put("TestNull", null);
+		assertFalse(testCache.containsValue(null)); // still false because null is an unknown value
+	}
+
 }
