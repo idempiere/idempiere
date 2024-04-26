@@ -46,6 +46,7 @@ public class SystemProperties {
 	private static final String org_adempiere_po_useTimeoutForUpdate = "org.adempiere.po.useTimeoutForUpdate";
 	private static final String org_compiere_report_path = "org.compiere.report.path";
 	private static final String org_idempiere_db_debug = "org.idempiere.db.debug";
+	private static final String org_idempiere_db_debug_convert = "org.idempiere.db.debug.convert";
 	private static final String org_idempiere_db_debug_filter = "org.idempiere.db.debug.filter";
 	private static final String org_idempiere_FileLogPrefix = "org.idempiere.FileLogPrefix";
 	private static final String org_idempiere_postgresql_URLParameters = "org.idempiere.postgresql.URLParameters";
@@ -175,6 +176,14 @@ public class SystemProperties {
 	 */
 	public static String getDBDebugFilter() {
 		return System.getProperty(org_idempiere_db_debug_filter);
+	}
+
+	/**
+	 * org.idempiere.db.convert=true to print also Oracle SQL Statements being converted
+	 * @return
+	 */
+	public static boolean isDBDebugConvert() {
+		return "true".equals(System.getProperty(org_idempiere_db_debug_convert));
 	}
 
 	/**
