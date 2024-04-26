@@ -21,6 +21,8 @@ import static org.compiere.model.MSysConfig.ZK_GRID_AFTER_FIND;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -853,15 +855,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
                 }
             }
             //
-            StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM ")
-                    .append(mTab.getTableName());
-            if (where.length() > 0)
-                sql.append(" WHERE ").append(where);
-            String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
-            		mTab.getTableName(), MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-            int no = DB.getSQLValue(null, finalSQL.toString());
-            //
-            require = mTab.isQueryRequire(no);
+            int no = getRecordCount(mTab, where);
+            // show find dialog if count timeout/exception
+            require = no == -1 ? true : mTab.isQueryRequire(no);
         }
         
         // Show find window (if required)
@@ -915,6 +911,34 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	callback.onCallback(query);
         }
     } // initialQuery
+
+    /**
+     * Get record count
+     * @param mTab
+     * @param where
+     * @return record count
+     */
+	private int getRecordCount(GridTab mTab, StringBuffer where) {
+		StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM ")
+		        .append(mTab.getTableName());
+		if (where.length() > 0)
+		    sql.append(" WHERE ").append(where);
+		String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
+				mTab.getTableName(), MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		int no = -1;
+		int timeout = GridTable.DEFAULT_COUNT_TIMEOUT_IN_SECONDS;
+		try (PreparedStatement stmt = DB.prepareStatement(finalSQL, null)) {
+			if (timeout > 0)
+				stmt.setQueryTimeout(timeout);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next())
+				no = rs.getInt(1);
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, e.getMessage(), e);
+			no = -1;
+		}
+		return no;
+	}	
 
     /**
      * Setup find window UI properties

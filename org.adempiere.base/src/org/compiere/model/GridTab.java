@@ -235,6 +235,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
 	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
+	public static final int DEFAULT_MAX_QUERY_RECORDS = 100000;
 	/**
 	 *  Tab loader for Tabs > 0
 	 */
@@ -3569,6 +3570,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		int tabMaxQueryRecords = m_vo.MaxQueryRecords;
 		if (roleMaxQueryRecords > 0 && (roleMaxQueryRecords < tabMaxQueryRecords || tabMaxQueryRecords == 0))
 			tabMaxQueryRecords = roleMaxQueryRecords;
+		if (tabMaxQueryRecords == 0)
+			tabMaxQueryRecords = DEFAULT_MAX_QUERY_RECORDS;			
 		return tabMaxQueryRecords;
 	}
 

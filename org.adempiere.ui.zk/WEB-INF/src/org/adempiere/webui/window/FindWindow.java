@@ -3150,8 +3150,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
 
         //  Execute Query
-        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, 
-        		GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+        int timeout = GridTable.DEFAULT_COUNT_TIMEOUT_IN_SECONDS;
         m_total = 999999;
         Statement stmt = null;
         ResultSet rs = null;
@@ -3187,12 +3186,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  No Records
         if (m_total == 0 && alertRecords)
             Dialog.warn(m_targetWindowNo, "FindZeroRecords", null);
-        //  More then allowed
+        //  Load not more than max allow
         if (m_gridTab != null && alertRecords && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total))
         {
-            Dialog.error(m_targetWindowNo, "FindOverMax",
-                m_total + " > " + m_gridTab.getMaxQueryRecords());
-            m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
+            m_total = m_gridTab.getMaxQueryRecords();
         }
         else
             if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);

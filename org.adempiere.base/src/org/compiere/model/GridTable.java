@@ -101,7 +101,9 @@ public class GridTable extends AbstractTableModel
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
-	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
+	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 10;
+	
+	public static final int DEFAULT_COUNT_TIMEOUT_IN_SECONDS = 1;
 	
 	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
 
@@ -169,6 +171,7 @@ public class GridTable extends AbstractTableModel
 
 	/**	Rowcount                    */
 	private int				    m_rowCount = 0;
+	private boolean				m_rowCountTimeout = false;
 	/**	Has Data changed?           */
 	private boolean			    m_changed = false;
 	/** Index of changed row via SetValueAt */
@@ -645,7 +648,8 @@ public class GridTable extends AbstractTableModel
 			m_buffer = new ArrayList<Object[]>(m_rowCount+10);
 		}
 		m_sort = new ArrayList<MSort>(m_rowCount+10);
-		if (m_rowCount > 0)
+		//actual row count or -1 for timeout
+		if (m_rowCount > 0 || m_rowCountTimeout) 
 		{
 			m_loader.setContext(ServerContext.getCurrentInstance());
 			m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
@@ -3009,12 +3013,13 @@ public class GridTable extends AbstractTableModel
 			//	Get Number of Rows
 			rows = 0;
 			PreparedStatement pstmt = null;
-			ResultSet rs = null;			
+			ResultSet rs = null;		
+			m_rowCountTimeout = false;
 			try
 			{
 				pstmt = DB.prepareStatement(m_SQL_Count, get_TrxName());
 				setParameter (pstmt, true);
-				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+				int timeout = DEFAULT_COUNT_TIMEOUT_IN_SECONDS;
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
@@ -3023,7 +3028,13 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e0)
 			{
-				throw new DBException(e0);
+				if (DB.getDatabase().isQueryTimeout(e0))
+				{
+					m_rowCountTimeout = true;
+					return 0;
+				}
+				else
+					throw new DBException(e0);
 			}
 			finally
 			{
@@ -3059,7 +3070,7 @@ public class GridTable extends AbstractTableModel
 			try
 			{
 				m_pstmt = DB.prepareStatement(m_SQL, trxName);
-				if (this.maxRows > 0 && rows == this.maxRows)
+				if (this.maxRows > 0)
 				{
 					m_pstmt.setMaxRows(this.maxRows);					
 				}
@@ -3143,6 +3154,8 @@ public class GridTable extends AbstractTableModel
 						m_buffer.add(rowData);
 					}
 					m_sort.add(sort);
+					if (m_rowCountTimeout)
+						m_rowCount++;
 
 					//	Statement all 1000 rows & sleep
 					if (m_sort.size() % 1000 == 0)
