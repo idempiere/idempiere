@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import javax.sql.RowSet;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CCachedRowSet;
 import org.compiere.util.CLogger;
 import org.compiere.util.CStatementVO;
@@ -133,8 +134,11 @@ public class StatementProxy implements InvocationHandler {
 			}
 		}
 		Method m = p_stmt.getClass().getMethod(name, method.getParameterTypes());
+		String nullTrxName = null;
 		try
 		{
+			if (SystemProperties.isTraceNullTrxConnection() && p_vo.getTrxName() == null)
+				nullTrxName = Trx.registerNullTrx();
 			return m.invoke(p_stmt, args);
 		}
 		catch (InvocationTargetException e)
@@ -143,6 +147,8 @@ public class StatementProxy implements InvocationHandler {
 		}
 		finally
 		{
+			if (nullTrxName != null && p_vo.getTrxName() == null)
+				Trx.unregisterNullTrx(nullTrxName);
 			if (log.isLoggable(Level.FINE) && logSql != null && logOperation != null)
 			{
 				log.fine((DisplayType.getDateFormat(DisplayType.DateTime)).format(new Date(System.currentTimeMillis()))+","+logOperation+","+logSql+","+(p_vo.getTrxName() != null ? p_vo.getTrxName() : "")+" (end)");
