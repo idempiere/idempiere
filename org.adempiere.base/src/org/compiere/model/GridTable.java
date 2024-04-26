@@ -95,16 +95,15 @@ public class GridTable extends AbstractTableModel
 	implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -5564364545827057092L;
+	private static final long serialVersionUID = -2602189278069194311L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
-	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 10;
-	
-	public static final int DEFAULT_COUNT_TIMEOUT_IN_SECONDS = 1;
-	
+	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
+	public static final int DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS = 1;
+
 	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
@@ -3019,7 +3018,8 @@ public class GridTable extends AbstractTableModel
 			{
 				pstmt = DB.prepareStatement(m_SQL_Count, get_TrxName());
 				setParameter (pstmt, true);
-				int timeout = DEFAULT_COUNT_TIMEOUT_IN_SECONDS;
+		        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
+		        		DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
@@ -3074,7 +3074,7 @@ public class GridTable extends AbstractTableModel
 				{
 					m_pstmt.setMaxRows(this.maxRows);					
 				}
-				//ensure not all row is fectch into memory for virtual table
+				//ensure not all rows are fetch into memory for virtual table
 				if (m_virtual)
 					m_pstmt.setFetchSize(100);
 				setParameter (m_pstmt, false);

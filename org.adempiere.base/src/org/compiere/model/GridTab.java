@@ -235,7 +235,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
 	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
-	public static final int DEFAULT_MAX_QUERY_RECORDS = 100000;
+	public static final int DEFAULT_GLOBAL_MAX_QUERY_RECORDS = 100000;
+
 	/**
 	 *  Tab loader for Tabs > 0
 	 */
@@ -3571,7 +3572,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (roleMaxQueryRecords > 0 && (roleMaxQueryRecords < tabMaxQueryRecords || tabMaxQueryRecords == 0))
 			tabMaxQueryRecords = roleMaxQueryRecords;
 		if (tabMaxQueryRecords == 0)
-			tabMaxQueryRecords = DEFAULT_MAX_QUERY_RECORDS;			
+			tabMaxQueryRecords = MSysConfig.getIntValue(MSysConfig.GLOBAL_MAX_QUERY_RECORDS, 
+	        		DEFAULT_GLOBAL_MAX_QUERY_RECORDS, Env.getAD_Client_ID(Env.getCtx()));
 		return tabMaxQueryRecords;
 	}
 

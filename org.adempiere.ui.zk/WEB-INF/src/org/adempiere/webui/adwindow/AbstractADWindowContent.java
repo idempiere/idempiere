@@ -926,7 +926,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
 				mTab.getTableName(), MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		int no = -1;
-		int timeout = GridTable.DEFAULT_COUNT_TIMEOUT_IN_SECONDS;
+        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
+        		GridTable.DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 		try (PreparedStatement stmt = DB.prepareStatement(finalSQL, null)) {
 			if (timeout > 0)
 				stmt.setQueryTimeout(timeout);
