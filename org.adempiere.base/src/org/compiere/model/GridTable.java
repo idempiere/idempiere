@@ -647,7 +647,7 @@ public class GridTable extends AbstractTableModel
 			m_buffer = new ArrayList<Object[]>(m_rowCount+10);
 		}
 		m_sort = new ArrayList<MSort>(m_rowCount+10);
-		//actual row count or -1 for timeout
+		// actual row count or timeout
 		if (m_rowCount > 0 || m_rowCountTimeout) 
 		{
 			m_loader.setContext(ServerContext.getCurrentInstance());
