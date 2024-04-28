@@ -1513,50 +1513,52 @@ public final class Env
 			outStr.append(inStr.substring(0, i));			// up to @
 			inStr = inStr.substring(i+1, inStr.length());	// from first @
 			
-			// If the next character is also '@', treat it as an escape sequence
-			if (inStr.startsWith("@")) {
-	            outStr.append("@");
-	            inStr = inStr.substring(1);
-	        }
-			else {
-				int j = inStr.indexOf('@');						// next @
-				if (j < 0)
-				{
-					if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
-					//not context variable, add back @ and break
-					outStr.append("@");
-					break;
-				}
-	
-				token = inStr.substring(0, j);
-	
-				// IDEMPIERE-194 Handling null context variable
-				String defaultV = null;
-				int idx = token.indexOf(":");	//	or clause
-				if (idx  >=  0) 
-				{
-					defaultV = token.substring(idx+1, token.length());
-					token = token.substring(0, idx);
-				}
-	
-				String ctxInfo = getContext(ctx, WindowNo, token, onlyWindow);	// get context
-				if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
-					ctxInfo = getContext(ctx, token);	// get global context
-	
-				if (ctxInfo.length() == 0 && defaultV != null)
-					ctxInfo = defaultV;
-	
-				if (ctxInfo.length() == 0)
-				{
-					if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
-					if (!ignoreUnparsable)
-						return "";						//	token not found
-				}
-				else
-					outStr.append(ctxInfo);				// replace context with Context
-	
-				inStr = inStr.substring(j+1, inStr.length());	// from second @
-	        }
+			int j = inStr.indexOf('@');						// next @
+			if (j < 0)
+			{
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
+				//not context variable, add back @ and break
+				outStr.append("@");
+				break;
+			}
+
+			if (j == 0)
+			{
+				outStr.append("@");
+				inStr = inStr.substring(1);
+				i = inStr.indexOf('@');
+				continue;
+			}
+
+			token = inStr.substring(0, j);
+
+			// IDEMPIERE-194 Handling null context variable
+			String defaultV = null;
+			int idx = token.indexOf(":");	//	or clause
+			if (idx  >=  0) 
+			{
+				defaultV = token.substring(idx+1, token.length());
+				token = token.substring(0, idx);
+			}
+
+			String ctxInfo = getContext(ctx, WindowNo, token, onlyWindow);	// get context
+			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
+				ctxInfo = getContext(ctx, token);	// get global context
+
+			if (ctxInfo.length() == 0 && defaultV != null)
+				ctxInfo = defaultV;
+
+			if (ctxInfo.length() == 0)
+			{
+				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
+				if (!ignoreUnparsable)
+					return "";						//	token not found
+			}
+			else
+				outStr.append(ctxInfo);				// replace context with Context
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+	        
 			i = inStr.indexOf('@');
 		}
 		outStr.append(inStr);						// add the rest of the string
@@ -1593,62 +1595,64 @@ public final class Env
 			outStr.append(inStr.substring(0, i));			// up to @
 			inStr = inStr.substring(i+1, inStr.length());	// from first @
 			
-			// If the next character is also '@', treat it as an escape sequence
-			if (inStr.startsWith("@")) {
+			int j = inStr.indexOf('@');						// next @
+			if (j < 0)
+			{
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
+				//not context variable, add back @ and break
+				outStr.append("@");
+				break;
+			}
+
+			if (j == 0)
+			{
 				outStr.append("@");
 				inStr = inStr.substring(1);
+				i = inStr.indexOf('@');
+				continue;
 			}
-			else {
-				int j = inStr.indexOf('@');						// next @
-				if (j < 0)
-				{
-					if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
-					//not context variable, add back @ and break
-					outStr.append("@");
-					break;
-				}
-	
-				token = inStr.substring(0, j);
-	
-				// IDEMPIERE-194 Handling null context variable
-				String defaultV = null;
-				int idx = token.indexOf(":");	//	or clause
-				if (idx  >=  0) 
-				{
-					defaultV = token.substring(idx+1, token.length());
-					token = token.substring(0, idx);
-				}
-	
-				String ctxInfo = null;
-				
-				if (token.equalsIgnoreCase(GridTab.CTX_Record_ID))
-				{
-					String keycolumnName = Env.getContext(Env.getCtx(), WindowNo, tabNo, GridTab.CTX_KeyColumnName,
-							onlyTab);
-					ctxInfo = Env.getContext(Env.getCtx(), WindowNo, tabNo, keycolumnName, onlyTab);
-				}
-				else
-				{
-					ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
-				}
-	
-				if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
-					ctxInfo = getContext(ctx, token);	// get global context
-	
-				if (ctxInfo.length() == 0 && defaultV != null)
-					ctxInfo = defaultV;
-	
-				if (ctxInfo.length() == 0)
-				{
-					if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
-					if (!ignoreUnparsable)
-						return "";						//	token not found
-				}
-				else
-					outStr.append(ctxInfo);				// replace context with Context
-	
-				inStr = inStr.substring(j+1, inStr.length());	// from second @
+
+			token = inStr.substring(0, j);
+
+			// IDEMPIERE-194 Handling null context variable
+			String defaultV = null;
+			int idx = token.indexOf(":");	//	or clause
+			if (idx  >=  0) 
+			{
+				defaultV = token.substring(idx+1, token.length());
+				token = token.substring(0, idx);
 			}
+
+			String ctxInfo = null;
+			
+			if (token.equalsIgnoreCase(GridTab.CTX_Record_ID))
+			{
+				String keycolumnName = Env.getContext(Env.getCtx(), WindowNo, tabNo, GridTab.CTX_KeyColumnName,
+						onlyTab);
+				ctxInfo = Env.getContext(Env.getCtx(), WindowNo, tabNo, keycolumnName, onlyTab);
+			}
+			else
+			{
+				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			}
+
+			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
+				ctxInfo = getContext(ctx, token);	// get global context
+
+			if (ctxInfo.length() == 0 && defaultV != null)
+				ctxInfo = defaultV;
+
+			if (ctxInfo.length() == 0)
+			{
+				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
+				if (!ignoreUnparsable)
+					return "";						//	token not found
+			}
+			else
+				outStr.append(ctxInfo);				// replace context with Context
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			
 			i = inStr.indexOf('@');
 		}
 		outStr.append(inStr);						// add the rest of the string
@@ -1722,99 +1726,101 @@ public final class Env
 		while (i != -1)
 		{
 			outStr.append(inStr.substring(0, i));			// up to @
-			inStr = inStr.substring(i+1, inStr.length());	// from first @
+			inStr = inStr.substring(i+1, inStr.length());	// from first @			
 			
-			// If the next character is also '@', treat it as an escape sequence
-			if (inStr.startsWith("@")) {
-	            outStr.append("@");
-	            inStr = inStr.substring(1);
-	        }
-			else {
-				int j = inStr.indexOf('@');						// next @
-				if (j < 0)
-				{
-					log.log(Level.SEVERE, "No second tag: " + inStr);
-					return "";						//	no second tag
-				}
-	
-				token = inStr.substring(0, j);
-	
-				String defaultValue = "";
-				int idx = token.indexOf(":");
-				if (token.contains(":")) {
-					defaultValue = token.substring(token.indexOf(":") + 1, token.length());
-					token = token.substring(0, idx);
-				}
-	
-				//format string
-				String format = "";
-				int f = token.indexOf('<');
-				if (f > 0 && token.endsWith(">")) {
-					format = token.substring(f+1, token.length()-1);
-					token = token.substring(0, f);
-				}
-	
-				Properties ctx = po != null ? po.getCtx() : Env.getCtx();
-				if (token.startsWith("#") || token.startsWith("$")) {
-					//take from context
-					String v = Env.getContext(ctx, token);
-					if (v != null && v.length() > 0) {
-						appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, null, v, outStr);
-					} else if (keepUnparseable) {
-						outStr.append("@").append(token);
-						if (!Util.isEmpty(format))
-							outStr.append("<").append(format).append(">");
-						outStr.append("@");
-					}
-				} else if (po != null && token.startsWith("=")) {
-					String property = token.substring(1);
-					char startChar = property.charAt(0);
-					if (startChar != Character.toUpperCase(startChar)) {
-						property = Character.toUpperCase(startChar) + property.substring(1);
-					}
-					String methodName = "get" + property;
-					Expression methodExpression = new Expression(po, methodName, null);
-					Object v = null;
-					try {
-						v = methodExpression.getValue();
-						if (v == null)
-							v = "";
-						appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, null, v, outStr);
-					} catch (Exception e) {
-						if (keepUnparseable) {
-							outStr.append("@").append(token);
-							if (!Util.isEmpty(format))
-								outStr.append("<").append(format).append(">");
-							outStr.append("@");
-						}
-					}
-				} else if (po != null) {
-					//take from po
-					if (po.get_ColumnIndex(token) >= 0) {
-						Object v = po.get_Value(token);
-						MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);					
-						if (v != null) {
-							appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, colToken, v, outStr);
-						}
-						else if (!Util.isEmpty(defaultValue))
-							outStr.append(defaultValue);
-					} else if (keepUnparseable) {
-						outStr.append("@").append(token);
-						if (!Util.isEmpty(format))
-							outStr.append("<").append(format).append(">");
-						outStr.append("@");
-					}
-				}
-				else if (keepUnparseable)
-				{
-					outStr.append("@"+token);
-					if (format.length() > 0)
-						outStr.append("<"+format+">");
+			int j = inStr.indexOf('@');						// next @
+			if (j < 0)
+			{
+				log.log(Level.SEVERE, "No second tag: " + inStr);
+				return "";						//	no second tag
+			}
+
+			if (j == 0)
+			{
+				outStr.append("@");
+				inStr = inStr.substring(1);
+				i = inStr.indexOf('@');
+				continue;
+			}
+			
+			token = inStr.substring(0, j);
+
+			String defaultValue = "";
+			int idx = token.indexOf(":");
+			if (token.contains(":")) {
+				defaultValue = token.substring(token.indexOf(":") + 1, token.length());
+				token = token.substring(0, idx);
+			}
+
+			//format string
+			String format = "";
+			int f = token.indexOf('<');
+			if (f > 0 && token.endsWith(">")) {
+				format = token.substring(f+1, token.length()-1);
+				token = token.substring(0, f);
+			}
+
+			Properties ctx = po != null ? po.getCtx() : Env.getCtx();
+			if (token.startsWith("#") || token.startsWith("$")) {
+				//take from context
+				String v = Env.getContext(ctx, token);
+				if (v != null && v.length() > 0) {
+					appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, null, v, outStr);
+				} else if (keepUnparseable) {
+					outStr.append("@").append(token);
+					if (!Util.isEmpty(format))
+						outStr.append("<").append(format).append(">");
 					outStr.append("@");
 				}
-				
-				inStr = inStr.substring(j+1, inStr.length());	// from second @
+			} else if (po != null && token.startsWith("=")) {
+				String property = token.substring(1);
+				char startChar = property.charAt(0);
+				if (startChar != Character.toUpperCase(startChar)) {
+					property = Character.toUpperCase(startChar) + property.substring(1);
+				}
+				String methodName = "get" + property;
+				Expression methodExpression = new Expression(po, methodName, null);
+				Object v = null;
+				try {
+					v = methodExpression.getValue();
+					if (v == null)
+						v = "";
+					appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, null, v, outStr);
+				} catch (Exception e) {
+					if (keepUnparseable) {
+						outStr.append("@").append(token);
+						if (!Util.isEmpty(format))
+							outStr.append("<").append(format).append(">");
+						outStr.append("@");
+					}
+				}
+			} else if (po != null) {
+				//take from po
+				if (po.get_ColumnIndex(token) >= 0) {
+					Object v = po.get_Value(token);
+					MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);					
+					if (v != null) {
+						appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, colToken, v, outStr);
+					}
+					else if (!Util.isEmpty(defaultValue))
+						outStr.append(defaultValue);
+				} else if (keepUnparseable) {
+					outStr.append("@").append(token);
+					if (!Util.isEmpty(format))
+						outStr.append("<").append(format).append(">");
+					outStr.append("@");
+				}
 			}
+			else if (keepUnparseable)
+			{
+				outStr.append("@"+token);
+				if (format.length() > 0)
+					outStr.append("<"+format+">");
+				outStr.append("@");
+			}
+			
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			
 			i = inStr.indexOf('@');
 		}
 		outStr.append(inStr);						// add the rest of the string
