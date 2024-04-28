@@ -1512,7 +1512,7 @@ public final class Env
 		{
 			outStr.append(inStr.substring(0, i));			// up to @
 			inStr = inStr.substring(i+1, inStr.length());	// from first @
-			
+
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
@@ -1558,7 +1558,6 @@ public final class Env
 				outStr.append(ctxInfo);				// replace context with Context
 
 			inStr = inStr.substring(j+1, inStr.length());	// from second @
-	        
 			i = inStr.indexOf('@');
 		}
 		outStr.append(inStr);						// add the rest of the string
@@ -1594,7 +1593,7 @@ public final class Env
 		{
 			outStr.append(inStr.substring(0, i));			// up to @
 			inStr = inStr.substring(i+1, inStr.length());	// from first @
-			
+
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
@@ -1652,7 +1651,6 @@ public final class Env
 				outStr.append(ctxInfo);				// replace context with Context
 
 			inStr = inStr.substring(j+1, inStr.length());	// from second @
-			
 			i = inStr.indexOf('@');
 		}
 		outStr.append(inStr);						// add the rest of the string
@@ -1726,8 +1724,7 @@ public final class Env
 		while (i != -1)
 		{
 			outStr.append(inStr.substring(0, i));			// up to @
-			inStr = inStr.substring(i+1, inStr.length());	// from first @			
-			
+			inStr = inStr.substring(i+1, inStr.length());	// from first @
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
@@ -1819,8 +1816,7 @@ public final class Env
 				outStr.append("@");
 			}
 			
-			inStr = inStr.substring(j+1, inStr.length());	// from second @
-			
+			inStr = inStr.substring(j+1, inStr.length());	// from second @			
 			i = inStr.indexOf('@');
 		}
 		outStr.append(inStr);						// add the rest of the string
