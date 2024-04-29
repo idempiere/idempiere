@@ -1655,10 +1655,12 @@ public abstract class PO
 		String columnName = p_info.getColumnName(index);
 		String[] selectColumns = MTable.getPartialPOResultSetColumns();
 		if (selectColumns != null && selectColumns.length > 0) {
-			Optional<String> optional = Arrays.stream(selectColumns).filter(e -> e.equalsIgnoreCase(columnName)).findFirst();
-			if (!optional.isPresent()) {
-				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Partial PO, Column not loaded: " + columnName);
-				return true;
+			if (!p_info.isColumnAlwaysLoadedForPartialPO(index)) {
+				Optional<String> optional = Arrays.stream(selectColumns).filter(e -> e.equalsIgnoreCase(columnName)).findFirst();
+				if (!optional.isPresent()) {
+					if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Partial PO, Column not loaded: " + columnName);
+					return true;
+				}
 			}
 		}
 		Class<?> clazz = p_info.getColumnClass(index);
