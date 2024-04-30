@@ -3020,14 +3020,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         //  Test for no records
         if (getNoOfRecords(m_query, true) != 0) {
-        	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		dispose();
-        	} else {
-                if (advancedPanel != null) {
-                	advancedPanel.getItems().clear();
-                }
-                dispose();
+        	if (advancedPanel != null) {
+        		advancedPanel.getItems().clear();
         	}
+        	dispose();
         }
     }   //  cmd_ok_Simple
     
@@ -3098,11 +3094,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         
         if (getNoOfRecords(m_query, true) != 0) {
-        	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		dispose();
-        	} else {
-                dispose();
-        	}
+        	dispose();
         }
     }   //  cmd_ok_Advanced
     

@@ -1770,7 +1770,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		// Re-post incremental loading event to UI thread
     		if (e.isLoading() && e.getSource() != null && e.getSource().equals(adTabbox.getSelectedGridTab().getTableModel()))
-    		{    			
+    		{
     			Executions.schedule(getComponent().getDesktop(), evt -> {
     				this.dataStatusChanged(e);
     			}, new Event("onAsynchronousDataStatusChanged"));
