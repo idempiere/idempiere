@@ -31,7 +31,14 @@ when detect side effect, fix to only apply for parameter window*/
 }
 
 .report-option-container {
-	overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+}
+
+.report-option-container div {
+    padding: 2px;
 }
 
 /* Chromium based browsers + Safari */
