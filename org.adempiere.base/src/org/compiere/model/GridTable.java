@@ -3154,9 +3154,27 @@ public class GridTable extends AbstractTableModel
 						m_buffer.add(rowData);
 					}
 					m_sort.add(sort);
+					
+					// Start with rowCount=0, inform loading of first row
 					if (m_rowCountTimeout)
+					{
 						m_rowCount++;
+						if (m_rowCount == 1)
+						{
+							DataStatusEvent evt = createDSE();
+							evt.setLoading(m_sort.size());
+							fireDataStatusChanged(evt);
+						}
+					}
 
+					// Background loading without initial rowCount, incremental inform loading of rows
+					if (m_rowCountTimeout && (m_sort.size() % 100 == 0))
+					{
+						DataStatusEvent evt = createDSE();
+						evt.setLoading(m_sort.size());
+						fireDataStatusChanged(evt);
+					}
+						
 					//	Statement all 1000 rows & sleep
 					if (m_sort.size() % 1000 == 0)
 					{
@@ -3186,6 +3204,15 @@ public class GridTable extends AbstractTableModel
 			{
 				close();
 			}
+			
+			// Background loading without initial rowCount, inform final loaded rows
+			if (m_rowCountTimeout && m_sort.size() > 0)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				fireDataStatusChanged(evt);
+			}
+			
 			fireDataStatusIEvent("", "");
 		}
 

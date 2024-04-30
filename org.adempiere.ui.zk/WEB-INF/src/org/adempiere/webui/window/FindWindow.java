@@ -3021,7 +3021,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  Test for no records
         if (getNoOfRecords(m_query, true) != 0) {
         	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        		dispose();
         	} else {
                 if (advancedPanel != null) {
                 	advancedPanel.getItems().clear();
@@ -3099,7 +3099,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         if (getNoOfRecords(m_query, true) != 0) {
         	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        		dispose();
         	} else {
                 dispose();
         	}
