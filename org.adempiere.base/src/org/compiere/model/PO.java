@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
+import org.apache.commons.codec.binary.Hex;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -3572,8 +3573,8 @@ public abstract class PO
 			if (DisplayType.isLOB(dt))
 			{
 				lobAdd (value, i, dt);
-				if (!p_info.isColumnMandatory(i))
-					continue;
+//				if (!p_info.isColumnMandatory(i))
+//					continue;
 			}
 
 			//do not export secure column
@@ -3682,14 +3683,7 @@ public abstract class PO
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
 					{
-						if (p_info.isColumnMandatory(i))
-						{
-							sqlValues.append("''");		//	no db dependent stuff here -- at this point value is known to be not null
-						}
-						else
-						{
-							sqlValues.append("null");
-						}
+						sqlValues.append("decode('"+Hex.encodeHexString((byte[]) value)+"','hex')");
 					}
 					else
 						sqlValues.append (saveNewSpecial (value, i));
