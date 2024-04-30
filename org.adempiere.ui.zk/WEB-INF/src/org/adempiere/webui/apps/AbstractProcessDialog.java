@@ -511,10 +511,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		//summary option
 		chbIsSummary = new Checkbox();
 		chbIsSummary.setSclass("option-input-parameter");
+		chbIsSummary.setLabel(Msg.translate(Env.getCtx(), "Summary"));
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		lPrintFormat.setSclass("option-input-parameter print-format-label");
-		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
-		lIsSummary.setSclass("option-input-parameter");
 
 		//print formats
 		MClient client = MClient.get(m_ctx);
@@ -531,7 +530,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		fPrintFormat.getComponent().setSclass("option-input-parameter print-format-list");
 		fPrintFormat.getComponent().setPlaceholder(lPrintFormat.getValue());
-		reportOptionLayout.appendChild(lIsSummary);
 		reportOptionLayout.appendChild(chbIsSummary);
 	}
 
