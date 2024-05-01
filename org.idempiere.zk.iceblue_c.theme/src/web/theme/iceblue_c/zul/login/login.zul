@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+<borderlayout id="layout" sclass="login-window">
+	<center border="none" autoscroll="true" style="background-color: transparent;">
+		<vbox pack="center" align="center" style="background-color: transparent;" hflex="1" vflex="1">
+			<window use="org.adempiere.webui.window.LoginWindow" id="loginWindow"/>
+		</vbox>
+	</center>
+	<east sclass="login-east-panel">
+		<include src="~./theme/iceblue_c/zul/login/login-right.zul"/>
+	</east>
+	<west sclass="login-west-panel">
+		<include src="~./theme/iceblue_c/zul/login/login-left.zul"/>
+	</west>
+	<north sclass="login-north-panel">
+		<include src="~./theme/iceblue_c/zul/login/login-top.zul"/>
+	</north>
+	<south sclass="login-south-panel">
+		<include src="~./theme/iceblue_c/zul/login/login-bottom.zul"/>
+	</south>
+</borderlayout>
+</zk>

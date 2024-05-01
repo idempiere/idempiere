@@ -19,7 +19,9 @@
 	/* AEnv.getDesktop().getWebApp().setAppName("iDempiere"); */
 	Env.setContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE, "Y");
 	Env.setContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE, MSysConfig.getBooleanValue(MSysConfig.ZK_THEME_USE_FONT_ICON_FOR_IMAGE, false));
-	Themes.setTheme(Executions.getCurrent(), "breeze");
+	var setZkTheme = "breeze";
+	Themes.setTheme(Executions.getCurrent(), setZkTheme);
+	Executions.getCurrent().setAttribute("Themes.setTheme",setZkTheme);	 
 ]]>
 </zscript>
 </zk>

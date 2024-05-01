@@ -65,6 +65,8 @@
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>
 		<module>org.idempiere.test</module>
+		<module>org.idempiere.zk.breeze.theme</module>
+		<module>org.idempiere.zk.iceblue_c.theme</module>
 		<module>org.idempiere.p2.targetplatform</module>		
 	</modules>
 
