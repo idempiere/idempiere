@@ -29,7 +29,6 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
@@ -1380,23 +1379,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     public void query (boolean onlyCurrentRows, int onlyCurrentDays, int maxRows)
     {
     	boolean open = gridTab.isOpen();
-    	try 
-    	{
-	        gridTab.query(onlyCurrentRows, onlyCurrentDays, maxRows);
-	        if (listPanel.isVisible() && !open)
-	        	gridTab.getTableModel().fireTableDataChanged();
-    	}
-    	catch (Exception e)
-    	{
-    		if (DBException.isTimeout(e)) 
-    		{
-    			throw e;
-    		}
-    		else
-    		{
-    			Dialog.error(windowNo, e.getMessage());
-    		}
-    	}
+        gridTab.query(onlyCurrentRows, onlyCurrentDays, maxRows);
+        if (listPanel.isVisible() && !open)
+        	gridTab.getTableModel().fireTableDataChanged();
     }
 
     /**

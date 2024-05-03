@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
@@ -95,14 +96,15 @@ public class GridTable extends AbstractTableModel
 	implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -5564364545827057092L;
+	private static final long serialVersionUID = -2602189278069194311L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
 	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
-	
+	public static final int DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS = 1;
+
 	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
@@ -169,6 +171,7 @@ public class GridTable extends AbstractTableModel
 
 	/**	Rowcount                    */
 	private int				    m_rowCount = 0;
+	private boolean				m_rowCountTimeout = false;
 	/**	Has Data changed?           */
 	private boolean			    m_changed = false;
 	/** Index of changed row via SetValueAt */
@@ -426,7 +429,8 @@ public class GridTable extends AbstractTableModel
 		//IDEMPIERE-5193 Add Limit to Query
 		if(m_maxRows > 0 && DB.getDatabase().isPagingSupported())
 		{
-			m_SQL = DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows);
+			// set to maxRows plus one to trigger FindOverMax on overflow
+			m_SQL = DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows+1);
 		}
 		
 		//
@@ -645,7 +649,8 @@ public class GridTable extends AbstractTableModel
 			m_buffer = new ArrayList<Object[]>(m_rowCount+10);
 		}
 		m_sort = new ArrayList<MSort>(m_rowCount+10);
-		if (m_rowCount > 0)
+		// actual row count or timeout
+		if (m_rowCount > 0 || m_rowCountTimeout) 
 		{
 			m_loader.setContext(ServerContext.getCurrentInstance());
 			m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
@@ -1159,7 +1164,7 @@ public class GridTable extends AbstractTableModel
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			//adjust row count
 			m_rowCount = m_sort.size();
-			throw new DBException("GridTabLoadTimeoutError");
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE));
 		}
 	}
 
@@ -1266,6 +1271,9 @@ public class GridTable extends AbstractTableModel
 		try
 		{
 			stmt = DB.prepareStatement(sql.toString(), null);
+			int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+			if (timeout > 0)
+				stmt.setQueryTimeout(timeout);
 			rs = stmt.executeQuery();
 			while(rs.next())
 			{
@@ -3014,12 +3022,14 @@ public class GridTable extends AbstractTableModel
 			//	Get Number of Rows
 			rows = 0;
 			PreparedStatement pstmt = null;
-			ResultSet rs = null;			
+			ResultSet rs = null;		
+			m_rowCountTimeout = false;
 			try
 			{
 				pstmt = DB.prepareStatement(m_SQL_Count, get_TrxName());
 				setParameter (pstmt, true);
-				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+		        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
+		        		DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
@@ -3028,7 +3038,13 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e0)
 			{
-				throw new DBException(e0);
+				if (DB.getDatabase().isQueryTimeout(e0))
+				{
+					m_rowCountTimeout = true;
+					return 0;
+				}
+				else
+					throw new DBException(e0);
 			}
 			finally
 			{
@@ -3064,11 +3080,7 @@ public class GridTable extends AbstractTableModel
 			try
 			{
 				m_pstmt = DB.prepareStatement(m_SQL, trxName);
-				if (this.maxRows > 0 && rows == this.maxRows)
-				{
-					m_pstmt.setMaxRows(this.maxRows);					
-				}
-				//ensure not all row is fectch into memory for virtual table
+				//ensure not all rows are fetch into memory for virtual table
 				if (m_virtual)
 					m_pstmt.setFetchSize(100);
 				setParameter (m_pstmt, false);
@@ -3079,8 +3091,12 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e)
 			{
-				log.saveError(e.getLocalizedMessage(), e);
-				throw new DBException(e);
+				if (DB.getDatabase().isQueryTimeout(e)) {
+					throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE), e);
+				} else {
+					log.saveError(e.getLocalizedMessage(), e);
+					throw new DBException(e);
+				}
 			}
 		}
 
@@ -3118,6 +3134,7 @@ public class GridTable extends AbstractTableModel
 		 * Fill buffer from result set
 		 */
 		private void doRun() {
+			boolean isFindOverMax = false;
 			try
 			{
 				openResultSet();
@@ -3126,6 +3143,11 @@ public class GridTable extends AbstractTableModel
 
 				while (m_rs.next())
 				{
+					if (maxRows > 0 && m_sort.size() == maxRows) {
+						isFindOverMax = true;
+			            break;
+					}
+
 					if (Thread.interrupted())
 					{
 						if (log.isLoggable(Level.FINE)) log.fine("Interrupted");
@@ -3149,9 +3171,25 @@ public class GridTable extends AbstractTableModel
 					}
 					m_sort.add(sort);
 
+					// Start with rowCount=0, inform loading of first row
+					if (m_rowCountTimeout)
+					{
+						m_rowCount++;
+						if (m_rowCount == 1)
+						{
+							DataStatusEvent evt = createDSE();
+							evt.setLoading(m_sort.size());
+							evt.setInfo("CountQueryTimeoutLoadBackground", null, false, true);
+							fireDataStatusChanged(evt);
+						}
+					}
+
 					//	Statement all 1000 rows & sleep
 					if (m_sort.size() % 1000 == 0)
 					{
+						DataStatusEvent evt = createDSE();
+						evt.setLoading(m_sort.size());
+						fireDataStatusChanged(evt);
 						//	give the other processes a chance
 						try
 						{
@@ -3164,9 +3202,6 @@ public class GridTable extends AbstractTableModel
 							close();
 							return;
 						}
-						DataStatusEvent evt = createDSE();
-						evt.setLoading(m_sort.size());
-						fireDataStatusChanged(evt);
 					}
 				}	//	while(rs.next())
 			}
@@ -3178,6 +3213,17 @@ public class GridTable extends AbstractTableModel
 			{
 				close();
 			}
+			
+			// Background loading without initial rowCount, inform final loaded rows
+			if (m_rowCountTimeout && m_sort.size() > 0)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				if (isFindOverMax)
+					evt.setInfo("FindOverMax", " > " + m_sort.size(), false, true);
+				fireDataStatusChanged(evt);
+			}
+
 			fireDataStatusIEvent("", "");
 		}
 
