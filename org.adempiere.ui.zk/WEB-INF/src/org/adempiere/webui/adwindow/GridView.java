@@ -57,17 +57,21 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Frozen;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.CustomGridDataLoader;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * Grid/List view implemented using the Grid component.
@@ -613,6 +617,68 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		this.getChildren().clear();
 	}
 
+	public static final String FROZEN_MENU_ITEM_LABEL = "Frozen";
+	public static final String RESET_FROZEN_MENU_ITEM_LABEL = "Reset Frozen";
+	public static final String ATTR_COLUMN_MENU_ACTION = "attr_column_menu_action";
+	public static final String ATTR_COLUMN_MENU_POPUP = "attr_column_menu_popup";
+	
+	public static final EventListener<? extends Event> listener = event -> {
+		Menuitem menuItem = (Menuitem)event.getTarget();
+		Menupopup menupopup = (Menupopup)menuItem.getParent();
+		
+		org.zkoss.zul.Column contextMenuColumn = (org.zkoss.zul.Column)menupopup.getAttribute(GridView.ATTR_COLUMN_MENU_ACTION);
+		org.zkoss.zul.Grid grid = contextMenuColumn.getGrid();
+		
+		Frozen frozen = grid.getFrozen();
+		int frozenColumns = 2;// 2 first columns for reset default frozen
+		if (GridView.FROZEN_MENU_ITEM_LABEL.equals(menuItem.getLabel())) {
+			frozenColumns = grid.getColumns().getChildren().indexOf(contextMenuColumn) + 1;
+		}
+		if (frozen != null) {
+			frozen.setColumns(frozenColumns);
+		}
+	};
+	
+	public static void setColumnsMenuPopup (Component compGetRoot, XulElement compSetPopup) {
+		if (compGetRoot.getRoot() == null)
+			return;
+		
+		Object objMenuPopup = compGetRoot.getRoot().getAttribute(GridView.ATTR_COLUMN_MENU_POPUP);
+		
+		Menupopup columnMenuPopup = null;
+		
+		if (objMenuPopup == null) {
+			synchronized(compGetRoot.getRoot()) {
+				columnMenuPopup = new Menupopup();
+				compGetRoot.getRoot().appendChild(columnMenuPopup);
+				compGetRoot.getRoot().setAttribute(GridView.ATTR_COLUMN_MENU_POPUP, columnMenuPopup);
+				
+				columnMenuPopup.addEventListener(Events.ON_OPEN, event -> {
+					OpenEvent openEvent = (OpenEvent)event;
+					if (openEvent.isOpen()) {
+						openEvent.getTarget().setAttribute(GridView.ATTR_COLUMN_MENU_ACTION, openEvent.getReference());
+					}else {
+						openEvent.getTarget().removeAttribute(GridView.ATTR_COLUMN_MENU_ACTION);
+					}
+				});
+				
+				Menuitem frozenMenuItem = new Menuitem(GridView.FROZEN_MENU_ITEM_LABEL);
+				frozenMenuItem.setIconSclass("z-icon-lock");
+				columnMenuPopup.appendChild(frozenMenuItem);
+				
+				Menuitem resetFrozenMenuItem = new Menuitem(GridView.RESET_FROZEN_MENU_ITEM_LABEL);
+				resetFrozenMenuItem.setIconSclass("z-icon-mail-reply");
+				columnMenuPopup.appendChild(resetFrozenMenuItem);
+				
+				frozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
+				resetFrozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
+			}
+		}else {
+			columnMenuPopup = (Menupopup)objMenuPopup;
+		}
+		
+		compSetPopup.setContext(columnMenuPopup);
+	}
 	/**
 	 * Setup {@link Columns} of data grid
 	 */
@@ -662,7 +728,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		listbox.appendChild(columns);
 		columns.setSizable(true);
-		columns.setMenupopup("none");
+		//columns.setMenupopup("none");
 		columns.setColumnsgroup(false);
 
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
@@ -761,6 +827,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					}
 				} 
 				columns.appendChild(column);
+				GridView.setColumnsMenuPopup(listbox, column);
 			}
 		}
 	}
