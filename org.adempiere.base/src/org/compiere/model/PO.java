@@ -1653,7 +1653,7 @@ public abstract class PO
 	private boolean loadColumn(ResultSet rs, int index) {
 		boolean success = true;
 		String columnName = p_info.getColumnName(index);
-		String[] selectColumns = MTable.getPartialPOResultSetColumns();
+		String[] selectColumns = MTable.getPartialPOResultSetColumns(rs);
 		if (selectColumns != null && selectColumns.length > 0) {
 			if (!p_info.isColumnAlwaysLoadedForPartialPO(index)) {
 				Optional<String> optional = Arrays.stream(selectColumns).filter(e -> e.equalsIgnoreCase(columnName)).findFirst();
