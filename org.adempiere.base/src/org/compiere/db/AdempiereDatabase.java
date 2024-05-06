@@ -489,11 +489,11 @@ public interface AdempiereDatabase
 	}	//	getSQLCreate
 	
 	/**
-	 * Get insert SQL statement 
-	 * @param po
-	 * @return insert SQL statement
+	 * Get SQL Statement to store Blob 
+	 * @param hexString
+	 * @return SQL statement
 	 */
-	public String getSQLInsert(PO po);
+	public String TO_Blob(String hexString);
 	
 	/**
 	 * @param column

@@ -3683,13 +3683,9 @@ public abstract class PO
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
 					{
-						if(database.equals(Database.DB_POSTGRESQL)) 
+						if(database!=null) 
 						{
-							sqlValues.append ("decode('"+Hex.encodeHexString((byte[]) value)+"','hex')");
-						}
-						else if(database.equals(Database.DB_ORACLE)) 
-						{
-							sqlValues.append ("hextoraw('"+Hex.encodeHexString((byte[]) value)+"')");
+							sqlValues.append (Database.getDatabase(database).TO_Blob(Hex.encodeHexString((byte[]) value)));
 						}
 						else if (p_info.isColumnMandatory(i))
                         {

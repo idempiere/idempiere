@@ -137,8 +137,8 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	 * @param pgs list to add postgresql insert script
 	 */
 	protected void addSQLInsert(PO po, List<String> oracles, List<String> pgs) {
-		String oracle = Database.getDatabase(Database.DB_ORACLE).getSQLInsert(po);
-		String pg = Database.getDatabase(Database.DB_POSTGRESQL).getSQLInsert(po);
+		String oracle = Database.getDatabase(Database.DB_ORACLE).convertStatement(po.toInsertSQL(Database.DB_ORACLE));
+		String pg = Database.getDatabase(Database.DB_POSTGRESQL).convertStatement(po.toInsertSQL(Database.DB_POSTGRESQL));
 		oracles.add(oracle);
 		pgs.add(pg);
 	}

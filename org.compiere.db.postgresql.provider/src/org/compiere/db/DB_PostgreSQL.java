@@ -1407,8 +1407,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
-	public String getSQLInsert(PO po) {
-		String sql = po.toInsertSQL(Database.DB_POSTGRESQL);
-		return convertStatement(sql);
+	public String TO_Blob(String hexString) {
+		return "decode('"+hexString+"','hex')";
 	}
 }   //  DB_PostgreSQL

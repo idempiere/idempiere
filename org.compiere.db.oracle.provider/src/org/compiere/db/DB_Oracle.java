@@ -1219,8 +1219,7 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
-	public String getSQLInsert(PO po) {
-		String sql = po.toInsertSQL(Database.DB_ORACLE);
-		return convertStatement(sql);
+	public String TO_Blob(String hexString) {
+		return "HEXTORAW('"+hexString+"')";
 	}
 }   //  DB_Oracle
