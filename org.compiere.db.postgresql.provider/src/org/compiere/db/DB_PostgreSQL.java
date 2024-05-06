@@ -1405,4 +1405,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public ITablePartitionService getTablePartitionService() {
 		return new TablePartitionService();
 	}
+
+	@Override
+	public String getSQLInsert(PO po) {
+		String sql = po.toInsertSQL(Database.DB_POSTGRESQL);
+		return convertStatement(sql);
+	}
 }   //  DB_PostgreSQL

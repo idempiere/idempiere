@@ -369,6 +369,7 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String convertStatement (String oraStatement)
     {
+    	
     	Convert.logMigrationScript(oraStatement, null);
 		if (SystemProperties.isDBDebug()) {
 			String filterOrDebug = SystemProperties.getDBDebugFilter();
@@ -1215,5 +1216,11 @@ public class DB_Oracle implements AdempiereDatabase
 	@Override
 	public ITablePartitionService getTablePartitionService() {
 		return new TablePartitionService();
+	}
+
+	@Override
+	public String getSQLInsert(PO po) {
+		String sql = po.toInsertSQL(Database.DB_ORACLE);
+		return convertStatement(sql);
 	}
 }   //  DB_Oracle

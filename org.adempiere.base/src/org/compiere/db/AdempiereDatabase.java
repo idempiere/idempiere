@@ -489,6 +489,13 @@ public interface AdempiereDatabase
 	}	//	getSQLCreate
 	
 	/**
+	 * Get insert SQL statement 
+	 * @param po
+	 * @return insert SQL statement
+	 */
+	public String getSQLInsert(PO po);
+	
+	/**
 	 * @param column
 	 * @return DDL SQL statement for column
 	 */

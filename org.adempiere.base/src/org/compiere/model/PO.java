@@ -60,6 +60,7 @@ import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
 import org.compiere.db.AdempiereDatabase;
+import org.compiere.db.Database;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -3465,7 +3466,7 @@ public abstract class PO
 				
 		//	SQL
 		StringBuilder sqlInsert = new StringBuilder();
-		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false);
+		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false, null);
 		//
 		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
 							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
@@ -3534,12 +3535,13 @@ public abstract class PO
 
 	/**
 	 * Export data as insert SQL statement
+	 * @param database 
 	 * @return SQL insert statement
 	 */
-	public String toInsertSQL() 
+	public String toInsertSQL(String database) 
 	{
 		StringBuilder sqlInsert = new StringBuilder();
-		buildInsertSQL(sqlInsert, true, null, null, 0, true);
+		buildInsertSQL(sqlInsert, true, null, null, 0, true, database);
 		return sqlInsert.toString();
 	}
 	
@@ -3554,7 +3556,7 @@ public abstract class PO
 	 * @return last AD_ChangeLog_ID
 	 */
 	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
-			int AD_ChangeLog_ID, boolean generateScriptOnly) {
+			int AD_ChangeLog_ID, boolean generateScriptOnly, String database) {
 		sqlInsert.append("INSERT INTO ");
 		sqlInsert.append(p_info.getTableName()).append(" (");
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
@@ -3573,8 +3575,6 @@ public abstract class PO
 			if (DisplayType.isLOB(dt))
 			{
 				lobAdd (value, i, dt);
-//				if (!p_info.isColumnMandatory(i))
-//					continue;
 			}
 
 			//do not export secure column
@@ -3683,7 +3683,22 @@ public abstract class PO
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
 					{
-						sqlValues.append("decode('"+Hex.encodeHexString((byte[]) value)+"','hex')");
+						if(database.equals(Database.DB_POSTGRESQL)) 
+						{
+							sqlValues.append ("decode('"+Hex.encodeHexString((byte[]) value)+"','hex')");
+						}
+						else if(database.equals(Database.DB_ORACLE)) 
+						{
+							sqlValues.append ("hextoraw('"+Hex.encodeHexString((byte[]) value)+"')");
+						}
+						else if (p_info.isColumnMandatory(i))
+                        {
+                            sqlValues.append("''");        //    no db dependent stuff here -- at this point value is known to be not null
+                        }
+                        else
+                        {
+                            sqlValues.append("null");
+                        }
 					}
 					else
 						sqlValues.append (saveNewSpecial (value, i));
