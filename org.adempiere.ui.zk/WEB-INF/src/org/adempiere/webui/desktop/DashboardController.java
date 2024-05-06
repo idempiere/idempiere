@@ -196,7 +196,11 @@ public class DashboardController implements EventListener<Event> {
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
 		
 		String layoutOrientation = MSysConfig.getValue(MSysConfig.DASHBOARD_LAYOUT_ORIENTATION, Env.getAD_Client_ID(Env.getCtx()));
-        if(!ClientInfo.isMobile() && layoutOrientation.equals(DASHBOARD_LAYOUT_ROWS))
+        if (   layoutOrientation.equals(DASHBOARD_LAYOUT_ROWS)
+        	&& isShowInDashboard
+        	&& !ClientInfo.isMobile()
+        	&& !ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)
+        	)
         	renderRows(parent, desktopImpl, isShowInDashboard, false);
         else
         	renderColumns(parent, desktopImpl, isShowInDashboard, false);

@@ -623,8 +623,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 				clientInfo.tablet = true;
 			} else if (ua.contains("ipad") || ua.contains("iphone") || ua.contains("android")) {
 				clientInfo.tablet = true;
-			} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
-				clientInfo.tablet = true;
+			}
 			if (getDesktop() != null && getDesktop().getSession() != null) {
 				getDesktop().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			} else if (Executions.getCurrent() != null){
