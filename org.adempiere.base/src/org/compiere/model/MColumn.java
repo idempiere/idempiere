@@ -609,6 +609,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
+		if (getAD_Reference_ID() == DisplayType.Payment)
+			setAD_Reference_Value_ID(SystemIDs.REFERENCE_PAYMENTRULE);
+
 		return true;
 	}	//	beforeSave
 	

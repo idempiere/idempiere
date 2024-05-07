@@ -542,7 +542,7 @@ public final class DisplayType
 	 */
 	public static boolean isLookup(int displayType)
 	{
-		if (displayType == List
+		if (displayType == List || displayType == Payment
 			|| displayType == Table || displayType == TableUU
 			|| displayType == TableDir || displayType == TableDirUU
 			|| displayType == Search || displayType == SearchUU
