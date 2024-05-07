@@ -543,7 +543,7 @@ public class DashboardController implements EventListener<Event> {
         // Dashboard content
         Hlayout dashboardLineLayout = null;
         int currentLineNo = 0;
-        int noOfLines = 0;
+        int maxPerLine = 0;
         int width = 100;
         try
 		{
@@ -562,13 +562,12 @@ public class DashboardController implements EventListener<Event> {
         		}
         	}
         	
-        	noOfLines = MDashboardPreference.getForSessionRowCount(isShowInDashboard, AD_User_ID, AD_Role_ID);        	
         	if (ClientInfo.isMobile() && isShowInDashboard) {
 	        	if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1)) {
 	        		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
-	        			noOfLines = 1;
-	        		} else if (noOfLines > 2) {
-	        			noOfLines = 2;
+	        			maxPerLine = 1;
+	        		} else {
+	        			maxPerLine = 2;
 	        		}
 	        	}
         	}
@@ -586,7 +585,7 @@ public class DashboardController implements EventListener<Event> {
 	        	int lineNo = dp.getLine().intValue();
 	        	
 	        	int flexGrow = (flexGrow = dp.getFlexGrow()) > 0 ? flexGrow : DEFAULT_FLEX_GROW;
-	        	if(dashboardLineLayout == null || currentLineNo != lineNo)
+	        	if(dashboardLineLayout == null || currentLineNo != lineNo || (maxPerLine > 0 && dashboardLineLayout.getChildren().size() == maxPerLine))
 	        	{
 	        		dashboardLineLayout = new Hlayout();
 					dashboardLineLayout.setAttribute(LINE_ATTRIBUTE, lineNo);
