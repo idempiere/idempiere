@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.print;
 
-import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
@@ -514,8 +512,6 @@ public class DataEngine
 				else if (DisplayType.isList(AD_Reference_ID) 
 					|| (AD_Reference_ID == DisplayType.Button && AD_Reference_Value_ID != 0))
 				{
-					if (AD_Reference_ID == DisplayType.Payment)
-						AD_Reference_Value_ID = REFERENCE_PAYMENTRULE;
 					if (ColumnSQL.length() > 0)
 					{
 						lookupSQL = ColumnSQL;
