@@ -52,6 +52,9 @@
 .desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
 	font-weight: 600;
 }
+.desktop-user-panel.mobile {
+    height: auto;
+}
 .desktop-user-panel .z-toolbarbutton:hover {
 	background: #e0f2ff;
 	color: rgba(0,0,0,0.9);

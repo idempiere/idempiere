@@ -67,11 +67,13 @@
 	display: inline-flex;	
 	align-items: center;
 	color: #333;
+	flex-shrink: 0;
 }
 .z-toolbarbutton .z-toolbarbutton-content {
 	display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 .z-toolbar-content {
 	display:flex;
@@ -98,6 +100,12 @@
 }
 .font-icon-toolbar-button.toolbar-button:hover {
 	color: #fff;
+	background-color: #7ac8ff;
+}
+.font-icon-toolbar-button.toolbar-button, .font-icon-toolbar-button.toolbar-button .z-toolbarbutton-content {
+	display:inline-flex;
+	align-items: center;
+	justify-content: center; 
 }
 .font-icon-toolbar-button .z-toolbarbutton-content {
 	color: inherit;

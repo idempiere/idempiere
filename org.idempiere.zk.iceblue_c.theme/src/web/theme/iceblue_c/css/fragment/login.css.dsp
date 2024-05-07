@@ -89,8 +89,13 @@
 		width: 90%;
 	}
 	.login-box-footer .confirm-panel, .login-box-footer-pnl {
-		width: 90% !important;
+		width: 100% !important;
+        margin: 0px;
 	}
+	.login-box-footer {
+		padding-left: 0px;
+		padding-right: 0px;
+    }
 	.login-box-header-txt {
 		display: none;
 	}

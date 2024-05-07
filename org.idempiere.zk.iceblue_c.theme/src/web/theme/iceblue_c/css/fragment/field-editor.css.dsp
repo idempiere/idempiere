@@ -96,7 +96,8 @@
 
 <%-- datetime box --%>
 .datetime-box {
-	white-space:nowrap;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 <%-- combobox editor in grid view --%>

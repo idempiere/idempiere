@@ -88,7 +88,7 @@ public final class ThemeManager {
 						if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) != null) {
 							THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V7;
 						} else {
-							log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to default");
+							log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to " + ITheme.ZK_THEME_DEFAULT);
 							m_brokenTheme = theme;
 							THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V8;
 							theme = ITheme.ZK_THEME_DEFAULT;
