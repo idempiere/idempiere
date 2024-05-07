@@ -38,5 +38,14 @@ Copyright (C) 2007 Ashley G Ramdass.
 ]]>
 </script>
 <include src="${themePreference}"/>
+<zscript>
+<![CDATA[
+var currentZkTheme = org.zkoss.zul.theme.Themes.getTheme(org.zkoss.zk.ui.Executions.getCurrent());
+var setZkTheme = org.zkoss.zk.ui.Executions.getCurrent().getAttribute("Themes.setTheme");
+if (setZkTheme != null && !setZkTheme.equals(currentZkTheme)) {
+	org.zkoss.zk.ui.Executions.sendRedirect(null);
+}
+]]>
+</zscript>
 <window use="org.adempiere.webui.AdempiereWebUI"/>
 </zk>
