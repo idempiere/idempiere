@@ -31,6 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HexFormat;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -1219,7 +1220,7 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
-	public String TO_Blob(String hexString) {
-		return "HEXTORAW('"+hexString+"')";
+	public String TO_Blob(byte[] blob) {
+		return "HEXTORAW('"+HexFormat.of().formatHex(blob)+"')";
 	}
 }   //  DB_Oracle

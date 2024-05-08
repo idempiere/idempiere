@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
-import org.apache.commons.codec.binary.Hex;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -3683,9 +3682,9 @@ public abstract class PO
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
 					{
-						if(database!=null) 
+						if(database!=null && MSysConfig.getBooleanValue(MSysConfig.EXPORT_BLOB_COLUMN_FOR_INSERT, true, getAD_Client_ID())) 
 						{
-							sqlValues.append (Database.getDatabase(database).TO_Blob(Hex.encodeHexString((byte[]) value)));
+							sqlValues.append (Database.getDatabase(database).TO_Blob((byte[]) value));
 						}
 						else if (p_info.isColumnMandatory(i))
                         {

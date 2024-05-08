@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -1407,7 +1408,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
-	public String TO_Blob(String hexString) {
-		return "decode('"+hexString+"','hex')";
+	public String TO_Blob(byte[] blob) {
+		return "decode('"+HexFormat.of().formatHex(blob)+"','hex')";
 	}
 }   //  DB_PostgreSQL

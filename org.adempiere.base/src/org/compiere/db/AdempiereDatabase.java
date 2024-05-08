@@ -489,11 +489,11 @@ public interface AdempiereDatabase
 	}	//	getSQLCreate
 	
 	/**
-	 * Get SQL Statement to store Blob 
+	 * Convert blob to hex encoded string and return SQL function that will convert the hex encoded string back to blob
 	 * @param hexString
 	 * @return SQL statement
 	 */
-	public String TO_Blob(String hexString);
+	public String TO_Blob(byte[] blob);
 	
 	/**
 	 * @param column
