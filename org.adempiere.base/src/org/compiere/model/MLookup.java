@@ -1230,6 +1230,8 @@ public final class MLookup extends Lookup implements Serializable
 				//	SELECT Key, Value, Name, IsActive FROM ...
 				String sqlFirstRows = DB.getDatabase().addPagingSQL(sql.toString(), 1, MAX_ROWS+1);
 				pstmt = DB.prepareStatement(sqlFirstRows, null);
+				if (! DB.getDatabase().isPagingSupported())
+					pstmt.setMaxRows(MAX_ROWS+1);
 				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);

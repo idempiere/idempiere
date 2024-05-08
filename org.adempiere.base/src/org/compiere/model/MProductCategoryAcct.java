@@ -236,7 +236,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		StringBuilder products = new StringBuilder();
 		StringBuilder sql = new StringBuilder("SELECT DISTINCT p.Value FROM M_Product p JOIN M_CostDetail d ON p.M_Product_ID=d.M_Product_ID");
 		sql.append(" WHERE p.IsActive='Y' AND p.M_Product_Category_ID=? AND d.C_AcctSchema_ID=?");
-		String query = DB.getDatabase().addPagingSQL(sql.toString(), 0, 50);
+		String query = DB.getDatabase().addPagingSQL(sql.toString(), 1, 50);
 		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), query, getM_Product_Category_ID(), getC_AcctSchema_ID());
 		if (list != null) {
 			for(List<Object> entry : list) {
