@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -3561,6 +3562,7 @@ public abstract class PO
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
 		boolean doComma = false;
+		Map<String, String> oracleBlobSQL = new HashMap<String, String>();
 		for (int i = 0; i < size; i++)
 		{
 			Object value = get_Value(i);
@@ -3684,7 +3686,14 @@ public abstract class PO
 					{
 						if(database!=null && MSysConfig.getBooleanValue(MSysConfig.EXPORT_BLOB_COLUMN_FOR_INSERT, true, getAD_Client_ID())) 
 						{
-							sqlValues.append (Database.getDatabase(database).TO_Blob((byte[]) value));
+							String blobSQL = Database.getDatabase(database).TO_Blob((byte[]) value);
+							// Oracle size limit for one SQL statement
+							if (blobSQL != null && database.equals(Database.DB_ORACLE) && blobSQL.length() > 2048)
+							{
+								oracleBlobSQL.put(p_info.getColumnName(i), blobSQL);
+								blobSQL = p_info.isColumnMandatory(i) ? "'0'" : null;
+							}
+							sqlValues.append (blobSQL);
 						}
 						else if (p_info.isColumnMandatory(i))
                         {
@@ -3829,6 +3838,47 @@ public abstract class PO
 		}
 		sqlInsert.append(sqlValues)
 			.append(")");
+		
+		// Use pl/sql block for Oracle blob insert that's > 2048 bytes
+		if (!oracleBlobSQL.isEmpty()) 
+		{
+			sqlInsert.append("\n;");
+			for(String column : oracleBlobSQL.keySet())
+			{
+				sqlInsert.append("\n\n");				
+				String blobSQL = oracleBlobSQL.get(column);
+				int hexDataStart = blobSQL.indexOf("'");
+				int hexDataEnd = blobSQL.indexOf("'", hexDataStart+1);
+				String functionStart = blobSQL.substring(0, hexDataStart);
+				String hexData = blobSQL.substring(hexDataStart+1, hexDataEnd);
+				String functionEnd = blobSQL.substring(hexDataEnd+1);
+				int remaining = hexData.length();
+				int lineSize = 2048;
+				sqlInsert.append("DECLARE\n")
+					.append("   lob_out blob;\n")
+					.append("BEGIN\n")
+					.append("   UPDATE ").append(p_info.getTableName())
+					.append(" SET ").append(column).append("=EMPTY_BLOB()\n")
+					.append("   WHERE ").append(getUUIDColumnName()).append("=")
+					.append("'").append(get_UUID()).append("';\n")
+					.append("   SELECT ").append(column).append(" INTO lob_out\n")
+					.append("   FROM ").append(p_info.getTableName()).append("\n")
+					.append("   WHERE ").append(getUUIDColumnName()).append("=")
+					.append("'").append(get_UUID()).append("'\n")
+					.append("   FOR UPDATE;\n");
+				// Split hex encoded text into 2048 bytes block
+				int index = 0;				
+				while (remaining > 0) 
+				{
+					sqlInsert.append("   dbms_lob.append(lob_out, ").append(functionStart).append("'");
+					String data = remaining > lineSize ? hexData.substring(index, index+lineSize) : hexData.substring(index);
+					sqlInsert.append(data).append("'").append(functionEnd).append(");\n");
+					remaining = remaining > lineSize ? remaining - lineSize : 0;
+					index = index + lineSize;
+				}
+				sqlInsert.append("END;\n/");
+			}
+		}
 		return AD_ChangeLog_ID;
 	}
 

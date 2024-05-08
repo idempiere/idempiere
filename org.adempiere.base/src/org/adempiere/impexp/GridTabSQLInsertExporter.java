@@ -86,7 +86,7 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	        ZipEntry fileEntry = new ZipEntry("oracle/" + table.getTableName() + ".sql");
 	        zos.putNextEntry(fileEntry);
 	        for(String oracle : oracles)
-	        	zos.write((oracle+"\n;\n").getBytes());
+	        	zos.write(!(oracle.endsWith("/")) ? (oracle+"\n;\n").getBytes() : (oracle+"\n").getBytes());
 	        zos.closeEntry();
 	        
 	        fileEntry = new ZipEntry("postgresql/" + table.getTableName() + ".sql");
