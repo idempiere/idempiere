@@ -490,7 +490,7 @@ public interface AdempiereDatabase
 	
 	/**
 	 * Convert blob to hex encoded string and return SQL function that will convert the hex encoded string back to blob
-	 * @param hexString
+	 * @param blob
 	 * @return SQL statement
 	 */
 	public String TO_Blob(byte[] blob);
