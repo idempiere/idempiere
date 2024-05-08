@@ -323,7 +323,7 @@ public interface AdempiereDatabase
 	public boolean isPagingSupported();
 
 	/**
-	 * modify sql to return a subset of the query result
+	 * modify sql to return a subset of the query result. use 1 base index for start and end parameter
 	 * @param sql
 	 * @param start
 	 * @param end

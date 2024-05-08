@@ -13,10 +13,10 @@ INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated
 ;
 
 -- May 8, 2024, 1:06:19 AM CEST
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The report query took too more time to execute than allowed: {0} seconds',0,0,'Y',TO_TIMESTAMP('2024-05-08 01:06:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 01:06:18','YYYY-MM-DD HH24:MI:SS'),100,200893,'ReportQueryTimeout','D','5f17f55f-adbe-4d97-bf83-9447983b4946')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The data query for the report took too much time to execute (over {0} seconds) exceeding the allowed limit',0,0,'Y',TO_TIMESTAMP('2024-05-08 01:06:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 01:06:18','YYYY-MM-DD HH24:MI:SS'),100,200893,'ReportQueryTimeout','D','5f17f55f-adbe-4d97-bf83-9447983b4946')
 ;
 
 -- May 8, 2024, 1:07:10 AM CEST
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The report exceeded the maximum rows allowed: {0}',0,0,'Y',TO_TIMESTAMP('2024-05-08 01:07:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 01:07:09','YYYY-MM-DD HH24:MI:SS'),100,200894,'ReportMaxRowsReached','D','a4b55c31-0df0-4302-a62a-91cb7e79be0d')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The report data exceeds the maximum limit of {0} rows',0,0,'Y',TO_TIMESTAMP('2024-05-08 01:07:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 01:07:09','YYYY-MM-DD HH24:MI:SS'),100,200894,'ReportMaxRowsReached','D','a4b55c31-0df0-4302-a62a-91cb7e79be0d')
 ;
 
