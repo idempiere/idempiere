@@ -6,6 +6,6 @@ INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,C
 ;
 
 -- May 8, 2024, 4:55:35 PM ICT
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Reset freeze to indicator column (default)',0,0,'Y',TO_TIMESTAMP('2024-05-08 16:55:35','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 16:55:35','YYYY-MM-DD HH24:MI:SS'),100,nextidfunc(9,'N'),'ResetFrozenColumnContextMenuLabel','D','d7a3119c-b7fa-4825-81e6-cec12676b219')
+INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Reset Freeze Column','Reset freeze to indicator column (default)',0,0,'Y',TO_TIMESTAMP('2024-05-08 16:55:35','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 16:55:35','YYYY-MM-DD HH24:MI:SS'),100,nextidfunc(9,'N'),'ResetFrozenColumnContextMenuLabel','D','d7a3119c-b7fa-4825-81e6-cec12676b219')
 ;
 
