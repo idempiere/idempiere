@@ -370,7 +370,6 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String convertStatement (String oraStatement)
     {
-    	
     	Convert.logMigrationScript(oraStatement, null);
 		if (SystemProperties.isDBDebug()) {
 			String filterOrDebug = SystemProperties.getDBDebugFilter();

@@ -3688,7 +3688,7 @@ public abstract class PO
 						}
 						else if (p_info.isColumnMandatory(i))
                         {
-                            sqlValues.append("''");        //    no db dependent stuff here -- at this point value is known to be not null
+                            sqlValues.append("'0'");        //    no db dependent stuff here -- at this point value is known to be not null
                         }
                         else
                         {
@@ -5423,7 +5423,7 @@ public abstract class PO
 		for (int i = 0; i < m_lobInfo.size(); i++)
 		{
 			PO_LOB lob = (PO_LOB)m_lobInfo.get(i);
-			if (!lob.save(get_TrxName()))
+			if (!lob.save(get_WhereClause(true), get_TrxName()))
 			{
 				retValue = false;
 				break;
