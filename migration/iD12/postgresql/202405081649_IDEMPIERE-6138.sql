@@ -2,7 +2,7 @@
 SELECT register_migration_script('202405081649_IDEMPIERE-6138.sql') FROM dual;
 
 -- May 8, 2024, 4:49:50 PM ICT
-INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Frozen','Freeze this column to keep it visible when scrolling horizontally',0,0,'Y',TO_TIMESTAMP('2024-05-08 16:49:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 16:49:50','YYYY-MM-DD HH24:MI:SS'),100,nextidfunc(9,'N'),'FrozenColumnContextMenuLabel','D','0b139c87-3c66-460f-ab27-692afcf693f8')
+INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Freeze Column','Freeze this column to keep it visible when scrolling horizontally',0,0,'Y',TO_TIMESTAMP('2024-05-08 16:49:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-08 16:49:50','YYYY-MM-DD HH24:MI:SS'),100,nextidfunc(9,'N'),'FrozenColumnContextMenuLabel','D','0b139c87-3c66-460f-ab27-692afcf693f8')
 ;
 
 -- May 8, 2024, 4:55:35 PM ICT
