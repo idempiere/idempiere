@@ -70,7 +70,7 @@ public class BaseActivator implements BundleActivator {
 		
 		blacklistService = new ComponentBlackListService(context);
 		
-		//setup poi
+		//setup poi factory
 		WorkbookFactory.addProvider(new HSSFWorkbookFactory());
         WorkbookFactory.addProvider(new XSSFWorkbookFactory());
         SlideShowFactory.addProvider(new XSLFSlideShowFactory());
@@ -135,6 +135,14 @@ public class BaseActivator implements BundleActivator {
 			blacklistService.stop(context);
 			blacklistService = null;
 		}
+		
+		//remove poi factory
+		WorkbookFactory.removeProvider(HSSFWorkbookFactory.class);
+        WorkbookFactory.removeProvider(XSSFWorkbookFactory.class);
+        SlideShowFactory.removeProvider(XSLFSlideShowFactory.class);
+        ExtractorFactory.removeProvider(POIXMLExtractorFactory.class);
+        ExtractorFactory.removeProvider(MainExtractorFactory.class);
+        
 		Adempiere.stop();
 	}
 
