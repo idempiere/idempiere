@@ -766,7 +766,6 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		listbox.appendChild(columns);
 		columns.setSizable(true);
-		//columns.setMenupopup("none");
 		columns.setColumnsgroup(false);
 
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
