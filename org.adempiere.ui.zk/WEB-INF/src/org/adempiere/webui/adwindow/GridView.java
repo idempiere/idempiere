@@ -617,8 +617,6 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		this.getChildren().clear();
 	}
 
-	// name of attribute to identify menu item
-	public static final String ATTR_NAME_IDENTIFY_MENU_ITEM = "columnMenuIdentify";
 	// value of attribute to identify freeze menu item
 	public static final String ATTR_VALUE_MENU_ITEM_FROZEN = "Frozen";
 	public static final String MENU_ITEM_FROZEN_LABEL = "FrozenColumnContextMenuLabel";
@@ -644,7 +642,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		// calculate frozen up to click menu
 		int frozenColumns = -1;
-		Object valueIdentifyMenuItem = menuItem.getAttribute(ATTR_NAME_IDENTIFY_MENU_ITEM);
+		Object valueIdentifyMenuItem = menuItem.getValue();
 		if (GridView.ATTR_VALUE_MENU_ITEM_FROZEN.equals(valueIdentifyMenuItem)) {// freeze column menu
 			frozenColumns = grid.getColumns().getChildren().indexOf(contextMenuColumn) + 1;
 		}else if (GridView.ATTR_VALUE_MENU_ITEM_RESET_FROZEN.equals(valueIdentifyMenuItem)) {// reset freeze menu
@@ -696,14 +694,14 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					
 					// setup freeze column menu
 					Menuitem frozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_FROZEN_LABEL, true));
-					frozenMenuItem.setAttribute(ATTR_NAME_IDENTIFY_MENU_ITEM, ATTR_VALUE_MENU_ITEM_FROZEN);
+					frozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_FROZEN);
 					frozenMenuItem.setIconSclass("z-icon-lock");
 					frozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
 					gridColumnMenuPopup.appendChild(frozenMenuItem);
 					
 					// setup reset freeze column menu
 					Menuitem resetFrozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_RESET_FROZEN_LABEL, true));
-					resetFrozenMenuItem.setAttribute(ATTR_NAME_IDENTIFY_MENU_ITEM, ATTR_VALUE_MENU_ITEM_RESET_FROZEN);
+					resetFrozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_RESET_FROZEN);
 					resetFrozenMenuItem.setIconSclass("z-icon-mail-reply");
 					resetFrozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
 					gridColumnMenuPopup.appendChild(resetFrozenMenuItem);
