@@ -71,7 +71,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.CustomGridDataLoader;
-import org.zkoss.zul.impl.XulElement;
 
 /**
  * Grid/List view implemented using the Grid component.
@@ -196,6 +195,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 
 	/** true if auto hide empty column feature is enable **/
 	private String m_isAutoHideEmptyColumn;
+
+	private Menupopup gridColumnMenuPopup;
 
 	/**
 	 * default constructor
@@ -656,68 +657,6 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	};
 	
 	/**
-	 * Assign context menu to grid column. Use one menu for all columns per each desktop <br/>
-	 * 1. lookup or create MenuPopup <br/>
-	 * 2. set context menu for compSetPopup<br/> 
-	 * @param compGetRoot component to lookup root component on desktop to lookup MenuPopup
-	 * @param compSetPopup column to set context menu
-	 */
-	public static void setColumnsMenuPopup (Component compGetRoot, XulElement compSetPopup) {
-		if (compGetRoot ==null || compSetPopup == null || compGetRoot.getRoot() == null)
-			return;
-		
-		Object objMenuPopup = compGetRoot.getRoot().getAttribute(GridView.ATTR_NAME_GRID_VIEW_CONTEXT_MENU_POPUP);
-		
-		Menupopup gridColumnMenuPopup = null;
-		
-		if (objMenuPopup == null) {
-			// instance menu popup
-			synchronized(compGetRoot.getRoot()) {
-				// some thread waiting for the gridColumnMenuPopup instance will enter synchronized block after finish instance gridColumnMenuPopup. 
-				// To avoid duplicate instance gridColumnMenuPopup, it to try to get it again from root component.
-				objMenuPopup = compGetRoot.getRoot().getAttribute(GridView.ATTR_NAME_GRID_VIEW_CONTEXT_MENU_POPUP);
-				
-				if (objMenuPopup != null) {
-					gridColumnMenuPopup = (Menupopup)objMenuPopup;
-				}else {
-					gridColumnMenuPopup = new Menupopup();
-					
-					// handle onOpen event to store column to attribute
-					gridColumnMenuPopup.addEventListener(Events.ON_OPEN, event -> {
-						OpenEvent openEvent = (OpenEvent)event;
-						if (openEvent.isOpen()) {
-							openEvent.getTarget().setAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN, openEvent.getReference());
-						}else {
-							openEvent.getTarget().removeAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN);
-						}
-					});
-					
-					// setup freeze column menu
-					Menuitem frozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_FROZEN_LABEL, true));
-					frozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_FROZEN);
-					frozenMenuItem.setIconSclass("z-icon-lock");
-					frozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
-					gridColumnMenuPopup.appendChild(frozenMenuItem);
-					
-					// setup reset freeze column menu
-					Menuitem resetFrozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_RESET_FROZEN_LABEL, true));
-					resetFrozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_RESET_FROZEN);
-					resetFrozenMenuItem.setIconSclass("z-icon-mail-reply");
-					resetFrozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
-					gridColumnMenuPopup.appendChild(resetFrozenMenuItem);
-					
-					// store menu popup to root component
-					compGetRoot.getRoot().appendChild(gridColumnMenuPopup);
-					compGetRoot.getRoot().setAttribute(GridView.ATTR_NAME_GRID_VIEW_CONTEXT_MENU_POPUP, gridColumnMenuPopup);	
-				}
-			}
-		}else {
-			gridColumnMenuPopup = (Menupopup)objMenuPopup;
-		}
-		
-		compSetPopup.setContext(gridColumnMenuPopup);
-	}
-	/**
 	 * Setup {@link Columns} of data grid
 	 */
 	private void setupColumns()
@@ -768,6 +707,35 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		columns.setSizable(true);
 		columns.setColumnsgroup(false);
 
+		if (gridColumnMenuPopup != null && gridColumnMenuPopup.getParent() != null)
+			gridColumnMenuPopup.detach();
+		gridColumnMenuPopup = new Menupopup();
+		appendChild(gridColumnMenuPopup);
+		
+		// handle onOpen event to store column to attribute
+		gridColumnMenuPopup.addEventListener(Events.ON_OPEN, event -> {
+			OpenEvent openEvent = (OpenEvent)event;
+			if (openEvent.isOpen()) {
+				openEvent.getTarget().setAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN, openEvent.getReference());
+			}else {
+				openEvent.getTarget().removeAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN);
+			}
+		});
+		
+		// setup freeze column menu
+		Menuitem frozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_FROZEN_LABEL, true));
+		frozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_FROZEN);
+		frozenMenuItem.setIconSclass("z-icon-lock");
+		frozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
+		gridColumnMenuPopup.appendChild(frozenMenuItem);
+		
+		// setup reset freeze column menu
+		Menuitem resetFrozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_RESET_FROZEN_LABEL, true));
+		resetFrozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_RESET_FROZEN);
+		resetFrozenMenuItem.setIconSclass("z-icon-mail-reply");
+		resetFrozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
+		gridColumnMenuPopup.appendChild(resetFrozenMenuItem);
+		
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
 		int index = 0;
 		
@@ -864,9 +832,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					}
 				} 
 				columns.appendChild(column);
-				GridView.setColumnsMenuPopup(listbox, column);
+				column.setContext(gridColumnMenuPopup);
 			}
-		}
+		}		
 	}
 
 	/**
