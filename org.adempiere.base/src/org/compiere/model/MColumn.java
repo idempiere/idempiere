@@ -1034,6 +1034,10 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
 				{
+					// Fk doesn't work for partitioned PostgreSQL table
+					if (DB.isPostgreSQL() && MTable.get(Env.getCtx(), referenceTableName) != null && MTable.get(Env.getCtx(), referenceTableName).isPartition())
+						return null;
+					
 					Hashtable<String, DatabaseKey> htForeignKeys = new Hashtable<String, DatabaseKey>();
 
 					if (md.storesUpperCaseIdentifiers()) {
