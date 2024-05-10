@@ -598,11 +598,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 		
 		// Validate partition column changes
-		if (is_ValueChanged(COLUMNNAME_IsPartitionKey) 
+		if (!newRecord && (is_ValueChanged(COLUMNNAME_IsPartitionKey) 
 				|| is_ValueChanged(COLUMNNAME_PartitioningMethod)
 				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_IsActive))
 				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_SeqNoPartition))
-				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_RangePartitionInterval))) {
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_RangePartitionInterval)))) {
 			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
 			if (service == null) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "DBAdapterNoTablePartitionSupport"));
