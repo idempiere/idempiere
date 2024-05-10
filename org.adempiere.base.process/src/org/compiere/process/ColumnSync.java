@@ -33,6 +33,7 @@ import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -182,7 +183,11 @@ public class ColumnSync extends SvrProcess
 			{
 				String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
 				if (fkConstraintSql != null && fkConstraintSql.length() > 0)
-					sql += fkConstraintSql;
+				{
+					// Fk doesn't work for partitioned PostgreSQL table
+					if (!(DB.isPostgreSQL() && MTable.get(Env.getCtx(), column.getReferenceTableName()).isPartition()))
+						sql += fkConstraintSql;
+				}
 			}
 			
 			int no = 0;
