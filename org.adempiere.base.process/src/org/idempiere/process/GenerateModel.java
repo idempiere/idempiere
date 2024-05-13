@@ -86,14 +86,11 @@ public class GenerateModel extends SvrProcess {
 	 *  @throws Exception
 	 */
 	protected String doIt() {
-		
-		for (String tableName : p_tableName.split(",")) {
-			tableName = tableName.trim();
-			if (p_isGenerateInterface)
-				ModelInterfaceGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, tableName, p_columnEntityType);
-			if (p_isGenerateClass)
-				ModelClassGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, tableName, p_columnEntityType);	
-		}
+
+		if (p_isGenerateInterface)
+			ModelInterfaceGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
+		if (p_isGenerateClass)
+			ModelClassGenerator.generateSource(p_sourceFolder, p_packageName, p_tableEntityType, p_tableName, p_columnEntityType);
 
 		return "@ProcessOK@";
 	}
