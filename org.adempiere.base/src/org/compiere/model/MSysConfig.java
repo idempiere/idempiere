@@ -158,9 +158,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MESSAGES_AT_TENANT_LEVEL = "MESSAGES_AT_TENANT_LEVEL";
     public static final String MFA_NTP_TIMEOUT_IN_MILLISECONDS = "MFA_NTP_TIMEOUT_IN_MILLISECONDS";
 	public static final String MFA_REGISTERED_DEVICE_EXPIRATION_DAYS = "MFA_REGISTERED_DEVICE_EXPIRATION_DAYS";
-    public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";
-    public static final String MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS";
-    public static final String MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT = "MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT";
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";
     public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";

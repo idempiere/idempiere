@@ -57,19 +57,7 @@ public class CopyRole extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
-			else if (name.equals("AD_Role_ID") && i == 0)
-				m_AD_Role_ID_From = para[i].getParameterAsInt();
-			else if (name.equals("AD_Role_ID")&& i == 1)
-				m_AD_Role_ID_To = para[i].getParameterAsInt();
-			else if (name.equals("AD_Client_ID"))
-				m_AD_Client_ID = para[i].getParameterAsInt();
-			else if (name.equals("AD_Org_ID"))
-				m_AD_Org_ID = para[i].getParameterAsInt();
-			else
-				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
+			MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}		
 	}	//	prepare
 

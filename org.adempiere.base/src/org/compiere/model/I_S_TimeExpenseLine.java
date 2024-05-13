@@ -386,20 +386,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public String getNote();
 
-	 /** Column name LineNetAmt */
-    public static final String COLUMNNAME_LineNetAmt = "LineNetAmt";
-
-	/** Set Line Amount.
-	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
-	  */
-	public void setLineNetAmt (BigDecimal LineNetAmt);
-
-	/** Get Line Amount.
-	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
-	  */
-	public BigDecimal getLineNetAmt();
-
-    /** Column name PriceInvoiced */
+	/** Column name PriceInvoiced */
     public static final String COLUMNNAME_PriceInvoiced = "PriceInvoiced";
 
 	/** Set Price Invoiced.
