@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -59,6 +60,7 @@ import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
 import org.compiere.db.AdempiereDatabase;
+import org.compiere.db.Database;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -3464,7 +3466,7 @@ public abstract class PO
 				
 		//	SQL
 		StringBuilder sqlInsert = new StringBuilder();
-		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false);
+		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false, null);
 		//
 		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
 							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
@@ -3533,12 +3535,13 @@ public abstract class PO
 
 	/**
 	 * Export data as insert SQL statement
+	 * @param database 
 	 * @return SQL insert statement
 	 */
-	public String toInsertSQL() 
+	public String toInsertSQL(String database) 
 	{
 		StringBuilder sqlInsert = new StringBuilder();
-		buildInsertSQL(sqlInsert, true, null, null, 0, true);
+		buildInsertSQL(sqlInsert, true, null, null, 0, true, database);
 		return sqlInsert.toString();
 	}
 	
@@ -3553,12 +3556,13 @@ public abstract class PO
 	 * @return last AD_ChangeLog_ID
 	 */
 	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
-			int AD_ChangeLog_ID, boolean generateScriptOnly) {
+			int AD_ChangeLog_ID, boolean generateScriptOnly, String database) {
 		sqlInsert.append("INSERT INTO ");
 		sqlInsert.append(p_info.getTableName()).append(" (");
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
 		boolean doComma = false;
+		Map<String, String> oracleBlobSQL = new HashMap<String, String>();
 		for (int i = 0; i < size; i++)
 		{
 			Object value = get_Value(i);
@@ -3572,8 +3576,6 @@ public abstract class PO
 			if (DisplayType.isLOB(dt))
 			{
 				lobAdd (value, i, dt);
-				if (!p_info.isColumnMandatory(i))
-					continue;
 			}
 
 			//do not export secure column
@@ -3682,14 +3684,25 @@ public abstract class PO
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
 					{
-						if (p_info.isColumnMandatory(i))
+						if(database!=null && MSysConfig.getBooleanValue(MSysConfig.EXPORT_BLOB_COLUMN_FOR_INSERT, true, getAD_Client_ID())) 
 						{
-							sqlValues.append("''");		//	no db dependent stuff here -- at this point value is known to be not null
+							String blobSQL = Database.getDatabase(database).TO_Blob((byte[]) value);
+							// Oracle size limit for one SQL statement
+							if (blobSQL != null && database.equals(Database.DB_ORACLE) && blobSQL.length() > 2048)
+							{
+								oracleBlobSQL.put(p_info.getColumnName(i), blobSQL);
+								blobSQL = p_info.isColumnMandatory(i) ? "'0'" : null;
+							}
+							sqlValues.append (blobSQL);
 						}
-						else
-						{
-							sqlValues.append("null");
-						}
+						else if (p_info.isColumnMandatory(i))
+                        {
+                            sqlValues.append("'0'");        //    no db dependent stuff here -- at this point value is known to be not null
+                        }
+                        else
+                        {
+                            sqlValues.append("null");
+                        }
 					}
 					else
 						sqlValues.append (saveNewSpecial (value, i));
@@ -3825,6 +3838,47 @@ public abstract class PO
 		}
 		sqlInsert.append(sqlValues)
 			.append(")");
+		
+		// Use pl/sql block for Oracle blob insert that's > 2048 bytes
+		if (!oracleBlobSQL.isEmpty()) 
+		{
+			sqlInsert.append("\n;");
+			for(String column : oracleBlobSQL.keySet())
+			{
+				sqlInsert.append("\n\n");				
+				String blobSQL = oracleBlobSQL.get(column);
+				int hexDataStart = blobSQL.indexOf("'");
+				int hexDataEnd = blobSQL.indexOf("'", hexDataStart+1);
+				String functionStart = blobSQL.substring(0, hexDataStart);
+				String hexData = blobSQL.substring(hexDataStart+1, hexDataEnd);
+				String functionEnd = blobSQL.substring(hexDataEnd+1);
+				int remaining = hexData.length();
+				int lineSize = 2048;
+				sqlInsert.append("DECLARE\n")
+					.append("   lob_out blob;\n")
+					.append("BEGIN\n")
+					.append("   UPDATE ").append(p_info.getTableName())
+					.append(" SET ").append(column).append("=EMPTY_BLOB()\n")
+					.append("   WHERE ").append(getUUIDColumnName()).append("=")
+					.append("'").append(get_UUID()).append("';\n")
+					.append("   SELECT ").append(column).append(" INTO lob_out\n")
+					.append("   FROM ").append(p_info.getTableName()).append("\n")
+					.append("   WHERE ").append(getUUIDColumnName()).append("=")
+					.append("'").append(get_UUID()).append("'\n")
+					.append("   FOR UPDATE;\n");
+				// Split hex encoded text into 2048 bytes block
+				int index = 0;				
+				while (remaining > 0) 
+				{
+					sqlInsert.append("   dbms_lob.append(lob_out, ").append(functionStart).append("'");
+					String data = remaining > lineSize ? hexData.substring(index, index+lineSize) : hexData.substring(index);
+					sqlInsert.append(data).append("'").append(functionEnd).append(");\n");
+					remaining = remaining > lineSize ? remaining - lineSize : 0;
+					index = index + lineSize;
+				}
+				sqlInsert.append("END;\n/");
+			}
+		}
 		return AD_ChangeLog_ID;
 	}
 
@@ -5419,7 +5473,7 @@ public abstract class PO
 		for (int i = 0; i < m_lobInfo.size(); i++)
 		{
 			PO_LOB lob = (PO_LOB)m_lobInfo.get(i);
-			if (!lob.save(get_TrxName()))
+			if (!lob.save(get_WhereClause(true), get_TrxName()))
 			{
 				retValue = false;
 				break;

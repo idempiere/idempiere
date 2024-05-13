@@ -489,6 +489,13 @@ public interface AdempiereDatabase
 	}	//	getSQLCreate
 	
 	/**
+	 * Convert blob to hex encoded string and return SQL function that will convert the hex encoded string back to blob
+	 * @param blob
+	 * @return SQL statement
+	 */
+	public String TO_Blob(byte[] blob);
+	
+	/**
 	 * @param column
 	 * @return DDL SQL statement for column
 	 */
