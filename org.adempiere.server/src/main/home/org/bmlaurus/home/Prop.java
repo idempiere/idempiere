@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 import org.compiere.util.SecureEngine;
@@ -90,7 +91,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere 10 Peace Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere 11 Synergy Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
@@ -245,8 +246,8 @@ public final class Prop implements Serializable {
 	
 	public static String getFileName (boolean tryUserHome)
 	{
-		if (System.getProperty("PropertyHomeFile") != null)
-			return System.getProperty("PropertyHomeFile");
+		if (SystemProperties.getPropertyHomeFile() != null)
+			return SystemProperties.getPropertyHomeFile();
 		String base = null;
 		if (tryUserHome && Ini.isClient())
 			base = System.getProperty("user.home");

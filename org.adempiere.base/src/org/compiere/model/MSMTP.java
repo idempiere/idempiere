@@ -32,26 +32,35 @@ import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- * SMTP servers
+ * SMTP server for specific email address or domain
  */
 public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3645639750095013941L;
 
 	/**	Cache */
 	private static ImmutablePOCache<String,MSMTP>	s_cache = new ImmutablePOCache<String,MSMTP>(Table_Name, 20);
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_SMTP_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSMTP(Properties ctx, String AD_SMTP_UU, String trxName) {
+        super(ctx, AD_SMTP_UU, trxName);
+    }
+
 	/**
 	 * SMTP constructor
 	 * @param ctx			context
-	 * @param X_AD_SMTP_ID	ID
+	 * @param AD_SMTP_ID	ID
 	 * @param trxName		transaction
 	 */
-	public MSMTP(Properties ctx, int X_AD_SMTP_ID, String trxName) {
-		super(ctx, X_AD_SMTP_ID, trxName);
+	public MSMTP(Properties ctx, int AD_SMTP_ID, String trxName) {
+		super(ctx, AD_SMTP_ID, trxName);
 	} // MSMTP
 
 	/**
@@ -65,7 +74,7 @@ public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
 	} // MSMTP
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -74,7 +83,7 @@ public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -84,12 +93,25 @@ public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
 		copyPO(copy);
 	}
 
-	/** Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only) */
+	/** 
+	 * Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only)
+	 * @param ctx
+	 * @param clientID
+	 * @param from from email address
+	 * @return MSMTP or null 
+	 */
 	public static MSMTP get (Properties ctx, int clientID, String from) {
 		return get(ctx, clientID, from, null);
 	}
 
-	/** Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only) */
+	/** 
+	 * Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only)
+	 * @param ctx
+	 * @param clientID
+	 * @param from from email address
+	 * @param trxName
+	 * @return MSMTP or null
+	 */
 	public static MSMTP get (Properties ctx, int clientID, String from, String trxName) {
 
 		String key = new StringBuilder().append(clientID).append("_").append(from).toString();
@@ -124,6 +146,7 @@ public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString() {
 		return new StringBuilder ("MSMTP[").append(get_ID()).append(" - Name=").append(getName()).append(" - Host=").append(getSMTPHost()).append("]").toString();
 	}	//	toString

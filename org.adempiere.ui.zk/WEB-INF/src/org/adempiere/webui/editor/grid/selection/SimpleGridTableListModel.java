@@ -29,14 +29,14 @@ import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * 
+ * ListModel for {@link GridTabSelectionListView}
  * @author Low Heng Sin
  *
  */
 public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> implements TableModelListener, Sortable<Object> {
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 698185856751242764L;
 	private GridTable tableModel;
@@ -61,6 +61,7 @@ public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> im
 	 * @param rowIndex
 	 * @see ListModel#getElementAt(int)
 	 */
+	@Override
 	public GridTableRow getElementAt(int rowIndex) {
 		GridTableRow row = null;
 		int columnCount = tableModel.getColumnCount();
@@ -80,6 +81,7 @@ public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> im
 	 * @return int
 	 * @see ListModel#getSize()
 	 */
+	@Override
 	public int getSize() {
 		return tableModel.getRowCount(); 
 	}
@@ -107,8 +109,9 @@ public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> im
 	/**
 	 * @param cmpr
 	 * @param ascending
-	 * @see ListModelExt#sort(Comparator, boolean) 
+	 * @see org.zkoss.zul.ListModelExt#sort(Comparator, boolean) 
 	 */
+	@Override
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		//use default zk comparator
 		if (cmpr instanceof ListitemComparator) {			
@@ -129,6 +132,7 @@ public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> im
 	 * @param e
 	 * @see TableModelListener#tableChanged(TableModelEvent) 
 	 */
+	@Override
 	public void tableChanged(TableModelEvent e) {
 		if (Executions.getCurrent() != null) {
 			if (e.getType() == TableModelEvent.DELETE) 

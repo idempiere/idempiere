@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_InterestArea
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_InterestArea")
-public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persistent 
+public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_InterestArea (Properties ctx, int R_InterestArea_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_InterestArea (Properties ctx, String R_InterestArea_UU, String trxName)
+    {
+      super (ctx, R_InterestArea_UU, trxName);
+      /** if (R_InterestArea_UU == null)
+        {
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setR_InterestArea_ID (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_InterestArea (Properties ctx, String R_InterestArea_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_InterestArea_UU, trxName, virtualColumns);
+      /** if (R_InterestArea_UU == null)
+        {
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setR_InterestArea_ID (0);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_InterestArea (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -119,10 +147,10 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -147,7 +175,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

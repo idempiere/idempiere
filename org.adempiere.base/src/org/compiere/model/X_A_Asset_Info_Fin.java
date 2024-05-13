@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Fin
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Info_Fin")
-public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Persistent 
+public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Fin (Properties ctx, int A_Asset_Info_Fin_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Info_Fin (Properties ctx, String A_Asset_Info_Fin_UU, String trxName)
+    {
+      super (ctx, A_Asset_Info_Fin_UU, trxName);
+      /** if (A_Asset_Info_Fin_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Fin_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Info_Fin (Properties ctx, String A_Asset_Info_Fin_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Info_Fin_UU, trxName, virtualColumns);
+      /** if (A_Asset_Info_Fin_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Fin_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Info_Fin (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -138,7 +160,7 @@ public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Info_Fin_ID()));
     }
@@ -271,10 +293,10 @@ public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Pers
 	public boolean isA_Purchase_Option()
 	{
 		Object oo = get_Value(COLUMNNAME_A_Purchase_Option);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -376,10 +398,10 @@ public class X_A_Asset_Info_Fin extends PO implements I_A_Asset_Info_Fin, I_Pers
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

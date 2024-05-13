@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept")
-public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent 
+public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_Concept (Properties ctx, String HR_Concept_UU, String trxName)
+    {
+      super (ctx, HR_Concept_UU, trxName);
+      /** if (HR_Concept_UU == null)
+        {
+			setColumnType (null);
+			setHR_Concept_ID (0);
+			setName (null);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Concept (Properties ctx, String HR_Concept_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Concept_UU, trxName, virtualColumns);
+      /** if (HR_Concept_UU == null)
+        {
+			setColumnType (null);
+			setHR_Concept_ID (0);
+			setName (null);
+			setType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_Concept (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -342,10 +368,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -365,17 +391,17 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
 	/** Set Paid.
-		@param IsPaid The document is paid
+		@param IsPaid The document is fully paid
 	*/
 	public void setIsPaid (boolean IsPaid)
 	{
@@ -383,15 +409,15 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Get Paid.
-		@return The document is paid
+		@return The document is fully paid
 	  */
 	public boolean isPaid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPaid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -411,10 +437,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -434,10 +460,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public boolean isReadWrite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadWrite);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -457,10 +483,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public boolean isReceipt()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReceipt);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -480,10 +506,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public boolean isRegistered()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRegistered);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -602,7 +628,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

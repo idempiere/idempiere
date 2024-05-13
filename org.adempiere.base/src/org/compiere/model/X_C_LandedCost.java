@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCost
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_LandedCost")
-public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent 
+public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_LandedCost (Properties ctx, int C_LandedCost_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_LandedCost (Properties ctx, String C_LandedCost_UU, String trxName)
+    {
+      super (ctx, C_LandedCost_UU, trxName);
+      /** if (C_LandedCost_UU == null)
+        {
+			setC_InvoiceLine_ID (0);
+			setC_LandedCost_ID (0);
+			setLandedCostDistribution (null);
+// Q
+			setM_CostElement_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_LandedCost (Properties ctx, String C_LandedCost_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_LandedCost_UU, trxName, virtualColumns);
+      /** if (C_LandedCost_UU == null)
+        {
+			setC_InvoiceLine_ID (0);
+			setC_LandedCost_ID (0);
+			setLandedCostDistribution (null);
+// Q
+			setM_CostElement_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_LandedCost (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -120,7 +148,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_InvoiceLine_ID()));
     }
@@ -332,10 +360,10 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

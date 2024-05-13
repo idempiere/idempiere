@@ -38,15 +38,24 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /**
- *
+ * Inventory Replenishment model
  * @author Daniel Tamm
  */
 public class MReplenish extends X_M_Replenish {
-
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -76806183034687720L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Replenish_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReplenish(Properties ctx, String M_Replenish_UU, String trxName) {
+        super(ctx, M_Replenish_UU, trxName);
+    }
 
 	/**
      * Standard constructor
@@ -60,7 +69,7 @@ public class MReplenish extends X_M_Replenish {
     }
     
     /**
-     * Standard constructor to create a PO from a resultset.
+     * Standard constructor to create a PO from a result set.
      * 
      * @param ctx
      * @param rs
@@ -71,7 +80,7 @@ public class MReplenish extends X_M_Replenish {
     }
     
     /**
-     * 
+     * Get active replenishment records for a product
      * @param ctx
      * @param M_ProductID
      * @param trxName

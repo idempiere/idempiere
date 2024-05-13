@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for U_RoleMenu
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="U_RoleMenu")
-public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent 
+public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_U_RoleMenu (Properties ctx, int U_RoleMenu_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_U_RoleMenu (Properties ctx, String U_RoleMenu_UU, String trxName)
+    {
+      super (ctx, U_RoleMenu_UU, trxName);
+      /** if (U_RoleMenu_UU == null)
+        {
+			setAD_Role_ID (0);
+			setU_RoleMenu_ID (0);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_RoleMenu (Properties ctx, String U_RoleMenu_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_RoleMenu_UU, trxName, virtualColumns);
+      /** if (U_RoleMenu_UU == null)
+        {
+			setAD_Role_ID (0);
+			setU_RoleMenu_ID (0);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_U_RoleMenu (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

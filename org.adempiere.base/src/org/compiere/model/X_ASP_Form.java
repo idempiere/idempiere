@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_Form
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Form")
-public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent 
+public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_ASP_Form (Properties ctx, int ASP_Form_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_Form (Properties ctx, String ASP_Form_UU, String trxName)
+    {
+      super (ctx, ASP_Form_UU, trxName);
+      /** if (ASP_Form_UU == null)
+        {
+			setAD_Form_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Form (Properties ctx, String ASP_Form_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Form_UU, trxName, virtualColumns);
+      /** if (ASP_Form_UU == null)
+        {
+			setAD_Form_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_Form (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

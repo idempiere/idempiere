@@ -33,6 +33,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	RMA Model
@@ -45,9 +46,21 @@ import org.compiere.util.Msg;
 public class MRMA extends X_M_RMA implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8352164928046804628L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_RMA_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRMA(Properties ctx, String M_RMA_UU, String trxName) {
+        super(ctx, M_RMA_UU, trxName);
+		if (Util.isEmpty(M_RMA_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -59,13 +72,18 @@ public class MRMA extends X_M_RMA implements DocAction
 	{
 		super (ctx, M_RMA_ID, trxName);
 		if (M_RMA_ID == 0)
-		{
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setIsApproved(false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MRMA
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setIsApproved(false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -86,9 +104,9 @@ public class MRMA extends X_M_RMA implements DocAction
 	protected MInOut			m_inout = null;
 
 	/**
-	 * 	Get Lines
-	 *	@param requery requery
-	 *	@return lines
+	 * 	Get RMA Lines
+	 *	@param requery true to re-query  from DB
+	 *	@return RMA lines
 	 */
 	public MRMALine[] getLines (boolean requery)
 	{
@@ -108,9 +126,9 @@ public class MRMA extends X_M_RMA implements DocAction
 	}	//	getLines
 	
 	/**
-	 * 	Get Taxes of RMA
-	 *	@param requery requery
-	 *	@return array of taxes
+	 * 	Get RMA Tax Lines
+	 *	@param requery true to re-query from DB
+	 *	@return array of RMA tax lines
 	 */
 	public MRMATax[] getTaxes(boolean requery)
 	{
@@ -194,11 +212,11 @@ public class MRMA extends X_M_RMA implements DocAction
 		m_inout = null;
 	}	//	setM_InOut_ID
 
-
 	/**
 	 * 	Get Document Info
 	 *	@return document info (untranslated)
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
@@ -207,8 +225,9 @@ public class MRMA extends X_M_RMA implements DocAction
 
 	/**
 	 * 	Create PDF
-	 *	@return File or null
+	 *	@return not implemented, always return null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -226,13 +245,12 @@ public class MRMA extends X_M_RMA implements DocAction
 	/**
 	 * 	Create PDF file
 	 *	@param file output file
-	 *	@return file if success
+	 *	@return not implemented, always return null
 	 */
 	public File createPDF (File file)
 	{
 		return null;
 	}	//	createPDF
-
 
 	/**
 	 * 	Before Save
@@ -240,6 +258,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord)
@@ -283,12 +302,12 @@ public class MRMA extends X_M_RMA implements DocAction
 		return true;
 	}	//	beforeSave
 
-
-	/**************************************************************************
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -305,6 +324,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Unlock Document.
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
@@ -316,6 +336,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Invalidate Document
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
@@ -326,6 +347,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid)
 	 */
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -395,6 +417,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Approve Document
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
@@ -406,6 +429,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Reject Approval
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
@@ -417,6 +441,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -471,9 +496,9 @@ public class MRMA extends X_M_RMA implements DocAction
 		}
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Create Counter Document
-	 * 	@return InOut
+	 * 	@return MRMA
 	 */
 	protected MRMA createCounterDoc()
 	{
@@ -547,13 +572,13 @@ public class MRMA extends X_M_RMA implements DocAction
 	}	//	createCounterDoc
 
 	/**
-	 * 	Create new RMA by copying
-	 * 	@param from RMA
+	 * 	Create and save new RMA by copying from another RMA document
+	 * 	@param from RMA to copy from
 	 * 	@param C_DocType_ID doc type
-	 * 	@param isSOTrx sales order
+	 * 	@param isSOTrx sales trx flag
 	 * 	@param counter create counter links
 	 * 	@param trxName trx
-	 *	@return MRMA
+	 *	@return new MRMA
 	 */
 	public static MRMA copyFrom (MRMA from, int C_DocType_ID, boolean isSOTrx, boolean counter, String trxName)
 	{
@@ -605,7 +630,7 @@ public class MRMA extends X_M_RMA implements DocAction
 
 	/**
 	 * 	Copy Lines From other RMA
-	 *	@param otherRMA
+	 *	@param otherRMA RMA to copy lines from
 	 *	@param counter set counter info
 	 *	@return number of lines copied
 	 */
@@ -656,6 +681,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Void Document.
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
@@ -711,9 +737,10 @@ public class MRMA extends X_M_RMA implements DocAction
 
 	/**
 	 * 	Close Document.
-	 * 	Cancel not delivered Qunatities
+	 * 	Cancel not delivered Quantities.
 	 * 	@return true if success
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
@@ -731,8 +758,9 @@ public class MRMA extends X_M_RMA implements DocAction
 
 	/**
 	 * 	Reverse Correction
-	 * 	@return true if success
+	 * 	@return not implemented, always return false
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseCorrectIt - " + toString());
@@ -750,9 +778,10 @@ public class MRMA extends X_M_RMA implements DocAction
 	}	//	reverseCorrectionIt
 
 	/**
-	 * 	Reverse Accrual - none
-	 * 	@return true if success
+	 * 	Reverse Accrual
+	 * 	@return not implemented, always return false
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseAccrualIt - " + toString());
@@ -771,8 +800,9 @@ public class MRMA extends X_M_RMA implements DocAction
 
 	/**
 	 * 	Re-activate
-	 * 	@return true if success
+	 * 	@return not implemented, always return false
 	 */
+	@Override
 	public boolean reActivateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reActivateIt - " + toString());
@@ -800,9 +830,10 @@ public class MRMA extends X_M_RMA implements DocAction
 
     /**
      *  Set Processed.
-     *  Propagate to Lines
+     *  Propagate to Lines.
      *  @param processed processed
      */
+	@Override
     public void setProcessed (boolean processed)
     {
         super.setProcessed (processed);
@@ -828,10 +859,11 @@ public class MRMA extends X_M_RMA implements DocAction
             setDescription(desc + " | " + description);
     }   //  addDescription
 
-	/*************************************************************************
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+    @Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -848,7 +880,7 @@ public class MRMA extends X_M_RMA implements DocAction
 
     /**
      * Retrieves all the charge lines that is present on the document
-     * @return Charge Lines
+     * @return RMA Lines with Charge
      */
     public MRMALine[] getChargeLines()
     {
@@ -893,6 +925,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+    @Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -902,6 +935,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+    @Override
 	public int getDoc_User_ID()
 	{
 		return getSalesRep_ID();
@@ -911,13 +945,14 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Get Document Approval Amount
 	 *	@return amount
 	 */
+    @Override
 	public BigDecimal getApprovalAmt()
 	{
 		return getAmt();
 	}	//	getApprovalAmt
 
 	/**
-	 * 	Document Status is Complete or Closed
+	 * 	Document Status is Complete, Closed or Reverse
 	 *	@return true if CO, CL or RE
 	 */
 	public boolean isComplete()
@@ -959,7 +994,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	}
 	
 	/**
-	 * Create Line from inoutline
+	 * Create and save RMA Line from inout line
 	 * @param M_InOutLine_ID
 	 * @param MovementQty
 	 * @param Description

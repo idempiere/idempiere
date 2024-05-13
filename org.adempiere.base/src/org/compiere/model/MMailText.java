@@ -27,17 +27,27 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * 	Request Mail Template Model.
- *	Cannot be cached as it holds PO/BPartner/User to parse
+ * 	Mail Template Model.
+ *	Cannot be cached as it holds PO/BPartner/User to parse.
  *  @author Jorg Janke
  *  @version $Id: MMailText.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MMailText extends X_R_MailText
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6458808409321394821L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_MailText_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMailText(Properties ctx, String R_MailText_UU, String trxName) {
+        super(ctx, R_MailText_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -80,9 +90,9 @@ public class MMailText extends X_R_MailText
 	protected String m_language = null;
 	
 	/**
-	 * 	Get parsed/translated Mail Text
-	 *	@param all concatenate all
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed Mail Text
+	 *	@param all true to concatenate mailtext, mailtext2 and mailtext3
+	 *	@return translated and parsed text
 	 */
 	public String getMailText(boolean all)
 	{
@@ -90,10 +100,10 @@ public class MMailText extends X_R_MailText
 	}
 	
 	/**
-	 * 	Get parsed/translated Mail Text
-	 *	@param all concatenate all
-	 *  @param parsed
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed (if parsed argument is true) Mail Text
+	 *	@param all true to concatenate mailtext, mailtext2 and mailtext3
+	 *  @param parsed true to parsed variables in text
+	 *	@return translated and parsed (if parsed argument is true) text
 	 */
 	public String getMailText(boolean all, boolean parsed)
 	{
@@ -114,8 +124,8 @@ public class MMailText extends X_R_MailText
 	}	//	getMailText
 
 	/**
-	 * 	Get parsed/translated Mail Text
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed Mail Text
+	 *	@return translated and parsed text
 	 */
 	public String getMailText()
 	{
@@ -124,8 +134,8 @@ public class MMailText extends X_R_MailText
 	}	//	getMailText
 	
 	/**
-	 * 	Get parsed/translated Mail Text 2
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed Mail Text 2
+	 *	@return translated and parsed text
 	 */
 	public String getMailText2()
 	{
@@ -134,8 +144,8 @@ public class MMailText extends X_R_MailText
 	}	//	getMailText2
 
 	/**
-	 * 	Get parsed/translated Mail Text 2
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed Mail Text 3
+	 *	@return translated and parsed text
 	 */
 	public String getMailText3()
 	{
@@ -144,8 +154,8 @@ public class MMailText extends X_R_MailText
 	}	//	getMailText3
 
 	/**
-	 * 	Get parsed/translated Mail Header
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed Mail Header
+	 *	@return translated and parsed text
 	 */
 	public String getMailHeader()
 	{
@@ -153,9 +163,9 @@ public class MMailText extends X_R_MailText
 	}
 	
 	/**
-	 * 	Get parsed/translated Mail Header
-	 *  @param parsed
-	 *	@return parsed/translated text
+	 * 	Get translated and parsed (if parsed argument is true) Header
+	 *  @param parsed true to parse variable in text
+	 *	@return translated and parsed (if parsed argument is true) text
 	 */
 	public String getMailHeader(boolean parsed)
 	{
@@ -163,8 +173,8 @@ public class MMailText extends X_R_MailText
 		return parsed ? parse(m_MailHeader) : m_MailHeader;
 	}	//	getMailHeader
 	
-	/**************************************************************************
-	 * 	Parse Text
+	/**
+	 * 	Parse variables in text (@variable expression@)
 	 *	@param text text
 	 *	@return parsed text
 	 */
@@ -183,9 +193,9 @@ public class MMailText extends X_R_MailText
 	}	//	parse
 	
 	/**
-	 * 	Parse text
+	 * 	Parse variables in text (@variable expression@)
 	 *	@param text text
-	 *	@param po object
+	 *	@param po PO instance
 	 *	@return parsed text
 	 */
 	protected String parse (String text, PO po)
@@ -222,10 +232,10 @@ public class MMailText extends X_R_MailText
 	}	//	parse
 
 	/**
-	 * 	Parse Variable
-	 *	@param variable variable
+	 * 	Get value for a variable expression
+	 *	@param variable variable expression
 	 *	@param po po
-	 *	@return translated variable or if not found the original tag
+	 *	@return value for variable or if not found the original variable expression
 	 */
 	protected String parseVariable (String variable, PO po)
 	{
@@ -233,7 +243,7 @@ public class MMailText extends X_R_MailText
 	}	//	translate
 	
 	/**
-	 * 	Set User for parse
+	 * 	Set User for parsing of text
 	 *	@param AD_User_ID user
 	 */
 	public void setUser (int AD_User_ID)
@@ -242,8 +252,8 @@ public class MMailText extends X_R_MailText
 	}	//	setUser
 	
 	/**
-	 * 	Set User for parse
-	 *	@param user user
+	 * 	Set User for parsing of text
+	 *	@param user MUser instance
 	 */
 	public void setUser (MUser user)
 	{
@@ -251,7 +261,7 @@ public class MMailText extends X_R_MailText
 	}	//	setUser
 	
 	/**
-	 * 	Set BPartner for parse
+	 * 	Set BPartner for parsing of text
 	 *	@param C_BPartner_ID bp
 	 */
 	public void setBPartner (int C_BPartner_ID)
@@ -260,8 +270,8 @@ public class MMailText extends X_R_MailText
 	}	//	setBPartner
 	
 	/**
-	 * 	Set BPartner for parse
-	 *	@param bpartner bp
+	 * 	Set BPartner for parsing of text
+	 *	@param bpartner MBPartner instance
 	 */
 	public void setBPartner (MBPartner bpartner)
 	{
@@ -269,8 +279,8 @@ public class MMailText extends X_R_MailText
 	}	//	setBPartner
 
 	/**
-	 * 	Set PO for parse
-	 *	@param po po
+	 * 	Set PO for parsing of text
+	 *	@param po PO instance
 	 */
 	public void setPO (PO po)
 	{
@@ -278,9 +288,9 @@ public class MMailText extends X_R_MailText
 	}	//	setPO
 
 	/**
-	 * 	Set PO for parse
-	 *	@param po po
-	 *	@param analyse if set to true, search for BPartner/User
+	 * 	Set PO for parsing of text
+	 *	@param po PO instance
+	 *	@param analyse true to search for BPartner/User from po
 	 */
 	public void setPO (PO po, boolean analyse)
 	{
@@ -311,7 +321,7 @@ public class MMailText extends X_R_MailText
 	}	//	setPO
 
 	/**
-	 * 	Translate to BPartner Language
+	 * 	Translate to BPartner Language or language from {@link #setLanguage(String)} call.
 	 */
 	protected void translate()
 	{
@@ -344,7 +354,7 @@ public class MMailText extends X_R_MailText
 	/**
 	 * 	Get Translation
 	 *	@param AD_Language language
-	 *	@return trl
+	 *	@return MMailTextTrl
 	 */
 	protected MMailTextTrl getTranslation (String AD_Language)
 	{
@@ -399,26 +409,42 @@ public class MMailText extends X_R_MailText
 		String		MailText3 = null;
 	}	//	MMailTextTrl
 	
+	/**
+	 * Set language for translation of text
+	 * @param language
+	 */
 	public void setLanguage(String language)
 	{
 		m_language = language;
 	}
 
+	/**
+	 * @return PO instance
+	 */
 	public PO getPO()
 	{
 		return m_po;
 	}
 
+	/**
+	 * @return MBPartner instance
+	 */
 	public MBPartner getBPartner()
 	{
 		return m_bpartner;
 	}
 
+	/**
+	 * @return language for translation of text
+	 */
 	public String getLanguage()
 	{
 		return m_language;
 	}
 
+	/**
+	 * @return MUser instance
+	 */
 	public MUser getUser()
 	{
 		return m_user;

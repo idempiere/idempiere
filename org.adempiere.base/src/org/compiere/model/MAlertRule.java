@@ -27,7 +27,6 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
  *	Alert Rule Model
  *	
@@ -38,8 +37,18 @@ public class MAlertRule extends X_AD_AlertRule
 {
 	private static final long serialVersionUID = -1267260460210893262L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AlertRule_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAlertRule(Properties ctx, String AD_AlertRule_UU, String trxName) {
+        super(ctx, AD_AlertRule_UU, trxName);
+    }
+
 	/**
-	 * 	Standatd Constructor
+	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_AlertRule_ID id
 	 *	@param trxName transaction
@@ -85,7 +94,7 @@ public class MAlertRule extends X_AD_AlertRule
 	/**
 	 *	Get Sql
 	 *	@return sql
-	 * @deprecated Use {@link #getSql(boolean)} instead
+	 *  @deprecated Use {@link #getSql(boolean)} instead
 	 */
 	public String getSql()
 	{
@@ -129,7 +138,7 @@ public class MAlertRule extends X_AD_AlertRule
 	}	//	getSql
 	
 	/**
-	 * Create Report File
+	 * Create Empty Report File
 	 * @param extension file extension
 	 * @return newly created File
 	 */
@@ -173,6 +182,7 @@ public class MAlertRule extends X_AD_AlertRule
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord)
@@ -197,7 +207,7 @@ public class MAlertRule extends X_AD_AlertRule
 	}
 
 	/**
-	 * Update parent flags
+	 * Update parent IsValid flag
 	 * @return true if success
 	 */
 	private boolean updateParent() {

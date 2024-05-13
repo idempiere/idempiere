@@ -24,22 +24,22 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_InventoryValue
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_InventoryValue")
-public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent 
+public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName)
+    public X_T_InventoryValue (Properties ctx, String T_InventoryValue_UU, String trxName)
     {
-      super (ctx, T_InventoryValue_ID, trxName);
-      /** if (T_InventoryValue_ID == 0)
+      super (ctx, T_InventoryValue_UU, trxName);
+      /** if (T_InventoryValue_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setM_AttributeSetInstance_ID (0);
@@ -49,10 +49,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
     }
 
     /** Standard Constructor */
-    public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName, String ... virtualColumns)
+    public X_T_InventoryValue (Properties ctx, String T_InventoryValue_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_InventoryValue_ID, trxName, virtualColumns);
-      /** if (T_InventoryValue_ID == 0)
+      super (ctx, T_InventoryValue_UU, trxName, virtualColumns);
+      /** if (T_InventoryValue_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setM_AttributeSetInstance_ID (0);
@@ -68,7 +68,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -85,7 +85,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_InventoryValue[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

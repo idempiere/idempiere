@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Reconciliation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Reconciliation")
-public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, I_Persistent 
+public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_Fact_Reconciliation (Properties ctx, String Fact_Reconciliation_UU, String trxName)
+    {
+      super (ctx, Fact_Reconciliation_UU, trxName);
+      /** if (Fact_Reconciliation_UU == null)
+        {
+			setFact_Acct_ID (0);
+			setFact_Reconciliation_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Fact_Reconciliation (Properties ctx, String Fact_Reconciliation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Fact_Reconciliation_UU, trxName, virtualColumns);
+      /** if (Fact_Reconciliation_UU == null)
+        {
+			setFact_Acct_ID (0);
+			setFact_Reconciliation_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_Fact_Reconciliation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -197,7 +219,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getFact_Acct_ID()));
     }

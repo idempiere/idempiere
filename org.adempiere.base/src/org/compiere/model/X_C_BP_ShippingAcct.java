@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_BP_ShippingAcct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_ShippingAcct")
-public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent 
+public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, int C_BP_ShippingAcct_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BP_ShippingAcct (Properties ctx, String C_BP_ShippingAcct_UU, String trxName)
+    {
+      super (ctx, C_BP_ShippingAcct_UU, trxName);
+      /** if (C_BP_ShippingAcct_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BP_ShippingAcct_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_ShippingAcct (Properties ctx, String C_BP_ShippingAcct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_ShippingAcct_UU, trxName, virtualColumns);
+      /** if (C_BP_ShippingAcct_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BP_ShippingAcct_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

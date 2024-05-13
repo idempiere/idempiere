@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Landed Cost Model
@@ -34,13 +35,12 @@ import org.compiere.util.Msg;
 public class MLandedCost extends X_C_LandedCost
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5645509613930428050L;
 
-
 	/**
-	 *	Get Costs of Invoice Line
+	 *	Get Landed Costs of Invoice Line
 	 * 	@param il invoice line
 	 *	@return array of landed cost lines
 	 */
@@ -78,9 +78,20 @@ public class MLandedCost extends X_C_LandedCost
 
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MLandedCost.class);
-
 	
-	/***************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_LandedCost_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLandedCost(Properties ctx, String C_LandedCost_UU, String trxName) {
+        super(ctx, C_LandedCost_UU, trxName);
+		if (Util.isEmpty(C_LandedCost_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * Standard Constructor
 	 * 
 	 * @param ctx context
@@ -91,10 +102,15 @@ public class MLandedCost extends X_C_LandedCost
 	{
 		super (ctx, C_LandedCost_ID, trxName);
 		if (C_LandedCost_ID == 0)
-		{
-			setLandedCostDistribution (LANDEDCOSTDISTRIBUTION_Quantity);	// Q
-		}
+			setInitialDefaults();
 	}	//	MLandedCost
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLandedCostDistribution (LANDEDCOSTDISTRIBUTION_Quantity);	// Q
+	}
 
 	/**
 	 * 	Load Constructor
@@ -112,6 +128,7 @@ public class MLandedCost extends X_C_LandedCost
 	 *	@param newRecord new
 	 *	@return true if ok
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	One Reference
@@ -131,8 +148,8 @@ public class MLandedCost extends X_C_LandedCost
 	}	//	beforeSave
 	
 	/**
-	 * 	Allocate Costs.
-	 * 	Done at Invoice Line Level
+	 * 	Allocate Landed Costs.
+	 * 	Done at Invoice Line Level.
 	 * 	@return error message or ""
 	 */
 	public String allocateCosts()
@@ -145,6 +162,7 @@ public class MLandedCost extends X_C_LandedCost
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MLandedCost[");

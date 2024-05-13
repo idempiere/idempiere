@@ -19,20 +19,28 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
- *	Subcriber Topic Only List (positive - i.e. must be a match if exists)
+ *	Subscriber Topic Only List (positive - i.e. must be a match if exists)
  *	
  *  @author Jorg Janke
  *  @version $Id: MRfQTopicSubscriberOnly.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MRfQTopicSubscriberOnly extends X_C_RfQ_TopicSubscriberOnly
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7744686970311507813L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQ_TopicSubscriberOnly_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRfQTopicSubscriberOnly(Properties ctx, String C_RfQ_TopicSubscriberOnly_UU, String trxName) {
+        super(ctx, C_RfQ_TopicSubscriberOnly_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

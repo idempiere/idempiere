@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.math.BigDecimal;
@@ -9,6 +30,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -20,9 +42,21 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 {
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8898773839204909595L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Acct_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetAcct(Properties ctx, String A_Asset_Acct_UU, String trxName) {
+        super(ctx, A_Asset_Acct_UU, trxName);
+		if (Util.isEmpty(A_Asset_Acct_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * DO NOT USE DIRECTLY
@@ -31,18 +65,28 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	{
 		super (ctx,X_A_Asset_Acct_ID, trxName);
 		if (X_A_Asset_Acct_ID == 0)
-		{
-			setA_Salvage_Value(Env.ZERO);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setA_Salvage_Value(Env.ZERO);
+	}
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAssetAcct (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAssetAcct(MAssetAcct copy)
@@ -51,7 +95,7 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -61,7 +105,7 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -163,24 +207,29 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 		}
 		setA_Period_Start(1);
 		setA_Period_End(asset.getUseLifeMonths());
-		//~ setProcessing(false);
 		dump();
 	}
 	
 	/**
-	 *
+	 * @param fiscal true for fiscal, false for non-fiscal
+	 * @return  depreciation variable percentage
 	 */
 	public BigDecimal getA_Depreciation_Variable_Perc(boolean fiscal)
 	{
 		return fiscal ? getA_Depreciation_Variable_Perc_F() : getA_Depreciation_Variable_Perc();
 	}
 	
-	
+	@Override
 	public MAcctSchema getC_AcctSchema()
 	{
 		return MAcctSchema.getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
 	}
 	
+	/**
+	 * 
+	 * @param M_Product_ID
+	 * @return Product asset account
+	 */
 	public MAccount getP_Asset_Acct(int M_Product_ID)
 	{
 		MAcctSchema as = getC_AcctSchema();

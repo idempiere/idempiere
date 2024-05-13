@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Commission
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Commission")
-public class X_C_Commission extends PO implements I_C_Commission, I_Persistent 
+public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Commission (Properties ctx, int C_Commission_ID, String trxName)
@@ -70,6 +70,42 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Commission (Properties ctx, String C_Commission_UU, String trxName)
+    {
+      super (ctx, C_Commission_UU, trxName);
+      /** if (C_Commission_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_Commission_ID (0);
+			setC_Currency_ID (0);
+			setDocBasisType (null);
+// I
+			setFrequencyType (null);
+// M
+			setListDetails (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Commission (Properties ctx, String C_Commission_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Commission_UU, trxName, virtualColumns);
+      /** if (C_Commission_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_Commission_ID (0);
+			setC_Currency_ID (0);
+			setDocBasisType (null);
+// I
+			setFrequencyType (null);
+// M
+			setListDetails (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Commission (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +113,7 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -333,10 +369,10 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	public boolean isListDetails()
 	{
 		Object oo = get_Value(COLUMNNAME_ListDetails);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -389,7 +425,7 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -407,10 +443,10 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

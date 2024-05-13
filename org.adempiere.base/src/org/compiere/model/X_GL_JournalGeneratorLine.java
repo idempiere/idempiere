@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGeneratorLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGeneratorLine")
-public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGeneratorLine, I_Persistent 
+public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGeneratorLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_JournalGeneratorLine (Properties ctx, String GL_JournalGeneratorLine_UU, String trxName)
+    {
+      super (ctx, GL_JournalGeneratorLine_UU, trxName);
+      /** if (GL_JournalGeneratorLine_UU == null)
+        {
+			setGL_JournalGenerator_ID (0);
+			setGL_JournalGeneratorLine_ID (0);
+			setIsCopyAllDimensions (false);
+// N
+			setIsSameProduct (false);
+// N
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM GL_JournalGeneratorLine WHERE GL_JournalGenerator_ID=@GL_JournalGenerator_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalGeneratorLine (Properties ctx, String GL_JournalGeneratorLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalGeneratorLine_UU, trxName, virtualColumns);
+      /** if (GL_JournalGeneratorLine_UU == null)
+        {
+			setGL_JournalGenerator_ID (0);
+			setGL_JournalGeneratorLine_ID (0);
+			setIsCopyAllDimensions (false);
+// N
+			setIsSameProduct (false);
+// N
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM GL_JournalGeneratorLine WHERE GL_JournalGenerator_ID=@GL_JournalGenerator_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_JournalGeneratorLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -283,7 +317,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getGL_JournalGenerator_ID()));
     }
@@ -353,10 +387,10 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	public boolean isCopyAllDimensions()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCopyAllDimensions);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -375,10 +409,10 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	public boolean isSameProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameProduct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

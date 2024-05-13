@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Attachment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Attachment")
-public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent 
+public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Attachment (Properties ctx, int AD_Attachment_ID, String trxName)
@@ -41,7 +41,6 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
         {
 			setAD_Attachment_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
 			setTitle (null);
         } */
     }
@@ -54,7 +53,30 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
         {
 			setAD_Attachment_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
+			setTitle (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attachment (Properties ctx, String AD_Attachment_UU, String trxName)
+    {
+      super (ctx, AD_Attachment_UU, trxName);
+      /** if (AD_Attachment_UU == null)
+        {
+			setAD_Attachment_ID (0);
+			setAD_Table_ID (0);
+			setTitle (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attachment (Properties ctx, String AD_Attachment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Attachment_UU, trxName, virtualColumns);
+      /** if (AD_Attachment_UU == null)
+        {
+			setAD_Attachment_ID (0);
+			setAD_Table_ID (0);
 			setTitle (null);
         } */
     }
@@ -66,7 +88,7 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -217,6 +239,21 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Record UUID.
+		@param Record_UU Record UUID
+	*/
+	public void setRecord_UU (String Record_UU)
+	{
+		set_ValueNoCheck (COLUMNNAME_Record_UU, Record_UU);
+	}
+
+	/** Get Record UUID.
+		@return Record UUID	  */
+	public String getRecord_UU()
+	{
+		return (String)get_Value(COLUMNNAME_Record_UU);
+	}
+
 	/** Set Text Message.
 		@param TextMsg Text Message
 	*/
@@ -252,7 +289,7 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getTitle());
     }

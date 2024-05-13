@@ -35,12 +35,17 @@ public class ProcessInfoLog implements Serializable
 
 	/**
 	 * 	Create Process Info Log.
+	 *  @param AD_PInstance_Log_UU Log UU
+	 *	@param Log_ID Log ID
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
-	 *	@param P_Msg Process Messagre
+	 *	@param P_Msg Process Message
+	 *	@param AD_Table_ID Table ID
+	 *	@param Record_ID Record ID
+	 *	@param PInstanceLogType Log Type
 	 */
-	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
+	public ProcessInfoLog (String AD_PInstance_Log_UU, int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID, String PInstanceLogType)
 	{
 		setLog_ID (Log_ID);
 		setP_ID (P_ID);
@@ -49,9 +54,65 @@ public class ProcessInfoLog implements Serializable
 		setP_Msg (P_Msg);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setPInstanceLogType(PInstanceLogType);
+		setAD_PInstance_Log_UU(AD_PInstance_Log_UU);
 		
 	}	//	ProcessInfoLog
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param Log_ID Log ID
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@param AD_Table_ID Table ID
+	 *	@param Record_ID Record ID
+	 */
+	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
+	{
+		this("", Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null); 
+	}
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@param AD_Table_ID Table ID
+	 *	@param Record_ID Record ID
+	 *	@param PInstanceLogType Log Type
+	 */
+	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID, String PInstanceLogType)
+	{
+		this("", s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, PInstanceLogType); 
+	}
+	
+	/**
+	 * 	Create Process Info Log.
+	 *  @param AD_PInstance_Log_UU Log UU
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@param AD_Table_ID Table ID
+	 *	@param Record_ID Record ID
+	 */
+	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
+	{
+		this(AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null); 
+	}
 
+	/**
+	 * 	Create Process Info Log.
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@param AD_Table_ID Table ID
+	 *	@param Record_ID Record ID
+	 */
 	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg , int AD_Table_ID ,int Record_ID)
 	{
 		this (s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID,Record_ID);
@@ -62,7 +123,7 @@ public class ProcessInfoLog implements Serializable
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
-	 *	@param P_Msg Process Messagre
+	 *	@param P_Msg Process Message
 	 */
 	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
@@ -75,11 +136,52 @@ public class ProcessInfoLog implements Serializable
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
-	 *	@param P_Msg Process Messagre
+	 *	@param P_Msg Process Message
 	 */
 	public ProcessInfoLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
 		this (Log_ID, P_ID, P_Date, P_Number, P_Msg, 0,0);
+	}	//	ProcessInfoLog
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param AD_PInstance_Log_UU Log UU
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@param PInstanceLogType Log Type
+	 */
+	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, String PInstanceLogType)
+	{
+		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0, 0, PInstanceLogType);
+	}	//	ProcessInfoLog
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param AD_PInstance_Log_UU Log UU
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 */
+	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	{
+		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0,0,null);
+	}	//	ProcessInfoLog
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param Log_ID Log ID
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@param PInstanceLogType Log Type
+	 */
+	public ProcessInfoLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, String PInstanceLogType)
+	{
+		this ("", Log_ID, P_ID, P_Date, P_Number, P_Msg, 0, 0, PInstanceLogType);
 	}	//	ProcessInfoLog
 
 	private static int	s_Log_ID = 0;
@@ -91,6 +193,8 @@ public class ProcessInfoLog implements Serializable
 	private String 		m_P_Msg;
 	private int 		m_AD_Table_ID;
 	private int 		m_Record_ID;
+	private String 		m_PInstanceLogType;
+	private String		m_AD_PInstance_Log_UU;
 
 	public int getAD_Table_ID() {
 		return m_AD_Table_ID;
@@ -190,6 +294,38 @@ public class ProcessInfoLog implements Serializable
 	public void setP_Msg (String P_Msg)
 	{
 		m_P_Msg = P_Msg;
+	}
+
+	/**
+	 * Get Log Type
+	 * @return Log Type
+	 */
+	public String getPInstanceLogType() {
+		return m_PInstanceLogType;
+	}
+
+	/**
+	 * Set Log Type
+	 * @param m_PInstanceLogType
+	 */
+	public void setPInstanceLogType(String m_PInstanceLogType) {
+		this.m_PInstanceLogType = m_PInstanceLogType;
+	}
+
+	/**
+	 * Set AD_PInstance_Log_UU
+	 * @return String AD_PInstance_Log_UU
+	 */
+	public String getAD_PInstance_Log_UU() {
+		return m_AD_PInstance_Log_UU;
+	}
+	
+	/**
+	 * Get AD_PInstance_Log_UU
+	 * @param m_AD_PInstance_Log_UU
+	 */
+	public void setAD_PInstance_Log_UU(String m_AD_PInstance_Log_UU) {
+		this.m_AD_PInstance_Log_UU = m_AD_PInstance_Log_UU;
 	}
 
 }	//	ProcessInfoLog

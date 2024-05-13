@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for EXP_Processor_Type
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="EXP_Processor_Type")
-public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_Persistent 
+public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_EXP_Processor_Type (Properties ctx, int EXP_Processor_Type_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_EXP_Processor_Type (Properties ctx, String EXP_Processor_Type_UU, String trxName)
+    {
+      super (ctx, EXP_Processor_Type_UU, trxName);
+      /** if (EXP_Processor_Type_UU == null)
+        {
+			setEXP_Processor_Type_ID (0);
+			setJavaClass (null);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_EXP_Processor_Type (Properties ctx, String EXP_Processor_Type_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, EXP_Processor_Type_UU, trxName, virtualColumns);
+      /** if (EXP_Processor_Type_UU == null)
+        {
+			setEXP_Processor_Type_ID (0);
+			setJavaClass (null);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_EXP_Processor_Type (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

@@ -248,9 +248,8 @@ public class CalloutPayment extends CalloutEngine
 		if (C_DocType_ID != 0)
 		{
 			dt = MDocType.get (ctx, C_DocType_ID);
-			Env
-				.setContext (ctx, WindowNo, "IsSOTrx", dt.isSOTrx () ? "Y"
-					: "N");
+			Env.setContext (ctx, WindowNo, "IsSOTrx", dt.isSOTrx () ? "Y" : "N");
+			mTab.setValue(MPayment.COLUMNNAME_IsReceipt, dt.isSOTrx () ? "Y" : "N");
 		}
 		// Invoice
 		if (C_Invoice_ID != 0)
@@ -363,8 +362,6 @@ public class CalloutPayment extends CalloutEngine
 			else
 			{
 				mTab.setValue(colName, oldValue);
-				if (overrideCR)
-					mTab.fireDataStatusEEvent("Invalid", Msg.getElement(ctx, colName), true);
 				return "";
 			}			
 		}
@@ -390,8 +387,6 @@ public class CalloutPayment extends CalloutEngine
 			else
 			{
 				mTab.setValue(colName, oldValue);
-				if (overrideCR)
-					mTab.fireDataStatusEEvent("Invalid", Msg.getElement(ctx, colName), true);
 				return "";
 			}
 		}

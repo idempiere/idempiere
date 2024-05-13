@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept_Category
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_HR_Concept_Category 

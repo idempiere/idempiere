@@ -30,6 +30,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Shipment Confirmation Model
@@ -49,7 +50,7 @@ import org.compiere.util.Msg;
 public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1998947558580855224L;
 
@@ -93,7 +94,19 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MInOutConfirm.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_InOutConfirm_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MInOutConfirm(Properties ctx, String M_InOutConfirm_UU, String trxName) {
+        super(ctx, M_InOutConfirm_UU, trxName);
+		if (Util.isEmpty(M_InOutConfirm_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_InOutConfirm_ID id
@@ -103,15 +116,20 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		super (ctx, M_InOutConfirm_ID, trxName);
 		if (M_InOutConfirm_ID == 0)
-		{
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setIsApproved (false);
-			setIsCancelled (false);
-			setIsInDispute(false);
-			super.setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInOutConfirm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setIsApproved (false);
+		setIsCancelled (false);
+		setIsInDispute(false);
+		super.setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -146,7 +164,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 
 	/**
 	 * 	Get Lines
-	 *	@param requery requery
+	 *	@param requery true to requery from DB
 	 *	@return array of lines
 	 */
 	public MInOutLineConfirm[] getLines (boolean requery)
@@ -192,6 +210,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MInOutConfirm[");
@@ -204,6 +223,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Get Document Info
 	 *	@return document info (untranslated)
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		StringBuilder msgreturn = new StringBuilder().append(Msg.getElement(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
@@ -214,6 +234,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Create PDF
 	 *	@return File or null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -232,17 +253,18 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	/**
 	 * 	Create PDF file
 	 *	@param file output file
-	 *	@return file if success
+	 *	@return not implemented, always return null
 	 */
 	public File createPDF (File file)
 	{
-			return null;
+		return null;
 	}	//	createPDF
 
 	/**
-	 * 	Set Approved
+	 * 	Set Approved and update description (if IsApproved=true)
 	 *	@param IsApproved approval
 	 */
+	@Override
 	public void setIsApproved (boolean IsApproved)
 	{
 		if (IsApproved && !isApproved())
@@ -257,13 +279,13 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		}
 		super.setIsApproved (IsApproved);
 	}	//	setIsApproved
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -280,6 +302,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Unlock Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -291,6 +314,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Invalidate Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -302,6 +326,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid) 
 	 */
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -341,6 +366,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -352,6 +378,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Reject Approval
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -363,6 +390,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -452,7 +480,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	}	//	completeIt
 
 	/**
-	 * 	Split Shipment into confirmed and dispute
+	 * 	Split Shipment into confirmed and dispute (if there are quantity difference recorded in confirmation line)
 	 *	@param original original shipment
 	 *	@param C_DocType_ID target DocType
 	 *	@param confirmLines confirm lines
@@ -562,10 +590,13 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			m_processMsg += "??";
 		
 	}	//	splitInOut
-
 	
 	/**
-	 * 	Create Difference Document
+	 * 	Create Difference Document.
+	 *  <ul>
+	 *  	<li>Physical inventory for scrap</li>
+	 *  	<li>Credit memo for difference</li>
+	 *  <ul>
 	 * 	@param inout shipment/receipt
 	 *	@param confirm confirm line
 	 *	@return true if created
@@ -637,8 +668,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		return true;
 	}	//	createDifferenceDoc
 
-
 	/**
+	 * Set physical inventory doc type
 	 * @param inventory 
 	 */
 	private void setInventoryDocType(MInventory inventory) {
@@ -652,12 +683,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			}
 		}
 	}
-	
-	
+		
 	/**
 	 * 	Void Document.
 	 * 	@return false 
 	 */
+	@Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -718,6 +749,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Close Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -740,6 +772,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Reverse Correction
 	 * 	@return false 
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -760,6 +793,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Reverse Accrual - none
 	 * 	@return false 
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -780,6 +814,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Re-activate
 	 * 	@return false 
 	 */
+	@Override
 	public boolean reActivateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -795,12 +830,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		
 		return false;
 	}	//	reActivateIt
-	
-	
-	/*************************************************************************
+		
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+	@Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -819,6 +854,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -828,6 +864,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getUpdatedBy();
@@ -837,6 +874,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 * 	Get Document Currency
 	 *	@return C_Currency_ID
 	 */
+	@Override
 	public int getC_Currency_ID()
 	{
 		return 0;

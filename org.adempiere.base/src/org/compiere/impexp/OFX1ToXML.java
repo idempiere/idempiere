@@ -28,10 +28,10 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 
 /**
- *	Covert OFX 1XX (SQGML) into valid XML
- *
+ *	Covert OFX 1XX (SQGML) into valid XML.
+ *  <p>
  *  SGML BASED OFX 1 compliant data is read from the BufferedReader
- *  passed to init. This class extends InputSream, allowing the
+ *  passed to init. This class extends InputStream, allowing the
  *  XML compliant output data to be read from it.
  *
  *  @author Maarten Klinker
@@ -106,6 +106,7 @@ public final class OFX1ToXML extends InputStream implements Runnable
 	 * Method run
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	public void run()
 	{
 		boolean addCloseTag;
@@ -183,6 +184,7 @@ public final class OFX1ToXML extends InputStream implements Runnable
 	 * @return int
 	 * @throws IOException
 	 */
+	@Override
 	public int read() throws IOException
 	{
 		return m_reader.read();
@@ -200,9 +202,6 @@ public final class OFX1ToXML extends InputStream implements Runnable
 	{
 		return m_reader.read(cbuf, off, len);
 	}	//	read
-	
-	
-	
 	
 	/**
 	 *	Encodes strings for XML

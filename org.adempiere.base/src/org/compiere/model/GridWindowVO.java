@@ -30,7 +30,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *  Model Window Value Object
+ *  Window Model Value Object
  *
  *  @author Jorg Janke
  *  @version  $Id: GridWindowVO.java,v 1.4 2006/07/30 00:58:04 jjanke Exp $
@@ -38,7 +38,7 @@ import org.compiere.util.Env;
 public class GridWindowVO implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6884332743173214735L;
 	
@@ -49,7 +49,6 @@ public class GridWindowVO implements Serializable
 		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
 	
 	/**
-	 * 
 	 * @param AD_Window_ID
 	 * @param windowNo
 	 * @return {@link GridWindowVO}
@@ -60,7 +59,6 @@ public class GridWindowVO implements Serializable
 	}
 	
 	/**
-	 * 
 	 * @param AD_Window_ID
 	 * @param windowNo
 	 * @param AD_Menu_ID
@@ -90,7 +88,7 @@ public class GridWindowVO implements Serializable
 	 *  Create Window Value Object
 	 *  @param WindowNo window no for ctx
 	 *  @param AD_Window_ID window id
-	 *  @return MWindowVO
+	 *  @return GridWindowVO
 	 */
 	public static GridWindowVO create (int WindowNo, int AD_Window_ID)
 	{
@@ -102,7 +100,7 @@ public class GridWindowVO implements Serializable
 	 *  @param ctx context
 	 *  @param WindowNo window no for ctx
 	 *  @param AD_Window_ID window id
-	 *  @return MWindowVO
+	 *  @return GridWindowVO
 	 */
 	public static GridWindowVO create (Properties ctx, int WindowNo, int AD_Window_ID)
 	{
@@ -116,12 +114,13 @@ public class GridWindowVO implements Serializable
 	 *  @param WindowNo window no for ctx
 	 *  @param AD_Window_ID window id
 	 *  @param AD_Menu_ID menu id
-	 *  @return MWindowVO
+	 *  @return GridWindowVO
 	 */
 	public static GridWindowVO create (Properties ctx, int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
-		CLogger.get().config("#" + WindowNo
-			+ " - AD_Window_ID=" + AD_Window_ID + "; AD_Menu_ID=" + AD_Menu_ID);
+		if (CLogger.get().isLoggable(Level.CONFIG))
+			CLogger.get().config("#" + WindowNo
+				+ " - AD_Window_ID=" + AD_Window_ID + "; AD_Menu_ID=" + AD_Menu_ID);
 		GridWindowVO vo = new GridWindowVO (ctx, WindowNo);
 		vo.AD_Window_ID = AD_Window_ID;
 
@@ -160,7 +159,8 @@ public class GridWindowVO implements Serializable
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
 			}
-			CLogger.get().config("AD_Window_ID=" + vo.AD_Window_ID);
+			if (CLogger.get().isLoggable(Level.CONFIG))
+				CLogger.get().config("AD_Window_ID=" + vo.AD_Window_ID);
 		}
 
 		//  --  Get Window
@@ -299,9 +299,8 @@ public class GridWindowVO implements Serializable
 		Env.setContext(mWindowVO.ctx, mWindowVO.WindowNo, "BaseTable_ID", mWindowVO.AD_Table_ID);
 		return true;
 	}   //  createTabs
-
 	
-	/**************************************************************************
+	/**
 	 *  Private Constructor
 	 *  @param Ctx context
 	 *  @param windowNo window no
@@ -323,7 +322,7 @@ public class GridWindowVO implements Serializable
 	public String		AD_Window_UU = "";
 	/** Name				*/
 	public	String		Name = "";
-	/** Desription			*/
+	/** Description			*/
 	public	String		Description = "";
 	/** Help				*/
 	public	String		Help = "";
@@ -355,7 +354,7 @@ public class GridWindowVO implements Serializable
 	public static final String	WINDOWTYPE_MMAINTAIN = "M";
 
 	/**
-	 *  Set Context including contained elements
+	 *  Set window context including context of GridTabVO
 	 *  @param newCtx context
 	 */
 	public void setCtx (Properties newCtx)
@@ -371,7 +370,7 @@ public class GridWindowVO implements Serializable
 	/**
 	 * 	Clone
 	 * 	@param windowNo no
-	 *	@return WindowVO
+	 *	@return GridWindowVO
 	 */
 	public GridWindowVO clone (int windowNo)
 	{
@@ -412,5 +411,5 @@ public class GridWindowVO implements Serializable
 		return clone;
 	}	//	clone
 
-}   //  MWindowVO
+}   //  GridWindowVO
 

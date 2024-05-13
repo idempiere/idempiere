@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestType")
-public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent 
+public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_RequestType (Properties ctx, int R_RequestType_ID, String trxName)
@@ -85,6 +85,58 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_RequestType (Properties ctx, String R_RequestType_UU, String trxName)
+    {
+      super (ctx, R_RequestType_UU, trxName);
+      /** if (R_RequestType_UU == null)
+        {
+			setConfidentialType (null);
+// C
+			setDueDateTolerance (0);
+// 7
+			setIsAutoChangeRequest (false);
+			setIsConfidentialInfo (false);
+// N
+			setIsDefault (false);
+// N
+			setIsEMailWhenDue (false);
+			setIsEMailWhenOverdue (false);
+			setIsIndexed (false);
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setR_RequestType_ID (0);
+			setR_StatusCategory_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestType (Properties ctx, String R_RequestType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestType_UU, trxName, virtualColumns);
+      /** if (R_RequestType_UU == null)
+        {
+			setConfidentialType (null);
+// C
+			setDueDateTolerance (0);
+// 7
+			setIsAutoChangeRequest (false);
+			setIsConfidentialInfo (false);
+// N
+			setIsDefault (false);
+// N
+			setIsEMailWhenDue (false);
+			setIsEMailWhenOverdue (false);
+			setIsIndexed (false);
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setR_RequestType_ID (0);
+			setR_StatusCategory_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_RequestType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -92,7 +144,7 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -240,10 +292,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isAutoChangeRequest()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoChangeRequest);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -263,10 +315,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isConfidentialInfo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsConfidentialInfo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -286,10 +338,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -309,10 +361,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isEMailWhenDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEMailWhenDue);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -332,10 +384,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isEMailWhenOverdue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEMailWhenOverdue);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -355,10 +407,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isIndexed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIndexed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -378,10 +430,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -401,10 +453,10 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -429,7 +481,7 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

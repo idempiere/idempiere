@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_PartType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PartType")
-public class X_M_PartType extends PO implements I_M_PartType, I_Persistent 
+public class X_M_PartType extends PO implements I_M_PartType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PartType (Properties ctx, int M_PartType_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_M_PartType extends PO implements I_M_PartType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PartType (Properties ctx, String M_PartType_UU, String trxName)
+    {
+      super (ctx, M_PartType_UU, trxName);
+      /** if (M_PartType_UU == null)
+        {
+			setM_PartType_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PartType (Properties ctx, String M_PartType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PartType_UU, trxName, virtualColumns);
+      /** if (M_PartType_UU == null)
+        {
+			setM_PartType_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PartType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_M_PartType extends PO implements I_M_PartType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

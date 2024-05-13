@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashPlan
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CashPlan")
-public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent 
+public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CashPlan (Properties ctx, int C_CashPlan_ID, String trxName)
@@ -72,6 +72,42 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CashPlan (Properties ctx, String C_CashPlan_UU, String trxName)
+    {
+      super (ctx, C_CashPlan_UU, trxName);
+      /** if (C_CashPlan_UU == null)
+        {
+			setC_CashPlan_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setIsApproved (false);
+// N
+			setIsSOTrx (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashPlan (Properties ctx, String C_CashPlan_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashPlan_UU, trxName, virtualColumns);
+      /** if (C_CashPlan_UU == null)
+        {
+			setC_CashPlan_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setIsApproved (false);
+// N
+			setIsSOTrx (false);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CashPlan (Properties ctx, ResultSet rs, String trxName)
     {
@@ -79,7 +115,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -361,7 +397,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -414,10 +450,10 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -437,10 +473,10 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -460,10 +496,10 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

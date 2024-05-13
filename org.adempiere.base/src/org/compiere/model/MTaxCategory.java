@@ -17,10 +17,11 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.Util;
 
 /**
  * 	Tax Category Model
@@ -31,9 +32,21 @@ import org.adempiere.exceptions.AdempiereException;
 public class MTaxCategory extends X_C_TaxCategory
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5521670797405300136L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_TaxCategory_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTaxCategory(Properties ctx, String C_TaxCategory_UU, String trxName) {
+        super(ctx, C_TaxCategory_UU, trxName);
+		if (Util.isEmpty(C_TaxCategory_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -45,10 +58,15 @@ public class MTaxCategory extends X_C_TaxCategory
 	{
 		super (ctx, C_TaxCategory_ID, trxName);
 		if (C_TaxCategory_ID == 0)
-		{
-			setIsDefault (false);
-		}
+			setInitialDefaults();
 	}	//	MTaxCategory
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -62,13 +80,12 @@ public class MTaxCategory extends X_C_TaxCategory
 	}	//	MTaxCategory
 	
 	/**
-	 * 	getDefaultTax
-	 *	Get the default tax id associated with this tax category
-	 *	
+	 *	Get the default tax associated with this tax category.
+	 *	@return default MTax for this tax category
 	 */
 	public MTax getDefaultTax()
 	{
-		MTax m_tax = new MTax(getCtx(), 0, get_TrxName());
+		MTax m_tax = null;
 		
 		final String whereClause = COLUMNNAME_C_TaxCategory_ID+"=? AND "+ COLUMNNAME_IsDefault+"='Y'";
 		List<MTax> list = new Query(getCtx(), I_C_Tax.Table_Name, whereClause,  get_TrxName())

@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import org.compiere.Adempiere;
 import org.compiere.model.MPInstance;
 import org.compiere.model.SystemIDs;
+import org.compiere.model.SystemProperties;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -40,8 +41,8 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /**
+ * Eclipse application that would launch the org.adempiere.pipo2.PackInFolder process to import 2pack archives inside a predefine folder. 
  * @author Carlos Ruiz (globalqss)
- *
  */
 public class PackInFolderApplication implements IApplication {
 
@@ -51,7 +52,7 @@ public class PackInFolderApplication implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		Adempiere.startup(false);
-		String logLevel = System.getProperty("LogLevel");
+		String logLevel = SystemProperties.getLogLevel();
 		if (logLevel == null)
 			logLevel = "INFO";
 		switch (logLevel) {
@@ -73,7 +74,7 @@ public class PackInFolderApplication implements IApplication {
 			ProcessInfo pi = new ProcessInfo("PackInFolder", 200099);
 			pi.setAD_Client_ID(0);
 			pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
-			MPInstance instance = new MPInstance(ctx, 200099, 0);
+			MPInstance instance = new MPInstance(ctx, 200099, 0, 0, null);
 			instance.saveEx();
 			instance.createParameter(10, "Folder", directory);
 			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());

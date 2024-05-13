@@ -18,6 +18,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.adempiere.base.annotation.Parameter;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocator;
@@ -41,13 +42,16 @@ import org.compiere.util.Msg;
 public class BPartnerOrgLink extends SvrProcess
 {
 	/**	Existing Org			*/
+	@Parameter
 	private int			p_AD_Org_ID;
 	/** Info for New Org		*/
+	@Parameter
 	private int			p_AD_OrgType_ID;
+	/** Role					*/
+	@Parameter
+	private int			p_AD_Role_ID;
 	/** Business Partner		*/
 	private int			p_C_BPartner_ID;
-	/** Role					*/
-	private int			p_AD_Role_ID;
 	
 	
 	/**
@@ -92,11 +96,11 @@ public class BPartnerOrgLink extends SvrProcess
 		//	BP Location
 		MBPartnerLocation[] locs = bp.getLocations(false);
 		if (locs == null || locs.length == 0)
-			throw new IllegalArgumentException ("Business Partner has no Location");
+			throw new IllegalArgumentException (Msg.getMsg(getCtx(),"BPartnerHasNoLocation"));
 		//	Location
 		int C_Location_ID = locs[0].getC_Location_ID();
 		if (C_Location_ID == 0)
-			throw new IllegalArgumentException ("Business Partner Location has no Address");
+			throw new IllegalArgumentException (Msg.getMsg(getCtx(),"BPartnerLocationHasNoAddress"));
 		
 		//	Create Org
 		boolean newOrg = p_AD_Org_ID == 0; 
@@ -107,14 +111,15 @@ public class BPartnerOrgLink extends SvrProcess
 			org.setName (bp.getName());
 			org.setDescription (bp.getDescription());
 			if (!org.save())
-				throw new Exception ("Organization not saved");
+				throw new Exception (Msg.getMsg(getCtx(),"OrganizationNotSaved"));
 		}
 		else	//	check if linked to already
 		{
 			int C_BPartner_ID = org.getLinkedC_BPartner_ID(get_TrxName());
-			if (C_BPartner_ID > 0)
-				throw new IllegalArgumentException ("Organization '" + org.getName() 
-					+ "' already linked (to C_BPartner_ID=" + C_BPartner_ID + ")");
+			if (C_BPartner_ID > 0) {
+				MBPartner partner = new MBPartner (getCtx(), C_BPartner_ID, get_TrxName());
+				throw new IllegalArgumentException (Msg.getMsg(getCtx(),"OrganizationAlreadyLinkedBusinessPartner",new Object[] {org.getName(), partner.getName()} ));
+			}
 		}
 		p_AD_Org_ID = org.getAD_Org_ID();
 		
@@ -137,7 +142,7 @@ public class BPartnerOrgLink extends SvrProcess
 		{
 			wh = new MWarehouse(org);
 			if (!wh.save(get_TrxName()))
-				throw new Exception ("Warehouse not saved");
+				throw new Exception (Msg.getMsg(getCtx(),"WarehouseNotSaved"));
 		}
 		//	Create Locator
 		MLocator mLoc = wh.getDefaultLocator();
@@ -151,7 +156,7 @@ public class BPartnerOrgLink extends SvrProcess
 		//	Update/Save Org Info
 		oInfo.setM_Warehouse_ID(wh.getM_Warehouse_ID());
 		if (!oInfo.save(get_TrxName()))
-			throw new Exception ("Organization Info not saved");
+			throw new Exception (Msg.getMsg(getCtx(),"OrganizationInfoNotSaved"));
 		
 		//	Update BPartner
 		bp.setAD_OrgBP_ID(p_AD_Org_ID);
@@ -160,7 +165,7 @@ public class BPartnerOrgLink extends SvrProcess
 		
 		//	Save BP
 		if (!bp.save())	
-			throw new Exception ("Business Partner not updated");
+			throw new Exception (Msg.getMsg(getCtx(),"BPartnerNotUpdated"));
 		
 		//	Limit to specific Role
 		if (p_AD_Role_ID != 0)	
@@ -186,7 +191,7 @@ public class BPartnerOrgLink extends SvrProcess
 		//	Reset Client Role
 		MRole.getDefault(getCtx(), true);
 		
-		return "Business Partner - Organization Link created";
+		return Msg.getMsg(getCtx(),"BPartnerOrganizationLinkCreated");
 	}	//	doIt
 
 }	//	BPartnerOrgLink

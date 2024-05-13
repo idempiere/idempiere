@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SMTP
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_SMTP")
-public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent 
+public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_SMTP (Properties ctx, int AD_SMTP_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_SMTP (Properties ctx, String AD_SMTP_UU, String trxName)
+    {
+      super (ctx, AD_SMTP_UU, trxName);
+      /** if (AD_SMTP_UU == null)
+        {
+			setAD_SMTP_ID (0);
+			setIsSecureSMTP (false);
+// N
+			setIsSmtpAuthorization (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SMTP (Properties ctx, String AD_SMTP_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SMTP_UU, trxName, virtualColumns);
+      /** if (AD_SMTP_UU == null)
+        {
+			setAD_SMTP_ID (0);
+			setIsSecureSMTP (false);
+// N
+			setIsSmtpAuthorization (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_SMTP (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -157,10 +187,10 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	public boolean isSecureSMTP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSecureSMTP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -180,10 +210,10 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	public boolean isSmtpAuthorization()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSmtpAuthorization);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -208,7 +238,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

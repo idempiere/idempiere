@@ -148,25 +148,25 @@ public class ReportCtl
 			 *	Order Print
 			 */
 			if (pi.getAD_Process_ID() == PROCESS_RPT_C_ORDER)			//	C_Order
-				return startDocumentPrint(ReportEngine.ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt PP_Order", null))			//	C_Order
-				return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt DD_Order", null))			//	C_Order
-				return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_INVOICE)		//	C_Invoice
-				return startDocumentPrint(ReportEngine.INVOICE, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.INVOICE, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INOUT)		//	M_InOut
-				return startDocumentPrint(ReportEngine.SHIPMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.SHIPMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PROJECT)		//	C_Project
-				return startDocumentPrint(ReportEngine.PROJECT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.PROJECT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_RFQRESPONSE)		//	C_RfQResponse
-				return startDocumentPrint(ReportEngine.RFQ, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.RFQ, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PAYMENT)		//	C_Payment
-				return startCheckPrint(pi.getRecord_ID(), !pi.isPrintPreview());
+				return startCheckPrint(pi.getRecord_ID(), !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)		//	Physical Inventory
-				return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
-				return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+				return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			/**
 	        else if (pi.getAD_Process_ID() == 290)      // Movement Submission by VHARCQ
 	            return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, IsDirectPrint);
@@ -179,11 +179,11 @@ public class ReportCtl
 				return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 		   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
 				|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
-			   return startFinReport (pi, WindowNo);
+			   return startFinReport (pi, WindowNo, instance);
 			/********************
 			 *	Standard Report
 			 *******************/
-			return startStandardReport (pi, WindowNo);
+			return startStandardReport (pi, WindowNo, instance);
 		}
 		finally {
 			instance.setIsProcessing(false);
@@ -212,6 +212,20 @@ public class ReportCtl
 	 *  @return true if OK
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint)
+	{
+		return startStandardReport(pi, WindowNo, IsDirectPrint, null);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info and submit
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 *  @param IsDirectPrint if true, prints directly - otherwise View
+	 * 	@param instance - AD_PInstance
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint, MPInstance instance)
 	{
 		pi.setPrintPreview(!IsDirectPrint);
 		return startStandardReport(pi, WindowNo);
@@ -247,6 +261,24 @@ public class ReportCtl
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
 	{
+		return startStandardReport(pi, WindowNo, null);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info and submit.<br>
+	 *  A report can be created from:
+	 *  <ol>
+	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
+	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
+	 *  </ol>
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 * 	@param instance - AD_PInstance
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, MPInstance instance)
+	{
 		ReportEngine re = null;
 		//
 		// Create Report Engine by using attached MPrintFormat (if any)
@@ -256,6 +288,9 @@ public class ReportCtl
 		if (o != null && o instanceof MPrintFormat) {
 			Properties ctx = Env.getCtx();
 			MPrintFormat format = (MPrintFormat)o;
+			if(instance != null) {
+				instance.updatePrintFormatAndLanguageIfEmpty(format);
+			}
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
@@ -277,6 +312,7 @@ public class ReportCtl
 		}
 		re.setLanguageID(pi.getLanguageID());
 		re.setIsReplaceTabContent(pi.isReplaceTabContent());
+		re.setProcessInfo(pi);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startStandardReport
@@ -299,6 +335,18 @@ public class ReportCtl
 	 */
 	static public boolean startFinReport (ProcessInfo pi, int WindowNo)
 	{
+		return startFinReport(pi, WindowNo, null);
+	}
+	
+	/**
+	 *	Start Financial Report.
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 * 	@param instance - AD_PInstance
+	 *  @return true if OK
+	 */
+	static public boolean startFinReport (ProcessInfo pi, int WindowNo, MPInstance instance)
+	{
 		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 
@@ -315,6 +363,11 @@ public class ReportCtl
 			s_log.log(Level.SEVERE, "startFinReport - No PrintFormat");
 			return false;
 		}
+		
+		if(instance != null) {
+			instance.updatePrintFormatAndLanguageIfEmpty(format);
+		}
+		
 		PrintInfo info = new PrintInfo(pi);
 
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info, pi.isSummary(), null, WindowNo);
@@ -353,7 +406,7 @@ public class ReportCtl
 	 */
 	public static boolean startDocumentPrint(int type, MPrintFormat customPrintFormat, int Record_ID, IProcessUI parent, int WindowNo, String printerName)
 	{
-		return(startDocumentPrint(type, customPrintFormat, Record_ID, parent, WindowNo, true, printerName));
+		return(startDocumentPrint(type, customPrintFormat, Record_ID, parent, WindowNo, true, printerName, null));
 	}
 
 	/**
@@ -369,7 +422,24 @@ public class ReportCtl
 	public static boolean startDocumentPrint(int type, int Record_ID, IProcessUI parent, int WindowNo,
 			boolean IsDirectPrint)
 	{
-		return(startDocumentPrint(type, null, Record_ID, parent, WindowNo, IsDirectPrint, null ));
+		return(startDocumentPrint(type, Record_ID, parent, WindowNo, IsDirectPrint, null ));
+	}
+	
+	/**
+	 * 	Start Document Print for Type.
+	 *  	Called also directly from ProcessDialog, VInOutGen, VInvoiceGen, VPayPrint
+	 * 	@param type document type in ReportEngine
+	 * 	@param Record_ID id
+	 *  @param parent The window which invoked the printing
+	 *  @param WindowNo The windows number which invoked the printing
+	 * 	@param IsDirectPrint if true, prints directly - otherwise View
+	 * 	@param instance - AD_PInstance
+	 * 	@return true if success
+	 */
+	public static boolean startDocumentPrint(int type, int Record_ID, IProcessUI parent, int WindowNo,
+			boolean IsDirectPrint, MPInstance instance)
+	{
+		return(startDocumentPrint(type, null, Record_ID, parent, WindowNo, IsDirectPrint, null, instance ));
 	}
 
 	/**
@@ -379,10 +449,11 @@ public class ReportCtl
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
 	 * 	@param printerName 	Specified printer name
+	 * 	@param instance - AD_PInstance
 	 * 	@return true if success
 	 */
 	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, IProcessUI parent, int WindowNo,
-			boolean IsDirectPrint, String printerName)
+			boolean IsDirectPrint, String printerName, MPInstance instance)
 	{
 		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID, WindowNo);
 		if (re == null)
@@ -397,7 +468,10 @@ public class ReportCtl
 		if(re.getPrintFormat()!=null)
 		{
 			MPrintFormat format = re.getPrintFormat();
-
+			
+			if(instance != null) {
+				instance.updatePrintFormatAndLanguageIfEmpty(format);
+			}
 			// We have a Jasper Print Format
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)
@@ -426,9 +500,10 @@ public class ReportCtl
 	 * 	Find/Create
 	 *	@param C_Payment_ID Payment
 	 * 	@param IsDirectPrint if true, prints directly - otherwise View
+	 * 	@param instance - AD_PInstance
 	 * 	@return true if success
 	 */
-	public static boolean startCheckPrint (int C_Payment_ID, boolean IsDirectPrint)
+	public static boolean startCheckPrint (int C_Payment_ID, boolean IsDirectPrint, MPInstance instance)
 	{
 
 		// afalcone - [ 1871567 ] Wrong value in Payment document
@@ -447,7 +522,7 @@ public class ReportCtl
 			if (psc != null)
 				C_PaySelectionCheck_ID = psc.getC_PaySelectionCheck_ID();
 		}
-		return startDocumentPrint (ReportEngine.CHECK, C_PaySelectionCheck_ID, null, -1, IsDirectPrint);
+		return startDocumentPrint (ReportEngine.CHECK, C_PaySelectionCheck_ID, null, -1, IsDirectPrint, instance);
 	}	//	startCheckPrint
 
 	private static void createOutput(ReportEngine re, boolean printPreview, String printerName)

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TaskInstance
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_TaskInstance")
-public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent 
+public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_TaskInstance (Properties ctx, String AD_TaskInstance_UU, String trxName)
+    {
+      super (ctx, AD_TaskInstance_UU, trxName);
+      /** if (AD_TaskInstance_UU == null)
+        {
+			setAD_Task_ID (0);
+			setAD_TaskInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TaskInstance (Properties ctx, String AD_TaskInstance_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TaskInstance_UU, trxName, virtualColumns);
+      /** if (AD_TaskInstance_UU == null)
+        {
+			setAD_Task_ID (0);
+			setAD_TaskInstance_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_TaskInstance (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -129,7 +151,7 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_TaskInstance_ID()));
     }

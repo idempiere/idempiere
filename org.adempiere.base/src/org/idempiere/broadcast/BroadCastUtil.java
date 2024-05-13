@@ -21,6 +21,7 @@ import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
 
 /**
+ * Static methods to broacast message using {@link IMessageService}.
  * @author Deepak Pansheriya
  */
 public class BroadCastUtil {
@@ -34,7 +35,7 @@ public class BroadCastUtil {
 	private static IMessageService service = null;
 	
 	/**
-	 * 
+	 * Add message subscriber
 	 * @param subscriber
 	 */
 	public static synchronized void subscribe(ITopicSubscriber<BroadCastMsg> subscriber){		
@@ -46,7 +47,7 @@ public class BroadCastUtil {
 	}
 	
 	/**
-	 * 
+	 * Remove message subsriber
 	 * @param subscriber
 	 */
 	public static synchronized void unSubscribe(ITopicSubscriber<BroadCastMsg> subscriber){		
@@ -58,7 +59,7 @@ public class BroadCastUtil {
 	}
 	
 	/**
-	 * 
+	 * Publish message to {@link IMessageService} with topic {@link #TOPIC_BROADCAST_MESSAGE}.
 	 * @param msg
 	 * @return true if publish successfully
 	 */
@@ -72,7 +73,6 @@ public class BroadCastUtil {
 	}
 	
 	/**
-	 * 
 	 * @param messageService
 	 */
 	public void bindMessageService(IMessageService messageService) {
@@ -86,7 +86,6 @@ public class BroadCastUtil {
 	}
 	
 	/**
-	 * 
 	 * @param messageService
 	 */
 	public void unbindMessageService(IMessageService messageService) {

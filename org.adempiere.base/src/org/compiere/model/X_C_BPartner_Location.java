@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BPartner_Location
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BPartner_Location")
-public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, I_Persistent 
+public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName)
@@ -81,6 +81,54 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BPartner_Location (Properties ctx, String C_BPartner_Location_UU, String trxName)
+    {
+      super (ctx, C_BPartner_Location_UU, trxName);
+      /** if (C_BPartner_Location_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_Location_ID (0);
+			setIsBillTo (true);
+// Y
+			setIsPayFrom (true);
+// Y
+			setIsPreserveCustomName (false);
+// N
+			setIsRemitTo (true);
+// Y
+			setIsShipTo (true);
+// Y
+			setName (null);
+// .
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BPartner_Location (Properties ctx, String C_BPartner_Location_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BPartner_Location_UU, trxName, virtualColumns);
+      /** if (C_BPartner_Location_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_Location_ID (0);
+			setIsBillTo (true);
+// Y
+			setIsPayFrom (true);
+// Y
+			setIsPreserveCustomName (false);
+// N
+			setIsRemitTo (true);
+// Y
+			setIsShipTo (true);
+// Y
+			setName (null);
+// .
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BPartner_Location (Properties ctx, ResultSet rs, String trxName)
     {
@@ -88,7 +136,7 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -275,10 +323,10 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	public boolean isBillTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBillTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -314,10 +362,10 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	public boolean isPayFrom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPayFrom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -336,10 +384,10 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	public boolean isPreserveCustomName()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPreserveCustomName);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -359,10 +407,10 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	public boolean isRemitTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRemitTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -382,10 +430,10 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	public boolean isShipTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShipTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -410,7 +458,7 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

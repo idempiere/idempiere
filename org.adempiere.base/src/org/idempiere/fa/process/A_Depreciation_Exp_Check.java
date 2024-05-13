@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.fa.process;
 
 import java.sql.Timestamp;
@@ -19,10 +37,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
 
-
 /**
  * @author Anca Bradau www.arhipac.ro
- *
  */
 @org.adempiere.base.annotation.Process
 public class A_Depreciation_Exp_Check extends SvrProcess
@@ -31,10 +47,9 @@ public class A_Depreciation_Exp_Check extends SvrProcess
 	private int p_A_Asset_ID = -1;
 	private String p_WhereClause = null;
 
-	
+	@Override
 	protected void prepare()
 	{
-		;
 		for (ProcessInfoParameter para : getParameter())
 		{
 			String name = para.getParameterName();
@@ -59,11 +74,9 @@ public class A_Depreciation_Exp_Check extends SvrProcess
 		}
 	}
 	
-	
+	@Override
 	protected String doIt() throws Exception
 	{
-//		ARHIPAC.assertDebugging();
-		
 		for (int A_Asset_ID : getAsset_IDs())
 		{
 			fixDepreciation(A_Asset_ID);
@@ -76,6 +89,10 @@ public class A_Depreciation_Exp_Check extends SvrProcess
 		return "Ok";
 	}
 	
+	/**
+	 * Get ids of fixed asset
+	 * @return fixed asset ids
+	 */
 	private int[] getAsset_IDs()
 	{
 		ArrayList<Object> params = new ArrayList<Object>();

@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_Attribute_Value
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Attribute_Value")
-public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_Persistent 
+public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Attribute_Value (Properties ctx, int AD_Attribute_Value_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Attribute_Value (Properties ctx, String AD_Attribute_Value_UU, String trxName)
+    {
+      super (ctx, AD_Attribute_Value_UU, trxName);
+      /** if (AD_Attribute_Value_UU == null)
+        {
+			setAD_Attribute_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attribute_Value (Properties ctx, String AD_Attribute_Value_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Attribute_Value_UU, trxName, virtualColumns);
+      /** if (AD_Attribute_Value_UU == null)
+        {
+			setAD_Attribute_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Attribute_Value (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -79,7 +101,7 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Attribute_Value[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

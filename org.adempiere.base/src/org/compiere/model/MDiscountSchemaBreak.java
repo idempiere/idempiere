@@ -23,9 +23,8 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
- *	Discount Break Schema (Model)
+ *	Discount Schema Break Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MDiscountSchemaBreak.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -35,11 +34,20 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements ImmutablePOSupport
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -5405425697628869517L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_DiscountSchemaBreak_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDiscountSchemaBreak(Properties ctx, String M_DiscountSchemaBreak_UU, String trxName) {
+        super(ctx, M_DiscountSchemaBreak_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -64,7 +72,7 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	}	//	MDiscountSchemaBreak
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDiscountSchemaBreak(MDiscountSchemaBreak copy) 
@@ -73,7 +81,7 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -83,7 +91,7 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -95,11 +103,11 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	}
 	
 	/**
-	 * 	Criteria apply
+	 * 	Check if criteria apply
 	 *	@param Value amt or qty
 	 *	@param M_Product_ID product
 	 *	@param M_Product_Category_ID category
-	 *	@return true if criteria met
+	 *	@return true if criteria is applicable for this break record
 	 */
 	public boolean applies (BigDecimal Value, int M_Product_ID, int M_Product_Category_ID)
 	{
@@ -140,6 +148,7 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MDiscountSchemaBreak[");

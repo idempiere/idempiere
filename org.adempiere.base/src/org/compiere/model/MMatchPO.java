@@ -41,14 +41,16 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
  *	Match PO Model.
- *	= Created when processing Shipment or Order
- *	- Updates Order (delivered, invoiced)
- *	- Creates PPV acct
- *	
+ *  <pre>
+ *  Created when processing Shipment or Order
+ *  - Updates Order (delivered, invoiced)
+ *  - Creates PPV acct
+ *	</pre>
  *  @author Jorg Janke
  *  @version $Id: MMatchPO.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  *  
@@ -69,7 +71,7 @@ import org.compiere.util.ValueNamePair;
 public class MMatchPO extends X_M_MatchPO
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 487498668807522050L;
 
@@ -243,7 +245,6 @@ public class MMatchPO extends X_M_MatchPO
 		return retValue;
 	}	//	getInvoice
 
-	// MZ Goodwill
 	/**
 	 * 	Get PO Matches for OrderLine
 	 *	@param ctx context
@@ -281,15 +282,14 @@ public class MMatchPO extends X_M_MatchPO
 		list.toArray (retValue);
 		return retValue;
 	}	//	getOrderLine
-	// end MZ
 	
 	/**
-	 * 	Find/Create PO(Inv) Match
+	 * 	Update or Create Match PO record
 	 *	@param iLine invoice line
 	 *	@param sLine receipt line
-	 *	@param dateTrx date
-	 *	@param qty qty
-	 *	@return Match Record
+	 *	@param dateTrx transaction date
+	 *	@param qty qty to match
+	 *	@return Match PO Record
 	 */
 	public static MMatchPO create (MInvoiceLine iLine, MInOutLine sLine,  
 		Timestamp dateTrx, BigDecimal qty)
@@ -353,6 +353,17 @@ public class MMatchPO extends X_M_MatchPO
 		}
 	}
 	
+	/**
+	 * Update or create MatchPO record (if needed, create MatchInv too). 
+	 * @param ctx
+	 * @param iLine
+	 * @param sLine
+	 * @param C_OrderLine_ID
+	 * @param dateTrx
+	 * @param qty
+	 * @param trxName
+	 * @return Match PO record
+	 */
 	protected static MMatchPO create(Properties ctx, MInvoiceLine iLine,
 			MInOutLine sLine, int C_OrderLine_ID, Timestamp dateTrx,
 			BigDecimal qty, String trxName) {
@@ -680,6 +691,16 @@ public class MMatchPO extends X_M_MatchPO
 		return retValue;
 	}	//	create
 	
+	/**
+	 * Create MatchInv record
+	 * @param mpo
+	 * @param C_InvoiceLine_ID
+	 * @param M_InOutLine_ID
+	 * @param qty
+	 * @param dateTrx
+	 * @param trxName
+	 * @return Match Inv record
+	 */
 	protected static MMatchInv createMatchInv(MMatchPO mpo, int C_InvoiceLine_ID, int M_InOutLine_ID, BigDecimal qty, Timestamp dateTrx, String trxName) 
 	{
 		Savepoint savepoint = null;
@@ -737,7 +758,7 @@ public class MMatchPO extends X_M_MatchPO
 	protected MMatchInv m_matchInv;
 
 	/**
-	 * Register the match inv created for immediate accounting purposes
+	 * Register the match inv created for immediate accounting posting
 	 * @param matchInv
 	 */
 	protected void setMatchInvCreated(MMatchInv matchInv) {
@@ -745,8 +766,9 @@ public class MMatchPO extends X_M_MatchPO
 	}
 
 	/**
-	 * Get the match inv created for immediate accounting purposes
-	 * Is cleared after read, so if you read twice second time it returns null
+	 * Get the match inv created for immediate accounting posting. <br/>
+	 * The Match Inv record reference is set to null after call, so if you call this method twice, the second call will returns null.
+	 * @return Match Inv record or null
 	 */
 	public MMatchInv getMatchInvCreated() {
 		MMatchInv tmp = m_matchInv;
@@ -757,8 +779,19 @@ public class MMatchPO extends X_M_MatchPO
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MMatchPO.class);
 
-	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_MatchPO_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMatchPO(Properties ctx, String M_MatchPO_UU, String trxName) {
+        super(ctx, M_MatchPO_UU, trxName);
+		if (Util.isEmpty(M_MatchPO_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_MatchPO_ID id
@@ -768,13 +801,18 @@ public class MMatchPO extends X_M_MatchPO
 	{
 		super (ctx, M_MatchPO_ID, trxName);
 		if (M_MatchPO_ID == 0)
-		{
-			setM_AttributeSetInstance_ID(0);
-			setPosted (false);
-			setProcessed (false);
-			setProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MMatchPO
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);
+		setPosted (false);
+		setProcessed (false);
+		setProcessing (false);
+	}
 
 	/**
 	 * 	Load Construor
@@ -828,16 +866,15 @@ public class MMatchPO extends X_M_MatchPO
 		setProcessed(true);		//	auto
 	}	//	MMatchPO
 	
-	/** Invoice Changed			*/
+	/** Invoice Line Changed			*/
 	protected boolean m_isInvoiceLineChange = false;
-	/** InOut Changed			*/
+	/** InOut Line Changed			*/
 	protected boolean m_isInOutLineChange = false;
 	/** Order Line				*/
 	protected MOrderLine		m_oLine = null;
 	/** Invoice Line			*/
 	protected MInvoiceLine	m_iLine = null;
-	
-	
+		
 	/**
 	 * 	Set C_InvoiceLine_ID
 	 *	@param line line
@@ -916,7 +953,7 @@ public class MMatchPO extends X_M_MatchPO
 	}	//	getOrderLine
 	
 	/**
-	 * Get PriceActual from Invoice and convert it to Order Currency
+	 * Get PriceActual from Invoice and convert it to Order Currency.
 	 * @return Price Actual in Order Currency
 	 */
 	public BigDecimal getInvoicePriceActual()
@@ -962,7 +999,6 @@ public class MMatchPO extends X_M_MatchPO
 			setM_AttributeSetInstance_ID(iol.getM_AttributeSetInstance_ID());
 		}
 		
-		// Bayu, Sistematika
 		// BF [ 2240484 ] Re MatchingPO, MMatchPO doesn't contains Invoice info
 		// If newRecord, set c_invoiceline_id while null
 		if (newRecord && getC_InvoiceLine_ID() == 0 && getReversal_ID()==0) 
@@ -1001,7 +1037,6 @@ public class MMatchPO extends X_M_MatchPO
 				}
 			}
 		}
-		// end Bayu
 		
 		//	Find OrderLine
 		if (getC_OrderLine_ID() == 0)
@@ -1190,10 +1225,9 @@ public class MMatchPO extends X_M_MatchPO
 		//
 		return success;
 	}	//	afterSave
-
 	
 	/**
-	 * 	Get the later Date Acct from invoice or shipment
+	 * 	Get the newer Date Acct between invoice and shipment
 	 *	@return date or null
 	 */
 	public Timestamp getNewerDateAcct()
@@ -1228,7 +1262,6 @@ public class MMatchPO extends X_M_MatchPO
 			return invoiceDate;
 		return shipDate;
 	}	//	getNewerDateAcct
-
 	
 	/**
 	 * 	Before Delete
@@ -1245,11 +1278,10 @@ public class MMatchPO extends X_M_MatchPO
 		}
 		return true;
 	}	//	beforeDelete
-
 	
 	/**
 	 * 	After Delete.
-	 * 	Set Order Qty Delivered/Invoiced 
+	 * 	Update Order Line Qty Delivered/Invoiced .
 	 *	@param success success
 	 *	@return success
 	 */
@@ -1274,6 +1306,7 @@ public class MMatchPO extends X_M_MatchPO
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MMatchPO[");
@@ -1289,22 +1322,21 @@ public class MMatchPO extends X_M_MatchPO
 	}	//	toString
 	
 	/**
-	 * 	Reverse MatchPO.
+	 * 	Reverse this MatchPO document.
 	 *  @param reversalDate
-	 *	@return boolean
+	 *	@return true if reversed
 	 *	@throws Exception
 	 */
-
 	public boolean reverse(Timestamp reversalDate)
 	{
 		return reverse(reversalDate, false);
 	}
 	
 	/**
-	 * 	Reverse MatchPO.
+	 * 	Reverse this MatchPO document.
 	 *  @param reversalDate
 	 *  @param reverseMatchingOnly true if MR is not reverse
-	 *	@return boolean
+	 *	@return true if reversed
 	 *	@throws Exception
 	 */
 
@@ -1433,5 +1465,24 @@ public class MMatchPO extends X_M_MatchPO
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Get or create Match PO record for order line.
+	 * @param C_OrderLine_ID
+	 * @param qty
+	 * @param sLine
+	 * @param trxName
+	 * @return new or existing MMatchPO record
+	 */
+	public static MMatchPO getOrCreate(int C_OrderLine_ID, BigDecimal qty, MInOutLine sLine, String trxName) {
+		Query query = new Query(Env.getCtx(), MMatchPO.Table_Name, "C_OrderLine_ID=? AND Qty=? AND Posted IN (?,?) AND M_InOutLine_ID IS NULL", trxName);
+		MMatchPO matchPO = query.setParameters(C_OrderLine_ID, qty, Doc.STATUS_NotPosted, Doc.STATUS_Deferred).first();
+		if (matchPO != null) {
+			matchPO.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
+			return matchPO;
+		} else {
+			return new MMatchPO (sLine, null, qty);
+		}
 	}
 }	//	MMatchPO

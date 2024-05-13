@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -31,9 +32,21 @@ import org.compiere.util.Env;
 public class MCommissionLine extends X_C_CommissionLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2167566875518334780L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CommissionLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCommissionLine(Properties ctx, String C_CommissionLine_UU, String trxName) {
+        super(ctx, C_CommissionLine_UU, trxName);
+		if (Util.isEmpty(C_CommissionLine_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -45,16 +58,21 @@ public class MCommissionLine extends X_C_CommissionLine
 	{
 		super(ctx, C_CommissionLine_ID, trxName);
 		if (C_CommissionLine_ID == 0)
-		{
-			setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CommissionLine WHERE C_Commission_ID=@C_Commission_ID@
-			setAmtMultiplier (Env.ZERO);
-			setAmtSubtract (Env.ZERO);
-			setCommissionOrders (false);
-			setIsPositiveOnly (false);
-			setQtyMultiplier (Env.ZERO);
-			setQtySubtract (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MCommissionLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CommissionLine WHERE C_Commission_ID=@C_Commission_ID@
+		setAmtMultiplier (Env.ZERO);
+		setAmtSubtract (Env.ZERO);
+		setCommissionOrders (false);
+		setIsPositiveOnly (false);
+		setQtyMultiplier (Env.ZERO);
+		setQtySubtract (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -67,6 +85,12 @@ public class MCommissionLine extends X_C_CommissionLine
 		super(ctx, rs, trxName);
 	}	//	MCommissionLine
 
+	/**
+	 * @param ctx
+	 * @param C_CommissionLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommissionLine(Properties ctx, int C_CommissionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CommissionLine_ID, trxName, virtualColumns);
 	}

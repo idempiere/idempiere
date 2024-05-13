@@ -32,7 +32,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7862096742442159952L;
 
@@ -71,6 +71,16 @@ public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MHierarchy> s_cache 
 		= new ImmutableIntPOCache<Integer, MHierarchy> (Table_Name, 20);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_Hierarchy_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MHierarchy(Properties ctx, String PA_Hierarchy_UU, String trxName) {
+        super(ctx, PA_Hierarchy_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -94,7 +104,7 @@ public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 	}	//	MHierarchy
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MHierarchy(MHierarchy copy) 
@@ -103,7 +113,7 @@ public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -113,7 +123,7 @@ public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -125,8 +135,8 @@ public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get AD_Tree_ID based on tree type
-	 *	@param TreeType Tree Type
+	 * 	Get AD_Tree_ID based on tree type 
+	 *	@param TreeType Tree Type (MTree.TREETYPE_*)
 	 *	@return id or 0
 	 */
 	public int getAD_Tree_ID (String TreeType)

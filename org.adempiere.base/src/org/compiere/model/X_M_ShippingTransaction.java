@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ShippingTransaction
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingTransaction")
-public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent 
+public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShippingTransaction (Properties ctx, int M_ShippingTransaction_ID, String trxName)
@@ -135,6 +135,106 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ShippingTransaction (Properties ctx, String M_ShippingTransaction_UU, String trxName)
+    {
+      super (ctx, M_ShippingTransaction_UU, trxName);
+      /** if (M_ShippingTransaction_UU == null)
+        {
+			setAction (null);
+			setCashOnDelivery (false);
+// N
+			setDeliveryConfirmation (false);
+// N
+			setIsAccessible (false);
+// N
+			setIsAddedHandling (false);
+// N
+			setIsAlternateReturnAddress (false);
+// N
+			setIsCargoAircraftOnly (false);
+// N
+			setIsDryIce (false);
+// N
+			setIsDutiable (false);
+// N
+			setIsFutureDayShipment (false);
+// N
+			setIsHazMat (false);
+// N
+			setIsHoldAtLocation (false);
+// N
+			setIsIgnoreZipNotFound (false);
+// N
+			setIsIgnoreZipStateNotMatch (false);
+// N
+			setIsPriviledgedRate (false);
+// N
+			setIsResidential (true);
+// Y
+			setIsSaturdayDelivery (false);
+// N
+			setIsSaturdayPickup (false);
+// N
+			setIsVerbalConfirmation (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShippingTransaction_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShippingTransaction (Properties ctx, String M_ShippingTransaction_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShippingTransaction_UU, trxName, virtualColumns);
+      /** if (M_ShippingTransaction_UU == null)
+        {
+			setAction (null);
+			setCashOnDelivery (false);
+// N
+			setDeliveryConfirmation (false);
+// N
+			setIsAccessible (false);
+// N
+			setIsAddedHandling (false);
+// N
+			setIsAlternateReturnAddress (false);
+// N
+			setIsCargoAircraftOnly (false);
+// N
+			setIsDryIce (false);
+// N
+			setIsDutiable (false);
+// N
+			setIsFutureDayShipment (false);
+// N
+			setIsHazMat (false);
+// N
+			setIsHoldAtLocation (false);
+// N
+			setIsIgnoreZipNotFound (false);
+// N
+			setIsIgnoreZipStateNotMatch (false);
+// N
+			setIsPriviledgedRate (false);
+// N
+			setIsResidential (true);
+// Y
+			setIsSaturdayDelivery (false);
+// N
+			setIsSaturdayPickup (false);
+// N
+			setIsVerbalConfirmation (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShippingTransaction_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ShippingTransaction (Properties ctx, ResultSet rs, String trxName)
     {
@@ -142,7 +242,7 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -275,10 +375,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isCashOnDelivery()
 	{
 		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -573,10 +673,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isDeliveryConfirmation()
 	{
 		Object oo = get_Value(COLUMNNAME_DeliveryConfirmation);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -978,10 +1078,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isAccessible()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAccessible);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1000,10 +1100,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isAddedHandling()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAddedHandling);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1022,10 +1122,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isAlternateReturnAddress()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAlternateReturnAddress);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1044,10 +1144,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isCargoAircraftOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCargoAircraftOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1066,10 +1166,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isDryIce()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDryIce);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1088,10 +1188,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isDutiable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDutiable);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1110,10 +1210,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isFutureDayShipment()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFutureDayShipment);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1132,10 +1232,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isHazMat()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHazMat);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1154,10 +1254,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isHoldAtLocation()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHoldAtLocation);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1176,10 +1276,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isIgnoreZipNotFound()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIgnoreZipNotFound);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1198,10 +1298,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isIgnoreZipStateNotMatch()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIgnoreZipStateNotMatch);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1220,10 +1320,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isPriviledgedRate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPriviledgedRate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1242,10 +1342,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isResidential()
 	{
 		Object oo = get_Value(COLUMNNAME_IsResidential);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1264,10 +1364,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isSaturdayDelivery()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSaturdayDelivery);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1286,10 +1386,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isSaturdayPickup()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSaturdayPickup);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1308,10 +1408,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isVerbalConfirmation()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVerbalConfirmation);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1747,10 +1847,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

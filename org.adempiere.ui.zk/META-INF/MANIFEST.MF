@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
-Bundle-Version: 10.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-Version: 11.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: com.google.common.annotations;version="30.1.1",
  com.google.common.base;version="30.1.1",
  com.google.common.cache;version="30.1.1",
@@ -102,6 +102,7 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  org.adempiere.webui.factory,
  org.adempiere.webui.grid,
  org.adempiere.webui.info,
+ org.adempiere.webui.listbox.renderer,
  org.adempiere.webui.panel,
  org.adempiere.webui.panel.action,
  org.adempiere.webui.part,
@@ -114,6 +115,7 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  org.adempiere.webui.window,
  org.idempiere.ui.zk.annotation,
  org.idempiere.ui.zk.media,
+ org.idempiere.ui.zk.report,
  org.idempiere.ui.zk.websocket,
  org.zkforge.ckez,
  org.zkforge.keylistener,
@@ -185,9 +187,9 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.ckez.ext.CKeditor.plugins.widget.images,
  web.js.ckez.ext.CKeditor.skins,
  web.js.ckez.ext.CKeditor.vendor,
+ web.js.dragdrop.attachment,
  web.js.html2canvas,
  web.js.jawwa.atmosphere,
- web.js.dragdrop.attachment,
  web.js.jquery.maskedinput,
  web.js.org.idempiere.commons,
  web.js.org.idempiere.websocket,

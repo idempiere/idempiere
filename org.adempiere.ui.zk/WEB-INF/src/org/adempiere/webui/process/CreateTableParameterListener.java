@@ -30,6 +30,9 @@ import org.adempiere.webui.apps.ProcessParameterPanel;
 import org.adempiere.webui.editor.WEditor;
 import org.idempiere.process.CreateTable;
 
+/**
+ * Parameter listener for create table process
+ */
 public class CreateTableParameterListener implements IProcessParameterListener {
 
 	@Override

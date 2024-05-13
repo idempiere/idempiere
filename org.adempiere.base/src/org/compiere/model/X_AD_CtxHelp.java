@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_CtxHelp
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelp")
-public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent 
+public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_CtxHelp (Properties ctx, int AD_CtxHelp_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_CtxHelp (Properties ctx, String AD_CtxHelp_UU, String trxName)
+    {
+      super (ctx, AD_CtxHelp_UU, trxName);
+      /** if (AD_CtxHelp_UU == null)
+        {
+			setAD_CtxHelp_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_CtxHelp (Properties ctx, String AD_CtxHelp_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_CtxHelp_UU, trxName, virtualColumns);
+      /** if (AD_CtxHelp_UU == null)
+        {
+			setAD_CtxHelp_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_CtxHelp (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CountryGroup
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CountryGroup")
-public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persistent 
+public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CountryGroup (Properties ctx, int C_CountryGroup_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CountryGroup (Properties ctx, String C_CountryGroup_UU, String trxName)
+    {
+      super (ctx, C_CountryGroup_UU, trxName);
+      /** if (C_CountryGroup_UU == null)
+        {
+			setC_CountryGroup_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CountryGroup (Properties ctx, String C_CountryGroup_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CountryGroup_UU, trxName, virtualColumns);
+      /** if (C_CountryGroup_UU == null)
+        {
+			setC_CountryGroup_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CountryGroup (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -205,7 +229,7 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

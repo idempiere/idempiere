@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOutLineConfirm
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_InOutLineConfirm")
-public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_Persistent 
+public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_InOutLineConfirm (Properties ctx, int M_InOutLineConfirm_ID, String trxName)
@@ -65,6 +65,36 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_InOutLineConfirm (Properties ctx, String M_InOutLineConfirm_UU, String trxName)
+    {
+      super (ctx, M_InOutLineConfirm_UU, trxName);
+      /** if (M_InOutLineConfirm_UU == null)
+        {
+			setConfirmedQty (Env.ZERO);
+			setM_InOutConfirm_ID (0);
+			setM_InOutLineConfirm_ID (0);
+			setM_InOutLine_ID (0);
+			setProcessed (false);
+			setTargetQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_InOutLineConfirm (Properties ctx, String M_InOutLineConfirm_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_InOutLineConfirm_UU, trxName, virtualColumns);
+      /** if (M_InOutLineConfirm_UU == null)
+        {
+			setConfirmedQty (Env.ZERO);
+			setM_InOutConfirm_ID (0);
+			setM_InOutLineConfirm_ID (0);
+			setM_InOutLine_ID (0);
+			setProcessed (false);
+			setTargetQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_InOutLineConfirm (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +102,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -287,7 +317,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_InOutLine_ID()));
     }
@@ -334,10 +364,10 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

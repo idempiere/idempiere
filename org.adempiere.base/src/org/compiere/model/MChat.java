@@ -16,21 +16,17 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.apache.ecs.xhtml.b;
 import org.apache.ecs.xhtml.hr;
 import org.apache.ecs.xhtml.p;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -42,9 +38,9 @@ import org.compiere.util.Util;
 public class MChat extends X_CM_Chat
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = 9165439123618441913L;
+	private static final long serialVersionUID = -1188256932717048308L;
 
 	/**
 	 * 	Get Chats Of Table - of client in context
@@ -54,59 +50,49 @@ public class MChat extends X_CM_Chat
 	 */
 	public static MChat[] getOfTable (Properties ctx, int AD_Table_ID)
 	{
-		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		ArrayList<MChat> list = new ArrayList<MChat>();
-		//
-		String sql = "SELECT * FROM CM_Chat "
-			+ "WHERE AD_Client_ID=? AND AD_Table_ID=? ORDER BY Record_ID";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_Client_ID);
-			pstmt.setInt (2, AD_Table_ID);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				list.add (new MChat (ctx, rs, null));
-			}
-		}
-		catch (Exception e)
-		{
-			s_log.log (Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
+		List<MChat> list = new Query(ctx, Table_Name, "AD_Table_ID=?", null)
+				.setClient_ID()
+				.setParameters(AD_Table_ID)
+				.setOrderBy(COLUMNNAME_Record_ID)
+				.list();
 		//
 		MChat[] retValue = new MChat[list.size()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	get
-	
-	/**	Logger	*/
-	private static CLogger s_log = CLogger.getCLogger (MChat.class);
-	
-	
-	/**************************************************************************
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param CM_Chat_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MChat(Properties ctx, String CM_Chat_UU, String trxName) {
+        super(ctx, CM_Chat_UU, trxName);
+		if (Util.isEmpty(CM_Chat_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param CM_Chat_ID id
-	 *	@param trxName transcation
+	 *	@param trxName transaction
 	 */
 	public MChat (Properties ctx, int CM_Chat_ID, String trxName)
 	{
 		super (ctx, CM_Chat_ID, trxName);
 		if (CM_Chat_ID == 0)
-		{
-			setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
-			setModerationType (MODERATIONTYPE_NotModerated);
-		}
+			setInitialDefaults();
 	}	//	MChat
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
+		setModerationType (MODERATIONTYPE_NotModerated);
+	}
 
 	/**
 	 * 	Full Constructor
@@ -126,6 +112,25 @@ public class MChat extends X_CM_Chat
 	}	//	MChat
 
 	/**
+	 * 	Full Constructor
+	 *	@param ctx context
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUI
+	 *	@param Description description
+	 *	@param trxName transaction
+	 */
+	public MChat (Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU,
+		String Description, String trxName)
+	{
+		this (ctx, 0, trxName);
+		setAD_Table_ID (AD_Table_ID);
+		setRecord_ID (Record_ID);
+		setRecord_UU (Record_UU);
+		setDescription (Description);
+	}	//	MChat
+
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -140,41 +145,20 @@ public class MChat extends X_CM_Chat
 	private MChatEntry[] 		m_entries = null;
 	/**	Date Format						*/
 	private SimpleDateFormat	m_format = null;
-	
-	
+		
 	/**
 	 *	Get Entries
 	 *	@param reload reload data
-	 *	@return array of lines
+	 *	@return array of chat entries
 	 */
 	public MChatEntry[] getEntries (boolean reload)
 	{
 		if (m_entries != null && !reload)
 			return m_entries;
-		ArrayList<MChatEntry> list = new ArrayList<MChatEntry>();
-		String sql = "SELECT * FROM CM_ChatEntry WHERE CM_Chat_ID=? ORDER BY Created";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, getCM_Chat_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				list.add (new MChatEntry (getCtx(), rs, get_TrxName()));
-			}
- 		}
-		catch (Exception e)
-		{
-			log.log (Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
+		List<MChatEntry> list = new Query(getCtx(), MChatEntry.Table_Name, "CM_Chat_ID=?", null)
+				.setParameters(getCM_Chat_ID())
+				.setOrderBy(COLUMNNAME_Created)
+				.list();
 		//
 		m_entries = new MChatEntry[list.size ()];
 		list.toArray (m_entries);
@@ -198,7 +182,7 @@ public class MChat extends X_CM_Chat
 	}	//	setDescription
 	
 	/**
-	 * 	Get History as htlp paragraph
+	 * 	Get History as html paragraph
 	 * 	@param ConfidentialType confidentiality
 	 *	@return html paragraph
 	 */
@@ -236,18 +220,50 @@ public class MChat extends X_CM_Chat
 		//
 		return history;
 	}	//	getHistory
-	
+
 	/**
 	 * IDEMPIERE-530
 	 * Get the chat ID based on table_id and record_id
 	 * @param Table_ID
 	 * @param Record_ID
-	 * @return CM_Chat_ID 
+	 * @return CM_Chat_ID
+ 	 * @deprecated Use {@link MChat#getID(int, int, String)} instead
 	 */
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_ID=?";
 		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
 		return chatID;
 	}
-	
+
+	/**
+	 * Get the chat ID based on table_id and record_uu
+	 * @param Table_ID
+	 * @param Record_UU
+	 * @param Record_ID
+	 * @return CM_Chat_ID 
+	 */
+	public static int getID(int Table_ID, int Record_ID, String Record_UU) {
+		if (Util.isEmpty(Record_UU))
+			return getID(Table_ID, Record_ID);
+		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_UU=?";
+		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
+		return chatID;
+	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
+			MTable table = MTable.get(getAD_Table_ID());
+			PO po = table.getPO(getRecord_ID(), get_TrxName());
+			if (po != null)
+				setRecord_UU(po.get_UUID());
+		}
+		return true;
+	}
+
 }	//	MChat

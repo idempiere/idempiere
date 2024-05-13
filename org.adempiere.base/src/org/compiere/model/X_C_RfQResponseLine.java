@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for C_RfQResponseLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLine")
-public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent 
+public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RfQResponseLine (Properties ctx, String C_RfQResponseLine_UU, String trxName)
+    {
+      super (ctx, C_RfQResponseLine_UU, trxName);
+      /** if (C_RfQResponseLine_UU == null)
+        {
+			setC_RfQLine_ID (0);
+			setC_RfQResponse_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setIsSelectedWinner (false);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQResponseLine (Properties ctx, String C_RfQResponseLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQResponseLine_UU, trxName, virtualColumns);
+      /** if (C_RfQResponseLine_UU == null)
+        {
+			setC_RfQLine_ID (0);
+			setC_RfQResponse_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setIsSelectedWinner (false);
+			setIsSelfService (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RfQResponseLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -279,10 +307,10 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	public boolean isSelectedWinner()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelectedWinner);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -302,10 +330,10 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

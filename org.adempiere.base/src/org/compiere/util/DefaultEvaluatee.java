@@ -34,8 +34,8 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 
 /**
+ * Default {@link Evaluatee} implementation
  * @author hengsin
- *
  */
 public class DefaultEvaluatee implements Evaluatee {
 
@@ -46,7 +46,6 @@ public class DefaultEvaluatee implements Evaluatee {
 	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 1, 2000);
 	
 	/**
-	 * 
 	 * @param gridTab
 	 * @param windowNo
 	 * @param tabNo

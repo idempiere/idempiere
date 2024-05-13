@@ -74,6 +74,16 @@ public class MTree_NodeMM extends X_AD_TreeNodeMM
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodeMM.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_TreeNodeMM_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTree_NodeMM(Properties ctx, String AD_TreeNodeMM_UU, String trxName) {
+        super(ctx, AD_TreeNodeMM_UU, trxName);
+    }
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

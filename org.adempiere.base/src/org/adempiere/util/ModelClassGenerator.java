@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -45,12 +46,10 @@ import org.compiere.util.Util;
 
 /**
  *  Generate Model Classes extending PO.
- *  Base class for CMP interface - will be extended to create byte code directly
  *
  *  @author Jorg Janke
- *  @version $Id: GenerateModel.java,v 1.42 2005/05/08 15:16:56 jjanke Exp $
  *
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1781629 ] Don't use Env.NL in model class/interface generators
  * 				<li>FR [ 1781630 ] Generated class/interfaces have a lot of unused imports
  * 				<li>BF [ 1781632 ] Generated class/interfaces should be UTF-8
@@ -63,7 +62,7 @@ import org.compiere.util.Util;
  * 				<li>--
  * 				<li>FR [ 2848449 ] ModelClassGenerator: Implement model getters
  *					https://sourceforge.net/p/adempiere/feature-requests/812/
- * @author Victor Perez, e-Evolution
+ *  @author Victor Perez, e-Evolution
  * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
  */
 public class ModelClassGenerator
@@ -79,12 +78,16 @@ public class ModelClassGenerator
 	{
 		this.packageName = packageName;
 
+		MTable table = MTable.get(AD_Table_ID);
+		boolean uuidKeyTable = table.isUUIDKeyTable() || table.getKeyColumns().length > 1 || (table.getKeyColumns().length == 1 && (!table.getColumn(table.getKeyColumns()[0]).isKey()));
+		boolean tableHasIds = table.getKeyColumns().length > 0 && !table.isUUIDKeyTable();
+
 		//	create column access methods
 		StringBuilder mandatory = new StringBuilder();
-		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter);
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter, uuidKeyTable);
 
 		// Header
-		String className = createHeader(AD_Table_ID, sb, mandatory, packageName);
+		String className = createHeader(AD_Table_ID, sb, mandatory, packageName, uuidKeyTable, tableHasIds);
 
 		// Save
 		if ( ! directory.endsWith(File.separator) )
@@ -108,9 +111,11 @@ public class ModelClassGenerator
 	 * 	@param sb buffer
 	 * 	@param mandatory init call for mandatory columns
 	 * 	@param packageName package name
+	 *  @param uuidKeyTable 
+	 *  @param tableHasIds 
 	 * 	@return class name
 	 */
-	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName)
+	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName, boolean uuidKeyTable, boolean tableHasIds)
 	{
 		String tableName = "";
 		int accessLevel = 0;
@@ -151,6 +156,8 @@ public class ModelClassGenerator
 		//
 		StringBuilder keyColumn = new StringBuilder().append(tableName).append("_ID");
 		StringBuilder className = new StringBuilder("X_").append(tableName);
+		String uuidColumn = PO.getUUIDColumnName(tableName);
+
 		//
 		StringBuilder start = new StringBuilder()
 			.append (ModelInterfaceGenerator.COPY)
@@ -166,13 +173,13 @@ public class ModelClassGenerator
 		createImports(start);
 		//	Class
 		start.append("/** Generated Model for ").append(tableName).append(NL)
-			 .append(" *  @author iDempiere (generated) ").append(NL)
+			 .append(" *  @author iDempiere (generated)").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
 			 .append("@org.adempiere.base.Model(table=\"").append(tableName).append("\")").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
 			 	.append(" implements I_").append(tableName)
-			 	.append(", I_Persistent ")
+			 	.append(", I_Persistent")
 			 	.append(NL)
 			 .append("{").append(NL)
 
@@ -183,10 +190,11 @@ public class ModelClassGenerator
 			 .append("\t */").append(NL)
 			 .append("\tprivate static final long serialVersionUID = ")
 			 .append(String.format("%1$tY%1$tm%1$td", new Timestamp(System.currentTimeMillis())))
-		 	 .append("L;").append(NL)
+		 	 .append("L;").append(NL);
 
-			//	Standard Constructor
-			 .append(NL)
+		 if (tableHasIds) {
+			//	Standard ID Constructor
+			 start.append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
 			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName)").append(NL)
 			 .append("    {").append(NL)
@@ -198,13 +206,40 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 			//	Constructor End
 
-			//	Standard Constructor + Virtual Columns
+			//	Standard ID Constructor + Virtual Columns
 			 .append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
 			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName, String ... virtualColumns)").append(NL)
 			 .append("    {").append(NL)
 			 .append("      super (ctx, ").append(keyColumn).append(", trxName, virtualColumns);").append(NL)
 			 .append("      /** if (").append(keyColumn).append(" == 0)").append(NL)
+			 .append("        {").append(NL)
+			 .append(mandatory)
+			 .append("        } */").append(NL)
+			 .append("    }").append(NL);
+			//	Constructor End
+		 }
+
+				//	Standard UUID Constructor
+		 start.append(NL)
+			 .append("    /** Standard Constructor */").append(NL)
+			 .append("    public ").append(className).append(" (Properties ctx, String ").append(uuidColumn).append(", String trxName)").append(NL)
+			 .append("    {").append(NL)
+			 .append("      super (ctx, ").append(uuidColumn).append(", trxName);").append(NL)
+			 .append("      /** if (").append(uuidColumn).append(" == null)").append(NL)
+			 .append("        {").append(NL)
+			 .append(mandatory) 
+			 .append("        } */").append(NL)
+			 .append("    }").append(NL)
+			//	Constructor End
+
+			//	Standard UUID Constructor + Virtual Columns
+			 .append(NL)
+			 .append("    /** Standard Constructor */").append(NL)
+			 .append("    public ").append(className).append(" (Properties ctx, String ").append(uuidColumn).append(", String trxName, String ... virtualColumns)").append(NL)
+			 .append("    {").append(NL)
+			 .append("      super (ctx, ").append(uuidColumn).append(", trxName, virtualColumns);").append(NL)
+			 .append("      /** if (").append(uuidColumn).append(" == null)").append(NL)
 			 .append("        {").append(NL)
 			 .append(mandatory)
 			 .append("        } */").append(NL)
@@ -223,7 +258,7 @@ public class ModelClassGenerator
 			// accessLevel
 			 .append(NL)
 			 .append("    /** AccessLevel").append(NL)
-			 .append("      * @return ").append(accessLevelInfo).append(NL)
+			 .append("      * @return ").append(accessLevelInfo.toString().trim()).append(NL)
 			 .append("      */").append(NL)
 			 .append("    protected int get_AccessLevel()").append(NL)
 			 .append("    {").append(NL)
@@ -247,7 +282,7 @@ public class ModelClassGenerator
 			 .append("    public String toString()").append(NL)
 			 .append("    {").append(NL)
 			 .append("      StringBuilder sb = new StringBuilder (\"").append(className).append("[\")").append(NL)
-			 .append("        .append(get_ID())");
+			 .append("        .append(").append(uuidKeyTable ? "get_UUID" : "get_ID").append("())");
 		if (hasName)
 			start.append(".append(\",Name=\").append(getName())");
 		start.append(".append(\"]\");").append(NL)
@@ -268,9 +303,10 @@ public class ModelClassGenerator
 	 * 	@param AD_Table_ID table
 	 * 	@param mandatory init call for mandatory columns
 	 *  @param entityTypeFilter 
+	 *  @param uuidKeyTable 
 	 * 	@return set/get method
 	 */
-	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter)
+	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter, boolean uuidKeyTable)
 	{
 		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory,"		//	1..3
@@ -324,7 +360,10 @@ public class ModelClassGenerator
 				//
 				if (seqNo == 1 && IsIdentifier) {
 					if (!isKeyNamePairCreated) {
-						sb.append(createKeyNamePair(columnName, displayType));
+						if (uuidKeyTable)
+							sb.append(createValueNamePair(columnName, displayType));
+						else
+							sb.append(createKeyNamePair(columnName, displayType));
 						isKeyNamePairCreated = true;
 					}
 					else {
@@ -538,10 +577,10 @@ public class ModelClassGenerator
 		}
 		else if (clazz.equals(Boolean.class)) {
 			sb.append("Object oo = ").append(getValue).append("(").append ("COLUMNNAME_").append(columnName).append(");").append(NL)
-				.append("\t\tif (oo != null) ").append(NL)
+				.append("\t\tif (oo != null)").append(NL)
 				.append("\t\t{").append(NL)
-				.append("\t\t\t if (oo instanceof Boolean) ").append(NL)
-				.append("\t\t\t\t return ((Boolean)oo).booleanValue(); ").append(NL)
+				.append("\t\t\t if (oo instanceof Boolean)").append(NL)
+				.append("\t\t\t\t return ((Boolean)oo).booleanValue();").append(NL)
 				.append("\t\t\treturn \"Y\".equals(oo);").append(NL)
 				.append("\t\t}").append(NL)
 				.append("\t\treturn false;").append(NL);
@@ -561,7 +600,13 @@ public class ModelClassGenerator
 	}	//	createColumnMethods
 
 
-	//	****** Set Comment ******
+	/**
+	 * Generate javadoc comment for Set methods.
+	 * @param columnName
+	 * @param propertyName
+	 * @param description
+	 * @param result
+	 */
 	public void generateJavaSetComment(String columnName, String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
@@ -576,7 +621,12 @@ public class ModelClassGenerator
 		result.append(NL).append("\t*/").append(NL);
 	}
 
-	//	****** Get Comment ******
+	/**
+	 * Generate javadoc comment for Get methods
+	 * @param propertyName
+	 * @param description
+	 * @param result
+	 */
 	public void generateJavaGetComment(String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
@@ -713,8 +763,8 @@ public class ModelClassGenerator
 	/**
 	 * 	Create getKeyNamePair() method with first identifier
 	 *	@param columnName name
-	 *	 * @param displayType int
-	@return method code
+	 *	@param displayType int
+	 *  @return method code
 	 */
 	private StringBuilder createKeyNamePair (String columnName, int displayType)
 	{
@@ -726,7 +776,7 @@ public class ModelClassGenerator
 			.append("    /** Get Record ID/ColumnName").append(NL)
 			.append("        @return ID/ColumnName pair").append(NL)
 			.append("      */").append(NL)
-			.append("    public KeyNamePair getKeyNamePair() ").append(NL)
+			.append("    public KeyNamePair getKeyNamePair()").append(NL)
 			.append("    {").append(NL)
 			.append("        return new KeyNamePair(get_ID(), ").append(method).append(");").append(NL)
 			.append("    }").append(NL)
@@ -735,8 +785,33 @@ public class ModelClassGenerator
 		return sb;
 	}	//	createKeyNamePair
 
+	/**
+	 * 	Create getValueNamePair() method with first identifier
+	 *	@param columnName name
+	 *	@param displayType String
+	 *  @return method code
+	 */
+	private StringBuilder createValueNamePair (String columnName, int displayType)
+	{
+		StringBuilder method = new StringBuilder("get").append(columnName).append("()");
+		if (displayType != DisplayType.String)
+			method = new StringBuilder("String.valueOf(").append(method).append(")");
 
-	/**************************************************************************
+		StringBuilder sb = new StringBuilder(NL)
+			.append("    /** Get Record UU/ColumnName").append(NL)
+			.append("        @return UU/ColumnName pair").append(NL)
+			.append("      */").append(NL)
+			.append("    public ValueNamePair getValueNamePair()").append(NL)
+			.append("    {").append(NL)
+			.append("        return new ValueNamePair(get_UUID(), ").append(method).append(");").append(NL)
+			.append("    }").append(NL)
+		;
+		addImportClass(org.compiere.util.ValueNamePair.class);
+		return sb;
+	}	//	createValueNamePair
+
+
+	/**
 	 * 	Write to file
 	 * 	@param sb string buffer
 	 * 	@param fileName file name
@@ -779,6 +854,7 @@ public class ModelClassGenerator
 
 	/** Import classes */
 	private Collection<String> s_importClasses = new TreeSet<String>();
+	
 	/**
 	 * Add class name to class import list
 	 * @param className
@@ -794,6 +870,7 @@ public class ModelClassGenerator
 		}
 		s_importClasses.add(className);
 	}
+	
 	/**
 	 * Add class to class import list
 	 * @param cl
@@ -806,6 +883,7 @@ public class ModelClassGenerator
 			return;
 		addImportClass(cl.getCanonicalName());
 	}
+	
 	/**
 	 * Generate java imports
 	 * @param sb

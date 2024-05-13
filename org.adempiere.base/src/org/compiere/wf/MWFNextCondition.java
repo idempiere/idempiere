@@ -31,20 +31,30 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.compiere.model.X_AD_WF_NextCondition;
 
 /**
- *	Workflow Transition Condition
+ *	Extended Workflow Transition Condition model for AD_WF_NextCondition
  *	
  *  @author Jorg Janke
  *  @version $Id: MWFNextCondition.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 		<li>BF [ 1943720 ] WF Next Condition: handling boolean values is poor
  */
 public class MWFNextCondition extends X_AD_WF_NextCondition implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3119863973003103716L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_NextCondition_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWFNextCondition(Properties ctx, String AD_WF_NextCondition_UU, String trxName) {
+        super(ctx, AD_WF_NextCondition_UU, trxName);
+    }
 
 	/**
 	 * 	Default Constructor
@@ -69,7 +79,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	}	//	MWFNextCondition
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MWFNextCondition(MWFNextCondition copy) 
@@ -78,7 +88,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -88,7 +98,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -182,12 +192,13 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	}	//	evaluate
 	
 	/**
-	 * F3P: Decode value string, for each substring enclosed in @:
-	 *  COL= remaining value is interpreted as a column of the associated record
+	 * Decode value string.<br/>
+	 * If sValue start with @COL=, remaining text is interpreted as a column of the associated record.<br/>
+	 * Otherwise, parse sValue for context and PO variable (i.e resolve @tag@ variables).
 	 * 
 	 * @param sValue value to be decoded
 	 * @param po PO model object bound to the activity
-	 * @return
+	 * @return decoded value
 	 */
 	protected String getDecodedValue(String sValue, PO po)
 	{		
@@ -214,9 +225,9 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	
 	/**
 	 * 	Compare Number
-	 *	@param valueObj comparator
+	 *	@param valueObj source value for comparison
 	 *	@param value1 first value
-	 *	@param value2 second value
+	 *	@param value2 second value for between comparison (OPERATION_X)
 	 *	@return true if operation
 	 */
 	private boolean compareNumber (Number valueObj, String value1, String value2)
@@ -289,9 +300,9 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	
 	/**
 	 * 	Compare String
-	 *	@param valueObj comparator
+	 *	@param valueObj source value for comparison
 	 *	@param value1S first value
-	 *	@param value2S second value
+	 *	@param value2S second value for between comparison (OPERATION_X)
 	 *	@return true if operation
 	 */
 	private boolean compareString (Object valueObj, String value1S, String value2S)
@@ -331,9 +342,9 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	
 	/**
 	 * 	Compare Boolean
-	 *	@param valueObj comparator
+	 *	@param valueObj source value for comparison
 	 *	@param value1S first value
-	 *	@param value2S second value
+	 *	@param value2S ignore
 	 *	@return true if operation
 	 */
 	private boolean compareBoolean (Boolean valueObj, String value1S, String value2S)
@@ -355,6 +366,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MWFNextCondition[");

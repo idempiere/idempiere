@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.sql.PreparedStatement;
@@ -12,6 +30,8 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 
 /**
@@ -20,16 +40,36 @@ import org.compiere.util.DB;
  */
 public class MRoleIncluded extends X_AD_Role_Included
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -3284165639631581484L;
+	private static final long serialVersionUID = 4101136698198494931L;
 
+	/**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Role_Included_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRoleIncluded(Properties ctx, String AD_Role_Included_UU, String trxName) {
+        super(ctx, AD_Role_Included_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_Role_Included_ID
+     * @param trxName
+     */
 	public MRoleIncluded(Properties ctx, int AD_Role_Included_ID, String trxName)
 	{
 		super(ctx, AD_Role_Included_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MRoleIncluded(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
@@ -45,6 +85,12 @@ public class MRoleIncluded extends X_AD_Role_Included
 		return true;
 	}
 	
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success)
 	{
@@ -67,6 +113,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 				throw new AdempiereException("Loop has detected "+roles);
 			}
 		}
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		//
 		return true;
 	}
@@ -81,7 +128,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 	 * @param trxName transaction name
 	 * @return true if loop detected. If you specified not null trace, you will have in that list the IDs from the loop
 	 */
-	// TODO: refactor this method and move into org.compiere.util.DB class because it's general and usefull of others too
+	// TODO: refactor this method and move into org.compiere.util.DB class because it's general and useful of others too
 	private static boolean hasLoop(String tableName, String idColumnName, String parentIdColumnName,
 			int nodeId, List<Integer> trace,
 			String trxName)
@@ -134,6 +181,18 @@ public class MRoleIncluded extends X_AD_Role_Included
 		}
 		//
 		return false;
+	}
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
 	}
 
 }

@@ -41,11 +41,10 @@ import org.compiere.util.Env;
 
 /**
  * @author Jan Roessler, jr@schaeffer-ag.de
- *
  */
 public class MSearchDefinition extends X_AD_SearchDefinition {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5366274782950561962L;
 	/** Constant for the searchtype table */
@@ -56,8 +55,17 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 	public static final String DATATYPE_STRING = "S";
 	/** Constant for the datatype Integer */
 	public static final String DATATYPE_INTEGER = "I";
-	
-	
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_SearchDefinition_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSearchDefinition(Properties ctx, String AD_SearchDefinition_UU, String trxName) {
+        super(ctx, AD_SearchDefinition_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_SearchDefinition_ID
@@ -67,6 +75,11 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 		super(ctx, AD_SearchDefinition_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MSearchDefinition(Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
 	}
@@ -74,8 +87,8 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 	/**
 	 * Returns all SearchDefinition objects with the given transaction code
 	 * 
-	 * @param transactionCode
-	 * @return
+	 * @param transactionCode optional transaction code, null to use default search definition
+	 * @return search definition list
 	 * @throws SQLException
 	 */
 	public static List<MSearchDefinition> getForCode(String transactionCode) throws SQLException {
@@ -112,6 +125,11 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 
 	}
 
+	/**
+	 * @param transactionCode
+	 * @return true if transaction code exists in at least one active search definition record
+	 * @throws SQLException
+	 */
 	public static boolean isValidTransactionCode(String transactionCode) throws SQLException {
 
 		boolean found = false;

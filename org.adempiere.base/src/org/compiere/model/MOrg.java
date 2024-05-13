@@ -25,6 +25,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -37,14 +38,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MOrg extends X_AD_Org implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8501438599288536080L;
 
 	/**
 	 * 	Get Active Organizations Of Client
-	 *	@param po persistent object
-	 *	@return array of orgs
+	 *	@param po PO to get AD_Client_ID value
+	 *	@return array of organization
 	 */
 	public static MOrg[] getOfClient (PO po)
 	{
@@ -53,7 +54,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 
 	/**
 	 * 	Get Active Organizations Of current Client
-	 *	@return array of orgs
+	 *	@return array of organization
 	 */
 	public static MOrg[] getOfClient ()
 	{
@@ -62,9 +63,8 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 
 	/**
 	 * 	Get Active Organizations Of Client
-	 *	@param ctx context
-	 *	@param int clientID
-	 *	@return array of orgs
+	 *	@param clientID AD_Client_ID
+	 *	@return array of organization
 	 */
 	public static MOrg[] getOfClient (int clientID)
 	{
@@ -111,9 +111,20 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Org_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOrg(Properties ctx, String AD_Org_UU, String trxName) {
+        super(ctx, AD_Org_UU, trxName);
+		if (Util.isEmpty(AD_Org_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Org_ID id
@@ -123,12 +134,17 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	{
 		super(ctx, AD_Org_ID, trxName);
 		if (AD_Org_ID == 0)
-		{
+			setInitialDefaults();
+	}	//	MOrg
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		//	setValue (null);
 		//	setName (null);
-			setIsSummary (false);
-		}
-	}	//	MOrg
+		setIsSummary (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -155,7 +171,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	}	//	MOrg
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MOrg(MOrg copy)
@@ -164,7 +180,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -174,7 +190,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -199,14 +215,13 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 		return orgInfo;
 	}	//	getMOrgInfo
 
-
-	
 	/**
 	 * 	After Save
 	 *	@param newRecord new Record
 	 *	@param success save success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -258,6 +273,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	 *	@param success
 	 *	@return deleted
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)

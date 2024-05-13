@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 
 /**
- *  Execute OS Task
+ *  Background thread for execution of OS Task
  *
  *  @author     Jorg Janke
  *  @version    $Id: Task.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -30,7 +30,7 @@ import java.util.logging.Level;
 public class Task extends Thread
 {
 	/**
-	 *  Create Process with cmd
+	 *  Create Process with OS cmd
 	 *  @param cmd o/s command
 	 */
 	public Task (String cmd)
@@ -54,18 +54,17 @@ public class Task extends Thread
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Task.class);
 	
-	/** Read Out                            */
+	/** Read Standard Output                           */
 	private Thread          m_outReader = new Thread()
 	{
 		public void run()
 		{
-			log.fine("outReader");
+			if (log.isLoggable(Level.FINE)) log.fine("outReader");
 			try
 			{
 				int c;
 				while ((c = m_outStream.read()) != -1 && !isInterrupted())
 				{
-			//		System.out.print((char)c);
 					m_out.append((char)c);
 				}
 				m_outStream.close();
@@ -74,22 +73,21 @@ public class Task extends Thread
 			{
 				log.log(Level.SEVERE, "outReader", ioe);
 			}
-			log.fine("outReader - done");
+			if (log.isLoggable(Level.FINE)) log.fine("outReader - done");
 		}   //  run
 	};   //  m_outReader
 
-	/** Read Out                            */
+	/** Read Error Output                           */
 	private Thread          m_errReader = new Thread()
 	{
 		public void run()
 		{
-			log.fine("errReader");
+			if (log.isLoggable(Level.FINE)) log.fine("errReader");
 			try
 			{
 				int c;
 				while ((c = m_errStream.read()) != -1 && !isInterrupted())
 				{
-			//		System.err.print((char)c);
 					m_err.append((char)c);
 				}
 				m_errStream.close();
@@ -98,17 +96,16 @@ public class Task extends Thread
 			{
 				log.log(Level.SEVERE, "errReader", ioe);
 			}
-			log.fine("errReader - done");
+			if (log.isLoggable(Level.FINE)) log.fine("errReader - done");
 		}   //  run
 	};   //  m_errReader
 
-
 	/**
-	 *  Execute it
+	 *  Execute command
 	 */
 	public void run()
 	{
-		log.info(m_cmd);
+		if (log.isLoggable(Level.INFO)) log.info(m_cmd);
 		try
 		{
 			m_child = Runtime.getRuntime().exec(m_cmd);
@@ -145,7 +142,7 @@ public class Task extends Thread
 					if (log.isLoggable(Level.FINE)) log.fine("run - ExitValue=" + m_child.exitValue());
 			}
 			catch (Exception e) {}
-			log.config("done");
+			if (log.isLoggable(Level.CONFIG)) log.config("done");
 		}
 		catch (IOException ioe)
 		{
@@ -161,7 +158,7 @@ public class Task extends Thread
 	{
 		if (isInterrupted())
 		{
-			log.config("interrupted");
+			if (log.isLoggable(Level.CONFIG)) log.config("interrupted");
 			//  interrupt child processes
 			if (m_child != null)
 				m_child.destroy();
@@ -189,8 +186,8 @@ public class Task extends Thread
 	}   //  checkInterrupted
 
 	/**
-	 *  Get Out Info
-	 *  @return StringBuffer
+	 *  Get Standard Output
+	 *  @return Standard Output Buffer
 	 */
 	public StringBuffer getOut()
 	{
@@ -198,8 +195,8 @@ public class Task extends Thread
 	}   //  getOut
 
 	/**
-	 *  Get Err Info
-	 *  @return StringBuffer
+	 *  Get Error Output
+	 *  @return Error Output Buffer
 	 */
 	public StringBuffer getErr()
 	{
@@ -207,8 +204,8 @@ public class Task extends Thread
 	}   //  getErr
 
 	/**
-	 *  Get The process input stream - i.e. we output to it
-	 *  @return OutputStream
+	 *  Get the process's input stream - i.e. we output to it
+	 *  @return OutputStream (connect to input stream of OS process)
 	 */
 	public OutputStream getInStream()
 	{

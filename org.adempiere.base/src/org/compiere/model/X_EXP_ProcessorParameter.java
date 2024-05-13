@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for EXP_ProcessorParameter
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="EXP_ProcessorParameter")
-public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParameter, I_Persistent 
+public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParameter, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_EXP_ProcessorParameter (Properties ctx, int EXP_ProcessorParameter_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
         } */
     }
 
+    /** Standard Constructor */
+    public X_EXP_ProcessorParameter (Properties ctx, String EXP_ProcessorParameter_UU, String trxName)
+    {
+      super (ctx, EXP_ProcessorParameter_UU, trxName);
+      /** if (EXP_ProcessorParameter_UU == null)
+        {
+			setEXP_Processor_ID (0);
+			setEXP_ProcessorParameter_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_EXP_ProcessorParameter (Properties ctx, String EXP_ProcessorParameter_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, EXP_ProcessorParameter_UU, trxName, virtualColumns);
+      /** if (EXP_ProcessorParameter_UU == null)
+        {
+			setEXP_Processor_ID (0);
+			setEXP_ProcessorParameter_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_EXP_ProcessorParameter (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

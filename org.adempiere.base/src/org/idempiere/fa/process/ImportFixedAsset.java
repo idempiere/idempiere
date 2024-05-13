@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.fa.process;
 
 import java.math.BigDecimal;
@@ -19,9 +40,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
-
 /**
- *	Import Fixed Asset
+ *	Process to Import Fixed Asset from I_FixedAsset
  *
  * 	@author 	Zuhri Utama, Ambidexter [based on ImportAssetClass Teo Sarca]
  * 
@@ -47,6 +67,7 @@ public class ImportFixedAsset extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -73,10 +94,11 @@ public class ImportFixedAsset extends SvrProcess
 
 
 	/**
-	 *  Perrform process.
+	 *  Perform process.
 	 *  @return Message
 	 *  @throws Exception
 	 */
+	@Override
 	protected String doIt() throws java.lang.Exception
 	{
 		StringBuilder sql = null;
@@ -275,137 +297,6 @@ public class ImportFixedAsset extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("No AssetDepreciationDate=" + no);
-		
-//		//	Set DateAcct (mandatory)
-//		sql = new StringBuilder ("UPDATE "+MIFixedAsset.Table_Name+" ifa ")
-//			.append("SET DateAcct=SysDate ")
-//			.append("WHERE DateAcct IS NULL")
-//			.append(" AND I_IsImported<>'Y'").append (sqlCheck);
-//		no = DB.executeUpdate(sql.toString(), get_TrxName());
-//		if (log.isLoggable(Level.FINE)) log.fine("Set DateAcct=" + no);
-				
-		//-- New BPartner ---------------------------------------------------
-
-		//	Go through Fixed Assets Records w/o C_BPartner_ID
-		/* no need this @win
-		sql = new StringBuilder ("SELECT * FROM "+MIFixedAsset.Table_Name+ " 
-			  + "WHERE I_IsImported='N' AND C_BPartnerSR_ID IS NULL").append (sqlCheck);
-		try
-		{
-			PreparedStatement pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MIFixedAsset ifa = new MIFixedAsset (getCtx(), rs, get_TrxName());
-				if (ifa.getBPartner_Value () == null)
-					continue;
-				
-				//	BPartner
-				MBPartner bp = MBPartner.get (getCtx(), ifa.getBPartner_Value());
-				if (bp == null)
-				{
-					bp = new MBPartner (getCtx (), -1, get_TrxName());
-					bp.setClientOrg (ifa.getAD_Client_ID (), ifa.getAD_Org_ID ());
-					bp.setValue (ifa.getBPartner_Value ());
-					bp.setName (ifa.getBPartner_Value ());
-					if (!bp.save ())
-						continue;
-				}
-				ifa.setC_BPartnerSR_ID (bp.getC_BPartner_ID ());
-				
-				MBPartnerLocation bpl = null;
-				
-				if (bpl == null)
-				{
-					//	New Location
-					MLocation loc = new MLocation (getCtx (), 0, get_TrxName());
-					loc.setCity (ifa.getC_City_Value ());
-					if (!loc.save ())
-						continue;
-					//
-					bpl = new MBPartnerLocation (bp);
-					bpl.setC_Location_ID (loc.getC_Location_ID());
-					if (!bpl.save ())
-						continue;
-				}
-				ifa.saveEx();
-			}	//	for all new BPartners
-			rs.close ();
-			pstmt.close ();
-			//
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "CreateBP", e);
-		}
-		sql = new StringBuilder ("UPDATE "+MIFixedAsset.Table_Name+ " "
-			  + "SET I_IsImported='N', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner, ' "
-			  + "WHERE C_BPartnerSR_ID IS NULL"
-			  + " AND I_IsImported<>'Y'").append (sqlCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (no != 0)
-			log.warning ("No BPartner=" + no);
-		
-		commitEx();
-		
-		//-- New Product ---------------------------------------------------
-		// TODO : zuhri Utama - need to fixed create new product
-
-		//	Go through Fixed Assets Records w/o M_Product_ID
-		sql = new StringBuilder ("SELECT * FROM "+MIFixedAsset.Table_Name+ " "
-			  + "WHERE I_IsImported='N' AND M_Product_ID IS NULL").append (sqlCheck);
-		try
-		{
-			PreparedStatement pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MIFixedAsset ifa = new MIFixedAsset (getCtx(), rs, get_TrxName());
-				if (ifa.getProductValue () == null)
-					continue;
-				
-				//	Product
-				String Value = ifa.getProductValue ();
-				if (Value == null || Value.length() == 0)
-					return null;
-				final String whereClause = "Value=? AND AD_Client_ID=?";
-				MProduct product = new Query(getCtx(), MProduct.Table_Name, whereClause, null)
-				.setParameters(Value,Env.getAD_Client_ID(getCtx()))
-				.firstOnly();
-				if (product == null)
-				{
-					product = new MProduct (getCtx (), -1, get_TrxName());
-					product.setAD_Org_ID(ifa.getAD_Org_ID ());
-					product.setValue (ifa.getProductValue ());
-					product.setName (ifa.getProductValue ());
-					product.setC_UOM_ID(ifa.getC_UOM_ID());
-					if(p_M_Product_Category_ID>0)
-						product.setM_Product_Category_ID(p_M_Product_Category_ID);
-					if (!product.save ())
-						continue;
-				}
-				ifa.setM_Product_ID (product.getM_Product_ID());
-				
-				ifa.saveEx();
-			}	//	for all new Products
-			rs.close ();
-			pstmt.close ();
-			//
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "CreateProduct", e);
-		}
-		sql = new StringBuilder ("UPDATE "+MIFixedAsset.Table_Name+ " "
-			  + "SET I_IsImported='N', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner, ' "
-			  + "WHERE M_Product_ID IS NULL"
-			  + " AND I_IsImported<>'Y'").append (sqlCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (no != 0)
-			log.warning ("No Product=" + no);
-		
-		commitEx();
-		*/ //commented by @win
 		
 		if (p_IsValidateOnly)
 			return "Data Was Validated";

@@ -25,9 +25,10 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
- *  Journal Line Model
+ *  GL Journal Line Model
  *
  *	@author Jorg Janke
  *	@author Cristina Ghita
@@ -38,9 +39,21 @@ import org.compiere.util.Msg;
 public class MJournalLine extends X_GL_JournalLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 253571209449736797L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param GL_JournalLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MJournalLine(Properties ctx, String GL_JournalLine_UU, String trxName) {
+        super(ctx, GL_JournalLine_UU, trxName);
+		if (Util.isEmpty(GL_JournalLine_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -52,17 +65,22 @@ public class MJournalLine extends X_GL_JournalLine
 	{
 		super (ctx, GL_JournalLine_ID, trxName);
 		if (GL_JournalLine_ID == 0)
-		{
-			setLine (0);
-			setAmtAcctCr (Env.ZERO);
-			setAmtAcctDr (Env.ZERO);
-			setAmtSourceCr (Env.ZERO);
-			setAmtSourceDr (Env.ZERO);
-			setCurrencyRate (Env.ONE);
-			setDateAcct (new Timestamp(System.currentTimeMillis()));
-			setIsGenerated (true);
-		}
+			setInitialDefaults();
 	}	//	MJournalLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);
+		setAmtAcctCr (Env.ZERO);
+		setAmtAcctDr (Env.ZERO);
+		setAmtSourceCr (Env.ZERO);
+		setAmtSourceDr (Env.ZERO);
+		setCurrencyRate (Env.ONE);
+		setDateAcct (new Timestamp(System.currentTimeMillis()));
+		setIsGenerated (true);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -104,9 +122,8 @@ public class MJournalLine extends X_GL_JournalLine
 		return m_parent;
 	}	//	getParent
 	
-
 	/**	Currency Precision		*/
-	protected int					m_precision = 2;
+	protected int				m_precision = 2;
 	/**	Account Combination		*/
 	protected MAccount		 	m_account = null;
 	/** Account Element			*/
@@ -114,7 +131,7 @@ public class MJournalLine extends X_GL_JournalLine
 	
 	/**
 	 * 	Set Currency Info
-	 *	@param C_Currency_ID currenct
+	 *	@param C_Currency_ID currency
 	 *	@param C_ConversionType_ID type
 	 *	@param CurrencyRate rate
 	 */
@@ -150,8 +167,9 @@ public class MJournalLine extends X_GL_JournalLine
 	
 	/**
 	 * 	Set Currency Rate
-	 *	@param CurrencyRate check for null (-&gt;one)
+	 *	@param CurrencyRate check for null or negative value (-&gt;one)
 	 */
+	@Override
 	public void setCurrencyRate (BigDecimal CurrencyRate)
 	{
 		if (CurrencyRate == null)
@@ -170,7 +188,7 @@ public class MJournalLine extends X_GL_JournalLine
 	
 	/**
 	 * 	Set Accounted Amounts only if not 0.
-	 * 	Amounts overwritten in beforeSave - set conversion rate
+	 * 	Amounts overwritten in beforeSave - set conversion rate.
 	 *	@param AmtAcctDr Dr
 	 *	@param AmtAcctCr Cr
 	 */
@@ -276,13 +294,13 @@ public class MJournalLine extends X_GL_JournalLine
 		}
 		return acct.isDocControlled();
 	}	//	isDocControlled
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true 
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -299,7 +317,6 @@ public class MJournalLine extends X_GL_JournalLine
 		if (getC_ConversionType_ID() == 0)
 			setC_ConversionType_ID(getParent().getC_ConversionType_ID());
 
-		// idempiere 344 - nmicoud
 		if (!getOrCreateCombination())
 			return false;
 		if (getC_ValidCombination_ID() <= 0)
@@ -308,7 +325,6 @@ public class MJournalLine extends X_GL_JournalLine
 			return false;
 		}
 		fillDimensionsFromCombination();
-		// end idempiere 344 - nmicoud
 
 		//	Acct Amts
 		BigDecimal rate = getCurrencyRate();
@@ -331,6 +347,7 @@ public class MJournalLine extends X_GL_JournalLine
 	 *	@param success true if success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -344,6 +361,7 @@ public class MJournalLine extends X_GL_JournalLine
 	 *	@param success true if deleted
 	 *	@return true if success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -383,7 +401,9 @@ public class MJournalLine extends X_GL_JournalLine
 		return no == 1;
 	}	//	updateJournalTotal
 
-	/** Update combination and optionally **/
+	/** 
+	 * Get or create new valid combination record. Set C_ValidCombination_ID.
+	 */
 	protected boolean getOrCreateCombination()
 	{
 		if (getC_ValidCombination_ID() == 0
@@ -459,7 +479,9 @@ public class MJournalLine extends X_GL_JournalLine
 		return true;
 	}	//	getOrCreateCombination
 
-	/** Fill Accounting Dimensions from line combination **/
+	/** 
+	 * Fill Accounting Dimensions from line valid combination. 
+	 */
 	protected void fillDimensionsFromCombination()
 	{
 		if (getC_ValidCombination_ID() > 0)

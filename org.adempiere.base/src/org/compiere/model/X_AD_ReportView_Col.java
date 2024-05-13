@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReportView_Col
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReportView_Col")
-public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Persistent 
+public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Col (Properties ctx, int AD_ReportView_Col_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ReportView_Col (Properties ctx, String AD_ReportView_Col_UU, String trxName)
+    {
+      super (ctx, AD_ReportView_Col_UU, trxName);
+      /** if (AD_ReportView_Col_UU == null)
+        {
+			setAD_ReportView_Col_ID (0);
+			setAD_ReportView_ID (0);
+			setFunctionColumn (null);
+			setIsGroupFunction (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReportView_Col (Properties ctx, String AD_ReportView_Col_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReportView_Col_UU, trxName, virtualColumns);
+      /** if (AD_ReportView_Col_UU == null)
+        {
+			setAD_ReportView_Col_ID (0);
+			setAD_ReportView_ID (0);
+			setFunctionColumn (null);
+			setIsGroupFunction (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ReportView_Col (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Pe
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -182,7 +208,7 @@ public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_ReportView_ID()));
     }
@@ -217,10 +243,10 @@ public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Pe
 	public boolean isGroupFunction()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGroupFunction);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for R_GroupUpdates
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_GroupUpdates")
-public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persistent 
+public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_GroupUpdates (Properties ctx, String R_GroupUpdates_UU, String trxName)
+    {
+      super (ctx, R_GroupUpdates_UU, trxName);
+      /** if (R_GroupUpdates_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Group_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_GroupUpdates (Properties ctx, String R_GroupUpdates_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_GroupUpdates_UU, trxName, virtualColumns);
+      /** if (R_GroupUpdates_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Group_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_GroupUpdates (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_R_GroupUpdates[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -126,10 +150,10 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

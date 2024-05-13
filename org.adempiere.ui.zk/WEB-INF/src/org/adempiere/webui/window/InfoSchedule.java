@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.WSchedule;
 import org.adempiere.webui.session.SessionManager;
@@ -40,6 +41,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.ScheduleUtil;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
@@ -55,6 +57,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Space;
@@ -62,27 +65,32 @@ import org.zkoss.zul.Vbox;
 
 
 /**
- *	Schedule - Resource availability and assigment.
+ *	Schedule - Resource availability and assignment.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: InfoSchedule.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  * 
  *  Zk Port
  *  @author Low Heng Sin
- *  
- *  Zk Port
  *  @author		Elaine
  *  @version	InfoSchedule.java Adempiere Swing UI 3.4.1 
  */
 public class InfoSchedule extends Window implements EventListener<Event>
 {
 	/**
-	 *  @param mAssignment optional assignment
-	 *  @param createNew if true, allows to create new assignments
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5948901371276429661L;
+	private static final long serialVersionUID = 3349721592479638482L;
+
 	private Callback<MResourceAssignment> m_callback;
 	private Component m_parent;
+	/** Window No */
+	private int m_windowNo;
+
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 *  Constructor
@@ -94,6 +102,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		this(mAssignment, createNew, (Callback<MResourceAssignment>)null);
 	}
 	
+	/**
+	 * @param mAssignment
+	 * @param createNew
+	 * @param callback
+	 */
 	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Callback<MResourceAssignment> callback)
 	{
 		this(mAssignment, createNew, (Component)null, callback);
@@ -160,10 +173,16 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "InfoSchedule", ex);
 		}
 		displayCalendar();
+
+		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
+    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+    	addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
+
 	}	//	InfoSchedule
 
 	/**
-	 * 	IDE Constructor
+	 * Default Constructor
 	 */
 	public InfoSchedule()
 	{
@@ -196,8 +215,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	private Mask mask;
 
 	/**
-	 * 	Static Layout
-	 * 	@throws Exception
+	 * Layout dialog
+	 * @throws Exception
 	 */
 	private void init() throws Exception
 	{
@@ -242,8 +261,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	}	//	jbInit
 
 	/**
-	 * 	Dynamic Init
-	 *  @param createNew if true, allows to create new assignments
+	 * Load resource and resource type
+	 * @param createNew if true, allows to create new assignments
 	 */
 	private void dynInit (boolean createNew) 
 	{
@@ -419,15 +438,13 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		invalidate();
 	}	//	displayCalendar
 
-	/**************************************************************************
-	 * 	Dispose.
+	/**
+	 * Close dialog
 	 */
 	public void dispose()
 	{
 		this.detach();
 	}	//	dispose
-
-	/*************************************************************************/
 
 	/**
 	 * 	Callback.
@@ -460,6 +477,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		return m_mAssignment;
 	}	//	getMResourceAssignment
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (m_loading)
 			return;
@@ -480,14 +498,37 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			doEdit((CalendarsEvent)event);
 		else if (event.getTarget() == fieldResource)
 			displayCalendar();
+		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+			if (LayoutUtils.isReallyVisible(this))
+				this.onCtrlKeyEvent(keyEvent);
+		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_windowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_windowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
 		//
 	}
 
+	/**
+	 * onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		m_cancel = true;
 		dispose();
 	}
 	
+	/**
+	 * Edit or create calendar event (for S_ResourceAssignment)
+	 * @param event
+	 */
 	private void doEdit(CalendarsEvent event) {
 		ListItem listItem = fieldResource.getSelectedItem();
 		if (listItem == null)
@@ -620,6 +661,9 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * @return true if create new assignment is enable
+	 */
 	public boolean isCreateNew() {
 		return m_createNew;
 	}
@@ -644,6 +688,9 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * @return busy mask
+	 */
 	private Div getMask() {
 		if (mask == null) {
 			mask = new Mask();
@@ -651,13 +698,31 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		return mask;
 	}
 	
+	/**
+	 * Show busy mask
+	 */
 	protected void showBusyMask() {
 		appendChild(getMask());
 	}
 	
+	/**
+	 * Hide busy mask
+	 */
 	protected void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
+		}
+	}
+
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) { 	// ESC
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 }	//	InfoSchedule

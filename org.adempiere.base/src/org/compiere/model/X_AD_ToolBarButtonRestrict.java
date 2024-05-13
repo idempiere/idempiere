@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_ToolBarButtonRestrict
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButtonRestrict")
-public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent 
+public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ToolBarButtonRestrict (Properties ctx, String AD_ToolBarButtonRestrict_UU, String trxName)
+    {
+      super (ctx, AD_ToolBarButtonRestrict_UU, trxName);
+      /** if (AD_ToolBarButtonRestrict_UU == null)
+        {
+			setAction (null);
+			setAD_ToolBarButtonRestrict_ID (0);
+			setIsExclude (true);
+// Y
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ToolBarButtonRestrict (Properties ctx, String AD_ToolBarButtonRestrict_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ToolBarButtonRestrict_UU, trxName, virtualColumns);
+      /** if (AD_ToolBarButtonRestrict_UU == null)
+        {
+			setAction (null);
+			setAD_ToolBarButtonRestrict_ID (0);
+			setIsExclude (true);
+// Y
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -312,10 +338,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public boolean isExclude()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExclude);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

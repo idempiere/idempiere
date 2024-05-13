@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_OnlineTrxHistory
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_OnlineTrxHistory")
-public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_Persistent 
+public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_OnlineTrxHistory (Properties ctx, int C_OnlineTrxHistory_ID, String trxName)
@@ -64,6 +64,38 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_OnlineTrxHistory (Properties ctx, String C_OnlineTrxHistory_UU, String trxName)
+    {
+      super (ctx, C_OnlineTrxHistory_UU, trxName);
+      /** if (C_OnlineTrxHistory_UU == null)
+        {
+			setAD_Table_ID (0);
+			setC_OnlineTrxHistory_ID (0);
+			setIsError (false);
+// N
+			setProcessed (false);
+// N
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OnlineTrxHistory (Properties ctx, String C_OnlineTrxHistory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OnlineTrxHistory_UU, trxName, virtualColumns);
+      /** if (C_OnlineTrxHistory_UU == null)
+        {
+			setAD_Table_ID (0);
+			setC_OnlineTrxHistory_ID (0);
+			setIsError (false);
+// N
+			setProcessed (false);
+// N
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_OnlineTrxHistory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +103,7 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -170,10 +202,10 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -193,10 +225,10 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Requisition
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Requisition")
-public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent 
+public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Requisition (Properties ctx, int M_Requisition_ID, String trxName)
@@ -92,6 +92,62 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Requisition (Properties ctx, String M_Requisition_UU, String trxName)
+    {
+      super (ctx, M_Requisition_UU, trxName);
+      /** if (M_Requisition_UU == null)
+        {
+			setAD_User_ID (0);
+			setC_DocType_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateRequired (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setM_PriceList_ID (0);
+			setM_Requisition_ID (0);
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPriorityRule (null);
+// 5
+			setProcessed (false);
+			setTotalLines (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Requisition (Properties ctx, String M_Requisition_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Requisition_UU, trxName, virtualColumns);
+      /** if (M_Requisition_UU == null)
+        {
+			setAD_User_ID (0);
+			setC_DocType_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateRequired (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setM_PriceList_ID (0);
+			setM_Requisition_ID (0);
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPriorityRule (null);
+// 5
+			setProcessed (false);
+			setTotalLines (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Requisition (Properties ctx, ResultSet rs, String trxName)
     {
@@ -99,7 +155,7 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -333,7 +389,7 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -368,10 +424,10 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -484,10 +540,10 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -536,10 +592,10 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -577,10 +633,10 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

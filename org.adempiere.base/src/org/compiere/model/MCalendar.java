@@ -34,7 +34,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6036302512252100576L;
 
@@ -109,9 +109,18 @@ public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MCalendar> s_cache
 		= new ImmutableIntPOCache<Integer,MCalendar>(Table_Name, 20);
-	
-	
-	/*************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Calendar_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCalendar(Properties ctx, String C_Calendar_UU, String trxName) {
+        super(ctx, C_Calendar_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_Calendar_ID id
@@ -146,7 +155,7 @@ public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 	}	//	MCalendar
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCalendar(MCalendar copy) 
@@ -155,7 +164,7 @@ public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -164,6 +173,12 @@ public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 		this(ctx, copy, (String) null);
 	}
 
+	/**
+	 * Copy constructor
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
 	public MCalendar(Properties ctx, MCalendar copy, String trxName) 
 	{
 		this(ctx, 0, trxName);
@@ -171,9 +186,9 @@ public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Create (current) Calendar Year
+	 * 	Create and save (current) calendar year and periods
 	 * 	@param locale locale
-	 *	@return The Year
+	 *	@return new MYear instance
 	 */
 	public MYear createYear(Locale locale)
 	{

@@ -36,6 +36,7 @@ import org.compiere.model.X_AD_PrintTableFormat;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.IntPOCopyCache;
 
@@ -55,6 +56,18 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	 */
 	private static final long serialVersionUID = -1608017405401341288L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintTableFormat_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintTableFormat(Properties ctx, String AD_PrintTableFormat_UU, String trxName) {
+        super(ctx, AD_PrintTableFormat_UU, trxName);
+		if (Util.isEmpty(AD_PrintTableFormat_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 *	Standard Constructor
 	 *  @param ctx context
@@ -65,15 +78,20 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	{
 		super (ctx, AD_PrintTableFormat_ID, trxName);
 		if (AD_PrintTableFormat_ID == 0)
-		{
-			setIsDefault (false);
-			setIsPaintHeaderLines (true);	// Y
-			setIsPaintBoundaryLines (false);
-			setIsPaintHLines (false);
-			setIsPaintVLines (false);
-			setIsPrintFunctionSymbols (true);
-		}
+			setInitialDefaults();
 	}	//	MPrintTableFormat
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setIsPaintHeaderLines (true);	// Y
+		setIsPaintBoundaryLines (false);
+		setIsPaintHLines (false);
+		setIsPaintVLines (false);
+		setIsPrintFunctionSymbols (true);
+	}
 
 	/**
 	 *	Load Constructor
@@ -183,8 +201,8 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	setStandard_Font
 
 	/**
-	 * 	Get Stndard Font
-	 * 	@return stndard font
+	 * 	Get Standard Font
+	 * 	@return standard font
 	 */
 	public Font getStandard_Font()
 	{
@@ -455,7 +473,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	getHLine_Color
 	
 	/**
-	 *  Get Verical Line Color.
+	 *  Get Vertical Line Color.
 	 * 	(one db attribute for line color)
 	 *  @return color or gray light
 	 */
@@ -682,7 +700,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		//
 		if(isImageIsAttached())
 		{	
-			MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID());
+			MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID(), get_UUID(), null);
 			if (attachment == null)
 			{
 				log.log(Level.WARNING, "No Attachment - ID=" + get_ID());

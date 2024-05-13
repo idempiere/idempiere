@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceAssignment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceAssignment")
-public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment, I_Persistent 
+public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)
@@ -64,6 +64,34 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_ResourceAssignment (Properties ctx, String S_ResourceAssignment_UU, String trxName)
+    {
+      super (ctx, S_ResourceAssignment_UU, trxName);
+      /** if (S_ResourceAssignment_UU == null)
+        {
+			setAssignDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setIsConfirmed (false);
+			setName (null);
+			setS_ResourceAssignment_ID (0);
+			setS_Resource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceAssignment (Properties ctx, String S_ResourceAssignment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceAssignment_UU, trxName, virtualColumns);
+      /** if (S_ResourceAssignment_UU == null)
+        {
+			setAssignDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setIsConfirmed (false);
+			setName (null);
+			setS_ResourceAssignment_ID (0);
+			setS_Resource_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_ResourceAssignment (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +99,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -154,10 +182,10 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	public boolean isConfirmed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsConfirmed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -266,7 +294,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getS_Resource_ID()));
     }

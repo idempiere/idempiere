@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_CashFlow
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_CashFlow")
-public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent 
+public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_CashFlow (Properties ctx, int T_CashFlow_ID, String trxName)
@@ -59,6 +59,30 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_CashFlow (Properties ctx, String T_CashFlow_UU, String trxName)
+    {
+      super (ctx, T_CashFlow_UU, trxName);
+      /** if (T_CashFlow_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setIsSOTrx (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_CashFlow (Properties ctx, String T_CashFlow_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_CashFlow_UU, trxName, virtualColumns);
+      /** if (T_CashFlow_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setIsSOTrx (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_CashFlow (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +90,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -506,10 +530,10 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionLine")
-public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persistent 
+public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PromotionLine (Properties ctx, int M_PromotionLine_ID, String trxName)
@@ -60,6 +60,32 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PromotionLine (Properties ctx, String M_PromotionLine_UU, String trxName)
+    {
+      super (ctx, M_PromotionLine_UU, trxName);
+      /** if (M_PromotionLine_UU == null)
+        {
+			setIsMandatoryPL (true);
+// Y
+			setM_Promotion_ID (0);
+			setM_PromotionLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionLine (Properties ctx, String M_PromotionLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionLine_UU, trxName, virtualColumns);
+      /** if (M_PromotionLine_UU == null)
+        {
+			setIsMandatoryPL (true);
+// Y
+			setM_Promotion_ID (0);
+			setM_PromotionLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PromotionLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +93,7 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -102,10 +128,10 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 	public boolean isMandatoryPL()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatoryPL);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -271,9 +271,9 @@ public abstract class SvrProcess implements ProcessCall
 			if (msg == null)
 				msg = e.toString();
 			if (e.getCause() != null)
-				log.log(Level.SEVERE, msg, e.getCause());
+				log.log(Level.SEVERE, Msg.parseTranslation(getCtx(), msg), e.getCause());
 			else 
-				log.log(Level.SEVERE, msg, e);
+				log.log(Level.SEVERE, Msg.parseTranslation(getCtx(), msg), e);
 			success = false;
 		//	throw new RuntimeException(e);
 		}
@@ -504,6 +504,25 @@ public abstract class SvrProcess implements ProcessCall
 	} // getRecord_IDs
 
 	/**
+	 *  Get Record_UU
+	 *  @return Record_UU
+	 */
+	protected String getRecord_UU()
+	{
+		return m_pi.getRecord_UU();
+	}   //  getRecord_UU
+
+	/**
+	 * Get Record_UUs
+	 * 
+	 * @return Record_UUs
+	 */
+	protected List<String> getRecord_UUs() 
+	{
+		return m_pi.getRecord_UUs();
+	} // getRecord_UUs
+
+	/**
 	 *  Get AD_User_ID
 	 *  @return AD_User_ID of Process owner or -1 if not found
 	 */
@@ -611,6 +630,9 @@ public abstract class SvrProcess implements ProcessCall
 			addLog (0, null, null, msg);
 	}	//	addLog
 
+	/**
+	 * Add buffer log to process info
+	 */
 	private void flushBufferLog () {
 		if (listEntryLog == null)
 			return;
@@ -622,8 +644,56 @@ public abstract class SvrProcess implements ProcessCall
 		}
 		listEntryLog = null; // flushed - to avoid flushing it again in case is called
 	}
+	
+	/**
+	 *  Save Progress Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
+	 */
+	public String saveProgress (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveProgress(id, date, number, msg);
+		return "";
+	}	//	saveProgress
 
-	/**************************************************************************
+	/**
+	 *  Save Status Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
+	 */
+	public String saveStatus (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveStatus(id, date, number, msg);
+		return "";
+	}	//	saveStatus
+	
+	/**
+	 *  Update Progress Log Entry with the specified AD_PInstance_Log_UU, update if exists
+	 *  @param pInstanceLogUU AD_PInstance_Log_UU
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 */
+	public void updateProgress (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (m_pi != null)
+			m_pi.updateProgress(pInstanceLogUU, id, date, number, msg);
+		
+		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
+	}	//	saveLog
+	
+	/**
 	 * 	Execute function
 	 * 	@param className class
 	 * 	@param methodName method
@@ -652,7 +722,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	doIt
 
 	
-	/**************************************************************************
+	/**
 	 *  Lock Process Instance
 	 */
 	private void lock()
@@ -660,8 +730,9 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.FINE)) log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID());
 		try 
 		{
-			DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
-				+ m_pi.getAD_PInstance_ID(), null);		//	outside trx
+			if(m_pi.getAD_PInstance_ID() > 0)	// Update only when AD_PInstance_ID > 0 (When we Start Process w/o saving process instance (No Process Audit))
+				DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
+					+ m_pi.getAD_PInstance_ID(), null);		//	outside trx
 		} catch (Exception e)
 		{
 			log.severe("lock() - " + e.getLocalizedMessage());
@@ -684,20 +755,22 @@ public abstract class SvrProcess implements ProcessCall
 			//clear interrupt signal so that we can unlock the ad_pinstance record
 			if (Thread.currentThread().isInterrupted())
 				Thread.interrupted();
-				
-			MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
-			if (mpi.get_ID() == 0)
-			{
-				log.log(Level.SEVERE, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
-				return;
-			}
-			mpi.setIsProcessing(false);
-			mpi.setResult(!m_pi.isError());
-			mpi.setErrorMsg(m_pi.getSummary());
-			mpi.saveEx();
-			if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
 			
-			ProcessInfoUtil.saveLogToDB(m_pi);
+			if(m_pi.getAD_PInstance_ID() > 0) {
+				MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
+				if (mpi.get_ID() == 0)
+				{
+					log.log(Level.INFO, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
+					return;
+				}
+				mpi.setIsProcessing(false);
+				mpi.setResult(!m_pi.isError());
+				mpi.setErrorMsg(m_pi.getSummary());
+				mpi.saveEx();
+				if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
+				
+				ProcessInfoUtil.saveLogToDB(m_pi);
+			}
 		} 
 		catch (Exception e)
 		{

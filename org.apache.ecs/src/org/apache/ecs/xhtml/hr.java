@@ -50,7 +50,7 @@ public class hr extends SinglePartElement
 	}
 
 	/**
-	 * methods to set the attibutes.
+	 * methods to set the attributes.
 	 */
 	public hr ()
 	{

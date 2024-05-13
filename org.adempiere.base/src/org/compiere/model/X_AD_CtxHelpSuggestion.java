@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpSuggestion
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelpSuggestion")
-public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent 
+public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
@@ -78,6 +78,52 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_CtxHelpSuggestion (Properties ctx, String AD_CtxHelpSuggestion_UU, String trxName)
+    {
+      super (ctx, AD_CtxHelpSuggestion_UU, trxName);
+      /** if (AD_CtxHelpSuggestion_UU == null)
+        {
+			setAD_CtxHelp_ID (0);
+			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelpSuggestion_ID (0);
+			setAD_CtxHelpSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setIsApproved (false);
+// N
+			setIsSaveAsTenantCustomization (false);
+// N
+			setMsgText (null);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_CtxHelpSuggestion (Properties ctx, String AD_CtxHelpSuggestion_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_CtxHelpSuggestion_UU, trxName, virtualColumns);
+      /** if (AD_CtxHelpSuggestion_UU == null)
+        {
+			setAD_CtxHelp_ID (0);
+			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelpSuggestion_ID (0);
+			setAD_CtxHelpSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setIsApproved (false);
+// N
+			setIsSaveAsTenantCustomization (false);
+// N
+			setMsgText (null);
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, ResultSet rs, String trxName)
     {
@@ -85,7 +131,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -316,10 +362,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -339,10 +385,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	public boolean isSaveAsTenantCustomization()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSaveAsTenantCustomization);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -378,10 +424,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

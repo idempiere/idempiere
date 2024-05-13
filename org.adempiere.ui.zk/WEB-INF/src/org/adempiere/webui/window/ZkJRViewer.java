@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.webui.window;
 
 import java.io.File;
@@ -89,11 +110,14 @@ import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
+/**
+ * Viewer for jasper report
+ */
 public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, IReportViewerExportSource {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -7204858572267608018L;
+	private static final long serialVersionUID = -8782402996207677811L;
 
 	private JasperPrint jasperPrint;
 	private java.util.List<JasperPrint> jasperPrintList;
@@ -109,8 +133,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
-	private long prevKeyEventTime = 0;
-	private KeyEvent prevKeyEvent;
 
 	private String m_title; // local title - embedded windows clear the title
 	Toolbar toolbar = new Toolbar();
@@ -130,18 +152,27 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	
 	protected final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
-			new ExportFormat(PDF_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
-			new ExportFormat(HTML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileHTML"), HTML_FILE_EXT, HTML_MIME_TYPE),			
-			new ExportFormat(CSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), CSV_FILE_EXT, CSV_MIME_TYPE),
-			new ExportFormat(EXCEL_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), EXCEL_FILE_EXT, EXCEL_MIME_TYPE),
-			new ExportFormat(EXCEL_XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE),
-			new ExportFormat(SSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE)
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileHTML"), HTML_FILE_EXT, HTML_MIME_TYPE),			
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileCSV"), CSV_FILE_EXT, CSV_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileXLS"), EXCEL_FILE_EXT, EXCEL_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE),
+			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE)
 	};
 
 	private Center center;
 	
+	/**
+	 * @param jasperPrint
+	 * @param title
+	 * @param printInfo
+	 */
 	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) {
 		super();
 		this.setTitle(title);
@@ -154,6 +185,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		init();
 	}
 
+	/**
+	 * @param jasperPrintList
+	 * @param title
+	 * @param printInfo
+	 */
 	public ZkJRViewer(java.util.List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo) {
 		super();
 		this.setTitle(title);
@@ -171,6 +207,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		super.onPageAttached(newpage, oldpage);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+			addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 	}
 
@@ -179,9 +216,13 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 	}
 
+	/**
+	 * Layout viewer
+	 */
 	private void init() {
 		final boolean isCanExport=MRole.getDefault().isCanExport();
 		defaultType = jasperPrint == null ? null : jasperPrint.getProperty(ReportStarter.IDEMPIERE_REPORT_TYPE);
@@ -338,6 +379,12 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;
+	
+	/**
+	 * Hide not accessible toolbar button
+	 * @param AD_Window_ID
+	 * @param AD_Process_ID
+	 */
 	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;
@@ -373,6 +420,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		ToolBarMenuRestictionLoaded = true;
 	}//updateToolbarAccess
 
+	/**
+	 * Create exporter for supported format type (html, pdf, etc)
+	 */
 	private void initMediaSuppliers() {
 		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
 			try {
@@ -580,10 +630,20 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		});
 	}
 	
+	/**
+	 * @param contentType
+	 * @param fileExtension
+	 * @return contentType + ; + fileExtension
+	 */
 	private String toMediaType(String contentType, String fileExtension) {
 		return contentType + ";" + fileExtension;
 	}
 	
+	/**
+	 * Create file name prefix from name
+	 * @param name
+	 * @return file name prefix
+	 */
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
@@ -596,8 +656,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 		return prefix.toString();
 	}
-	/**************************************************************************
-	 * 	Action Listener
+	/**
+	 * 	Handle event
 	 * 	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -617,6 +677,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			cmd_upload();
 	}	//	actionPerformed
 
+	/**
+	 * Render report
+	 */
 	private void cmd_render() {
 		try {
 			renderReport();
@@ -625,7 +688,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 	}
 
-	// Added by Martin Augustine - Ntier Software Services 09/10/2013
+	/**
+	 * Email report as pdf attachment
+	 */
 	private void cmd_sendMail()
 	{
 
@@ -643,46 +708,46 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
 			from, to, subject, "", new FileDataSource(attachment),
-			m_WindowNo, m_printInfo.getAD_Table_ID(), m_printInfo.getRecord_ID(), m_printInfo);
+			m_WindowNo, m_printInfo.getAD_Table_ID(), m_printInfo.getRecord_ID(),
+			m_printInfo.getRecord_UU(), m_printInfo);
 
 		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT)) {
 			actionPerformed(event);
 		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
 			KeyEvent keyEvent = (KeyEvent) event;
-			if (LayoutUtils.isReallyVisible(this)) {
-				//filter same key event that is too close
-				//firefox fire key event twice when grid is visible
-				long time = System.currentTimeMillis();
-				if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-						prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-						prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-						prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-						prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-						prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-					if ((time - prevKeyEventTime) <= 300) {
-						return;
-					}
-				}
+			if (LayoutUtils.isReallyVisible(this))
 				this.onCtrlKeyEvent(keyEvent);
-			}
 		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
 	}
 
+	/**
+	 * Handle key event
+	 * @param keyEvent
+	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
-			if (m_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
-			}
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 
+	/**
+	 * Render report
+	 * @throws Exception
+	 */
 	private void renderReport() throws Exception {
 		String reportType;
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -709,6 +774,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		Events.echoEvent("onRenderReport", this, null);
 	}
 
+	/**
+	 * @return PDF file
+	 * @throws IOException
+	 * @throws JRException
+	 */
 	private File getPDF() throws IOException, JRException {
 		String path = System.getProperty("java.io.tmpdir");
 
@@ -735,6 +805,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		return file;
 	}
 
+	/**
+	 * Handle onRenderReport event
+	 */
 	public void onRenderReport() {
 		Listitem selected = previewType.getSelectedItem();
 		String reportType=selected.getValue();
@@ -803,11 +876,14 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 	}
 
+	/**
+	 * Open report using javascript pdf viewer (pdf.js from Mozilla)
+	 */
 	protected void openWithPdfJsViewer() {
 		attachIFrame();
 		mediaVersion++;
 		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
-		String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+		String pdfJsUrl = AEnv.toPdfJsUrl(url);
 		iframe.setContent(null);
 		iframe.setSrc(pdfJsUrl);
 	}
@@ -897,7 +973,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	} // cmd_archive
 
 	/**
-	 * Create archive for jasper report
+	 * Save jasper report as attachment of a record (AD_Table_ID and Record_ID from {@link #m_printInfo})
 	 */
 	protected void cmd_attachment()
 	{
@@ -920,9 +996,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	} // cmd_archive
 
 	/** 
-	 * convert File data into Byte Data
+	 * convert File data into byte[]
 	 * @param tempFile
-	 * @return file in ByteData 
+	 * @return content of file in byte[]
 	 */
 	private byte[] getFileByteData(File tempFile)
 	{
@@ -956,6 +1032,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
 	
+	/**
+	 * Upload to external destination
+	 */
 	private void cmd_upload() {
 		if (media == null)
 			return;

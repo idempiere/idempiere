@@ -27,7 +27,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAuthorizationAccount;
 
 /**
- *  Email User Authentification
+ *  Email User Authentication
  *
  *  @author Jorg Janke
  *  @version $Id: EMailAuthenticator.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $

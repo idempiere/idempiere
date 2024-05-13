@@ -11,6 +11,7 @@
 	<packaging>eclipse-repository</packaging>
 	<properties>
 		<materializeProduct>package</materializeProduct>
+		<assembleRepository>package</assembleRepository>
 	</properties>
 	<build>
 		<plugins>
@@ -106,14 +107,14 @@
 						<goals>
 							<goal>assemble-repository</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${assembleRepository}</phase>
 					</execution>
 					<execution>
 						<id>default-archive-repository</id>
 						<goals>
 							<goal>archive-repository</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${assembleRepository}</phase>
 					</execution>
 				</executions>
 				<configuration>
@@ -152,16 +153,93 @@
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-eclipserun-plugin</artifactId>
-				<configuration>
-					<appArgLine>-application org.eclipse.equinox.p2.director -repository file:${project.build.directory}/repository -destination ${project.build.directory}/products/${idempiere.product.id}/${tycho.env.osgi.os}/${tycho.env.osgi.ws}/${tycho.env.osgi.arch} -installIU "${extra.ui.install}" -profileProperties org.eclipse.update.install.features=true -p2.os ${tycho.env.osgi.os} -p2.ws ${tycho.env.osgi.ws} -p2.arch ${tycho.env.osgi.arch} -consoleLog -roaming</appArgLine>
-				</configuration>
 				<executions>
 					<execution>
-						<id>default-eclipse-run</id>
+						<id>default-eclipse-run-linux</id>
 						<goals>
 							<goal>eclipse-run</goal>
 						</goals>
 						<phase>${materializeProduct}</phase>
+						<configuration>
+							<applicationArgs>
+								<arg>-application</arg>
+								<arg>org.eclipse.equinox.p2.director</arg>
+								<arg>-repository</arg>
+								<arg>file:${project.build.directory}/repository</arg>
+								<arg>-destination</arg>
+								<arg>${project.build.directory}/products/${idempiere.product.id}/linux/gtk/x86_64</arg>
+								<arg>-installIU</arg>
+								<arg>${extra.iu.install}</arg>
+								<arg>-profileProperties</arg> 
+								<arg>org.eclipse.update.install.features=true</arg>
+								<arg>-p2.os</arg>
+								<arg>linux</arg>
+								<arg>-p2.ws</arg>
+								<arg>gtk</arg>
+								<arg>-p2.arch</arg>
+								<arg>x86_64</arg>
+								<arg>-consoleLog</arg>
+								<arg>-roaming</arg>
+							</applicationArgs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-eclipse-run-win32</id>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+						<phase>${materializeProduct}</phase>
+						<configuration>
+							<applicationArgs>
+								<arg>-application</arg>
+								<arg>org.eclipse.equinox.p2.director</arg>
+								<arg>-repository</arg>
+								<arg>file:${project.build.directory}/repository</arg>
+								<arg>-destination</arg>
+								<arg>${project.build.directory}/products/${idempiere.product.id}/win32/win32/x86_64</arg>
+								<arg>-installIU</arg>
+								<arg>${extra.iu.install}</arg>
+								<arg>-profileProperties</arg> 
+								<arg>org.eclipse.update.install.features=true</arg>
+								<arg>-p2.os</arg>
+								<arg>win32</arg>
+								<arg>-p2.ws</arg>
+								<arg>win32</arg>
+								<arg>-p2.arch</arg>
+								<arg>x86_64</arg>
+								<arg>-consoleLog</arg>
+								<arg>-roaming</arg>
+							</applicationArgs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-eclipse-run-macosx</id>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+						<phase>${materializeProduct}</phase>
+						<configuration>
+							<applicationArgs>
+								<arg>-application</arg>
+								<arg>org.eclipse.equinox.p2.director</arg>
+								<arg>-repository</arg>
+								<arg>file:${project.build.directory}/repository</arg>
+								<arg>-destination</arg>
+								<arg>${project.build.directory}/products/${idempiere.product.id}/macosx/cocoa/x86_64</arg>
+								<arg>-installIU</arg>
+								<arg>${extra.iu.install}</arg>
+								<arg>-profileProperties</arg> 
+								<arg>org.eclipse.update.install.features=true</arg>
+								<arg>-p2.os</arg>
+								<arg>macosx</arg>
+								<arg>-p2.ws</arg>
+								<arg>cocoa</arg>
+								<arg>-p2.arch</arg>
+								<arg>x86_64</arg>
+								<arg>-consoleLog</arg>
+								<arg>-roaming</arg>
+							</applicationArgs>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

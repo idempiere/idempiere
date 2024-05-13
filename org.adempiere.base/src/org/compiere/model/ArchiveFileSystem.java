@@ -44,8 +44,8 @@ import org.xml.sax.SAXException;
 import org.w3c.dom.Element;
 
 /**
+ * File system backed implementation of {@link IArchiveStore}
  * @author juliana
- *
  */
 public class ArchiveFileSystem implements IArchiveStore {
 	
@@ -91,7 +91,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				if(filePath!=null){
 					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
-					//just to be shure...
+					//just to be sure...
 					String replaceSeparator = File.separator;
 					if(!replaceSeparator.equals("/")){
 						replaceSeparator = "\\\\";
@@ -160,6 +160,12 @@ public class ArchiveFileSystem implements IArchiveStore {
 		}
 	}
 
+	/**
+	 * Write archive data to file
+	 * @param archive
+	 * @param prov
+	 * @param inflatedData archive data
+	 */
 	private void write(MArchive archive, MStorageProvider prov,
 			byte[] inflatedData) {		
 		BufferedOutputStream out = null;
@@ -221,6 +227,10 @@ public class ArchiveFileSystem implements IArchiveStore {
 		}
 	}
 
+	/**
+	 * @param prov
+	 * @return root path
+	 */
 	private String getArchivePathRoot(MStorageProvider prov) {
 		String archivePathRoot = prov.getFolder();
 		if (archivePathRoot == null)

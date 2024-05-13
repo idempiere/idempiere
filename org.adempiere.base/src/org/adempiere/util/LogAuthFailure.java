@@ -30,7 +30,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 
-
+/**
+ * Log authentication failure to AuthFailure.log text file.
+ */
 public class LogAuthFailure  {
 
 	private static FileOutputStream file = null;
@@ -39,6 +41,9 @@ public class LogAuthFailure  {
 	/**	Logger				*/
 	private static final CLogger log = CLogger.getCLogger(LogAuthFailure.class);
 
+	/**
+	 * Default constructor
+	 */
 	public LogAuthFailure() {
 
 		String path = Ini.getAdempiereHome() + File.separator + "log";
@@ -54,6 +59,13 @@ public class LogAuthFailure  {
 		}
 	}
 
+	/**
+	 * Log authentication failure message
+	 * @param clientIP
+	 * @param context
+	 * @param username
+	 * @param msg
+	 */
 	public void log(String clientIP, String context, String username, String msg) {
 		try {
 			SimpleDateFormat format = DisplayType.getTimestampFormat_Default();

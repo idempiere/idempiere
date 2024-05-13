@@ -32,6 +32,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.WrongValueException;
 
+/**
+ * Parameter listener for bank transfer process
+ */
 public class BankTransferParameterListener implements IProcessParameterListener {
 
 	@Override

@@ -56,7 +56,7 @@ import org.compiere.util.WebDoc;
 public class GridWindow implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3342733142743698614L;
 
@@ -89,7 +89,7 @@ public class GridWindow implements Serializable
 		return new GridWindow(mWindowVO, virtual);
 	}	//	get
 
-	/**************************************************************************
+	/**
 	 *	Constructor
 	 *  @param vo value object
 	 */
@@ -98,10 +98,10 @@ public class GridWindow implements Serializable
 		this(vo, false);
 	}
 	
-	/**************************************************************************
+	/**
 	 *	Constructor
 	 *  @param vo value object
-	 *  @param virtual
+	 *  @param virtual true to use virtual buffer
 	 */
 	public GridWindow (GridWindowVO vo, boolean virtual)
 	{
@@ -125,7 +125,7 @@ public class GridWindow implements Serializable
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(GridWindow.class);
 	
-	/**************************************************************************
+	/**
 	 *	Dispose
 	 */
 	public void dispose()
@@ -138,9 +138,7 @@ public class GridWindow implements Serializable
 	}	//	dispose
 
 	/**
-	 *  Load is complete.
-	 *  Return when async load is complete
-	 *  Used for performance tests (Base.test())
+	 * Wait until asynchronous loading of all tab is complete.
 	 */
 	public void loadCompete ()
 	{
@@ -150,13 +148,11 @@ public class GridWindow implements Serializable
 	}   //  loadComplete
 
 	/**
-	 *	Get Tab data and create MTab(s)
+	 *	Get Tab data and create GridTab(s)
 	 *  @return true if tab loaded
 	 */
 	private boolean loadTabData()
 	{
-		log.config("");
-
 		if (m_vo.Tabs == null)
 			return false;
 
@@ -175,8 +171,8 @@ public class GridWindow implements Serializable
 
 	/**
 	 * Is tab initialize
-	 * @param index
-	 * @return boolean
+	 * @param index tab index
+	 * @return true if tab at index have been initialized
 	 */
 	public boolean isTabInitialized(int index)
 	{
@@ -185,8 +181,8 @@ public class GridWindow implements Serializable
 	}
 	
 	/**
-	 * Initialise tab
-	 * @param index
+	 * Initialize tab
+	 * @param index tab index
 	 */
 	public void initTab(int index)
 	{
@@ -298,21 +294,20 @@ public class GridWindow implements Serializable
 	}   //  getColor
 
 	/**
-	 * 	SO Trx Window
-	 *	@return true if SO Trx
+	 *	@return true if window is for SO Trx
 	 */
 	public boolean isSOTrx()
 	{
 		return m_vo.IsSOTrx;
 	}	//	isSOTrx
-	
-	
+		
 	/**
-	 *  Open and query first Tab (events should be enabled) and get first row.
+	 *  Open and query first Tab (events should be enabled) and navigate to first row.
 	 */
 	public void query()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO))
+			log.info("");
 		GridTab tab = getTab(0);
 		tab.query(false, 0, 0);
 		if (tab.getRowCount() > 0)
@@ -320,7 +315,7 @@ public class GridWindow implements Serializable
 	}   //  open
 
 	/**
-	 *  Enable Events - enable data events of tabs (add listeners)
+	 *  Enable events for all tabs (listen for GridTable events)
 	 */
 	private void enableEvents()
 	{
@@ -338,9 +333,8 @@ public class GridWindow implements Serializable
 	}	//	getTabCount
 
 	/**
-	 *	Get i-th MTab - null if not valid
-	 *  @param i index
-	 *  @return MTab
+	 *  @param i tab index
+	 *  @return GridTab at tab index or null if tab index is invalid
 	 */
 	public GridTab getTab (int i)
 	{
@@ -349,6 +343,10 @@ public class GridWindow implements Serializable
 		return (GridTab)m_tabs.get(i);
 	}	//	getTab
 	
+	/**
+	 * @param tab
+	 * @return tab index
+	 */
 	public int getTabIndex(GridTab tab)
 	{
 		return m_tabs.indexOf(tab);
@@ -410,7 +408,7 @@ public class GridWindow implements Serializable
 
 	/**
 	 *	Is Transaction Window
-	 *  @return true if transaction
+	 *  @return true if this is transaction window
 	 */
 	public boolean isTransaction()
 	{
@@ -440,8 +438,8 @@ public class GridWindow implements Serializable
 
 	/**
 	 * 	Get Help HTML Document
-	 * 	@param javaClient true if java client false for browser
-	 *	@return help 
+	 * 	@param javaClient true if java client, false for browser
+	 *	@return help document
 	 */
 	public WebDoc getHelpDoc (boolean javaClient)
 	{
@@ -562,8 +560,8 @@ public class GridWindow implements Serializable
 
 	/**
 	 * 	Get Model last Updated
-	 * 	@param recalc recalculate again
-	 *	@return date
+	 * 	@param recalc true to always re-query from DB
+	 *	@return last updated timestamp
 	 */
 	public Timestamp getModelUpdated (boolean recalc)
 	{
@@ -613,6 +611,9 @@ public class GridWindow implements Serializable
 		return m_modelUpdated;
 	}	//	getModelUpdated
 
+	/**
+	 * @return AD_Window_UU
+	 */
 	public String getAD_Window_UU() {
 		return m_vo.AD_Window_UU;
 	}

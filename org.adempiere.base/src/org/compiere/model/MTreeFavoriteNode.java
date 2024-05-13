@@ -33,6 +33,16 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 
 	public static final String	SQL_CHECK_MENU_EXISTS	= "SELECT CASE WHEN COUNT(AD_Menu_ID) > 0 THEN 'Y' ELSE 'N' END FROM AD_Tree_Favorite_Node WHERE AD_Tree_Favorite_ID=? AND NVL(Parent_ID, 0)=? AND AD_Menu_ID=?";
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Tree_Favorite_Node_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTreeFavoriteNode(Properties ctx, String AD_Tree_Favorite_Node_UU, String trxName) {
+        super(ctx, AD_Tree_Favorite_Node_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_Tree_Favorite_Node_ID

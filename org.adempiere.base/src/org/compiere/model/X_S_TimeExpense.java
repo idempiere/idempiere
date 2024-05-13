@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeExpense
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_TimeExpense")
-public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent 
+public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_TimeExpense (Properties ctx, int S_TimeExpense_ID, String trxName)
@@ -80,6 +80,50 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_TimeExpense (Properties ctx, String S_TimeExpense_UU, String trxName)
+    {
+      super (ctx, S_TimeExpense_UU, trxName);
+      /** if (S_TimeExpense_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setDateReport (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setM_PriceList_ID (0);
+			setM_Warehouse_ID (0);
+			setProcessed (false);
+			setS_TimeExpense_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_TimeExpense (Properties ctx, String S_TimeExpense_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_TimeExpense_UU, trxName, virtualColumns);
+      /** if (S_TimeExpense_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setDateReport (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setM_PriceList_ID (0);
+			setM_Warehouse_ID (0);
+			setProcessed (false);
+			setS_TimeExpense_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_TimeExpense (Properties ctx, ResultSet rs, String trxName)
     {
@@ -87,7 +131,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -296,7 +340,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -315,10 +359,10 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -394,10 +438,10 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -416,10 +460,10 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

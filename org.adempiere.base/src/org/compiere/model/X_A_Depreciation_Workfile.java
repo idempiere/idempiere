@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Workfile
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Workfile")
-public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Workfile, I_Persistent 
+public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Workfile, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Workfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
@@ -124,6 +124,94 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Depreciation_Workfile (Properties ctx, String A_Depreciation_Workfile_UU, String trxName)
+    {
+      super (ctx, A_Depreciation_Workfile_UU, trxName);
+      /** if (A_Depreciation_Workfile_UU == null)
+        {
+			setA_Accumulated_Depr (Env.ZERO);
+// 0
+			setA_Accumulated_Depr_F (Env.ZERO);
+// 0
+			setA_Asset_Cost (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Life_Current_Year (Env.ZERO);
+// 0
+			setA_Asset_Life_Years (Env.ZERO);
+// 0
+			setA_Asset_Life_Years_F (Env.ZERO);
+// 0
+			setA_Curr_Dep_Exp (Env.ZERO);
+// 0
+			setA_Depreciation_Workfile_ID (0);
+			setA_Life_Period (0);
+// 0
+			setA_Life_Period_F (0);
+// 0
+			setA_QTY_Current (Env.ZERO);
+			setA_Salvage_Value (Env.ZERO);
+// 0
+			setA_Tip_Finantare (null);
+// 'P'
+			setProcessed (false);
+// N
+			setUseLifeMonths (0);
+// 0
+			setUseLifeMonths_F (0);
+// 0
+			setUseLifeYears (Env.ZERO);
+// 0
+			setUseLifeYears_F (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Workfile (Properties ctx, String A_Depreciation_Workfile_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Workfile_UU, trxName, virtualColumns);
+      /** if (A_Depreciation_Workfile_UU == null)
+        {
+			setA_Accumulated_Depr (Env.ZERO);
+// 0
+			setA_Accumulated_Depr_F (Env.ZERO);
+// 0
+			setA_Asset_Cost (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Life_Current_Year (Env.ZERO);
+// 0
+			setA_Asset_Life_Years (Env.ZERO);
+// 0
+			setA_Asset_Life_Years_F (Env.ZERO);
+// 0
+			setA_Curr_Dep_Exp (Env.ZERO);
+// 0
+			setA_Depreciation_Workfile_ID (0);
+			setA_Life_Period (0);
+// 0
+			setA_Life_Period_F (0);
+// 0
+			setA_QTY_Current (Env.ZERO);
+			setA_Salvage_Value (Env.ZERO);
+// 0
+			setA_Tip_Finantare (null);
+// 'P'
+			setProcessed (false);
+// N
+			setUseLifeMonths (0);
+// 0
+			setUseLifeMonths_F (0);
+// 0
+			setUseLifeYears (Env.ZERO);
+// 0
+			setUseLifeYears_F (Env.ZERO);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Depreciation_Workfile (Properties ctx, ResultSet rs, String trxName)
     {
@@ -131,7 +219,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -420,7 +508,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Workfile_ID()));
     }
@@ -812,10 +900,10 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	public boolean isDepreciated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDepreciated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -864,10 +952,10 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -886,10 +974,10 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

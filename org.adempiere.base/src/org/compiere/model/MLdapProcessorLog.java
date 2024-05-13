@@ -19,19 +19,31 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
 
 /**
- *	LDAP Server Log
+ *	LDAP Processor Log
  *  @author Jorg Janke
  *  @version $Id$
  */
 public class MLdapProcessorLog extends X_AD_LdapProcessorLog implements AdempiereProcessorLog
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -2587778949013986055L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_LdapProcessorLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLdapProcessorLog(Properties ctx, String AD_LdapProcessorLog_UU, String trxName) {
+        super(ctx, AD_LdapProcessorLog_UU, trxName);
+		if (Util.isEmpty(AD_LdapProcessorLog_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -44,10 +56,15 @@ public class MLdapProcessorLog extends X_AD_LdapProcessorLog implements Adempier
 	{
 		super (ctx, AD_LdapProcessorLog_ID, trxName);
 		if (AD_LdapProcessorLog_ID == 0)
-		{
-			setIsError (false);
-		}	
+			setInitialDefaults();
 	}	//	MLdapProcessorLog
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsError (false);
+	}
 
 	/**
 	 * 	Load Constructor

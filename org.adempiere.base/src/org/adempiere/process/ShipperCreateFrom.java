@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.process;
 
 import org.compiere.model.MShipper;
@@ -9,6 +30,9 @@ import org.compiere.model.X_M_ShipperPackagingCfg;
 import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.SvrProcess;
 
+/**
+ * Process to create shipper child records from M_ShipperCfg child records.
+ */
 @org.adempiere.base.annotation.Process
 public class ShipperCreateFrom extends SvrProcess
 {
@@ -30,6 +54,9 @@ public class ShipperCreateFrom extends SvrProcess
 		return "OK";
 	}
 	
+	/**
+	 * Create M_ShipperPackaging records from M_ShipperPackagingCfg records.
+	 */
 	private void createShipperPackaging()
 	{
 		StringBuilder whereClause = new StringBuilder();
@@ -54,6 +81,9 @@ public class ShipperCreateFrom extends SvrProcess
 		}
 	}
 	
+	/**
+	 * Create M_ShipperLabels records from M_ShipperLabelsCfg records.
+	 */
 	private void createShipperLabels()
 	{
 		StringBuilder whereClause = new StringBuilder();
@@ -78,6 +108,9 @@ public class ShipperCreateFrom extends SvrProcess
 		}
 	}
 	
+	/**
+	 * Create M_ShipperPickupTypes records from M_ShipperPickupTypesCfg records.
+	 */
 	private void createShipperPickupTypes()
 	{
 		StringBuilder whereClause = new StringBuilder();

@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	POS Function Key Model
  *	
@@ -32,9 +31,19 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPOSKey extends X_C_POSKey implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -5138032789563975514L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_POSKey_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPOSKey(Properties ctx, String C_POSKey_UU, String trxName) {
+        super(ctx, C_POSKey_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -59,7 +68,7 @@ public class MPOSKey extends X_C_POSKey implements ImmutablePOSupport
 	}	//	MPOSKey
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPOSKey(MPOSKey copy) 
@@ -68,7 +77,7 @@ public class MPOSKey extends X_C_POSKey implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -78,7 +87,7 @@ public class MPOSKey extends X_C_POSKey implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

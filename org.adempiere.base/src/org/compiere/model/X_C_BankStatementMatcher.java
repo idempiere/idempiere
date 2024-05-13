@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementMatcher
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BankStatementMatcher")
-public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMatcher, I_Persistent 
+public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMatcher, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BankStatementMatcher (Properties ctx, int C_BankStatementMatcher_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BankStatementMatcher (Properties ctx, String C_BankStatementMatcher_UU, String trxName)
+    {
+      super (ctx, C_BankStatementMatcher_UU, trxName);
+      /** if (C_BankStatementMatcher_UU == null)
+        {
+			setC_BankStatementMatcher_ID (0);
+			setClassname (null);
+			setName (null);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankStatementMatcher (Properties ctx, String C_BankStatementMatcher_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankStatementMatcher_UU, trxName, virtualColumns);
+      /** if (C_BankStatementMatcher_UU == null)
+        {
+			setC_BankStatementMatcher_ID (0);
+			setClassname (null);
+			setName (null);
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BankStatementMatcher (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -175,7 +201,7 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

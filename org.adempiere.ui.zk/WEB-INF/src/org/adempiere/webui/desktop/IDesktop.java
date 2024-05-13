@@ -19,6 +19,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.UIPart;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -38,6 +39,8 @@ public interface IDesktop extends UIPart {
 	/** {@link EventQueue} name for activities (workflow activities, request, notice and unprocessed documents) */
 	public static final String ACTIVITIES_EVENT_QUEUE = "ActivitiesEventQueue";
 	public static final String ON_ACTIVITIES_CHANGED_EVENT = "onActivitiesChanged";
+	/** Event when closing window/tab with shortcut */
+    public static final String ON_CLOSE_WINDOW_SHORTCUT_EVENT = "onCloseWindowShortcut";
 
 	/**
 	 *
@@ -222,7 +225,14 @@ public interface IDesktop extends UIPart {
 	
 	/**
 	 * update help content in help/info panel
-	 * @param ctxTypes
+	 * @param infoWindowId
+	 * @param infoPanel
+	 */
+	public void updateHelpContext(String ctxType, int infoWindowId, InfoPanel infoPanel);
+	
+	/**
+	 * update help content in help/info panel
+	 * @param ctxType
 	 * @param recordId
 	 */
 	public void updateHelpContext(String ctxType, int recordId);
@@ -247,6 +257,12 @@ public interface IDesktop extends UIPart {
 	 * @param gridTab
 	 */
 	public void updateHelpQuickInfo(GridTab gridTab);
+	
+	/**
+	 * update quick info (status line) in help/info panel
+	 * @param infoPanel
+	 */
+	public void updateHelpQuickInfo(InfoPanel infoPanel);
 
 	/**
 	 * 
@@ -265,4 +281,16 @@ public interface IDesktop extends UIPart {
 	 * render home tab
 	 */
 	public void renderHomeTab();
+	
+	/**
+	 * Is closing tab with shortcut allowed
+	 * @return true if allowed
+	 */
+	public boolean isCloseTabWithShortcut();
+	
+	/**
+	 * Set if closing tab with shortcut is allowed
+	 * @param isCloseTabWithShortcut
+	 */
+	public void setCloseTabWithShortcut(boolean isCloseTabWithShortcut);
 }

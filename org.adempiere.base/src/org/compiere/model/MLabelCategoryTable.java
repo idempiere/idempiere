@@ -33,7 +33,20 @@ import java.util.Properties;
  * Label Category Table Model
  */
 public class MLabelCategoryTable extends X_AD_LabelCategoryTable {
+	/**
+	 * Generated serial id
+	 */
 	private static final long serialVersionUID = -964945828771768568L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_LabelCategoryTable_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLabelCategoryTable(Properties ctx, String AD_LabelCategoryTable_UU, String trxName) {
+        super(ctx, AD_LabelCategoryTable_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

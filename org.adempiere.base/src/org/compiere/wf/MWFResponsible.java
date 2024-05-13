@@ -26,9 +26,8 @@ import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
- *	Workflow Resoinsible
+ *	Extended Workflow Responsible model for AD_WF_Responsible
  *	
  *  @author Jorg Janke
  *  @version $Id: MWFResponsible.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -36,7 +35,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSupport
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5073542640376766737L;
 
@@ -88,9 +87,18 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MWFResponsible>	s_cache	= new ImmutableIntPOCache<Integer,MWFResponsible>(Table_Name, 10);
-
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_Responsible_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWFResponsible(Properties ctx, String AD_WF_Responsible_UU, String trxName) {
+        super(ctx, AD_WF_Responsible_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_WF_Responsible_ID id
@@ -113,7 +121,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}	//	MWFResponsible
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MWFResponsible(MWFResponsible copy) 
@@ -122,7 +130,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -132,7 +140,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -153,7 +161,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}	//	isInvoker
 	
 	/**
-	 * 	Is Role Responsible
+	 * 	Is Role Responsible Type
 	 *	@return true if role
 	 */
 	public boolean isRole()
@@ -163,7 +171,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}	//	isRole
 
 	/**
-	 * 	Is Role Responsible
+	 * 	Get reference role instance
 	 *	@return true if role
 	 */
 	public MRole getRole()
@@ -174,7 +182,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}	//	getRole
 
 	/**
-	 * 	Is Human Responsible
+	 * 	Is Human Responsible Type
 	 *	@return true if human
 	 */
 	public boolean isHuman()
@@ -184,7 +192,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	}	//	isHuman
 	
 	/**
-	 * 	Is Org Responsible
+	 * 	Is Org Responsible Type
 	 *	@return true if Org
 	 */
 	public boolean isOrganization()
@@ -196,12 +204,11 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
-	 *	@return tre if can be saved
+	 *	@return true if can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-	//	if (RESPONSIBLETYPE_Human.equals(getResponsibleType()) && getAD_User_ID() == 0)
-	//		return true;
 		if (RESPONSIBLETYPE_Role.equals(getResponsibleType()) 
 			&& getAD_Role_ID() == 0
 			&& getAD_Client_ID() > 0)
@@ -228,6 +235,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder("MWFResponsible[");
@@ -242,6 +250,10 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 		return sb.toString ();
 	}	//	toString
 	
+	/**
+	 * Is manual responsible type
+	 * @return true if this is manual responsible type
+	 */
 	public boolean isManual() {
 	    return RESPONSIBLETYPE_Manual.equals(getResponsibleType());
 	}

@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -38,7 +39,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MCharge extends X_C_Charge implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1978008783808254164L;
 
@@ -50,6 +51,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	 *  @return Charge Account or null
 	 *  @deprecated use getAccount(Charge, as) instead
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as, BigDecimal amount)
 	{
 		return getAccount (C_Charge_ID, as);
@@ -132,9 +134,20 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCharge.class);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Charge_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCharge(Properties ctx, String C_Charge_UU, String trxName) {
+        super(ctx, C_Charge_UU, trxName);
+		if (Util.isEmpty(C_Charge_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_Charge_ID id
@@ -144,13 +157,18 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	{
 		super (ctx, C_Charge_ID, trxName);
 		if (C_Charge_ID == 0)
-		{
-			setChargeAmt (Env.ZERO);
-			setIsSameCurrency (false);
-			setIsSameTax (false);
-			setIsTaxIncluded (false);	// N
-		}
+			setInitialDefaults();
 	}	//	MCharge
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setChargeAmt (Env.ZERO);
+		setIsSameCurrency (false);
+		setIsSameTax (false);
+		setIsTaxIncluded (false);	// N
+	}
 
 	/**
 	 * 	Load Constructor
@@ -164,7 +182,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	}	//	MCharge
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCharge(MCharge copy) 
@@ -173,7 +191,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -183,7 +201,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -200,6 +218,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)

@@ -20,9 +20,8 @@ import org.compiere.model.MClient;
 import org.compiere.model.MUser;
 
 /**
- * 
+ * Event data for {@link IEventTopics#REQUEST_SEND_EMAIL} event topic.
  * @author Elaine
- *
  */
 public class RequestSendEMailEventData 
 { 
@@ -35,10 +34,29 @@ public class RequestSendEMailEventData
 	private int requestID;
 	private boolean isHtml;
 	
+	/**
+	 * @param client
+	 * @param from
+	 * @param to
+	 * @param subject
+	 * @param message
+	 * @param attachment
+	 * @param requestID
+	 */
 	public RequestSendEMailEventData(MClient client, MUser from, MUser to, String subject, String message, File attachment, int requestID) {
 		this(client, from, to, subject, message, attachment, requestID, false);
 	}
 	
+	/**
+	 * @param client
+	 * @param from
+	 * @param to
+	 * @param subject
+	 * @param message
+	 * @param attachment
+	 * @param requestID
+	 * @param isHtml
+	 */
 	public RequestSendEMailEventData(MClient client, MUser from, MUser to, String subject, String message, File attachment, int requestID, boolean isHtml) {
 		setClient(client);
 		setFrom(from);
@@ -50,66 +68,114 @@ public class RequestSendEMailEventData
 		setHtml(isHtml);
 	}
 
+	/**
+	 * @return MClient
+	 */
 	public MClient getClient() {
 		return client;
 	}
 
+	/**
+	 * @param client
+	 */
 	public void setClient(MClient client) {
 		this.client = client;
 	}
 
+	/**
+	 * @return from user
+	 */
 	public MUser getFrom() {
 		return from;
 	}
 
+	/**
+	 * @param from from user
+	 */
 	public void setFrom(MUser from) {
 		this.from = from;
 	}
 
+	/**
+	 * @return to user
+	 */
 	public MUser getTo() {
 		return to;
 	}
 
+	/**
+	 * @param to to user
+	 */
 	public void setTo(MUser to) {
 		this.to = to;
 	}
 
+	/**
+	 * @return subject
+	 */
 	public String getSubject() {
 		return subject;
 	}
 
+	/**
+	 * @param subject
+	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
 
+	/**
+	 * @return message
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * @param message
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
+	/**
+	 * @return attachment file
+	 */
 	public File getAttachment() {
 		return attachment;
 	}
 
+	/**
+	 * @param attachment
+	 */
 	public void setAttachment(File attachment) {
 		this.attachment = attachment;
 	}
 
+	/**
+	 * @return R_Request_ID
+	 */
 	public int getRequestID() {
 		return requestID;
 	}
 
+	/**
+	 * @param requestID R_Request_ID
+	 */
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
 	}
 
+	/**
+	 * @return true if message is html text
+	 */
 	public boolean isHtml() {
 		return isHtml;
 	}
 
+	/**
+	 * @param isHtml
+	 */
 	public void setHtml(boolean isHtml) {
 		this.isHtml = isHtml;
 	}

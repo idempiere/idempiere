@@ -34,16 +34,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6052691522260506413L;
 
 	/**
 	 * 	Get Product Price
 	 *	@param ctx ctx
-	 *	@param M_PriceList_Version_ID id
-	 *	@param M_Product_ID id
-	 *	@param trxName trx
+	 *	@param M_PriceList_Version_ID price list version id
+	 *	@param M_Product_ID product id
+	 *	@param trxName transaction name
 	 *	@return product price or null
 	 */
 	public static MProductPrice get (Properties ctx, int M_PriceList_Version_ID, int M_Product_ID,
@@ -60,11 +60,20 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MProductPrice.class);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ProductPrice_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MProductPrice(Properties ctx, String M_ProductPrice_UU, String trxName) {
+        super(ctx, M_ProductPrice_UU, trxName);
+    }
+
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
-	 *	@param M_ProductPrice_ID key
-	 *	@param trxName transaction
+	 *	@param M_ProductPrice_ID id
+	 *	@param trxName transaction name
 	 */
 	public MProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
 	{
@@ -83,7 +92,7 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	}	//	MProductPrice
 
 	/**
-	 * 	New Constructor
+	 * 	New record Constructor
 	 *	@param ctx context
 	 *	@param M_PriceList_Version_ID Price List Version
 	 *	@param M_Product_ID product
@@ -97,7 +106,7 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	}	//	MProductPrice
 
 	/**
-	 * 	New Constructor
+	 * 	New record Constructor
 	 *	@param ctx context
 	 *	@param M_PriceList_Version_ID Price List Version
 	 *	@param M_Product_ID product
@@ -132,7 +141,7 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	}	//	MProductPrice
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MProductPrice(MProductPrice copy) 
@@ -141,7 +150,7 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -151,7 +160,7 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -179,6 +188,7 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MProductPrice[");

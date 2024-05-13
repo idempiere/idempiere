@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_VerifyMigration
- *  @author iDempiere (generated) 
+ *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_VerifyMigration")
-public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_Persistent 
+public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230113L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_VerifyMigration (Properties ctx, int AD_VerifyMigration_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_VerifyMigration (Properties ctx, String AD_VerifyMigration_UU, String trxName)
+    {
+      super (ctx, AD_VerifyMigration_UU, trxName);
+      /** if (AD_VerifyMigration_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setAD_Table_ID (0);
+			setAD_VerifyMigration_ID (0);
+			setIsIgnore (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_VerifyMigration (Properties ctx, String AD_VerifyMigration_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_VerifyMigration_UU, trxName, virtualColumns);
+      /** if (AD_VerifyMigration_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setAD_Table_ID (0);
+			setAD_VerifyMigration_ID (0);
+			setIsIgnore (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_VerifyMigration (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -296,10 +324,10 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
 	public boolean isIgnore()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIgnore);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

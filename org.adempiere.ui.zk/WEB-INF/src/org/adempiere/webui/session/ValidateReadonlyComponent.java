@@ -31,9 +31,7 @@ import org.zkoss.zul.impl.InputElement;
 
 
 /**
- * 
- * this service is interception into desktop process,
- * it will deny request to modify a readonly field or action on readonly button  
+ * Zk desktop listener to deny request to modify a readonly field or perform action using a readonly button.  
  * @author hieplq
  *
  */

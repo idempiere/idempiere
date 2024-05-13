@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere JasperReport integration
 Bundle-SymbolicName: org.adempiere.report.jasper;singleton:=true
-Bundle-Version: 10.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-Version: 11.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: com.zaxxer.sparsebits;version="1.2.0",
  net.sourceforge.barbecue,
  org.apache.commons.codec,
@@ -14,6 +14,7 @@ Import-Package: com.zaxxer.sparsebits;version="1.2.0",
  org.jfree.chart,
  org.jfree.chart.plot,
  org.osgi.framework;version="1.10.0",
+ org.osgi.framework.wiring;version="1.2.0",
  org.osgi.service.event
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  net.sf.jasperreports.engine;bundle-version="6.3.1",

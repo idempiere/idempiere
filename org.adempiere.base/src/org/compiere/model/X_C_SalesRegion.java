@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_SalesRegion
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_SalesRegion")
-public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent 
+public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_SalesRegion (Properties ctx, int C_SalesRegion_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_SalesRegion (Properties ctx, String C_SalesRegion_UU, String trxName)
+    {
+      super (ctx, C_SalesRegion_UU, trxName);
+      /** if (C_SalesRegion_UU == null)
+        {
+			setC_SalesRegion_ID (0);
+			setIsDefault (false);
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_SalesRegion (Properties ctx, String C_SalesRegion_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_SalesRegion_UU, trxName, virtualColumns);
+      /** if (C_SalesRegion_UU == null)
+        {
+			setC_SalesRegion_ID (0);
+			setIsDefault (false);
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_SalesRegion (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -156,10 +184,10 @@ public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -179,10 +207,10 @@ public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -207,7 +235,7 @@ public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

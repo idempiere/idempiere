@@ -30,9 +30,19 @@ import org.compiere.util.Msg;
 public class MStatusLineUsedIn extends X_AD_StatusLineUsedIn
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6341924761622666560L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_StatusLineUsedIn_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MStatusLineUsedIn(Properties ctx, String AD_StatusLineUsedIn_UU, String trxName) {
+        super(ctx, AD_StatusLineUsedIn_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -61,11 +71,21 @@ public class MStatusLineUsedIn extends X_AD_StatusLineUsedIn
 		if (getAD_Table_ID() > 0) {
 			setAD_Window_ID(0);
 			setAD_Tab_ID(0);
-		} else {
-			if (getAD_Window_ID() <= 0) {
-				log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@FillMandatory@ @AD_Table_ID@ @AD_Window_ID@"));
-				return false;
-			}
+			setAD_InfoWindow_ID(0);
+		}
+		else if (getAD_Window_ID() > 0) {
+			setAD_Table_ID(0);
+			setAD_InfoWindow_ID(0);	
+		}
+		else if (getAD_InfoWindow_ID() > 0) {
+			setAD_Table_ID(0);
+			setAD_Window_ID(0);	
+			setAD_Tab_ID(0);
+		}
+		else {
+			log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@FillMandatory@ @AD_Table_ID@ @AD_Window_ID@ @AD_InfoWindow_ID@"));
+			return false;
+			
 		}
 		return true;
 	}

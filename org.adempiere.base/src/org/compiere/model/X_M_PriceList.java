@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PriceList")
-public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent 
+public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PriceList (Properties ctx, int M_PriceList_ID, String trxName)
@@ -69,6 +69,42 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PriceList (Properties ctx, String M_PriceList_UU, String trxName)
+    {
+      super (ctx, M_PriceList_UU, trxName);
+      /** if (M_PriceList_UU == null)
+        {
+			setC_Currency_ID (0);
+			setEnforcePriceLimit (false);
+			setIsDefault (false);
+			setIsSOPriceList (false);
+			setIsTaxIncluded (false);
+			setM_PriceList_ID (0);
+			setName (null);
+			setPricePrecision (0);
+// 2
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PriceList (Properties ctx, String M_PriceList_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PriceList_UU, trxName, virtualColumns);
+      /** if (M_PriceList_UU == null)
+        {
+			setC_Currency_ID (0);
+			setEnforcePriceLimit (false);
+			setIsDefault (false);
+			setIsSOPriceList (false);
+			setIsTaxIncluded (false);
+			setM_PriceList_ID (0);
+			setName (null);
+			setPricePrecision (0);
+// 2
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PriceList (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +112,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -183,10 +219,10 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isEnforcePriceLimit()
 	{
 		Object oo = get_Value(COLUMNNAME_EnforcePriceLimit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -206,10 +242,10 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -229,10 +265,10 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -251,10 +287,10 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isPresentForProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_isPresentForProduct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -274,10 +310,10 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isSOPriceList()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOPriceList);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -297,10 +333,10 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isTaxIncluded()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxIncluded);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -362,7 +398,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

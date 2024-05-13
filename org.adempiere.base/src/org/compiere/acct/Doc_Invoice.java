@@ -88,6 +88,7 @@ public class Doc_Invoice extends Doc
 	 *  Load Specific Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails ()
 	{
 		MInvoice invoice = (MInvoice)getPO();
@@ -342,10 +343,11 @@ public class Doc_Invoice extends Doc
 	}	//	getPrecision
 
 
-	/**************************************************************************
+	/**
 	 *  Get Source Currency Balance - subtracts line and tax amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -405,6 +407,7 @@ public class Doc_Invoice extends Doc
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//
@@ -806,7 +809,7 @@ public class Doc_Invoice extends Doc
 	}   //  createFact
 
 	/**
-	 * 	Create Fact Cash Based (i.e. only revenue/expense)
+	 * 	Create Fact for Cash Based accounting (i.e. only revenue/expense)
 	 *	@param as accounting schema
 	 *	@param fact fact to add lines to
 	 *	@param multiplier source amount multiplier
@@ -915,7 +918,7 @@ public class Doc_Invoice extends Doc
 	 *	@param as accounting schema
 	 *	@param fact fact
 	 *	@param line document line
-	 *	@param dr DR entry (normal api)
+	 *	@param dr true for DR side, false otherwise
 	 *	@return true if landed costs were created
 	 */
 	protected boolean landedCost (MAcctSchema as, Fact fact, DocLine line, boolean dr)

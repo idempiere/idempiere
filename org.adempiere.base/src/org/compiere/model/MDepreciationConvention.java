@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
@@ -10,17 +31,29 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-/**	Convention for the first year of depreciation (ex. FMCON, FYCON ...)
+/**	
+ *  Convention for the first year of depreciation (ex. FMCON, FYCON ...).
+ *  Not fully implemented.
  *	@author Teo Sarca, SC Arhipac SRL
  *	@version $Id$
  */
 public class MDepreciationConvention extends X_A_Depreciation_Convention implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3735111030292424391L;
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Depreciation_Convention_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDepreciationConvention(Properties ctx, String A_Depreciation_Convention_UU, String trxName) {
+        super(ctx, A_Depreciation_Convention_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -43,7 +76,7 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 	}	//	MDepreciationConvention
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MDepreciationConvention(MDepreciationConvention copy) 
@@ -52,7 +85,7 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -62,7 +95,7 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -105,12 +138,25 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 		return null;
 	} // get
 
-	/**	*/
+	/**
+	 * @param assetwk
+	 * @param assetAcct
+	 * @param Flag
+	 * @param Period
+	 * @return
+	 */
 	public BigDecimal invoke (MDepreciationWorkfile assetwk, MAssetAcct assetAcct, int Flag, int Period) {
 		return invoke(assetwk.getA_Asset_ID(), assetAcct.getPostingType(), assetAcct.get_ID(), Flag, Period);
 	}
 	
-	/**	*/
+	/**
+	 * @param A_Asset_ID
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
+	 * @param Flag
+	 * @param Period
+	 * @return calculated value
+	 */
 	public BigDecimal invoke (int A_Asset_ID, String PostingType, int A_Asset_Acct_ID, int Flag, int Period) {
 		String conventionType = getConventionType();
 		BigDecimal retValue = null;
@@ -153,6 +199,14 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 		return retValue;
 	}
 
+	/**
+	 * @param A_Asset_ID
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
+	 * @param Flag
+	 * @param Period
+	 * @return always return 1
+	 */
 	public BigDecimal apply_FMCON(int A_Asset_ID, String PostingType, int A_Asset_Acct_ID, int Flag, int Period) {
 		return BigDecimal.ONE;
 	}

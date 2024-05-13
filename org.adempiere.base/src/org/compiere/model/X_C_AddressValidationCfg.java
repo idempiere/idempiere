@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressValidationCfg
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressValidationCfg")
-public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidationCfg, I_Persistent 
+public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidationCfg, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AddressValidationCfg (Properties ctx, String C_AddressValidationCfg_UU, String trxName)
+    {
+      super (ctx, C_AddressValidationCfg_UU, trxName);
+      /** if (C_AddressValidationCfg_UU == null)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AddressValidationCfg (Properties ctx, String C_AddressValidationCfg_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AddressValidationCfg_UU, trxName, virtualColumns);
+      /** if (C_AddressValidationCfg_UU == null)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AddressValidationCfg (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -208,7 +234,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

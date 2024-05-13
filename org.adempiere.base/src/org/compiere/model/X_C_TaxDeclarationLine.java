@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclarationLine")
-public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine, I_Persistent 
+public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName)
@@ -75,6 +75,46 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_TaxDeclarationLine (Properties ctx, String C_TaxDeclarationLine_UU, String trxName)
+    {
+      super (ctx, C_TaxDeclarationLine_UU, trxName);
+      /** if (C_TaxDeclarationLine_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_Currency_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setC_TaxDeclarationLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsManual (true);
+// Y
+			setLine (0);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclarationLine (Properties ctx, String C_TaxDeclarationLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclarationLine_UU, trxName, virtualColumns);
+      /** if (C_TaxDeclarationLine_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_Currency_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setC_TaxDeclarationLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsManual (true);
+// Y
+			setLine (0);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -82,7 +122,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -382,10 +422,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -26,10 +26,11 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.eevolution.model.MDDOrderLine;
 
 /**
- *	Inventory Move Line Model
+ *	Inventory Movement Line Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MMovementLine.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
@@ -37,12 +38,24 @@ import org.eevolution.model.MDDOrderLine;
 public class MMovementLine extends X_M_MovementLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5614562023263896756L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_MovementLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMovementLine(Properties ctx, String M_MovementLine_UU, String trxName) {
+        super(ctx, M_MovementLine_UU, trxName);
+		if (Util.isEmpty(M_MovementLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
-	 * 	Standard Cosntructor
+	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_MovementLine_ID id
 	 *	@param trxName transaction
@@ -51,15 +64,20 @@ public class MMovementLine extends X_M_MovementLine
 	{
 		super (ctx, M_MovementLine_ID, trxName);
 		if (M_MovementLine_ID == 0)
-		{
-			setM_AttributeSetInstance_ID(0);	//	ID
-			setMovementQty (Env.ZERO);	// 1
-			setTargetQty (Env.ZERO);	// 0
-			setScrappedQty(Env.ZERO);
-			setConfirmedQty(Env.ZERO);
-			setProcessed (false);
-		}	
+			setInitialDefaults();
 	}	//	MMovementLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);	//	ID
+		setMovementQty (Env.ZERO);	// 1
+		setTargetQty (Env.ZERO);	// 0
+		setScrappedQty(Env.ZERO);
+		setConfirmedQty(Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -121,7 +139,7 @@ public class MMovementLine extends X_M_MovementLine
 	}	//	getProduct
 	
 	/**
-	 * 	Set Movement Qty - enforce UOM precision 
+	 * 	Set Movement Qty - enforce product UOM precision 
 	 *	@param MovementQty qty
 	 */
 	@Override
@@ -152,7 +170,6 @@ public class MMovementLine extends X_M_MovementLine
 			m_parent = new MMovement (getCtx(), getM_Movement_ID(), get_TrxName());
 		return m_parent;
 	}	//	getParent
-
 	
 	/**
 	 * 	Before Save
@@ -246,12 +263,14 @@ public class MMovementLine extends X_M_MovementLine
 	}
 
 	/** 
-	 *      Set Distribution Order Line. 
-	 *      Does not set Quantity! 
-	 *      @param oLine order line 
-	 *      @param Qty used only to find suitable locator 
-	 *      @param isReceipt 
+	 * Set Distribution Order Line. 
+	 * Does not set Quantity! 
+	 * @param oLine order line 
+	 * @param Qty used only to find suitable locator 
+	 * @param isReceipt
+	 * @deprecated not fully implemented 
 	 */ 
+	@Deprecated
 	public void setOrderLine (MDDOrderLine oLine, BigDecimal Qty, boolean isReceipt) 
 	{ 
 		setDD_OrderLine_ID(oLine.getDD_OrderLine_ID()); 
@@ -304,8 +323,8 @@ public class MMovementLine extends X_M_MovementLine
 	}       //      setOrderLine 
 
 	/** 
-	 *      Set M_Locator_ID 
-	 *      @param M_Locator_ID id 
+	 * Set M_Locator_ID. Throw exception if M_Locator_ID &lt; 0. 
+	 * @param M_Locator_ID id 
 	 */
 	@Override
 	public void setM_Locator_ID (int M_Locator_ID) 
@@ -317,8 +336,8 @@ public class MMovementLine extends X_M_MovementLine
 	}       //      setM_Locator_ID 
 
 	/** 
-	 *      Set M_LocatorTo_ID 
-	 *      @param M_LocatorTo_ID id 
+	 * Set M_LocatorTo_ID. Throw exception if M_LocatorTo_ID &lt; 0. 
+	 * @param M_LocatorTo_ID id 
 	 */ 
 	@Override
 	public void setM_LocatorTo_ID (int M_LocatorTo_ID) 
@@ -335,8 +354,10 @@ public class MMovementLine extends X_M_MovementLine
 	 *  @param DD_OrderLine_ID line 
 	 *  @param where optional addition where clause 
 	 *  @param trxName transaction 
-	 *      @return array of receipt lines 
+	 *  @return array of receipt lines
+	 *  @deprecated not fully implemented 
 	 */ 
+	@Deprecated
 	public static MMovementLine[] getOfOrderLine (Properties ctx, 
 			int DD_OrderLine_ID, String where, String trxName) 
 	{
@@ -350,6 +371,7 @@ public class MMovementLine extends X_M_MovementLine
 		return list.toArray(new MMovementLine[list.size()]);
 	}       //      getOfOrderLine 
 
+	@Override
 	public String toString()
 	{
 		return Table_Name + "[" + get_ID() 

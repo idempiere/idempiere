@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_BOM_Indented
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_BOM_Indented")
-public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persistent 
+public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_BOM_Indented (Properties ctx, int T_BOM_Indented_ID, String trxName)
@@ -54,6 +54,26 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_BOM_Indented (Properties ctx, String T_BOM_Indented_UU, String trxName)
+    {
+      super (ctx, T_BOM_Indented_UU, trxName);
+      /** if (T_BOM_Indented_UU == null)
+        {
+			setT_BOM_Indented_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_BOM_Indented (Properties ctx, String T_BOM_Indented_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_BOM_Indented_UU, trxName, virtualColumns);
+      /** if (T_BOM_Indented_UU == null)
+        {
+			setT_BOM_Indented_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_BOM_Indented (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +81,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

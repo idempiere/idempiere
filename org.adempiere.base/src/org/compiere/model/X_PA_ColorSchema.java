@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ColorSchema
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_ColorSchema")
-public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persistent 
+public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_ColorSchema (Properties ctx, int PA_ColorSchema_ID, String trxName)
@@ -67,6 +67,40 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_ColorSchema (Properties ctx, String PA_ColorSchema_UU, String trxName)
+    {
+      super (ctx, PA_ColorSchema_UU, trxName);
+      /** if (PA_ColorSchema_UU == null)
+        {
+			setAD_PrintColor1_ID (0);
+			setAD_PrintColor2_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setMark1Percent (0);
+			setMark2Percent (0);
+			setName (null);
+			setPA_ColorSchema_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ColorSchema (Properties ctx, String PA_ColorSchema_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ColorSchema_UU, trxName, virtualColumns);
+      /** if (PA_ColorSchema_UU == null)
+        {
+			setAD_PrintColor1_ID (0);
+			setAD_PrintColor2_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setMark1Percent (0);
+			setMark2Percent (0);
+			setName (null);
+			setPA_ColorSchema_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_ColorSchema (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +108,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -337,7 +371,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

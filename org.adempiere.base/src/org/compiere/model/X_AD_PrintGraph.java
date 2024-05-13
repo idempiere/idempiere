@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintGraph
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintGraph")
-public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent 
+public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PrintGraph (Properties ctx, int AD_PrintGraph_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PrintGraph (Properties ctx, String AD_PrintGraph_UU, String trxName)
+    {
+      super (ctx, AD_PrintGraph_UU, trxName);
+      /** if (AD_PrintGraph_UU == null)
+        {
+			setAD_PrintFormat_ID (0);
+// 0
+			setAD_PrintGraph_ID (0);
+			setData_PrintFormatItem_ID (0);
+			setDescription_PrintFormatItem_ID (0);
+			setGraphType (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintGraph (Properties ctx, String AD_PrintGraph_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintGraph_UU, trxName, virtualColumns);
+      /** if (AD_PrintGraph_UU == null)
+        {
+			setAD_PrintFormat_ID (0);
+// 0
+			setAD_PrintGraph_ID (0);
+			setData_PrintFormatItem_ID (0);
+			setDescription_PrintFormatItem_ID (0);
+			setGraphType (null);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PrintGraph (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -386,7 +418,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

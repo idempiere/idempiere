@@ -23,7 +23,6 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Sales Region Model
  *	
@@ -33,10 +32,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -1958080117315345389L;
-
 
 	/**
 	 * 	Get SalesRegion from Cache (immutable)
@@ -72,8 +70,17 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MSalesRegion>	s_cache	= new ImmutableIntPOCache<Integer,MSalesRegion>(Table_Name, 10);
 	
-	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_SalesRegion_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSalesRegion(Properties ctx, String C_SalesRegion_UU, String trxName) {
+        super(ctx, C_SalesRegion_UU, trxName);
+    }
+
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param C_SalesRegion_ID id
@@ -96,7 +103,7 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	}	//	MSalesRegion
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MSalesRegion(MSalesRegion copy) 
@@ -105,7 +112,7 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -115,7 +122,7 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -134,6 +141,7 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	 *	@param success save success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -154,6 +162,7 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	 *	@param success
 	 *	@return deleted
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)

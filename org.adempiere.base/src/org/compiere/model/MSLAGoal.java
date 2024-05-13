@@ -25,13 +25,16 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Service Level Agreement Goals
  *	
  *  @author Jorg Janke
  *  @version $Id: MSLAGoal.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
+ *  @deprecated not fully implement, marked as inactive in application dictionary
  */
+@Deprecated
 public class MSLAGoal extends X_PA_SLA_Goal
 {
 
@@ -39,6 +42,18 @@ public class MSLAGoal extends X_PA_SLA_Goal
 	 * 
 	 */
 	private static final long serialVersionUID = -5165579804502911120L;
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_SLA_Goal_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSLAGoal(Properties ctx, String PA_SLA_Goal_UU, String trxName) {
+        super(ctx, PA_SLA_Goal_UU, trxName);
+		if (Util.isEmpty(PA_SLA_Goal_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -50,12 +65,17 @@ public class MSLAGoal extends X_PA_SLA_Goal
 	{
 		super (ctx, PA_SLA_Goal_ID, trxName);
 		if (PA_SLA_Goal_ID == 0)
-		{
-			setMeasureActual (Env.ZERO);
-			setMeasureTarget (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MSLAGoal
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setMeasureActual (Env.ZERO);
+		setMeasureTarget (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.io.File;
@@ -14,7 +32,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-
+import org.compiere.util.Util;
 
 /**
  * @author Anca Bradau www.arhipac.ro
@@ -22,39 +40,69 @@ import org.compiere.util.TimeUtil;
  */
 public class MAssetReval extends X_A_Asset_Reval
 implements DocAction
-{
-	
+{	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3937514008250840440L;
 	private boolean		m_justPrepared = false;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Reval_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetReval(Properties ctx, String A_Asset_Reval_UU, String trxName) {
+        super(ctx, A_Asset_Reval_UU, trxName);
+		if (Util.isEmpty(A_Asset_Reval_UU))
+			setInitialDefaults();
+    }
+
+    /**
+     * @param ctx
+     * @param X_A_Asset_Reval_ID
+     * @param trxName
+     */
 	public MAssetReval(Properties ctx, int X_A_Asset_Reval_ID, String trxName)
 	{
 		super(ctx, X_A_Asset_Reval_ID, trxName);
 		if (X_A_Asset_Reval_ID == 0)
-		{
-		    setDocStatus(DOCSTATUS_Drafted);
-			setDocAction(DOCACTION_Complete);
-			setProcessed(false);
-		}
+			setInitialDefaults();
 	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+	    setDocStatus(DOCSTATUS_Drafted);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
+	}
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAssetReval(Properties ctx, ResultSet rs, String trxName)
 	{
        super (ctx, rs, trxName);
     }
 	
+	@Override
 	public boolean approveIt() 
 	{
 			return false;
 	}
 	
+	@Override
 	public boolean closeIt() {
 		setDocAction(DOCACTION_None);
 		return true;
 	}
 	
+	@Override
 	public String prepareIt()
 	{
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
@@ -109,7 +157,11 @@ implements DocAction
 			setDocAction(DOCACTION_Complete);
 		return DocAction.STATUS_InProgress;
 	}
-    //return true if is last record depreciated
+	
+    /**
+     * @param date
+     * @return true if date argument equals last recorded depreciation date
+     */
 	public boolean isLastDepreciated(Timestamp date)
 	{
 		MDepreciationWorkfile assetwk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType());
@@ -119,6 +171,7 @@ implements DocAction
 		
 	}
 	
+	@Override
 	public String completeIt() {
 
 		if (!m_justPrepared)
@@ -154,37 +207,43 @@ implements DocAction
 		return DocAction.STATUS_Completed;
 	}
 	
+	@Override
 	public File createPDF() 
 	{
 		return null;
 	}
 	
+	@Override
 	public BigDecimal getApprovalAmt() 
 	{
 		return Env.ZERO;
 	}
 	
+	@Override
 	public int getC_Currency_ID() 
 	{
 		return 0;
 	}
 	
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getCreatedBy();
 	}
 	
+	@Override
 	public String getDocumentInfo()
     {
 		return getDocumentNo() + "/" + getDateAcct();
 	}
 	
+	@Override
 	public String getProcessMsg() {
 		return m_processMsg;
 	}
 	private String m_processMsg = null;
 	
-	
+	@Override
 	public String getSummary() 
 	{
 		StringBuilder sb = new StringBuilder();
@@ -192,11 +251,13 @@ implements DocAction
 		return sb.toString();
 	}
 	
+	@Override
 	public boolean invalidateIt()
 	{
     	return false;
 	}
 	
+	@Override
 	public boolean processIt(String action) throws Exception
 	{
 			m_processMsg = null;
@@ -204,36 +265,43 @@ implements DocAction
 			return engine.processIt (action, getDocAction());
 	}
 	
-	
+	@Override
 	public boolean reActivateIt() 
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean rejectIt() 
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean reverseAccrualIt() 
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean reverseCorrectIt() 
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean unlockIt() 
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean voidIt() 
 	{		
 		return false;
 	}
+	
+	@Override
 	public String getDocumentNo() 
 	{
 		return null;

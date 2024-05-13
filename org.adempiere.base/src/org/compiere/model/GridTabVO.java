@@ -33,7 +33,7 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Util;
 
 /**
- *  Model Tab Value Object
+ *  Tab Model Value Object
  *
  *  @author Jorg Janke
  *  @version  $Id: GridTabVO.java,v 1.4 2006/07/30 00:58:38 jjanke Exp $
@@ -42,12 +42,12 @@ public class GridTabVO implements Evaluatee, Serializable
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8781340605954851838L;
 
-	/**************************************************************************
-	 *	Create MTab VO
+	/**
+	 *	Create GridTabVO VO
 	 *
 	 *  @param wVO value object
 	 *  @param TabNo tab no
@@ -59,7 +59,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	public static GridTabVO create (GridWindowVO wVO, int TabNo, ResultSet rs, 
 		boolean isRO, boolean onlyCurrentRows)
 	{
-		CLogger.get().config("#" + TabNo);
+		if (CLogger.get().isLoggable(Level.CONFIG))
+			CLogger.get().config("#" + TabNo);
 
 		GridTabVO vo = new GridTabVO (wVO.ctx, wVO.WindowNo);
 		vo.AD_Window_ID = wVO.AD_Window_ID;
@@ -70,7 +71,8 @@ public class GridTabVO implements Evaluatee, Serializable
 
 		if (isRO)
 		{
-			CLogger.get().fine("Tab is ReadOnly");
+			if (CLogger.get().isLoggable(Level.FINE))
+				CLogger.get().fine("Tab is ReadOnly");
 			vo.IsReadOnly = true;
 		}
 		vo.onlyCurrentRows = onlyCurrentRows;
@@ -132,25 +134,28 @@ public class GridTabVO implements Evaluatee, Serializable
 					showTrl = false;
 				if (!showTrl)
 				{
-					CLogger.get().config("TrlTab Not displayed - AD_Tab_ID=" 
-						+ vo.AD_Tab_ID + "=" + vo.Name + ", Table=" + vo.TableName
-						+ ", BaseTrl=" + Env.isBaseTranslation(vo.TableName)
-						+ ", MultiLingual=" + Env.isMultiLingualDocument(vo.ctx));
+					if (CLogger.get().isLoggable(Level.CONFIG))
+						CLogger.get().config("TrlTab Not displayed - AD_Tab_ID=" 
+							+ vo.AD_Tab_ID + "=" + vo.Name + ", Table=" + vo.TableName
+							+ ", BaseTrl=" + Env.isBaseTranslation(vo.TableName)
+							+ ", MultiLingual=" + Env.isMultiLingualDocument(vo.ctx));
 					return false;
 				}
 			}
 			//	Advanced Tab	**
 			if (!showAdvanced && rs.getString("IsAdvancedTab").equals("Y"))
 			{
-				CLogger.get().config("AdvancedTab Not displayed - AD_Tab_ID=" 
-					+ vo.AD_Tab_ID + " " + vo.Name);
+				if (CLogger.get().isLoggable(Level.CONFIG))
+					CLogger.get().config("AdvancedTab Not displayed - AD_Tab_ID=" 
+						+ vo.AD_Tab_ID + " " + vo.Name);
 				return false;
 			}
 			//	Accounting Info Tab	**
 			if (!showAcct && rs.getString("IsInfoTab").equals("Y"))
 			{
-				CLogger.get().fine("AcctTab Not displayed - AD_Tab_ID=" 
-					+ vo.AD_Tab_ID + " " + vo.Name);
+				if (CLogger.get().isLoggable(Level.FINE))
+					CLogger.get().fine("AcctTab Not displayed - AD_Tab_ID=" 
+						+ vo.AD_Tab_ID + " " + vo.Name);
 				return false;
 			}
 			
@@ -163,7 +168,8 @@ public class GridTabVO implements Evaluatee, Serializable
 			vo.AccessLevel = rs.getString("AccessLevel");
 			if (!role.canView (vo.ctx, vo.AccessLevel))	//	No Access
 			{
-				CLogger.get().fine("No Role Access - AD_Tab_ID=" + vo.AD_Tab_ID + " " + vo. Name);
+				if (CLogger.get().isLoggable(Level.FINE))
+					CLogger.get().fine("No Role Access - AD_Tab_ID=" + vo.AD_Tab_ID + " " + vo. Name);
 				return false;
 			}	//	Used by MField.getDefault
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AccessLevel, vo.AccessLevel);
@@ -173,8 +179,9 @@ public class GridTabVO implements Evaluatee, Serializable
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(vo.AD_Table_ID));
 			if (!role.isTableAccess(vo.AD_Table_ID, true))
 			{
-				CLogger.get().config("No Table Access - AD_Tab_ID=" 
-					+ vo.AD_Tab_ID + " " + vo. Name);
+				if (CLogger.get().isLoggable(Level.CONFIG))
+					CLogger.get().config("No Table Access - AD_Tab_ID=" 
+						+ vo.AD_Tab_ID + " " + vo. Name);
 				return false;
 			}
 			vo.AD_Table_UU = rs.getString("AD_Table_UU");
@@ -319,8 +326,8 @@ public class GridTabVO implements Evaluatee, Serializable
 
 	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 1000);
 	
-	/**************************************************************************
-	 *  Create Tab Fields
+	/**
+	 *  Create GridFieldVOs
 	 *  @param mTabVO tab value object
 	 *  @return true if fields were created
 	 */
@@ -385,7 +392,7 @@ public class GridTabVO implements Evaluatee, Serializable
 	}   //  createFields
 	
 	/**
-	 *  Return the SQL statement used for the MTabVO.create
+	 *  Get the SQL statement used for GridTabVO.create
 	 *  @param ctx context
 	 *  @return SQL SELECT String
 	 */
@@ -455,9 +462,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		}
 		return sql.toString();
 	}   //  getSQL
-	
-	
-	/**************************************************************************
+		
+	/**
 	 *  Private constructor - must use Factory
 	 *  @param Ctx context
 	 *  @param windowNo window
@@ -569,6 +575,9 @@ public class GridTabVO implements Evaluatee, Serializable
 	/** Delete Confirmation Logic of AD_Tab or AD_UserDef_Tab	 */
 	public String deleteConfirmationLogic = null;
 	
+	/**
+	 * @return GridFieldVOs
+	 */
 	public ArrayList<GridFieldVO> getFields()
 	{
 		if (!initFields) createFields(this);
@@ -593,9 +602,9 @@ public class GridTabVO implements Evaluatee, Serializable
 	}   //  setCtx
 	
 	/**
-	 * 	Get Variable Value (Evaluatee)
+	 * 	Get Variable Value (Evaluatee) as string
 	 *	@param variableName name
-	 *	@return value
+	 *	@return value as string
 	 */
 	public String get_ValueAsString (String variableName)
 	{
@@ -606,7 +615,7 @@ public class GridTabVO implements Evaluatee, Serializable
 	 * 	Clone
 	 * 	@param Ctx context
 	 * 	@param windowNo no
-	 *	@return MTabVO or null
+	 *	@return GridTabVO or null
 	 */
 	protected GridTabVO clone(Properties Ctx, int windowNo)
 	{
@@ -677,7 +686,7 @@ public class GridTabVO implements Evaluatee, Serializable
 	}	//	clone
 
 	/**
-	 * @return the initFields
+	 * @return true if fields have been created
 	 */
 	public boolean isInitFields() {
 		return initFields;

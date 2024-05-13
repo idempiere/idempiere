@@ -15,14 +15,14 @@ import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 
 /**
- * Info Related Value Object
+ * Related Info Value Object
  * @author Igor Pojzl, Cloudempiere
  * @version $Id$
  */
 public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3683704870522235708L;
 	
@@ -77,6 +77,9 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		this.afterCreate();		
 	}
 	
+	/**
+	 * Process user define customization
+	 */
 	public void afterCreate() {
 		InfoRelatedVO vo = this;
 		
@@ -125,34 +128,58 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		return infoRelatedVOList.toArray(new InfoRelatedVO[infoRelatedVOList.size()]);
 	}
 
+	/**
+	 * @return AD_InfoWindow_ID of related info window
+	 */
 	public int getRelatedInfo_ID() {
 		return infoRelated.getRelatedInfo_ID();
 	}
 
+	/**
+	 * @return link column name
+	 */
 	public String getLinkColumnName() {
 		return infoRelated.getLinkColumnName();
 	}
 
+	/**
+	 * @return parent related AD_InfoColumn_ID
+	 */
 	public int getParentRelatedColumn_ID() {
 		return infoRelated.getParentRelatedColumn_ID();
 	}
 
+	/**
+	 * @return related I_AD_InfoWindow
+	 */
 	public I_AD_InfoWindow getRelatedInfo() {
 		return infoRelated.getRelatedInfo();
 	}
 
+	/**
+	 * @return Link MInfoColumn
+	 */
 	public MInfoColumn getLinkInfoColumn() {
 		return infoRelated.getLinkInfoColumn();
 	}
 
+	/**
+	 * @return name
+	 */
 	public String getName() {
 		return Name;
 	}
 
+	/**
+	 * @return parent related I_AD_InfoColumn
+	 */
 	public I_AD_InfoColumn getParentRelatedColumn() {
 		return infoRelated.getParentRelatedColumn();
 	}
 	
+	/**
+	 * @return sequence number
+	 */
 	public int getSeqNo() {
 		return this.SeqNo;
 	}
@@ -173,11 +200,14 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		return (MInfoColumn) getParentRelatedColumn();
 	}
 
+	/**
+	 * @return display logic
+	 */
 	public String getDisplayLogic() {
 		return DisplayLogic;
 	}
 	
-	/**************************************************************************
+	/**
 	 *	Is the Related Window Visible ?
 	 *  @return true, if visible
 	 */
@@ -187,7 +217,7 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		if (Util.isEmpty(getDisplayLogic()))
 			return true;
 
-		if (getDisplayLogic().startsWith("@SQL=")) {
+		if (getDisplayLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			return Evaluator.parseSQLLogic(DisplayLogic, ctx, WindowNo, 0, infoRelated.toString());
 		}
 		Evaluatee evaluatee = new Evaluatee() {
@@ -201,12 +231,11 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		return retValue;
 
 	}	//	isDisplayed
-	
-	
+		
 	/**
-	 * 	Get Variable Value (Evaluatee)
+	 * 	Get Variable Value (Evaluatee) as string
 	 *	@param variableName name
-	 *	@return value
+	 *	@return value as string
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{

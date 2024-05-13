@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_RMA
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_RMA")
-public class X_M_RMA extends PO implements I_M_RMA, I_Persistent 
+public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_RMA (Properties ctx, int M_RMA_ID, String trxName)
@@ -83,6 +83,54 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_RMA (Properties ctx, String M_RMA_UU, String trxName)
+    {
+      super (ctx, M_RMA_UU, trxName);
+      /** if (M_RMA_UU == null)
+        {
+			setC_DocType_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setInOut_ID (0);
+			setIsApproved (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setM_RMA_ID (0);
+			setM_RMAType_ID (0);
+			setName (null);
+			setProcessed (false);
+			setSalesRep_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_RMA (Properties ctx, String M_RMA_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_RMA_UU, trxName, virtualColumns);
+      /** if (M_RMA_UU == null)
+        {
+			setC_DocType_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setInOut_ID (0);
+			setIsApproved (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setM_RMA_ID (0);
+			setM_RMAType_ID (0);
+			setName (null);
+			setProcessed (false);
+			setSalesRep_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_RMA (Properties ctx, ResultSet rs, String trxName)
     {
@@ -90,7 +138,7 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -399,7 +447,7 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -478,10 +526,10 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -501,10 +549,10 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -605,10 +653,10 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -627,10 +675,10 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

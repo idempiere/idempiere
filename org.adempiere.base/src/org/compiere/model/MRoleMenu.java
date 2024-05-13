@@ -24,19 +24,39 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
+@Deprecated
 public class MRoleMenu extends X_U_RoleMenu
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 9022716123964882452L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param U_RoleMenu_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRoleMenu(Properties ctx, String U_RoleMenu_UU, String trxName) {
+        super(ctx, U_RoleMenu_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param U_RoleMenu_ID
+     * @param trxName
+     */
 	public MRoleMenu(Properties ctx, int U_RoleMenu_ID, String trxName)
 	{
 		super(ctx, U_RoleMenu_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MRoleMenu(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DemandDetail
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_DemandDetail")
-public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persistent 
+public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_DemandDetail (Properties ctx, int M_DemandDetail_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_DemandDetail (Properties ctx, String M_DemandDetail_UU, String trxName)
+    {
+      super (ctx, M_DemandDetail_UU, trxName);
+      /** if (M_DemandDetail_UU == null)
+        {
+			setM_DemandDetail_ID (0);
+			setM_DemandLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DemandDetail (Properties ctx, String M_DemandDetail_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DemandDetail_UU, trxName, virtualColumns);
+      /** if (M_DemandDetail_UU == null)
+        {
+			setM_DemandDetail_ID (0);
+			setM_DemandLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_DemandDetail (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -136,7 +158,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_DemandDetail_ID()));
     }

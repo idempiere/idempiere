@@ -43,7 +43,7 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
- * Add UUID column (tableName_UU) to table and update existing records with new UUID.
+ * Add UUID column (tableName_UU) to table and update existing records with new UUID.<br/>
  * Warning: this process is only safe to run if it have exclusive access to database.
  * @author hengsin
  *
@@ -121,7 +121,7 @@ public class UUIDGenerator extends SvrProcess {
 					}
 					mColumn.setAD_Element_ID(AD_Element_ID);
 					mColumn.setColumnName(columnName);
-					mColumn.setAD_Reference_ID(DisplayType.String);
+					mColumn.setAD_Reference_ID(DisplayType.UUID);
 					mColumn.setEntityType("U");
 					mColumn.setFieldLength(36);
 					mColumn.setName(columnName);
@@ -173,6 +173,12 @@ public class UUIDGenerator extends SvrProcess {
 		return msgreturn.toString();
 	}
 
+	/**
+	 * Fill column with new uuid value (if it is null)
+	 * @param column
+	 * @param trxName
+	 * @return message
+	 */
 	public static String updateUUID(MColumn column, String trxName) {
 		MTable table = (MTable) column.getAD_Table();
 		if (table.getTableName().startsWith("T_")) {
@@ -273,6 +279,10 @@ public class UUIDGenerator extends SvrProcess {
 		return msg;
 	}
 
+	/**
+	 * sync column with DB
+	 * @param column
+	 */
 	private void syncColumn(MColumn column) {
 		//	Find Column in Database
 		Connection conn = null;

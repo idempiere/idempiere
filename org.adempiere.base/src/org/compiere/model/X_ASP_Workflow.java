@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_Workflow
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Workflow")
-public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent 
+public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_ASP_Workflow (Properties ctx, int ASP_Workflow_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_Workflow (Properties ctx, String ASP_Workflow_UU, String trxName)
+    {
+      super (ctx, ASP_Workflow_UU, trxName);
+      /** if (ASP_Workflow_UU == null)
+        {
+			setAD_Workflow_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Workflow (Properties ctx, String ASP_Workflow_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Workflow_UU, trxName, virtualColumns);
+      /** if (ASP_Workflow_UU == null)
+        {
+			setAD_Workflow_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_Workflow (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

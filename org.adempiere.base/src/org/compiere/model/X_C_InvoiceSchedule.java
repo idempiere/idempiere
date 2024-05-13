@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceSchedule
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceSchedule")
-public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Persistent 
+public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_InvoiceSchedule (Properties ctx, int C_InvoiceSchedule_ID, String trxName)
@@ -71,6 +71,42 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_InvoiceSchedule (Properties ctx, String C_InvoiceSchedule_UU, String trxName)
+    {
+      super (ctx, C_InvoiceSchedule_UU, trxName);
+      /** if (C_InvoiceSchedule_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_InvoiceSchedule_ID (0);
+			setInvoiceDay (0);
+// 1
+			setInvoiceFrequency (null);
+			setInvoiceWeekDay (null);
+			setIsAmount (false);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceSchedule (Properties ctx, String C_InvoiceSchedule_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceSchedule_UU, trxName, virtualColumns);
+      /** if (C_InvoiceSchedule_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_InvoiceSchedule_ID (0);
+			setInvoiceDay (0);
+// 1
+			setInvoiceFrequency (null);
+			setInvoiceWeekDay (null);
+			setIsAmount (false);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_InvoiceSchedule (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +114,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -185,10 +221,10 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	public boolean isEvenInvoiceWeek()
 	{
 		Object oo = get_Value(COLUMNNAME_EvenInvoiceWeek);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -339,10 +375,10 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	public boolean isAmount()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAmount);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -362,10 +398,10 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -390,7 +426,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

@@ -31,9 +31,19 @@ public class MAcctProcessorLog extends X_C_AcctProcessorLog
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3668544104375224987L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AcctProcessorLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAcctProcessorLog(Properties ctx, String C_AcctProcessorLog_UU, String trxName) {
+        super(ctx, C_AcctProcessorLog_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

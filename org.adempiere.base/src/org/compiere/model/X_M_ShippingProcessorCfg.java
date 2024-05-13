@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShippingProcessorCfg
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingProcessorCfg")
-public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcessorCfg, I_Persistent 
+public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcessorCfg, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ShippingProcessorCfg (Properties ctx, String M_ShippingProcessorCfg_UU, String trxName)
+    {
+      super (ctx, M_ShippingProcessorCfg_UU, trxName);
+      /** if (M_ShippingProcessorCfg_UU == null)
+        {
+			setHostAddress (null);
+			setHostPort (0);
+			setM_ShippingProcessorCfg_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShippingProcessorCfg (Properties ctx, String M_ShippingProcessorCfg_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShippingProcessorCfg_UU, trxName, virtualColumns);
+      /** if (M_ShippingProcessorCfg_UU == null)
+        {
+			setHostAddress (null);
+			setHostPort (0);
+			setM_ShippingProcessorCfg_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ShippingProcessorCfg (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -193,7 +219,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

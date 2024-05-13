@@ -202,7 +202,7 @@ public class POInfo implements Serializable
 				//
 				m_AccessLevel = rs.getString(18);
 				String ColumnSQL = rs.getString(19);
-				if (ColumnSQL != null && ColumnSQL.length() > 0 && (ColumnSQL.startsWith("@SQL=") || ColumnSQL.startsWith("@SQLFIND=")))
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && (ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX)))
 					ColumnSQL = "NULL";
 				if (ColumnSQL != null && ColumnSQL.contains("@"))
 					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
@@ -381,7 +381,7 @@ public class POInfo implements Serializable
 		if (index < 0 || index >= m_columns.length)
 			return null;
 		if (m_columns[index].ColumnSQL != null && m_columns[index].ColumnSQL.length() > 0) {
-			if (m_columns[index].ColumnSQL.startsWith("@SQL=") || m_columns[index].ColumnSQL.startsWith("@SQLFIND="))
+			if (m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX))
 				return "NULL AS " + m_columns[index].ColumnName;
 			return m_columns[index].ColumnSQL + " AS " + m_columns[index].ColumnName;
 		}
@@ -412,7 +412,7 @@ public class POInfo implements Serializable
 			return true;
 		return m_columns[index].ColumnSQL != null 
 			&& m_columns[index].ColumnSQL.length() > 0
-			&& !m_columns[index].ColumnSQL.startsWith("@SQL=");
+			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}   //  isVirtualDBColumn
 
 	/**
@@ -426,7 +426,7 @@ public class POInfo implements Serializable
 			return true;
 		return m_columns[index].ColumnSQL != null 
 			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith("@SQL=");
+			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}   //  isVirtualUIColumn
 	
 	/**
@@ -440,7 +440,7 @@ public class POInfo implements Serializable
 			return true;
 		return m_columns[index].ColumnSQL != null 
 			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith("@SQLFIND=");
+			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualSearchColumn
 
 	/**
@@ -657,6 +657,17 @@ public class POInfo implements Serializable
 		return m_columns[index].IsEncrypted;
 	}   //  isEncrypted
 
+	/**
+	 * @param index
+	 * @return true if column is secure
+	 */
+	public boolean isSecure(int index)
+	{
+		if (index < 0 || index >= m_columns.length)
+			return false;
+		return MColumn.get(m_columns[index].AD_Column_ID).isSecure();
+	}
+	
 	/**
 	 * Is allowed logging on this column
 	 * 

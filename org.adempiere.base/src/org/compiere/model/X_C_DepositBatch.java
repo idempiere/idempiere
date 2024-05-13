@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatch
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatch")
-public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent 
+public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
@@ -78,6 +78,48 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_DepositBatch (Properties ctx, String C_DepositBatch_UU, String trxName)
+    {
+      super (ctx, C_DepositBatch_UU, trxName);
+      /** if (C_DepositBatch_UU == null)
+        {
+			setC_BankAccount_ID (0);
+			setC_DepositBatch_ID (0);
+			setC_DocType_ID (0);
+			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDepositAmt (Env.ZERO);
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DepositBatch (Properties ctx, String C_DepositBatch_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DepositBatch_UU, trxName, virtualColumns);
+      /** if (C_DepositBatch_UU == null)
+        {
+			setC_BankAccount_ID (0);
+			setC_DepositBatch_ID (0);
+			setC_DocType_ID (0);
+			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDepositAmt (Env.ZERO);
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_DepositBatch (Properties ctx, ResultSet rs, String trxName)
     {
@@ -85,7 +127,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -341,7 +383,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -360,10 +402,10 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -382,10 +424,10 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

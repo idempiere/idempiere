@@ -22,12 +22,15 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
- *	Role Org Access Model
+ *	Role Organization Access Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MRoleOrgAccess.java,v 1.3 2006/07/30 00:58:38 jjanke Exp $
@@ -37,14 +40,13 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4664267788838719168L;
-
+	private static final long serialVersionUID = -3476937107774004286L;
 
 	/**
 	 * 	Get Organizational Access of Role
 	 *	@param ctx context
 	 *	@param AD_Role_ID role
-	 *	@return array of Role Org Access
+	 *	@return array of Role Organization Access
 	 */
 	public static MRoleOrgAccess[] getOfRole (Properties ctx, int AD_Role_ID)
 	{
@@ -55,7 +57,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	 * 	Get Organizational Access of Client
 	 *	@param ctx context
 	 *	@param AD_Client_ID client
-	 *	@return array of Role Org Access
+	 *	@return array of Role Organization Access
 	 */
 	public static MRoleOrgAccess[] getOfClient (Properties ctx, int AD_Client_ID)
 	{
@@ -63,10 +65,10 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	}	//	getOfClient
 
 	/**
-	 * 	Get Organizational Access of Org
+	 * 	Get Organizational Access of Organization
 	 *	@param ctx context
-	 *	@param AD_Org_ID role
-	 *	@return array of Role Org Access
+	 *	@param AD_Org_ID organization
+	 *	@return array of Role Organization Access
 	 */
 	public static MRoleOrgAccess[] getOfOrg (Properties ctx, int AD_Org_ID)
 	{
@@ -74,11 +76,11 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	}	//	getOfOrg
 	
 	/**
-	 * 	Get Organizational Info
+	 * 	Get Organizational Access for Role
 	 *	@param ctx context
-	 *	@param sql sql command
-	 *	@param id id
-	 *	@return array of Role Org Access
+	 *	@param sql SQL select clause
+	 *	@param id id parameter for SQL clause
+	 *	@return array of Role Organization Access
 	 */
 	private static MRoleOrgAccess[] get (Properties ctx, String sql, int id)
 	{
@@ -109,8 +111,8 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	}	//	get
 	
 	/**
-	 * 	Create Organizational Access for all Automatic Roles
-	 *	@param org org
+	 * 	Create Organizational Access for all Automatic Roles (IsManual=N)
+	 *	@param org organization
 	 *	@return true if created
 	 */
 	public static boolean createForOrg (MOrg org)
@@ -132,9 +134,8 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MRoleOrgAccess.class);
-
 	
-	/**************************************************************************
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -145,8 +146,19 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 		super(ctx, rs, trxName);
 	}	//	MRoleOrgAccess
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Role_OrgAccess_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRoleOrgAccess(Properties ctx, String AD_Role_OrgAccess_UU, String trxName) {
+        super(ctx, AD_Role_OrgAccess_UU, trxName);
+		if (Util.isEmpty(AD_Role_OrgAccess_UU))
+			setInitialDefaults();
+    }
+
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -156,12 +168,19 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
-		setIsReadOnly(false);
+		setInitialDefaults();
 	}	//	MRoleOrgAccess
 	
 	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsReadOnly(false);
+	}
+
+	/**
 	 * 	Organization Constructor
-	 *	@param org org
+	 *	@param org organization
 	 *	@param AD_Role_ID role
 	 */
 	public MRoleOrgAccess (MOrg org, int AD_Role_ID)
@@ -174,7 +193,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	/**
 	 * 	Role Constructor
 	 *	@param role role
-	 *	@param AD_Org_ID org
+	 *	@param AD_Org_ID organization
 	 */
 	public MRoleOrgAccess (MRole role, int AD_Org_ID)
 	{
@@ -187,6 +206,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MRoleOrgAccess[");
@@ -197,9 +217,8 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 		sb.append("]");
 		return sb.toString();
 	}	//	toString
-
 	
-	/**************************************************************************
+	/**
 	 * 	Extended String Representation
 	 * 	@param ctx context
 	 *	@return extended info
@@ -217,7 +236,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	
 	/**
 	 * 	Get Client Name
-	 *	@return name
+	 *	@return client name
 	 */
 	public String getClientName()
 	{
@@ -254,8 +273,8 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	}	//	getClientName
 	
 	/**
-	 * 	Get Client Name
-	 *	@return name
+	 * 	Get organization Name
+	 *	@return organization name
 	 */
 	public String getOrgName()
 	{
@@ -263,5 +282,30 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 			getClientName();
 		return m_orgName;
 	}	//	getOrgName
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MRoleOrgAccess

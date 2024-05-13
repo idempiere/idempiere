@@ -18,22 +18,41 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /**
- * 
+ * Online transaction history model
  * @author Elaine
  *
  */
 public class MOnlineTrxHistory extends X_C_OnlineTrxHistory {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2160888813932490117L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_OnlineTrxHistory_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOnlineTrxHistory(Properties ctx, String C_OnlineTrxHistory_UU, String trxName) {
+        super(ctx, C_OnlineTrxHistory_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param C_OnlineTrxHistory_ID
+     * @param trxName
+     */
 	public MOnlineTrxHistory(Properties ctx, int C_OnlineTrxHistory_ID, String trxName)
 	{
 		super(ctx, C_OnlineTrxHistory_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MOnlineTrxHistory(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);

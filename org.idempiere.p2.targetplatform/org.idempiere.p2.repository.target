@@ -43,8 +43,8 @@
 		<plugin id="com.sun.mail.jakarta.mail"/>
 		<plugin id="com.sun.xml.bind.external.relaxng-datatype"/>
 		<plugin id="com.sun.xml.bind.jaxb-impl"/>
-		<plugin id="com.sun.xml.fastinfoset.FastInfoset" version="2.0.0"/>
 		<plugin id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
+		<plugin id="com.sun.xml.fastinfoset.FastInfoset" version="2.0.0"/>
 		<plugin id="com.sun.xml.messaging.saaj.impl"/>
 		<plugin id="com.sun.xml.stream.buffer.streambuffer"/>
 		<plugin id="com.sun.xml.ws.jaxws-rt"/>
@@ -133,7 +133,7 @@
 		<plugin id="org.apache.xalan"/>
 		<plugin id="org.apache.xml.resolver"/>
 		<plugin id="org.apache.xml.serializer"/>
-		<plugin id="org.apiguardian"/>
+		<plugin id="org.apiguardian.api"/>
 		<plugin id="org.atmosphere.runtime"/>
 		<plugin id="org.codehaus.jettison.jettison"/>
 		<plugin id="org.cryptacular"/>
@@ -255,17 +255,18 @@
 		<plugin id="org.glassfish.pfl.pfl-tf"/>
 		<plugin id="org.hamcrest.core"/>
 		<plugin id="org.junit"/>
-		<plugin id="org.junit.jupiter.api"/>
-		<plugin id="org.junit.jupiter.engine"/>
-		<plugin id="org.junit.jupiter.migrationsupport"/>
-		<plugin id="org.junit.jupiter.params"/>
-		<plugin id="org.junit.platform.commons"/>
-		<plugin id="org.junit.platform.engine"/>
-		<plugin id="org.junit.platform.launcher"/>
-		<plugin id="org.junit.platform.runner"/>
-		<plugin id="org.junit.platform.suite.api"/>
-		<plugin id="org.junit.platform.suite.commons"/>
-		<plugin id="org.junit.vintage.engine"/>
+		<plugin id="junit-jupiter-api"/>
+		<plugin id="junit-jupiter-engine"/>
+		<plugin id="junit-jupiter-migrationsupport"/>
+		<plugin id="junit-jupiter-params"/>
+		<plugin id="junit-platform-commons"/>
+		<plugin id="junit-platform-engine"/>
+		<plugin id="junit-platform-launcher"/>
+		<plugin id="junit-platform-runner"/>
+		<plugin id="junit-platform-suite-api"/>
+		<plugin id="junit-platform-suite-commons"/>
+		<plugin id="junit-platform-suite-engine"/>
+		<plugin id="junit-vintage-engine"/>
 		<plugin id="org.jvnet.mimepull"/>
 		<plugin id="org.jvnet.staxex.stax-ex"/>
 		<plugin id="org.krysalis.barcode4j"/>
@@ -287,7 +288,7 @@
 		<plugin id="org.w3c.dom.svg"/>
 		<plugin id="org.zkoss.zsoup"/>
 		<plugin id="slf4j.api"/>
-		<plugin id="slf4j.jcl"/>
+		<plugin id="slf4j.jdk14"/>
 		<plugin id="stax2-api"/>
 		<plugin id="wrapped.com.google.http-client.google-http-client-gson"/>
 		<plugin id="wrapped.com.google.zxing.javase"/>
@@ -337,5 +338,33 @@
 		<plugin id="org.apache.httpcomponents.core5.httpcore5"/>
 		<plugin id="org.apache.httpcomponents.core5.httpcore5-h2"/>
 		<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient5"/>
+		<plugin id="assertj-core"/>
+		<plugin id="org.eclipse.jdt.core.compiler.batch"/>
+		<plugin id="org.osgi.annotation.bundle"/>
+		<plugin id="org.osgi.annotation.versioning"/>
+		<plugin id="org.osgi.service.cm"/>
+		<plugin id="org.osgi.service.component.annotations"/>
+		<plugin id="org.osgi.service.component"/>
+		<plugin id="org.osgi.service.coordinator"/>
+		<plugin id="org.osgi.service.device"/>
+		<plugin id="org.osgi.service.event"/>
+		<plugin id="org.osgi.service.log.stream"/>
+		<plugin id="org.osgi.service.metatype.annotations"/>
+		<plugin id="org.osgi.service.metatype"/>
+		<plugin id="org.osgi.service.prefs"/>
+		<plugin id="org.osgi.service.provisioning"/>
+		<plugin id="org.osgi.service.upnp"/>
+		<plugin id="org.osgi.service.useradmin"/>
+		<plugin id="org.osgi.service.wireadmin"/>
+		<plugin id="org.osgi.util.function"/>
+		<plugin id="org.osgi.util.measurement"/>
+		<plugin id="org.osgi.util.position"/>
+		<plugin id="org.osgi.util.promise"/>
+		<plugin id="org.osgi.util.pushstream"/>
+		<plugin id="org.osgi.util.tracker"/>
+		<plugin id="org.osgi.util.xml"/>
+		<plugin id="com.zaxxer.HikariCP"/>
+		<plugin id="org.postgresql.jdbc"/>
+		<plugin id="wrapped.com.oracle.database.jdbc.ojdbc10"/>
 	</includeBundles>
 </target>

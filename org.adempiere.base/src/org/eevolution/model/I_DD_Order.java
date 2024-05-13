@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_Order
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_DD_Order 

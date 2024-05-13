@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectIssue
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssue")
-public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persistent 
+public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName)
@@ -90,6 +90,60 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ProjectIssue (Properties ctx, String C_ProjectIssue_UU, String trxName)
+    {
+      super (ctx, C_ProjectIssue_UU, trxName);
+      /** if (C_ProjectIssue_UU == null)
+        {
+			setC_Project_ID (0);
+			setC_ProjectIssue_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setIsApproved (false);
+// N
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_ProjectIssue WHERE C_Project_ID=@C_Project_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setPosted (false);
+// N
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectIssue (Properties ctx, String C_ProjectIssue_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectIssue_UU, trxName, virtualColumns);
+      /** if (C_ProjectIssue_UU == null)
+        {
+			setC_Project_ID (0);
+			setC_ProjectIssue_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setIsApproved (false);
+// N
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_ProjectIssue WHERE C_Project_ID=@C_Project_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setPosted (false);
+// N
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ProjectIssue (Properties ctx, ResultSet rs, String trxName)
     {
@@ -97,7 +151,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -149,7 +203,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Project_ID()));
     }
@@ -311,10 +365,10 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -500,10 +554,10 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -523,10 +577,10 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -564,10 +618,10 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

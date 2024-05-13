@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -126,6 +127,18 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 	
 	/**	Cache					*/
 	protected static ImmutableIntPOCache<Integer,MWarehouse> s_cache = new ImmutableIntPOCache<Integer,MWarehouse>(Table_Name, 50 );	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Warehouse_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWarehouse(Properties ctx, String M_Warehouse_UU, String trxName) {
+        super(ctx, M_Warehouse_UU, trxName);
+		if (Util.isEmpty(M_Warehouse_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -136,10 +149,15 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 	{
 		super(ctx, M_Warehouse_ID, trxName);
 		if (M_Warehouse_ID == 0)
-		{
-			setSeparator ("*");	// *
-		}
+			setInitialDefaults();
 	}	//	MWarehouse
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setSeparator ("*");	// *
+	}
 
 	/**
 	 * 	Load Constructor

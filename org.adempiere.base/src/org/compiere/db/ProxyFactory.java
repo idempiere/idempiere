@@ -21,7 +21,6 @@ import org.compiere.util.CStatement;
 import org.compiere.util.CStatementVO;
 
 /**
- * 
  * Factory class to instantiate dynamic proxy for CStatement, CPreparedStatement and CCallableStatement
  * @author Low Heng Sin
  *
@@ -29,11 +28,10 @@ import org.compiere.util.CStatementVO;
 public class ProxyFactory {
 	
 	/**
-	 * 
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param trxName
-	 * @return CStatement proxy
+	 * @return new CStatement proxy instance
 	 */
 	public static CStatement newCStatement(int resultSetType,
 			int resultSetConcurrency, String trxName) {
@@ -43,12 +41,11 @@ public class ProxyFactory {
 	}
 	
 	/**
-	 * 
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param sql
 	 * @param trxName
-	 * @return CPreparedStatement proxy
+	 * @return new CPreparedStatement proxy instance
 	 */
 	public static CPreparedStatement newCPreparedStatement(int resultSetType,
 			int resultSetConcurrency, String sql, String trxName) {
@@ -58,12 +55,11 @@ public class ProxyFactory {
 	}
 
 	/**
-	 * 
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param sql
-	 * @param trxName
-	 * @return CPreparedStatement proxy
+	 * @param connection
+	 * @return new CPreparedStatement proxy instance
 	 */
 	public static CPreparedStatement newCPreparedStatement(int resultSetType,
 			int resultSetConcurrency, String sql, Connection connection) {
@@ -73,12 +69,11 @@ public class ProxyFactory {
 	}
 	
 	/**
-	 * 
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param sql
 	 * @param trxName
-	 * @return CCallableStatement proxy
+	 * @return new CCallableStatement proxy instance
 	 */
 	public static CCallableStatement newCCallableStatement(int resultSetType,
 			int resultSetConcurrency, String sql, String trxName) {
@@ -88,9 +83,8 @@ public class ProxyFactory {
 	}
 
 	/**
-	 * 
 	 * @param info
-	 * @return CStatement proxy
+	 * @return new CStatement proxy instance
 	 */
 	public static CStatement newCStatement(CStatementVO info) {
 		return (CStatement)Proxy.newProxyInstance(CStatement.class.getClassLoader(), 
@@ -99,9 +93,8 @@ public class ProxyFactory {
 	}
 	
 	/**
-	 * 
 	 * @param info
-	 * @return CPreparedStatement proxy
+	 * @return new CPreparedStatement proxy instance
 	 */
 	public static CPreparedStatement newCPreparedStatement(CStatementVO info) {
 		return (CPreparedStatement)Proxy.newProxyInstance(CPreparedStatement.class.getClassLoader(), 
@@ -110,9 +103,8 @@ public class ProxyFactory {
 	}
 	
 	/**
-	 * 
 	 * @param info
-	 * @return CCallableStatement proxy
+	 * @return new CCallableStatement proxy instance
 	 */
 	public static CCallableStatement newCCallableStatement(CStatementVO info) {
 		return (CCallableStatement)Proxy.newProxyInstance(CCallableStatement.class.getClassLoader(), 
@@ -125,7 +117,7 @@ public class ProxyFactory {
 	 * @param resultSetType
 	 * @param resultSetConcurrency
 	 * @param sql
-	 * @return {@link CPreparedStatement}
+	 * @return new {@link CPreparedStatement} proxy instance
 	 */
 	public static CPreparedStatement newReadReplicaPreparedStatement(int resultSetType, int resultSetConcurrency, String sql) {
 		ReadReplicaPreparedStatementProxy handler = new ReadReplicaPreparedStatementProxy(resultSetType, resultSetConcurrency, sql);

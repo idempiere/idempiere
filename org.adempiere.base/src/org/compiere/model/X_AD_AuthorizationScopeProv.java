@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_AuthorizationScopeProv
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationScopeProv")
-public class X_AD_AuthorizationScopeProv extends PO implements I_AD_AuthorizationScopeProv, I_Persistent 
+public class X_AD_AuthorizationScopeProv extends PO implements I_AD_AuthorizationScopeProv, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationScopeProv (Properties ctx, int AD_AuthorizationScopeProv_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_AuthorizationScopeProv (Properties ctx, String AD_AuthorizationScopeProv_UU, String trxName)
+    {
+      super (ctx, AD_AuthorizationScopeProv_UU, trxName);
+      /** if (AD_AuthorizationScopeProv_UU == null)
+        {
+			setAD_AuthorizationScope (null);
+			setAD_AuthorizationScopeProv_ID (0);
+			setScopeURL (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AuthorizationScopeProv (Properties ctx, String AD_AuthorizationScopeProv_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AuthorizationScopeProv_UU, trxName, virtualColumns);
+      /** if (AD_AuthorizationScopeProv_UU == null)
+        {
+			setAD_AuthorizationScope (null);
+			setAD_AuthorizationScopeProv_ID (0);
+			setScopeURL (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_AuthorizationScopeProv (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservationLog
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservationLog")
-public class X_M_StorageReservationLog extends PO implements I_M_StorageReservationLog, I_Persistent 
+public class X_M_StorageReservationLog extends PO implements I_M_StorageReservationLog, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName)
@@ -74,6 +74,46 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_StorageReservationLog (Properties ctx, String M_StorageReservationLog_UU, String trxName)
+    {
+      super (ctx, M_StorageReservationLog_UU, trxName);
+      /** if (M_StorageReservationLog_UU == null)
+        {
+			setAD_Table_ID (0);
+			setDeltaQty (Env.ZERO);
+			setIsSOTrx (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_StorageReservationLog_ID (0);
+			setM_StorageReservationLog_UU (null);
+			setM_Warehouse_ID (0);
+			setNewQty (Env.ZERO);
+			setOldQty (Env.ZERO);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_StorageReservationLog (Properties ctx, String M_StorageReservationLog_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_StorageReservationLog_UU, trxName, virtualColumns);
+      /** if (M_StorageReservationLog_UU == null)
+        {
+			setAD_Table_ID (0);
+			setDeltaQty (Env.ZERO);
+			setIsSOTrx (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_StorageReservationLog_ID (0);
+			setM_StorageReservationLog_UU (null);
+			setM_Warehouse_ID (0);
+			setNewQty (Env.ZERO);
+			setOldQty (Env.ZERO);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_StorageReservationLog (Properties ctx, ResultSet rs, String trxName)
     {
@@ -81,7 +121,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -207,10 +247,10 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

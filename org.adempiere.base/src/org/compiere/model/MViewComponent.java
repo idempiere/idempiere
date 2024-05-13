@@ -33,6 +33,16 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 	 */
 	private static final long serialVersionUID = 1580063310233871896L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ViewComponent_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MViewComponent(Properties ctx, String AD_ViewComponent_UU, String trxName) {
+        super(ctx, AD_ViewComponent_UU, trxName);
+    }
+
 	/**
 	 * Standard constructor
 	 * @param ctx context

@@ -19,12 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -37,11 +40,12 @@ import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.South;
 
 /**
  *	WorkFlow Panel
@@ -53,9 +57,13 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8777798080154603970L;
+	private static final long serialVersionUID = 3748544216557474367L;
 
-
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	/**
 	 * 	Create Workflow Panel
 	 */
@@ -71,6 +79,9 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 			log.log(Level.SEVERE, "WFPanel", e);
 		}
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);	// for closing the window with shortcut
+		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+		addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 	}	//	WFPanel
 
 	/**	Window No			*/
@@ -111,7 +122,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		this.appendChild(center);
 		createTable();
 		center.appendChild(table);
-		contentPanel.setStyle("width: 100%; heigh: 100%;");
+		contentPanel.setStyle("width: 100%; height: 100%;");
 		center.setAutoscroll(true);
 		
 		South south = new South();
@@ -274,8 +285,21 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 				}
 			}
 		}
-		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
+		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, m_wf.getAD_Workflow_ID());
+		}
+		else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+        	if (LayoutUtils.isReallyVisible(this))
+	        	this.onCtrlKeyEvent(keyEvent);
+		}
+		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
 	}
 
 	private void start(MWFNode wfn) {
@@ -295,4 +319,15 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		}
 	}
 
+	/**
+	 * Handle shortcut key event
+	 * @param keyEvent
+	 */
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
+		}
+	}
 }	//	WFPanel

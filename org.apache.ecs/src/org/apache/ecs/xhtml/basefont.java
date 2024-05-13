@@ -110,7 +110,7 @@ public class basefont extends SinglePartElement implements Printable
 
         @param  color
 
-        Create a new BaseFont object with the face abd color already set. Convience colors are defined in HtmlColor interface.
+        Create a new BaseFont object with the face abd color already set. Convenience colors are defined in HtmlColor interface.
 
     */
 
@@ -136,7 +136,7 @@ public class basefont extends SinglePartElement implements Printable
 
         @param  size
 
-        Create a new basefont object with the face,color and size already set. Convience colors are defined in HtmlColor interface.
+        Create a new basefont object with the face,color and size already set. Convenience colors are defined in HtmlColor interface.
 
     */
 
@@ -224,7 +224,7 @@ public class basefont extends SinglePartElement implements Printable
 
         sets the color="" attribute.
 
-        @param  color sets the color="" attribute. Convience colors are defined in the HtmlColors interface.
+        @param  color sets the color="" attribute. Convenience colors are defined in the HtmlColors interface.
 
     */
 

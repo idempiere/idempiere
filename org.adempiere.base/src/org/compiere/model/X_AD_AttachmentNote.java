@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AttachmentNote
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_AttachmentNote")
-public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Persistent 
+public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_AttachmentNote (Properties ctx, String AD_AttachmentNote_UU, String trxName)
+    {
+      super (ctx, AD_AttachmentNote_UU, trxName);
+      /** if (AD_AttachmentNote_UU == null)
+        {
+			setAD_Attachment_ID (0);
+			setAD_AttachmentNote_ID (0);
+			setAD_User_ID (0);
+			setTextMsg (null);
+			setTitle (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AttachmentNote (Properties ctx, String AD_AttachmentNote_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AttachmentNote_UU, trxName, virtualColumns);
+      /** if (AD_AttachmentNote_UU == null)
+        {
+			setAD_Attachment_ID (0);
+			setAD_AttachmentNote_ID (0);
+			setAD_User_ID (0);
+			setTextMsg (null);
+			setTitle (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_AttachmentNote (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -217,7 +245,7 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getTitle());
     }

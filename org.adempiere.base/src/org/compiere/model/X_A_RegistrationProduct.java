@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for A_RegistrationProduct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationProduct")
-public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProduct, I_Persistent 
+public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProduct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_RegistrationProduct (Properties ctx, int A_RegistrationProduct_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_RegistrationProduct (Properties ctx, String A_RegistrationProduct_UU, String trxName)
+    {
+      super (ctx, A_RegistrationProduct_UU, trxName);
+      /** if (A_RegistrationProduct_UU == null)
+        {
+			setA_RegistrationAttribute_ID (0);
+			setM_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_RegistrationProduct (Properties ctx, String A_RegistrationProduct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_RegistrationProduct_UU, trxName, virtualColumns);
+      /** if (A_RegistrationProduct_UU == null)
+        {
+			setA_RegistrationAttribute_ID (0);
+			setM_Product_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_RegistrationProduct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_A_RegistrationProduct[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

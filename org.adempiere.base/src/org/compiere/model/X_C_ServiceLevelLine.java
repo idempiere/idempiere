@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevelLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ServiceLevelLine")
-public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_Persistent 
+public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ServiceLevelLine (Properties ctx, int C_ServiceLevelLine_ID, String trxName)
@@ -62,6 +62,32 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ServiceLevelLine (Properties ctx, String C_ServiceLevelLine_UU, String trxName)
+    {
+      super (ctx, C_ServiceLevelLine_UU, trxName);
+      /** if (C_ServiceLevelLine_UU == null)
+        {
+			setC_ServiceLevel_ID (0);
+			setC_ServiceLevelLine_ID (0);
+			setServiceDate (new Timestamp( System.currentTimeMillis() ));
+			setServiceLevelProvided (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ServiceLevelLine (Properties ctx, String C_ServiceLevelLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ServiceLevelLine_UU, trxName, virtualColumns);
+      /** if (C_ServiceLevelLine_UU == null)
+        {
+			setC_ServiceLevel_ID (0);
+			setC_ServiceLevelLine_ID (0);
+			setServiceDate (new Timestamp( System.currentTimeMillis() ));
+			setServiceLevelProvided (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ServiceLevelLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +95,7 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -185,10 +211,10 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -213,7 +239,7 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getServiceDate()));
     }

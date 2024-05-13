@@ -29,15 +29,26 @@ import java.util.Properties;
 public class MReplicationRun extends X_AD_Replication_Run
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7609847179225634980L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Replication_Run_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReplicationRun(Properties ctx, String AD_Replication_Run_UU, String trxName) {
+        super(ctx, AD_Replication_Run_UU, trxName);
+    }
+
 	/**
-	 * 	Create new Run
+	 * 	Create new Replication Run
 	 *	@param ctx context
 	 *	@param AD_Replication_ID id
 	 *	@param dateRun date
+	 *  @param trxName
 	 */
 	public MReplicationRun (Properties ctx, int AD_Replication_ID, Timestamp dateRun, String trxName)
 	{
@@ -47,6 +58,11 @@ public class MReplicationRun extends X_AD_Replication_Run
 		super.setIsReplicated (false);
 	}	//	MReplicationRun
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReplicationRun (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
@@ -56,6 +72,7 @@ public class MReplicationRun extends X_AD_Replication_Run
 	 * 	Set Replication Flag
 	 * 	@param IsReplicated replicated
 	 */
+	@Override
 	public void setIsReplicated (boolean IsReplicated)
 	{
 		super.setIsReplicated(IsReplicated);

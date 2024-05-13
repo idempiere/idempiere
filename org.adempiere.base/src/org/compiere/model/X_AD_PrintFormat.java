@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormat
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintFormat")
-public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persistent 
+public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -85,6 +85,58 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PrintFormat (Properties ctx, String AD_PrintFormat_UU, String trxName)
+    {
+      super (ctx, AD_PrintFormat_UU, trxName);
+      /** if (AD_PrintFormat_UU == null)
+        {
+			setAD_PrintColor_ID (0);
+			setAD_PrintFont_ID (0);
+			setAD_PrintFormat_ID (0);
+// 0
+			setAD_PrintPaper_ID (0);
+			setAD_Table_ID (0);
+			setFooterMargin (0);
+			setHeaderMargin (0);
+			setIsBreakPagePerRecord (false);
+// N
+			setIsDefault (false);
+			setIsForm (false);
+			setIsStandardHeaderFooter (true);
+// Y
+			setIsTableBased (true);
+// Y
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintFormat (Properties ctx, String AD_PrintFormat_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintFormat_UU, trxName, virtualColumns);
+      /** if (AD_PrintFormat_UU == null)
+        {
+			setAD_PrintColor_ID (0);
+			setAD_PrintFont_ID (0);
+			setAD_PrintFormat_ID (0);
+// 0
+			setAD_PrintPaper_ID (0);
+			setAD_Table_ID (0);
+			setFooterMargin (0);
+			setHeaderMargin (0);
+			setIsBreakPagePerRecord (false);
+// N
+			setIsDefault (false);
+			setIsForm (false);
+			setIsStandardHeaderFooter (true);
+// Y
+			setIsTableBased (true);
+// Y
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PrintFormat (Properties ctx, ResultSet rs, String trxName)
     {
@@ -92,7 +144,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -471,10 +523,10 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public boolean isBreakPagePerRecord()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBreakPagePerRecord);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -494,10 +546,10 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -517,10 +569,10 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public boolean isForm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsForm);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -540,10 +592,10 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public boolean isStandardHeaderFooter()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStandardHeaderFooter);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -563,10 +615,10 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public boolean isTableBased()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTableBased);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -619,7 +671,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

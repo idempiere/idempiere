@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Hierarchy
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_Hierarchy")
-public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent 
+public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_Hierarchy (Properties ctx, int PA_Hierarchy_ID, String trxName)
@@ -71,6 +71,44 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_Hierarchy (Properties ctx, String PA_Hierarchy_UU, String trxName)
+    {
+      super (ctx, PA_Hierarchy_UU, trxName);
+      /** if (PA_Hierarchy_UU == null)
+        {
+			setAD_Tree_Account_ID (0);
+			setAD_Tree_Activity_ID (0);
+			setAD_Tree_BPartner_ID (0);
+			setAD_Tree_Campaign_ID (0);
+			setAD_Tree_Org_ID (0);
+			setAD_Tree_Product_ID (0);
+			setAD_Tree_Project_ID (0);
+			setAD_Tree_SalesRegion_ID (0);
+			setName (null);
+			setPA_Hierarchy_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Hierarchy (Properties ctx, String PA_Hierarchy_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Hierarchy_UU, trxName, virtualColumns);
+      /** if (PA_Hierarchy_UU == null)
+        {
+			setAD_Tree_Account_ID (0);
+			setAD_Tree_Activity_ID (0);
+			setAD_Tree_BPartner_ID (0);
+			setAD_Tree_Campaign_ID (0);
+			setAD_Tree_Org_ID (0);
+			setAD_Tree_Product_ID (0);
+			setAD_Tree_Project_ID (0);
+			setAD_Tree_SalesRegion_ID (0);
+			setName (null);
+			setPA_Hierarchy_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_Hierarchy (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +116,7 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -374,7 +412,7 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

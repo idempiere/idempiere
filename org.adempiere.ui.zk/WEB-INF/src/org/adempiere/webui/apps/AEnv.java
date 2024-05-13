@@ -177,6 +177,26 @@ public final class AEnv
 	}	//	zoom
 
 	/*************************************************************************
+	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
+	 *	@param AD_Table_ID
+	 *	@param Record_UU
+	 */
+	public static void zoomUU(int AD_Table_ID, String Record_UU)
+	{
+		int AD_Window_ID = Env.getZoomWindowUU(AD_Table_ID, Record_UU);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+		String uuColName = PO.getUUIDColumnName(table.getTableName());
+		MQuery query = MQuery.getEqualQuery(uuColName, Record_UU);
+		query.setZoomTableName(table.getTableName());
+		query.setZoomColumnName(uuColName);
+		query.setZoomValue(Record_UU);
+		zoom(AD_Window_ID, query);
+	}	//	zoom
+
+	/*************************************************************************
 	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
@@ -186,6 +206,22 @@ public final class AEnv
 	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query, int windowNo)
 	{
 		int AD_Window_ID = Env.getZoomWindowID(AD_Table_ID, Record_ID, windowNo);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		zoom(AD_Window_ID, query);
+	}	//	zoom
+
+	/*************************************************************************
+	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
+	 *	@param AD_Table_ID
+	 *	@param Record_UU
+	 *	@param query initial query for destination AD Window
+	 *  @param windowNo
+	 */
+	public static void zoomUU(int AD_Table_ID, String Record_UU, MQuery query, int windowNo)
+	{
+		int AD_Window_ID = Env.getZoomWindowUU(AD_Table_ID, Record_UU, windowNo);
 		//  Nothing to Zoom to
 		if (AD_Window_ID == 0)
 			return;
@@ -441,13 +477,17 @@ public final class AEnv
 		zoomQuery.setZoomValue(value);
 		zoomQuery.addRestriction(column, MQuery.EQUAL, value);
 		zoomQuery.setRecordCount(1);    //  guess
-        if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
-        	int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
-        	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
-        } else {
-        	int windowId = lookup.getZoom(zoomQuery);
-        	zoom(windowId, zoomQuery, lookup.getWindowNo());
-        }
+		int windowId = lookup.getZoom(zoomQuery);
+		if (windowId > 0) {
+			zoom(windowId, zoomQuery, lookup.getWindowNo());
+		} else {
+			int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
+	        if (value instanceof Integer && ((Integer) value).intValue() >= 0) {
+	        	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
+	        } else {
+	        	zoomUU(tableId, value.toString(), zoomQuery, lookup.getWindowNo());
+	        }
+		}
     }
 
     /**
@@ -894,6 +934,15 @@ public final class AEnv
 
 	/**
 	 * @param po
+	 * @return URL link for direct access to the record using AD_Table_ID+Record_UUID
+	 */
+	public static String getZoomUrlTableUU(PO po)
+	{
+		return getApplicationUrl() + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_UU=" + po.get_UUID();
+	}
+
+	/**
+	 * @param po
 	 * @return URL link for direct access to the record using AD_Table_ID+Record_ID
 	 */
 	public static String getZoomUrlTableID(PO po)
@@ -943,5 +992,22 @@ public final class AEnv
 				detachInputElement(child);
 			}
 		}		
+	}
+				
+	/**
+	 * Construct url to open pdfUrl with embedded pdf.js viewer from Mozilla
+	 * @param pdfUrl
+	 * @return pdf.js viewer url
+	 */
+	public static String toPdfJsUrl(String pdfUrl) {
+		String viewer = Executions.encodeURL("~./js/pdf.js/web/viewer.html?file=");
+		//remove context path
+		int index = viewer.indexOf("/zkau");
+		if (index >= 0) {
+			viewer = viewer.substring(index+1);
+		}
+		StringBuilder url = new StringBuilder(viewer);
+		url.append(pdfUrl);
+		return url.toString();
 	}
 }	//	AEnv

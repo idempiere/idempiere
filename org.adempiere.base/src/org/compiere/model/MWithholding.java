@@ -33,6 +33,16 @@ public class MWithholding extends X_C_Withholding
 	 */
 	private static final long serialVersionUID = 6368597644089198711L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Withholding_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWithholding(Properties ctx, String C_Withholding_UU, String trxName) {
+        super(ctx, C_Withholding_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

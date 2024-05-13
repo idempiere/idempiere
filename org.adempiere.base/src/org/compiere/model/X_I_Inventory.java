@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Inventory
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_Inventory")
-public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent 
+public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_Inventory (Properties ctx, int I_Inventory_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_Inventory (Properties ctx, String I_Inventory_UU, String trxName)
+    {
+      super (ctx, I_Inventory_UU, trxName);
+      /** if (I_Inventory_UU == null)
+        {
+			setI_Inventory_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Inventory (Properties ctx, String I_Inventory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Inventory_UU, trxName, virtualColumns);
+      /** if (I_Inventory_UU == null)
+        {
+			setI_Inventory_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_Inventory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -250,7 +272,7 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getI_Inventory_ID()));
     }
@@ -284,10 +306,10 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -523,10 +545,10 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -545,10 +567,10 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

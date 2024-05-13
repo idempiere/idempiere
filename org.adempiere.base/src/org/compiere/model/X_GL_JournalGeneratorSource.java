@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for GL_JournalGeneratorSource
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGeneratorSource")
-public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGeneratorSource, I_Persistent 
+public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGeneratorSource, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorSource (Properties ctx, int GL_JournalGeneratorSource_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_JournalGeneratorSource (Properties ctx, String GL_JournalGeneratorSource_UU, String trxName)
+    {
+      super (ctx, GL_JournalGeneratorSource_UU, trxName);
+      /** if (GL_JournalGeneratorSource_UU == null)
+        {
+			setAmtMultiplier (Env.ZERO);
+// 1
+			setC_ElementValue_ID (0);
+			setGL_JournalGeneratorLine_ID (0);
+			setGL_JournalGeneratorSource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalGeneratorSource (Properties ctx, String GL_JournalGeneratorSource_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalGeneratorSource_UU, trxName, virtualColumns);
+      /** if (GL_JournalGeneratorSource_UU == null)
+        {
+			setAmtMultiplier (Env.ZERO);
+// 1
+			setC_ElementValue_ID (0);
+			setGL_JournalGeneratorLine_ID (0);
+			setGL_JournalGeneratorSource_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_JournalGeneratorSource (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

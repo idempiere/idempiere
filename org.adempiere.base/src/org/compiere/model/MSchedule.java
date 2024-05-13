@@ -14,7 +14,6 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-
 package org.compiere.model;
 
 import it.sauronsoftware.cron4j.Predictor;
@@ -37,11 +36,13 @@ import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
+/**
+ * Schedule model for scheduler 
+ */
 public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7183417983901074702L;
 	private static Pattern VALID_IPV4_PATTERN = null;
@@ -49,18 +50,36 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
     private static final String ipv6Pattern = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Schedule_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSchedule(Properties ctx, String AD_Schedule_UU, String trxName) {
+        super(ctx, AD_Schedule_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_Schedule_ID
+     * @param trxName
+     */
 	public MSchedule(Properties ctx, int AD_Schedule_ID, String trxName) {
 		super(ctx, AD_Schedule_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MSchedule(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MSchedule(MSchedule copy) {
@@ -68,7 +87,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -77,7 +96,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -89,34 +108,33 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-        //		Set Schedule Type & Frequencies
-			if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
+        //	Set Schedule Type & Frequencies
+		if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
+		{
+			if (getFrequencyType() == null)
+				setFrequencyType(FREQUENCYTYPE_Day);
+			if (getFrequency() < 1)
+				setFrequency(1);
+			setCronPattern(null);
+		}
+		else if (SCHEDULETYPE_CronSchedulingPattern.equals(getScheduleType()))
+		{
+			String pattern = getCronPattern();
+			if (pattern != null && pattern.trim().length() > 0)
 			{
-				if (getFrequencyType() == null)
-					setFrequencyType(FREQUENCYTYPE_Day);
-				if (getFrequency() < 1)
-					setFrequency(1);
-				setCronPattern(null);
-			}
-			else if (SCHEDULETYPE_CronSchedulingPattern.equals(getScheduleType()))
-			{
-				String pattern = getCronPattern();
-				if (pattern != null && pattern.trim().length() > 0)
+				if (!SchedulingPattern.validate(pattern))
 				{
-					if (!SchedulingPattern.validate(pattern))
-					{
-						log.saveError("Error", "InvalidCronPattern");
-						return false;
-					}
+					log.saveError("Error", "InvalidCronPattern");
+					return false;
 				}
 			}
-			return true;
+		}
+		return true;
 	}
 
 	/**
-	 *  Brought from Compiere Open Source Community version 3.3.0
-	 * 	Is it OK to Run process On IP of this box
-	 *	@return
+	 * 	Is it OK to Run process on this server based on server IP verification.
+	 *	@return true if it is ok to run
 	 */
 	public boolean isOKtoRunOnIP()
 	{
@@ -139,11 +157,9 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	}	//	isOKtoRunOnIP
 
 	/**
-	 * 
-	 *  Brought from Compiere Open Source Community version 3.3.0
-	 * 	check whether this IP is allowed to process
+	 * 	check whether this server's IP match the ipOnly argument
 	 *	@param ipOnly
-	 *	@return true if IP is correct
+	 *	@return true if server IP match ipOnly
 	 */
 	private boolean checkIP(String ipOnly) {
 		try {
@@ -223,6 +239,10 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer, MSchedule> s_cache = new ImmutableIntPOCache<Integer, MSchedule> (Table_Name, 10);
 
+	/**
+	 * @param ipOnly
+	 * @return true if ipOnly is IPV4 IPV6 address
+	 */
 	public boolean chekIPFormat(String ipOnly)
 	{
 		boolean IsIp = false;
@@ -258,6 +278,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	 *	@return next run in MS
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern)
 	{
 		return getNextRunMS(last, scheduleType, frequencyType, frequency, cronPattern, null);
@@ -271,7 +292,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	 *  @param frequency
 	 *  @param cronPattern
 	 *  @param timeZone
-	 *	@return next run in MS
+	 *	@return next run time stamp in millisecond
 	 */
 	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern, String timeZone)
 	{

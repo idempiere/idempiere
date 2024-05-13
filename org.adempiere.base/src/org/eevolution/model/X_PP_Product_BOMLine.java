@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOMLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_BOMLine")
-public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_Persistent 
+public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName)
@@ -67,6 +67,36 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Product_BOMLine (Properties ctx, String PP_Product_BOMLine_UU, String trxName)
+    {
+      super (ctx, PP_Product_BOMLine_UU, trxName);
+      /** if (PP_Product_BOMLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
+			setM_Product_ID (0);
+// -1
+			setPP_Product_BOM_ID (0);
+			setPP_Product_BOMLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Product_BOMLine (Properties ctx, String PP_Product_BOMLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Product_BOMLine_UU, trxName, virtualColumns);
+      /** if (PP_Product_BOMLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
+			setM_Product_ID (0);
+// -1
+			setPP_Product_BOM_ID (0);
+			setPP_Product_BOMLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Product_BOMLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +104,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -295,10 +325,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	public boolean isCritical()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCritical);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -318,10 +348,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	public boolean isQtyPercentage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQtyPercentage);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -477,7 +507,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_RelationType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_RelationType")
-public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persistent 
+public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_RelationType (Properties ctx, int AD_RelationType_ID, String trxName)
@@ -67,6 +67,40 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_RelationType (Properties ctx, String AD_RelationType_UU, String trxName)
+    {
+      super (ctx, AD_RelationType_UU, trxName);
+      /** if (AD_RelationType_UU == null)
+        {
+			setAD_RelationType_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDirected (false);
+// N
+			setName (null);
+			setType (null);
+// I
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_RelationType (Properties ctx, String AD_RelationType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_RelationType_UU, trxName, virtualColumns);
+      /** if (AD_RelationType_UU == null)
+        {
+			setAD_RelationType_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDirected (false);
+// N
+			setName (null);
+			setType (null);
+// I
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_RelationType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +108,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -234,10 +268,10 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	public boolean isDirected()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDirected);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -262,7 +296,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

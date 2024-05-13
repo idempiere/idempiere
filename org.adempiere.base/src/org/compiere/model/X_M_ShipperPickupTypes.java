@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_ShipperPickupTypes
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPickupTypes")
-public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes, I_Persistent 
+public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ShipperPickupTypes (Properties ctx, String M_ShipperPickupTypes_UU, String trxName)
+    {
+      super (ctx, M_ShipperPickupTypes_UU, trxName);
+      /** if (M_ShipperPickupTypes_UU == null)
+        {
+			setIsDefault (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShipperPickupTypesCfg_ID (0);
+			setM_ShipperPickupTypes_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShipperPickupTypes (Properties ctx, String M_ShipperPickupTypes_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShipperPickupTypes_UU, trxName, virtualColumns);
+      /** if (M_ShipperPickupTypes_UU == null)
+        {
+			setIsDefault (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShipperPickupTypesCfg_ID (0);
+			setM_ShipperPickupTypes_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -104,10 +134,10 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

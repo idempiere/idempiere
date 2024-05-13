@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8100247902607470888L;
 
@@ -75,6 +75,16 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSuppor
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MPOSKeyLayout> s_cache = new ImmutableIntPOCache<Integer,MPOSKeyLayout>(Table_Name, 3);
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_POSKeyLayout_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPOSKeyLayout(Properties ctx, String C_POSKeyLayout_UU, String trxName) {
+        super(ctx, C_POSKeyLayout_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -98,7 +108,7 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSuppor
 	}	//	MPOSKeyLayout
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MPOSKeyLayout(MPOSKeyLayout copy) 
@@ -107,7 +117,7 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -117,7 +127,7 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -133,9 +143,9 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSuppor
 	private MPOSKey[]	m_keys = null;
 	
 	/**
-	 * 	Get Keys
+	 * 	Get POS Keys
 	 *	@param requery requery
-	 *	@return keys
+	 *	@return array of MPOSKey
 	 */
 	public MPOSKey[] getKeys (boolean requery)
 	{

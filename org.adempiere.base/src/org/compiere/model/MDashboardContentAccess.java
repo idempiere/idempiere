@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.sql.PreparedStatement;
@@ -15,22 +33,30 @@ import org.compiere.util.Env;
 
 /**
  * @author juliana
- *
  */
 public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -4460812046437256244L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_DashboardContent_Access_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDashboardContentAccess(Properties ctx, String PA_DashboardContent_Access_UU, String trxName) {
+        super(ctx, PA_DashboardContent_Access_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
 	 * @param PA_DashboardContent_Access_ID
 	 * @param trxName
 	 */
-	public MDashboardContentAccess(Properties ctx,
-			int PA_DashboardContent_Access_ID, String trxName) {
+	public MDashboardContentAccess(Properties ctx, int PA_DashboardContent_Access_ID, String trxName) {
 		super(ctx, PA_DashboardContent_Access_ID, trxName);
 	}
 
@@ -43,6 +69,13 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param AD_Role
+	 * @param AD_User
+	 * @param trxname
+	 * @return array of MDashboardContent
+	 */
 	public static MDashboardContent[] get (Properties ctx,int AD_Role, int AD_User, String trxname)
 	{
 		
@@ -100,7 +133,6 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 
 		sql.append(" AND cta.AD_Client_ID in (0,?)");
 		parameters.add(AD_Client_ID);
-
 
         sql.append(" ORDER BY ColumnNo");
 

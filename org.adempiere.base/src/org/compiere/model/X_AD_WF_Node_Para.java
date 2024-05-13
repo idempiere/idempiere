@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Node_Para
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Node_Para")
-public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persistent 
+public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_Node_Para (Properties ctx, int AD_WF_Node_Para_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_Node_Para (Properties ctx, String AD_WF_Node_Para_UU, String trxName)
+    {
+      super (ctx, AD_WF_Node_Para_UU, trxName);
+      /** if (AD_WF_Node_Para_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+// @1|AD_WF_Node_ID@
+			setAD_WF_Node_Para_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Node_Para (Properties ctx, String AD_WF_Node_Para_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Node_Para_UU, trxName, virtualColumns);
+      /** if (AD_WF_Node_Para_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+// @1|AD_WF_Node_ID@
+			setAD_WF_Node_Para_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_Node_Para (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persis
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -147,7 +175,7 @@ public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Node_ID()));
     }

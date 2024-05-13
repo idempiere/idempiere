@@ -52,8 +52,8 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.POCopyCache;
 
 /**
- *	Role Model.
- *	Includes AD_User runtime info for Personal Access
+ *	Role Model.<br/>
+ *	Includes AD_User runtime info for Personal Access.<br/>
  *	The class is final, so that you cannot overwrite the security rules.
  *	
  *  @author Jorg Janke
@@ -64,14 +64,13 @@ import org.idempiere.cache.POCopyCache;
  */
 public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8937680640915708588L;
-
+	private static final long serialVersionUID = 7266911648463503849L;
 
 	/**
-	 * 	Get Default (Client) Role
+	 * 	Get role for current session/context
 	 *	@return role
 	 */
 	public static MRole getDefault ()
@@ -80,9 +79,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getDefault
 
 	/**
-	 * 	Get/Set Default Role.
+	 * 	Get role for current session/context
 	 * 	@param ctx context
-	 * 	@param reload if true forces load
+	 * 	@param reload if true forces reload
 	 *	@return role
 	 *	@see org.compiere.util.Login#loadPreferences(KeyNamePair, KeyNamePair, java.sql.Timestamp, String)
 	 */
@@ -96,7 +95,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
 		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 
-		MRole defaultRole = getDefaultRole(); 
+		MRole defaultRole = getDefaultRole(ctx, AD_Role_ID, AD_User_ID); 
 		if (reload || defaultRole == null)
 		{
 			defaultRole = get (ctx, AD_Role_ID, AD_User_ID, reload);
@@ -111,13 +110,38 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return defaultRole;
 	}	//	getDefault
 	
+	/**
+	 * Set role for current session/context
+	 * @param defaultRole
+	 */
 	private static void setDefaultRole(MRole defaultRole) {
 		Env.getCtx().remove(ROLE_KEY);
 		Env.getCtx().put(ROLE_KEY, defaultRole);
 	}
 
+	/**
+	 * Get role for current session/context
+	 * @return MRole
+	 */
 	private static MRole getDefaultRole() {
-		return (MRole) Env.getCtx().get(ROLE_KEY);
+		return getDefaultRole(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
+	}
+
+	/**
+	 * Get role for current session/context
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_User_ID
+	 * @return MRole
+	 */
+	private static MRole getDefaultRole(Properties ctx, int AD_Role_ID, int AD_User_ID) {
+		MRole role = (MRole) ctx.get(ROLE_KEY);
+		String key = AD_Role_ID + "_" + AD_User_ID;
+		if (! s_roles.containsKey(key)) {
+			ctx.remove(ROLE_KEY);
+			role = null;
+		}
+		return role;
 	}
 
 	/**
@@ -151,7 +175,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Get Role (cached).
-	 * 	Did not set user - so no access loaded
+	 * 	Did not set user - so no access loaded.
 	 * 	@param ctx context
 	 * 	@param AD_Role_ID role
 	 *	@return role
@@ -206,10 +230,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getOfClient
 	
 	/**
-	 * 	Get Roles With where clause
+	 * 	Get Roles via where clause
 	 *	@param ctx context
-	 *	@param whereClause where clause
-	 *	@return roles of client
+	 *	@param whereClause SQL where clause
+	 *	@return roles matching where clause
 	 */
 	public static MRole[] getOf (Properties ctx, String whereClause)
 	{
@@ -260,12 +284,25 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	public static final int			SYSTEM_USER_ID = USER_SYSTEM;
 	
 	private static final String ROLE_KEY = "org.compiere.model.DefaultRole";
-	
-	
-	/**************************************************************************
-	 * 	Standard Constructor
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Role_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRole(Properties ctx, String AD_Role_UU, String trxName) {
+        super(ctx, AD_Role_UU, trxName);
+		if (Util.isEmpty(AD_Role_UU))
+			setInitialDefaults();
+    }
+
+	/**
+	 * 	Standard Constructor.
+	 *  <pre>
 	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
-	 *         in such case is necessary to use one of the get methods setting the userID
+	 *         in such case is necessary to use one of the get methods setting AD_User_ID.
+	 *  </pre>
 	 *	@param ctx context
 	 *	@param AD_Role_ID id
 	 *	@param trxName transaction
@@ -275,28 +312,35 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		super (ctx, AD_Role_ID, trxName);
 		//	ID=0 == System Administrator
 		if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
-		{
-			setIsCanExport (true);
-			setIsCanReport (true);
-			setIsManual (false);
-			setIsPersonalAccess (false);
-			setIsPersonalLock (false);
-			setIsShowAcct (false);
-			setIsAccessAllOrgs(false);
-			setUserLevel (USERLEVEL_Organization);
-			setPreferenceType(PREFERENCETYPE_Organization);
-			setIsChangeLog(false);
-			setOverwritePriceLimit(false);
-			setIsUseUserOrgAccess(false);
-			setMaxQueryRecords(0);
-			setConfirmQueryRecords(0);
-		}
+			setInitialDefaults();
 	}	//	MRole
 
 	/**
-	 * 	Load Constructor
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsCanExport (true);
+		setIsCanReport (true);
+		setIsManual (false);
+		setIsPersonalAccess (false);
+		setIsPersonalLock (false);
+		setIsShowAcct (false);
+		setIsAccessAllOrgs(false);
+		setUserLevel (USERLEVEL_Organization);
+		setPreferenceType(PREFERENCETYPE_Organization);
+		setIsChangeLog(false);
+		setOverwritePriceLimit(false);
+		setIsUseUserOrgAccess(false);
+		setMaxQueryRecords(0);
+		setConfirmQueryRecords(0);
+	}
+
+	/**
+	 * 	Load Constructor.
+	 *  <pre>
 	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
-	 *         in such case is necessary to use one of the get methods setting the userID
+	 *         in such case is necessary to use one of the get methods setting AD_User_ID.
+	 *  </pre>
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -307,7 +351,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	MRole
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRole(MRole copy) 
@@ -316,7 +360,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -326,7 +370,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -355,7 +399,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Get Confirm Query Records
-	 *	@return entered records or 500 (default)
+	 *	@return value of ConfirmQueryRecords or 500 if value of ConfirmQueryRecords is 0.
 	 */
 	public int getConfirmQueryRecords ()
 	{
@@ -366,10 +410,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getConfirmQueryRecords
 	
 	/**
-	 * 	Require Query
 	 *	@param noRecords records
 	 *	@return true if query required
+	 *  @deprecated replace by {@link GridTab#isQueryRequire(int)}
 	 */
+	@Deprecated
 	public boolean isQueryRequire (int noRecords)
 	{
 		if (noRecords < 2)
@@ -385,7 +430,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	Over max Query
 	 *	@param noRecords records
 	 *	@return true if over max query
+	 *  @deprecated replace by {@link GridTab#isQueryMax(int)}
 	 */
+	@Deprecated
 	public boolean isQueryMax (int noRecords)
 	{
 		int max = getMaxQueryRecords();
@@ -397,6 +444,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true if it can be saved
 	 */
+	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (getAD_Client_ID() == 0)
@@ -415,6 +463,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -435,11 +484,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		//
 		else if (is_ValueChanged("UserLevel"))
 			updateAccessRecords();
-		
-		//	Default Role changed
-		if (getDefaultRole() != null 
-			&& getDefaultRole().get_ID() == get_ID())
-			setDefaultRole(this);
+
 		return success;
 	}	//	afterSave
 	
@@ -448,6 +493,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	@param success true if record deleted
 	 *	@return true if delete is a success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if(success) {
@@ -457,7 +503,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	} 	//	afterDelete
 
 	/**
-	 * 	Create Access Records
+	 * 	Create Access Records (delete existing access records prior to that)
 	 *	@return info
 	 */
 	public String updateAccessRecords ()
@@ -468,7 +514,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	
 	/**
 	 * 	Create Access Records
-	 *	@param reset true will reset existing access
+	 *	@param reset true to delete existing access records
 	 *	@return info
 	 */
 	public String updateAccessRecords (boolean reset)
@@ -620,7 +666,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	createAccessRecords
 
 	/**
-	 * Delete Access Records of the role after the role was (successfully) deleted.
+	 * Delete Access Records of a role.
 	 */
 	private void deleteAccessRecords() {
 		String whereDel = " WHERE AD_Role_ID=" + getAD_Role_ID();
@@ -644,6 +690,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MRole[");
@@ -690,8 +737,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return sb.toString();
 	}	//	toStringX
 
-
-
 	/*************************************************************************
 	 * 	Access Management
 	 ************************************************************************/
@@ -725,7 +770,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Set Logged in user
-	 *	@param AD_User_ID user requesting info
+	 *	@param AD_User_ID logged in user id
 	 */
 	public void setAD_User_ID(int AD_User_ID)
 	{
@@ -734,17 +779,16 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Get Logged in user
-	 *	@return AD_User_ID user requesting info
+	 *	@return AD_User_ID 
 	 */
 	public int getAD_User_ID()
 	{
 		return m_AD_User_ID;
 	}	//	getAD_User_ID
-
 	
-	/**************************************************************************
+	/**
 	 * 	Load Access Info
-	 * 	@param reload re-load from disk
+	 * 	@param reload re-load from DB
 	 */
 	public void loadAccess (boolean reload)
 	{
@@ -764,8 +808,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	loadAccess
 
 	/**
-	 * 	Load Org Access
-	 *	@param reload reload
+	 * 	Load Organization Access
+	 *	@param reload reload from DB
 	 */
 	private void loadOrgAccess (boolean reload)
 	{
@@ -796,8 +840,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	loadOrgAccess
 
 	/**
-	 * 	Load Org Access User
-	 *	@param list list
+	 * 	Load Organization User Access (AD_User_OrgAccess)
+	 *	@param list list to load access record to
 	 */
 	private void loadOrgAccessUser(ArrayList<OrgAccess> list)
 	{
@@ -812,7 +856,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_User_ID());
-			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
+			pstmt.setInt(2, getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -831,8 +875,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	loadOrgAccessRole
 
 	/**
-	 * 	Load Org Access Role
-	 *	@param list list
+	 * 	Load Organization Role Access (AD_Role_OrgAccess)
+	 *	@param list list to load access record to
 	 */
 	private void loadOrgAccessRole(ArrayList<OrgAccess> list)
 	{
@@ -844,7 +888,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_Role_ID());
-			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
+			pstmt.setInt(2, getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -863,9 +907,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	loadOrgAccessRole
 	
 	/**
-	 * 	Load Org Access Add Tree to List
-	 *	@param list list
-	 *	@param oa org access
+	 * 	Add OrgAccess to OrgAccess list.<br/>
+	 *  If OrgAccess belongs to a summary organization, perform the same addition for child organization as well.
+	 *	@param list list to add OrgAccess to
+	 *	@param oa OrgAccess record
 	 *	@see org.compiere.util.Login
 	 */
 	private void loadOrgAccessAdd (ArrayList<OrgAccess> list, OrgAccess oa)
@@ -910,11 +955,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			rs = null; pstmt = null;
 		}
 	}	//	loadOrgAccessAdd
-
 	
 	/**
-	 * 	Load Table Access
-	 *	@param reload reload
+	 * 	Load Table Access (AD_Table_Access)
+	 *	@param reload true to reload from DB
 	 */
 	private void loadTableAccess(boolean reload)
 	{
@@ -949,7 +993,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * Check if tableName is a view
 	 * @param tableName
-	 * @return boolean
+	 * @return true if tableName is a view
 	 */
 	private boolean isView(String tableName)
 	{
@@ -959,6 +1003,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return table.isView();
 	}
 
+	/**
+	 * @param tableName
+	 * @return Id column for tableName or null
+	 */
 	private String getIdColumnName(String tableName)
 	{
 		StringBuilder colkey = new StringBuilder(tableName).append("_ID");
@@ -971,8 +1019,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Load Column Access
-	 *	@param reload reload
+	 * 	Load Column Access (AD_Column_Access)
+	 *	@param reload true to reload from DB
 	 */
 	private void loadColumnAccess(boolean reload)
 	{
@@ -1005,8 +1053,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	loadColumnAccess
 	
 	/**
-	 * 	Load Record Access
-	 *	@param reload reload
+	 * 	Load Record Access (AD_Record_Access)
+	 *	@param reload true to reload from DB
 	 */
 	private void loadRecordAccess(boolean reload)
 	{
@@ -1046,11 +1094,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_recordAccess.length + " - Dependent #" + m_recordDependentAccess.length); 
 	}	//	loadRecordAccess
 
-
-	/**************************************************************************
-	 * 	Get Client Where Clause Value 
+	/**
+	 * 	Get Where Clause for client filter
 	 * 	@param rw read write
-	 * 	@return "AD_Client_ID=0" or "AD_Client_ID IN(0,1)"
+	 * 	@return "AD_Client_ID=0" or "AD_Client_ID IN(0,1,...)"
 	 */
 	public String getClientWhere (boolean rw)
 	{
@@ -1101,7 +1148,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	Access to Client
 	 *	@param AD_Client_ID client
 	 *	@param rw read write access
-	 *	@return true if access
+	 *	@return true if can access
 	 */
 	public boolean isClientAccess(int AD_Client_ID, boolean rw)
 	{
@@ -1130,9 +1177,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	isClientAccess
 	
 	/**
-	 * 	Get Org Where Clause Value 
+	 * 	Get Where Clause for organization filter 
 	 * 	@param rw read write
-	 * 	@return "AD_Org_ID=0" or "AD_Org_ID IN(0,1)" or null (if access all org)
+	 * 	@return "AD_Org_ID=0" or "AD_Org_ID IN(0,1,...)" or null (if access all org)
 	 */
 	public String getOrgWhere (boolean rw)
 	{
@@ -1211,11 +1258,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return false;
 	}	//	isOrgAccess
 
-
 	/**
 	 * 	Can Report on table
 	 *	@param AD_Table_ID table
-	 *	@return true if access
+	 *	@return true if can report
 	 */
 	public boolean isCanReport (int AD_Table_ID)
 	{
@@ -1259,7 +1305,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * 	Can Export Table
 	 *	@param AD_Table_ID
-	 *	@return true if access
+	 *	@return true if can export
 	 */
 	public boolean isCanExport (int AD_Table_ID)
 	{
@@ -1306,7 +1352,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	Access to Table
 	 *	@param AD_Table_ID table
 	 *	@param ro check read only access otherwise read write access level
-	 *	@return has RO/RW access to table
+	 *	@return true if has RO/RW access to table
 	 */
 	public boolean isTableAccess (int AD_Table_ID, boolean ro)
 	{
@@ -1360,10 +1406,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	isTableAccess
 
 	/**
-	 * 	Access to Table based on Role User Level Table Access Level
+	 * 	Access to Table based on User Level and Table Access Level
 	 *	@param AD_Table_ID table
 	 *	@param ro check read only access otherwise read write access level
-	 *	@return has RO/RW access to table
+	 *	@return true if has RO/RW access to table
 	 */
 	public boolean isTableAccessLevel (int AD_Table_ID, boolean ro)
 	{
@@ -1377,32 +1423,32 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			log.warning("No Table Found with AD_Table_ID=" + AD_Table_ID);
 			return false;
 		}
-		String roleAccessLevel = table.getAccessLevel();
-		if (roleAccessLevel == null)
+		String tableAccessLevel = table.getAccessLevel();
+		if (tableAccessLevel == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("NO - No AccessLevel - AD_Table_ID=" + AD_Table_ID);
 			return false;
 		}
 		//	Access to all User Levels
-		if (roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_All))
+		if (tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_All))
 			return true;
 		//	User Level = SCO
 		String userLevel = getUserLevel();
 		//	
 		if (userLevel.charAt(0) == 'S'
-			&& (roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_SystemOnly) 
-				|| roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_SystemPlusClient)))
+			&& (tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_SystemOnly) 
+				|| tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_SystemPlusClient)))
 			return true;
 		if (userLevel.charAt(1) == 'C'
-			&& (roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_ClientOnly) 
-				|| roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_SystemPlusClient)))
+			&& (tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_ClientOnly) 
+				|| tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_SystemPlusClient)))
 			return true;
 		if (userLevel.charAt(2) == 'O'
-			&& (roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_Organization) 
-				|| roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_ClientPlusOrganization)))
+			&& (tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_Organization) 
+				|| tableAccessLevel.equals(X_AD_Table.ACCESSLEVEL_ClientPlusOrganization)))
 			return true;
 		if (log.isLoggable(Level.FINE)) log.fine("NO - AD_Table_ID=" + AD_Table_ID 
-			+ ", UserLevel=" + userLevel + ", AccessLevel=" + roleAccessLevel);
+			+ ", UserLevel=" + userLevel + ", AccessLevel=" + tableAccessLevel);
 		return false;
 	}	//	isTableAccessLevel
 
@@ -1410,8 +1456,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	Access to Column
 	 *	@param AD_Table_ID table
 	 *	@param AD_Column_ID column
-	 *	@param ro read only
-	 *	@return true if access
+	 *	@param ro true for read only, false for read write
+	 *	@return true if can access
 	 */
 	public boolean isColumnAccess (int AD_Table_ID, int AD_Column_ID, boolean ro)
 	{
@@ -1422,9 +1468,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * 	Access to Column
 	 *	@param AD_Table_ID table
 	 *	@param AD_Column_ID column
-	 *	@param ro read only
+	 *	@param ro true for read only, false for read write
 	 *  @param trxName
-	 *	@return true if access
+	 *	@return true if can access
 	 */
 	public boolean isColumnAccess (int AD_Table_ID, int AD_Column_ID, boolean ro, String trxName)
 	{
@@ -1498,11 +1544,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	isColumnAccess
 
 	/**
-	 *	Access to Record (no check of table)
+	 *	Access to Record (AD_Record_Access)
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
-	 *	@param ro read only
-	 *	@return boolean
+	 *	@param ro true for read only, false for read write
+	 *	@return true if can access
 	 */
 	public boolean isRecordAccess (int AD_Table_ID, int Record_ID, boolean ro)
 	{
@@ -1544,9 +1590,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	isRecordAccess
 
 	/**
-	 * 	Get Window Access
+	 * 	Get Window Access (AD_Window_Access).<br/>
+	 *  Check ASP record as well if client is using ASP access control.
 	 *	@param AD_Window_ID window
-	 *	@return null in no access, TRUE if r/w and FALSE if r/o
+	 *	@return null if can't access, TRUE if r/w and FALSE if r/o
 	 */
 	public synchronized Boolean getWindowAccess (int AD_Window_ID)
 	{
@@ -1631,9 +1678,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getWindowAccess
 
 	/**
-	 * 	Get Process Access
+	 * 	Get Process Access (AD_Process_Access).
+	 *  Check ASP record as well if client is using ASP access control.
 	 *	@param AD_Process_ID process
-	 *	@return null in no access, TRUE if r/w and FALSE if r/o
+	 *	@return null if can't access, TRUE if r/w and FALSE if r/o
 	 */
 	public synchronized Boolean getProcessAccess (int AD_Process_ID)
 	{
@@ -1721,9 +1769,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getProcessAccess
 
 	/**
-	 * 	Get Task Access
+	 * 	Get Task Access (AD_Task_Access). <br/>
+	 *  Check ASP record as well if client is using ASP access control.
 	 *	@param AD_Task_ID task
-	 *	@return null in no access, TRUE if r/w and FALSE if r/o
+	 *	@return null if can't access, TRUE if r/w and FALSE if r/o
 	 */
 	public synchronized Boolean getTaskAccess (int AD_Task_ID)
 	{
@@ -1809,9 +1858,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getTaskAccess
 
 	/**
-	 * 	Get Form Access
+	 * 	Get Form Access (AD_Form_Access).<br/>
+	 *  Check ASP record as well if client is using ASP access control.
 	 *	@param AD_Form_ID form
-	 *	@return null in no access, TRUE if r/w and FALSE if r/o
+	 *	@return null if can't access, TRUE if r/w and FALSE if r/o
 	 */
 	public synchronized Boolean getFormAccess (int AD_Form_ID)
 	{
@@ -1897,9 +1947,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getFormAccess
 
 	/**
-	 * 	Get Workflow Access
+	 * 	Get Workflow Access (AD_Workflow_Access).<br/>
+	 *  Check ASP record as well if client is using ASP access control.
 	 *	@param AD_Workflow_ID workflow
-	 *	@return null in no access, TRUE if r/w and FALSE if r/o
+	 *	@return null if can't access, TRUE if r/w and FALSE if r/o
 	 */
 	public synchronized Boolean getWorkflowAccess (int AD_Workflow_ID)
 	{
@@ -1983,16 +2034,15 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		}
 		return retValue;
 	}	//	getWorkflowAccess
-
 	
-	/*************************************************************************
-	 *	Appends where clause to SQL statement for Table
+	/**
+	 *	Appends access where clause to SQL statement for Tables
 	 *
 	 *	@param SQL			existing SQL statement
 	 *	@param TableNameIn	Table Name or list of table names AAA, BBB or AAA a, BBB b
-	 *	@param fullyQualified	fullyQualified names
-	 *	@param rw			if false, includes System Data
-	 *	@return				updated SQL statement
+	 *	@param fullyQualified	fullyQualified column name
+	 *	@param rw			if false, includes records belongs to System client (AD_Client_ID=0).
+	 *	@return	updated SQL statement
 	 */
 	public String addAccessSQL (String SQL, String TableNameIn, 
 		boolean fullyQualified, boolean rw)
@@ -2166,9 +2216,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Get Dependent Access 
-	 *	@param whereColumnName column
-	 *	@param includes ids to include
-	 *	@param excludes ids to exclude
+	 *	@param whereColumnName column name for includes and excludes id
+	 *	@param includes record ids to include
+	 *	@param excludes record ids to exclude
 	 *	@return where clause starting with AND or ""
 	 */
 	private String getDependentAccess(String whereColumnName,
@@ -2177,7 +2227,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (includes.size() == 0 && excludes.size() == 0)
 			return "";
 		if (includes.size() != 0 && excludes.size() != 0)
-			log.warning("Mixing Include and Excluse rules - Will not return values");
+			log.warning("Mixing Include and Exclude rules - Will not return values");
 		
 		StringBuilder where = new StringBuilder(" AND ");
 		if (includes.size() == 1)
@@ -2212,14 +2262,13 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		}
 		if (log.isLoggable(Level.FINEST)) log.finest(where.toString());
 		return where.toString();
-	}	//	getDependentAccess
-	
+	}	//	getDependentAccess	
 	
 	/**
-	 * 	Get Dependent Record Where clause
+	 * 	Get column name for dependent record where clause 
 	 *	@param mainSql sql to examine
-	 *	@param columnName columnName
-	 *	@return where clause column "x.columnName"
+	 *	@param columnName 
+	 *	@return original or updated column name (e.g "x.columnName")
 	 */
 	private String getDependentRecordWhereColumn (String mainSql, String columnName)
 	{
@@ -2233,7 +2282,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (c == '.')
 		{
 			StringBuilder sb = new StringBuilder();
-			while (c != ' ' && c != ',' && c != '(')	//	delimeter
+			while (c != ' ' && c != ',' && c != '(')	//	delimiter
 			{
 				sb.insert(0, c);
 				c = mainSql.charAt(--offset);
@@ -2244,18 +2293,16 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return retValue;
 	}	//	getDependentRecordWhereColumn
 
-
-
 	/**
-	 *	UPDATE - Can I Update the record.
-	 *  Access error info (AccessTableNoUpdate) is saved in the log
+	 * Check update access.
+	 * Access error info (AccessTableNoUpdate) is saved in the log
 	 * 
 	 * @param AD_Client_ID context to derive client/org/user level
 	 * @param AD_Org_ID number of the current window to retrieve context
 	 * @param AD_Table_ID table
 	 * @param Record_ID record id
-	 * @param createError boolean
-	 * @return true if you can update
+	 * @param createError true to capture error into server log
+	 * @return true if can update
 	 * see org.compiere.model.MTable#dataSave(boolean)
 	 **/
 	public boolean canUpdate (int AD_Client_ID, int AD_Org_ID, 
@@ -2330,21 +2377,21 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 *	VIEW - Can I view record in Table with given TableLevel.
-	 *  <code>
-	 *	TableLevel			S__ 100		4	System info
-	 *						SCO	111		7	System shared info
-	 *						SC_ 110		6	System/Client info
-	 *						_CO	011		3	Client shared info
-	 *						_C_	011		2	Client shared info
-	 *						__O	001		1	Organization info
-	 *  </code>
+	 *  <pre>
+	 *	TableLevel		S__ 100		4	System info
+	 *			        SCO 111		7	System shared info
+	 *			        SC_ 110		6	System/Client info
+	 *			        _CO 011		3	Client shared info
+	 *			        _C_ 011		2	Client shared info
+	 *			        __O 001		1	Organization info
+	 *  </pre>
 	 * 
 	 * 	@param ctx	context
-	 *	@param TableLevel	AccessLevel
-	 *	@return	true/false
+	 *	@param TableLevel table access level
+	 *	@return	true if can view<br/>
 	 *  Access error info (AccessTableNoUpdate, AccessTableNoView) is saved in the log
-	 *  see org.compiere.model.MTabVO#loadTabDetails(MTabVO, ResultSet)
-	 **/
+	 *  @see org.compiere.model.GridTabVO#loadTabDetails(GridTabVO, ResultSet)
+	 */
 	public boolean canView(Properties ctx, String TableLevel)
 	{
 		String userLevel = getUserLevel();	//	Format 'SCO'
@@ -2391,12 +2438,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return retValue;
 	}	//	canView
 
-
 	/**
-	 *	Returns clear text String of TableLevel
+	 *	Returns translated display text of TableLevel
 	 *  @param AD_Language language
-	 *  @param TableLevel level
-	 *  @return info
+	 *  @param TableLevel table access level
+	 *  @return translated display text of TableLevel
 	 */
 	private String getTableLevelString (String AD_Language, String TableLevel)
 	{
@@ -2418,7 +2464,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getTableLevelString
 
 	/**
-	 * 	Get Table ID from name
+	 * 	Get Table ID from table name
 	 *	@param tableName table name
 	 *	@return AD_Table_ID or 0
 	 */
@@ -2431,7 +2477,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getAD_Table_ID
 
 	/**
-	 * 	Return Where clause for Record Access
+	 * 	Get Where clause for Record Access
 	 *	@param AD_Table_ID table
 	 *	@param keyColumnName (fully qualified) key column name
 	 *	@param rw true if read write
@@ -2494,6 +2540,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				sb.append(keyColumnName).append(lockedIDs).append(") ");
 			}
 		}
+
+		for (MTableValRule tvr : MTableValRule.get(p_ctx, AD_Table_ID, Env.getAD_Client_ID(p_ctx), Env.getAD_Role_ID(p_ctx), Env.getAD_User_ID(p_ctx))) {
+			if (sb.length() > 0)
+				sb.append(" AND ");
+			String wherevr = Env.parseContext(p_ctx, 0, tvr.getCode(), false);
+			sb.append(" (").append(wherevr).append(") ");
+		}
+
 		//
 		return sb.toString();
 	}	//	getRecordWhere
@@ -2508,15 +2562,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	isShowPreference
 	
 	/**
-	 * 	Org Access Summary
+	 * 	Organization Access value object class
 	 */
 	class OrgAccess implements Serializable
 	{
 		/**
-		 * 
+		 * generated serial id
 		 */
 		private static final long serialVersionUID = -4880665261978385315L;
-
 
 		/**
 		 * 	Org Access constructor
@@ -2530,19 +2583,20 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			this.AD_Org_ID = ad_Org_ID;
 			this.readOnly = readonly;
 		}
+		
 		/** Client				*/
 		public int AD_Client_ID = 0;
 		/** Organization		*/
 		public int AD_Org_ID = 0;
 		/** Read Only			*/
 		public boolean readOnly = true;
-		
-		
+				
 		/**
 		 * 	Equals
 		 *	@param obj object to compare
 		 *	@return true if equals
 		 */
+		@Override
 		public boolean equals (Object obj)
 		{
 			if (obj != null && obj instanceof OrgAccess)
@@ -2553,12 +2607,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			}
 			return false;
 		}	//	equals
-		
-		
+				
 		/**
 		 * 	Hash Code
 		 *	@return hash Code
 		 */
+		@Override
 		public int hashCode ()
 		{
 			return (AD_Client_ID*7) + AD_Org_ID;
@@ -2568,6 +2622,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		 * 	Extended String Representation
 		 *	@return extended info
 		 */
+		@Override
 		public String toString ()
 		{
 			String clientName = "System";
@@ -2590,12 +2645,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	
 	/**
 	 * Checks the access rights of the given role/client for the given document actions.
-	 * @param clientId
-	 * @param docTypeId
-	 * @param options
-	 * @param maxIndex
-	 * @return number of valid actions in the String[] options
-	 * @see metas-2009_0021_AP1_G94
+	 * @param clientId AD_Client_ID
+	 * @param docTypeId C_DocType_ID
+	 * @param options array of document actions
+	 * @param maxIndex define the range of elements to examine in options (>= 0 and &lt; maxIndex)
+	 * @return number of valid actions in the String[] options argument
 	 */
 	public int checkActionAccess(int clientId, int docTypeId, String[] options,
 			int maxIndex) {
@@ -2701,10 +2755,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	private List<MRole> m_includedRoles = null;
 	
 	/**
-	 * Include role permissions 
+	 * Add role to the included role list ({@link #m_includedRoles}). 
 	 * @param role
 	 * @param seqNo
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	private void includeRole(MRole role, int seqNo)
 	{
@@ -2735,9 +2788,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * @param recursive
 	 * @return unmodifiable list of included roles
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	public List<MRole> getIncludedRoles(boolean recursive)
 	{
@@ -2766,7 +2818,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * Load all included roles (direct inclusion or from user substitution)
 	 * @param reload
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	private void loadIncludedRoles(boolean reload)
 	{
@@ -2779,6 +2830,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		}
 	}
 	
+	/**
+	 * Merge access record from this role and immediate included roles.
+	 * @param reload
+	 */
 	private void mergeAccesses(boolean reload)
 	{
 		OrgAccess[] orgAccess = new OrgAccess[]{};
@@ -2822,7 +2877,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * Load Child Roles
 	 * @param reload
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	private void loadChildRoles(boolean reload)
 	{
@@ -2831,7 +2885,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (AD_User_ID < 0)
 		{
 			log.info("Trying to load Child Roles but user has not been set");
-			//throw new IllegalStateException("AD_User_ID is not set");
 			return ;
 		}
 		//
@@ -2853,7 +2906,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * Load substituted roles
 	 * @param reload
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	private void loadSubstitutedRoles(boolean reload)
 	{
@@ -2896,7 +2948,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * Set parent role. This method is called when this role is included in a parent role.
 	 * @param parent
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	private void setParentRole(MRole parent)
 	{
@@ -2912,7 +2963,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * @param array1
 	 * @param array2
 	 * @return array of merged values
-	 * @see metas-2009_0021_AP1_G94
 	 */
 	@SuppressWarnings("unchecked")
 	private static final <T> T[] mergeAccess(T[] array1, T[] array2, boolean override)
@@ -3007,6 +3057,13 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return list.toArray(arr);
 	}
 	
+	/**
+	 * Merge access records
+	 * @param map1
+	 * @param map2
+	 * @param override
+	 * @return merged access records
+	 */
 	private static final HashMap<Integer,Boolean> mergeAccess(
 			HashMap<Integer,Boolean> map1, HashMap<Integer,Boolean> map2,
 			boolean override)
@@ -3042,6 +3099,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return map;
 	}
 	
+	/**
+	 * Merge access record of this role and immediate included roles
+	 * @param varname name for the type of access (for e.g m_formAccess, m_windowAccess, etc)
+	 */
 	private void mergeIncludedAccess(String varname)
 	{
 		HashMap<Integer,Boolean> includedAccess = new HashMap<Integer, Boolean>();
@@ -3063,6 +3124,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		setAccessMap(varname, mergeAccess(getAccessMap(varname), includedAccess, false));
 	}
 	
+	/**
+	 * @param varname name for the type of access (for e.g m_formAccess, m_windowAccess, etc)
+	 * @return access map for varname type
+	 */
 	private HashMap<Integer, Boolean> getAccessMap(String varname)
 	{
 		if ("m_windowAccess".equals(varname))
@@ -3100,6 +3165,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			throw new IllegalArgumentException("varname not supported - "+varname);
 		}
 	}
+	
+	/**
+	 * Set access map for varname type
+	 * @param varname name for the type of access (for e.g m_formAccess, m_windowAccess, etc)
+	 * @param map access map
+	 */
 	private void setAccessMap(String varname, HashMap<Integer, Boolean> map)
 	{
 		if ("m_windowAccess".equals(varname))
@@ -3133,12 +3204,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Get Role Where Clause.
+	 * Get Where Clause filter for this role and included roles.<br/>
 	 * It will look something like myalias.AD_Role_ID IN (?, ?, ?).
-	 * @param roleColumnSQL role columnname or role column SQL (e.g. myalias.AD_Role_ID) 
-	 * @param params a list where the method will put SQL parameters.
-	 * 				If null, this method will generate a not parametrized query 
-	 * @return role SQL where clause
+	 * @param roleColumnSQL role column name or role column SQL (e.g. myalias.AD_Role_ID) 
+	 * @param params a list where the method will put SQL parameters.<br/>
+	 * 		  If null, this method will generate a not parameterized query 
+	 * @return SQL where clause
 	 */
 	public String getIncludedRolesWhereClause(String roleColumnSQL, List<Object> params)
 	{
@@ -3170,6 +3241,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return whereClause.toString();
 	}
 
+	/**
+	 * Get info window access (AD_InfoWindow_Access)
+	 * @param AD_InfoWindow_ID
+	 * @return null if can't access, TRUE if r/w and FALSE if r/o
+	 */
 	public synchronized Boolean getInfoAccess(int AD_InfoWindow_ID) {
 		if (m_infoAccess == null)
 		{
@@ -3217,6 +3293,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	private Boolean m_canAccess_Info_Product = null;
 
+	/**
+	 * @return true if can access info window for product
+	 */
 	public boolean canAccess_Info_Product() {
 		if (m_canAccess_Info_Product == null) {
 			String sql = ""
@@ -3254,8 +3333,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * 	Get where clause for a role types list
 	 * 	@param roleType - comma separated list of role types, NULL can be used
-	 * 	@param tableName - if table needs to be qualified
-	 *	@return whereClause - return null if roleType is null or empty
+	 * 	@param tableName - if column needs to be qualified
+	 *	@return whereClause, return null if roleType is null or empty
 	 */
 	public static String getWhereRoleType(String roleType, String tableName) {
 		if (Util.isEmpty(roleType, true)) {
@@ -3297,10 +3376,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return whereClause.toString();
 	}
 
-	/*
+	/**
 	 * Verify compatibility of AD_Role.UserLevel vs Access Level
 	 * @param accessLevel the access level of the dictionary object
-	 * @return true if access and user level are compatible
+	 * @return true if access level and user level are compatible
 	 */
 	private boolean isAccessLevelCompatible(String accessLevel) {
 		boolean access = false;
@@ -3341,9 +3420,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Does the table is excluded for current role (this method doesn't check the level of the table, use isTableAccess for this purpose)
-	 * @param tableID ID of the table
-	 * @return
+	 * Does the table is excluded for current role (this method doesn't check the access level of the table, use isTableAccessLevel for that purpose)
+	 * @param tableID AD_Table_ID
+	 * @return true if table access is excluded for this role
 	 */
 	public boolean isTableAccessExcluded(int tableID)
 	{

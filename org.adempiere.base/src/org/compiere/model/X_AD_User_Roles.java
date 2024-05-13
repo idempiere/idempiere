@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_User_Roles
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_User_Roles")
-public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent 
+public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_User_Roles (Properties ctx, int AD_User_Roles_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_User_Roles (Properties ctx, String AD_User_Roles_UU, String trxName)
+    {
+      super (ctx, AD_User_Roles_UU, trxName);
+      /** if (AD_User_Roles_UU == null)
+        {
+			setAD_Role_ID (0);
+			setAD_User_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_User_Roles (Properties ctx, String AD_User_Roles_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_User_Roles_UU, trxName, virtualColumns);
+      /** if (AD_User_Roles_UU == null)
+        {
+			setAD_Role_ID (0);
+			setAD_User_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_User_Roles (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_User_Roles[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

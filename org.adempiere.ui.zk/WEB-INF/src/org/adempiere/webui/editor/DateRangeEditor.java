@@ -131,7 +131,6 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 
 	/**
 	 * Set/Remove Mandatory Style
-	 * @param applyStyle
 	 */
 	public void setFieldMandatoryStyle() {
 		if (isMandatoryStyle())

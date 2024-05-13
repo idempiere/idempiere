@@ -28,16 +28,26 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /**
- * Authorization ScopeProvider
+ * Authorization Scope Provider
  */
 public class MAuthorizationScopeProv extends X_AD_AuthorizationScopeProv {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1862019802912162492L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AuthorizationScopeProv_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAuthorizationScopeProv(Properties ctx, String AD_AuthorizationScopeProv_UU, String trxName) {
+        super(ctx, AD_AuthorizationScopeProv_UU, trxName);
+    }
+
 	/**
-	 * Create empty Authorization ScopeProvider
+	 * Create empty Authorization Scope Provider
 	 *
 	 * @param ctx              context
 	 * @param AD_AuthorizationScopeProv_ID ID
@@ -48,7 +58,7 @@ public class MAuthorizationScopeProv extends X_AD_AuthorizationScopeProv {
 	} // MAuthorizationScopeProv
 
 	/**
-	 * Create Authorization ScopeProvider from current row in ResultSet
+	 * Create Authorization Scope Provider from current row in ResultSet
 	 *
 	 * @param ctx     context
 	 * @param rs      ResultSet

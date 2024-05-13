@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Imp_Backup
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Imp_Backup")
-public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Backup, I_Persistent 
+public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Backup, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Backup (Properties ctx, String AD_Package_Imp_Backup_UU, String trxName)
+    {
+      super (ctx, AD_Package_Imp_Backup_UU, trxName);
+      /** if (AD_Package_Imp_Backup_UU == null)
+        {
+			setAD_Package_Imp_Backup_ID (0);
+			setAD_Package_Imp_Detail_ID (0);
+			setAD_Package_Imp_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Backup (Properties ctx, String AD_Package_Imp_Backup_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Imp_Backup_UU, trxName, virtualColumns);
+      /** if (AD_Package_Imp_Backup_UU == null)
+        {
+			setAD_Package_Imp_Backup_ID (0);
+			setAD_Package_Imp_Detail_ID (0);
+			setAD_Package_Imp_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -137,7 +161,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Package_Imp_Backup_ID()));
     }
@@ -307,10 +331,10 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	public boolean isUninstall()
 	{
 		Object oo = get_Value(COLUMNNAME_Uninstall);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

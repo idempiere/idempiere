@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 973259852970379643L;
 
@@ -71,6 +72,18 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MChatType> s_cache 
 		= new ImmutableIntPOCache<Integer, MChatType> (Table_Name, 20);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param CM_ChatType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MChatType(Properties ctx, String CM_ChatType_UU, String trxName) {
+        super(ctx, CM_ChatType_UU, trxName);
+		if (Util.isEmpty(CM_ChatType_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -81,8 +94,15 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	{
 		super (ctx, CM_ChatType_ID, trxName);
 		if (CM_ChatType_ID == 0)
-			setModerationType (MODERATIONTYPE_NotModerated);
+			setInitialDefaults();
 	}	//	MChatType
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setModerationType (MODERATIONTYPE_NotModerated);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -96,7 +116,7 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	}	//	MChatType
 	
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MChatType(MChatType copy) 
@@ -105,7 +125,7 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -115,7 +135,7 @@ public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

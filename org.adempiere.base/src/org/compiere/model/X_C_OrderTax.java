@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_OrderTax
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderTax")
-public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent 
+public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_OrderTax (Properties ctx, int C_OrderTax_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_OrderTax (Properties ctx, String C_OrderTax_UU, String trxName)
+    {
+      super (ctx, C_OrderTax_UU, trxName);
+      /** if (C_OrderTax_UU == null)
+        {
+			setC_Order_ID (0);
+			setC_Tax_ID (0);
+			setIsTaxIncluded (false);
+			setProcessed (false);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderTax (Properties ctx, String C_OrderTax_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderTax_UU, trxName, virtualColumns);
+      /** if (C_OrderTax_UU == null)
+        {
+			setC_Order_ID (0);
+			setC_Tax_ID (0);
+			setIsTaxIncluded (false);
+			setProcessed (false);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_OrderTax (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -88,7 +118,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_OrderTax[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -204,10 +234,10 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	public boolean isTaxIncluded()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxIncluded);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -227,10 +257,10 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

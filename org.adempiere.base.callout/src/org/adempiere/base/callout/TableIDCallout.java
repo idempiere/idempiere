@@ -47,9 +47,17 @@ public class TableIDCallout implements IColumnCallout {
 	
 	@Override	
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
+		// do not trigger change if the table didn't change
+		if (oldValue != null && value != null && oldValue.equals(value))
+			return null;
+
 		GridField recordId = mTab.getField("Record_ID"); 
 		if (recordId != null) {
 			mTab.setValue(recordId, null);
+		}
+		GridField recordUU = mTab.getField("Record_UU"); 
+		if (recordUU != null) {
+			mTab.setValue(recordUU, null);
 		}
 		return null;
 	}

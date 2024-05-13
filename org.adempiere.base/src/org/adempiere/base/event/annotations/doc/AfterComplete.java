@@ -33,14 +33,13 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.annotations.EventTopic;
 
+/**
+ * Method annotation for after complete document action event 
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.DOC_AFTER_COMPLETE)
-/**
- * 
- * @author hengsin
- * 
- */
 public @interface AfterComplete {
 
 }

@@ -30,14 +30,23 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 
-public class MUserPreference extends X_AD_UserPreference{
-	/**
+public class MUserPreference extends X_AD_UserPreference {
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -5816348717625872665L;
+	private static final long serialVersionUID = 4313636387666521703L;
 
-	public MUserPreference(Properties ctx, int AD_UserPreference_ID,
-			String trxName) {
+	/**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserPreference_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserPreference(Properties ctx, String AD_UserPreference_UU, String trxName) {
+        super(ctx, AD_UserPreference_UU, trxName);
+    }
+
+	public MUserPreference(Properties ctx, int AD_UserPreference_ID, String trxName) {
 		super(ctx, AD_UserPreference_ID, trxName);
 
 	} //MUserPreference

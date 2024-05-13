@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_ReplicationDocument
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReplicationDocument")
-public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocument, I_Persistent 
+public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocument, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ReplicationDocument (Properties ctx, String AD_ReplicationDocument_UU, String trxName)
+    {
+      super (ctx, AD_ReplicationDocument_UU, trxName);
+      /** if (AD_ReplicationDocument_UU == null)
+        {
+			setAD_ReplicationDocument_ID (0);
+			setAD_ReplicationStrategy_ID (0);
+			setAD_Table_ID (0);
+			setC_DocType_ID (0);
+			setReplicationType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReplicationDocument (Properties ctx, String AD_ReplicationDocument_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReplicationDocument_UU, trxName, virtualColumns);
+      /** if (AD_ReplicationDocument_UU == null)
+        {
+			setAD_ReplicationDocument_ID (0);
+			setAD_ReplicationStrategy_ID (0);
+			setAD_Table_ID (0);
+			setC_DocType_ID (0);
+			setReplicationType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ReplicationDocument (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

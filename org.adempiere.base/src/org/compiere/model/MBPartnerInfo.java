@@ -26,7 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	Business Partner Info Model for Query
+ *	Business Partner Info Model for report view
  *	
  *  @author Jorg Janke
  *  @version $Id: MBPartnerInfo.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -34,7 +34,7 @@ import org.compiere.util.DB;
 public class MBPartnerInfo extends X_RV_BPartner
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7947336480731180299L;
 
@@ -47,7 +47,7 @@ public class MBPartnerInfo extends X_RV_BPartner
 	 *	@param EMail Contact/User EMail
 	 *	@param Phone phone
 	 *	@param City city
-	 *	@return array if of info
+	 *	@return array of MBPartnerInfo
 	 */
 	public static MBPartnerInfo[] find (Properties ctx, 
 		String Value, String Name, String Contact, String EMail, String Phone, String City)
@@ -136,12 +136,21 @@ public class MBPartnerInfo extends X_RV_BPartner
 		list.toArray(retValue);
 		return retValue;
 	}	//	find
-	
-	
+		
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MBPartnerInfo.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param RV_BPartner_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBPartnerInfo(Properties ctx, String RV_BPartner_UU, String trxName) {
+        super(ctx, RV_BPartner_UU, trxName);
+    }
+
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set

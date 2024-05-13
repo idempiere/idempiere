@@ -35,14 +35,26 @@ public class WindowValidatorEvent {
 	private ADWindow window;
 	/** Event name **/
 	private String name;
+	/** Event data **/
+	private Object data;
 
 	/**
 	 * @param window
 	 * @param name
 	 */
 	public WindowValidatorEvent(ADWindow window, String name) {
+		this(window, name, null);
+	}
+	
+	/**
+	 * @param window
+	 * @param name
+	 * @param data
+	 */
+	public WindowValidatorEvent(ADWindow window, String name, Object data) {
 		this.window = window;
 		this.name = name;
+		this.data = data;
 	}
 	
 	/**
@@ -57,5 +69,20 @@ public class WindowValidatorEvent {
 	 */
 	public String getName() {
 		return this.name;
+	}
+	
+	/**
+	 * @return Event data
+	 */
+	public Object getData() {
+		return data;
+	}
+
+	/**
+	 * Set event data
+	 * @param data
+	 */
+	public void setData(Object data) {
+		this.data = data;
 	}
 }

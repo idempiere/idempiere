@@ -20,9 +20,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Currency Model.
@@ -32,9 +33,21 @@ import org.idempiere.cache.ImmutablePOCache;
 public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4325153934518648373L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Currency_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCurrency(Properties ctx, String C_Currency_UU, String trxName) {
+        super(ctx, C_Currency_UU, trxName);
+		if (Util.isEmpty(C_Currency_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Currency Constructor
@@ -46,13 +59,18 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	{
 		super (ctx, C_Currency_ID, trxName);
 		if (C_Currency_ID == 0)
-		{
-			setIsEMUMember (false);
-			setIsEuro (false);
-			setStdPrecision (2);
-			setCostingPrecision (4);
-		}
+			setInitialDefaults();
 	}	//	MCurrency
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsEMUMember (false);
+		setIsEuro (false);
+		setStdPrecision (2);
+		setCostingPrecision (4);
+	}
 
 	/**
 	 * Resultset constructor
@@ -89,7 +107,7 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	}	//	MCurrency
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCurrency(MCurrency copy) 
@@ -98,7 +116,7 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -108,7 +126,7 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -119,7 +137,7 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**	Store System Currencies			**/
+	/**	Currencies cache		**/
 	private static ImmutableIntPOCache<Integer,MCurrency> s_currencies = new ImmutableIntPOCache<Integer,MCurrency>(Table_Name, 50);
 	/** Cache System Currencies by using ISO code as key **/
 	private static ImmutablePOCache<String,MCurrency> s_currenciesISO = new ImmutablePOCache<String,MCurrency>(Table_Name, "C_CurrencyISO", 50);
@@ -231,6 +249,7 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder msgreturn = new StringBuilder("MCurrency[").append(getC_Currency_ID())

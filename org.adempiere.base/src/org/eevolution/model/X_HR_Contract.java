@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Contract
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_Contract")
-public class X_HR_Contract extends PO implements I_HR_Contract, I_Persistent 
+public class X_HR_Contract extends PO implements I_HR_Contract, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_Contract (Properties ctx, int HR_Contract_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_HR_Contract extends PO implements I_HR_Contract, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_Contract (Properties ctx, String HR_Contract_UU, String trxName)
+    {
+      super (ctx, HR_Contract_UU, trxName);
+      /** if (HR_Contract_UU == null)
+        {
+			setHR_Contract_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Contract (Properties ctx, String HR_Contract_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Contract_UU, trxName, virtualColumns);
+      /** if (HR_Contract_UU == null)
+        {
+			setHR_Contract_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_Contract (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_HR_Contract extends PO implements I_HR_Contract, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -240,7 +262,7 @@ public class X_HR_Contract extends PO implements I_HR_Contract, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

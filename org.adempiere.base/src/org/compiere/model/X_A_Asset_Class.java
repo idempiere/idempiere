@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for A_Asset_Class
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Class")
-public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent 
+public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Class (Properties ctx, int A_Asset_Class_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Class (Properties ctx, String A_Asset_Class_UU, String trxName)
+    {
+      super (ctx, A_Asset_Class_UU, trxName);
+      /** if (A_Asset_Class_UU == null)
+        {
+			setA_Asset_Class_ID (0);
+			setA_Life_Period_Max (0);
+			setA_Life_Period_Min (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Class (Properties ctx, String A_Asset_Class_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Class_UU, trxName, virtualColumns);
+      /** if (A_Asset_Class_UU == null)
+        {
+			setA_Asset_Class_ID (0);
+			setA_Life_Period_Max (0);
+			setA_Life_Period_Min (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Class (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

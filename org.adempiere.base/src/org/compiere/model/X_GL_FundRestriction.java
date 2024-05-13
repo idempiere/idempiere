@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_FundRestriction
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_FundRestriction")
-public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_Persistent 
+public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_FundRestriction (Properties ctx, int GL_FundRestriction_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_FundRestriction (Properties ctx, String GL_FundRestriction_UU, String trxName)
+    {
+      super (ctx, GL_FundRestriction_UU, trxName);
+      /** if (GL_FundRestriction_UU == null)
+        {
+			setC_ElementValue_ID (0);
+			setGL_Fund_ID (0);
+			setGL_FundRestriction_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_FundRestriction (Properties ctx, String GL_FundRestriction_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_FundRestriction_UU, trxName, virtualColumns);
+      /** if (GL_FundRestriction_UU == null)
+        {
+			setC_ElementValue_ID (0);
+			setGL_Fund_ID (0);
+			setGL_FundRestriction_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_FundRestriction (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -215,7 +241,7 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_CostElement
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_CostElement")
-public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent 
+public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_CostElement (Properties ctx, int M_CostElement_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_CostElement (Properties ctx, String M_CostElement_UU, String trxName)
+    {
+      super (ctx, M_CostElement_UU, trxName);
+      /** if (M_CostElement_UU == null)
+        {
+			setCostElementType (null);
+			setIsCalculated (false);
+			setM_CostElement_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostElement (Properties ctx, String M_CostElement_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostElement_UU, trxName, virtualColumns);
+      /** if (M_CostElement_UU == null)
+        {
+			setCostElementType (null);
+			setIsCalculated (false);
+			setM_CostElement_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_CostElement (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -183,10 +209,10 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	public boolean isCalculated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCalculated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -248,7 +274,7 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

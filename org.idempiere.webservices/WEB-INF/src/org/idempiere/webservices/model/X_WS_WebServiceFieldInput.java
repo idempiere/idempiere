@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldInput")
-public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent 
+public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -56,6 +56,28 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebServiceFieldInput (Properties ctx, String WS_WebServiceFieldInput_UU, String trxName)
+    {
+      super (ctx, WS_WebServiceFieldInput_UU, trxName);
+      /** if (WS_WebServiceFieldInput_UU == null)
+        {
+			setWS_WebServiceFieldInput_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceFieldInput (Properties ctx, String WS_WebServiceFieldInput_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceFieldInput_UU, trxName, virtualColumns);
+      /** if (WS_WebServiceFieldInput_UU == null)
+        {
+			setWS_WebServiceFieldInput_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +85,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -213,10 +235,10 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	public boolean isIdentifier()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -236,10 +258,10 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	public boolean isNullIdentifier()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNullIdentifier);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -269,7 +291,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getWS_WebServiceFieldInput_ID()));
     }

@@ -1,0 +1,45 @@
+<?page title="iDempiere" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
+<?init zscript="theme.zs" ?>
+<?link rel="icon" type="image/png" href="${browserIcon}"?>
+<zk>
+<zscript>
+<![CDATA[
+	import org.compiere.util.Msg;
+	import org.compiere.util.Env;
+	import org.adempiere.webui.theme.ThemeManager;
+	self.setTitle(ThemeManager.getBrowserTitle());
+]]>
+</zscript>
+<script>
+<![CDATA[
+	zk.load("adempiere.local.storage");
+]]>
+</script>
+<window width="60%" mode="highlighted">
+<vbox style="padding: 5px">
+<window use="org.adempiere.webui.window.ErrorWindow" id="ErrorWindow"/>
+<div id="errorText"></div>
+<div style="margin-top: 10px">
+	<toolbarbutton id="continueText" href="/index.zul" label="Continue"/>
+</div>
+</vbox>
+<script defer="true">
+<![CDATA[
+	var callback = function(ok, val) {
+		if (ok && !!val)
+		{
+			document.getElementById("${errorText.uuid}").innerHTML = val;
+		}
+	};
+	var callbackC = function(ok, val) {
+		if (ok && !!val)
+		{
+			document.getElementById("${continueText.uuid}").innerHTML = val;
+		}
+	};
+    adempiere.get("zkErrorMsg", callback);
+	adempiere.get("zkContinueText", callbackC);
+]]>	
+</script>
+</window>
+</zk>

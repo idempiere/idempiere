@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
  *	Alert Recipient
  *	
@@ -29,9 +28,19 @@ import java.util.Properties;
 public class MAlertRecipient extends X_AD_AlertRecipient
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7388195934030609324L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AlertRecipient_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAlertRecipient(Properties ctx, String AD_AlertRecipient_UU, String trxName) {
+        super(ctx, AD_AlertRecipient_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -54,9 +63,7 @@ public class MAlertRecipient extends X_AD_AlertRecipient
 	{
 		super(ctx, rs, trxName);
 	}	//	MAlertRecipient
-
-	
-	
+		
 	/**
 	 * 	Get User
 	 *	@return	AD_User_ID or -1 if none

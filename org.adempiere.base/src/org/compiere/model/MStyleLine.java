@@ -32,15 +32,25 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
+ * Lines for MStyle
  * @author hengsin
- *
  */
 public class MStyleLine extends X_AD_StyleLine implements ImmutablePOSupport {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5884961214171382581L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_StyleLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MStyleLine(Properties ctx, String AD_StyleLine_UU, String trxName) {
+        super(ctx, AD_StyleLine_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
@@ -61,7 +71,7 @@ public class MStyleLine extends X_AD_StyleLine implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MStyleLine(MStyleLine copy) {
@@ -69,7 +79,7 @@ public class MStyleLine extends X_AD_StyleLine implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -78,7 +88,7 @@ public class MStyleLine extends X_AD_StyleLine implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

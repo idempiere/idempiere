@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_S_TimeExpenseLine 
 {
@@ -385,6 +385,19 @@ public interface I_S_TimeExpenseLine
 	  * Optional additional user defined information
 	  */
 	public String getNote();
+
+	 /** Column name LineNetAmt */
+    public static final String COLUMNNAME_LineNetAmt = "LineNetAmt";
+
+	/** Set Line Amount.
+	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
+	  */
+	public void setLineNetAmt (BigDecimal LineNetAmt);
+
+	/** Get Line Amount.
+	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
+	  */
+	public BigDecimal getLineNetAmt();
 
     /** Column name PriceInvoiced */
     public static final String COLUMNNAME_PriceInvoiced = "PriceInvoiced";

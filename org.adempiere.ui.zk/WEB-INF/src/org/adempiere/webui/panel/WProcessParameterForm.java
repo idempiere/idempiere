@@ -26,12 +26,14 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MScheduler;
+import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -44,14 +46,18 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
+/**
+ * Form to capture process parameters for scheduler, etc
+ */
 @org.idempiere.ui.zk.annotation.Form
 public class WProcessParameterForm extends ADForm
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2533099650671242190L;
 
+	/** Form Controller */
 	private WProcessParameter pp;
 
 	private VerticalBox dialogBody;
@@ -70,8 +76,14 @@ public class WProcessParameterForm extends ADForm
 
 	private ProcessParameterPanel parameterPanel;
 	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	private final static CLogger log = CLogger.getCLogger(WProcessParameterForm.class);
 
+	/**
+	 * @param wpp
+	 */
 	public WProcessParameterForm(WProcessParameter wpp) {
 		pp = wpp;
 		initComponents();
@@ -105,10 +117,20 @@ public class WProcessParameterForm extends ADForm
 		}
 	}
 	
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.dispose();
 	}
 
+	/**
+	 * Handle onOk event
+	 */
 	private void onOK() {
 		MPInstancePara[] paras = parameterPanel.getParameters();
 		GridTab gridTab = super.getGridTab();
@@ -148,6 +170,9 @@ public class WProcessParameterForm extends ADForm
 		ZKUpdateUtil.setVflex(this, "min");
 	}
 
+	/**
+	 * Create components
+	 */
 	private void initComponents() {
 		this.setBorder("normal");		
 		dialogBody = new VerticalBox();
@@ -185,8 +210,8 @@ public class WProcessParameterForm extends ADForm
 	}
 	
 	/**
-	 *	Dynamic Init
-	 *  @return true, if there is something to process (start from menu)
+	 * Init {@link #parameterPanel}
+	 * @return true if init ok
 	 */
 	private boolean init()
 	{
@@ -243,7 +268,6 @@ public class WProcessParameterForm extends ADForm
 		this.setTitle(m_Name);
 		message.setContent(m_messageText.toString());
 
-		//	Move from APanel.actionButton
 		processInfo.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		processInfo.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		processInfo.setTitle(m_Name);

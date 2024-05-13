@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Schedule
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Schedule")
-public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent 
+public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Schedule (Properties ctx, int AD_Schedule_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Schedule (Properties ctx, String AD_Schedule_UU, String trxName)
+    {
+      super (ctx, AD_Schedule_UU, trxName);
+      /** if (AD_Schedule_UU == null)
+        {
+			setIsIgnoreProcessingTime (false);
+// N
+			setIsSystemSchedule (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Schedule (Properties ctx, String AD_Schedule_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Schedule_UU, trxName, virtualColumns);
+      /** if (AD_Schedule_UU == null)
+        {
+			setIsIgnoreProcessingTime (false);
+// N
+			setIsSystemSchedule (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Schedule (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -215,10 +243,10 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 	public boolean isIgnoreProcessingTime()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIgnoreProcessingTime);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -238,10 +266,10 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 	public boolean isSystemSchedule()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSystemSchedule);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -285,7 +313,7 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

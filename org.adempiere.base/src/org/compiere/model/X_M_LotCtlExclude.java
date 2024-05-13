@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_LotCtlExclude
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_LotCtlExclude")
-public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persistent 
+public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_LotCtlExclude (Properties ctx, int M_LotCtlExclude_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_LotCtlExclude (Properties ctx, String M_LotCtlExclude_UU, String trxName)
+    {
+      super (ctx, M_LotCtlExclude_UU, trxName);
+      /** if (M_LotCtlExclude_UU == null)
+        {
+			setAD_Table_ID (0);
+			setIsSOTrx (false);
+			setM_LotCtlExclude_ID (0);
+			setM_LotCtl_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_LotCtlExclude (Properties ctx, String M_LotCtlExclude_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_LotCtlExclude_UU, trxName, virtualColumns);
+      /** if (M_LotCtlExclude_UU == null)
+        {
+			setAD_Table_ID (0);
+			setIsSOTrx (false);
+			setM_LotCtlExclude_ID (0);
+			setM_LotCtl_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_LotCtlExclude (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -128,10 +154,10 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

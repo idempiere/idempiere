@@ -30,29 +30,33 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- * Auto sync corresponding price list with the price list schema and base price list.
+ * Model validator to sync corresponding price list with the price list schema and base price list.
  * @author Elaine
- *
  */
 public class ProductPriceValidator implements ModelValidator {
 	
 	private static final CLogger log = CLogger.getCLogger(ProductPriceValidator.class);
 	private int m_AD_Client_ID;
 	
+	@Override
 	public int getAD_Client_ID() {
 		return m_AD_Client_ID;
 	}
 
+	@Override
 	public void initialize(ModelValidationEngine engine, MClient client) {
 		engine.addModelChange(MProductPrice.Table_Name, this);
 		if (client != null)
 			m_AD_Client_ID = client.getAD_Client_ID();
 	}
 
+
+	@Override
 	public String login(int AD_Org_ID, int AD_Role_ID, int AD_User_ID) {
 		return null;
 	}
 
+	@Override
 	public String modelChange(PO po, int type) throws Exception {
 		if (po instanceof MProductPrice) {
 			if (type == TYPE_AFTER_CHANGE || type == TYPE_AFTER_NEW || type == TYPE_AFTER_DELETE) {
@@ -134,6 +138,7 @@ public class ProductPriceValidator implements ModelValidator {
 		return null;
 	}
 	
+	@Override
 	public String docValidate(PO po, int timing) {
 		return null;
 	}

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for A_Depreciation_Convention
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Convention")
-public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_Convention, I_Persistent 
+public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_Convention, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Convention (Properties ctx, int A_Depreciation_Convention_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Depreciation_Convention (Properties ctx, String A_Depreciation_Convention_UU, String trxName)
+    {
+      super (ctx, A_Depreciation_Convention_UU, trxName);
+      /** if (A_Depreciation_Convention_UU == null)
+        {
+			setA_Depreciation_Convention_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Convention (Properties ctx, String A_Depreciation_Convention_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Convention_UU, trxName, virtualColumns);
+      /** if (A_Depreciation_Convention_UU == null)
+        {
+			setA_Depreciation_Convention_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Depreciation_Convention (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -181,10 +205,10 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -203,10 +227,10 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

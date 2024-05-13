@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_AllClients_V
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_AllClients_V")
-public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persistent 
+public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AllClients_V (Properties ctx, int AD_AllClients_V_ID, String trxName)
@@ -50,6 +50,24 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_AllClients_V (Properties ctx, String AD_AllClients_V_UU, String trxName)
+    {
+      super (ctx, AD_AllClients_V_UU, trxName);
+      /** if (AD_AllClients_V_UU == null)
+        {
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AllClients_V (Properties ctx, String AD_AllClients_V_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AllClients_V_UU, trxName, virtualColumns);
+      /** if (AD_AllClients_V_UU == null)
+        {
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_AllClients_V (Properties ctx, ResultSet rs, String trxName)
     {
@@ -57,7 +75,7 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

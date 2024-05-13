@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_Training")
-public class X_S_Training extends PO implements I_S_Training, I_Persistent 
+public class X_S_Training extends PO implements I_S_Training, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_Training (Properties ctx, int S_Training_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_Training (Properties ctx, String S_Training_UU, String trxName)
+    {
+      super (ctx, S_Training_UU, trxName);
+      /** if (S_Training_UU == null)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setS_Training_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_Training (Properties ctx, String S_Training_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_Training_UU, trxName, virtualColumns);
+      /** if (S_Training_UU == null)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setS_Training_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_Training (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -272,7 +300,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -290,10 +318,10 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

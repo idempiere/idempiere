@@ -16,12 +16,12 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
+ * CSS Style model
  * @author hengsin
- *
  */
 public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5409686715292148171L;
 	/**	Cache					*/
@@ -31,16 +31,36 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
     public static final String SCLASS_PREFIX = "@sclass=";
     public static final String ZCLASS_PREFIX = "@zclass=";
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Style_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MStyle(Properties ctx, String AD_Style_UU, String trxName) {
+        super(ctx, AD_Style_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_Style_ID
+     * @param trxName
+     */
 	public MStyle(Properties ctx, int AD_Style_ID, String trxName) {
 		super(ctx, AD_Style_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MStyle(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MStyle(MStyle copy) {
@@ -48,7 +68,7 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -57,7 +77,7 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -101,6 +121,10 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 		return retValue;
 	}	//	get
 	
+	/**
+	 * Get lines
+	 * @return array of style line
+	 */
 	public MStyleLine[] getStyleLines() {
 		if (m_lines == null) {
 			Query query = new Query(Env.getCtx(), I_AD_StyleLine.Table_Name, "AD_Style_ID=? AND InlineStyle IS NOT NULL", null);
@@ -114,6 +138,12 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 		return m_lines;
 	}
 	
+	/**
+	 * Build CSS style text from lines
+	 * @param defaultTheme
+	 * @param evaluatee evaluatee for display logic
+	 * @return CSS style text
+	 */
 	public String buildStyle(String defaultTheme, Evaluatee evaluatee) {
 		X_AD_StyleLine[] lines = getStyleLines();
 		StringBuilder styleBuilder = new StringBuilder();
@@ -148,6 +178,5 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 			Arrays.stream(m_lines).forEach(e -> e.markImmutable());
 		return this;
 	}
-	
-	
+		
 }

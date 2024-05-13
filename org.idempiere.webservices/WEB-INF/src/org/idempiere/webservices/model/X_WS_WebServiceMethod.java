@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceMethod
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceMethod")
-public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, I_Persistent 
+public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebServiceMethod (Properties ctx, String WS_WebServiceMethod_UU, String trxName)
+    {
+      super (ctx, WS_WebServiceMethod_UU, trxName);
+      /** if (WS_WebServiceMethod_UU == null)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebServiceMethod_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceMethod (Properties ctx, String WS_WebServiceMethod_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceMethod_UU, trxName, virtualColumns);
+      /** if (WS_WebServiceMethod_UU == null)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebServiceMethod_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebServiceMethod (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -180,7 +204,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getWS_WebService_ID()));
     }

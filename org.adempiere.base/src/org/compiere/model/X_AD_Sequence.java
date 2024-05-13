@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Sequence
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence")
-public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent 
+public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Sequence (Properties ctx, int AD_Sequence_ID, String trxName)
@@ -81,6 +81,54 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Sequence (Properties ctx, String AD_Sequence_UU, String trxName)
+    {
+      super (ctx, AD_Sequence_UU, trxName);
+      /** if (AD_Sequence_UU == null)
+        {
+			setAD_Sequence_ID (0);
+			setCurrentNext (0);
+// 1000000
+			setCurrentNextSys (0);
+// 100
+			setIncrementNo (0);
+// 1
+			setIsAutoSequence (false);
+			setIsOrgLevelSequence (false);
+// N
+			setName (null);
+			setStartNewMonth (false);
+// N
+			setStartNo (0);
+// 1000000
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Sequence (Properties ctx, String AD_Sequence_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Sequence_UU, trxName, virtualColumns);
+      /** if (AD_Sequence_UU == null)
+        {
+			setAD_Sequence_ID (0);
+			setCurrentNext (0);
+// 1000000
+			setCurrentNextSys (0);
+// 100
+			setIncrementNo (0);
+// 1
+			setIsAutoSequence (false);
+			setIsOrgLevelSequence (false);
+// N
+			setName (null);
+			setStartNewMonth (false);
+// N
+			setStartNo (0);
+// 1000000
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Sequence (Properties ctx, ResultSet rs, String trxName)
     {
@@ -88,7 +136,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -265,10 +313,10 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isAudited()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAudited);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -288,10 +336,10 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isAutoSequence()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoSequence);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -311,10 +359,10 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isOrgLevelSequence()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrgLevelSequence);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -334,10 +382,10 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isTableID()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTableID);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -362,7 +410,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -412,10 +460,10 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isStartNewMonth()
 	{
 		Object oo = get_Value(COLUMNNAME_StartNewMonth);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -435,10 +483,10 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isStartNewYear()
 	{
 		Object oo = get_Value(COLUMNNAME_StartNewYear);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

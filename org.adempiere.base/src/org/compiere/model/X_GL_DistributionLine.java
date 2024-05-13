@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_DistributionLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_DistributionLine")
-public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, I_Persistent 
+public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName)
@@ -89,6 +89,60 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_DistributionLine (Properties ctx, String GL_DistributionLine_UU, String trxName)
+    {
+      super (ctx, GL_DistributionLine_UU, trxName);
+      /** if (GL_DistributionLine_UU == null)
+        {
+			setGL_Distribution_ID (0);
+			setGL_DistributionLine_ID (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
+			setOverwriteAcct (false);
+			setOverwriteActivity (false);
+			setOverwriteBPartner (false);
+			setOverwriteCampaign (false);
+			setOverwriteLocFrom (false);
+			setOverwriteLocTo (false);
+			setOverwriteOrg (false);
+			setOverwriteOrgTrx (false);
+			setOverwriteProduct (false);
+			setOverwriteProject (false);
+			setOverwriteSalesRegion (false);
+			setOverwriteUser1 (false);
+			setOverwriteUser2 (false);
+			setPercent (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_DistributionLine (Properties ctx, String GL_DistributionLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_DistributionLine_UU, trxName, virtualColumns);
+      /** if (GL_DistributionLine_UU == null)
+        {
+			setGL_Distribution_ID (0);
+			setGL_DistributionLine_ID (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
+			setOverwriteAcct (false);
+			setOverwriteActivity (false);
+			setOverwriteBPartner (false);
+			setOverwriteCampaign (false);
+			setOverwriteLocFrom (false);
+			setOverwriteLocTo (false);
+			setOverwriteOrg (false);
+			setOverwriteOrgTrx (false);
+			setOverwriteProduct (false);
+			setOverwriteProject (false);
+			setOverwriteSalesRegion (false);
+			setOverwriteUser1 (false);
+			setOverwriteUser2 (false);
+			setPercent (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_DistributionLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -96,7 +150,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -460,7 +514,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
@@ -529,10 +583,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteAcct()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteAcct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -552,10 +606,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteActivity()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteActivity);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -575,10 +629,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteBPartner()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteBPartner);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -598,10 +652,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteCampaign()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteCampaign);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -621,10 +675,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteLocFrom()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteLocFrom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -644,10 +698,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteLocTo()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteLocTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -667,10 +721,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteOrg()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteOrg);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -690,10 +744,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteOrgTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteOrgTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -713,10 +767,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteProduct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -736,10 +790,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteProject()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteProject);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -759,10 +813,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteSalesRegion()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteSalesRegion);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -782,10 +836,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteUser1()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteUser1);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -805,10 +859,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public boolean isOverwriteUser2()
 	{
 		Object oo = get_Value(COLUMNNAME_OverwriteUser2);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -17,27 +17,27 @@ import org.compiere.model.InfoColumnVO;
 import org.compiere.model.Lookup;
 
 /**
+ * Factory interface for {@link Lookup}.
+ * For plugin that implement this as OSGi component, use <b>property = {"service.ranking:Integer=1"}</b> to set up a calling order 
+ * that prioritizes your component over core component.
  * @author Jan Thielemann - jan.thielemann@evenos.de
  * @author evenos Consulting GmbH - www.evenos.org
  */
 public interface ILookupFactory {
 	
 	/**
-	 * 
 	 * @param gridFieldVO
 	 * @return lookup instance
 	 */
 	public Lookup getLookup (GridFieldVO gridFieldVO);
 
 	/**
-	 * 
 	 * @param gridFieldVO
 	 * @return true if the field's displaytype uses lookup
 	 */
 	public boolean isLookup(GridFieldVO gridFieldVO);
 
 	/**
-	 * 
 	 * @param infoColumnVO
 	 * @return true if the field's displaytype uses lookup
 	 */

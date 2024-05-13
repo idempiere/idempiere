@@ -19,9 +19,8 @@ import java.util.List;
 import org.compiere.model.GridTab;
 
 /**
- *
+ * Interface to export data from {@link GridTab}
  * @author hengsin
- *
  */
 public interface IGridTabExporter {
 
@@ -31,21 +30,22 @@ public interface IGridTabExporter {
 	 * @param childs
 	 * @param isCurrentRowOnly
 	 * @param file
+	 * @param indxDetailSelected index of selected child tab
 	 */
 	public void export(GridTab gridTab, List<GridTab> childs, boolean isCurrentRowOnly, File file, int indxDetailSelected);
 
 	/**
-	 * @return file extension
+	 * @return file extension (csv, zip, ect)
 	 */
 	public String getFileExtension();
 
 	/**
-	 * @return description for file extension
+	 * @return label for file extension
 	 */
 	public String getFileExtensionLabel();
 
 	/**
-	 * @return mime type
+	 * @return mime content type
 	 */
 	public String getContentType();
 
@@ -55,9 +55,31 @@ public interface IGridTabExporter {
 	public String getSuggestedFileName(GridTab gridTab);
 	
 	/**
-	 * Check a tab (detail tab) is support to export in this exporter
-	 * @param gridTab
-	 * @return
+	 * Check if exported support the export of a child tab
+	 * @param childTab
+	 * @return true if export is supported, false otherwise
 	 */
-	public boolean isExportableTab (GridTab gridTab);
+	public boolean isExportableTab (GridTab childTab);
+	
+	/**
+	 * @return true if exporter is available to role with advanced access only
+	 */
+	default boolean isAdvanced()  {
+		return false;
+	}
+	
+	/**
+	 * @return true if export of child tabs is supported only when current row only is on.
+	 */
+	default boolean isExportChildTabsForCurrentRowOnly() {
+		return false;
+	}
+	
+	/**
+	 * Maximum deep of child tab supported by the exporter
+	 * @return &gt; 0 for maximum level of deep, &lt;= 0 for unlimited level of deep 
+	 */
+	default int maxDeepOfChildTab() {
+		return 0;
+	}
 }

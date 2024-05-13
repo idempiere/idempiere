@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for T_MRP_CRP
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_MRP_CRP")
-public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent 
+public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_MRP_CRP (Properties ctx, int T_MRP_CRP_ID, String trxName)
@@ -53,6 +53,26 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_MRP_CRP (Properties ctx, String T_MRP_CRP_UU, String trxName)
+    {
+      super (ctx, T_MRP_CRP_UU, trxName);
+      /** if (T_MRP_CRP_UU == null)
+        {
+			setT_MRP_CRP_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_MRP_CRP (Properties ctx, String T_MRP_CRP_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_MRP_CRP_UU, trxName, virtualColumns);
+      /** if (T_MRP_CRP_UU == null)
+        {
+			setT_MRP_CRP_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_MRP_CRP (Properties ctx, ResultSet rs, String trxName)
     {
@@ -60,7 +80,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

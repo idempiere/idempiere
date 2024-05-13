@@ -55,10 +55,9 @@ import org.idempiere.util.ParseSeq;
  *  and AD_Column (the storage attributes).
  *  <p>
  *  The Field maintains the current edited value. If the value is changed,
- *  it fire PropertyChange "FieldValue".
- *  If the background is changed the PropertyChange "FieldAttribute" is fired.
+ *  it fire PropertyChange "FieldValue" event.
  *  <br>
- *  Usually editors listen to their fields.
+ *  Usually editors listen to PropertyChange event of their fields.
  *
  *  @author Jorg Janke
  *  @author Victor Perez , e-Evolution.SC FR [ 1757088 ], [1877902] Implement JSR 223 Scripting APIs to Callout
@@ -81,7 +80,7 @@ public class GridField
 	implements Serializable, Evaluatee, Cloneable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4496344553246662012L;
 	
@@ -125,7 +124,7 @@ public class GridField
 	private boolean m_lockedRecord = false;
 	
 	/**
-	 *  Dispose
+	 * Clean up
 	 */
 	protected void dispose()
 	{
@@ -142,7 +141,6 @@ public class GridField
 	private Lookup			m_lookup = null;
 	/** New Row / inserting         */
 	private boolean			m_inserting = false;
-
 
 	/** Max Display Length = 60		*/
 	public static final int MAXDISPLAY_LENGTH = 60;
@@ -174,10 +172,9 @@ public class GridField
 
 	/**	Logger			*/
 	private static CLogger	log = CLogger.getCLogger(GridField.class);
-	
-	
-	/**************************************************************************
-	 *  Set Lookup for columns with lookup
+		
+	/**
+	 *  Set Lookup for columns with lookup and IsDisplayed=true
 	 */
 	public void loadLookup()
 	{
@@ -211,7 +208,7 @@ public class GridField
 	}
 
 	/***
-	 * bypass isdisplay validation, used by findwindow
+	 * Skip isDisplay checking
 	 */
 	public void loadLookupNoValidate() {
 		if (m_vo.lookupInfo == null && isLookup()) {
@@ -233,7 +230,7 @@ public class GridField
 	}
 
 	/**
-	 *  Wait until Load is complete
+	 *  Wait until loading of lookup is complete
 	 */
 	public void lookupLoadComplete()
 	{
@@ -272,7 +269,7 @@ public class GridField
 	}   //  isLookup
 
 	/**
-	 *  Refresh Lookup if the lookup is unstable
+	 *  Refresh Lookup if necessary
 	 *  @return true if lookup is validated
 	 */
 	public boolean refreshLookup()
@@ -280,7 +277,7 @@ public class GridField
 		if (m_lookup == null)
 			return true;
 
-		//  if there is a validation string, the lookup is unstable - read-only fields are not loaded initially
+		//  if there is a validation string, the lookup might need refresh - read-only fields are not loaded initially
 		if (m_lookup.getValidation().length() == 0 && m_lookup.isLoaded())
 			return true;
 		//
@@ -290,9 +287,13 @@ public class GridField
 	}   //  refreshLookup
 
 	/**
-	 *  Get a list of variables, this field is dependent on.
-	 *  - for display purposes or
-	 *  - for lookup purposes
+	 *  <pre>
+	 *  Get a list of variables that this field is dependent on.
+	 *  - for display logic or
+	 *  - for readonly logic or
+	 *  - for mandatory or
+	 *  - for lookup validation
+	 *  </pre>
 	 *  @return ArrayList
 	 */
 	public ArrayList<String> getDependentOn()
@@ -303,7 +304,7 @@ public class GridField
 		Evaluator.parseDepends(list, m_vo.ReadOnlyLogic);
 		Evaluator.parseDepends(list, m_vo.MandatoryLogic);
 		// Virtual UI Column
-		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="))
+		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 			Evaluator.parseDepends(list, m_vo.ColumnSQL.substring(5));
 		//  Lookup
 		if (m_lookup != null)
@@ -318,11 +319,10 @@ public class GridField
 		}
 		return list;
 	}   //  getDependentOn
-
 	
-	/**************************************************************************
+	/**
 	 *	Set Error.
-	 *  Used by editors to set the color
+	 *  Used by editors to set the color.
 	 *  @param error true if error
 	 */
 	public void setError (boolean error)
@@ -331,28 +331,25 @@ public class GridField
 	}	//	setBackground
 
 	/**
-	 *	Get Background Error.
-	 *  @return error
+	 *  @return true if there's error
 	 */
 	public boolean isError()
 	{
 		return m_error;
 	}	//	isError
 
-
 	/**
 	 *	Is it Mandatory to enter for user?
-	 *  Mandatory checking is dome in MTable.getMandatory
 	 *  @param checkContext - check environment (requires correct row position)
 	 *  @return true if mandatory
 	 */
 	public boolean isMandatory (boolean checkContext)
 	{
-//	  Do we have a mandatory rule
+		// Do we have a mandatory rule
 		if (checkContext && m_vo.MandatoryLogic.length() > 0)
 		{
 			boolean retValue  = false;
-			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith("@SQL=")) {
+			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				retValue = Evaluator.parseSQLLogic(m_vo.MandatoryLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 
 			} else{
@@ -393,7 +390,7 @@ public class GridField
 	public boolean isEditablePara(boolean checkContext) {
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
-			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
+			if (m_vo.ReadOnlyLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 			{
 				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
@@ -413,7 +410,7 @@ public class GridField
 	}
 	
 	/**
-	 *	Is it Editable - checks IsActive, IsUpdateable, and isDisplayed
+	 *	Is it Editable
 	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
 	 *  @return true, if editable
 	 */
@@ -423,8 +420,8 @@ public class GridField
 	}
 	
 	/**
-	 *	Is it Editable in Grid- checks IsActive, IsUpdateable, and isDisplayedGrid
-	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
+	 *	Is it Editable in Grid
+	 *  @param checkContext if true checks environment context
 	 *  @return true, if editable
 	 */
 	public boolean isEditableGrid (boolean checkContext)
@@ -433,8 +430,8 @@ public class GridField
 	}
 	
 	/**
-	 *	Is it Editable - checks IsActive, IsUpdateable, and isDisplayed
-	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
+	 *	Is it Editable
+	 *  @param checkContext if true checks environment context
 	 *  @return true, if editable
 	 */
 	public boolean isEditable (Properties ctx, boolean checkContext,boolean isGrid)
@@ -443,7 +440,7 @@ public class GridField
 			return false;
 		if (m_lockedRecord)
 			return false;
-		//  Fields always enabled (are usually not updateable)
+		//  Fields always enabled (are usually not updatable)
 		if (m_vo.ColumnName.equals("Posted")
 			|| (m_vo.ColumnName.equals("Record_ID") && m_vo.displayType == DisplayType.Button))	//  Zoom
 			return true;
@@ -455,7 +452,7 @@ public class GridField
 			return false;
 		}
 
-		//  Fields always updateable
+		//  Fields always updatable
 		if (m_vo.IsAlwaysUpdateable)
 		{
 			return true;
@@ -465,7 +462,7 @@ public class GridField
 		if (checkContext && m_vo.AlwaysUpdatableLogic.length() > 0)
 		{
 			boolean isAlwaysUpdatable = false;
-			if (m_vo.AlwaysUpdatableLogic.startsWith("@SQL=")) {
+			if (m_vo.AlwaysUpdatableLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, ctx, m_vo.WindowNo,
 						m_vo.TabNo, m_vo.ColumnName);
 			} else {
@@ -493,7 +490,7 @@ public class GridField
 			}
 		}
 
-		//	Not Updateable - only editable if new updateable row
+		//	Not updatable - only editable if new updatable row
 		if (!m_vo.IsUpdateable && !m_inserting)
 		{
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - FieldUpdateable=" + m_vo.IsUpdateable);
@@ -546,7 +543,7 @@ public class GridField
 		//  Do we have a readonly rule
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
-			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
+			if (m_vo.ReadOnlyLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 			{
 				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
@@ -570,7 +567,6 @@ public class GridField
 		//  Always editable if Active
 		if (checkContext && "Y".equals(Env.getContext(ctx, m_vo.WindowNo, m_vo.TabNo, "IsActive"))
 				&& (   m_vo.ColumnName.equals("Processing")
-					|| m_vo.ColumnName.equals("PaymentRule")
 					|| m_vo.ColumnName.equals("DocAction") 
 					|| m_vo.ColumnName.equals("GenerateTo")))
 			return true;
@@ -587,15 +583,13 @@ public class GridField
 		// Record is not Active
 		if (checkContext && getGridTab() != null && !Env.getContext(ctx, m_vo.WindowNo,m_vo.TabNo, "IsActive").equals("Y"))
 			return false;
-
-
 		
 		return isDisplayed (ctx, checkContext);
 	}	//	isEditable
 
 	/**
-	 *  Set Inserting (allows to enter not updateable fields).
-	 *  Reset when setting the Field Value
+	 *  Set Inserting (allows to enter not updatable fields).
+	 *  Reset when setting the Field Value.
 	 *  @param inserting true if inserting
 	 */
 	public void setInserting (boolean inserting)
@@ -603,16 +597,22 @@ public class GridField
 		m_inserting = inserting;
 	}   //  setInserting
 
+	/**
+	 * @param defaultValue
+	 */
 	public void setDefaultLogic(String defaultValue) {
 		m_vo.DefaultValue = defaultValue;
 	}
 
+	/**
+	 * @param defaultValue2 default value for range field
+	 */
 	public void setDefault2Logic(String defaultValue2) {
 		m_vo.DefaultValue2 = defaultValue2;
 	}
 	
-	/**************************************************************************
-	 *	Create default value.
+	/**
+	 *	Get default value.
 	 *  <pre>{@code
 	 *		(a) Key/Parent/IsActive/SystemAccess
 	 *      (b) SQL Default
@@ -624,8 +624,6 @@ public class GridField
 	 *  Don't default from Context => use explicit defaultValue
 	 *  (would otherwise copy previous record)
 	 *  }</pre>
-	 *  this method code in mind GirdField lie at standard window, and default is receive when new record.
-	 *  maybe it will don't suitable for use at other place as info panel parameter,...
 	 *  @return default value or null
 	 */
 	public Object getDefault()
@@ -650,7 +648,7 @@ public class GridField
 	}	//	getDefault
 	
 	/**
-	 * get default of field when field don't lie down at standard window
+	 * Get default of field when field not inside standard AD window (i.e not AD_Tab+AD_Field)
 	 * @return
 	 */
 	public Object getDefaultForPanel (){
@@ -674,7 +672,7 @@ public class GridField
 	/**
 	 * Get default value with priority define by seqGetDefaultValue
 	 * @param seqGetDefaultValue
-	 * @return
+	 * @return default value
 	 */
 	public Object getDefault(ParseSeq seqGetDefaultValue){
 		Object defaultValue = null;
@@ -692,15 +690,18 @@ public class GridField
 	}
 	
 	/**
-	 * "1" mean from special case
-	 * "2" mean from sql default
-	 * "3" mean from default logic
-	 * "4" mean user preference
-	 * "5" mean from system preference
-	 * "6" mean preference for field lie down at panel as process parameter, info parameter,...
-	 * "7" mean data-type default
+	 * <pre>
+	 * defaultValueType:
+	 * "1" special case
+	 * "2" sql default
+	 * "3" default logic
+	 * "4" user preference
+	 * "5" system preference
+	 * "6" preference for field as process parameter, info parameter,...
+	 * "7" data-type default
+	 * </pre>
 	 * @param defaultValueType
-	 * @return
+	 * @return default value
 	 */
 	protected Object getDefaultValueByType (Character defaultValueType){
 		if (defaultValueType.equals(SPECIAL_CASE_DEFAULT)) {
@@ -720,6 +721,9 @@ public class GridField
 		return null;
 	}
 	
+	/**
+	 * @return true to ignore default value
+	 */
 	protected boolean isIgnoreDefault (){
 		// No defaults for these fields
 		return (m_vo.IsKey || m_vo.displayType == DisplayType.RowID 
@@ -729,11 +733,11 @@ public class GridField
 	}
 
 	/**
-	 * When field lie down at standard window, for make new record, some column is fix will special logic
-	 * example: reference column at child tab always use parent value
-	 * active column always true
-	 * in system client always use system for client
-	 * @return
+	 * When field is inside standard AD window, for new record, some column is fix with special logic.<br/>
+	 * For example: reference column at child tab always uses parent value.<br/>
+	 * Active column always true.<br/>
+	 * In system client, always use system for client.
+	 * @return default value or null
 	 */
 	protected Object defaultForSpecialCase (){
 		Object defaultValue = null;
@@ -755,6 +759,10 @@ public class GridField
 		return null;
 	}
 	
+	/**
+	 * Get default value from parent tab
+	 * @return default value or null
+	 */
 	protected Object defaultFromParent (){
 		// Set Parent to context if not explicitly set
 		if (isParentValue()
@@ -767,6 +775,9 @@ public class GridField
 		return null;
 	}
 
+	/**
+	 * @return default value or null
+	 */
 	protected Object defaultForActiveField (){
 		// Always Active
 		if (m_vo.ColumnName.equals("IsActive"))
@@ -778,6 +789,10 @@ public class GridField
 		return null;
 	}
 	
+	/**
+	 * Default value for AD_Org_ID and AD_Client_ID
+	 * @return default value or null
+	 */
 	protected Object defaultForClientOrg (){
 		// Set Client & Org to System, if System access
 		if (X_AD_Table.ACCESSLEVEL_SystemOnly.equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_AccessLevel))
@@ -797,12 +812,16 @@ public class GridField
 		return null;
 	}
 	
+	/**
+	 * Default value from SQL
+	 * @return default value or null
+	 */
 	protected Object defaultFromSQLExpression () {
 		/**
 		 *  (b) SQL Statement (for data integity & consistency)
 		 */
 		String	defStr = "";
-		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith("@SQL="))
+		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			String sql = m_vo.DefaultValue.substring(5);			//	w/o tag
 			//hengsin, capture unparseable error to avoid subsequent sql exception
@@ -851,11 +870,15 @@ public class GridField
 		return null;
 	}
 	
+	/**
+	 * Default value from expression 
+	 * @return default value or null
+	 */
 	protected Object defaultFromExpression (){
 		/**
 		 * 	(c) Field DefaultValue		=== similar code in AStartRPDialog.getDefault ===
 		 */
-		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith("@SQL="))
+		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			String defStr = "";		//	problem is with texts like 'sss;sss'
 			//	It is one or more variables/constants
@@ -882,8 +905,8 @@ public class GridField
 	}
 	
 	/**
-	 * get preference when field don't lie down at standard window
-	 * @return
+	 * Get preference when field not inside standard AD window
+	 * @return default value or null
 	 */
 	protected Object defaultFromPreferenceForPanel() {
 		String defStr = "";
@@ -951,7 +974,7 @@ public class GridField
 	
 	/**
 	 * @param defaultValueType "4" for user preference and "5" for system preference
-	 * @return
+	 * @return default value or null
 	 */
 	protected Object defaultFromPreference(Character defaultValueType) {
 		String defStr = "";
@@ -984,6 +1007,10 @@ public class GridField
 		return null;
 	}
 	
+	/**
+	 * Default value by data type
+	 * @return default value or null
+	 */
 	protected Object defaultFromDatatype (){
 		/**
 		 *	(f) DataType defaults
@@ -1016,7 +1043,7 @@ public class GridField
 	}
 	
 	/**
-	 *	Create Default Object type.
+	 *	Convert value to the expected type
 	 *  <pre>
 	 *		Integer 	(IDs, Integer)
 	 *		BigDecimal 	(Numbers)
@@ -1024,7 +1051,7 @@ public class GridField
 	 *		Boolean		(YesNo)
 	 *		default: String
 	 *  </pre>
-	 *  @param value string
+	 *  @param value default value
 	 *  @return type dependent converted object
 	 */
 	private Object createDefault (String value)
@@ -1069,7 +1096,9 @@ public class GridField
 				SimpleDateFormat dateFormat = DisplayType.getDateFormat_JDBC();
 				SimpleDateFormat timeFormat = DisplayType.getTimeFormat_Default();
 				try {
-					if (m_vo.displayType == DisplayType.Date) {
+					if(Util.isEmpty(value, true)) {
+						return null;
+					} else if (m_vo.displayType == DisplayType.Date) {
 						date = dateFormat.parse (value);
 					} else if (m_vo.displayType == DisplayType.Time) {
 						date = timeFormat.parse (value);
@@ -1097,8 +1126,8 @@ public class GridField
 	}	//	createDefault
 
 	/**
-	 *  Validate initial Field Value.  Do not push direct value if it doesn't exist
-	 * 	Called from GridTab.dataNew when inserting
+	 *  Validate initial Field Value.  Do not push direct value if it doesn't exist.
+	 * 	Called from GridTab.dataNew when inserting.
 	 *  @return true if valid
 	 */
 	public boolean validateValueNoDirect()
@@ -1150,7 +1179,7 @@ public class GridField
 			}
 			if (allValid)
 				return true;
-		} else if (getDisplayType() == DisplayType.ChosenMultipleSelectionTable || getDisplayType() == DisplayType.ChosenMultipleSelectionSearch) {
+		} else if (DisplayType.isMultiID(getDisplayType())) {
 			boolean allValid = true;
 			for (String vals : ((String)m_value).split(",")) {
 				Integer vali = Integer.valueOf(vals);
@@ -1239,7 +1268,7 @@ public class GridField
 		return false;
 	}   //  validateValue
 
-	/**************************************************************************
+	/**
 	 *	Is the Column Visible ?
 	 *  @param checkContext - check environment (requires correct row position)
 	 *  @return true, if visible
@@ -1249,8 +1278,9 @@ public class GridField
 		return isDisplayed(m_vo.ctx, checkContext);
 	}
 
-	/**************************************************************************
+	/**
 	 *	Is the Column Visible ?
+	 *  @param ctx
 	 *  @param checkContext - check environment (requires correct row position)
 	 *  @return true, if visible
 	 */
@@ -1267,7 +1297,7 @@ public class GridField
 		//  ** dynamic content **
 		if (checkContext)
 		{
-			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
+			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
 			Evaluatee evaluatee = new Evaluatee() {
@@ -1283,8 +1313,8 @@ public class GridField
 		return true;
 	}	//	isDisplayed
 
-	/**************************************************************************
-	 *	Is the Displayed Grid Column Visible ?
+	/**
+	 *	Is the Grid Column Visible ?
 	 *  @param checkContext - check environment (requires correct row position)
 	 *  @return true, if visible
 	 */
@@ -1293,8 +1323,9 @@ public class GridField
 		return isDisplayedGrid(m_vo.ctx, checkContext);
 	}
 
-	/**************************************************************************
-	 *	Is the Displayed Grid Column Visible ?
+	/**
+	 *	Is the Grid Column Visible ?
+	 *  @param ctx
 	 *  @param checkContext - check environment (requires correct row position)
 	 *  @return true, if visible
 	 */
@@ -1311,7 +1342,7 @@ public class GridField
 		//  ** dynamic content **
 		if (checkContext)
 		{
-			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
+			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
 			Evaluatee evaluatee = new Evaluatee() {
@@ -1328,7 +1359,7 @@ public class GridField
 	}	//	isDisplayedGrid
 
 	/**
-	 * 	Get Variable Value (Evaluatee)
+	 * 	Get variable value (Evaluatee) as string
 	 *	@param variableName name
 	 *	@return value
 	 */
@@ -1338,7 +1369,8 @@ public class GridField
 	}
 	
 	/**
-	 * 	Get Variable Value (Evaluatee)
+	 * 	Get variable value (Evaluatee) as string
+	 *  @param ctx
 	 *	@param variableName name
 	 *	@return value
 	 */
@@ -1352,10 +1384,9 @@ public class GridField
 		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
-
 	/**
-	 *	Add Display Dependencies to given List.
-	 *  Source: DisplayLogic
+	 *	Add display dependencies to given List.
+	 *  Source: DisplayLogic.
 	 *  @param list list to be added to
 	 */
 	public void addDependencies (ArrayList<String> list)
@@ -1383,9 +1414,8 @@ public class GridField
 			}
 		}
 	}	//	addDependencies
-
 	
-	/**************************************************************************
+	/**
 	 *  Get Column Name
 	 *  @return column name
 	 */
@@ -1404,7 +1434,7 @@ public class GridField
 		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
 		{
 			String query;
-			if (m_vo.ColumnSQL.startsWith("@SQL=") || m_vo.ColumnSQL.startsWith("@SQLFIND="))
+			if (m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX))
 				query = "NULL";
 			else
 				query = m_vo.ColumnSQL;
@@ -1425,9 +1455,9 @@ public class GridField
 		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
 		{
 			String query;
-			if (m_vo.ColumnSQL.startsWith("@SQL="))
+			if (m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 				query = "NULL";
-			else if (m_vo.ColumnSQL.startsWith("@SQLFIND="))
+			else if (m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX))
 				query = m_vo.ColumnSQL.substring(9);
 			else
 				query = m_vo.ColumnSQL;
@@ -1438,7 +1468,7 @@ public class GridField
 
 	/**
 	 *  Is Virtual Column
-	 *  @return column is virtual
+	 *  @return true if column is virtual
 	 */
 	public boolean isVirtualColumn()
 	{
@@ -1446,30 +1476,30 @@ public class GridField
 	}	//	isVirtualColumn
 	
 	/**
-	 *  Is Virtual DB Column
-	 *  @return column is virtual DB
+	 *  Is Virtual DB Column (not using @SQL= and loaded as part of main query)
+	 *  @return true if column is virtual DB
 	 */
 	public boolean isVirtualDBColumn()
 	{
-		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && !m_vo.ColumnSQL.startsWith("@SQL="));
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && !m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX));
 	}	//	isVirtualDBColumn
 	
 	/**
-	 *  Is Virtual UI Column
+	 *  Is Virtual UI Column (using @SQL= and loaded separately from main query)
 	 *  @return column is virtual UI
 	 */
 	public boolean isVirtualUIColumn()
 	{
-		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="));
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX));
 	}	//	isVirtualUIColumn
 	
 	/**
-	 *  Is Virtual search Column
+	 *  Is Virtual search Column (using @SQLFIND= and it is for find window usage only)
 	 *  @return column is virtual search
 	 */
 	public boolean isVirtualSearchColumn()
 	{
-		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQLFIND="));
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX));
 	}	//	isVirtualDBColumn
 	
 	/**
@@ -1482,7 +1512,7 @@ public class GridField
 	}
 	/**
 	 * 	Get Display Type
-	 *	@return dt
+	 *	@return display type
 	 */
 	public int getDisplayType()
 	{
@@ -1490,7 +1520,7 @@ public class GridField
 	}
 	/**
 	 * 	Get AD_Reference_Value_ID
-	 *	@return reference value
+	 *	@return AD_Reference_ID
 	 */
 	public int getAD_Reference_Value_ID()
 	{
@@ -1498,15 +1528,14 @@ public class GridField
 	}
 	/**
 	 * 	Get AD_Window_ID
-	 *	@return window
+	 *	@return AD_Window_ID
 	 */
 	public int getAD_Window_ID()
 	{
 		return m_vo.AD_Window_ID;
 	}
 	/** 
-	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
-	 *  it's difference with AD_Process_ID
+	 *  @return AD_Process_ID of containing panel
 	 */
 	public int getAD_Process_ID_Of_Panel()
 	{
@@ -1514,27 +1543,29 @@ public class GridField
 	}
 	
 	/** 
-	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
-	 *  it's difference with AD_Process_ID
+	 * @return AD_Window_ID of containing panel
 	 */
 	public int getAD_Window_ID_Of_Panel()
 	{
 		return m_vo.AD_Window_ID_Of_Panel > 0 ? m_vo.AD_Window_ID_Of_Panel : m_vo.AD_Window_ID;		
 	}
 	
+	/**
+	 * @return AD_InfoWindow_ID of containing panel
+	 */
 	public int getAD_InfoWindow_ID_of_Panel(){
 		return m_vo.AD_InfoWindow_ID_Of_Panel;
 	}
 	
-	/** get AD_Chart_ID
-	 * @return chart id
+	/** 
+	 * get AD_Chart_ID
+	 * @return AD_Chart_ID
 	 */
 	public int getAD_Chart_ID()
 	{
 		return m_vo.AD_Chart_ID;
 	}
-	
-	
+		
 	/**
 	 * 	Get Window No
 	 *	@return window no
@@ -1545,7 +1576,7 @@ public class GridField
 	}
 	/**
 	 * 	Get AD_Column_ID
-	 *	@return column
+	 *	@return AD_Column_ID
 	 */
 	public int getAD_Column_ID()
 	{
@@ -1553,7 +1584,7 @@ public class GridField
 	}
 	/**
 	 * 	Get Display Length
-	 *	@return display
+	 *	@return display length
 	 */
 	public int getDisplayLength()
 	{
@@ -1561,7 +1592,7 @@ public class GridField
 	}
 	/**
 	 * 	Is SameLine
-	 *	@return trie if same line
+	 *	@return true if same line with previous field
 	 */
 	public boolean isSameLine()
 	{
@@ -1575,22 +1606,25 @@ public class GridField
 	{
 		return m_vo.IsDisplayed;
 	}
+	
 	/**
 	 * 	Is Displayed
-	 *	@return true if displayed
+	 *	@return true if displayed in grid mode
 	 */
 	public boolean isDisplayedGrid()
 	{
 		return m_vo.IsDisplayedGrid;
 	}
+	
 	/**
 	 * 	Grid sequence number
-	 *	@return sequence number
+	 *	@return grid sequence number
 	 */
 	public int getSeqNoGrid()
 	{
 		return m_vo.SeqNoGrid;
 	}
+	
 	/**
 	 * 	Get DisplayLogic
 	 *	@return display logic
@@ -1599,16 +1633,22 @@ public class GridField
 	{
 		return m_vo.DisplayLogic;
 	}
+	
 	/**
 	 * 	Get Default Value
-	 *	@return default
+	 *  @see #getDefault()
+	 *	@return default value
 	 */
 	public String getDefaultValue()
 	{
 		return m_vo.DefaultValue;
 	}
+	
 	/**
 	 * 	Is ReadOnly
+	 *  @see #isEditable(boolean)
+	 *  @see #isEditableGrid(boolean)
+	 *  @see #isEditablePara(boolean)
 	 *	@return true if read only
 	 */
 	public boolean isReadOnly()
@@ -1617,9 +1657,10 @@ public class GridField
 			return true;
 		return m_vo.IsReadOnly;
 	}
+	
 	/**
-	 * 	Is Updateable
-	 *	@return true if updateable
+	 * 	Is Updatable
+	 *	@return true if updatable
 	 */
 	public boolean isUpdateable()
 	{
@@ -1627,6 +1668,7 @@ public class GridField
 			return false;
 		return m_vo.IsUpdateable;
 	}
+	
 	/**
 	 * 	Is Autocomplete
 	 *	@return true if autocomplete
@@ -1634,9 +1676,10 @@ public class GridField
 	public boolean isAutocomplete() {
 		return m_vo.IsAutocomplete;
 	}
+	
 	/**
 	 * 	Is Allow Copy
-	 *	@return true if allow copy
+	 *	@return true if allow copy value of field to new record
 	 */
 	public boolean isAllowCopy() {
 		/* IDEMPIERE-67
@@ -1671,9 +1714,10 @@ public class GridField
 			return false;
 		return m_vo.IsAllowCopy;
 	}
+	
 	/**
 	 * 	Is Always Updateable
-	 *	@return true if always updateable
+	 *	@return true if field is always updatable
 	 */
 	public boolean isAlwaysUpdateable()
 	{
@@ -1681,33 +1725,37 @@ public class GridField
 			return false;
 		return m_vo.IsAlwaysUpdateable;
 	}
+	
 	/**
 	 * 	Is Heading
-	 *	@return heading
+	 *	@return true if heading only (no field editor)
 	 */
 	public boolean isHeading()
 	{
 		return m_vo.IsHeading;
 	}
+	
 	/**
 	 * 	Is Field Only
-	 *	@return field only
+	 *	@return true if field editor only (no label)
 	 */
 	public boolean isFieldOnly()
 	{
 		return m_vo.IsFieldOnly;
 	}
+	
 	/**
 	 * 	Is Encrypted Field (display)
-	 *	@return encrypted field
+	 *	@return true if encrypted field
 	 */
 	public boolean isEncryptedField()
 	{
 		return m_vo.IsEncryptedField;
 	}
+	
 	/**
 	 * 	Is Encrypted Field (display) or obscured
-	 *	@return encrypted field
+	 *	@return true if encrypted or obscured field
 	 */
 	public boolean isEncrypted()
 	{
@@ -1718,54 +1766,61 @@ public class GridField
 			return true;
 		return m_vo.ColumnName.equals("Password");
 	}
+	
 	/**
 	 * 	Is Encrypted Column (data)
-	 *	@return encrypted column
+	 *	@return true if encrypted column
 	 */
 	public boolean isEncryptedColumn()
 	{
 		return m_vo.IsEncryptedColumn;
 	}
+	
 	/**
 	 * 	Is Selection Column
-	 *	@return selection
+	 *	@return true if selection column (column in simple find window)
 	 */
 	public boolean isSelectionColumn()
 	{
 		return m_vo.IsSelectionColumn;
 	}
+	
 	/**
 	 * 	Is HTML Field (display)
-	 *	@return html field
+	 *	@return true if it is html field
 	 */
 	public boolean isHtml()
 	{
 		return m_vo.IsHtml;
 	}
+	
 	/**
 	 * 	Selection column sequence
-	 *	@return SeqNoSelection
+	 *	@return Selection column sequence
 	 */
 	public int getSeqNoSelection() 
 	{
 		return m_vo.SeqNoSelection;
 	}
+	
 	/**
 	 * 	Get Obscure Type
-	 *	@return obscure
+	 *	@return obscure type
 	 */
 	public String getObscureType()
 	{
 		return m_vo.ObscureType;
 	}
+	
 	/**
 	 * 	Get Sort No
-	 *	@return  sort
+	 *	@return sequence in sort
 	 */
 	public int getSortNo()
 	{
 		return m_vo.SortNo;
 	}
+	
 	/**
 	 * 	Get Field Length
 	 *	@return field length
@@ -1774,37 +1829,42 @@ public class GridField
 	{
 		return m_vo.FieldLength;
 	}
+	
 	/**
 	 * 	Get VFormat
-	 *	@return format
+	 *	@return value format
 	 */
 	public String getVFormat()
 	{
 		return m_vo.VFormat;
 	}
+	
 	/**
 	 * 	Get Format Pattern
-	 *	@return format pattern
+	 *	@return value format pattern
 	 */
 	public String getFormatPattern() {
 		return m_vo.FormatPattern;
 	}
+	
 	/**
 	 * 	Get Value Min
-	 *	@return min
+	 *	@return min value
 	 */
 	public String getValueMin()
 	{
 		return m_vo.ValueMin;
 	}
+	
 	/**
 	 * 	Get Value Max
-	 *	@return max
+	 *	@return max value
 	 */
 	public String getValueMax()
 	{
 		return m_vo.ValueMax;
 	}
+	
 	/**
 	 * 	Get Field Group
 	 *	@return field group
@@ -1813,6 +1873,7 @@ public class GridField
 	{
 		return m_vo.FieldGroup;
 	}
+	
 	/**
 	 * 	Get Field Group Type
 	 *	@return field group type
@@ -1821,17 +1882,19 @@ public class GridField
 	{
 		return m_vo.FieldGroupType;
 	}
+	
 	/**
 	 * 	Key
-	 *	@return key
+	 *	@return true if this is key field
 	 */
 	public boolean isKey()
 	{
 		return m_vo.IsKey;
 	}
+	
 	/**
 	 * 	UUID
-	 *	@return is UUID
+	 *	@return true if this is UUID field
 	 */
 	public boolean isUUID()
 	{
@@ -1842,23 +1905,25 @@ public class GridField
 		}
 		return false;
 	}
+	
 	/**
 	 * 	Parent Column
-	 *	@return parent column
+	 *	@return true if this is a parent column
 	 */
 	public boolean isParentColumn()
 	{
 			return m_vo.IsParent;
 	}
+	
 	/**
 	 * 	Parent Link Value
-	 *	@return parent value
+	 *	@return true if this is field for parent link column
 	 */
 	public boolean isParentValue()
 	{
 		if (m_parentValue != null)
 			return m_parentValue.booleanValue();
-		if (!DisplayType.isID(m_vo.displayType) || m_vo.TabNo == 0)
+		if ( ( !DisplayType.isID(m_vo.displayType) && !DisplayType.isUUID(m_vo.displayType) ) || m_vo.TabNo == 0)
 			m_parentValue = Boolean.FALSE;
 		else 
 		{
@@ -1890,20 +1955,22 @@ public class GridField
 	
 	/**
 	 * 	Get AD_Process_ID
-	 *	@return process
+	 *	@return AD_Process_ID
 	 */
 	public int getAD_Process_ID()
 	{
 		return m_vo.AD_Process_ID;
 	}
+	
 	/**
 	 * 	Get AD_InfoWindow_ID
-	 *	@return info window
+	 *	@return AD_InfoWindow_ID
 	 */
 	public int getAD_InfoWindow_ID()
 	{
 		return m_vo.AD_InfoWindow_ID;
 	}
+	
 	/**
 	 * 	Get Description
 	 *	@return description
@@ -1912,6 +1979,7 @@ public class GridField
 	{
 		return m_vo.Description;
 	}
+	
 	/**
 	 * 	Get Help
 	 *	@return help
@@ -1920,6 +1988,7 @@ public class GridField
 	{
 		return m_vo.Help;
 	}
+	
 	/**
 	 * 	Get AD_Tab_ID
 	 *	@return tab
@@ -1928,6 +1997,7 @@ public class GridField
 	{
 		return m_vo.AD_Tab_ID;
 	}
+	
 	/**
 	 * 	Get VO
 	 *	@return value object
@@ -1939,7 +2009,7 @@ public class GridField
 
 	/**
 	 * 	Default Focus
-	 *	@return focus
+	 *	@return true if this is the default focus field
 	 */
 	public boolean isDefaultFocus()
 	{
@@ -1957,7 +2027,7 @@ public class GridField
 	
 	/**
 	 * 	Get AD_Field_ID
-	 *	@return field
+	 *	@return AD_Field_ID
 	 */
 	public int getAD_Field_ID()
 	{
@@ -1967,8 +2037,8 @@ public class GridField
 	/**
 	 *  Set Value to null.
 	 *  <p>
-	 *  Do not update context - called from GridTab.setCurrentRow
-	 *  Send Bean PropertyChange if there is a change
+	 *  Do not update context - called from GridTab.setCurrentRow.
+	 *  Send Bean PropertyChange event if there is a change (i.e current value is not null).
 	 */
 	public void setValue ()
 	{
@@ -1985,8 +2055,8 @@ public class GridField
 	/**
 	 *  Set Value to null.
 	 *  <p>
-	 *  Do update context - called from GridTab.setCurrentRow
-	 *  Send Bean PropertyChange if there is a change
+	 *  Do update context - called from GridTab.setCurrentRow.
+	 *  Send Bean PropertyChange event if there is a change (i.e current value is not null).
 	 */
 	public void setValueAndUpdateContext ()
 	{
@@ -2007,7 +2077,7 @@ public class GridField
 	 *  Set Value.
 	 *  <p>
 	 *  Update context, if not text or RowID;
-	 *  Send Bean PropertyChange if there is a change
+	 *  Send Bean PropertyChange event if there is a change.
 	 *  @param newValue new value
 	 *  @param inserting true if inserting
 	 */
@@ -2088,11 +2158,17 @@ public class GridField
 		}		
 	}
 	
+	/**
+	 * @return AD_LabelStyle_ID
+	 */
 	public int getAD_LabelStyle_ID()
 	{
 		return m_vo.AD_LabelStyle_ID;
 	}
 	
+	/**
+	 * @return AD_FieldStyle_ID
+	 */
 	public int getAD_FieldStyle_ID()
 	{
 		return m_vo.AD_FieldStyle_ID;
@@ -2170,8 +2246,6 @@ public class GridField
 		if (!DisplayType.isID(dt))
 			return null;
 		
-		//TODO: setValueValidate
-
 		return null;
 	}	//	setValueValidate
 
@@ -2185,9 +2259,6 @@ public class GridField
 	}   //  getValue
 
 	/**
-	 *  Set old/previous Value.
-	 *  (i.e. don't fire Property change)
-	 *  Used by VColor.setField
 	 *  @param value if false property change will always be fires
 	 */
 	public void setValueNoFire (boolean value)
@@ -2197,7 +2268,7 @@ public class GridField
 
 	/**
 	 *  Get old/previous Value.
-	 * 	Called from MTab.processCallout
+	 * 	Called from MTab.processCallout.
 	 *  @return old value
 	 */
 	public Object getOldValue()
@@ -2206,8 +2277,8 @@ public class GridField
 	}   //  getOldValue
 
 	/**
-	 *  Set Error Value (the value, which cuased some Error)
-	 *  @param errorValue error message
+	 *  Set Error Value (the value, which caused some Error)
+	 *  @param errorValue error value
 	 */
 	public void setErrorValue (String errorValue)
 	{
@@ -2216,7 +2287,7 @@ public class GridField
 	}   //  setErrorValue
 
 	/**
-	 *  Get Error Value (the value, which cuased some Error) <b>AND</b> reset it to null
+	 *  Get Error Value (the value, which caused some Error) <b>AND</b> reset error value to null
 	 *  @return error value
 	 */
 	public String getErrorValue ()
@@ -2228,8 +2299,8 @@ public class GridField
 	}   //  getErrorValue
 
 	/**
-	 *  Return true, if value has Error (for HTML interface) <b>AND</b> reset it to false
-	 *  @return has error
+	 *  Get error value flag <b>AND</b> reset error value flag to false
+	 *  @return true if error value is set
 	 */
 	public boolean isErrorValue()
 	{
@@ -2249,13 +2320,12 @@ public class GridField
 
 	/**
 	 *  Overwrite Displayed
-	 *  @param displayed trie if displayed
+	 *  @param displayed true if displayed
 	 */
 	public void setDisplayed (boolean displayed)
 	{
 		m_vo.IsDisplayed = displayed;
 	}   //  setDisplayed
-
 	
 	/**
 	 * 	Create Mnemonic for field
@@ -2288,7 +2358,6 @@ public class GridField
 	{
 		m_mnemonic = mnemonic;
 	}	//	setMnemonic
-
 	
 	/**
 	 *  String representation
@@ -2320,8 +2389,7 @@ public class GridField
 		return sb.toString();
 	}   //  toStringX
 
-
-	/*************************************************************************
+	/**
 	 *  Remove Property Change Listener
 	 *  @param l listener
 	 */
@@ -2339,10 +2407,8 @@ public class GridField
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}
 	
-	
-	/**************************************************************************
-	 * 	Create Fields.
-	 * 	Used by APanel.cmd_find  and  Viewer.cmd_find
+	/**
+	 * 	Create GridFields for AD_Tab
 	 * 	@param ctx context
 	 * 	@param WindowNo window
 	 * 	@param TabNo tab no
@@ -2392,8 +2458,8 @@ public class GridField
 		
 	/**
 	 * bug[1637757]
-	 * Check whether is indirect parent. 
-	 * @return boolean
+	 * Check whether is indirect parent link field (i.e not immediate parent tab)
+	 * @return true if it is indirect parent link field
 	 */
 	private boolean isIndirectParentValue()
 	{
@@ -2445,7 +2511,7 @@ public class GridField
 	}
 	
 	/**
-	 * Restore the backup value if any
+	 * Restore the backup value (if available)
 	 * author teo_sarca [ 1699826 ]
 	 */
 	public void restoreValue() {
@@ -2477,7 +2543,7 @@ public class GridField
 	/**
     *  Feature Request FR [ 1757088 ]
 	*  Get the id tab include
-	*  @return id Tab
+	*  @return Included_Tab_ID
 	*/
 	public int getIncluded_Tab_ID ()
 	{	 
@@ -2500,9 +2566,8 @@ public class GridField
 	}
 	
 	/**
-	 * Returns a list containing all existing entries of this field
-	 * with the actual AD_Client_ID.
-	 * @return List of existing entries for this field
+	 * Returns a list containing all existing values of this field (for current login client).
+	 * @return List of existing values for this field
 	 */
 	public List<String> getEntries() {
 		/* TODO: consider caching the list to avoid repeating queries on every window open (twice, for find and for field) */
@@ -2559,7 +2624,7 @@ public class GridField
 	
 	/**
 	 * @param columnName
-	 * @return true if columnName also exist in parent tab
+	 * @return true if columnName also exist in parent tab (immediate or indirect)
 	 */
 	private boolean isParentTabField(String columnName)
 	{
@@ -2576,14 +2641,16 @@ public class GridField
 	}
 	
 	/**
-	 * 
-	 * @return true if this field (m_vo.ColumnName) also exist in parent tab
+	 * @return true if this field (m_vo.ColumnName) also exist in parent tab (immediate or indirect)
 	 */
 	private boolean isParentTabField()
 	{
 		return isParentTabField(m_vo.ColumnName);
 	}
 	
+	/**
+	 * @return true if field will update window context
+	 */
 	private boolean isUpdateWindowContext()
 	{
 		if (getGridTab() != null)
@@ -2592,59 +2659,95 @@ public class GridField
 		return true;
 	}
 	
-	/*IDEMPIERE-358*/
-	
+	/**
+	 * IDEMPIERE-358
+	 * @return X position in form
+	 */	
 	public int getXPosition()
 	{
 		return m_vo.XPosition;
 	}
 	
+	/**
+	 * @return column span (for form)
+	 */
 	public int getColumnSpan()
 	{
 		return m_vo.ColumnSpan;
 	}
 	
+	/**
+	 * @return number of lines (for form)
+	 */
 	public int getNumLines()
 	{
 		return m_vo.NumLines;
 	}
 	
+	/**
+	 * @return true if render as toolbar button
+	 */
 	public boolean isToolbarButton()
 	{
 		return m_vo.displayType == DisplayType.Button &&
 			(MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton) || MColumn.ISTOOLBARBUTTON_Both.equals(m_vo.IsToolbarButton));
 	}
 
+	/**
+	 * @return true if only render as toolbar button
+	 */
 	public boolean isToolbarOnlyButton()
 	{
 		return m_vo.displayType == DisplayType.Button && MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton);
 	}
 
+	/**
+	 * @return true if record is lock
+	 */
 	public boolean isLockedRecord() {
 		return m_lockedRecord;
 	}
 
+	/**
+	 * @param lockedRecord
+	 */
 	public void setLockedRecord(boolean lockedRecord) {
 		this.m_lockedRecord = lockedRecord;
 	}
 
+	/**
+	 * @return PA_DashboardContent_ID
+	 */
 	public int getPA_DashboardContent_ID()
 	{
 		return m_vo.PA_DashboardContent_ID;
 	}
 
+	/**
+	 * @return place holder text for editor
+	 */
 	public String getPlaceholder() {
 		return m_vo.Placeholder;
 	}
 
+	/**
+	 * @return place holder text 2 for editor (for range field)
+	 */
 	public String getPlaceholder2() {
 		return m_vo.Placeholder2;
 	}
 
+	/**
+	 * @param placeholder
+	 */
 	public void setPlaceholder(String placeholder) {
 		m_vo.Placeholder = placeholder;
 	}
 
+	/**
+	 * @param ctx
+	 * @return clone GridField
+	 */
 	public GridField clone(Properties ctx)  
 	{
 		try {
@@ -2676,6 +2779,7 @@ public class GridField
 	{
 		return m_lookupEditorSettingValue;
 	}
+	
 	/**
 	 * Is Quick Form
 	 * @return true if displayed in Quick Form
@@ -2692,6 +2796,9 @@ public class GridField
 		return m_vo.dateRangeOption;
 	}
 	
+	/**
+	 * Load virtual UI column
+	 */
 	public void processUIVirtualColumn() {
 		String sql = m_vo.ColumnSQL.substring(5);
 		sql = Env.parseContext(Env.getCtx(), getWindowNo(), sql, false);

@@ -33,7 +33,7 @@ import org.compiere.util.DB;
 public class MCashPlan extends X_C_CashPlan
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3068952163785661012L;
 
@@ -41,7 +41,17 @@ public class MCashPlan extends X_C_CashPlan
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MCashPlan.class);
 
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CashPlan_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCashPlan(Properties ctx, String C_CashPlan_UU, String trxName) {
+        super(ctx, C_CashPlan_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_CashPlan_ID id
@@ -67,6 +77,7 @@ public class MCashPlan extends X_C_CashPlan
 	 * 	Before Delete
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		// delete the lines using direct SQL (to avoid logging and updating of header on every step) - same as cascade foreign key

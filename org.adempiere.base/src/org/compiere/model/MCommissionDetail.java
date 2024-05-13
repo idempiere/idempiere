@@ -32,12 +32,21 @@ import org.compiere.util.Env;
 public class MCommissionDetail extends X_C_CommissionDetail
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1727857992121809494L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CommissionDetail_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCommissionDetail(Properties ctx, String C_CommissionDetail_UU, String trxName) {
+        super(ctx, C_CommissionDetail_UU, trxName);
+    }
+
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -79,6 +88,12 @@ public class MCommissionDetail extends X_C_CommissionDetail
 		super(ctx, rs, trxName);
 	}	//	MCommissionDetail
 
+	/**
+	 * @param ctx
+	 * @param C_CommissionDetail_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommissionDetail(Properties ctx, int C_CommissionDetail_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CommissionDetail_ID, trxName, virtualColumns);
 	}
@@ -117,6 +132,7 @@ public class MCommissionDetail extends X_C_CommissionDetail
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -131,6 +147,7 @@ public class MCommissionDetail extends X_C_CommissionDetail
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)
@@ -139,7 +156,7 @@ public class MCommissionDetail extends X_C_CommissionDetail
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Amt Header
+	 * 	Update Header (MCommissionAmt) amount
 	 */
 	private void updateAmtHeader()
 	{

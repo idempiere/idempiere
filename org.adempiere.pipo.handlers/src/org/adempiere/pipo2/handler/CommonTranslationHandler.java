@@ -21,6 +21,7 @@ import org.compiere.model.MLanguage;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -28,6 +29,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 	public static final String CONTEXT_KEY_PARENT_TABLE = "currentParentTableForTranslation";
 	public static final String CONTEXT_KEY_PARENT_RECORD_ID = "currentParentTableRecordID_ForTranslation";
+	public static final String CONTEXT_KEY_PARENT_RECORD_UU = "currentParentTableRecordUU_ForTranslation";
 
 	private HashMap<String, ArrayList<String>> cacheColumns = new HashMap<String, ArrayList<String>>();//Key: table name. Value: set of PIPO columns
 
@@ -48,9 +50,9 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		}
 
 		String elementValue = element.getElementValue();
-		int parentID = element.parent.recordId;
+		Object parentID = element.parent.recordId;
 
-		if(parentID ==0)
+		if((parentID instanceof Integer && (Integer)parentID == 0) || (parentID instanceof String && Util.isEmpty((String)parentID)))
 			throw new SAXException();
 
 		String language = getStringValue(element, "AD_Language");
@@ -69,14 +71,19 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	private boolean isRecordExists(String tableName, int parentID,
+	private boolean isRecordExists(String tableName, Object parentID,
 			String language, PIPOContext ctx) {
 
-		String sql =
-			"SELECT AD_Client_ID FROM " + tableName +" WHERE " +
-			tableName.substring(0, tableName.length()-4) + "_ID = ? AND AD_Language = ?";
+		String parentTableName = tableName.substring(0, tableName.length()-4);
+		MTable parentTable = MTable.get(ctx.ctx, parentTableName);
+		StringBuilder sql = new StringBuilder()
+				.append("SELECT AD_Client_ID FROM ")
+				.append(tableName)
+				.append(" WHERE ")
+				.append(parentTable.getKeyColumns()[0])
+				.append(" = ? AND AD_Language = ?");
 
-		if(DB.getSQLValue(getTrxName(ctx), sql, parentID, language) == -1){
+		if(DB.getSQLValue(getTrxName(ctx), sql.toString(), parentID, language) == -1){
 			return false;
 		}else{
 			return true;
@@ -84,21 +91,20 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	private void insertTranslation(String tableName, int parentID,
+	private void insertTranslation(String tableName, Object parentID,
 			PIPOContext ctx, Element element) throws SAXException{
 
-		String parentTable = tableName.substring(0, tableName.length()-4);
-		ArrayList<String> columns = getTranslatedColumns(ctx, parentTable);
-		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO ")
+		String parentTableName = tableName.substring(0, tableName.length()-4);
+		MTable parentTable = MTable.get(ctx.ctx, parentTableName);
+		ArrayList<String> columns = getTranslatedColumns(ctx, parentTableName);
+		StringBuilder sql = new StringBuilder("INSERT INTO ")
 			.append(tableName)
 			.append(" (")
-			.append(parentTable)
-			.append("_ID, ")
+			.append(parentTable.getKeyColumns()[0])
+			.append(", ")
 			.append(" AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ")
 			.append(cast(columns))
-			.append(") values ( ?, ?, ?, ?, ? ");
-
+			.append(") VALUES ( ?, ?, ?, ?, ? ");
 		for (int i = 0; i<columns.size(); i++) {
 			sql.append(",?");
 		}
@@ -108,7 +114,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		PreparedStatement pstm = null;
 		try {
 			pstm = DB.prepareStatement(sql.toString(), getTrxName(ctx));
-			pstm.setInt(1, parentID);
+			pstm.setObject(1, parentID);
 			pstm.setInt(2, 0);
 			pstm.setInt(3, 0);
 			pstm.setInt(4, 0);
@@ -138,22 +144,32 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	private void updateTranslation(String tableName, int parentID,
+	private void updateTranslation(String tableName, Object parentID,
 			PIPOContext ctx, Element element) throws SAXException{
-		String parentTable = tableName.substring(0, tableName.length()-4);
-		ArrayList<String> columns = getTranslatedColumns(ctx, parentTable);
-		StringBuilder buffer = new StringBuilder("UPDATE "+tableName+" SET ");
-		for (String columnName : columns) {
-			buffer.append(columnName).append("=?,");
-		}
+		String parentTableName = tableName.substring(0, tableName.length()-4);
+		MTable parentTable = MTable.get(ctx.ctx, parentTableName);
 
-		String sql =  buffer.substring(0, buffer.length()-1);
-		sql += " WHERE AD_Language = '"+getStringValue(element, "AD_Language")+
-		"' AND "+parentTable+"_ID="+parentID;
+		ArrayList<String> columns = getTranslatedColumns(ctx, parentTableName);
+		StringBuilder sql = new StringBuilder("UPDATE ")
+				.append(tableName)
+				.append(" SET ");
+		for (String columnName : columns) {
+			sql.append(columnName).append("=?,");
+		}
+		sql.deleteCharAt(sql.length() - 1); // remove last comma
+		sql.append(" WHERE AD_Language=")
+			.append(DB.TO_STRING(getStringValue(element, "AD_Language")))
+			.append(" AND ")
+			.append(parentTable.getKeyColumns()[0])
+			.append("=");
+		if (parentID instanceof Integer)
+			sql.append((Integer)parentID);
+		else
+			sql.append(DB.TO_STRING(parentID.toString()));
 
 		PreparedStatement pstm = null;
 		try {
-			pstm = DB.prepareStatement(sql,getTrxName(ctx));
+			pstm = DB.prepareStatement(sql.toString(), getTrxName(ctx));
 			int i=0;
 			for (String columnName : columns) {
 				String value = getStringValue(element, columnName);
@@ -189,29 +205,39 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		String parenTableName = Env.getContext(ctx.ctx, CONTEXT_KEY_PARENT_TABLE);
 
 		int parentRecordID = Env.getContextAsInt(ctx.ctx, CONTEXT_KEY_PARENT_RECORD_ID);
+		String parentRecordUU = Env.getContext(ctx.ctx, CONTEXT_KEY_PARENT_RECORD_UU);
 
-		createTranslationTags(ctx, parenTableName, parentRecordID, document);
+		createTranslationTags(ctx, parenTableName, parentRecordID, parentRecordUU, document);
 	}
 
 
-	private void createTranslationTags(PIPOContext ctx, String parentTable,
-			int parentRecordID, TransformerHandler document) throws SAXException {
+	private void createTranslationTags(PIPOContext ctx, String parentTableName,
+			int parentRecordID, String parentRecordUU, TransformerHandler document) throws SAXException {
 
-		ArrayList<String> translatedColumns = getTranslatedColumns(ctx, parentTable);
+		ArrayList<String> translatedColumns = getTranslatedColumns(ctx, parentTableName);
+		MTable parentTable = MTable.get(ctx.ctx, parentTableName);
 
-		String sql =
-			"SELECT "+cast(translatedColumns)+" FROM "+parentTable+"_Trl WHERE "+
-			parentTable+"_ID=?";
+		StringBuilder sql = new StringBuilder()
+				.append("SELECT ")
+				.append(cast(translatedColumns))
+				.append(" FROM ")
+				.append(parentTableName)
+				.append("_Trl WHERE ")
+				.append(parentTable.getKeyColumns()[0])
+				.append("=?");
 
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 		try {
 
-			pstm = DB.prepareStatement(sql, getTrxName(ctx));
-			pstm.setInt(1, parentRecordID);
+			pstm = DB.prepareStatement(sql.toString(), getTrxName(ctx));
+			if (parentTable.isUUIDKeyTable())
+				pstm.setString(1, parentRecordUU);
+			else
+				pstm.setInt(1, parentRecordID);
 			rs = pstm.executeQuery();
 
-			String elementName = parentTable + "_Trl";
+			String elementName = parentTableName + "_Trl";
 			while(rs.next()){
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "translation");
@@ -290,15 +316,21 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			return false;
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	{
+		packOut(packout, packoutHandler, docHandler, recordId, null);
+	}
+
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String recordUU) throws Exception
 	{
 		if("Y".equals(packout.getCtx().ctx.getProperty("isHandleTranslations")) && existTranslated(packout.getCtx().ctx.getProperty("Table_Name"))){
 			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,packout.getCtx().ctx.getProperty("Table_Name"));
 			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID,recordId);
+			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_UU,recordUU);
 			this.create(packout.getCtx(), packoutHandler);
 			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE);
 			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID);
-
+			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_UU);
 		}
 	}
 }

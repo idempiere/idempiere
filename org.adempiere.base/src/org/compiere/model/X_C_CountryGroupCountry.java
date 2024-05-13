@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for C_CountryGroupCountry
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CountryGroupCountry")
-public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCountry, I_Persistent 
+public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCountry, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)
@@ -53,6 +53,26 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CountryGroupCountry (Properties ctx, String C_CountryGroupCountry_UU, String trxName)
+    {
+      super (ctx, C_CountryGroupCountry_UU, trxName);
+      /** if (C_CountryGroupCountry_UU == null)
+        {
+			setC_CountryGroupCountry_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CountryGroupCountry (Properties ctx, String C_CountryGroupCountry_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CountryGroupCountry_UU, trxName, virtualColumns);
+      /** if (C_CountryGroupCountry_UU == null)
+        {
+			setC_CountryGroupCountry_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CountryGroupCountry (Properties ctx, ResultSet rs, String trxName)
     {
@@ -60,7 +80,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

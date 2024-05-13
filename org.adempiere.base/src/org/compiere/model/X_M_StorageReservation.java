@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservation")
-public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent 
+public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
@@ -65,6 +65,36 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_StorageReservation (Properties ctx, String M_StorageReservation_UU, String trxName)
+    {
+      super (ctx, M_StorageReservation_UU, trxName);
+      /** if (M_StorageReservation_UU == null)
+        {
+			setIsSOTrx (true);
+// Y
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_StorageReservation (Properties ctx, String M_StorageReservation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_StorageReservation_UU, trxName, virtualColumns);
+      /** if (M_StorageReservation_UU == null)
+        {
+			setIsSOTrx (true);
+// Y
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_StorageReservation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +102,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -89,7 +119,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_StorageReservation[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -123,10 +153,10 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

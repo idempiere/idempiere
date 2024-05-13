@@ -47,7 +47,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *	
  *  @author Carlos Ruiz
  */
-@org.adempiere.base.Model(table = X_WS_WebService.Table_Name)
+@org.adempiere.base.Model(table="WS_WebService")
 public class MWebService extends X_WS_WebService implements ImmutablePOSupport
 {
 	/**
@@ -200,6 +200,16 @@ public class MWebService extends X_WS_WebService implements ImmutablePOSupport
 	/**	Static Logger	*/
 	private static final CLogger	s_log	= CLogger.getCLogger (MWebService.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param WS_WebService_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWebService(Properties ctx, String WS_WebService_UU, String trxName) {
+        super(ctx, WS_WebService_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -209,12 +219,6 @@ public class MWebService extends X_WS_WebService implements ImmutablePOSupport
 	public MWebService (Properties ctx, int WS_WebService_ID, String trxName)
 	{
 		super (ctx, WS_WebService_ID, trxName);
-        /** if (WS_WebService_ID == 0)
-        {
-			setName (null);
-			setValue (null);
-			setWS_WebService_ID (0);
-        } */
 	}	//	MWebService
 
 	/**

@@ -30,7 +30,6 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  * 	Product Download Model
  *  @author Jorg Janke
@@ -40,14 +39,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MProductDownload extends X_M_ProductDownload implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 6930118119436114158L;
 
 	/**
 	 * 	Migrate Download URLs (2.5.2c)
 	 *	@param ctx context
+	 *  @deprecated
 	 */
+	@Deprecated
 	public static void migrateDownloads (Properties ctx)
 	{
 		String sql = "SELECT COUNT(*) FROM M_ProductDownload";
@@ -106,14 +107,23 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MProductDownload.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ProductDownload_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MProductDownload(Properties ctx, String M_ProductDownload_UU, String trxName) {
+        super(ctx, M_ProductDownload_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_ProductDownload_ID id
 	 *	@param trxName trx
 	 */
-	public MProductDownload (Properties ctx, int M_ProductDownload_ID,
-		String trxName)
+	public MProductDownload (Properties ctx, int M_ProductDownload_ID, String trxName)
 	{
 		super (ctx, M_ProductDownload_ID, trxName);
 	}	//	MProductDownload
@@ -130,7 +140,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	}	//	MProductDownload
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MProductDownload(MProductDownload copy) 
@@ -139,7 +149,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -149,7 +159,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -164,6 +174,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MProductDownload[")
@@ -173,8 +184,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
+		
 	/**
 	 * 	Get Download Name
 	 *	@return download name (last part of name)
@@ -189,7 +199,6 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 			return url.substring(pos+1);
 		return url;
 	}	//	getDownloadName
-
 
 	/**
 	 * 	Get Download URL
@@ -221,7 +230,6 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 		}
 		return url;
 	}	//	getDownloadURL
-
 	
 	/**
 	 * 	Find download url
@@ -253,7 +261,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	/**
 	 * 	Get Download Stream
 	 * 	@param directory optional directory
-	 *	@return input stream
+	 *	@return input stream or null
 	 */
 	public InputStream getDownloadStream (String directory)
 	{

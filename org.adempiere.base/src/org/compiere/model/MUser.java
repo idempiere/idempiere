@@ -194,16 +194,22 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		return user;
 	}
 	
+	public static MUser get (Properties ctx, String name, String password)
+	{
+		return MUser.get(ctx, name, password, false);
+	}
+	
 	/**
 	 * 	Get User
 	 *	@param ctx context
 	 *	@param name name
 	 *	@param password password
+	 *	@param isSSOLogin when isSSOLogin is true, password is ignored.
 	 *	@return user or null
 	 */
-	public static MUser get (Properties ctx, String name, String password)
+	public static MUser get (Properties ctx, String name, String password, boolean isSSOLogin)
 	{
-		if (name == null || name.length() == 0 || password == null || password.length() == 0)
+		if (name == null || name.length() == 0 || (!isSSOLogin && (password == null || password.length() == 0)))
 		{
 			s_log.warning ("Invalid Name/Password = " + name);
 			return null;
@@ -250,8 +256,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			if (system == null)
 				throw new IllegalStateException("No System Info");
 			
-			
-			if (system.isLDAP() && ! Util.isEmpty(user.getLDAPUser())) {
+			if (isSSOLogin) {
+				valid = true;
+			} else if (system.isLDAP() && ! Util.isEmpty(user.getLDAPUser())) {
 				valid = system.isLDAP(name, password);
 			} else if (hash_password) {
 				valid = user.authenticateHash(password);
@@ -305,6 +312,18 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MUser.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_User_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUser(Properties ctx, String AD_User_UU, String trxName) {
+        super(ctx, AD_User_UU, trxName);
+		if (Util.isEmpty(AD_User_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -315,11 +334,16 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	{
 		super (ctx, AD_User_ID, trxName);	//	0 is also System
 		if (AD_User_ID == 0)
-		{
-			setIsFullBPAccess (true);
-			setNotificationType(NOTIFICATIONTYPE_None);
-		}		
+			setInitialDefaults();
 	}	//	MUser
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsFullBPAccess (true);
+		setNotificationType(NOTIFICATIONTYPE_None);
+	}
 
 	/**
 	 * 	Parent Constructor
@@ -769,7 +793,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		
 		ArrayList<MRole> list = new ArrayList<MRole>();
 		// 2007-06-08, matthiasO.
-		// Extension of sql query so that not only roles with org acces for this user
+		// Extension of sql query so that not only roles with org access for this user
 		// are found but also roles which delegate org access to the user level where
 		// this user has access to the org in question
 		String sql = "SELECT * FROM AD_Role r " 

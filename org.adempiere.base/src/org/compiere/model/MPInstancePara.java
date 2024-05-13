@@ -29,15 +29,23 @@ import java.util.Properties;
  *  @version $Id: MPInstancePara.java,v 1.3 2006/07/30 00:58:05 jjanke Exp $
  */
 public class MPInstancePara extends X_AD_PInstance_Para
-{
-	
+{	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -8407658637240252680L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PInstance_Para_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPInstancePara(Properties ctx, String AD_PInstance_Para_UU, String trxName) {
+        super(ctx, AD_PInstance_Para_UU, trxName);
+    }
+
 	/**
-	 * 	Persistence Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -74,8 +82,6 @@ public class MPInstancePara extends X_AD_PInstance_Para
 		setSeqNo (SeqNo);
 	}	//	MPInstance_Para
 
-	
-	
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context
@@ -91,6 +97,7 @@ public class MPInstancePara extends X_AD_PInstance_Para
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPInstancePara[")
@@ -234,6 +241,10 @@ public class MPInstancePara extends X_AD_PInstance_Para
 		return -1;
 	}
 	
+	/**
+	 * @param param
+	 * @return true if param is equal to this instance parameter record
+	 */
 	public boolean equalParameter(MPInstancePara param) {
 		
 		if (param == null)
@@ -268,6 +279,7 @@ public class MPInstancePara extends X_AD_PInstance_Para
 	 * @param ctx
 	 * @param AD_PInstance_ID
 	 * @param SeqNo
+	 * @return MPInstancePara
 	 */
 	public static MPInstancePara getOrCreate(Properties ctx, int AD_PInstance_ID, int SeqNo)
 	{

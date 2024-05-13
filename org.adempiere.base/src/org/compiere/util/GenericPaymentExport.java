@@ -30,7 +30,7 @@ import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
 
 /**
- * 	Generic Payment Export
+ * 	Generic Payment Export.<br/>
  *  Sample implementation of Payment Export Interface - brought here from MPaySelectionCheck
  *	
  * 	@author 	Jorg Janke
@@ -42,7 +42,6 @@ public class GenericPaymentExport implements PaymentExport
 {
 	/** Logger								*/
 	static private CLogger	s_log = CLogger.getCLogger (GenericPaymentExport.class);
-
 
 	/** BPartner Info Index for Value       */
 	private static final int     BP_VALUE = 0;
@@ -65,8 +64,7 @@ public class GenericPaymentExport implements PaymentExport
 	/** BPartner Info Index for Reference No    */
 	private static final int     BP_REFNO = 9;
 
-	
-	/**************************************************************************
+	/**
 	 *  Export to File
 	 *  @param checks array of checks
 	 *  @param depositBatch book the payments as single position
@@ -181,7 +179,7 @@ public class GenericPaymentExport implements PaymentExport
 
 	/**
 	 *  Get Customer/Vendor Info.
-	 *  Based on BP_ static variables
+	 *  Based on BP_ static variables.
 	 *  @param C_BPartner_ID BPartner
 	 *  @return info array
 	 */
@@ -286,4 +284,4 @@ public class GenericPaymentExport implements PaymentExport
 		return false;
 	}
 	
-}	//	PaymentExporterInterface
+}

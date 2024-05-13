@@ -40,7 +40,7 @@ public class button extends MultiPartElement
 	 */
 	private static final long serialVersionUID = -5825801558843063454L;
 
-	// convience variables
+	// convenience variables
 	public final static String	TYPE_RESET	= "reset";
 
 	public final static String	TYPE_SUBMIT	= "submit";
@@ -48,7 +48,7 @@ public class button extends MultiPartElement
 	public final static String	TYPE_BUTTON	= "button";
 	
 	/**
-	 * private initializaer.
+	 * private initializer.
 	 */
 	{
 		setElementType ("button");
@@ -85,7 +85,7 @@ public class button extends MultiPartElement
 	}
 
 	/**
-	 * Set the type of button this is. Convience variables are <br>
+	 * Set the type of button this is. Convenience variables are <br>
 	 * button.submit <br>
 	 * button.reset <br>
 	 * button.button

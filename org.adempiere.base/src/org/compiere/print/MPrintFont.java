@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFont;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -43,6 +44,18 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = -613305916546183810L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintFont_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintFont(Properties ctx, String AD_PrintFont_UU, String trxName) {
+        super(ctx, AD_PrintFont_UU, trxName);
+		if (Util.isEmpty(AD_PrintFont_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 *	Constructor
 	 *  @param ctx context
@@ -53,9 +66,16 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 	{
 		super (ctx, AD_PrintFont_ID, trxName);
 		if (AD_PrintFont_ID == 0)
-			setIsDefault(false);
+			setInitialDefaults();
 	}	//	MPrintFont
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault(false);
+	}
+
 	public MPrintFont(Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);

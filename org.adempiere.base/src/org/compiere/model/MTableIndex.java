@@ -27,12 +27,12 @@ import org.compiere.util.Util;
 
 public class MTableIndex extends X_AD_TableIndex {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1433937879086456196L;
 
 	/**
-	 * Get active indexes from table
+	 * Get active indexes of table
 	 * @param table table
 	 * @return array of table index
 	 */
@@ -51,8 +51,8 @@ public class MTableIndex extends X_AD_TableIndex {
 	/**
 	 * Get table indexes with where clause
 	 * @param ctx context
-	 * @param whereClause where clause
-	 * @return array of table index
+	 * @param whereClause SQL where clause
+	 * @return list of table index
 	 */
 	public static List<MTableIndex> getTableIndexesByQuery(Properties ctx, String whereClause)
 	{
@@ -61,6 +61,18 @@ public class MTableIndex extends X_AD_TableIndex {
 		return list;
 	}
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_TableIndex_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTableIndex(Properties ctx, String AD_TableIndex_UU, String trxName) {
+        super(ctx, AD_TableIndex_UU, trxName);
+		if (Util.isEmpty(AD_TableIndex_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * Standard constructor
 	 * @param ctx context
@@ -71,13 +83,18 @@ public class MTableIndex extends X_AD_TableIndex {
 	{
 		super(ctx, AD_TableIndex_ID, trxName);
 		if (AD_TableIndex_ID == 0)
-		{
-			setEntityType(ENTITYTYPE_UserMaintained);
-			setIsUnique(false);
-			setIsCreateConstraint(false);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType(ENTITYTYPE_UserMaintained);
+		setIsUnique(false);
+		setIsCreateConstraint(false);
+	}
+
 	/**
 	 * Load constructor
 	 * @param ctx context
@@ -93,7 +110,7 @@ public class MTableIndex extends X_AD_TableIndex {
 	/**
 	 * Parent constructor
 	 * @param parent parent
-	 * @param name name
+	 * @param name index name
 	 */
 	public MTableIndex(MTable parent, String name)
 	{
@@ -114,7 +131,7 @@ public class MTableIndex extends X_AD_TableIndex {
 	
 	/**
 	 * Get index columns
-	 * @param reload reload data
+	 * @param reload true to reload from DB
 	 * @return array of index column
 	 */
 	public MIndexColumn[] getColumns(boolean reload)
@@ -124,7 +141,7 @@ public class MTableIndex extends X_AD_TableIndex {
 	
 	/**
 	 * Get index columns
-	 * @param reload reload data
+	 * @param reload true to reload from DB
 	 * @param activeOnly return active records only
 	 * @return array of index column
 	 */
@@ -160,8 +177,8 @@ public class MTableIndex extends X_AD_TableIndex {
 	}
 	
 	/**
-	 * Get SQL DDL
-	 * @return DDL
+	 * Get create index or constraint (if IsCreateConstraint=Y) DDL
+	 * @return create index or constraint DDL
 	 */
 	private String createDDL()
 	{
@@ -194,6 +211,9 @@ public class MTableIndex extends X_AD_TableIndex {
 		return sql.toString();
 	}
 
+	/**
+	 * @return columns for create index/constraint DDL 
+	 */
 	private String createColumnList() {
 		getColumns(false, true);
 		if (m_columns.length <= 0)
@@ -211,8 +231,8 @@ public class MTableIndex extends X_AD_TableIndex {
 	}
 
 	/**
-	 * Get SQL index create DDL
-	 * @return SQL DDL
+	 * Get create index or constraint (if IsCreateConstraint=Y) DDL
+	 * @return Create Index or Constraint DDL
 	 */
 	public String getDDL()
 	{
@@ -222,8 +242,8 @@ public class MTableIndex extends X_AD_TableIndex {
 	}
 	
 	/**
-	 * Get SQL index create DDL
-	 * @return SQL DDL
+	 * Get drop index or constraint (if IsCreateConstraint=Y) DDL
+	 * @return Drop Index or Constraint DDL
 	 */
 	public String getDropDDL()
 	{

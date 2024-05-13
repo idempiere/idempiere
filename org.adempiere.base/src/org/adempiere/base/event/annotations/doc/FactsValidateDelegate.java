@@ -31,14 +31,14 @@ import org.compiere.model.PO;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate for accounting facts validation event.<br/>
+ * To handle facts validate event, create a subclass of this and uses the {@link FactsValidate} annotation
+ * to annotate the event handling method. 
  * @author hengsin
- *
  */
 public abstract class FactsValidateDelegate<T extends PO> extends ModelEventDelegate<T> {
 
 	/**
-	 * 
 	 * @param po
 	 * @param event
 	 */
@@ -47,7 +47,6 @@ public abstract class FactsValidateDelegate<T extends PO> extends ModelEventDele
 	}
 	
 	/**
-	 * 
 	 * @return {@link FactsEventData}
 	 */
 	protected FactsEventData getFactsEventData() {

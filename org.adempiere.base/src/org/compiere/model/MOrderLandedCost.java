@@ -28,8 +28,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
+ * Landed cost for order
  * @author hengsin
- *
  */
 public class MOrderLandedCost extends X_C_OrderLandedCost {
 
@@ -38,13 +38,22 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 	 */
 	private static final long serialVersionUID = 2629138678703667123L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_OrderLandedCost_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOrderLandedCost(Properties ctx, String C_OrderLandedCost_UU, String trxName) {
+        super(ctx, C_OrderLandedCost_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param C_OrderLandedCost_ID
 	 * @param trxName
 	 */
-	public MOrderLandedCost(Properties ctx, int C_OrderLandedCost_ID,
-			String trxName) {
+	public MOrderLandedCost(Properties ctx, int C_OrderLandedCost_ID, String trxName) {
 		super(ctx, C_OrderLandedCost_ID, trxName);
 	}
 
@@ -58,23 +67,23 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 	}
 
 	/**
-	 * 	Get allocation
+	 * 	Get landed cost lines
 	 * 	@param C_Order_ID
-	 * 	@return lines
+	 * 	@return array of MOrderLandedCost
 	 */
 	public static MOrderLandedCost[] getOfOrder (int C_Order_ID, String trxName)
 	{
 		StringBuilder whereClause = new StringBuilder(COLUMNNAME_C_Order_ID).append("=?");
-		List<MOrderLandedCostAllocation> list = new Query(Env.getCtx(), I_C_OrderLandedCost.Table_Name, whereClause.toString(), trxName)
+		List<MOrderLandedCost> list = new Query(Env.getCtx(), I_C_OrderLandedCost.Table_Name, whereClause.toString(), trxName)
 										.setParameters(C_Order_ID)
 										.list();
 		return list.toArray(new MOrderLandedCost[list.size()]);
-	}	//	getLines
+	}	//	getOfOrder
 	
 	/**
 	 * 	Get Lines of allocation
 	 * 	@param whereClause starting with AND
-	 * 	@return lines
+	 * 	@return landed cost allocation lines
 	 */
 	public MOrderLandedCostAllocation[] getLines (String whereClause)
 	{
@@ -87,6 +96,10 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 		return list.toArray(new MOrderLandedCostAllocation[list.size()]);
 	}	//	getLines
 	
+	/**
+	 * create landed cost allocations 
+	 * @return error message or null
+	 */
 	public String distributeLandedCost() {
 		MOrderLandedCostAllocation[] lines = getLines("");
 		if (lines.length == 0) {
@@ -158,7 +171,8 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 	}
 	
 	/**
-	 * 	Allocate Landed Cost - Enforce Rounding
+	 * If there are difference between landed cost amount (getAmt()) and total landed cost allocation (MOrderLandedCostAllocation) amount,
+	 * add the difference to the largest landed cost allocation line.
 	 * @param lines 
 	 */
 	private void allocateLandedCostRounding(MOrderLandedCostAllocation[] lines)

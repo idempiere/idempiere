@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.MPInstanceLog;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Process Info with Utilities
@@ -172,7 +174,8 @@ public class ProcessInfoUtil
 		{
 			MPInstanceLog il = new MPInstanceLog(pi.getAD_PInstance_ID(), logs[i].getLog_ID(), logs[i].getP_Date(),
 					logs[i].getP_ID(), logs[i].getP_Number(), logs[i].getP_Msg(),
-					logs[i].getAD_Table_ID(), logs[i].getRecord_ID());
+					logs[i].getAD_Table_ID(), logs[i].getRecord_ID(), 
+					!Util.isEmpty(logs[i].getPInstanceLogType()) ? logs[i].getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
 			il.save();
 		}
 	}   //  saveLogToDB

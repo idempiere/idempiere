@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Inventory Movement Confirmation Line
@@ -31,11 +32,22 @@ import org.compiere.util.Msg;
  */
 public class MMovementLineConfirm extends X_M_MovementLineConfirm
 {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5447921784818655144L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_MovementLineConfirm_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMovementLineConfirm(Properties ctx, String M_MovementLineConfirm_UU, String trxName) {
+        super(ctx, M_MovementLineConfirm_UU, trxName);
+		if (Util.isEmpty(M_MovementLineConfirm_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -47,16 +59,21 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	{
 		super (ctx, M_MovementLineConfirm_ID, trxName);
 		if (M_MovementLineConfirm_ID == 0)
-		{
-			setConfirmedQty (Env.ZERO);
-			setDifferenceQty (Env.ZERO);
-			setScrappedQty (Env.ZERO);
-			setTargetQty (Env.ZERO);
-			setProcessed (false);
-		}	}	//	M_MovementLineConfirm
+			setInitialDefaults();
+	}	//	M_MovementLineConfirm
 
 	/**
-	 * 	M_MovementLineConfirm
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setConfirmedQty (Env.ZERO);
+		setDifferenceQty (Env.ZERO);
+		setScrappedQty (Env.ZERO);
+		setTargetQty (Env.ZERO);
+		setProcessed (false);
+	}
+
+	/**
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -102,12 +119,13 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 			m_line = new MMovementLine (getCtx(), getM_MovementLine_ID(), get_TrxName());
 		return m_line;
 	}	//	getLine
-	
-	
+		
 	/**
-	 * 	Process Confirmation Line.
-	 * 	- Update Movement Line
-	 *	@return success
+	 *  <pre>
+	 *  Process Confirmation Line.
+	 *  - Update Movement Line.
+	 *  </pre>
+	 *	@return true if success
 	 */
 	public boolean processLine ()
 	{
@@ -129,12 +147,12 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	{
 		return getTargetQty().compareTo(getConfirmedQty()) == 0;
 	}	//	isFullyConfirmed
-	
-	
+		
 	/**
-	 * 	Before Delete - do not delete
+	 * 	Before Delete - do not allow delete
 	 *	@return false 
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		return false;
@@ -145,6 +163,7 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MMovementConfirm parent = new MMovementConfirm(getCtx(), getM_MovementConfirm_ID(), get_TrxName());
@@ -158,7 +177,5 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 		setDifferenceQty(difference);
 		//
 		return true;
-	}	//	beforeSave
-
-	
+	}	//	beforeSave	
 }	//	M_MovementLineConfirm

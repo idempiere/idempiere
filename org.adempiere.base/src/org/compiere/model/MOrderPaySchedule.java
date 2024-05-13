@@ -29,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Order Payment Schedule Model 
@@ -39,7 +40,7 @@ import org.compiere.util.TimeUtil;
 public class MOrderPaySchedule extends X_C_OrderPaySchedule
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2158181283878369676L;
 
@@ -49,7 +50,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	 * 	@param C_Order_ID order id (direct)
 	 * 	@param C_OrderPaySchedule_ID id (indirect)
 	 *	@param trxName transaction
-	 *	@return array of schedule
+	 *	@return array of payment schedule
 	 */
 	public static MOrderPaySchedule[] getOrderPaySchedule(Properties ctx, 
 		int C_Order_ID, int C_OrderPaySchedule_ID, String trxName)
@@ -97,7 +98,19 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MOrderPaySchedule.class);
 
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_OrderPaySchedule_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOrderPaySchedule(Properties ctx, String C_OrderPaySchedule_UU, String trxName) {
+        super(ctx, C_OrderPaySchedule_UU, trxName);
+		if (Util.isEmpty(C_OrderPaySchedule_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_OrderPaySchedule_ID id
@@ -107,10 +120,15 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	{
 		super(ctx, C_OrderPaySchedule_ID, trxName);
 		if (C_OrderPaySchedule_ID == 0)
-		{
-			setIsValid (false);
-		}
+			setInitialDefaults();
 	}	//	MOrderPaySchedule
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsValid (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -165,10 +183,9 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	
 	/**	Parent						*/
 	private MOrder	m_parent = null;
-
 	
 	/**
-	 * @return Returns the parent.
+	 * @return parent
 	 */
 	public MOrder getParent ()
 	{
@@ -189,6 +206,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MOrderPaySchedule[");
@@ -197,19 +215,18 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 			.append("]");
 		return sb.toString();
 	}	//	toString
-	
-	
-	
+			
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (is_ValueChanged("DueAmt"))
 		{
-			log.fine("beforeSave");
+			if (log.isLoggable(Level.FINE)) log.fine("beforeSave");
 			setIsValid(false);
 		}
 		return true;
@@ -221,13 +238,14 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
 		if (is_ValueChanged("DueAmt") || is_ValueChanged("IsActive"))
 		{
-			log.fine("afterSave");
+			if (log.isLoggable(Level.FINE)) log.fine("afterSave");
 			getParent();
 			m_parent.validatePaySchedule();
 			m_parent.saveEx();
@@ -239,7 +257,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	protected boolean afterDelete(boolean success) {
 		if (!success)
 			return success;
-		log.fine("afterDelete");
+		if (log.isLoggable(Level.FINE)) log.fine("afterDelete");
 		getParent();
 		m_parent.validatePaySchedule();
 		m_parent.saveEx();

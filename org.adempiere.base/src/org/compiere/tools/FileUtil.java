@@ -364,7 +364,7 @@ public class FileUtil
 
 	/**
 	 * 	Get Filter String
-	 *	@return flter String
+	 *	@return filter String
 	 */
 	String getFilterString()
 	{
@@ -488,19 +488,7 @@ public class FileUtil
 
 		String fileName = prefix + suffix;
 
-        SecurityManager sm = System.getSecurityManager();
         File f = new File(tmpdirname, fileName);
-
-        if (sm != null) {
-            try {
-                sm.checkWrite(f.getPath());
-            } catch (SecurityException se) {
-                // don't reveal temporary directory location
-                if (directory == null)
-                    throw new SecurityException("Unable to create temporary file");
-                throw se;
-            }
-        }
 
         return f;	
 	}

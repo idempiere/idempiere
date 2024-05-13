@@ -33,11 +33,9 @@ import java.lang.annotation.Target;
 import org.adempiere.base.event.annotations.EventDelegate;
 
 /**
- * 
- * Annotation for OSGi Event Topic Delegate.
+ * Annotation for OSGi Event Topic Delegate.<br/>
  * Works with {@link EventDelegate} and its sub classes
  * @author hengsin
- *
  */
 @Retention(RUNTIME)
 @Target(ElementType.TYPE)

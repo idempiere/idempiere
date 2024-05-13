@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Job
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Job")
-public class X_C_Job extends PO implements I_C_Job, I_Persistent 
+public class X_C_Job extends PO implements I_C_Job, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Job (Properties ctx, int C_Job_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_C_Job extends PO implements I_C_Job, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Job (Properties ctx, String C_Job_UU, String trxName)
+    {
+      super (ctx, C_Job_UU, trxName);
+      /** if (C_Job_UU == null)
+        {
+			setC_JobCategory_ID (0);
+			setC_Job_ID (0);
+			setIsEmployee (true);
+// Y
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Job (Properties ctx, String C_Job_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Job_UU, trxName, virtualColumns);
+      /** if (C_Job_UU == null)
+        {
+			setC_JobCategory_ID (0);
+			setC_Job_ID (0);
+			setIsEmployee (true);
+// Y
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Job (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_C_Job extends PO implements I_C_Job, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -200,10 +228,10 @@ public class X_C_Job extends PO implements I_C_Job, I_Persistent
 	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -228,7 +256,7 @@ public class X_C_Job extends PO implements I_C_Job, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

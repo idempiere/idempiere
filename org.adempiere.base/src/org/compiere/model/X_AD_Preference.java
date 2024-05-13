@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Preference
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Preference")
-public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent 
+public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230913L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Preference (Properties ctx, String AD_Preference_UU, String trxName)
+    {
+      super (ctx, AD_Preference_UU, trxName);
+      /** if (AD_Preference_UU == null)
+        {
+			setAD_Preference_ID (0);
+			setAttribute (null);
+			setPreferenceFor (null);
+// W
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Preference (Properties ctx, String AD_Preference_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Preference_UU, trxName, virtualColumns);
+      /** if (AD_Preference_UU == null)
+        {
+			setAD_Preference_ID (0);
+			setAttribute (null);
+			setPreferenceFor (null);
+// W
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Preference (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -88,6 +116,34 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
+
+	/** Set Special Form.
+		@param AD_Form_ID Special Form
+	*/
+	public void setAD_Form_ID (int AD_Form_ID)
+	{
+		if (AD_Form_ID < 1)
+			set_Value (COLUMNNAME_AD_Form_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
+	}
+
+	/** Get Special Form.
+		@return Special Form
+	  */
+	public int getAD_Form_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
@@ -256,7 +312,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getAttribute());
     }
@@ -269,6 +325,8 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	public static final String PREFERENCEFOR_Process = "P";
 	/** Window = W */
 	public static final String PREFERENCEFOR_Window = "W";
+	/** Form = X */
+	public static final String PREFERENCEFOR_Form = "X";
 	/** Set Preference For.
 		@param PreferenceFor Type of preference, it can window, info window or parameter process
 	*/

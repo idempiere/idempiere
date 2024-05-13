@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_SubscriptionType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_SubscriptionType")
-public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_Persistent 
+public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_SubscriptionType (Properties ctx, int C_SubscriptionType_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_SubscriptionType (Properties ctx, String C_SubscriptionType_UU, String trxName)
+    {
+      super (ctx, C_SubscriptionType_UU, trxName);
+      /** if (C_SubscriptionType_UU == null)
+        {
+			setC_SubscriptionType_ID (0);
+			setFrequency (0);
+			setFrequencyType (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_SubscriptionType (Properties ctx, String C_SubscriptionType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_SubscriptionType_UU, trxName, virtualColumns);
+      /** if (C_SubscriptionType_UU == null)
+        {
+			setC_SubscriptionType_ID (0);
+			setFrequency (0);
+			setFrequencyType (null);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_SubscriptionType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -203,7 +229,7 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

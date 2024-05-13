@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_TransactionAllocation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_TransactionAllocation")
-public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllocation, I_Persistent 
+public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllocation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName)
@@ -70,6 +70,42 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_TransactionAllocation (Properties ctx, String M_TransactionAllocation_UU, String trxName)
+    {
+      super (ctx, M_TransactionAllocation_UU, trxName);
+      /** if (M_TransactionAllocation_UU == null)
+        {
+			setAllocationStrategyType (null);
+			setIsAllocated (false);
+// N
+			setIsManual (false);
+// N
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_TransactionAllocation (Properties ctx, String M_TransactionAllocation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_TransactionAllocation_UU, trxName, virtualColumns);
+      /** if (M_TransactionAllocation_UU == null)
+        {
+			setAllocationStrategyType (null);
+			setIsAllocated (false);
+// N
+			setIsManual (false);
+// N
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_TransactionAllocation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +113,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -94,7 +130,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_TransactionAllocation[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -135,10 +171,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	public boolean isAllocated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllocated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -158,10 +194,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

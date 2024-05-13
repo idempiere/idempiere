@@ -105,7 +105,7 @@ billboard.LineRenderer.prototype.render = function(wgt) {
 				var h = '<table class="bb-tooltip"><tbody><tr><th>';
 				h = h + defaultTitleFormat(c.x);
 				h = h + '</th></tr><tr class="bb-tooltip-name-data"><td class="value">';
-				h = h + c.value + '</td></tr></tbody></table>';
+				h = h + d3.format('.2f')(c.value) + '</td></tr></tbody></table>';
 		        return h;
 		    }
 		},

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_Task
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Task")
-public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent 
+public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_ASP_Task (Properties ctx, int ASP_Task_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_Task (Properties ctx, String ASP_Task_UU, String trxName)
+    {
+      super (ctx, ASP_Task_UU, trxName);
+      /** if (ASP_Task_UU == null)
+        {
+			setAD_Task_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Task (Properties ctx, String ASP_Task_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Task_UU, trxName, virtualColumns);
+      /** if (ASP_Task_UU == null)
+        {
+			setAD_Task_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_Task (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

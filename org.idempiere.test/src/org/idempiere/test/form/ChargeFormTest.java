@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Vector;
 
 import org.compiere.apps.form.Charge;
+import org.compiere.minigrid.MiniTableImpl;
 import org.idempiere.test.AbstractTestCase;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -58,7 +58,7 @@ public class ChargeFormTest extends AbstractTestCase {
 		int elementValueId = charge.createElementValue(value, name, true);
 		assertTrue(elementValueId > 0, "Failed to create new account element record");
 		int chargeId = charge.createCharge(name, elementValueId);
-		assertTrue(chargeId > 0, "Failed to creaet new Charge record");
+		assertTrue(chargeId > 0, "Failed to create new Charge record");
 	}
 	
 	@Test

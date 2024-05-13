@@ -35,10 +35,14 @@ import java.util.Set;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
+import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.SelectableIDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MImage;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -51,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
@@ -58,6 +63,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * Renderer for {@link org.adempiere.webui.component.ListItem}
@@ -115,7 +121,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 * @param columnIndex	The index of the column for which details are to be retrieved.
 	 * @return	The details of the column at the specified index.
 	 */
-	private WTableColumn getColumn(int columnIndex)
+	public WTableColumn getColumn(int columnIndex)
 	{
 		try
 		{
@@ -199,14 +205,61 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 									  int rowIndex, int columnIndex)
 	{
 		ListCell listcell = new ListCell();
+		WTableColumn column = null;
 		if (m_tableColumns.size() > columnIndex) {
-			WTableColumn column = getColumn(columnIndex);
+			column = getColumn(columnIndex);
 			if (column != null && column.getHeaderValue() != null) {
 				listcell.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, column.getHeaderValue().toString());
 			}
 		}
 		boolean isCellEditable = table != null ? table.isCellEditable(rowIndex, columnIndex) : false;
 
+		//use custom editor configure through WTableColumn (if any)
+		if (column != null && column.getEditorProvider() != null) 
+		{
+        	WEditor editor = column.getEditorProvider().apply(new WTableColumn.EditorProviderParameters(table, rowIndex, columnIndex, value));
+        	if (editor != null) 
+        	{
+        		editor.setValue(value);
+        		if (isCellEditable) 
+        		{
+	        		editor.setReadWrite(true);
+	        		editor.setTableEditor(true);	        		
+	        		editor.addValueChangeListener(evt -> onValueChange(evt));
+	        		listcell.appendChild(editor.getComponent());	        		        		
+        		} 
+        		else 
+        		{    
+        			editor.setReadWrite(false);
+        			Component displayComponent = editor.getDisplayComponent();
+        			if (displayComponent != null && displayComponent instanceof Html) 
+        			{
+        				String text = editor.getDisplayTextForGridView(value);
+        				((Html)displayComponent).setContent(text);
+        				listcell.appendChild(displayComponent);
+        			} 
+        			else if (displayComponent != null && displayComponent instanceof Label)
+        			{
+        				String text = editor.getDisplay();
+        				((Label)displayComponent).setValue(text);
+        				listcell.appendChild(displayComponent);
+        			}
+        			else if (displayComponent != null && displayComponent instanceof InputElement)
+        			{
+        				String text = editor.getDisplay();
+        				((InputElement)displayComponent).setText(text);
+        				((InputElement)displayComponent).setReadonly(true);
+        				listcell.appendChild(displayComponent);
+        			}
+        			else 
+        			{        				
+    	        		listcell.appendChild(editor.getComponent());    	        		
+        			}
+        		}
+        		return listcell;
+        	}
+        }
+		
 		if (value != null)
 		{
 			if (value instanceof Boolean)
@@ -348,10 +401,13 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					}
 				}
 			}
-			// if ID column make it invisible
-			else if (value instanceof IDColumn)
+			// if ID or UUID column make it invisible
+			else if (value instanceof IDColumn || value instanceof UUIDColumn)
 			{
-				listcell.setValue(((IDColumn) value).getRecord_ID());
+				if (value instanceof IDColumn)
+					listcell.setValue(((IDColumn) value).getRecord_ID());
+				else
+					listcell.setValue(((UUIDColumn) value).getRecord_UU());
 				if (!table.isCheckmark()) {
 					table.setCheckmark(true);
 					table.removeEventListener(Events.ON_SELECT, this);
@@ -373,6 +429,24 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		return listcell;
 	}
 
+	/**
+	 * Handle value change from custom editor created by {@link WTableColumn#getEditorProvider()}.
+	 * @param evt
+	 */
+	private void  onValueChange(ValueChangeEvent evt) {
+		WEditor editor = (WEditor) evt.getSource();
+		Component component = editor.getComponent();
+		int row = getRowPosition(component);
+		int col = getColumnPosition(component);
+		
+		WTableColumn tableColumn = getColumn(col);
+		TableValueChangeEvent vcEvent = new TableValueChangeEvent(component,
+				tableColumn.getHeaderValue().toString(),
+				row, col,
+				evt.getOldValue(), evt.getNewValue());
+
+		fireTableValueChange(vcEvent);
+	}
 
 	/**
 	 *  Update header of a Column.
@@ -435,7 +509,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 
 	/**
 	 * This is unused.
-	 * The readonly proprty of a column should be set in
+	 * The readonly property of a column should be set in
 	 * the parent table.
 	 *
 	 * @param colIndex
@@ -468,7 +542,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
         String headerText = headerValue.toString();
         if (m_headers.size() <= headerIndex || m_headers.get(headerIndex) == null)
         {
-        	if (classType != null && classType.isAssignableFrom(IDColumn.class))
+        	if (classType != null && (classType.isAssignableFrom(IDColumn.class) || classType.isAssignableFrom(UUIDColumn.class)))
         	{
         		header = new ListHeader("");
         		ZKUpdateUtil.setWidth(header, "30px");
@@ -500,7 +574,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	            		if (width > 0 && width < 180)
 	            			width = 180;
 	            	}
-	            	else if (classType.equals(IDColumn.class))
+	            	else if (classType.equals(IDColumn.class) || classType.equals(UUIDColumn.class))
 	            	{
 	            		header.setSort("none");
 	            		if (width < 30)
@@ -681,13 +755,13 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			WListbox table = (WListbox) event.getTarget();
 			if (table.isCheckmark()) {
 				int cnt = table.getRowCount();
-				if (cnt == 0 || !(table.getValueAt(0, 0) instanceof IDColumn))
+				if (cnt == 0 || !(table.getValueAt(0, 0) instanceof IDColumn || table.getValueAt(0, 0) instanceof UUIDColumn))
 					return;
 
 				//update IDColumn
 				tableColumn = m_tableColumns.get(0);
 				for (int i = 0; i < cnt; i++) {
-					IDColumn idcolumn = (IDColumn) table.getValueAt(i, 0);
+					SelectableIDColumn idcolumn = (SelectableIDColumn) table.getValueAt(i, 0);
 					Listitem item = table.getItemAtIndex(i);
 
 					value = item.isSelected();

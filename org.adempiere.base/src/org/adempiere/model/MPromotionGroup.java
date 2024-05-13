@@ -19,23 +19,47 @@ import java.util.Properties;
 import org.compiere.model.X_M_PromotionGroup;
 
 /**
- *
+ * Extended model class for M_PromotionGroup
  * @author hengsin
- *
  */
 public class MPromotionGroup extends X_M_PromotionGroup {
 
 	private static final long serialVersionUID = 4203915332775348579L;
 
-	public MPromotionGroup(Properties ctx, int M_PromotionGroup_ID,
-			String trxName) {
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_PromotionGroup_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPromotionGroup(Properties ctx, String M_PromotionGroup_UU, String trxName) {
+        super(ctx, M_PromotionGroup_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param M_PromotionGroup_ID
+     * @param trxName
+     */
+	public MPromotionGroup(Properties ctx, int M_PromotionGroup_ID, String trxName) {
 		super(ctx, M_PromotionGroup_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionGroup(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionGroup_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionGroup(Properties ctx, int M_PromotionGroup_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_PromotionGroup_ID, trxName, virtualColumns);
 	}

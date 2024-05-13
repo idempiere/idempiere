@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatchLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatchLine")
-public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_Persistent 
+public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_DepositBatchLine (Properties ctx, String C_DepositBatchLine_UU, String trxName)
+    {
+      super (ctx, C_DepositBatchLine_UU, trxName);
+      /** if (C_DepositBatchLine_UU == null)
+        {
+			setC_DepositBatch_ID (0);
+			setC_DepositBatchLine_ID (0);
+			setC_Payment_ID (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
+			setPayAmt (Env.ZERO);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DepositBatchLine (Properties ctx, String C_DepositBatchLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DepositBatchLine_UU, trxName, virtualColumns);
+      /** if (C_DepositBatchLine_UU == null)
+        {
+			setC_DepositBatch_ID (0);
+			setC_DepositBatchLine_ID (0);
+			setC_Payment_ID (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
+			setPayAmt (Env.ZERO);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_DepositBatchLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -127,7 +161,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_DepositBatch_ID()));
     }
@@ -248,10 +282,10 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -270,10 +304,10 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

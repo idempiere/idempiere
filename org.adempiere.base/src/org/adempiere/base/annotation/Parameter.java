@@ -22,16 +22,16 @@ import org.compiere.model.X_AD_Process_Para;
 import org.compiere.process.SvrProcess;
 
 /**
- * Tags a process class field as a process parameter in order to have its value set automatically. 
+ * Tags a process class field as a process parameter in order to have its value set automatically.<br/>
  * Class fields are matched against process parameters using the following heuristics: <br>
  * [1] If the parameter annotation has a name, then it must match exactly the process parameter 
  *     metadata definition. For example: <br>
  *     <code>@Parameter(name="C_BPartner_ID") int foo</code> will fill <code>foo</code> with
  *     the value of the parameter named <code>C_BPartner_ID</code>. <br>
  * [2] Class fields with the <code>p_</code> prefix will be matched automatically. Example: <br>
- *     <code>@Parameter Integer p_C_BPartner_ID</code> will match a parameter named <code>C_BPartner_ID</code>.
+ *     <code>@Parameter Integer p_C_BPartner_ID</code> will match a parameter named <code>C_BPartner_ID</code>.<br/>
  * [3] Fields with their names matching metadata names after stripping the "_" character. Example:
- *     <code>@Parameter Integer cBPartnerId</code> will match a parameter named <code>C_BPartner_ID</code>.
+ *     <code>@Parameter Integer cBPartnerId</code> will match a parameter named <code>C_BPartner_ID</code>.<br/>
  * [4] Fields with their names matching exactly their metadata names. Example:
  *     <code>@Parameter Integer C_BPartner_ID</code> will match a parameter named <code>C_BPartner_ID</code>.
  * @see SvrProcess

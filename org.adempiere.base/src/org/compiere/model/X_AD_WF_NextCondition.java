@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NextCondition
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_NextCondition")
-public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, I_Persistent 
+public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
@@ -73,6 +73,46 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_NextCondition (Properties ctx, String AD_WF_NextCondition_UU, String trxName)
+    {
+      super (ctx, AD_WF_NextCondition_UU, trxName);
+      /** if (AD_WF_NextCondition_UU == null)
+        {
+			setAD_WF_NextCondition_ID (0);
+			setAD_WF_NodeNext_ID (0);
+// @4|AD_WF_NodeNext_ID@
+			setAndOr (null);
+// O
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setOperation (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_WF_NextCondition WHERE AD_WF_NodeNext_ID=@AD_WF_NodeNext_ID@
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_NextCondition (Properties ctx, String AD_WF_NextCondition_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_NextCondition_UU, trxName, virtualColumns);
+      /** if (AD_WF_NextCondition_UU == null)
+        {
+			setAD_WF_NextCondition_ID (0);
+			setAD_WF_NodeNext_ID (0);
+// @4|AD_WF_NodeNext_ID@
+			setAndOr (null);
+// O
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setOperation (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_WF_NextCondition WHERE AD_WF_NodeNext_ID=@AD_WF_NodeNext_ID@
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_NextCondition (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +120,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -326,7 +366,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

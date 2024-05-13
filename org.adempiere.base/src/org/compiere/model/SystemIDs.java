@@ -93,6 +93,7 @@ public class SystemIDs
 	public final static int PROCESS_AD_CHANGELOG_REDO = 307;
 	public final static int PROCESS_AD_NATIVE_SEQUENCE_ENABLE = 53156;
 	public final static int PROCESS_AD_TAB_CREATEFIELDS = 174;
+	public final static int PROCESS_C_BPARTNER_VALIDATE = 314;
 	public final static int PROCESS_C_INVOICE_GENERATE = 119;
 	public final static int PROCESS_C_INVOICE_GENERATE_MANUAL = 134;
 	public final static int PROCESS_C_INVOICE_GENERATERMA_MANUAL = 52002;
@@ -135,6 +136,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_FILENAME = 39;
 	public final static int REFERENCE_DATATYPE_FILEPATH = 38;
 	public final static int REFERENCE_DATATYPE_ID = 13;
+	public final static int REFERENCE_DATATYPE_UUID = 200231;
 	public final static int REFERENCE_DATATYPE_IMAGE = 32;
 	public final static int REFERENCE_DATATYPE_INTEGER = 11;
 	public final static int REFERENCE_DATATYPE_LIST = 17;
@@ -149,12 +151,17 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_QUANTITY = 29;
 	public final static int REFERENCE_DATATYPE_RADIOGROUP_LIST= 200152;
 	public final static int REFERENCE_DATATYPE_RECORD_ID = 200202;
+	public final static int REFERENCE_DATATYPE_RECORD_UU = 200240;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
+	public final static int REFERENCE_DATATYPE_SCHEDULER_STATE = 200173;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;
+	public final static int REFERENCE_DATATYPE_SEARCH_UU = 200235;
 	public final static int REFERENCE_DATATYPE_SINGLE_SELECTION_GRID = 200127;
 	public final static int REFERENCE_DATATYPE_STRING = 10;
 	public final static int REFERENCE_DATATYPE_TABLE = 18;
+	public final static int REFERENCE_DATATYPE_TABLE_UU = 200233;
 	public final static int REFERENCE_DATATYPE_TABLEDIR = 19;
+	public final static int REFERENCE_DATATYPE_TABLEDIR_UU = 200234;
 	public final static int REFERENCE_DATATYPE_TEXT = 14;
 	public final static int REFERENCE_DATATYPE_TEXTLONG = 36;
 	public final static int REFERENCE_DATATYPE_TIME = 24;

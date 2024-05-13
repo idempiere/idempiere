@@ -19,16 +19,29 @@ import org.compiere.util.Util;
  *	@version $Id
  */
 public class MIFixedAsset extends X_I_FixedAsset
-{
-	
+{	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -6394518107160329652L;
 	/** Default depreciation method */
 	private static final String s_defaultDepreciationType = "SL";
 	
-	/** Standard Constructor */
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param I_FixedAsset_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MIFixedAsset(Properties ctx, String I_FixedAsset_UU, String trxName) {
+        super(ctx, I_FixedAsset_UU, trxName);
+    }
+
+	/**
+	 * @param ctx
+	 * @param I_FixedAsset_ID
+	 * @param trxName
+	 */
 	public MIFixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
 	{
 		super (ctx, I_FixedAsset_ID, trxName);
@@ -44,7 +57,8 @@ public class MIFixedAsset extends X_I_FixedAsset
 		super (ctx, rs, trxName);
 	}	//	MIFixedAsset
 	
-	/**	Create / Load product
+	/**	
+	 *  Create / Load product
 	 *	@return product
 	 */
 	public MProduct getCreateProduct()
@@ -110,6 +124,8 @@ public class MIFixedAsset extends X_I_FixedAsset
 	}	//	getCreateProduct
 	
 	/**
+	 * Round value of a column to standard precision.
+	 * @param idx column index 
 	 */
 	private void fixAmount(int idx) {
 		BigDecimal amt = (BigDecimal)get_Value(idx);
@@ -123,6 +139,8 @@ public class MIFixedAsset extends X_I_FixedAsset
 	}
 	
 	/**
+	 * Trim and compress duplicate space character in the value of a column 
+	 * @param idx column index
 	 */
 	private void fixKeyValue(int idx) {
 		String name = (String)get_Value(idx);
@@ -134,8 +152,9 @@ public class MIFixedAsset extends X_I_FixedAsset
 	}
 	
 	/**
-	 *
+	 * @deprecated
 	 */
+	@Deprecated
 	public void process()
 	{
 		if (isProcessed()) {
@@ -219,7 +238,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 	}
 	
 	/**
-	 * @return Este MF-ul depreciat integral
+	 * @return true if fully depreciated
 	 */
 	public boolean isFullyDepreciated()
 	{
@@ -255,18 +274,32 @@ public class MIFixedAsset extends X_I_FixedAsset
 	
 	/**				*/
 	private int m_M_Product_Category_ID = 0;
+	
+	/**
+	 * SEt default product category id
+	 * @param M_Product_Category_ID
+	 */
 	public void setDefault_Product_Category_ID(int M_Product_Category_ID) {
 		m_M_Product_Category_ID = M_Product_Category_ID;
 	}
 	
 	/**				*/
 	private int m_A_Asset_Group_ID = 0;
+	
+	/**
+	 * set default asset group id 
+	 * @param A_Asset_Group_ID
+	 */
 	public void setDefault_Asset_Group_ID(int A_Asset_Group_ID) {
 		m_A_Asset_Group_ID = A_Asset_Group_ID;
 	}
 	
 	/**	Product	*/
 	private MProduct m_product = null;
+	
+	/**
+	 * @param product
+	 */
 	public void setProduct(MProduct product) {
 		m_product = product;
 		setM_Product_ID(product.get_ID());
@@ -274,6 +307,10 @@ public class MIFixedAsset extends X_I_FixedAsset
 		if (Util.isEmpty(getName()))
 			setName(product.getName());
 	}
+	
+	/**
+	 * @return product or null
+	 */
 	public MProduct getProduct() {
 		if (m_product == null && getM_Product_ID() > 0) {
 			m_product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
@@ -281,27 +318,38 @@ public class MIFixedAsset extends X_I_FixedAsset
 		return m_product;
 	}
 	
-	/**	Depreciation Method */
+	/**	
+	 * @return A_Depreciation_ID
+	 */
 	public int getA_Depreciation_ID() {
 		MDepreciation depr = MDepreciation.get(getCtx(), s_defaultDepreciationType);
 		return depr != null ? depr.get_ID() : 0;
 	}
+	
+	/**	
+	 * @return A_Depreciation_ID
+	 */
 	public int getA_Depreciation_F_ID() {
 		return getA_Depreciation_ID();
 	}
 	
-	/**	Currency			*/
+	/**	
+	 * @return standard precision of primary accounting schema 
+	 */
 	public int getStdPrecision() {
 		return MClient.get(getCtx()).getAcctSchema().getStdPrecision();
 	}
 	
-	/** String representation */
+	/**
+	 * @return summary text 
+	 */
 	public String getSummary() {
 		return getInventoryNo() + " - " + getName();
 	}
 
-	/**	Sets custom error
-	 *
+	/**	
+	 * Sets custom error (I_ErrorMsg)
+	 * @param msg
 	 */
 	public void setError(String msg) {
 		String msg_trl = Msg.parseTranslation(getCtx(), msg);

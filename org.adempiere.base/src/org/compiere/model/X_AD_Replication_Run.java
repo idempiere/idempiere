@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Run
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Replication_Run")
-public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_Persistent 
+public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Replication_Run (Properties ctx, int AD_Replication_Run_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Replication_Run (Properties ctx, String AD_Replication_Run_UU, String trxName)
+    {
+      super (ctx, AD_Replication_Run_UU, trxName);
+      /** if (AD_Replication_Run_UU == null)
+        {
+			setAD_Replication_ID (0);
+			setAD_Replication_Run_ID (0);
+			setIsReplicated (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Replication_Run (Properties ctx, String AD_Replication_Run_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Replication_Run_UU, trxName, virtualColumns);
+      /** if (AD_Replication_Run_UU == null)
+        {
+			setAD_Replication_ID (0);
+			setAD_Replication_Run_ID (0);
+			setIsReplicated (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Replication_Run (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -184,10 +212,10 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	public boolean isReplicated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReplicated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -212,7 +240,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

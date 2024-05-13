@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOM
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_BOM")
-public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persistent 
+public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Product_BOM (Properties ctx, int PP_Product_BOM_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Product_BOM (Properties ctx, String PP_Product_BOM_UU, String trxName)
+    {
+      super (ctx, PP_Product_BOM_UU, trxName);
+      /** if (PP_Product_BOM_UU == null)
+        {
+			setM_Product_ID (0);
+			setName (null);
+			setPP_Product_BOM_ID (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Product_BOM (Properties ctx, String PP_Product_BOM_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Product_BOM_UU, trxName, virtualColumns);
+      /** if (PP_Product_BOM_UU == null)
+        {
+			setM_Product_ID (0);
+			setName (null);
+			setPP_Product_BOM_ID (0);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Product_BOM (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -381,10 +407,10 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -456,7 +482,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

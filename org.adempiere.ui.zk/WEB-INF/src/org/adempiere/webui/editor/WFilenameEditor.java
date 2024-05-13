@@ -26,14 +26,18 @@ import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 /**
- *
+ * Default editor for {@link DisplayType#FileName}.<br/>
+ * Implemented with {@link FilenameBox} component with upload enabled.
  * @author Low Heng Sin
  *
  */
@@ -43,6 +47,7 @@ public class WFilenameEditor extends WEditor
 
 	private static final CLogger log = CLogger.getCLogger(WFilenameEditor.class);
 
+	/** absolute folder path + file name */
 	private String oldValue;
 
 	/**
@@ -117,6 +122,7 @@ public class WFilenameEditor extends WEditor
 		getComponent().setEnabled(readWrite);
 	}
 
+	@Override
 	public void onEvent(Event event)
 	{
 		String newValue = null;
@@ -140,6 +146,10 @@ public class WFilenameEditor extends WEditor
 		processNewValue(newValue);
 	}
 
+	/**
+	 * Process newValue from user input
+	 * @param newValue
+	 */
 	protected void processNewValue(String newValue) {
 		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
     	    return;
@@ -151,18 +161,19 @@ public class WFilenameEditor extends WEditor
 		fireValueChange(changeEvent);
 	}
 
+	/**
+	 * Process uploaded file from file selection dialog
+	 * @param file {@link Media}
+	 */
 	private void processUploadMedia(Media file) {
 		if (file == null)
 			return;
-
-		// String fileName = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + ;
-		// File tempFile = new File(fileName);
 
 		FileOutputStream fos = null;
 		String fileName = null;
 		try {
 
-			File tempFile = File.createTempFile("adempiere_", "_"+file.getName());
+			File tempFile = File.createTempFile(MSysConfig.getValue(MSysConfig.UPLOAD_TEMP_FILENAME_PREFIX, "idempiere", Env.getAD_Client_ID(Env.getCtx())), "_"+file.getName());
 			fileName = tempFile.getAbsolutePath();
 
 			fos = new FileOutputStream(tempFile);
@@ -203,6 +214,7 @@ public class WFilenameEditor extends WEditor
 		processNewValue(getComponent().getText());
 	}
 
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;

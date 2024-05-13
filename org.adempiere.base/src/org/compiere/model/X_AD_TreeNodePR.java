@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_TreeNodePR
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_TreeNodePR")
-public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent 
+public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_TreeNodePR (Properties ctx, int AD_TreeNodePR_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_TreeNodePR (Properties ctx, String AD_TreeNodePR_UU, String trxName)
+    {
+      super (ctx, AD_TreeNodePR_UU, trxName);
+      /** if (AD_TreeNodePR_UU == null)
+        {
+			setAD_Tree_ID (0);
+			setNode_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TreeNodePR (Properties ctx, String AD_TreeNodePR_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TreeNodePR_UU, trxName, virtualColumns);
+      /** if (AD_TreeNodePR_UU == null)
+        {
+			setAD_Tree_ID (0);
+			setNode_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_TreeNodePR (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_TreeNodePR[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

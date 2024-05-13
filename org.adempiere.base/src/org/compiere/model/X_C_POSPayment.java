@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_POSPayment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_POSPayment")
-public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent 
+public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_POSPayment (Properties ctx, String C_POSPayment_UU, String trxName)
+    {
+      super (ctx, C_POSPayment_UU, trxName);
+      /** if (C_POSPayment_UU == null)
+        {
+			setC_Order_ID (0);
+			setC_POSPayment_ID (0);
+			setC_POSTenderType_ID (0);
+			setIsPostDated (false);
+// N
+			setPayAmt (Env.ZERO);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_POSPayment (Properties ctx, String C_POSPayment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_POSPayment_UU, trxName, virtualColumns);
+      /** if (C_POSPayment_UU == null)
+        {
+			setC_Order_ID (0);
+			setC_POSPayment_ID (0);
+			setC_POSTenderType_ID (0);
+			setIsPostDated (false);
+// N
+			setPayAmt (Env.ZERO);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_POSPayment (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -415,10 +447,10 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	public boolean isPostDated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPostDated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -473,10 +505,10 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

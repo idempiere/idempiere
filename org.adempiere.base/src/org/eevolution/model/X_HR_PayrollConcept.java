@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_PayrollConcept
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_PayrollConcept")
-public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Persistent 
+public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_PayrollConcept (Properties ctx, int HR_PayrollConcept_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_PayrollConcept (Properties ctx, String HR_PayrollConcept_UU, String trxName)
+    {
+      super (ctx, HR_PayrollConcept_UU, trxName);
+      /** if (HR_PayrollConcept_UU == null)
+        {
+			setHR_Concept_ID (0);
+			setHR_PayrollConcept_ID (0);
+			setHR_Payroll_ID (0);
+			setIsPrinted (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_PayrollConcept (Properties ctx, String HR_PayrollConcept_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_PayrollConcept_UU, trxName, virtualColumns);
+      /** if (HR_PayrollConcept_UU == null)
+        {
+			setHR_Concept_ID (0);
+			setHR_PayrollConcept_ID (0);
+			setHR_Payroll_ID (0);
+			setIsPrinted (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_PayrollConcept (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -221,10 +249,10 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	public boolean isDisplayed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisplayed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -244,10 +272,10 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	public boolean isInclude()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInclude);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -267,10 +295,10 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -295,7 +323,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

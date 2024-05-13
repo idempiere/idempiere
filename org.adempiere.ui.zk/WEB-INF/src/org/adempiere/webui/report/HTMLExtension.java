@@ -59,19 +59,20 @@ public class HTMLExtension implements IHTMLExtension {
 	 * @param contextPath
 	 * @param classPrefix
 	 * @param componentId
+	 * @param processID
 	 */
 	public HTMLExtension(String contextPath, String classPrefix, String componentId, String processID) {
 
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 
-		if (! theme.startsWith("/") && !theme.startsWith("~./"))
+		if (!theme.startsWith("/") && !theme.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE))
 			theme = "/" + theme;
 		if (! theme.endsWith("/"))
 			theme = theme + "/";
 
 		this.classPrefix = classPrefix;
 		this.componentId = componentId;
-		if (theme.startsWith("~./")) {
+		if (theme.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE)) {
 			if (Executions.getCurrent() != null) {
 				this.styleURL = Executions.encodeURL(theme + "css/report.css");
 			}
@@ -196,11 +197,15 @@ public class HTMLExtension implements IHTMLExtension {
 	@Override
 	public String getFullPathStyle() {
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
-		if (! theme.startsWith("/"))
+		if (!theme.startsWith("/") && !theme.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE))
 			theme = "/" + theme;
-		if (! theme.endsWith("/"))
+		if (!theme.endsWith("/"))
 			theme = theme + "/";
 		String resFile = theme + "css/report.css";
+		
+		// translate ~./ url to classpath url
+		if (theme.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE))
+			resFile = ThemeManager.toClassPathResourcePath(resFile);
 		
 		URL urlFile = this.getClass().getResource(resFile);
 		if (urlFile == null) {

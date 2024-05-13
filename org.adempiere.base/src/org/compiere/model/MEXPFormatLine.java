@@ -45,24 +45,42 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MEXPFormatLine extends X_EXP_FormatLine implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2125885766063286714L;
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (X_EXP_FormatLine.class);
 	
-	
-	
-	public MEXPFormatLine(Properties ctx, int C_EDIFormat_Line_ID, String trxName) {
-		super(ctx, C_EDIFormat_Line_ID, trxName);
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param EXP_FormatLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MEXPFormatLine(Properties ctx, String EXP_FormatLine_UU, String trxName) {
+        super(ctx, EXP_FormatLine_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param EXP_FormatLine_ID
+     * @param trxName
+     */
+	public MEXPFormatLine(Properties ctx, int EXP_FormatLine_ID, String trxName) {
+		super(ctx, EXP_FormatLine_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MEXPFormatLine (Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MEXPFormatLine(MEXPFormatLine copy) {
@@ -70,7 +88,7 @@ public class MEXPFormatLine extends X_EXP_FormatLine implements ImmutablePOSuppo
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -79,7 +97,7 @@ public class MEXPFormatLine extends X_EXP_FormatLine implements ImmutablePOSuppo
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -95,36 +113,44 @@ public class MEXPFormatLine extends X_EXP_FormatLine implements ImmutablePOSuppo
 		return sb.toString();
 	}
 	
+	/**
+	 * @param ctx
+	 * @param value
+	 * @param EXP_Format_ID
+	 * @param trxName
+	 * @return MEXPFormatLine
+	 * @throws SQLException
+	 */
 	public static MEXPFormatLine getFormatLineByValue(Properties ctx, String value, int EXP_Format_ID, String trxName) 
 	throws SQLException 
 	{
-	MEXPFormatLine result = null;
-	                   
-	StringBuilder sql = new StringBuilder("SELECT * ")
-		.append(" FROM ").append(X_EXP_FormatLine.Table_Name)
-		.append(" WHERE ").append(X_EXP_Format.COLUMNNAME_Value).append("=?")
-		.append(" AND ").append(X_EXP_Format.COLUMNNAME_EXP_Format_ID).append(" = ?")
-	;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	try {
-		pstmt = DB.prepareStatement (sql.toString(), trxName);
-		pstmt.setString(1, value);
-		pstmt.setInt(2, EXP_Format_ID);
-		rs = pstmt.executeQuery ();
-		if ( rs.next() ) {
-			result = new MEXPFormatLine (ctx, rs, trxName);
+		MEXPFormatLine result = null;
+		                   
+		StringBuilder sql = new StringBuilder("SELECT * ")
+			.append(" FROM ").append(X_EXP_FormatLine.Table_Name)
+			.append(" WHERE ").append(X_EXP_FormatLine.COLUMNNAME_Value).append("=?")
+			.append(" AND ").append(X_EXP_FormatLine.COLUMNNAME_EXP_Format_ID).append(" = ?")
+		;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql.toString(), trxName);
+			pstmt.setString(1, value);
+			pstmt.setInt(2, EXP_Format_ID);
+			rs = pstmt.executeQuery ();
+			if ( rs.next() ) {
+				result = new MEXPFormatLine (ctx, rs, trxName);
+			}
+		} catch (SQLException e) {
+			s_log.log(Level.SEVERE, sql.toString(), e);
+			throw e;
+		} finally{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-	} catch (SQLException e) {
-		s_log.log(Level.SEVERE, sql.toString(), e);
-		throw e;
-	} finally{
-		DB.close(rs, pstmt);
-		rs = null;
-		pstmt = null;
-	}
-	
-	return result;
+		
+		return result;
 	}
 	
 	@Override

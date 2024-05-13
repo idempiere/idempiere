@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_BankTransfer
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BankTransfer")
-public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persistent 
+public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
@@ -113,6 +113,84 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BankTransfer (Properties ctx, String C_BankTransfer_UU, String trxName)
+    {
+      super (ctx, C_BankTransfer_UU, trxName);
+      /** if (C_BankTransfer_UU == null)
+        {
+			setC_BankTransfer_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setFrom_AD_Org_ID (0);
+			setFrom_Amt (Env.ZERO);
+			setFrom_C_BankAccount_ID (0);
+			setFrom_C_BPartner_ID (0);
+			setFrom_C_Charge_ID (0);
+			setFrom_C_Currency_ID (0);
+			setFrom_TenderType (null);
+// A
+			setIsOverrideCurrencyRate (false);
+// N
+			setPayDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setProcessed (false);
+			setRate (Env.ZERO);
+			setTo_AD_Org_ID (0);
+			setTo_Amt (Env.ZERO);
+			setTo_C_BankAccount_ID (0);
+			setTo_C_BPartner_ID (0);
+			setTo_C_Charge_ID (0);
+			setTo_C_Currency_ID (0);
+			setTo_TenderType (null);
+// D
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankTransfer (Properties ctx, String C_BankTransfer_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankTransfer_UU, trxName, virtualColumns);
+      /** if (C_BankTransfer_UU == null)
+        {
+			setC_BankTransfer_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setFrom_AD_Org_ID (0);
+			setFrom_Amt (Env.ZERO);
+			setFrom_C_BankAccount_ID (0);
+			setFrom_C_BPartner_ID (0);
+			setFrom_C_Charge_ID (0);
+			setFrom_C_Currency_ID (0);
+			setFrom_TenderType (null);
+// A
+			setIsOverrideCurrencyRate (false);
+// N
+			setPayDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setProcessed (false);
+			setRate (Env.ZERO);
+			setTo_AD_Org_ID (0);
+			setTo_Amt (Env.ZERO);
+			setTo_C_BankAccount_ID (0);
+			setTo_C_BPartner_ID (0);
+			setTo_C_Charge_ID (0);
+			setTo_C_Currency_ID (0);
+			setTo_TenderType (null);
+// D
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BankTransfer (Properties ctx, ResultSet rs, String trxName)
     {
@@ -120,7 +198,7 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -536,10 +614,10 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public boolean isOverrideCurrencyRate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOverrideCurrencyRate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -575,10 +653,10 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -597,10 +675,10 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

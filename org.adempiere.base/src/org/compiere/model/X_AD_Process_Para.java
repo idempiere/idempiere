@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process_Para
- *  @author iDempiere (generated) 
+ *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_Para")
-public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persistent 
+public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230302L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -95,6 +95,68 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Process_Para (Properties ctx, String AD_Process_Para_UU, String trxName)
+    {
+      super (ctx, AD_Process_Para_UU, trxName);
+      /** if (AD_Process_Para_UU == null)
+        {
+			setAD_Process_ID (0);
+			setAD_Process_Para_ID (0);
+			setAD_Reference_ID (0);
+			setColumnName (null);
+			setDateRangeOption (null);
+// D
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFieldLength (0);
+			setIsAutocomplete (false);
+// N
+			setIsCentrallyMaintained (true);
+// Y
+			setIsEncrypted (false);
+// N
+			setIsMandatory (false);
+			setIsRange (false);
+			setIsShowNegateButton (false);
+// N
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Process_Para WHERE AD_Process_ID=@AD_Process_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Process_Para (Properties ctx, String AD_Process_Para_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Process_Para_UU, trxName, virtualColumns);
+      /** if (AD_Process_Para_UU == null)
+        {
+			setAD_Process_ID (0);
+			setAD_Process_Para_ID (0);
+			setAD_Reference_ID (0);
+			setColumnName (null);
+			setDateRangeOption (null);
+// D
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFieldLength (0);
+			setIsAutocomplete (false);
+// N
+			setIsCentrallyMaintained (true);
+// Y
+			setIsEncrypted (false);
+// N
+			setIsMandatory (false);
+			setIsRange (false);
+			setIsShowNegateButton (false);
+// N
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Process_Para WHERE AD_Process_ID=@AD_Process_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Process_Para (Properties ctx, ResultSet rs, String trxName)
     {
@@ -102,7 +164,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -498,10 +560,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isAutocomplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutocomplete);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -521,10 +583,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -544,10 +606,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isEncrypted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEncrypted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -567,10 +629,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -590,10 +652,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isRange()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRange);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -613,10 +675,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isShowNegateButton()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowNegateButton);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -656,7 +718,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -742,22 +804,6 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	*/
-	public void setVFormat (String VFormat)
-	{
-		set_Value (COLUMNNAME_VFormat, VFormat);
-	}
-
-	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	  */
-	public String getVFormat()
-	{
-		return (String)get_Value(COLUMNNAME_VFormat);
-	}
-
 	/** Set Max. Value.
 		@param ValueMax Maximum Value for a field
 	*/
@@ -788,5 +834,21 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getValueMin()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMin);
+	}
+
+	/** Set Value Format.
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
+	public void setVFormat (String VFormat)
+	{
+		set_Value (COLUMNNAME_VFormat, VFormat);
+	}
+
+	/** Get Value Format.
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	  */
+	public String getVFormat()
+	{
+		return (String)get_Value(COLUMNNAME_VFormat);
 	}
 }

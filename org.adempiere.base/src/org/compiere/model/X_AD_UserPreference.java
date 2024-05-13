@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_UserPreference
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserPreference")
-public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Persistent 
+public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserPreference (Properties ctx, String AD_UserPreference_UU, String trxName)
+    {
+      super (ctx, AD_UserPreference_UU, trxName);
+      /** if (AD_UserPreference_UU == null)
+        {
+			setAD_User_ID (0);
+			setAD_UserPreference_ID (0);
+			setViewFindResult (null);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserPreference (Properties ctx, String AD_UserPreference_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserPreference_UU, trxName, virtualColumns);
+      /** if (AD_UserPreference_UU == null)
+        {
+			setAD_User_ID (0);
+			setAD_UserPreference_ID (0);
+			setViewFindResult (null);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserPreference (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -163,10 +189,10 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isAutoCommit()
 	{
 		Object oo = get_Value(COLUMNNAME_AutoCommit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -204,10 +230,10 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isAutoNew()
 	{
 		Object oo = get_Value(COLUMNNAME_AutoNew);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -245,10 +271,10 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isDetailedZoomAcross()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDetailedZoomAcross);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -267,10 +293,10 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isUseSimilarTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUseSimilarTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -305,10 +331,10 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isToggleOnDoubleClick()
 	{
 		Object oo = get_Value(COLUMNNAME_ToggleOnDoubleClick);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

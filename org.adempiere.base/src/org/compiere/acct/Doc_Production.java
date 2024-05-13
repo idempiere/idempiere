@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLineMA;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Production;
@@ -36,7 +37,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *  Post Invoice Documents.
+ *  Post {@link MProduction} Documents.
  *  <pre>
  *  Table:              M_Production (325)
  *  Document Types:     MMP
@@ -61,6 +62,7 @@ public class Doc_Production extends Doc
 	 *  Load Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails()
 	{
 		setC_Currency_ID (NO_CURRENCY);
@@ -81,7 +83,7 @@ public class Doc_Production extends Doc
 	 * @param line
 	 * @param isUsePlan
 	 * @param addMoreQty when you want get value, just pass null
-	 * @return
+	 * @return qty produce for line (include addMoreQty if addMoreQty is not null)
 	 */
 	private BigDecimal manipulateQtyProduced (Map<Integer, BigDecimal> mQtyProduced, X_M_ProductionLine line, Boolean isUsePlan, BigDecimal addMoreQty){
 		BigDecimal qtyProduced = null;
@@ -102,7 +104,7 @@ public class Doc_Production extends Doc
 		return qtyProduced;
 	}
 	/**
-	 *	Load Invoice Line
+	 *	Load production lines
 	 *	@param prod production
 	 *  @return DoaLine Array
 	 */
@@ -112,7 +114,7 @@ public class Doc_Production extends Doc
 		mQtyProduced = new HashMap<>(); 
 		String sqlPL = null;
 		if (prod.isUseProductionPlan()){
-//			Production
+			//	Production Plan
 			//	-- ProductionLine	- the real level
 			sqlPL = "SELECT * FROM "
 							+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
@@ -120,7 +122,7 @@ public class Doc_Production extends Doc
 							+ " WHERE pro.M_Production_ID=? "
 							+ " ORDER BY plan.M_ProductionPlan_id, pro_line.Line";
 		}else{
-//			Production
+			//	Production
 			//	-- ProductionLine	- the real level
 			sqlPL = "SELECT * FROM M_ProductionLine pl "
 					+ "WHERE pl.M_Production_ID=? "
@@ -178,6 +180,7 @@ public class Doc_Production extends Doc
 	 *  Get Balance
 	 *  @return Zero (always balanced)
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -194,6 +197,7 @@ public class Doc_Production extends Doc
 	 *  @param as account schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//  create Fact Header

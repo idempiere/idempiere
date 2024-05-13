@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMProduct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMProduct")
-public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent 
+public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_BOMProduct (Properties ctx, int M_BOMProduct_ID, String trxName)
@@ -73,6 +73,44 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_BOMProduct (Properties ctx, String M_BOMProduct_UU, String trxName)
+    {
+      super (ctx, M_BOMProduct_UU, trxName);
+      /** if (M_BOMProduct_UU == null)
+        {
+			setBOMProductType (null);
+// S
+			setBOMQty (Env.ZERO);
+// 1
+			setIsPhantom (false);
+			setLeadTimeOffset (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
+			setM_BOM_ID (0);
+			setM_BOMProduct_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_BOMProduct (Properties ctx, String M_BOMProduct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_BOMProduct_UU, trxName, virtualColumns);
+      /** if (M_BOMProduct_UU == null)
+        {
+			setBOMProductType (null);
+// S
+			setBOMQty (Env.ZERO);
+// 1
+			setIsPhantom (false);
+			setLeadTimeOffset (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
+			setM_BOM_ID (0);
+			setM_BOMProduct_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_BOMProduct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +118,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -195,10 +233,10 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	public boolean isPhantom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPhantom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -245,7 +283,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }

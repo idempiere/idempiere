@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Order Tax Model
@@ -37,7 +38,7 @@ import org.compiere.util.Env;
 public class MOrderTax extends X_C_OrderTax
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6776007249310373908L;
 
@@ -46,8 +47,8 @@ public class MOrderTax extends X_C_OrderTax
 	 * 	Get Tax Line for Order Line
 	 *	@param line Order line
 	 *	@param precision currency precision
-	 *	@param oldTax get old tax
-	 *	@param trxName transaction
+	 *	@param oldTax true to get old tax
+	 *	@param trxName transaction name
 	 *	@return existing or new tax
 	 */
 	public static MOrderTax get (MOrderLine line, int precision, 
@@ -130,9 +131,9 @@ public class MOrderTax extends X_C_OrderTax
 	 * 	Get Child Tax Line for Order Line
 	 *	@param line Order line
 	 *	@param precision currency precision
-	 *	@param oldTax get old tax
-	 *	@param trxName transaction
-	 *	@return existing or new tax
+	 *	@param oldTax true to get old tax
+	 *	@param trxName transaction name
+	 *	@return existing or new child tax lines
 	 */
 	public static MOrderTax[] getChildTaxes(MOrderLine line, int precision, 
 		boolean oldTax, String trxName)
@@ -221,10 +222,20 @@ public class MOrderTax extends X_C_OrderTax
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MOrderTax.class);
-	
-	
-	/**************************************************************************
-	 * 	Persistence Constructor
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_OrderTax_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOrderTax(Properties ctx, String C_OrderTax_UU, String trxName) {
+        super(ctx, C_OrderTax_UU, trxName);
+		if (Util.isEmpty(C_OrderTax_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -234,10 +245,17 @@ public class MOrderTax extends X_C_OrderTax
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
+		setInitialDefaults();
+	}	//	MOrderTax
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		setTaxAmt (Env.ZERO);
 		setTaxBaseAmt (Env.ZERO);
 		setIsTaxIncluded(false);
-	}	//	MOrderTax
+	}
 
 	/**
 	 * 	Load Constructor.
@@ -258,7 +276,7 @@ public class MOrderTax extends X_C_OrderTax
 
 	/**
 	 * 	Get Precision
-	 * 	@return Returns the precision or 2
+	 * 	@return Returns the set precision or 2
 	 */
 	private int getPrecision ()
 	{
@@ -286,9 +304,8 @@ public class MOrderTax extends X_C_OrderTax
 			m_tax = MTax.get(getCtx(), getC_Tax_ID());
 		return m_tax;
 	}	//	getTax
-
 	
-	/**************************************************************************
+	/**
 	 * 	Calculate/Set Tax Amt from Order Lines
 	 * 	@return true if calculated
 	 */
@@ -358,6 +375,7 @@ public class MOrderTax extends X_C_OrderTax
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MOrderTax[")

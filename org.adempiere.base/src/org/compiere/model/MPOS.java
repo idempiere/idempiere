@@ -17,15 +17,15 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
-
 
 /**
  *	POS Terminal definition
@@ -36,7 +36,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPOS extends X_C_POS implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2499679269059812831L;
 
@@ -72,11 +72,11 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	} //	get
 
 	/**
-	 * 	Get POSes for passed argument
+	 * 	Get POS records for passed argument
 	 *	@param ctx context
-	 *  @param field
-	 *  @param ID
-	 *	@return POSes
+	 *  @param field column name
+	 *  @param ID id value for field
+	 *	@return array of MPOS
 	 */
 	public static MPOS[] getAll (Properties ctx, String field, int ID)
 	{
@@ -92,6 +92,18 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MPOS> s_cache = new ImmutableIntPOCache<Integer,MPOS>(Table_Name, 20);
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_POS_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPOS(Properties ctx, String C_POS_UU, String trxName) {
+        super(ctx, C_POS_UU, trxName);
+		if (Util.isEmpty(C_POS_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -102,10 +114,15 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	{
 		super (ctx, C_POS_ID, trxName);
 		if (C_POS_ID == 0)
-		{
-			setIsModifyPrice (false);	// N
-		}	
+			setInitialDefaults();
 	}	//	MPOS
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsModifyPrice (false);	// N
+	}
 
 	/**
 	 * 	Load Constructor
@@ -119,7 +136,7 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	}	//	MPOS
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPOS(MPOS copy) 
@@ -128,7 +145,7 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -138,7 +155,7 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -152,14 +169,13 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	
 	/**	Cash Business Partner			*/
 	private MBPartner	m_template = null;
-	
-	
-	
+			
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Org Consistency
@@ -183,10 +199,9 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 		}
 		return true;
 	}	//	beforeSave
-
 	
 	/**
-	 * 	Get default Cash BPartner
+	 * 	Get template Cash BPartner
 	 *	@return BPartner
 	 */
 	public MBPartner getBPartner()

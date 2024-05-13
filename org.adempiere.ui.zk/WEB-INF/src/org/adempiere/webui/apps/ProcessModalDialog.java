@@ -24,8 +24,10 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MSysConfig;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -53,8 +55,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6227339628038418701L;
-	
+	private static final long serialVersionUID = -3116200847404416861L;
+
 	/** 
 	 * Event echo form {@link #onOk()} to defer execution of {@link #onOk()}.
 	 * Execution is defer to happens after the dismiss of modal dialog (usually info window) blocking parameter panel. 
@@ -72,6 +74,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	private ITabOnCloseHandler originalOnCloseHandler;
 
 	private Tabpanel parentTabPanel;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * @param WindowNo
@@ -217,6 +221,20 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 
 	/**
 	 * Dialog to start a process/report
+	 * @param WindowNo
+	 * @param AD_Process_ID
+	 * @param tableId
+	 * @param recordId
+	 * @param recordUU
+	 * @param autoStart
+	 */
+	public ProcessModalDialog (EventListener<Event> listener, int WindowNo, int AD_Process_ID, int tableId, int recordId, String recordUU, boolean autoStart)
+	{
+		this(listener, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId, recordUU), autoStart);
+	}
+
+	/**
+	 * Dialog to start a process/report
 	 * @param parent not used
 	 * @param title not used
 	 * @param WindowNo
@@ -336,6 +354,10 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * Handle ON_Click event from {@link #bCancel}
 	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		cancelProcess();
 	}
 

@@ -24,11 +24,15 @@ import org.zkoss.zk.ui.event.Event;
 public class ZoomEvent extends Event {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8857628145535148973L;
 	public final static String EVENT_NAME = "onZoom";
 
+	/**
+	 * @param target
+	 * @param data
+	 */
 	public ZoomEvent(Component target, Object data) {
 		super(EVENT_NAME, target, data);
 	}

@@ -135,7 +135,7 @@ public class DigestOfFile
      */
     public static boolean md5HashCompare(File file1,File file2)
     {
-    	//compute Hash of exisiting and downloaded
+    	//compute Hash of existing and downloaded
     	String hashFile1;
     	String hashFile2;
     	try{

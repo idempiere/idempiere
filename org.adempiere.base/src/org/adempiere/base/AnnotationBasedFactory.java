@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
@@ -66,14 +67,18 @@ public abstract class AnnotationBasedFactory {
 		} catch (Exception e) { }
 	}
 
+	/**
+	 * Wait for completion of annotation scanning
+	 */
 	protected void blockWhileScanning() {
 		String className = this.getClass().getSimpleName();
 		if(!scanCompleted.get())
 			try {
 				Instant start = Instant.now();
 				threadBlockerFuture.get();
-				s_log.fine(() -> String.format("%s waited %d(ms) for class scanning to end"
-						, className, Duration.between(start, Instant.now()).toMillis()));
+				if (s_log.isLoggable(Level.FINE))
+					s_log.fine(() -> String.format("%s waited %d(ms) for class scanning to end"
+							, className, Duration.between(start, Instant.now()).toMillis()));
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);

@@ -42,13 +42,23 @@ import org.idempiere.cache.ImmutablePOCache;
  */
 public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3148838750037103261L;
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MCtxHelpMsg.class);
 	/** Context Help Message Cache				*/
 	private static ImmutablePOCache<String, MCtxHelpMsg> s_cache = new ImmutablePOCache<String, MCtxHelpMsg>(Table_Name, 10);
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_CtxHelpMsg_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCtxHelpMsg(Properties ctx, String AD_CtxHelpMsg_UU, String trxName) {
+        super(ctx, AD_CtxHelpMsg_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -71,7 +81,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	}	//	MCtxHelpMsg
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCtxHelpMsg(MCtxHelpMsg copy) {
@@ -79,7 +89,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -88,7 +98,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -139,6 +149,11 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 		return retValue;
 	}
 
+	/**
+	 * @param ctxType CTXTYPE_*
+	 * @param recordId
+	 * @return AD_CtxHelp_ID
+	 */
 	private static int getCtxHelpID(String ctxType, int recordId) {
 		Properties ctx = Env.getCtx();
 		String column;

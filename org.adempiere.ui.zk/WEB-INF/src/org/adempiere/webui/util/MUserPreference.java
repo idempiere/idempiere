@@ -28,6 +28,11 @@ public class MUserPreference extends MPreference {
 
 	private static final long serialVersionUID = -3424015890197944847L;
 
+	/**
+	 * @param ctx
+	 * @param AD_Preference_ID
+	 * @param trxName
+	 */
 	public MUserPreference(Properties ctx, int AD_Preference_ID, String trxName) {
 		super(ctx, AD_Preference_ID, trxName);
 		setClientOrg(0, 0);

@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionRun
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionRun")
-public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persistent 
+public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName)
@@ -66,6 +66,36 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CommissionRun (Properties ctx, String C_CommissionRun_UU, String trxName)
+    {
+      super (ctx, C_CommissionRun_UU, trxName);
+      /** if (C_CommissionRun_UU == null)
+        {
+			setC_Commission_ID (0);
+			setC_CommissionRun_ID (0);
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setProcessed (false);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionRun (Properties ctx, String C_CommissionRun_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionRun_UU, trxName, virtualColumns);
+      /** if (C_CommissionRun_UU == null)
+        {
+			setC_Commission_ID (0);
+			setC_CommissionRun_ID (0);
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setProcessed (false);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CommissionRun (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +103,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -222,7 +252,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -260,10 +290,10 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -282,10 +312,10 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

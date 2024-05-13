@@ -25,6 +25,8 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_BOM
  *  @author iDempiere (generated) 
+ *  Replace by X_PP_Product_BOM and X_PP_Product_BOMLine since version 9
+ *  @deprecated
  *  @version Development 9.0 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_BOM")
 public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent 

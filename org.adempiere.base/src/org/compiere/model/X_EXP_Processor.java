@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for EXP_Processor
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="EXP_Processor")
-public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent 
+public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_EXP_Processor (Properties ctx, int EXP_Processor_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_EXP_Processor (Properties ctx, String EXP_Processor_UU, String trxName)
+    {
+      super (ctx, EXP_Processor_UU, trxName);
+      /** if (EXP_Processor_UU == null)
+        {
+			setEXP_Processor_ID (0);
+			setEXP_Processor_Type_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_EXP_Processor (Properties ctx, String EXP_Processor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, EXP_Processor_UU, trxName, virtualColumns);
+      /** if (EXP_Processor_UU == null)
+        {
+			setEXP_Processor_ID (0);
+			setEXP_Processor_Type_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_EXP_Processor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

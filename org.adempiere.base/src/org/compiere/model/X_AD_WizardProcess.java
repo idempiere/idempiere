@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_WizardProcess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WizardProcess")
-public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Persistent 
+public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WizardProcess (Properties ctx, int AD_WizardProcess_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WizardProcess (Properties ctx, String AD_WizardProcess_UU, String trxName)
+    {
+      super (ctx, AD_WizardProcess_UU, trxName);
+      /** if (AD_WizardProcess_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+			setAD_WizardProcess_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WizardProcess (Properties ctx, String AD_WizardProcess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WizardProcess_UU, trxName, virtualColumns);
+      /** if (AD_WizardProcess_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+			setAD_WizardProcess_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WizardProcess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {

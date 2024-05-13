@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchema
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_DiscountSchema")
-public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Persistent 
+public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_DiscountSchema (Properties ctx, int M_DiscountSchema_ID, String trxName)
@@ -68,6 +68,38 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_DiscountSchema (Properties ctx, String M_DiscountSchema_UU, String trxName)
+    {
+      super (ctx, M_DiscountSchema_UU, trxName);
+      /** if (M_DiscountSchema_UU == null)
+        {
+			setDiscountType (null);
+			setIsBPartnerFlatDiscount (false);
+			setIsQuantityBased (true);
+// Y
+			setM_DiscountSchema_ID (0);
+			setName (null);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DiscountSchema (Properties ctx, String M_DiscountSchema_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DiscountSchema_UU, trxName, virtualColumns);
+      /** if (M_DiscountSchema_UU == null)
+        {
+			setDiscountType (null);
+			setIsBPartnerFlatDiscount (false);
+			setIsQuantityBased (true);
+// Y
+			setM_DiscountSchema_ID (0);
+			setName (null);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_M_DiscountSchema (Properties ctx, ResultSet rs, String trxName)
     {
@@ -75,7 +107,7 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -193,10 +225,10 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
 	public boolean isBPartnerFlatDiscount()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBPartnerFlatDiscount);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -216,10 +248,10 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
 	public boolean isQuantityBased()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQuantityBased);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -281,7 +313,7 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -299,10 +331,10 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

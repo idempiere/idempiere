@@ -28,19 +28,27 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /**
- * 
+ * Change log for inventory reservation storage
  * @author hengsin
- *
  */
 public class MStorageReservationLog extends X_M_StorageReservationLog {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4527538966135474314L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_StorageReservationLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MStorageReservationLog(Properties ctx, String M_StorageReservationLog_UU, String trxName) {
+        super(ctx, M_StorageReservationLog_UU, trxName);
+    }
+
 	/**
-	 * 
 	 * @param ctx
 	 * @param M_StorageReservationLog_ID
 	 * @param trxName
@@ -50,7 +58,6 @@ public class MStorageReservationLog extends X_M_StorageReservationLog {
 	}
 
 	/**
-	 * 
 	 * @param ctx
 	 * @param rs
 	 * @param trxName

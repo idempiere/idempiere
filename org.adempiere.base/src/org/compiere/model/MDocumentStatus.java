@@ -26,7 +26,6 @@
 * - Murilo Ht                                                         *
 * - Carlos Ruiz                                                       *
 **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -39,22 +38,45 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
+/**
+ * Named status of records in a table via SQL criteria
+ */
 public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4028519324986534673L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_DocumentStatus_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDocumentStatus(Properties ctx, String PA_DocumentStatus_UU, String trxName) {
+        super(ctx, PA_DocumentStatus_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param PA_DocumentStatus_ID
+     * @param trxName
+     */
 	public MDocumentStatus(Properties ctx, int PA_DocumentStatus_ID, String trxName) {
 		super(ctx, PA_DocumentStatus_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MDocumentStatus(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDocumentStatus(MDocumentStatus copy) 
@@ -63,7 +85,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -73,7 +95,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -84,14 +106,14 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		copyPO(copy);
 	}
 	
-	/**	Categopry Cache				*/
+	/**	MDocumentStatus Cache				*/
 	private static ImmutableIntPOCache<Integer,MDocumentStatus>	s_cache = new ImmutableIntPOCache<Integer,MDocumentStatus>(Table_Name, 20);
 	
 	/**
 	 * 	Get from Cache (immutable)
 	 *	@param ctx context
-	 *	@param M_Product_Category_ID id
-	 *	@return category
+	 *	@param PA_DocumentStatus_ID id
+	 *	@return document status
 	 */
 	public static MDocumentStatus get (Properties ctx, int PA_DocumentStatus_ID)
 	{
@@ -162,6 +184,10 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		return retValue;
 	}	//	getDocumentStatusIndicators
 
+	/**
+	 * @param documentStatus
+	 * @return number of matching records
+	 */
 	public static int evaluate(MDocumentStatus documentStatus) {
 		StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
@@ -173,6 +199,10 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		return DB.getSQLValue(null, sqlS);
 	}
 
+	/**
+	 * @param documentStatus
+	 * @return where clause to find matching records
+	 */
 	public static String getWhereClause(MDocumentStatus documentStatus) {
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );

@@ -959,7 +959,7 @@ public class DocumentEngine implements DocAction
 	 * @param docAction
 	 * @param options
 	 * @param periodOpen - flag indicating if the period is Open - to avoid including Void and ReverseCorrect options in the list
-	 * @return Number of valid options
+	 * @return End index of valid options[] (exclusive)
 	 */
 	public static int getValidActions(String docStatus, Object processing,
 			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, boolean periodOpen, PO po)

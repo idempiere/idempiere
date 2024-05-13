@@ -19,19 +19,19 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for AD_Table_Access
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_Access")
-public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persistent 
+public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Table_Access (Properties ctx, int AD_Table_Access_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Table_Access (Properties ctx, String AD_Table_Access_UU, String trxName)
+    {
+      super (ctx, AD_Table_Access_UU, trxName);
+      /** if (AD_Table_Access_UU == null)
+        {
+			setAccessTypeRule (null);
+// A
+			setAD_Role_ID (0);
+			setAD_Table_ID (0);
+			setIsExclude (true);
+// Y
+			setIsReadOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Table_Access (Properties ctx, String AD_Table_Access_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Table_Access_UU, trxName, virtualColumns);
+      /** if (AD_Table_Access_UU == null)
+        {
+			setAccessTypeRule (null);
+// A
+			setAD_Role_ID (0);
+			setAD_Table_ID (0);
+			setIsExclude (true);
+// Y
+			setIsReadOnly (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Table_Access (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -89,7 +121,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Table_Access[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -189,12 +221,12 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getAD_Table_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getAD_Table_ID()));
     }
 
 	/** Set Exclude.
@@ -211,10 +243,10 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	public boolean isExclude()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExclude);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -234,10 +266,10 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

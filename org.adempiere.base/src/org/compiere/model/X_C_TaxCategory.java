@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxCategory
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxCategory")
-public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent 
+public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxCategory (Properties ctx, int C_TaxCategory_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_TaxCategory (Properties ctx, String C_TaxCategory_UU, String trxName)
+    {
+      super (ctx, C_TaxCategory_UU, trxName);
+      /** if (C_TaxCategory_UU == null)
+        {
+			setC_TaxCategory_ID (0);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxCategory (Properties ctx, String C_TaxCategory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxCategory_UU, trxName, virtualColumns);
+      /** if (C_TaxCategory_UU == null)
+        {
+			setC_TaxCategory_ID (0);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_TaxCategory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -168,10 +192,10 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -196,7 +220,7 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

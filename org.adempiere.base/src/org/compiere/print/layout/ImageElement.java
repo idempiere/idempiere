@@ -273,8 +273,7 @@ public class ImageElement extends PrintElement
 	 */
 	private void loadAttachment(int AD_PrintFormatItem_ID)
 	{
-		MAttachment attachment = MAttachment.get(Env.getCtx(), 
-			MPrintFormatItem.Table_ID, AD_PrintFormatItem_ID);
+		MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, AD_PrintFormatItem_ID, null, null);
 		if (attachment == null)
 		{
 			log.log(Level.WARNING, "No Attachment - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);

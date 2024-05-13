@@ -1,0 +1,158 @@
+-- IDEMPIERE-5886
+SELECT register_migration_script('202310171231_IDEMPIERE-5886.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Oct 17, 2023, 12:34:25 PM CEST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203842,0,0,'Y',TO_TIMESTAMP('2023-10-17 12:34:25','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-17 12:34:25','YYYY-MM-DD HH24:MI:SS'),100,'FKConstraintMsg_ID','Constraint Message','Constraint Message','D','33d8b6e4-5d70-4fdc-8517-3f4629258e05')
+;
+
+-- Oct 17, 2023, 12:35:14 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (215961,0,'Constraint Message',101,'FKConstraintMsg_ID',10,'N','N','N','N','N',0,'N',30,102,0,0,'Y',TO_TIMESTAMP('2023-10-17 12:35:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-17 12:35:14','YYYY-MM-DD HH24:MI:SS'),100,203842,'Y','N','D','N','N','N','Y','4d4db0fc-1bbe-4117-b9d3-5d51df69a140','Y',0,'N','N','N')
+;
+
+-- Oct 17, 2023, 12:35:18 PM CEST
+UPDATE AD_Column SET FKConstraintName='FKConstraintMsg_ADColumn', FKConstraintType='N',Updated=TO_TIMESTAMP('2023-10-17 12:35:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215961
+;
+
+-- Oct 17, 2023, 12:35:18 PM CEST
+ALTER TABLE AD_Column ADD FKConstraintMsg_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Oct 17, 2023, 12:35:18 PM CEST
+ALTER TABLE AD_Column ADD CONSTRAINT FKConstraintMsg_ADColumn FOREIGN KEY (FKConstraintMsg_ID) REFERENCES ad_message(ad_message_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Oct 17, 2023, 12:37:22 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207775,'Constraint Message',101,215961,'Y',10,500,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-10-17 12:37:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-17 12:37:22','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','2da41a02-e961-42fd-b7ff-2aec7710bd82','Y',470,2)
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207143
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=240,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=59619
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204220
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=171
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2574
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2573
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=161
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=162
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202518
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202519
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=330, XPosition=1,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207775
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=340,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=160
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=350,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=166
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2370
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10128
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=380,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5122
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=390,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207127
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=400,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=169
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=410,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4941
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=420,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=50188
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=430,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=168
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=440,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=159
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=450,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4940
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=460,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200288
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=470,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=56317
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=480,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=62467
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=490,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202257
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=500,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200648
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=510,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=167
+;
+
+-- Oct 17, 2023, 12:38:05 PM CEST
+UPDATE AD_Field SET SeqNo=520,Updated=TO_TIMESTAMP('2023-10-17 12:38:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=825
+;
+
+-- Oct 17, 2023, 12:42:02 PM CEST
+UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=19 | @AD_Reference_ID@=30 | @AD_Reference_ID@=18 | @AD_Reference_ID@=21 | @AD_Reference_ID@=25 | @AD_Reference_ID@=31 | @AD_Reference_ID@=35 | @AD_Reference_ID@=33 | @AD_Reference_ID@=32 | @AD_Reference_ID@=53370 | @AD_Reference_ID@=200233 | @AD_Reference_ID@=200234 | @AD_Reference_ID@=200235', SeqNo=330,Updated=TO_TIMESTAMP('2023-10-17 12:42:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207775
+;
+
+-- Oct 24, 2023, 1:22:19 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Record not deleted - there are dependent records in the table {0} for the column {1}',0,0,'Y',TO_TIMESTAMP('2023-10-24 13:22:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-24 13:22:19','YYYY-MM-DD HH24:MI:SS'),100,200838,'DeleteErrorDependentInfo','D','76cab20f-d155-45e9-b6e0-fd663312b180')
+;
+

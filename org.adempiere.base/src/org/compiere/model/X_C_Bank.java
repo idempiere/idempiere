@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Bank
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Bank")
-public class X_C_Bank extends PO implements I_C_Bank, I_Persistent 
+public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Bank (Properties ctx, int C_Bank_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Bank (Properties ctx, String C_Bank_UU, String trxName)
+    {
+      super (ctx, C_Bank_UU, trxName);
+      /** if (C_Bank_UU == null)
+        {
+			setC_Bank_ID (0);
+			setIsOwnBank (true);
+// Y
+			setName (null);
+			setRoutingNo (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Bank (Properties ctx, String C_Bank_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Bank_UU, trxName, virtualColumns);
+      /** if (C_Bank_UU == null)
+        {
+			setC_Bank_ID (0);
+			setIsOwnBank (true);
+// Y
+			setName (null);
+			setRoutingNo (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Bank (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -184,10 +212,10 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	public boolean isOwnBank()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOwnBank);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -212,7 +240,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

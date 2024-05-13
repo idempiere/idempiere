@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AllocationHdr
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AllocationHdr")
-public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persistent 
+public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_AllocationHdr (Properties ctx, int C_AllocationHdr_ID, String trxName)
@@ -82,6 +82,52 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AllocationHdr (Properties ctx, String C_AllocationHdr_UU, String trxName)
+    {
+      super (ctx, C_AllocationHdr_UU, trxName);
+      /** if (C_AllocationHdr_UU == null)
+        {
+			setApprovalAmt (Env.ZERO);
+			setC_AllocationHdr_ID (0);
+			setC_Currency_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setIsManual (false);
+			setPosted (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AllocationHdr (Properties ctx, String C_AllocationHdr_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AllocationHdr_UU, trxName, virtualColumns);
+      /** if (C_AllocationHdr_UU == null)
+        {
+			setApprovalAmt (Env.ZERO);
+			setC_AllocationHdr_ID (0);
+			setC_Currency_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setIsManual (false);
+			setPosted (false);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AllocationHdr (Properties ctx, ResultSet rs, String trxName)
     {
@@ -89,7 +135,7 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -379,7 +425,7 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -398,10 +444,10 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -421,10 +467,10 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -444,10 +490,10 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -467,10 +513,10 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -508,10 +554,10 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

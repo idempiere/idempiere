@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobRemuneration
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_JobRemuneration")
-public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Persistent 
+public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_JobRemuneration (Properties ctx, int C_JobRemuneration_ID, String trxName)
@@ -60,6 +60,32 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_JobRemuneration (Properties ctx, String C_JobRemuneration_UU, String trxName)
+    {
+      super (ctx, C_JobRemuneration_UU, trxName);
+      /** if (C_JobRemuneration_UU == null)
+        {
+			setC_Job_ID (0);
+			setC_JobRemuneration_ID (0);
+			setC_Remuneration_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobRemuneration (Properties ctx, String C_JobRemuneration_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobRemuneration_UU, trxName, virtualColumns);
+      /** if (C_JobRemuneration_UU == null)
+        {
+			setC_Job_ID (0);
+			setC_JobRemuneration_ID (0);
+			setC_Remuneration_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_JobRemuneration (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +93,7 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -119,7 +145,7 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Job_ID()));
     }

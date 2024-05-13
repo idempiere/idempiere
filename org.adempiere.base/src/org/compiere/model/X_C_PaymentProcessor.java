@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentProcessor
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentProcessor")
-public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_Persistent 
+public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
@@ -87,6 +87,58 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_PaymentProcessor (Properties ctx, String C_PaymentProcessor_UU, String trxName)
+    {
+      super (ctx, C_PaymentProcessor_UU, trxName);
+      /** if (C_PaymentProcessor_UU == null)
+        {
+			setAcceptAMEX (false);
+			setAcceptATM (false);
+			setAcceptCheck (false);
+			setAcceptCorporate (false);
+			setAcceptDiners (false);
+			setAcceptDirectDebit (false);
+			setAcceptDirectDeposit (false);
+			setAcceptDiscover (false);
+			setAcceptMC (false);
+			setAcceptVisa (false);
+			setCommission (Env.ZERO);
+			setCostPerTrx (Env.ZERO);
+			setC_PaymentProcessor_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+			setRequireVV (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentProcessor (Properties ctx, String C_PaymentProcessor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentProcessor_UU, trxName, virtualColumns);
+      /** if (C_PaymentProcessor_UU == null)
+        {
+			setAcceptAMEX (false);
+			setAcceptATM (false);
+			setAcceptCheck (false);
+			setAcceptCorporate (false);
+			setAcceptDiners (false);
+			setAcceptDirectDebit (false);
+			setAcceptDirectDeposit (false);
+			setAcceptDiscover (false);
+			setAcceptMC (false);
+			setAcceptVisa (false);
+			setCommission (Env.ZERO);
+			setCostPerTrx (Env.ZERO);
+			setC_PaymentProcessor_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+			setRequireVV (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_PaymentProcessor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -94,7 +146,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -129,10 +181,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptAMEX()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptAMEX);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -152,10 +204,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptATM()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptATM);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -175,10 +227,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptCheck);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -198,10 +250,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptCorporate()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptCorporate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -221,10 +273,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptDiners()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDiners);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -244,10 +296,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptDirectDebit()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDirectDebit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -267,10 +319,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptDirectDeposit()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDirectDeposit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -290,10 +342,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptDiscover()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDiscover);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -313,10 +365,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptMC()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptMC);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -336,10 +388,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isAcceptVisa()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptVisa);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -593,7 +645,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -695,10 +747,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public boolean isRequireVV()
 	{
 		Object oo = get_Value(COLUMNNAME_RequireVV);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

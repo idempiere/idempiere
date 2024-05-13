@@ -27,21 +27,24 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
+/**
+ * Inventory reservation storage model
+ */
 public class MStorageReservation extends X_M_StorageReservation {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8179093165315835613L;
 
 	/**
-	 * 	Get Storage Info
+	 * 	Get Reservation Storage
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID warehouse
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance
 	 *  @param isSOTrx
 	 *	@param trxName transaction
-	 *	@return existing or null
+	 *	@return existing MStorageReservation or null
 	 */
 	public static MStorageReservation get (Properties ctx, int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, boolean isSOTrx, String trxName)
@@ -87,18 +90,36 @@ public class MStorageReservation extends X_M_StorageReservation {
 
 	private static CLogger s_log = CLogger.getCLogger(MStorageReservation.class);
 
-	public MStorageReservation(Properties ctx, int M_StorageReservation_ID,
-			String trxName) {
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_StorageReservation_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MStorageReservation(Properties ctx, String M_StorageReservation_UU, String trxName) {
+        super(ctx, M_StorageReservation_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param M_StorageReservation_ID
+     * @param trxName
+     */
+	public MStorageReservation(Properties ctx, int M_StorageReservation_ID, String trxName) {
 		super(ctx, M_StorageReservation_ID, trxName);
 	}
 	
-	public MStorageReservation(Properties ctx, ResultSet rs,
-			String trxName) {
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
+	public MStorageReservation(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 	
 	/**
-	 * 	Full NEW Constructor
+	 * 	NEW MStorageReservation Constructor
 	 *	@param warehouse (parent) warehouse
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID attribute
@@ -116,13 +137,13 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}	//	MStorageReservation
 
 	/**
-	 * Get Storage Info for Product on specified Warehouse
+	 * Get Reservation Storage for Product on specified Warehouse
 	 * @param ctx
 	 * @param m_Warehouse_ID
 	 * @param m_Product_ID
-	 * @param i
+	 * @param i not use
 	 * @param trxName
-	 * @return
+	 * @return array of MStorageReservation
 	 */
 	public static MStorageReservation[] get(Properties ctx, int m_Warehouse_ID,
 			int m_Product_ID, int i, String trxName) {
@@ -138,11 +159,11 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}
 	
 	/**
-	 * 	Get Storage Info for Product across warehouses
+	 * 	Get Reservation Storage for Product across warehouses
 	 *	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param trxName transaction
-	 *	@return existing or null
+	 *	@return array of MStorageReservation
 	 */
 	public static MStorageReservation[] getOfProduct (Properties ctx, int M_Product_ID, String trxName)
 	{
@@ -162,7 +183,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * Get Quantity Reserved/Ordered of Warehouse
 	 * @param M_Product_ID
 	 * @param M_Warehouse_ID
-	 * @param M_AttributeSetInstance_ID
+	 * @param M_AttributeSetInstance_ID M_AttributeSetInstance_ID filter if > 0
 	 * @param isSOTrx - true to get reserved, false to get ordered
 	 * @param trxName
 	 * @return quantity reserved/ordered
@@ -192,14 +213,12 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}
 
 	/**
-	 * 	Get Available Qty.
-	 * 	The call is accurate only if there is a storage record 
-	 * 	and assumes that the product is stocked 
+	 * 	Get Available Qty (On Hand - Reserved)
 	 *	@param M_Warehouse_ID wh
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID masi
 	 *	@param trxName transaction
-	 *	@return qty available (QtyOnHand-QtyReserved) or null
+	 *	@return qty available (QtyOnHand-QtyReserved)
 	 */
 	public static BigDecimal getQtyAvailable (int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, String trxName)
@@ -211,7 +230,6 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}
 
 	/**
-	 * 
 	 * @param ctx
 	 * @param M_Warehouse_ID
 	 * @param M_Product_ID
@@ -222,6 +240,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @return true if ok
 	 * @deprecated
 	 */
+	@Deprecated
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			BigDecimal diffQty, boolean isSOTrx, String trxName)
@@ -230,13 +249,13 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}
 	
 	/**
-	 * 
+	 * Add diffQty to quantity reserved/ordered
 	 * @param ctx
 	 * @param M_Warehouse_ID
 	 * @param M_Product_ID
 	 * @param M_AttributeSetInstance_ID
-	 * @param diffQty
-	 * @param isSOTrx
+	 * @param diffQty difference to add to quantity reserved/ordered
+	 * @param isSOTrx true for quantity reserved, false for quantity ordered
 	 * @param trxName
 	 * @param tracer
 	 * @return true if ok
@@ -282,12 +301,13 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @param addition
 	 * @deprecated
 	 */
+	@Deprecated
 	public void addQty(BigDecimal addition) {
 		addQty(addition, null);
 	}
 	
 	/**
-	 * Add quantity on hand directly - not using cached value - solving IDEMPIERE-2629
+	 * Add addition to Qty of this record using direct SQL - not using cached value - solving IDEMPIERE-2629
 	 * @param addition
 	 */
 	public void addQty(BigDecimal addition, IReservationTracer tracer) {
@@ -304,7 +324,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}
 
 	/**
-	 * 	Update Storage Info add.
+	 * 	Update Reservation Storage
 	 * 	Called from MProjectIssue
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID warehouse
@@ -326,14 +346,14 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}	//	add
 
 	/**
-	 * 	Create or Get Storage Info
+	 * 	Create or Get Reservation Storage
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance
-	 *  @param isSOTrx
+	 *  @param isSOTrx true for quantity reserved, false for quantity ordered
 	 *	@param trxName transaction
-	 *	@return existing/new or null
+	 *	@return existing or new MStorageReservation
 	 */
 	public static MStorageReservation getCreate (Properties ctx, int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, boolean isSOTrx, String trxName)
@@ -361,6 +381,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 *	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MStorageReservation[")

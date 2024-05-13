@@ -34,7 +34,7 @@ import org.zkoss.zul.ListitemRendererExt;
 import org.zkoss.zul.RendererCtrl;
 
 /**
- * ListItem renderer for GridTabSelectionListView
+ * ListItem renderer for {@link GridTabSelectionListView}
  * @author hengsin
  *
  */
@@ -60,7 +60,7 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 	/**
 	 * @param listitem
 	 * @param data
-	 * @see ListitemRenderer#render(Listitem, Object)
+	 * @see ListitemRenderer#render(Listitem, Object, int)
 	 */
 	@Override
 	public void render(Listitem listitem, GridTableRow data, int index) throws Exception {
@@ -126,6 +126,12 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 		}
 	}
 
+	/**
+	 * Create {@link Listcell} for gridField and value
+	 * @param gridField
+	 * @param value
+	 * @return Listcell
+	 */
 	private Listcell renderCell(GridField gridField, Object value) {
 		Listcell cell;
 		if (gridField.getDisplayType() == DisplayType.YesNo) {
@@ -186,6 +192,12 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 		return item;
 	}
 
+	/**
+	 * 
+	 * @param gridField
+	 * @param value
+	 * @return display text
+	 */
 	private String getDisplayText(GridField gridField, Object value)
 	{
 		if (value == null)
@@ -211,15 +223,14 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 	
 	/**
 	 * Is renderer initialize
-	 * @return boolean
+	 * @return true if initialize, false otherwise
 	 */
 	public boolean isInitialize() {
 		return !editors.isEmpty();
 	}
 
 	/**
-	 * 
-	 * @return active editor list
+	 * @return field editor list
 	 */
 	public List<WEditor> getEditors() {
 		List<WEditor> editorList = new ArrayList<WEditor>();
@@ -247,10 +258,16 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 	public void doTry() {
 	}
 
+	/**
+	 * @param listView
+	 */
 	public void setListView (GridTabSelectionListView listView) {
 		this.listView = listView;
 	}
 
+	/**
+	 * @return GridTabSelectionListView
+	 */
 	public GridTabSelectionListView getListView() {
 		return listView;
 	}

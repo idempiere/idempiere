@@ -26,9 +26,8 @@ import org.compiere.model.X_AD_WF_Node_Para;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
- *	Workflow Node Process Parameter Model
+ *	Extended Workflow Node Process Parameter Model for AD_WF_Node_Para
  *	
  *  @author Jorg Janke
  *  @version $Id: MWFNodePara.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -36,7 +35,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7304684637362248174L;
 
@@ -56,9 +55,18 @@ public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 		list.toArray (retValue);
 		return retValue;
 	}	//	getParameters
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_Node_Para_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWFNodePara(Properties ctx, String AD_WF_Node_Para_UU, String trxName) {
+        super(ctx, AD_WF_Node_Para_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param id id
@@ -81,7 +89,7 @@ public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 	}	//	MWFNodePara
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MWFNodePara(MWFNodePara copy) 
@@ -90,7 +98,7 @@ public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -100,7 +108,7 @@ public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

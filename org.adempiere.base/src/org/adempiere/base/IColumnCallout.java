@@ -29,15 +29,15 @@ public interface IColumnCallout
 	/**
 	 *	Start Callout.
 	 *  <p>
-	 *	Callout's are used for cross field validation and setting values in other fields
-	 *	when returning a non empty (error message) string, an exception is raised
+	 *	Callout's are used for cross field validation and setting values in other fields.
+	 *	When returning a non empty (error message) string, an exception is raised.
 	 *  <p>
 	 *	When invoked, the Tab model has the new value!
 	 *
 	 *  @param ctx      Context
 	 *  @param WindowNo current Window No
-	 *  @param mTab     Model Tab
-	 *  @param mField   Model Field
+	 *  @param mTab     Tab model
+	 *  @param mField   Field model
 	 *  @param value    The new value
 	 *  @param oldValue The old value
 	 *  @return Error message or ""

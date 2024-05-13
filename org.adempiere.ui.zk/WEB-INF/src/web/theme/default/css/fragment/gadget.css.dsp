@@ -133,6 +133,16 @@
 	display: inline-flex;
 	align-items: center;
 }
+
+.dashboard-report-toolbar .z-toolbar-content {
+	display: block;
+}
+
+.dashboard-report-toolbar .rowcount-label {
+	float: right;
+	padding: 5px;
+}
+
 .recentitems-box .trash-toolbarbutton .z-toolbarbutton-content {
 	font-size: 16px;
 }
@@ -164,7 +174,8 @@
 	text-align: center;
 }
 .views-box .z-toolbarbutton [class^="z-icon"]:before {
-	width: 14px;
+	width: 16px;
+	display: inline-block;
 }
 
 .activities-box {
@@ -202,7 +213,7 @@
 .performance-indicator-box {
 	background-color: #eee; 
 	border: 1px solid #d8d8d8; 
-	border-radius: 11px; 
+	border-radius: 5px; 
 	cursor: pointer;
 }
 .performance-indicator-title {
@@ -331,6 +342,41 @@
 .dashboard-content-help-icon {
 	padding: 5px;
 	cursor: default;
+	visibility: hidden;
+}
+
+.z-caption:hover .dashboard-content-help-icon {
+	visibility: visible;
+}
+
+.dashboard-content-help-popup {
+	display: none;
+}
+
+.dashboard-content-help-icon:hover ~ .dashboard-content-help-popup {
+	display: inline-flex;
+	background: black;
+	color: white;
+	border-radius: 5px;
+	padding: 4px 7px;
+    position: fixed;
+    z-index: 1800;
+    max-width: 300px;
+}
+
+.fill-mandatory-process-para-wrapper {
+	padding: 11px;
+	display: flex;
+	flex-direction: column;
+	max-width: 500px;
+}
+
+.fill-mandatory-process-para-text {
+    background: #C62223;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 90%;
 }
 
 .fill-mandatory-process-para-wrapper {

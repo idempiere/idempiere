@@ -24,7 +24,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 /**
- * 
+ * Static factory methods for zoom info
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
  */
@@ -70,7 +70,7 @@ public class ZoomInfoFactory {
 	/**
 	 * Adds {@link ZoomInfo} instances from {@link MRelationType}s and
 	 * {@link GenericZoomProvider}.
-	 * 
+	 * <p>
 	 * First it looks for matching {@link MRelationType} instances and adds
 	 * their {@link MRelationType#retrieveZoomInfos(PO)} results. Then it adds
 	 * the {@link GenericZoomProvider}'s results unless there is already one
@@ -79,7 +79,7 @@ public class ZoomInfoFactory {
 	 * 
 	 * @param po
 	 * @param windowID
-	 * @return
+	 * @return matching zoom info records
 	 */
 	public static List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(final PO po,
 			final int windowID) {

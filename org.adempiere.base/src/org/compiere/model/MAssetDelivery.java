@@ -23,6 +23,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.compiere.util.EMail;
+import org.compiere.util.Util;
 
 /**
  *  Asset Delivery Model
@@ -33,9 +34,21 @@ import org.compiere.util.EMail;
 public class MAssetDelivery extends X_A_Asset_Delivery
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1731010685101745675L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Delivery_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetDelivery(Properties ctx, String A_Asset_Delivery_UU, String trxName) {
+        super(ctx, A_Asset_Delivery_UU, trxName);
+		if (Util.isEmpty(A_Asset_Delivery_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Constructor
@@ -47,10 +60,15 @@ public class MAssetDelivery extends X_A_Asset_Delivery
 	{
 		super (ctx, A_Asset_Delivery_ID, trxName);
 		if (A_Asset_Delivery_ID == 0)
-		{
-			setMovementDate (new Timestamp (System.currentTimeMillis ()));
-		}
+			setInitialDefaults();
 	}	//	MAssetDelivery
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setMovementDate (new Timestamp (System.currentTimeMillis ()));
+	}
 
 	/**
 	 *  Load Constructor
@@ -122,6 +140,7 @@ public class MAssetDelivery extends X_A_Asset_Delivery
 	 * 	String representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MAssetDelivery[")

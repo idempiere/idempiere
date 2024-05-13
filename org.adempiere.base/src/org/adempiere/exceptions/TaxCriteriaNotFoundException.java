@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.adempiere.exceptions;
 
-
 /**
  * Throw when a tax criteria was not found
  * @author Teo Sarca, www.arhipac.ro
@@ -22,17 +21,26 @@ package org.adempiere.exceptions;
 public class TaxCriteriaNotFoundException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8192276006656371964L;
 	
 	private static final String AD_Message = "TaxCriteriaNotFound";
 	
+	/**
+	 * @param criteriaName
+	 * @param criteria_ID
+	 */
 	public TaxCriteriaNotFoundException(String criteriaName, int criteria_ID)
 	{
 		super(buildMessage(criteriaName, criteria_ID));
 	}
 	
+	/**
+	 * @param criteriaName
+	 * @param criteria_ID
+	 * @return error message
+	 */
 	private static final String buildMessage (String criteriaName, int criteria_ID)
 	{
 		StringBuilder msg = new StringBuilder("@").append(AD_Message).append("@");

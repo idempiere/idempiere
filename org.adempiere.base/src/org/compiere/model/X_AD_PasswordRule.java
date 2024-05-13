@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PasswordRule
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PasswordRule")
-public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent 
+public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
@@ -71,6 +71,44 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PasswordRule (Properties ctx, String AD_PasswordRule_UU, String trxName)
+    {
+      super (ctx, AD_PasswordRule_UU, trxName);
+      /** if (AD_PasswordRule_UU == null)
+        {
+			setAD_PasswordRule_ID (0);
+			setIsDictMatchBackwards (false);
+// N
+			setIsUserNameRule (false);
+// N
+			setIsUsingDictionary (false);
+// N
+			setIsWhitespace (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PasswordRule (Properties ctx, String AD_PasswordRule_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PasswordRule_UU, trxName, virtualColumns);
+      /** if (AD_PasswordRule_UU == null)
+        {
+			setAD_PasswordRule_ID (0);
+			setIsDictMatchBackwards (false);
+// N
+			setIsUserNameRule (false);
+// N
+			setIsUsingDictionary (false);
+// N
+			setIsWhitespace (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PasswordRule (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +116,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -225,10 +263,10 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	public boolean isDictMatchBackwards()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDictMatchBackwards);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -248,10 +286,10 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	public boolean isUserNameRule()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserNameRule);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -270,10 +308,10 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	public boolean isUsingDictionary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUsingDictionary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -293,10 +331,10 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	public boolean isWhitespace()
 	{
 		Object oo = get_Value(COLUMNNAME_IsWhitespace);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -377,7 +415,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

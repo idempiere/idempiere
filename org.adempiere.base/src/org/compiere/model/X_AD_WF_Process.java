@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Process
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Process")
-public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent 
+public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_Process (Properties ctx, int AD_WF_Process_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_Process (Properties ctx, String AD_WF_Process_UU, String trxName)
+    {
+      super (ctx, AD_WF_Process_UU, trxName);
+      /** if (AD_WF_Process_UU == null)
+        {
+			setAD_Table_ID (0);
+			setAD_WF_Process_ID (0);
+			setAD_WF_Responsible_ID (0);
+			setAD_Workflow_ID (0);
+			setProcessed (false);
+			setRecord_ID (0);
+			setWFState (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Process (Properties ctx, String AD_WF_Process_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Process_UU, trxName, virtualColumns);
+      /** if (AD_WF_Process_UU == null)
+        {
+			setAD_Table_ID (0);
+			setAD_WF_Process_ID (0);
+			setAD_WF_Responsible_ID (0);
+			setAD_Workflow_ID (0);
+			setProcessed (false);
+			setRecord_ID (0);
+			setWFState (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_Process (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -273,7 +305,7 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Workflow_ID()));
     }
@@ -311,10 +343,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -333,10 +365,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

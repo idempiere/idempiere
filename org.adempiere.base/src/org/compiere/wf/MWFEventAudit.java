@@ -26,22 +26,21 @@ import org.compiere.model.X_AD_WF_EventAudit;
 import org.compiere.util.Env;
 
 /**
- *	Workflow Event Audit
+ *	Extended Workflow Event Audit model for AD_WF_EventAudit
  *	
  *  @author Jorg Janke
  *  @version $Id: MWFEventAudit.java,v 1.3 2006/07/30 00:51:06 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1801842 ] DB connection fix and improvements for concurrent threads
  * 			<li>BF [ 1943723 ] WF Activity History is not translated
  */
 public class MWFEventAudit extends X_AD_WF_EventAudit
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 3760514881823970823L;
-
 
 	/**
 	 * Get Event Audit for node
@@ -51,18 +50,19 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 	 * @return event audit or null
 	 * @deprecated Deprecated since 3.4.0. Use instead {@link #get(Properties, int, int, String)}
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID, int AD_WF_Node_ID)
 	{
 		return get(ctx, AD_WF_Process_ID, AD_WF_Node_ID, null);
 	}
 	
 	/**
-	 * Get Event Audit for node
+	 * Get Event Audits for node
 	 * @param ctx context
 	 * @param AD_WF_Process_ID process
 	 * @param AD_WF_Node_ID optional node
 	 * @param trxName
-	 * @return event audit or null
+	 * @return event audits or null
 	 */
 	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID, int AD_WF_Node_ID, String trxName)
 	{
@@ -91,25 +91,35 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 	 * @return event audit or null
 	 * @deprecated Deprecated since 3.4.0. Use instead {@link #get(Properties, int, String)}
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID)
 	{
 		return get(ctx, AD_WF_Process_ID, null);
 	}
 	
 	/**
-	 * Get Event Audit for node
+	 * Get Event Audits for node
 	 * @param ctx context
 	 * @param AD_WF_Process_ID process
 	 * @param trxName
-	 * @return event audit or null
+	 * @return event audits or null
 	 */
 	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID, String trxName)
 	{
 		return get(ctx, AD_WF_Process_ID, 0, trxName);
 	}	//	get
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_EventAudit_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWFEventAudit(Properties ctx, String AD_WF_EventAudit_UU, String trxName) {
+        super(ctx, AD_WF_EventAudit_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 * 	@param ctx context
 	 *	@param AD_WF_EventAudit_ID id
@@ -121,7 +131,7 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 	}	//	MWFEventAudit
 
 	/**
-	 * 	Load Cosntructors
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 * 	@param trxName transaction

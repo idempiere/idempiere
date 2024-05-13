@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ForecastLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ForecastLine")
-public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persistent 
+public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ForecastLine (Properties ctx, int M_ForecastLine_ID, String trxName)
@@ -72,6 +72,42 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ForecastLine (Properties ctx, String M_ForecastLine_UU, String trxName)
+    {
+      super (ctx, M_ForecastLine_UU, trxName);
+      /** if (M_ForecastLine_UU == null)
+        {
+			setC_Period_ID (0);
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setM_Forecast_ID (0);
+			setM_ForecastLine_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setQty (Env.ZERO);
+			setQtyCalculated (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ForecastLine (Properties ctx, String M_ForecastLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ForecastLine_UU, trxName, virtualColumns);
+      /** if (M_ForecastLine_UU == null)
+        {
+			setC_Period_ID (0);
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setM_Forecast_ID (0);
+			setM_ForecastLine_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setQty (Env.ZERO);
+			setQtyCalculated (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ForecastLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -79,7 +115,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -131,7 +167,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Period_ID()));
     }

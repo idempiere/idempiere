@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionAmt
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionAmt")
-public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persistent 
+public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CommissionAmt (Properties ctx, int C_CommissionAmt_ID, String trxName)
@@ -65,6 +65,36 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CommissionAmt (Properties ctx, String C_CommissionAmt_UU, String trxName)
+    {
+      super (ctx, C_CommissionAmt_UU, trxName);
+      /** if (C_CommissionAmt_UU == null)
+        {
+			setActualQty (Env.ZERO);
+			setC_CommissionAmt_ID (0);
+			setC_CommissionLine_ID (0);
+			setC_CommissionRun_ID (0);
+			setCommissionAmt (Env.ZERO);
+			setConvertedAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionAmt (Properties ctx, String C_CommissionAmt_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionAmt_UU, trxName, virtualColumns);
+      /** if (C_CommissionAmt_UU == null)
+        {
+			setActualQty (Env.ZERO);
+			setC_CommissionAmt_ID (0);
+			setC_CommissionLine_ID (0);
+			setC_CommissionRun_ID (0);
+			setCommissionAmt (Env.ZERO);
+			setConvertedAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CommissionAmt (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +102,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -208,7 +238,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_CommissionRun_ID()));
     }

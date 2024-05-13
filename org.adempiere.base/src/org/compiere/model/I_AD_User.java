@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_User
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_User 
 {
@@ -118,6 +118,15 @@ public interface I_AD_User
 
 	/** Get Answer	  */
 	public String getAnswer();
+
+    /** Column name AuthenticationType */
+    public static final String COLUMNNAME_AuthenticationType = "AuthenticationType";
+
+	/** Set Authentication Type	  */
+	public void setAuthenticationType (String AuthenticationType);
+
+	/** Get Authentication Type	  */
+	public String getAuthenticationType();
 
     /** Column name Birthday */
     public static final String COLUMNNAME_Birthday = "Birthday";

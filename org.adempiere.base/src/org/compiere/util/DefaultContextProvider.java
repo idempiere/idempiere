@@ -19,9 +19,8 @@ package org.compiere.util;
 import java.util.Properties;
 
 /**
- * 
+ * Default context provider for swing client 
  * @author Low Heng Sin
- *
  */
 public class DefaultContextProvider implements ContextProvider {
 

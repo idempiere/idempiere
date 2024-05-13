@@ -40,7 +40,7 @@ public class Callout_AD_Column extends CalloutEngine
 		// IDEMPIERE-1011
 		if (PO.getUUIDColumnName(column.getAD_Table().getTableName()).equals(column.getColumnName())) {
 			// UUID column
-			column.setAD_Reference_ID(DisplayType.String);
+			column.setAD_Reference_ID(DisplayType.UUID);
 			column.setAD_Val_Rule_ID(0);
 			column.setAD_Reference_Value_ID(0);
 			column.setFieldLength(36);

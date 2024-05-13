@@ -155,7 +155,7 @@ public class colgroup extends MultiPartElement implements Printable
 
     /**
 
-        Sets the align="" attribute convience variables are provided in the AlignType interface
+        Sets the align="" attribute convenience variables are provided in the AlignType interface
 
         @param  align   Sets the align="" attribute
 
@@ -175,7 +175,7 @@ public class colgroup extends MultiPartElement implements Printable
 
     /**
 
-        Sets the valign="" attribute convience variables are provided in the AlignType interface
+        Sets the valign="" attribute convenience variables are provided in the AlignType interface
 
         @param  valign   Sets the valign="" attribute
 

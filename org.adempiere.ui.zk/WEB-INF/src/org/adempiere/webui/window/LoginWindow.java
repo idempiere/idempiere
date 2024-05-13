@@ -26,9 +26,13 @@ package org.adempiere.webui.window;
 import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
@@ -41,14 +45,19 @@ import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.util.ZkSSOUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
@@ -71,9 +80,10 @@ import org.zkoss.zk.ui.util.Clients;
 public class LoginWindow extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8570332386555237381L;
+	protected static final CLogger log = CLogger.getCLogger(LoginWindow.class);
 
 	protected IWebClient app;
     protected Properties ctx;
@@ -87,12 +97,17 @@ public class LoginWindow extends Window implements EventListener<Event>
 
     public LoginWindow() {}
 
+    /**
+     * Layout window
+     * @param app
+     */
     public void init(IWebClient app)
     {
     	this.ctx = Env.getCtx();
         this.app = app;
         initComponents();
-        this.appendChild(pnlLogin);
+		if (pnlLogin != null)
+			this.appendChild(pnlLogin);
         this.setStyle("background-color: transparent");
         // add listener on 'ENTER' key for the login window
         addEventListener(Events.ON_OK,this);
@@ -100,29 +115,129 @@ public class LoginWindow extends Window implements EventListener<Event>
         setWidgetListener("onOK", "zAu.cmd0.showBusy(null)");
     }
 
-    private void initComponents()
-    {
-        createLoginPanel();
-    }
+    /**
+     * Create login panel
+     */
+	private void initComponents()
+	{
+		Object token = getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+		if (token == null)
+		{
+			createLoginPanel();
+		}
+		else
+		{
+			ssoLogin(token);
+		}
+	}
 
+	/**
+	 * Show role panel after SSO authentication.
+	 * 
+	 * @param Session token for retrieving user and language.
+	 */
+	private void ssoLogin(Object token)
+	{
+		String errorMessage = null;
+		try
+		{
+			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
+			String username = ssoPrincipal.getUserName(token);
+			Language language = ssoPrincipal.getLanguage(token);
+			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+			if (Util.isEmpty(username))
+				throw new AdempiereException("No Apps " + (isEmailLogin ? "Email" : "User"));
+			if (language == null)
+				language = Language.getBaseLanguage();
+
+			Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName());
+			Locale locale = language.getLocale();
+			getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
+
+			Login login = new Login(ctx);
+			boolean isShowRolePanel = MSysConfig.getBooleanValue(MSysConfig.SSO_SELECT_ROLE, true);
+			
+			// show role panel when change role 
+			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
+				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
+			
+			KeyNamePair[] clients = login.getClients(username, null, null, token);
+			if (clients != null)
+				loginOk(username, isShowRolePanel, clients, true);
+			else
+			{
+				log.log(Level.WARNING,"No Client found for user:" + username);
+				ValueNamePair error = CLogger.retrieveError();
+				if (error == null)
+					error = CLogger.retrieveWarning();
+				errorMessage = Msg.getMsg(language, error.getValue(), new Object[] { error.getName() });
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, e.getMessage(), e);
+			errorMessage = e.getLocalizedMessage();
+		}
+
+		if (!Util.isEmpty(errorMessage))
+		{
+			ZkSSOUtils.setErrorMessageText(errorMessage);
+			Executions.sendRedirect(SSOUtils.ERROR_VALIDATION_URL);
+		}
+	}
+
+    /**
+     * Create login panel
+     */
 	protected void createLoginPanel() {
 		pnlLogin = new LoginPanel(ctx, this);
 	}
 
-    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
-    {
-    	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
+	/**
+	 * After verification of user name and password. 
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 */
+	public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
+	{
+		loginOk(userName, show, clientsKNPairs, false);
+	}
+
+    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
+	{
+		boolean isClientDefined = (clientsKNPairs.length == 1 || !Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
-    	if (isClientDefined) {
+		if (isSSOLogin)
+		{
+			Executions.schedule(getDesktop(), e -> validateMFPanel(userName, show, clientsKNPairs, isClientDefined), new Event(SSOUtils.EVENT_ON_AFTER_SSOLOGIN));
+		}
+		else
+		{
+			validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
+		}
+	}
+
+	private void validateMFPanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined)
+	{
+		if (isClientDefined) {
     		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	} else {
             showRolePanel(userName, show, clientsKNPairs, isClientDefined, false);
-            if (! pnlRole.show())
+			if (!pnlRole.show())
             	createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	}
-    }
+	}
 
+    /**
+     * Show role selection panel
+     * @param userName
+     * @param show
+     * @param clientsKNPairs
+     * @param isClientDefined
+     * @param isMFAValidated
+     */
 	public void showRolePanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined, boolean isMFAValidated) {
         this.getChildren().clear();
         if (pnlRole.show()) {
@@ -138,6 +253,13 @@ public class LoginWindow extends Window implements EventListener<Event>
         }
 	}
     
+	/**
+	 * Show change password panel
+	 * @param userName
+	 * @param userPassword
+	 * @param show
+	 * @param clientsKNPairs
+	 */
     public void changePassword(String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs)
     {
     	Clients.clearBusy();
@@ -146,11 +268,23 @@ public class LoginWindow extends Window implements EventListener<Event>
         this.appendChild(pnlChangePassword);
     }
 
+    /**
+     * Create change password panel
+     * @param userName
+     * @param userPassword
+     * @param show
+     * @param clientsKNPairs
+     */
 	protected void createChangePasswordPanel(String userName,
 			String userPassword, boolean show, KeyNamePair[] clientsKNPairs) {
 		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
 	}
     
+	/**
+	 * Show reset password panel
+	 * @param userName
+	 * @param noSecurityQuestion
+	 */
     public void resetPassword(String userName, boolean noSecurityQuestion)
     {
     	createResetPasswordPanel(userName, noSecurityQuestion);
@@ -158,16 +292,37 @@ public class LoginWindow extends Window implements EventListener<Event>
         this.appendChild(pnlResetPassword);
     }
 
+    /**
+     * Create reset password panel
+     * @param userName
+     * @param noSecurityQuestion
+     */
 	protected void createResetPasswordPanel(String userName,
 			boolean noSecurityQuestion) {
 		pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
 	}
 
+	/**
+	 * Show MFA panel
+	 * @param orgKNPair
+	 * @param isClientDefined
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 */
 	public void validateMFA(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
     	Clients.clearBusy();
 		createValidateMFAPanel(orgKNPair, isClientDefined, userName, show, clientsKNPairs);
 	}
 
+	/**
+	 * Create and show MFA panel
+	 * @param orgKNPair
+	 * @param isClientDefined
+	 * @param userName
+	 * @param show
+	 * @param clientsKNPairs
+	 */
 	private void createValidateMFAPanel(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
 		if (pnlValidateMFA == null)
 			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair, isClientDefined, userName, show, clientsKNPairs);
@@ -177,6 +332,12 @@ public class LoginWindow extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Complete login process
+	 * @param login
+	 * @param m_orgKNPair
+	 * @param component
+	 */
 	public void loginCompleted(Login login, KeyNamePair m_orgKNPair, Window component)
     {
 		Session currSess = Executions.getCurrent().getDesktop().getSession();
@@ -215,13 +376,17 @@ public class LoginWindow extends Window implements EventListener<Event>
         app.loginCompleted();
     }
 
+	/**
+	 * Login cancel by user. Show login panel again.
+	 */
     public void loginCancelled()
     {
         createLoginPanel();
         this.getChildren().clear();
         this.appendChild(pnlLogin);
     }
-
+    
+    @Override
     public void onEvent(Event event)
     {
        // check that 'ENTER' key is pressed

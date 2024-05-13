@@ -30,6 +30,7 @@ import org.compiere.model.X_AD_PrintPaper;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -97,6 +98,18 @@ public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer,MPrintPaper>(Table_Name, 5);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintPaper_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintPaper(Properties ctx, String AD_PrintPaper_UU, String trxName) {
+        super(ctx, AD_PrintPaper_UU, trxName);
+		if (Util.isEmpty(AD_PrintPaper_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *	Constructor
 	 *  @param ctx context
@@ -107,17 +120,22 @@ public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 	{
 		super(ctx, AD_PrintPaper_ID, trxName);
 		if (AD_PrintPaper_ID == 0)
-		{
-			setIsDefault (false);
-			setIsLandscape (true);
-			setCode ("iso-a4");
-			setMarginTop (36);
-			setMarginBottom (36);
-			setMarginLeft (36);
-			setMarginRight (36);
-		}
+			setInitialDefaults();
 	}	//	MPrintPaper
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setIsLandscape (true);
+		setCode ("iso-a4");
+		setMarginTop (36);
+		setMarginBottom (36);
+		setMarginLeft (36);
+		setMarginRight (36);
+	}
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

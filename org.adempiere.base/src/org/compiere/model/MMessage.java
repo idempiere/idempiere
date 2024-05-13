@@ -36,7 +36,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MMessage extends X_AD_Message implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3305457539918386807L;
 
@@ -117,7 +117,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}	//	get
 	
 	/**
-	 * 	Get Message ID (cached)
+	 * 	Get Message ID from cache
 	 *	@param Value message value
 	 *	@return AD_Message_ID
 	 */
@@ -127,7 +127,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get Message ID (cached)
+	 * 	Get Message ID from cache
 	 *  @param ctx context
 	 *	@param Value message value
 	 *	@return AD_Message_ID
@@ -145,7 +145,17 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MMessage.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Message_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMessage(Properties ctx, String AD_Message_UU, String trxName) {
+        super(ctx, AD_Message_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Message_ID id
@@ -157,7 +167,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}	//	MMessage
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -168,7 +178,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}	//	MMessage
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MMessage(MMessage copy) 
@@ -177,7 +187,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -187,7 +197,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -207,13 +217,13 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 		return this;
 	}
 
-	/*
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if save
 	 */
+	@Override
 	protected boolean beforeSave(boolean newRecord) {
-
 		// To avoid conflicts with tenant level messages, the value cannot start with numeric and |
 		if (getValue() != null && getValue().contains("|")) {
 

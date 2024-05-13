@@ -65,12 +65,12 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				return;
 			}
 			Element displayElement = element.properties.get("AD_Display");
-			int displayColumnId = ReferenceUtils.resolveReference(ctx.ctx, displayElement, getTrxName(ctx));
+			int displayColumnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, displayElement, getTrxName(ctx));
 			refTable.setAD_Display(displayColumnId);
 
 
 			Element keyElement = element.properties.get("AD_Key");
-			int keyColumnId = ReferenceUtils.resolveReference(ctx.ctx, keyElement, getTrxName(ctx));
+			int keyColumnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, keyElement, getTrxName(ctx));
 			refTable.setAD_Key(keyColumnId);
 
 			if (refTable.is_new() || refTable.is_Changed()) {

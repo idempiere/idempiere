@@ -30,15 +30,25 @@ import org.compiere.util.Msg;
 public class MRequestAction extends X_R_RequestAction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2902231219773596011L;
 
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_RequestAction_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRequestAction(Properties ctx, String R_RequestAction_UU, String trxName) {
+        super(ctx, R_RequestAction_UU, trxName);
+    }
+
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param R_RequestAction_ID id
+	 *  @param trxName
 	 */
 	public MRequestAction (Properties ctx, int R_RequestAction_ID, String trxName)
 	{
@@ -46,7 +56,7 @@ public class MRequestAction extends X_R_RequestAction
 	}	//	MRequestAction
 
 	/**
-	 * 	Load Construtor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 */
@@ -83,7 +93,7 @@ public class MRequestAction extends X_R_RequestAction
 
 	/**
 	 * 	Get Name of creator
-	 *	@return name
+	 *	@return created by name
 	 */
 	public String getCreatedByName()
 	{
@@ -93,7 +103,7 @@ public class MRequestAction extends X_R_RequestAction
 
 	/**
 	 * 	Get Changes as HTML string
-	 *	@return changes
+	 *	@return changes HTML
 	 */
 	public String getChangesHTML()
 	{
@@ -143,7 +153,7 @@ public class MRequestAction extends X_R_RequestAction
 	
 	/**
 	 * 	Get individual Change HTML
-	 *	@param sb string to append to
+	 *	@param sb buffer to append change HTML to
 	 *	@param columnName column name
 	 */
 	private void getChangeHTML (StringBuffer sb, String columnName)
@@ -168,13 +178,13 @@ public class MRequestAction extends X_R_RequestAction
 			}
 		}
 	}	//	getChangeHTML
-	
-	
+		
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		return true;

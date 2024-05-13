@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCost
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderLandedCost")
-public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Persistent 
+public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCost (Properties ctx, int C_OrderLandedCost_ID, String trxName)
@@ -70,6 +70,42 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_OrderLandedCost (Properties ctx, String C_OrderLandedCost_UU, String trxName)
+    {
+      super (ctx, C_OrderLandedCost_UU, trxName);
+      /** if (C_OrderLandedCost_UU == null)
+        {
+			setAmt (Env.ZERO);
+// 0
+			setC_Order_ID (0);
+			setC_OrderLandedCost_ID (0);
+			setLandedCostDistribution (null);
+// Q
+			setM_CostElement_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderLandedCost (Properties ctx, String C_OrderLandedCost_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderLandedCost_UU, trxName, virtualColumns);
+      /** if (C_OrderLandedCost_UU == null)
+        {
+			setAmt (Env.ZERO);
+// 0
+			setC_Order_ID (0);
+			setC_OrderLandedCost_ID (0);
+			setLandedCostDistribution (null);
+// Q
+			setM_CostElement_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_C_OrderLandedCost (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +113,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -268,10 +304,10 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

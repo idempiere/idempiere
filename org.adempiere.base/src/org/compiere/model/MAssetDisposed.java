@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.io.File;
@@ -11,13 +32,12 @@ import java.util.logging.Level;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.fa.exceptions.AssetAlreadyDepreciatedException;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
 import org.idempiere.fa.exceptions.AssetStatusChangedException;
 import org.idempiere.fa.util.POCacheLocal;
-
-
 
 /**
  * Asset Disposal Model
@@ -27,28 +47,56 @@ public class MAssetDisposed extends X_A_Asset_Disposed
 implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1763997880662445638L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Disposed_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetDisposed(Properties ctx, String A_Asset_Disposed_UU, String trxName) {
+        super(ctx, A_Asset_Disposed_UU, trxName);
+		if (Util.isEmpty(A_Asset_Disposed_UU))
+			setInitialDefaults();
+    }
+
+    /**
+     * @param ctx
+     * @param A_Asset_Disposed_ID
+     * @param trxName
+     */
 	public MAssetDisposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
 	{
 		super (ctx, A_Asset_Disposed_ID, trxName);
 		if (A_Asset_Disposed_ID == 0)
-		{
-			setProcessed (false);
-			setProcessing (false);
-		}
-		
+			setInitialDefaults();
 	}
 	
-	//@win: autocreate asset disposal from ar invoice
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessed (false);
+		setProcessing (false);
+	}
+
+	/**
+	 * Create asset disposal from AR invoice
+	 * @param invLine
+	 * @return MAssetDisposed
+	 */
 	public static MAssetDisposed createAssetDisposed (MInvoiceLine invLine) {
 		MAssetDisposed assetDisposed = new MAssetDisposed(invLine);
 		assetDisposed.dump();
 		return assetDisposed;
 	}
 	
+	/**
+	 * @param invLine
+	 */
 	private MAssetDisposed (MInvoiceLine invLine) {
 		this(invLine.getCtx(),0,invLine.get_TrxName());
 		if (log.isLoggable(Level.FINEST)) log.finest("Entering: Project=" + invLine);
@@ -65,28 +113,45 @@ implements DocAction
 	}
 
 	private final POCacheLocal<MInvoiceLine> m_cacheInvoiceLine = POCacheLocal.newInstance(this, MInvoiceLine.class);
+	
+	/**
+	 * @param requery
+	 * @return MInvoiceLine
+	 */
 	public MInvoiceLine getM_InvoiceLine(boolean requery)
 	{
 		return m_cacheInvoiceLine.get(requery);
 	}
+	
+	/**
+	 * Set cached invoice line
+	 * @param invLine
+	 */
 	private void setM_InvoiceLine(MInvoiceLine invLine)
 	{
 		set_Value("C_InvoiceLine_ID", invLine.get_ID());
 		m_cacheInvoiceLine.set(invLine);
 	}
-	//end @win: autocreate asset disposal from ar invoice
-	
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAssetDisposed (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 	
+	/**
+	 * @return MAsset
+	 */
 	public MAsset getAsset()
 	{
 		return MAsset.get(getCtx(), getA_Asset_ID(), null);
 	}
 	
-	
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -99,20 +164,20 @@ implements DocAction
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
-	
+	@Override
 	public boolean unlockIt()
 	{
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
 	
-	
+	@Override
 	public boolean invalidateIt()
 	{
 		return false;
 	}	//	invalidateIt
 	
-	
+	@Override
 	public String prepareIt()
 	{
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
@@ -123,9 +188,8 @@ implements DocAction
 		
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_GLDocument, getAD_Org_ID());
 
-		//saveEx() //commented by @win
 		updateFromAsset(this);
-		saveEx(get_TrxName()); //added by @win
+		saveEx(get_TrxName());
 		if (is_Changed())
 		{
 			throw new AssetStatusChangedException();
@@ -150,7 +214,7 @@ implements DocAction
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
 	
-	
+	@Override
 	public boolean approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
@@ -158,7 +222,7 @@ implements DocAction
 		return true;
 	}	//	approveIt
 	
-	
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
@@ -166,7 +230,7 @@ implements DocAction
 		return true;
 	}	//	rejectIt
 	
-	
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -238,7 +302,6 @@ implements DocAction
 		
 		asset.saveEx(get_TrxName());
 		
-
 		//	User Validation
 		valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -253,39 +316,38 @@ implements DocAction
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
 	
-	
+	@Override
 	public boolean voidIt()
 	{
 		throw new AssetNotImplementedException("");
 	}	//	voidIt
 	
-	
+	@Override
 	public boolean closeIt()
 	{
 		setDocAction(DOCACTION_None);
 		return true;
 	}	//	closeIt
 	
-	
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		throw new AssetNotImplementedException("");
 	}	//	reverseCorrectionIt
 	
-	
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		throw new AssetNotImplementedException("");
 	}
 	
-	
+	@Override
 	public boolean reActivateIt()
 	{
 		throw new AssetNotImplementedException("");
 	}
-	
-	
-	
+		
+	@Override
 	public String getSummary()
 	{
 		return new StringBuilder()
@@ -293,31 +355,31 @@ implements DocAction
 				.toString();
 	}
 
-	
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
 	}	//	getProcessMsg
 	
-	
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getCreatedBy();
 	}
 
-	
+	@Override
 	public BigDecimal getApprovalAmt()
 	{
 		return Env.ZERO;
 	} 
 	
-	
+	@Override
 	public int getC_Currency_ID()
 	{
 		return MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema().getC_Currency_ID();
 	}
 	
-	
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getDateAcct() == null)
@@ -332,12 +394,6 @@ implements DocAction
 		{
 			setA_Disposed_Date(getDateAcct());
 		}
-		/* commented by @win - asset type
-		if (!MAssetType.isFixedAsset(getA_Asset_ID()))
-		{
-			throw new AssetException("This is not a Fixed Asset!");
-		}
-		*/
 		return true;
 	}
 	
@@ -371,13 +427,13 @@ implements DocAction
 		}
 	}
 	
-	
+	@Override
 	public File createPDF ()
 	{
 		return null;
 	}	//	createPDF
 	
-	
+	@Override
 	public String getDocumentInfo()
 	{
 		return getDocumentNo();
@@ -385,13 +441,17 @@ implements DocAction
 	
 	/**
 	 * Check if this is a disposal (if the asset is not disposed)
-	 * @return true if is disposal
+	 * @return true if asset has been disposed
 	 */
 	public boolean isDisposal()
 	{
 		return !isDisposed();
 	}
 	
+	/**
+	 * Set asset disposal amount
+	 * @param bean
+	 */
 	public static void setA_Disposal_Amt(I_A_Asset_Disposed bean)
 	{
 		int precision = 2;
@@ -411,6 +471,9 @@ implements DocAction
 		bean.setExpense(Expense);
 	}
 	
+	/**
+	 * Process disposal
+	 */
 	private void createDisposal()
 	{
 		for (MDepreciationWorkfile assetwk :  MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName()))

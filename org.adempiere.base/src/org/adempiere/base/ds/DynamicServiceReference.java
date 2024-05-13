@@ -29,7 +29,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * IServiceReferenceHolder implementation using ServiceTracker
+ * IServiceReferenceHolder for OSGi service, implemented using {@link ServiceTracker}
  * @author hengsin
  *
  * @param <T>

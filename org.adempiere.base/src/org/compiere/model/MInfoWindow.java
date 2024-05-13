@@ -46,13 +46,23 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6793583766286122866L;
 
 	/**	Cache						*/
 	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_InfoWindow_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MInfoWindow(Properties ctx, String AD_InfoWindow_UU, String trxName) {
+        super(ctx, AD_InfoWindow_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -98,6 +108,12 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		this.m_infoRelated = copy.m_infoRelated != null ? Arrays.stream(copy.m_infoRelated).map(MInfoRelated::new).toArray(MInfoRelated[]::new) : null;
 	}
 	
+	/**
+	 * Get first accessible info window for a table
+	 * @param tableName
+	 * @param trxName
+	 * @return MInfoWindow
+	 */
 	public static MInfoWindow get(String tableName, String trxName) {
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), MInfoWindow.Table_ID), MInfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
 		MTable table = MTable.get(Env.getCtx(), tableName);
@@ -120,7 +136,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * author xolali
 	 * @param AD_InfoWindow_ID
-	 * @return {@link MInfoWindow}
+	 * @return {@link MInfoWindow} or null
 	 */
 	public static MInfoWindow getInfoWindow(int AD_InfoWindow_ID) {
 		if (AD_InfoWindow_ID > 0) {
@@ -153,7 +169,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * author xolali
 	 * @param requery
-	 * @return
+	 * @return related info windows
 	 */
 	public MInfoRelated[] getInfoRelated(boolean requery) {
 		if ((this.m_infoRelated != null) && (!requery)) {
@@ -174,9 +190,9 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 
 	/**
 	 * IDEMPIERE-1334
-	 * Get list {@link MInfoProcess} of this infoWindow
-	 * @param requery true get from db, false try get from cache
-	 * @return empty array when not exists Info Process
+	 * Get {@link MInfoProcess} list of this infoWindow
+	 * @param requery true to always get from DB, false to try to get from cache
+	 * @return empty array array of Info Process
 	 */
 	public MInfoProcess [] getInfoProcess(boolean requery) {
 		// try from cache
@@ -198,10 +214,9 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return m_infoProcess;
 	}
 	
-
     /**
-     * if user haven't right to run a process, set infoProcess to null 
-     * @param lsInfoProcess
+     * if user haven't got right to run a process, remove infoProcess from list
+     * @param lsInfoProcess info process list
      */
 	protected void checkProcessRight (List<MInfoProcess> lsInfoProcess) {
 		Iterator<MInfoProcess> iterator = lsInfoProcess.iterator();
@@ -218,7 +233,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * @param infoWindowID
 	 * @param trxName 
-	 * return MInfoWindow if the current role can access to the specified info window ; otherwise return null 
+	 * @return MInfoWindow if the current role can access to the specified info window ; otherwise return null 
 	 * */
 	public static MInfoWindow get(int infoWindowID, String trxName) {
 		MInfoWindow iw = getInfoWindow(infoWindowID);
@@ -235,6 +250,10 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return null;
 	}
 
+	/**
+	 * @param tableInfos
+	 * @return array of accessible info column
+	 */
 	public synchronized MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {
 		getInfoColumns();
 		List<MInfoColumn> list = new ArrayList<MInfoColumn>();
@@ -245,6 +264,9 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return list.toArray(new MInfoColumn[0]);
 	}
 	
+	/**
+	 * @return array of info columns (doesn't check access right)
+	 */
 	public synchronized MInfoColumn[] getInfoColumns() {
 		if (m_infocolumns == null) {
 			Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
@@ -265,6 +287,11 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 */
 	private MInfoColumn[] m_infocolumns = null;
 
+	/**
+	 * @param requery
+	 * @param checkDisplay true to exclude not visible column
+	 * @return array of info column
+	 */
 	public synchronized MInfoColumn[] getInfoColumns(boolean requery, boolean checkDisplay) {
 		if (m_infocolumns == null || requery) {
 			m_infocolumns = null;
@@ -285,7 +312,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 
 	/**
 	 * author xolali
-	 * @return
+	 * @return SELECT SQL clause
 	 */
 	public String getSql(){
 
@@ -307,11 +334,14 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		sql.append(" FROM ").append(fromsql)
 		.append(oclause);
 
-		log.info("Generated SQL -- getSql: "+ sql.toString());
+		if (log.isLoggable(Level.INFO)) log.info("Generated SQL -- getSql: "+ sql.toString());
 
 		return sql.toString();
 	}
 
+	/**
+	 * @return true if generated SELECT SQL is valid
+	 */
 	public boolean validateSql(){
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -417,7 +447,9 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return super.afterSave(newRecord, success);
 	}
 	
-	
+	/**
+	 * Validate info window and update IsValid flag
+	 */
 	public void validate ()
 	{		
 		// default, before complete check is invalid
@@ -496,10 +528,16 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 **/
 	private boolean m_validateEachColumn = true;
 
+	/**
+	 * @param validateEachColumn
+	 */
 	public void setIsValidateEachColumn (boolean validateEachColumn) {
 		m_validateEachColumn= validateEachColumn;
 	}
 
+	/**
+	 * @return true if info window should be re-validate after saving changes of any info column
+	 */
 	boolean isValidateEachColumn() {
 		return m_validateEachColumn;
 	}

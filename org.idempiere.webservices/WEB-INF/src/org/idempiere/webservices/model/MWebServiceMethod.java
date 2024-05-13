@@ -35,13 +35,23 @@ import org.idempiere.cache.ImmutablePOSupport;
  * @author hengsin
  *
  */
-@org.adempiere.base.Model(table = X_WS_WebServiceMethod.Table_Name)
+@org.adempiere.base.Model(table="WS_WebServiceMethod")
 public class MWebServiceMethod extends X_WS_WebServiceMethod implements ImmutablePOSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6822623209157500849L;
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param WS_WebServiceMethod_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWebServiceMethod(Properties ctx, String WS_WebServiceMethod_UU, String trxName) {
+        super(ctx, WS_WebServiceMethod_UU, trxName);
+    }
 
 	/**
 	 * @param ctx

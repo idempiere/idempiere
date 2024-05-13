@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRunLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_DunningRunLine")
-public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Persistent 
+public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_DunningRunLine (Properties ctx, int C_DunningRunLine_ID, String trxName)
@@ -77,6 +77,48 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_DunningRunLine (Properties ctx, String C_DunningRunLine_UU, String trxName)
+    {
+      super (ctx, C_DunningRunLine_UU, trxName);
+      /** if (C_DunningRunLine_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_DunningRunEntry_ID (0);
+			setC_DunningRunLine_ID (0);
+			setConvertedAmt (Env.ZERO);
+			setDaysDue (0);
+			setFeeAmt (Env.ZERO);
+			setInterestAmt (Env.ZERO);
+			setIsInDispute (false);
+			setOpenAmt (Env.ZERO);
+			setProcessed (false);
+			setTimesDunned (0);
+			setTotalAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DunningRunLine (Properties ctx, String C_DunningRunLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DunningRunLine_UU, trxName, virtualColumns);
+      /** if (C_DunningRunLine_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_DunningRunEntry_ID (0);
+			setC_DunningRunLine_ID (0);
+			setConvertedAmt (Env.ZERO);
+			setDaysDue (0);
+			setFeeAmt (Env.ZERO);
+			setInterestAmt (Env.ZERO);
+			setIsInDispute (false);
+			setOpenAmt (Env.ZERO);
+			setProcessed (false);
+			setTimesDunned (0);
+			setTotalAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_DunningRunLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -84,7 +126,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -220,7 +262,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Invoice_ID()));
     }
@@ -371,10 +413,10 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	public boolean isInDispute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInDispute);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -413,10 +455,10 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

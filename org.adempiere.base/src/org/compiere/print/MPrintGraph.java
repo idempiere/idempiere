@@ -34,6 +34,16 @@ public class MPrintGraph extends X_AD_PrintGraph
 	 */
 	private static final long serialVersionUID = 4827755559898685764L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintGraph_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintGraph(Properties ctx, String AD_PrintGraph_UU, String trxName) {
+        super(ctx, AD_PrintGraph_UU, trxName);
+    }
+
 	/**
 	 *	Standard Constructor
 	 *  @param ctx context

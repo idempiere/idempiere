@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_UserBPAccess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserBPAccess")
-public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persistent 
+public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserBPAccess (Properties ctx, int AD_UserBPAccess_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserBPAccess (Properties ctx, String AD_UserBPAccess_UU, String trxName)
+    {
+      super (ctx, AD_UserBPAccess_UU, trxName);
+      /** if (AD_UserBPAccess_UU == null)
+        {
+			setAD_UserBPAccess_ID (0);
+			setAD_User_ID (0);
+			setBPAccessType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserBPAccess (Properties ctx, String AD_UserBPAccess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserBPAccess_UU, trxName, virtualColumns);
+      /** if (AD_UserBPAccess_UU == null)
+        {
+			setAD_UserBPAccess_ID (0);
+			setAD_User_ID (0);
+			setBPAccessType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserBPAccess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {

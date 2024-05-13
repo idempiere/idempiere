@@ -16,6 +16,15 @@
  *****************************************************************************/
 package org.compiere.print.layout;
 
+import java.awt.Graphics2D;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextLayout;
+import java.awt.geom.Point2D;
+import java.text.AttributedCharacterIterator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.compiere.model.MQuery;
@@ -58,5 +67,93 @@ public class ParameterElement extends GridElement
 		}
 	}	//	ParameterElement
 
+	/** Row:List<TextLayout> for parameter value text column */
+	private Map<Integer, List<TextLayout>> valueTextLayoutMap = new HashMap<Integer, List<TextLayout>>();
+	
+	/**
+	 * Fit parameter text to page width
+	 * @param pageWidth
+	 */
+	public void fitToPage(int pageWidth) {
+		//label + parameter name + operator
+		int offsetWidth = m_colWidth[0] + m_colGap + m_colWidth[1] + m_colGap + m_colWidth[2];		
+		int maxWidth = pageWidth - offsetWidth;
+		for (int row = 0; row < m_rows; row++) {
+			int height = 0;
+			AttributedCharacterIterator iter = m_iterator[row][3];
+			if (iter == null)
+				continue;
+			LineBreakMeasurer measurer = new LineBreakMeasurer(iter, m_frc);
+			while (measurer.getPosition() < iter.getEndIndex()) {
+				TextLayout layout = measurer.nextLayout(maxWidth);
+				List<TextLayout> layouts = valueTextLayoutMap.get(row);
+				if (layouts == null) {
+					layouts = new ArrayList<TextLayout>();
+					valueTextLayoutMap.put(row, layouts);					
+				}
+				height = height + ((int)(layout.getAscent() + layout.getDescent() + layout.getLeading())+1);
+				layouts.add(layout);
+			}
+			if (m_rowHeight[row] < height)
+				m_rowHeight[row] = height;
+		}
+		calculateSize();
+	}
+	
+	/**
+	 * 	Paint it
+	 * 	@param g2D Graphics
+	 *  @param pageStart top left Location of page
+	 *  @param pageNo page number for multi page support (0 = header/footer) - ignored
+	 *  @param ctx print context
+	 *  @param isView true if online view (IDs are links)
+	 */
+	@Override
+	public void paint(Graphics2D g2D, int pageNo, Point2D pageStart, Properties ctx, boolean isView)
+	{
+		//fall back to GridElement paint if fitToPage(int pageWidth) is not call
+		if (valueTextLayoutMap.isEmpty()) 
+		{
+			super.paint(g2D, pageNo, pageStart, ctx, isView);
+			return;
+		}
+		
+		Point2D.Double location = getAbsoluteLocation(pageStart);
+		float y = (float)location.y;
+		//
+		for (int row = 0; row < m_rows; row++)
+		{
+			float x = (float)location.x;
+			for (int col = 0; col < m_cols; col++)
+			{
+				//use valueTextLayoutMap for parameter value text column
+				if (col == 3 && valueTextLayoutMap.get(row) != null)
+				{
+					List<TextLayout> layouts = valueTextLayoutMap.get(row);
+					float curY = y;
+					for(TextLayout layout : layouts)
+					{
+						curY = curY + layout.getAscent();
+						layout.draw(g2D, x, curY);
+						curY += m_rowGap;
+					}
+				}
+				else
+				{
+					if (m_textLayout[row][col] != null)
+					{
+						float yy = y + m_textLayout[row][col].getAscent();
+						m_textLayout[row][col].draw(g2D, x, yy);
+					}
+					x += m_colWidth[col];
+					if (m_colWidth[col] > 0)
+						x += m_colGap;
+				}
+			}
+			y += m_rowHeight[row];
+			if (m_rowHeight[row] > 0)
+				y += m_rowGap;
+		}
+	}	//	paint
 }	//	ParameterElement
 

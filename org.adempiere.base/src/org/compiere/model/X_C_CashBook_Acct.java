@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_CashBook_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CashBook_Acct")
-public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persistent 
+public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CashBook_Acct (Properties ctx, int C_CashBook_Acct_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CashBook_Acct (Properties ctx, String C_CashBook_Acct_UU, String trxName)
+    {
+      super (ctx, C_CashBook_Acct_UU, trxName);
+      /** if (C_CashBook_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_CashBook_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashBook_Acct (Properties ctx, String C_CashBook_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashBook_Acct_UU, trxName, virtualColumns);
+      /** if (C_CashBook_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_CashBook_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CashBook_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_CashBook_Acct[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

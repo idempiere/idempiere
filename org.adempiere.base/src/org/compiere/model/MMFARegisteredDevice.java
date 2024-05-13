@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz (sponsored by FH)                                     *
  **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -35,9 +34,19 @@ import org.compiere.util.Env;
  */
 public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7913538709234444407L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param MFA_RegisteredDevice_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMFARegisteredDevice(Properties ctx, String MFA_RegisteredDevice_UU, String trxName) {
+        super(ctx, MFA_RegisteredDevice_UU, trxName);
+    }
 
 	/**
 	 * Read/Create empty MFA Registered Device
@@ -62,8 +71,8 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 	} // MMFARegisteredDevice
 
 	/**
-	 * Validate if there is a non-expired device registered with that code
-	 * @param identifier
+	 * Validate if there is a non-expired device registered with identifier
+	 * @param identifier device identifier
 	 * @return true if device is valid
 	 */
 	public static boolean isValid(String identifier) {
@@ -76,10 +85,12 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 	}
 
 	/**
-	 * 	Set User/Contact.
+	 * Set User/Contact.
      * @param AD_User_ID
-     * User within the system - Internal or Business Partner Contact
-     * Overridden to allow saving System record (zero ID)
+     * <pre>
+     * User within the system - Internal or Business Partner Contact.
+     * Overridden to allow saving System record (zero ID).
+     * </pre>
 	 */
 	@Override
 	public void setAD_User_ID (int AD_User_ID)

@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
-
 /**
  *	Dunning Level Model
  *	
@@ -35,12 +34,22 @@ import org.compiere.util.DB;
 public class MDunningLevel extends X_C_DunningLevel
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4869909989789113387L;
 	/** Logger								*/
 	private static CLogger		s_log = CLogger.getCLogger (MDunningLevel.class);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_DunningLevel_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDunningLevel(Properties ctx, String C_DunningLevel_UU, String trxName) {
+        super(ctx, C_DunningLevel_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

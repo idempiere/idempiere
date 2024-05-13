@@ -51,6 +51,9 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
+/**
+ * Static method for message and input dialog
+ */
 public final class Dialog {
 	
     private static final CLogger logger = CLogger.getCLogger(Dialog.class);
@@ -81,6 +84,11 @@ public final class Dialog {
 		return out.toString();
 	}
     
+    /**
+     * @param adMessage
+     * @param args
+     * @return translated message
+     */
     private static String getADMessage(String adMessage, Object ... args) {
     	String message;
 
@@ -96,8 +104,7 @@ public final class Dialog {
 	 *	Display dialog with a warning icon
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
-	 */
-    
+	 */    
     public static void warn(int windowNo, String adMessage) {
         warn(windowNo, adMessage, null, null);
     }
@@ -108,8 +115,7 @@ public final class Dialog {
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
 	 *	@param	title		Message box title
-	 */
-    
+	 */    
     public static void warn(int windowNo, String adMessage, String title) {
         warn(windowNo, adMessage, null, title);
     }
@@ -132,10 +138,20 @@ public final class Dialog {
 		Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.EXCLAMATION);
     }
     
+    /**
+     * @param title
+     * @param windowNo
+     * @return title for dialog
+     */
     private static String getDialogTitle(String title, int windowNo) {
     	return title == null ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title;
     }
 
+    /**
+     * Replace "\n" with "&lt;br&gt;" tag.
+     * @param originalMessage
+     * @return message
+     */
     private static String formatDialogMessage(String originalMessage) {
     	return originalMessage.replace("\n", "<br>");
     }
@@ -208,55 +224,58 @@ public final class Dialog {
 		Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.ERROR, callback);
     }
 
-    /**************************************************************************
-	 *	Ask Question with question icon and (OK) (Cancel) buttons
-	 *
-	 *	@param	windowNo	Number of Window
-	 *	@param	adMessage	Message to be translated
-	 *	@return true, if OK
+    /**
+	 * Ask Question with question icon and (OK) (Cancel) buttons
+	 * @deprecated 
+	 * @param	windowNo	Number of Window
+	 * @param	adMessage	Message to be translated
+	 * @return true, if OK
 	 */
+    @Deprecated(forRemoval = true, since = "11")
     public static boolean ask(int windowNo, String adMessage) {
     	return ask(windowNo, adMessage, "");
     }
     
-    /**************************************************************************
+    /**
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
 	 *	@param	callback
-	 *	@return true, if OK
+	 *	@return ignore, use callback instead.
 	 */    
     public static boolean ask(int windowNo, String adMessage, final Callback<Boolean> callback) {
     	return ask(null, windowNo, adMessage, callback);
     }
 
-    /**************************************************************************
-	 *	Ask Question with question icon and (OK) (Cancel) buttons
+    /**
+	 * Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	windowNo	Number of Window
-	 *	@param	adMessage	Message to be translated
-	 *	@param	additionalMessage			Additional clear text message
-	 *	@return true, if OK
-	 */    
+	 * @deprecated
+	 * @param	windowNo	Number of Window
+	 * @param	adMessage	Message to be translated
+	 * @param	additionalMessage			Additional clear text message
+	 * @return true, if OK
+	 */
+    @Deprecated(forRemoval = true, since = "11")
     public static boolean ask(int windowNo, String adMessage, String additionalMessage) {
     	return ask(windowNo, adMessage, additionalMessage, (Callback<Boolean>)null);
     }
     
-    /**************************************************************************
+    /**
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
 	 *	@param	additionalMessage			Additional clear text message
      *  @param callback
-	 *	@return true, if OK
+	 *	@return ignore, use callback instead.
 	 */    
     public static boolean ask(int windowNo, String adMessage, String additionalMessage, final Callback<Boolean> callback) {
     	return ask(null, windowNo, adMessage, additionalMessage, callback);
     }
     
-    /**************************************************************************
+    /**
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
      *  @param  title
@@ -264,27 +283,27 @@ public final class Dialog {
 	 *	@param	adMessage	Message to be translated
      *  @param  callback
      *  @param  args
-	 *	@return true, if OK
+	 *	@return ignore, use callback instead.
 	 */
     public static boolean ask(String title, int windowNo, String adMessage, final Callback<Boolean> callback, Object ... args) {
     	return ask(title, windowNo, adMessage, null, callback, args);
     }
     
-    /**************************************************************************
+    /**
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
 	 *	@param	windowNo	Number of Window
 	 *	@param	title		Title of the dialog panel
 	 *	@param	adMessage   Message to be translated
 	 *	@param	msg			Additional clear text message
-     *  @param callback
-	 *	@return true, if OK
+     *  @param  callback
+	 *	@return ignore, use callback instead.
 	 */        
     public static boolean ask(int windowNo, String title, String adMessage, String msg, final Callback<Boolean> callback) {
     	return ask(title, windowNo, adMessage, msg, callback);
     }
     
-    /**************************************************************************
+    /**
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
      *  @param  title
@@ -293,7 +312,7 @@ public final class Dialog {
 	 *	@param	additionalMessage			Additional clear text message
      *  @param  callback
      *  @param  args
-	 *	@return true, if OK
+	 *	@return ignore, use callback instead.
 	 */
     public static boolean ask(String title, int windowNo, String adMessage, String additionalMessage, final Callback<Boolean> callback, Object ... args) {
     	Callback<Integer> msgCallback = getMessageCallback(callback);
@@ -308,6 +327,11 @@ public final class Dialog {
         return (response == Messagebox.OK);
     }
     
+    /**
+     * Create Callback<Integer> instance that will act as proxy for the "Callback&lt;Boolean&gt;" parameter.
+     * @param callback
+     * @return Callback<Integer> instance
+     */
     private static Callback<Integer> getMessageCallback(final Callback<Boolean> callback) {
     	Callback<Integer> msgCallback = null;
     	if (callback != null) {
@@ -323,10 +347,28 @@ public final class Dialog {
     	return msgCallback;
     }
     
+    /**
+     * @param message
+     * @param lookup
+     * @param editorType
+     * @param callback
+     * @param desktop
+     * @param windowNo
+     */
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
 		askForInput(message, lookup, editorType, callback, desktop, windowNo, "", null);
 	}
 	
+	/**
+	 * @param message
+	 * @param lookup
+	 * @param editorType
+	 * @param callback
+	 * @param desktop
+	 * @param windowNo
+	 * @param title
+	 * @param defaultValue
+	 */
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo, String title, Object defaultValue) {
 		
 		final WEditor weditor = getEditor(lookup, editorType);
@@ -341,6 +383,11 @@ public final class Dialog {
 		}, new Event("onAskForInput"));
 	}
 	
+	/**
+	 * @param lookup
+	 * @param editorType
+	 * @return WEditor
+	 */
 	private static WEditor getEditor(MLookup lookup, int editorType) {
 		switch (editorType) {
 		case DisplayType.String:
@@ -350,8 +397,10 @@ public final class Dialog {
 		case DisplayType.Integer:
 			return new WNumberEditor(editorType);
 		case DisplayType.TableDir:
+		case DisplayType.TableDirUU:
 			return new WTableDirEditor(lookup, "", "", true, false, true);
 		case DisplayType.Search:
+		case DisplayType.SearchUU:
 			return new WSearchEditor(lookup, "", "", true, false, true);
 		case DisplayType.ChosenMultipleSelectionSearch:
 			return new WChosenboxSearchEditor(lookup, "", "", true, false, true);
@@ -363,10 +412,23 @@ public final class Dialog {
 		}
 	}
 
+	/**
+	 * @param windowNo
+	 * @param weditor
+	 * @param adMessage
+	 * @param callback
+	 */
     public static void askForInput(int windowNo, WEditor weditor, String adMessage, final Callback<Object> callback) {
     	askForInput(windowNo, weditor, adMessage, "", callback);
     }
     
+    /**
+     * @param windowNo
+     * @param weditor
+     * @param adMessage
+     * @param title
+     * @param callback
+     */
     public static void askForInput(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Object> callback) {
     	Callback<Object> msgCallback = null;
     	if (callback != null) {
@@ -386,10 +448,21 @@ public final class Dialog {
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
     
+    /**
+     * @param windowNo
+     * @param adMessage
+     * @param callback
+     */
     public static void askForInput(int windowNo, String adMessage, final Callback<String> callback) {
     	askForInput(windowNo, adMessage, "", callback);
     }
     
+    /**
+     * @param windowNo
+     * @param adMessage
+     * @param title
+     * @param callback
+     */
     public static void askForInput(int windowNo, String adMessage, String title, final Callback<String> callback) {
     	Callback<String> msgCallback = null;
     	if (callback != null) 
@@ -409,6 +482,12 @@ public final class Dialog {
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
     }
     
+    /**
+     * Same as askForInput but uses password editor for input field.
+     * @param windowNo
+     * @param adMessage
+     * @param callback
+     */
     public static void askForSecretInput(int windowNo, String adMessage, final Callback<String> callback) {
     	Callback<String> msgCallback = null;
     	if (callback != null) 
@@ -435,7 +514,6 @@ public final class Dialog {
      * @param adMessage
      * @param adMessageArgs
      * @param title
-     * @param correctInput
      * @param callback
      */
     public static void askForInputTextConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<Map.Entry<Boolean, String>> callback) {
@@ -454,6 +532,13 @@ public final class Dialog {
         		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
     
+    /**
+     * @param windowNo
+     * @param weditor
+     * @param adMessage
+     * @param title
+     * @param callback
+     */
     public static void askForInputWithCancel(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Map.Entry<Boolean, Object>> callback) {
     	Callback<Map.Entry<Boolean, Object>> msgCallback = null;
     	if (callback != null) 
@@ -505,17 +590,26 @@ public final class Dialog {
      */
     
     public static void info(int windowNo, String adMessage, String additionalMessage, String title) {
-        if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + additionalMessage);
+        info(windowNo, adMessage, additionalMessage, title, null);
+    }
 
-        if (CLogMgt.isLevelFinest()) {
-            Trace.printStack();
-        }
-        
-        String dialogTitle = getDialogTitle(title, windowNo);
+    /**
+     *  Display dialog with information icon.
+     *
+     *  @param  windowNo    Number of Window
+     *  @param  adMessage   Message to be translated
+     *  @param  additionalMessage     Additional message
+     *  @param	title		If none then one will be generated
+     *  @param  callback (optional)
+     */
+    public static void info(int windowNo, String adMessage, String additionalMessage, String title, Callback<Integer> callback) {
+    	if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + additionalMessage);
+
+    	String dialogTitle = getDialogTitle(title, windowNo);
     	String message = constructMessage(adMessage, additionalMessage);
     	message = formatDialogMessage(message);
-    	
-    	Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.INFORMATION);
+
+    	Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.INFORMATION, callback);
     }
-   
+    
 }

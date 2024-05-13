@@ -36,14 +36,17 @@ import org.compiere.model.MColor;
  */
 @org.adempiere.base.Model(table = MColor.Table_Name)
 public class MyAnnotatedColorModel extends MColor {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4031355909606578271L;
 
 	public MyAnnotatedColorModel(Properties ctx, int Test_ID, String trxName) {
 		super(ctx, Test_ID, trxName);
+	}
+
+	public MyAnnotatedColorModel(Properties ctx, String Test_UU, String trxName) {
+		super(ctx, Test_UU, trxName);
 	}
 
 	public MyAnnotatedColorModel(Properties ctx, ResultSet rs, String trxName) {

@@ -42,7 +42,7 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.South;
 
 /**
- *  Application Task
+ *  Dialog to execute OS Task
  *
  *  @author     Jorg Janke
  *  @version    $Id: ATask.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -52,10 +52,9 @@ import org.zkoss.zul.South;
 public class WTask extends Window implements EventListener<Event>, IHelpContext
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1235619876719378703L;
-
 
 	/**
 	 *  Start Application Task
@@ -70,9 +69,7 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 
 	private Thread taskThread;
 
-
-	/**************************************************************************
-	 *  Full Constructor
+	/**
 	 *  @param title title
 	 *  @param task task
 	 */
@@ -108,7 +105,9 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 		}
 	}   //  ATask
 
-
+	/**
+	 * Execute OS task.
+	 */
 	public void executeTask() {
 		Runnable runnable = new Runnable() {
 			public void run() {
@@ -165,7 +164,7 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 	private Html info = new Html();
 
 	/**
-	 *  Static Layout
+	 *  Layout dialog
 	 *  @throws Exception
 	 */
 	private void zkInit() throws Exception
@@ -197,9 +196,10 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e
 	 */
+	@Override
 	public void onEvent(Event e)
 	{
 		if (taskThread != null && taskThread.isAlive())

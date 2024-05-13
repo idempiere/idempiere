@@ -67,6 +67,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -86,6 +87,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
@@ -261,11 +263,14 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		row.appendCellChild(fieldProduct.getComponent(), 2);
 		row = rows.newRow();
 		row.appendCellChild(labelDateAcct.rightAlign());
-		ZKUpdateUtil.setHflex(fieldDateAcct.getComponent(), "true");
 		row.appendCellChild(fieldDateAcct.getComponent(), 2);
 		row.appendCellChild(labelDateAcct2.rightAlign());
-		ZKUpdateUtil.setHflex(fieldDateAcct2.getComponent(), "true");
-		row.appendCellChild(fieldDateAcct2.getComponent(), 2);
+		Hbox boxTo = new Hbox();
+		boxTo.appendChild(fieldDateAcct2.getComponent());
+		DateRangeButton drb = (new DateRangeButton(fieldDateAcct, fieldDateAcct2));
+		boxTo.appendChild(drb);
+		row.appendCellChild(boxTo, 2);
+
 		row = rows.newRow();
 		row.appendChild(bRefresh);
 		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))

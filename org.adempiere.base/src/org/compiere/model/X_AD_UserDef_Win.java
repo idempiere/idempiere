@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Win
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Win")
-public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persistent 
+public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Win (Properties ctx, int AD_UserDef_Win_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserDef_Win (Properties ctx, String AD_UserDef_Win_UU, String trxName)
+    {
+      super (ctx, AD_UserDef_Win_UU, trxName);
+      /** if (AD_UserDef_Win_UU == null)
+        {
+			setAD_UserDef_Win_ID (0);
+			setAD_Window_ID (0);
+			setIsDefault (false);
+			setIsReadOnly (false);
+			setIsUserUpdateable (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Win (Properties ctx, String AD_UserDef_Win_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Win_UU, trxName, virtualColumns);
+      /** if (AD_UserDef_Win_UU == null)
+        {
+			setAD_UserDef_Win_ID (0);
+			setAD_Window_ID (0);
+			setIsDefault (false);
+			setIsReadOnly (false);
+			setIsUserUpdateable (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserDef_Win (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -89,8 +117,8 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
       return sb.toString();
     }
 
-	/** AD_Language AD_Reference_ID=106 */
-	public static final int AD_LANGUAGE_AD_Reference_ID=106;
+	/** AD_Language AD_Reference_ID=327 */
+	public static final int AD_LANGUAGE_AD_Reference_ID=327;
 	/** Set Language.
 		@param AD_Language Language for this entity
 	*/
@@ -231,7 +259,7 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Window_ID()));
     }
@@ -282,10 +310,10 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -305,10 +333,10 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -328,10 +356,10 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
 	public boolean isUserUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserUpdateable);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

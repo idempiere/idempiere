@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Measure
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_SLA_Measure")
-public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persistent 
+public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_SLA_Measure (Properties ctx, int PA_SLA_Measure_ID, String trxName)
@@ -64,6 +64,34 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_SLA_Measure (Properties ctx, String PA_SLA_Measure_UU, String trxName)
+    {
+      super (ctx, PA_SLA_Measure_UU, trxName);
+      /** if (PA_SLA_Measure_UU == null)
+        {
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setMeasureActual (Env.ZERO);
+			setPA_SLA_Goal_ID (0);
+			setPA_SLA_Measure_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_SLA_Measure (Properties ctx, String PA_SLA_Measure_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_SLA_Measure_UU, trxName, virtualColumns);
+      /** if (PA_SLA_Measure_UU == null)
+        {
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setMeasureActual (Env.ZERO);
+			setPA_SLA_Goal_ID (0);
+			setPA_SLA_Measure_ID (0);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_SLA_Measure (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +99,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -139,7 +167,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getDateTrx()));
     }
@@ -258,10 +286,10 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -280,10 +308,10 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

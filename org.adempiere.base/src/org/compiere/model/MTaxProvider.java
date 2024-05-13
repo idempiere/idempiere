@@ -24,25 +24,51 @@ import java.util.Properties;
 public class MTaxProvider extends X_C_TaxProvider 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6621828279540899973L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_TaxProvider_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTaxProvider(Properties ctx, String C_TaxProvider_UU, String trxName) {
+        super(ctx, C_TaxProvider_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param C_TaxProvider_ID
+     * @param trxName
+     */
 	public MTaxProvider(Properties ctx, int C_TaxProvider_ID, String trxName) 
 	{
 		super(ctx, C_TaxProvider_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MTaxProvider(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * @return Tax provider Java class name
+	 */
 	public String getTaxProviderClass()
 	{
 		return getC_TaxProviderCfg().getTaxProviderClass();
 	}
 	
+	/**
+	 * @return URL for online tax provider service
+	 */
 	public String getURL()
 	{
 		return getC_TaxProviderCfg().getURL();

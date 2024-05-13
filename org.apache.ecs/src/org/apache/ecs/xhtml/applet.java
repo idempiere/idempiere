@@ -67,10 +67,10 @@ public class applet extends MultiPartElement
 	}
 
 	/**
-     * Comma seperated archive list.
+     * Comma separated archive list.
      * 
      * @param url
-     *            Comma seperate archive list.
+     *            Comma separate archive list.
      */
 	public applet setArchive (String url)
 	{
@@ -230,11 +230,11 @@ public class applet extends MultiPartElement
 
 	/**
      * Set the horizontal or vertical alignment of this applet.<br>
-     * Convience variables are in the AlignTypes interface.
+     * Convenience variables are in the AlignTypes interface.
      * 
      * @param alignment
      *            Set the horizontal or vertical alignment of this applet.<br>
-     *            Convience variables are in the AlignTypes interface.
+     *            Convenience variables are in the AlignTypes interface.
      */
 	public applet setAlign (String alignment)
 	{
@@ -268,7 +268,7 @@ public class applet extends MultiPartElement
 	}
 
 	/**
-     * Breif description, alternate text for the applet.
+     * Brief description, alternate text for the applet.
      * 
      * @param alt
      *            alternat text.

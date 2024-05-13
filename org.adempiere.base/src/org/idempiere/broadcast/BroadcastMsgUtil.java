@@ -35,21 +35,18 @@ import org.compiere.util.Env;
 import org.compiere.util.WebUtil;
 
 /**
- * 
+ * Static methods for broadcast message service
  * @author Vivek
  * @author Deepak Pansheriya
- *
  */
 public class BroadcastMsgUtil
- {
-	
+ {	
 	private static final CLogger logger = CLogger
 			.getCLogger(BroadcastMsgUtil.class);
 	// BROADCAST_MESSAGE_QUEUE
 
-
 	/**
-	 * Publish Message
+	 * Publish Broadcast Message
 	 * @param messageID
 	 * @param trxName
 	 */
@@ -112,6 +109,11 @@ public class BroadcastMsgUtil
 	
 	}
 
+	/**
+	 * Publish message using message service or using OSGi event service.
+	 * @param msg message to broadcast
+	 * @param isLocalOnly true to use event service, false to use message service
+	 */
 	public static void pushToQueue(final BroadCastMsg msg, boolean isLocalOnly) {
 
 		boolean isPublished = false;
@@ -139,7 +141,7 @@ public class BroadcastMsgUtil
 		}
 	}
 	/**
-	 * Test message
+	 * Broadcast Test message
 	 * @param messageID
 	 * @param AD_Session_ID
 	 */
@@ -168,6 +170,7 @@ public class BroadcastMsgUtil
 				+ "       AND n.AD_Client_ID = ? "
 				+ "       AND ( bm.BroadcastType = 'IL' OR bm.BroadcastType = 'L' ) "
 				+ "       AND bm.isPublished = 'Y' "
+				+ "       AND bm.IsActive = 'Y' "
 				+ "       AND ( n.Processed = 'N' OR ( n.Processed = 'Y' AND bm.BroadcastFrequency = 'E' ) ) "
 				+ "       AND ( bm.Expired = 'N' AND ( bm.Expiration IS NULL OR bm.Expiration > getDate() ) ) ";
 

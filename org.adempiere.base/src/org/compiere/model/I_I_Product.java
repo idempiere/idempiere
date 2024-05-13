@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Product
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_I_Product 
 {
@@ -383,6 +383,21 @@ public interface I_I_Product
 	  * Manufacturer of the Product
 	  */
 	public String getManufacturer();
+
+    /** Column name M_AttributeSet_ID */
+    public static final String COLUMNNAME_M_AttributeSet_ID = "M_AttributeSet_ID";
+
+	/** Set Attribute Set.
+	  * Product Attribute Set
+	  */
+	public void setM_AttributeSet_ID (int M_AttributeSet_ID);
+
+	/** Get Attribute Set.
+	  * Product Attribute Set
+	  */
+	public int getM_AttributeSet_ID();
+
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_Product_Category_ID */
     public static final String COLUMNNAME_M_Product_Category_ID = "M_Product_Category_ID";

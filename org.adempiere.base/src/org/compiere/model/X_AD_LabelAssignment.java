@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_LabelAssignment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelAssignment")
-public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_Persistent 
+public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_LabelAssignment (Properties ctx, int AD_LabelAssignment_ID, String trxName)
@@ -40,7 +40,6 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
         {
 			setAD_Label_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
         } */
     }
 
@@ -52,7 +51,28 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
         {
 			setAD_Label_ID (0);
 			setAD_Table_ID (0);
-			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelAssignment (Properties ctx, String AD_LabelAssignment_UU, String trxName)
+    {
+      super (ctx, AD_LabelAssignment_UU, trxName);
+      /** if (AD_LabelAssignment_UU == null)
+        {
+			setAD_Label_ID (0);
+			setAD_Table_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelAssignment (Properties ctx, String AD_LabelAssignment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelAssignment_UU, trxName, virtualColumns);
+      /** if (AD_LabelAssignment_UU == null)
+        {
+			setAD_Label_ID (0);
+			setAD_Table_ID (0);
         } */
     }
 
@@ -63,7 +83,7 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -212,5 +232,20 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Record UUID.
+		@param Record_UU Record UUID
+	*/
+	public void setRecord_UU (String Record_UU)
+	{
+		set_ValueNoCheck (COLUMNNAME_Record_UU, Record_UU);
+	}
+
+	/** Get Record UUID.
+		@return Record UUID	  */
+	public String getRecord_UU()
+	{
+		return (String)get_Value(COLUMNNAME_Record_UU);
 	}
 }

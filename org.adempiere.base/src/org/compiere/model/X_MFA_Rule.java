@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for MFA_Rule
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Rule")
-public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent 
+public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_MFA_Rule (Properties ctx, String MFA_Rule_UU, String trxName)
+    {
+      super (ctx, MFA_Rule_UU, trxName);
+      /** if (MFA_Rule_UU == null)
+        {
+			setMFA_Method_ID (0);
+			setMFA_Rule_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_Rule (Properties ctx, String MFA_Rule_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_Rule_UU, trxName, virtualColumns);
+      /** if (MFA_Rule_UU == null)
+        {
+			setMFA_Method_ID (0);
+			setMFA_Rule_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_MFA_Rule (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

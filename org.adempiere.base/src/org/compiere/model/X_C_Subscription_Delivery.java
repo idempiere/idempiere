@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Subscription_Delivery
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Subscription_Delivery")
-public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_Delivery, I_Persistent 
+public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_Delivery, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Subscription_Delivery (Properties ctx, int C_Subscription_Delivery_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Subscription_Delivery (Properties ctx, String C_Subscription_Delivery_UU, String trxName)
+    {
+      super (ctx, C_Subscription_Delivery_UU, trxName);
+      /** if (C_Subscription_Delivery_UU == null)
+        {
+			setC_Subscription_Delivery_ID (0);
+			setC_Subscription_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Subscription_Delivery (Properties ctx, String C_Subscription_Delivery_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Subscription_Delivery_UU, trxName, virtualColumns);
+      /** if (C_Subscription_Delivery_UU == null)
+        {
+			setC_Subscription_Delivery_ID (0);
+			setC_Subscription_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Subscription_Delivery (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -108,7 +130,7 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Subscription_Delivery_ID()));
     }

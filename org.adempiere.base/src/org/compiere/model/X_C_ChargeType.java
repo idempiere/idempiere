@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ChargeType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ChargeType")
-public class X_C_ChargeType extends PO implements I_C_ChargeType, I_Persistent 
+public class X_C_ChargeType extends PO implements I_C_ChargeType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ChargeType (Properties ctx, int C_ChargeType_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_C_ChargeType extends PO implements I_C_ChargeType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ChargeType (Properties ctx, String C_ChargeType_UU, String trxName)
+    {
+      super (ctx, C_ChargeType_UU, trxName);
+      /** if (C_ChargeType_UU == null)
+        {
+			setC_ChargeType_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ChargeType (Properties ctx, String C_ChargeType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ChargeType_UU, trxName, virtualColumns);
+      /** if (C_ChargeType_UU == null)
+        {
+			setC_ChargeType_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ChargeType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_C_ChargeType extends PO implements I_C_ChargeType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -172,7 +196,7 @@ public class X_C_ChargeType extends PO implements I_C_ChargeType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

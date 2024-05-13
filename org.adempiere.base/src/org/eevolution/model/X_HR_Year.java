@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for HR_Year
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_Year")
-public class X_HR_Year extends PO implements I_HR_Year, I_Persistent 
+public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_Year (Properties ctx, int HR_Year_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_Year (Properties ctx, String HR_Year_UU, String trxName)
+    {
+      super (ctx, HR_Year_UU, trxName);
+      /** if (HR_Year_UU == null)
+        {
+			setC_Year_ID (0);
+			setHR_Payroll_ID (0);
+			setHR_Year_ID (0);
+			setNetDays (0);
+			setQty (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Year (Properties ctx, String HR_Year_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Year_UU, trxName, virtualColumns);
+      /** if (HR_Year_UU == null)
+        {
+			setC_Year_ID (0);
+			setHR_Payroll_ID (0);
+			setHR_Year_ID (0);
+			setNetDays (0);
+			setQty (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_Year (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -216,10 +246,10 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -238,10 +268,10 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

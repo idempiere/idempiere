@@ -33,9 +33,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Evaluatee;
 
 /**
- * 
+ * Static method for evaluation of logic expression
  * @author hengsin
- *
  */
 public final class LogicEvaluator {
 
@@ -45,25 +44,26 @@ public final class LogicEvaluator {
 	}
 
 	/**
-	 *	Evaluate Logic.
+	 *	Evaluate Logic Expression.<br/>
+	 *  <pre>
 	 *  {@code
-	 *	format: <negate>(<expression> [<logic> <expression>]).
+	 *  format: <negate>(<expression> [<logic> <expression>]).
 	 *  <negate>: $!.
-	 *	<expression>: @<context>@<comparison><value>.
-	 *	<logic>: | or & (Example '@AD_Table@=Test | @Language@=GERGER).
+	 *  <expression>: @<context>@<comparison><value>.
+	 *  <logic>: | or & (Example '@AD_Table@=Test | @Language@=GERGER).
 	 *  <comparison>: = | ! | ^ | < | > | <= | >= | ~ (Equal, Not Equal, Not Equal, Less Than, 
 	 *  Greater Than, Less Than or Equal, Greater Than or Equal, Regular Expression Match).
 	 *  <Regular Expression Match>: <input string> ~ '<regular expression>'.
 	 *  <List>: value1,value2,value3 (Example '@CalculationType@=A,R,S').
-	 *	<context>: any global or window context.
-	 *	<value>: strings can be with ' or ".
-	 *	<logic operators>: AND or OR with the previous result from left to right.
+	 *  <context>: any global or window context.
+	 *  <value>: strings can be with ' or ".
+	 *  <logic operators>: AND or OR with the previous result from left to right.
 	 *  <()>: override the default left to right evaluation order (Example '@GrandTotal@=0 |(@GrandTotal@>0 & @PaymentRule@=X)").
-	 *
 	 *  }
+	 *  </pre>
 	 *  @param source class implementing get_ValueAsString(variable)
-	 *  @param logic logic string
-	 *  @return logic result
+	 *  @param logic logic expression
+	 *  @return logic evaluation result
 	 */
 	public static boolean evaluateLogic (Evaluatee source, String logic) {
 		SimpleBooleanLexer lexer = new SimpleBooleanLexer(CharStreams.fromString(logic));
@@ -86,7 +86,7 @@ public final class LogicEvaluator {
 	}
 	
 	/**
-	 * Throw exception if logic is not valid
+	 * Throw exception if logic expression is not valid
 	 * @param logic
 	 * @throws ParseCancellationException
 	 */

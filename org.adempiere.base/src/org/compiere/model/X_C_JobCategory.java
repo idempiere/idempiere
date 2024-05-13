@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobCategory
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_JobCategory")
-public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent 
+public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_JobCategory (Properties ctx, int C_JobCategory_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_JobCategory (Properties ctx, String C_JobCategory_UU, String trxName)
+    {
+      super (ctx, C_JobCategory_UU, trxName);
+      /** if (C_JobCategory_UU == null)
+        {
+			setC_JobCategory_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobCategory (Properties ctx, String C_JobCategory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobCategory_UU, trxName, virtualColumns);
+      /** if (C_JobCategory_UU == null)
+        {
+			setC_JobCategory_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_JobCategory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -171,7 +193,7 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

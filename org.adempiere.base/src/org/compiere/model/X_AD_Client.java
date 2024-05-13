@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Client
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Client")
-public class X_AD_Client extends PO implements I_AD_Client, I_Persistent 
+public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       super (ctx, AD_Client_ID, trxName);
       /** if (AD_Client_ID == 0)
         {
+			setAuthenticationType (null);
+// AAS
 			setAutoArchive (null);
 // N
 			setIsMultiLingualDocument (false);
@@ -65,6 +67,64 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       super (ctx, AD_Client_ID, trxName, virtualColumns);
       /** if (AD_Client_ID == 0)
         {
+			setAuthenticationType (null);
+// AAS
+			setAutoArchive (null);
+// N
+			setIsMultiLingualDocument (false);
+			setIsPostImmediate (false);
+// N
+			setIsSecureSMTP (false);
+// N
+			setIsSmtpAuthorization (false);
+// N
+			setIsUseASP (false);
+// N
+			setIsUseBetaFunctions (true);
+// Y
+			setMMPolicy (null);
+// F
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Client (Properties ctx, String AD_Client_UU, String trxName)
+    {
+      super (ctx, AD_Client_UU, trxName);
+      /** if (AD_Client_UU == null)
+        {
+			setAuthenticationType (null);
+// AAS
+			setAutoArchive (null);
+// N
+			setIsMultiLingualDocument (false);
+			setIsPostImmediate (false);
+// N
+			setIsSecureSMTP (false);
+// N
+			setIsSmtpAuthorization (false);
+// N
+			setIsUseASP (false);
+// N
+			setIsUseBetaFunctions (true);
+// Y
+			setMMPolicy (null);
+// F
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Client (Properties ctx, String AD_Client_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Client_UU, trxName, virtualColumns);
+      /** if (AD_Client_UU == null)
+        {
+			setAuthenticationType (null);
+// AAS
 			setAutoArchive (null);
 // N
 			setIsMultiLingualDocument (false);
@@ -92,7 +152,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -202,6 +262,30 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 		return ii.intValue();
 	}
 
+	/** AuthenticationType AD_Reference_ID=200239 */
+	public static final int AUTHENTICATIONTYPE_AD_Reference_ID=200239;
+	/** Application and SSO = AAS */
+	public static final String AUTHENTICATIONTYPE_ApplicationAndSSO = "AAS";
+	/** Application Only = APO */
+	public static final String AUTHENTICATIONTYPE_ApplicationOnly = "APO";
+	/** SSO Only = SSO */
+	public static final String AUTHENTICATIONTYPE_SSOOnly = "SSO";
+	/** Set Authentication Type.
+		@param AuthenticationType Authentication Type
+	*/
+	public void setAuthenticationType (String AuthenticationType)
+	{
+
+		set_Value (COLUMNNAME_AuthenticationType, AuthenticationType);
+	}
+
+	/** Get Authentication Type.
+		@return Authentication Type	  */
+	public String getAuthenticationType()
+	{
+		return (String)get_Value(COLUMNNAME_AuthenticationType);
+	}
+
 	/** AutoArchive AD_Reference_ID=334 */
 	public static final int AUTOARCHIVE_AD_Reference_ID=334;
 	/** All (Reports, Documents) = 1 */
@@ -291,10 +375,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isMultiLingualDocument()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMultiLingualDocument);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -314,10 +398,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isPostImmediate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPostImmediate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -337,10 +421,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isSecureSMTP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSecureSMTP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -360,10 +444,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isSmtpAuthorization()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSmtpAuthorization);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -382,10 +466,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isUseASP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUseASP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -405,10 +489,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isUseBetaFunctions()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUseBetaFunctions);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -487,7 +571,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

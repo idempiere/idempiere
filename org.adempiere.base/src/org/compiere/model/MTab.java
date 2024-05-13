@@ -28,11 +28,12 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Tab Model
+ *	Window Tab Model
  *	
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution
@@ -43,7 +44,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTab extends X_AD_Tab implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8111075325920938135L;
 
@@ -51,7 +52,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20);
 	
 	/**
-	 * 
+	 * Get MTab from cache (immutable)
 	 * @param AD_Tab_ID
 	 * @return {@link MTab}
 	 */
@@ -70,6 +71,18 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 		return null;
 	}
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Tab_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTab(Properties ctx, String AD_Tab_UU, String trxName) {
+        super(ctx, AD_Tab_UU, trxName);
+		if (Util.isEmpty(AD_Tab_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -80,19 +93,24 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	{
 		super (ctx, AD_Tab_ID, trxName);
 		if (AD_Tab_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setHasTree (false);
-			setIsReadOnly (false);
-			setIsSingleRow (false);
-			setIsSortTab (false);	// N
-			setIsTranslationTab (false);
-			setSeqNo (0);
-			setTabLevel (0);
-			setIsInsertRecord(true);
-			setIsAdvancedTab(false);
-		}
+			setInitialDefaults();
 	}	//	M_Tab
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setHasTree (false);
+		setIsReadOnly (false);
+		setIsSingleRow (false);
+		setIsSortTab (false);	// N
+		setIsTranslationTab (false);
+		setSeqNo (0);
+		setTabLevel (0);
+		setIsInsertRecord(true);
+		setIsAdvancedTab(false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -120,7 +138,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	/**
 	 * 	Parent Constructor
 	 *	@param parent parent
-	 *	@param from copy from
+	 *	@param from tab to copy from
 	 */
 	public MTab (MWindow parent, MTab from)
 	{
@@ -132,7 +150,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	}	//	M_Tab
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MTab(MTab copy) 
@@ -141,7 +159,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -151,7 +169,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -169,12 +187,11 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTab.class);
 	
-	/**	Packages for Model Classes	*/
 	/**
 	 * 	Get Fields
-	 *	@param reload reload data
-	 *	@return array of lines
-	 *	@param trxName transaction
+	 *	@param reload true to reload from DB
+	 *  @param trxName transaction
+	 *	@return array of field
 	 */
 	public MField[] getFields (boolean reload, String trxName)
 	{
@@ -212,8 +229,14 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (! newRecord && is_ValueChanged(COLUMNNAME_AD_Table_ID) && getFields(false, get_TrxName()).length > 0) {
+			log.saveError("Error", "Cannot change table if there are related fields");
+			return false;
+		}
+
 		if (isReadOnly() && isInsertRecord())
 			setIsInsertRecord(false);
 		if (is_new() || is_ValueChanged(COLUMNNAME_AD_TabType))
@@ -229,12 +252,11 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 		return true;
 	}
 	
-	// begin e-evolution vpj-cd
 	/**
-	 * 	get Tab ID
-	 *	@param AD_Window_ID String
-	 *	@param TabName String
-	 *	@return int retValue
+	 * 	get AD_Tab_ID via tab name
+	 *	@param AD_Window_ID window id
+	 *	@param TabName tab name
+	 *	@return AD_Tab_ID or 0 (not found) or -1 (error)
 	 */
 	public static int getTab_ID(int AD_Window_ID , String TabName) {
 		int retValue = 0;
@@ -262,8 +284,11 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 		}
 		return retValue;
 	}
-	//end vpj-cd e-evolution
 
+	/**
+	 * Get AD_Tab_ID of parent tab
+	 * @return AD_Tab_ID or -1 (no parent tab)
+	 */
     public int getParentTabID() {
     	int parentTabID = -1;
 

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImportTemplate
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ImportTemplate")
-public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Persistent 
+public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20240327L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
@@ -44,7 +44,13 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setAD_Window_ID (0);
 			setCharacterSet (null);
 			setCSVHeader (null);
+			setImportTemplateType (null);
+// CSV
 			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
         } */
     }
 
@@ -59,7 +65,55 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setAD_Window_ID (0);
 			setCharacterSet (null);
 			setCSVHeader (null);
+			setImportTemplateType (null);
+// CSV
 			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImportTemplate (Properties ctx, String AD_ImportTemplate_UU, String trxName)
+    {
+      super (ctx, AD_ImportTemplate_UU, trxName);
+      /** if (AD_ImportTemplate_UU == null)
+        {
+			setAD_ImportTemplate_ID (0);
+			setAD_Tab_ID (0);
+			setAD_Window_ID (0);
+			setCharacterSet (null);
+			setCSVHeader (null);
+			setImportTemplateType (null);
+// CSV
+			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImportTemplate (Properties ctx, String AD_ImportTemplate_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ImportTemplate_UU, trxName, virtualColumns);
+      /** if (AD_ImportTemplate_UU == null)
+        {
+			setAD_ImportTemplate_ID (0);
+			setAD_Tab_ID (0);
+			setAD_Window_ID (0);
+			setCharacterSet (null);
+			setCSVHeader (null);
+			setImportTemplateType (null);
+// CSV
+			setName (null);
+			setQuoteChar (null);
+// "
+			setSeparatorChar (null);
+// ,
         } */
     }
 
@@ -70,7 +124,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -244,6 +298,30 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** ImportTemplateType AD_Reference_ID=200268 */
+	public static final int IMPORTTEMPLATETYPE_AD_Reference_ID=200268;
+	/** CSV = CSV */
+	public static final String IMPORTTEMPLATETYPE_CSV = "CSV";
+	/** XLS = XLS */
+	public static final String IMPORTTEMPLATETYPE_XLS = "XLS";
+	/** XLSX = XLSX */
+	public static final String IMPORTTEMPLATETYPE_XLSX = "XLSX";
+	/** Set Import Template Type.
+		@param ImportTemplateType Import Template Type
+	*/
+	public void setImportTemplateType (String ImportTemplateType)
+	{
+
+		set_Value (COLUMNNAME_ImportTemplateType, ImportTemplateType);
+	}
+
+	/** Get Import Template Type.
+		@return Import Template Type	  */
+	public String getImportTemplateType()
+	{
+		return (String)get_Value(COLUMNNAME_ImportTemplateType);
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -263,8 +341,38 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Quote Char.
+		@param QuoteChar Quote Char
+	*/
+	public void setQuoteChar (String QuoteChar)
+	{
+		set_Value (COLUMNNAME_QuoteChar, QuoteChar);
+	}
+
+	/** Get Quote Char.
+		@return Quote Char	  */
+	public String getQuoteChar()
+	{
+		return (String)get_Value(COLUMNNAME_QuoteChar);
+	}
+
+	/** Set Separator Character.
+		@param SeparatorChar Separator Character
+	*/
+	public void setSeparatorChar (String SeparatorChar)
+	{
+		set_Value (COLUMNNAME_SeparatorChar, SeparatorChar);
+	}
+
+	/** Get Separator Character.
+		@return Separator Character	  */
+	public String getSeparatorChar()
+	{
+		return (String)get_Value(COLUMNNAME_SeparatorChar);
+	}
 }

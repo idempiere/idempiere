@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Currency
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Currency")
-public class X_C_Currency extends PO implements I_C_Currency, I_Persistent 
+public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Currency (Properties ctx, int C_Currency_ID, String trxName)
@@ -80,6 +80,50 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Currency (Properties ctx, String C_Currency_UU, String trxName)
+    {
+      super (ctx, C_Currency_UU, trxName);
+      /** if (C_Currency_UU == null)
+        {
+			setC_Currency_ID (0);
+			setCostingPrecision (0);
+// 4
+			setDescription (null);
+			setIsEMUMember (false);
+// N
+			setIsEuro (false);
+// N
+			setISO_Code (null);
+			setRoundOffFactor (Env.ZERO);
+// 1
+			setStdPrecision (0);
+// 2
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Currency (Properties ctx, String C_Currency_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Currency_UU, trxName, virtualColumns);
+      /** if (C_Currency_UU == null)
+        {
+			setC_Currency_ID (0);
+			setCostingPrecision (0);
+// 4
+			setDescription (null);
+			setIsEMUMember (false);
+// N
+			setIsEuro (false);
+// N
+			setISO_Code (null);
+			setRoundOffFactor (Env.ZERO);
+// 1
+			setStdPrecision (0);
+// 2
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Currency (Properties ctx, ResultSet rs, String trxName)
     {
@@ -87,7 +131,7 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -245,10 +289,10 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
 	public boolean isEMUMember()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEMUMember);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -268,10 +312,10 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
 	public boolean isEuro()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEuro);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -296,7 +340,7 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getISO_Code());
     }

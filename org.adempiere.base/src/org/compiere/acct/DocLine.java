@@ -119,7 +119,7 @@ public class DocLine
 
 	/**
 	 *  Get Currency
-	 *  @return c_Currency_ID
+	 *  @return C_Currency_ID
 	 */
 	public int getC_Currency_ID ()
 	{
@@ -168,11 +168,17 @@ public class DocLine
 		m_C_ConversionType_ID = C_ConversionType_ID;
 	}	//	setC_ConversionType_ID
 	
+	/**
+	 * @return Currency rate
+	 */
 	public BigDecimal getCurrencyRate()
 	{
 		return m_currencyRate;
 	}
 	
+	/**
+	 * @param currencyRate
+	 */
 	protected void setCurrencyRate(BigDecimal currencyRate) 
 	{
 		m_currencyRate = currencyRate;
@@ -325,9 +331,9 @@ public class DocLine
 		log.fine(msg);
 	}	//	setLineNetAmtDifference
 
-	/**************************************************************************
+	/**
 	 *  Set Accounting Date
-	 *  @param dateAcct acct date
+	 *  @param dateAcct accounting date
 	 */
 	public void setDateAcct (Timestamp dateAcct)
 	{
@@ -405,7 +411,7 @@ public class DocLine
 	}   //  getDateDoc
 
 
-	/**************************************************************************
+	/**
 	 *  Set GL Journal Account
 	 *  @param acct account
 	 */
@@ -506,7 +512,7 @@ public class DocLine
 		m_C_Period_ID = C_Period_ID;
 	}	//	setC_Period_ID
 	
-	/**************************************************************************
+	/**
 	 *  Get (Journal) AcctSchema
 	 *  @return C_AcctSchema_ID
 	 */
@@ -517,7 +523,7 @@ public class DocLine
 
 	/**
 	 * 	Get Line ID
-	 *	@return id
+	 *	@return id of line PO
 	 */
 	public int get_ID()
 	{
@@ -526,7 +532,7 @@ public class DocLine
 	
 	/**
 	 * 	Get AD_Org_ID
-	 *	@return org
+	 *	@return AD_Org_ID
 	 */
 	public int getAD_Org_ID()
 	{
@@ -535,7 +541,7 @@ public class DocLine
 	
 	/**
 	 * 	Get Order AD_Org_ID
-	 *	@return order org if defined
+	 *	@return order AD_Org_ID if defined
 	 */
 	public int getOrder_Org_ID()
 	{
@@ -568,7 +574,7 @@ public class DocLine
 
 	/**
 	 * 	Is this an Item Product (vs. not a Service, a charge)
-	 *	@return true if product
+	 *	@return true if product is of type item
 	 */
 	public boolean isItem()
 	{
@@ -619,7 +625,7 @@ public class DocLine
 
 	/**
 	 *  Get Warehouse Locator To
-	 *  @return M_Locator_ID
+	 *  @return to M_Locator_ID
 	 */
 	public int getM_LocatorTo_ID()
 	{
@@ -685,7 +691,7 @@ public class DocLine
 
 	/**
 	 * 	Get C_LocFrom_ID
-	 *	@return loc from
+	 *	@return C_Location_ID from
 	 */
 	public int getC_LocFrom_ID()
 	{
@@ -721,7 +727,7 @@ public class DocLine
 
 	/**
 	 * 	Get C_LocTo_ID
-	 *	@return loc to
+	 *	@return C_Location_ID to
 	 */
 	public int getC_LocTo_ID()
 	{
@@ -765,7 +771,14 @@ public class DocLine
 			MCostDetail cd = MCostDetail.get (Env.getCtx(), whereClause, 
 					get_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), p_po.get_TrxName());
 			if (cd != null)
-				return cd.getAmt();
+			{
+				BigDecimal amt = cd.getAmt();
+				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK);
+				if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
+					return amt.negate();
+				else
+					return amt;
+			}
 		}
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK);
 	}   //  getProductCosts
@@ -818,7 +831,7 @@ public class DocLine
 
 	/**
 	 *  Quantity UOM
-	 *  @return Transaction or Storage M_UOM_ID
+	 *  @return Transaction or Storage C_UOM_ID
 	 */
 	public int getC_UOM_ID()
 	{
@@ -942,7 +955,7 @@ public class DocLine
 	
 	/**
 	 * 	Get C_BPartner_Location_ID
-	 *	@return BPartner Location
+	 *	@return C_BPartner_Location_ID
 	 */
 	public int getC_BPartner_Location_ID()
 	{
@@ -1080,8 +1093,8 @@ public class DocLine
 	}   //  getC_Activity_ID
 
 	/**
-	 *  Get User 1
-	 *  @return user defined 1
+	 *  Get user defined id 1
+	 *  @return User1_ID
 	 */
 	public int getUser1_ID()
 	{
@@ -1096,8 +1109,8 @@ public class DocLine
 	}   //  getUser1_ID
 
 	/**
-	 *  Get User 2
-	 *  @return user defined 2
+	 *  Get user defined id 2
+	 *  @return User2_ID
 	 */
 	public int getUser2_ID()
 	{
@@ -1111,10 +1124,10 @@ public class DocLine
 		return 0;
 	}   //  getUser2_ID
         
-        	/**
-	 *  Get User Defined Column
+    /**
+	 *  Get column value
 	 *  @param ColumnName column name
-	 *  @return user defined column value
+	 *  @return column value or 0 (if column doesn't exist)
 	 */
 	public int getValue(String ColumnName)
 	{
@@ -1130,6 +1143,7 @@ public class DocLine
 
 	//AZ Goodwill
 	private int         		m_ReversalLine_ID = 0;
+	
 	/**
 	 *  Set ReversalLine_ID
 	 *  store original (voided/reversed) document line
@@ -1151,6 +1165,9 @@ public class DocLine
 	}   //  getReversalLine_ID
 	//end AZ Goodwill
 	
+	/**
+	 * @return line PO
+	 */
 	public PO getPO() 
 	{
 		return p_po;

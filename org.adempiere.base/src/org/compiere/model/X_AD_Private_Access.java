@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Private_Access
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Private_Access")
-public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Persistent 
+public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Private_Access (Properties ctx, int AD_Private_Access_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Private_Access (Properties ctx, String AD_Private_Access_UU, String trxName)
+    {
+      super (ctx, AD_Private_Access_UU, trxName);
+      /** if (AD_Private_Access_UU == null)
+        {
+			setAD_Table_ID (0);
+			setAD_User_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Private_Access (Properties ctx, String AD_Private_Access_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Private_Access_UU, trxName, virtualColumns);
+      /** if (AD_Private_Access_UU == null)
+        {
+			setAD_Table_ID (0);
+			setAD_User_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Private_Access (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Private_Access[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

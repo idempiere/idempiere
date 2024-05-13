@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_ShippingProcessor
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingProcessor")
-public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, I_Persistent 
+public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ShippingProcessor (Properties ctx, String M_ShippingProcessor_UU, String trxName)
+    {
+      super (ctx, M_ShippingProcessor_UU, trxName);
+      /** if (M_ShippingProcessor_UU == null)
+        {
+			setConnectionPassword (null);
+			setM_ShippingProcessorCfg_ID (0);
+			setM_ShippingProcessor_ID (0);
+			setName (null);
+			setUserID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShippingProcessor (Properties ctx, String M_ShippingProcessor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShippingProcessor_UU, trxName, virtualColumns);
+      /** if (M_ShippingProcessor_UU == null)
+        {
+			setConnectionPassword (null);
+			setM_ShippingProcessorCfg_ID (0);
+			setM_ShippingProcessor_ID (0);
+			setName (null);
+			setUserID (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ShippingProcessor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

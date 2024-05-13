@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for EXP_FormatLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="EXP_FormatLine")
-public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persistent 
+public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_EXP_FormatLine (Properties ctx, int EXP_FormatLine_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_EXP_FormatLine (Properties ctx, String EXP_FormatLine_UU, String trxName)
+    {
+      super (ctx, EXP_FormatLine_UU, trxName);
+      /** if (EXP_FormatLine_UU == null)
+        {
+			setAD_Column_ID (0);
+			setEXP_FormatLine_ID (0);
+			setName (null);
+			setType (null);
+// E
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_EXP_FormatLine (Properties ctx, String EXP_FormatLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, EXP_FormatLine_UU, trxName, virtualColumns);
+      /** if (EXP_FormatLine_UU == null)
+        {
+			setAD_Column_ID (0);
+			setEXP_FormatLine_ID (0);
+			setName (null);
+			setType (null);
+// E
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_EXP_FormatLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -294,10 +324,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -316,10 +346,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	public boolean isPartUniqueIndex()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPartUniqueIndex);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -31,7 +31,7 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230324L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Form (Properties ctx, int AD_Form_ID, String trxName)
@@ -53,6 +53,36 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
     {
       super (ctx, AD_Form_ID, trxName, virtualColumns);
       /** if (AD_Form_ID == 0)
+        {
+			setAccessLevel (null);
+			setAD_Form_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Form (Properties ctx, String AD_Form_UU, String trxName)
+    {
+      super (ctx, AD_Form_UU, trxName);
+      /** if (AD_Form_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Form_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Form (Properties ctx, String AD_Form_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Form_UU, trxName, virtualColumns);
+      /** if (AD_Form_UU == null)
         {
 			setAccessLevel (null);
 			setAD_Form_ID (0);
@@ -258,7 +288,7 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
 	*/
 	public void setImageURL (String ImageURL)
 	{
-		set_ValueNoCheck (COLUMNNAME_ImageURL, ImageURL);
+		set_Value (COLUMNNAME_ImageURL, ImageURL);
 	}
 
 	/** Get Image URL.

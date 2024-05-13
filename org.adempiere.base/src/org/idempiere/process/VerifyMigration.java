@@ -56,11 +56,11 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
+/**
+ * Process to help verifying after a migration, check if customizations were overwritten
+ */
 @org.adempiere.base.annotation.Process
 public class VerifyMigration extends SvrProcess {
-
-	// Process to help verifying after a migration, check if customizations were
-	// overwritten
 
 	/* Date To */
 	private Timestamp p_DateTo = null;

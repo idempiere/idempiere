@@ -34,20 +34,27 @@ import org.compiere.util.CLogger;
  * <li> http://jira.idempiere.com/browse/IDEMPIERE-218
  */
 public class MReplicationStrategy extends X_AD_ReplicationStrategy {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7231926756021012730L;
 	public static final int REPLICATION_TABLE =0;
 	public static final int REPLICATION_DOCUMENT =1;
-	
-	
+		
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MReplicationStrategy.class);
-
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ReplicationStrategy_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReplicationStrategy(Properties ctx, String AD_ReplicationStrategy_UU, String trxName) {
+        super(ctx, AD_ReplicationStrategy_UU, trxName);
+    }
+
 	/**
 	 * Constructor
 	 * @param ctx
@@ -58,12 +65,17 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 		super(ctx, AD_ReplicationStrategy_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReplicationStrategy(Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
 	}
 
 	/**
-	 * @return the list the X_AD_ReplicationTable
+	 * @return the list of active X_AD_ReplicationTable record
 	 */
 	public List <X_AD_ReplicationTable> getReplicationTables() {
 		final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID+"=?"; // #1
@@ -76,7 +88,7 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	}
 	
 	/**
-	 * @return the list the X_AD_ReplicationDocument
+	 * @return the list of active X_AD_ReplicationDocument record
 	 */
 	public List<X_AD_ReplicationDocument> getReplicationDocuments() {
 	    	final String whereClause = I_AD_ReplicationDocument.COLUMNNAME_AD_ReplicationStrategy_ID+"=?"; // #1
@@ -89,13 +101,15 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	}
 	
 	/**
-	 * 
+	 * Find X_AD_ReplicationTable record via replication strategy id and table id
+	 * @param ctx
+	 * @param AD_ReplicationStrategy_ID
 	 * @param AD_Table_ID
-	 * @return X_AD_ReplicationTable table to replication
+	 * @return X_AD_ReplicationTable record or null
 	 */
 	public static X_AD_ReplicationTable getReplicationTable(Properties ctx ,int AD_ReplicationStrategy_ID, int AD_Table_ID)
 	{
-	    	final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
+	    final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
 	    				 			 + I_AD_ReplicationTable.COLUMNNAME_AD_Table_ID + "=?";
 		return new Query(ctx, I_AD_ReplicationTable.Table_Name, whereClause, null)
 			.setOnlyActiveRecords(true)
@@ -106,9 +120,11 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	}
 	
 	/**
-	 * 
+	 * Find X_AD_ReplicationDocument record via replication strategy id and table id
+	 * @param ctx
+	 * @param AD_ReplicationStrategy_ID
 	 * @param AD_Table_ID
-	 * @return X_AD_ReplicationDocument Document to replication
+	 * @return X_AD_ReplicationDocument record or null
 	 */
 	public static X_AD_ReplicationDocument getReplicationDocument(Properties ctx ,int AD_ReplicationStrategy_ID , int AD_Table_ID)
 	{
@@ -123,9 +139,12 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	}
 	
 	/**
-	 * 
+	 * Find X_AD_ReplicationDocument record via replication strategy id, table id and document type id
+	 * @param ctx
+	 * @param AD_ReplicationStrategy_ID
 	 * @param AD_Table_ID
-	 * @return X_AD_ReplicationDocument Document to replication
+	 * @param C_DocType_ID
+	 * @return X_AD_ReplicationDocument record or null
 	 */
 	public static X_AD_ReplicationDocument getReplicationDocument(Properties ctx ,int AD_ReplicationStrategy_ID , int AD_Table_ID, int C_DocType_ID)
 	{

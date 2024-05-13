@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for EXP_Format
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="EXP_Format")
-public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent 
+public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_EXP_Format (Properties ctx, int EXP_Format_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_EXP_Format (Properties ctx, String EXP_Format_UU, String trxName)
+    {
+      super (ctx, EXP_Format_UU, trxName);
+      /** if (EXP_Format_UU == null)
+        {
+			setAD_Table_ID (0);
+			setEXP_Format_ID (0);
+			setName (null);
+			setValue (null);
+			setVersion (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_EXP_Format (Properties ctx, String EXP_Format_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, EXP_Format_UU, trxName, virtualColumns);
+      /** if (EXP_Format_UU == null)
+        {
+			setAD_Table_ID (0);
+			setEXP_Format_ID (0);
+			setName (null);
+			setValue (null);
+			setVersion (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_EXP_Format (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -213,10 +241,10 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Role_Included
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Role_Included")
-public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Persistent 
+public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Role_Included (Properties ctx, String AD_Role_Included_UU, String trxName)
+    {
+      super (ctx, AD_Role_Included_UU, trxName);
+      /** if (AD_Role_Included_UU == null)
+        {
+			setAD_Role_ID (0);
+			setIncluded_Role_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Role_Included WHERE AD_Role_ID=@AD_Role_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Role_Included (Properties ctx, String AD_Role_Included_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Role_Included_UU, trxName, virtualColumns);
+      /** if (AD_Role_Included_UU == null)
+        {
+			setAD_Role_ID (0);
+			setIncluded_Role_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Role_Included WHERE AD_Role_ID=@AD_Role_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Role_Included (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -82,7 +108,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Role_Included[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

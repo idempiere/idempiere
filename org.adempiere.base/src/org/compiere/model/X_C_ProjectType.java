@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectType")
-public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent 
+public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ProjectType (Properties ctx, int C_ProjectType_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ProjectType (Properties ctx, String C_ProjectType_UU, String trxName)
+    {
+      super (ctx, C_ProjectType_UU, trxName);
+      /** if (C_ProjectType_UU == null)
+        {
+			setC_ProjectType_ID (0);
+			setName (null);
+			setProjectCategory (null);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectType (Properties ctx, String C_ProjectType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectType_UU, trxName, virtualColumns);
+      /** if (C_ProjectType_UU == null)
+        {
+			setC_ProjectType_ID (0);
+			setName (null);
+			setProjectCategory (null);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ProjectType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -175,7 +201,7 @@ public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

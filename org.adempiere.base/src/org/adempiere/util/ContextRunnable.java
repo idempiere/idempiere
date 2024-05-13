@@ -15,9 +15,17 @@ package org.adempiere.util;
 
 import java.util.Properties;
 
-
 /**
- * Base class to implement runnable that will execute code in session context
+ * Base class to implement runnable that will execute code in session context.<br/>
+ * Example usage:
+ * <pre>
+ *     ContextRunnable runnable = new ContextRunnable() {
+ *         protected void doRun() {
+ *            ....
+ *         }
+ *     };
+ *     Adempiere.getThreadPoolExecutor().submit(runnable);
+ * </pre>
  * @author hengsin
  */
 public abstract class ContextRunnable implements Runnable {
@@ -28,14 +36,15 @@ public abstract class ContextRunnable implements Runnable {
 	protected Properties context = null;
 	
 	/**
-	 * default constructor
+	 * Capture reference to current session context.
 	 */
 	public ContextRunnable() {
 		this.context = ServerContext.getCurrentInstance();
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
+	/**
+	 * Set captured session context as current thread local context and 
+	 * call {@link #doRun()} to perform actual work.
 	 */
 	@Override
 	public void run() {
@@ -48,14 +57,14 @@ public abstract class ContextRunnable implements Runnable {
 	}
 
 	/**
-	 * setup thread context
+	 * setup thread local context
 	 */
 	protected void setup() {
 		ServerContext.setCurrentInstance(context);
 	}
 
 	/**
-	 * clean up thread context
+	 * clean up thread local context
 	 */
 	protected void cleanup() {
 		ServerContext.dispose();

@@ -29,29 +29,44 @@ import java.util.Properties;
 public class MReplication extends X_AD_Replication
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -562186299848949607L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Replication_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReplication(Properties ctx, String AD_Replication_UU, String trxName) {
+        super(ctx, AD_Replication_UU, trxName);
+    }
+
 	/**
-	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param AD_Replication_ID id
+	 *  @param trxName
 	 */
 	public MReplication (Properties ctx, int AD_Replication_ID, String trxName)
 	{
 		super (ctx, AD_Replication_ID, trxName);
 	}	//	MReplication
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReplication (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 
 	/**
-	 *	Public Access
 	 * 	@param DateLastRun date last run
 	 */
+	@Override
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		super.setDateLastRun (DateLastRun);

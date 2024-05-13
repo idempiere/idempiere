@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Billboard.js Chart
 Bundle-SymbolicName: org.idempiere.zk.billboard.chart
-Bundle-Version: 10.0.0.qualifier
+Bundle-Version: 11.0.0.qualifier
 Bundle-Activator: org.idempiere.zk.billboard.chart.Activator
 Bundle-Vendor: iDempiere
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.idempiere.zk.billboard.chart
 Import-Package: org.osgi.framework,
  org.osgi.service.component,

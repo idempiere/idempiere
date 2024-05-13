@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for PP_WF_Node_Product
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_WF_Node_Product")
-public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_Persistent 
+public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Product (Properties ctx, int PP_WF_Node_Product_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_WF_Node_Product (Properties ctx, String PP_WF_Node_Product_UU, String trxName)
+    {
+      super (ctx, PP_WF_Node_Product_UU, trxName);
+      /** if (PP_WF_Node_Product_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setM_Product_ID (0);
+			setPP_WF_Node_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_WF_Node_Product (Properties ctx, String PP_WF_Node_Product_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_WF_Node_Product_UU, trxName, virtualColumns);
+      /** if (PP_WF_Node_Product_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setM_Product_ID (0);
+			setPP_WF_Node_Product_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_WF_Node_Product (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -176,10 +204,10 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	public boolean isSubcontracting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubcontracting);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

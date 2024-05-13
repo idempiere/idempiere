@@ -25,7 +25,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Task;
 
 /**
- * 	Operating Task Model
+ * 	Operating System Task Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MTask.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
@@ -33,9 +33,19 @@ import org.compiere.util.Task;
 public class MTask extends X_AD_Task
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5286481246615520755L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Task_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTask(Properties ctx, String AD_Task_UU, String trxName) {
+        super(ctx, AD_Task_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -49,7 +59,7 @@ public class MTask extends X_AD_Task
 	}	//	MTask
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx ctx
 	 *	@param rs result set
 	 *	@param trxName trx
@@ -76,13 +86,13 @@ public class MTask extends X_AD_Task
 	}	//	execute
 	
 	/**
-	 * 	Execute Task locally and wait
+	 * 	Execute command locally and wait
 	 * 	@param cmd command
-	 *	@return execution info
+	 *	@return output from execution of command
 	 */
 	public String executeLocal(String cmd)
 	{
-		log.config(cmd);
+		if (log.isLoggable(Level.CONFIG)) log.config(cmd);
 		if (m_task != null && m_task.isAlive())
 			m_task.interrupt();
 
@@ -111,7 +121,7 @@ public class MTask extends X_AD_Task
 			if (!m_task.isAlive())
 				break;
 		}
-		log.config("done");
+		if (log.isLoggable(Level.CONFIG)) log.config("done");
 		return sb.toString();
 	}	//	executeLocal
 	
@@ -135,6 +145,7 @@ public class MTask extends X_AD_Task
 	 *  @param success success
 	 *  @return true if save complete (if not overwritten true)
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("Success=" + success);

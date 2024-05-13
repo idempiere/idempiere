@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldOutput
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldOutput")
-public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFieldOutput, I_Persistent 
+public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFieldOutput, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldOutput (Properties ctx, int WS_WebServiceFieldOutput_ID, String trxName)
@@ -56,6 +56,28 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebServiceFieldOutput (Properties ctx, String WS_WebServiceFieldOutput_UU, String trxName)
+    {
+      super (ctx, WS_WebServiceFieldOutput_UU, trxName);
+      /** if (WS_WebServiceFieldOutput_UU == null)
+        {
+			setWS_WebServiceFieldOutput_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceFieldOutput (Properties ctx, String WS_WebServiceFieldOutput_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceFieldOutput_UU, trxName, virtualColumns);
+      /** if (WS_WebServiceFieldOutput_UU == null)
+        {
+			setWS_WebServiceFieldOutput_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebServiceFieldOutput (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +85,7 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -136,7 +158,7 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getWS_WebServiceFieldOutput_ID()));
     }

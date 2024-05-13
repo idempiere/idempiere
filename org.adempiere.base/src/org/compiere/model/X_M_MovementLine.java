@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementLine")
-public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persistent 
+public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_MovementLine (Properties ctx, int M_MovementLine_ID, String trxName)
@@ -81,6 +81,52 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_MovementLine (Properties ctx, String M_MovementLine_UU, String trxName)
+    {
+      super (ctx, M_MovementLine_UU, trxName);
+      /** if (M_MovementLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_MovementLine WHERE M_Movement_ID=@M_Movement_ID@
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setM_LocatorTo_ID (0);
+// @M_LocatorTo_ID@
+			setM_Movement_ID (0);
+			setM_MovementLine_ID (0);
+			setMovementQty (Env.ZERO);
+// 1
+			setM_Product_ID (0);
+			setProcessed (false);
+			setTargetQty (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MovementLine (Properties ctx, String M_MovementLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MovementLine_UU, trxName, virtualColumns);
+      /** if (M_MovementLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_MovementLine WHERE M_Movement_ID=@M_Movement_ID@
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setM_LocatorTo_ID (0);
+// @M_LocatorTo_ID@
+			setM_Movement_ID (0);
+			setM_MovementLine_ID (0);
+			setMovementQty (Env.ZERO);
+// 1
+			setM_Product_ID (0);
+			setProcessed (false);
+			setTargetQty (Env.ZERO);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_M_MovementLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -88,7 +134,7 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -193,7 +239,7 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
@@ -436,10 +482,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

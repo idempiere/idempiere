@@ -84,7 +84,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				&& mColumn.is_ValueChanged(MColumn.COLUMNNAME_FieldLength)
 				&& mColumn.getFieldLength() < mColumn.get_ValueOldAsInt(MColumn.COLUMNNAME_FieldLength)
 				) {
-				// IDEMPIERE-1518 2Pack shoud not try to reduce column size
+				// IDEMPIERE-1518 2Pack should not try to reduce column size
 				mColumn.setFieldLength(mColumn.get_ValueOldAsInt(MColumn.COLUMNNAME_FieldLength));
 			}
 

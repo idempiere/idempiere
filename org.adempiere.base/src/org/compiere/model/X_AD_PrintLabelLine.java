@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabelLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintLabelLine")
-public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Persistent 
+public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName)
@@ -69,6 +69,42 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PrintLabelLine (Properties ctx, String AD_PrintLabelLine_UU, String trxName)
+    {
+      super (ctx, AD_PrintLabelLine_UU, trxName);
+      /** if (AD_PrintLabelLine_UU == null)
+        {
+			setAD_LabelPrinterFunction_ID (0);
+			setAD_PrintLabel_ID (0);
+			setAD_PrintLabelLine_ID (0);
+			setLabelFormatType (null);
+// F
+			setName (null);
+			setSeqNo (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintLabelLine (Properties ctx, String AD_PrintLabelLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintLabelLine_UU, trxName, virtualColumns);
+      /** if (AD_PrintLabelLine_UU == null)
+        {
+			setAD_LabelPrinterFunction_ID (0);
+			setAD_PrintLabel_ID (0);
+			setAD_PrintLabelLine_ID (0);
+			setLabelFormatType (null);
+// F
+			setName (null);
+			setSeqNo (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PrintLabelLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +112,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -295,7 +331,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getSeqNo()));
     }

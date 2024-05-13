@@ -32,14 +32,13 @@ import java.lang.annotation.Target;
 
 import org.adempiere.base.event.IEventTopics;
 
+/**
+ * Method annotation for handling of after load preference event  
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.PREF_AFTER_LOAD)
-/**
- * 
- * @author hengsin
- * 
- */
 public @interface AfterLoadPref {
 
 }

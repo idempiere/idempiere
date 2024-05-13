@@ -34,6 +34,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *  Payment Print/Export model.
@@ -44,12 +45,12 @@ import org.compiere.util.Trx;
 public class MPaySelectionCheck extends X_C_PaySelectionCheck
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2130445794890189020L;
 
 	/**
-	 * 	Get Check for Payment
+	 * 	Get Pay Selection Check for Payment
 	 *	@param ctx context
 	 *	@param C_Payment_ID id
 	 *	@param trxName transaction
@@ -93,11 +94,11 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	}	//	getOfPayment
 
 	/**
-	 * 	Create Check for Payment
+	 * 	Create Pay Selection and Pay Selection Check for Payment
 	 *	@param ctx context
 	 *	@param C_Payment_ID id
 	 *	@param trxName transaction
-	 *	@return pay selection check for payment or null
+	 *	@return MPaySelectionCheck for payment or null
 	 */
 	public static MPaySelectionCheck createForPayment (Properties ctx, int C_Payment_ID, String trxName)
 	{
@@ -159,7 +160,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 			psl.saveEx();
 		} else {
 			// globalqss - CarlosRuiz - fix bug [ 1803054 ] Empty Remittance lines on payments
-			// look for existance of C_PaymentAllocate records
+			// look for existence of C_PaymentAllocate records
 			//	Allocate to multiple Payments based on entry
 			MPaymentAllocate[] pAllocs = MPaymentAllocate.get(payment);
 			if (pAllocs.length != 0) {
@@ -196,13 +197,13 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		return psc;
 	}	//	createForPayment
 	
-	/**************************************************************************
-	 *  Get Checks of Payment Selection without check no assignment
+	/**
+	 *  Get Pay Selection Check records
 	 *
 	 *  @param C_PaySelection_ID Payment Selection
 	 *  @param PaymentRule Payment Rule
 	 *	@param trxName transaction
-	 *  @return array of checks
+	 *  @return array of MPaySelectionCheck
 	 */
 	public static MPaySelectionCheck[] get (int C_PaySelection_ID, String PaymentRule, String trxName)
 	{
@@ -242,16 +243,15 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		list.toArray(retValue);
 		return retValue;
 	}   //  get
-
 	
-	/**************************************************************************
-	 *  Get Checks of Payment Selection
+	/**
+	 *  Get Payment Selection Check records and set new Check Document No.
 	 *
 	 *  @param C_PaySelection_ID Payment Selection
 	 *  @param PaymentRule Payment Rule
-	 *  @param startDocumentNo start document no
+	 *  @param startDocumentNo starting document no
 	 *	@param trxName transaction
-	 *  @return array of checks
+	 *  @return array of MPaySelectionCheck
 	 */
 	static public MPaySelectionCheck[] get (int C_PaySelection_ID,
 		String PaymentRule, int startDocumentNo, String trxName)
@@ -267,9 +267,9 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		return checks;
 	}   //  get
 
-	/**************************************************************************
-	 * 	Confirm Print for a payment selection check
-	 * 	Create Payment the first time 
+	/**
+	 * 	Confirm Print for a payment selection check record.
+	 * 	Create Payment if not created yet (i.e check.getC_Payment_ID() == 0). 
 	 * 	@param check check
 	 * 	@param batch batch
 	 */
@@ -383,9 +383,9 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		}
 	}	//	confirmPrint
 	
-	/**************************************************************************
-	 * 	Confirm Print.
-	 * 	Create Payments the first time 
+	/**
+	 * 	Confirm Print for payment selection check records. <br/>
+	 * 	For each payment selection check record, call {@link #confirmPrint(MPaySelectionCheck, MPaymentBatch)}.
 	 * 	@param checks checks
 	 * 	@param batch batch
 	 * 	@param createDepositBatch create deposit batch
@@ -496,9 +496,8 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		return lastDocumentNo;
 	}	//	confirmPrint
 
-	/**************************************************************************
-	 * 	Confirm Print.
-	 * 	Create Payments the first time 
+	/**
+	 * 	Call {@link #confirmPrint(MPaySelectionCheck[], MPaymentBatch, boolean)}.  
 	 * 	@param checks checks
 	 * 	@param batch batch
 	 * 	@return last Document number or 0 if nothing printed
@@ -512,8 +511,19 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	/** Logger								*/
 	static private CLogger	s_log = CLogger.getCLogger (MPaySelectionCheck.class);
 
-	/**************************************************************************
-	 *	Constructor
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaySelectionCheck_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPaySelectionCheck(Properties ctx, String C_PaySelectionCheck_UU, String trxName) {
+        super(ctx, C_PaySelectionCheck_UU, trxName);
+		if (Util.isEmpty(C_PaySelectionCheck_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 *  @param ctx context
 	 *  @param C_PaySelectionCheck_ID C_PaySelectionCheck_ID
 	 *	@param trxName transaction
@@ -522,15 +532,20 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	{
 		super(ctx, C_PaySelectionCheck_ID, trxName);
 		if (C_PaySelectionCheck_ID == 0)
-		{
-			setPayAmt (Env.ZERO);
-			setDiscountAmt(Env.ZERO);
-			setWriteOffAmt(Env.ZERO);
-			setIsPrinted (false);
-			setIsReceipt (false);
-			setQty (0);
-		}
+			setInitialDefaults();
 	}   //  MPaySelectionCheck
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPayAmt (Env.ZERO);
+		setDiscountAmt(Env.ZERO);
+		setWriteOffAmt(Env.ZERO);
+		setIsPrinted (false);
+		setIsReceipt (false);
+		setQty (0);
+	}
 
 	/**
 	 *	Load Constructor
@@ -544,9 +559,9 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	}   //  MPaySelectionCheck
 
 	/**
-	 * 	Create from Line
-	 *	@param line payment selection
-	 *	@param PaymentRule payment rule
+	 * 	Create from Payment Selection Line
+	 *	@param line payment selection line
+	 *	@param PaymentRule payment rule (PAYMENTRULE_*)
 	 */
 	public MPaySelectionCheck (MPaySelectionLine line, String PaymentRule)
 	{
@@ -594,7 +609,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	/**
 	 * 	Create from Pay Selection
 	 *	@param ps payment selection
-	 *	@param PaymentRule payment rule
+	 *	@param PaymentRule payment rule (PAYMENTRULE_*)
 	 */
 	public MPaySelectionCheck (MPaySelection ps, String PaymentRule)
 	{
@@ -603,17 +618,15 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		setC_PaySelection_ID (ps.getC_PaySelection_ID());
 		setPaymentRule (PaymentRule);
 	}	//	MPaySelectionCheck
-	
-	
+		
 	/**	Parent					*/
 	private MPaySelection			m_parent = null;
 	/**	Payment Selection lines of this check	*/
 	private MPaySelectionLine[]		m_lines = null;
-
 	
 	/**
 	 * 	Add Payment Selection Line
-	 *	@param line line
+	 *	@param line Payment Selection Line
 	 */
 	public void addLine (MPaySelectionLine line)
 	{
@@ -637,7 +650,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	
 	/**
 	 * 	Get Parent
-	 *	@return parent
+	 *	@return parent MPaySelection record
 	 */
 	public MPaySelection getParent()
 	{
@@ -658,8 +671,8 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	}	//	isValid
 	
 	/**
-	 * 	Is this a direct Debit or Deposit
-	 *	@return true if direct
+	 * 	Is this with Direct Debit or Direct Deposit payment rule
+	 *	@return true if is with Direct Debit or Direct Deposit payment rule
 	 */
 	public boolean isDirect()
 	{
@@ -671,6 +684,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MPaymentCheck[");
@@ -683,8 +697,8 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	}	//	toString
 	
 	/**
-	 * 	Get Payment Selection Lines of this check
-	 *	@param requery requery
+	 * 	Get Payment Selection Lines
+	 *	@param requery true to re-query from DB
 	 * 	@return array of payment selection lines
 	 */
 	public MPaySelectionLine[] getPaySelectionLines (boolean requery)
@@ -720,18 +734,16 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		list.toArray (m_lines);
 		return m_lines;
 	}	//	getPaySelectionLines
-
 	
 	/**
-	 *	Delete Payment Selection when generated as Draft (Print Preview) 
+	 *	Delete Payment Selection records that are generated as Draft (Print Preview) 
 	 *	@param ctx context
 	 *	@param C_Payment_ID id
 	 *	@param trxName transaction
-	 * @return
+	 *  @return false if there are errors
 	 */
 	public static boolean deleteGeneratedDraft(Properties ctx, int C_Payment_ID, String trxName)
-	{
-		
+	{		
 		MPaySelectionCheck mpsc = MPaySelectionCheck.getOfPayment (ctx, C_Payment_ID, trxName);
 		
 		if (mpsc != null && mpsc.isGeneratedDraft())  
@@ -753,7 +765,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 			if (!mps.delete(true, trxName))
 				return false;
 		}
-	return true;	
+		return true;	
 	}
 	
 }   //  MPaySelectionCheck

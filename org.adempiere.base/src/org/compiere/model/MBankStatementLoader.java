@@ -29,7 +29,8 @@ import org.compiere.util.Util;
  
  
 /**
- *	Bank Statement Loader Model
+ *  <pre>
+ *  Bank Statement Loader Model.
  *  This class is responsible for creating an instance of the
  *  bank statement loader class to use.
  *  It also inserts the data into the I_BankStatement table.
@@ -50,14 +51,14 @@ import org.compiere.util.Util;
  *  be used to construct the URL to connect to (combined with the other parameters).
  *  In this scenario the file name from the process parameter can be used to save
  *  the acquired statement data to disk.
- *
+ *  <pre/>
  *	author Maarten Klinker, Eldir Tomassen
  *	@version $Id: MBankStatementLoader.java,v 1.3 2006/07/30 00:51:04 jjanke Exp $
  */
  public class MBankStatementLoader extends X_C_BankStatementLoader
  {
  	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8482717913976119270L;
 
@@ -85,6 +86,17 @@ import org.compiere.util.Util;
 	/* Last saved line, to be retrieved on loaders */
 	private X_I_BankStatement m_lastSavedLine;
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BankStatementLoader_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBankStatementLoader(Properties ctx, String C_BankStatementLoader_UU, String trxName) {
+        super(ctx, C_BankStatementLoader_UU, trxName);
+		init(null);
+    }
+
 	/**
 	 * 	Create a Statement Loader
 	 *  Added for compatibility with new PO infrastructure (bug# 968136)
@@ -124,6 +136,10 @@ import org.compiere.util.Util;
  		init(null);
  	}	//	MBankStatementLoader
  	
+ 	/**
+ 	 * Initialize loader
+ 	 * @param fileName
+ 	 */
  	private void init(String fileName)
 	{
 		localFileName = fileName;
@@ -146,9 +162,10 @@ import org.compiere.util.Util;
 	}
 	
 	/**
-	 *	Return Name
-	 *	@return Name
+	 *	Return id and name
+	 *	@return id and name
 	 */
+ 	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MBankStatementLoader[")
@@ -173,7 +190,7 @@ import org.compiere.util.Util;
 	public boolean loadLines()
 	{
 		boolean result = false;
-		log.info( "MBankStatementLoader.loadLines");
+		if (log.isLoggable(Level.INFO)) log.info( "MBankStatementLoader.loadLines");
 		if (m_loader == null)
 		{
 			errorMessage = "ClassNotLoaded";
@@ -224,14 +241,14 @@ import org.compiere.util.Util;
 	}	//	loadLines
 	
 	/**
-	 * 	Load a bank statement into the I_BankStatement table
-	 *	@return Statement line was loaded successfully
-	 *	This method is called by the BankStatementLoadere whenever a complete 
+	 * 	Save last loaded line from loader into the I_BankStatement table.
+	 *	This method is called by the BankStatementLoader after a complete 
 	 *	statement line has been read.
+	 *  @return true if Statement line was loaded successfully.
 	 */
 	public boolean saveLine()
 	{
-		log.info( "MBankStatementLoader.importLine");
+		if (log.isLoggable(Level.INFO)) log.info( "MBankStatementLoader.importLine");
 		boolean result = false;
 		X_I_BankStatement imp = new X_I_BankStatement(getCtx(), 0, get_TrxName());
 		if (m_loader == null)
@@ -328,7 +345,7 @@ import org.compiere.util.Util;
 
 	/**
 	 * Return the last saved line
-	 * @return
+	 * @return last saved X_I_BankStatement record
 	 */
 	public X_I_BankStatement getLastSavedLine() {
 		return m_lastSavedLine;

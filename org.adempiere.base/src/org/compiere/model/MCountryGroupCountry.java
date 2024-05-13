@@ -30,12 +30,12 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 
 /**
- *	Country Group Country Model
+ *	Countries in a Country Group 
  */
 public class MCountryGroupCountry extends X_C_CountryGroupCountry
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6075271124746909433L;
 
@@ -43,8 +43,17 @@ public class MCountryGroupCountry extends X_C_CountryGroupCountry
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCountryGroupCountry.class);
 
-	/*************************************************************************
-	 *	Create empty Country Group Country
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CountryGroupCountry_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCountryGroupCountry(Properties ctx, String C_CountryGroupCountry_UU, String trxName) {
+        super(ctx, C_CountryGroupCountry_UU, trxName);
+    }
+
+	/**
 	 * 	@param ctx context
 	 * 	@param C_CountryGroupCountry_ID ID
 	 *	@param trxName transaction
@@ -55,7 +64,6 @@ public class MCountryGroupCountry extends X_C_CountryGroupCountry
 	}   //  MCountryGroupCountry
 
 	/**
-	 *	Create Country Group from current row in ResultSet
 	 * 	@param ctx context
 	 *  @param rs ResultSet
 	 *	@param trxName transaction

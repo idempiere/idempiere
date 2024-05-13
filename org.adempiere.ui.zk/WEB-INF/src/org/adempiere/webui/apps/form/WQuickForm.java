@@ -39,6 +39,7 @@ import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkforge.keylistener.Keylistener;
@@ -88,6 +89,8 @@ public class WQuickForm extends Window implements IQuickForm
 	private int						windowNo;
 
 	private boolean stayInParent;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * @param winContent
@@ -419,6 +422,10 @@ public class WQuickForm extends Window implements IQuickForm
 	{
 		super.dispose();
 
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+		
 		gridTab.setQuickForm(false);
 		onIgnore();
 		gridTab.removeDataStatusListener(this);

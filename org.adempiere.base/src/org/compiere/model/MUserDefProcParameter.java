@@ -34,6 +34,16 @@ public class MUserDefProcParameter extends X_AD_UserDef_Proc_Parameter {
 	 */
 	private static final long serialVersionUID = -203142278687451678L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Proc_Parameter_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefProcParameter(Properties ctx, String AD_UserDef_Proc_Parameter_UU, String trxName) {
+        super(ctx, AD_UserDef_Proc_Parameter_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_UserDef_Proc_Parameter_ID
@@ -41,7 +51,6 @@ public class MUserDefProcParameter extends X_AD_UserDef_Proc_Parameter {
 	 */
 	public MUserDefProcParameter(Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName) {
 		super(ctx, AD_UserDef_Proc_Parameter_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

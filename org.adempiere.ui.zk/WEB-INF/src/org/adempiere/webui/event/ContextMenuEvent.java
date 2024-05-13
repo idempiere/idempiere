@@ -20,13 +20,14 @@ package org.adempiere.webui.event;
 import org.zkoss.zk.ui.Component;
 
 /**
- *
+ * Event for context menu (right-click menu) action
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
  * @version $Revision: 0.10 $
  */
 public class ContextMenuEvent
 {
+	/** Event id/name */
     private String contextEvent;
 	private Component target;
     

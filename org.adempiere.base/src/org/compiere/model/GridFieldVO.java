@@ -30,7 +30,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
-
 /**
  *  Field Model Value Object
  *
@@ -44,12 +43,13 @@ import org.compiere.util.Env;
 public class GridFieldVO implements Serializable, Cloneable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4069340866487289281L;
 
 	/**
-	 *  Return the SQL statement used for the MFieldVO.create
+	 *  Get the SQL statement used for {@link #create(Properties, int, int, int, int, boolean, ResultSet)} or
+	 *  {@link #createFromResultSet(Properties, int, int, int, int, boolean, ResultSet)}.
 	 *  @param ctx context
 	 *  @return SQL with or w/o translation and 1 parameter
 	 */
@@ -77,10 +77,9 @@ public class GridFieldVO implements Serializable, Cloneable
 		return sql.toString();
 	}   //  getSQL
 
-
 	/**
 	 *  Create Field Value Object.
-	 *  The vo return is not safe to cache directly or through clone
+	 *  The VO return is not safe to cache directly or through clone.
 	 *  @param ctx context
 	 *  @param WindowNo window
 	 *  @param TabNo tab
@@ -99,7 +98,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	}   //  create
 
 	/**
-	 * Additional processing after a new vo have been created from db or cloned from cache
+	 * Additional processing after a new vo have been created from db or cloned from cache.
 	 * This include asp customization, user customization and loading of lookup info. 
 	 * @return GridFieldVO
 	 */
@@ -189,13 +188,11 @@ public class GridFieldVO implements Serializable, Cloneable
 			if (userDef.getPlaceholder() != null)
 				vo.Placeholder = userDef.getPlaceholder();
 
-			//devCoffee 8535
 			if (userDef.getAD_FieldGroup_ID() > 0)
 			{
 				vo.FieldGroup = ((X_AD_FieldGroup)userDef.getAD_FieldGroup()).get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
 				vo.FieldGroupType = userDef.getAD_FieldGroup().getFieldGroupType();
 			}
-			//fim devCoffee 8535
 
 			if (userDef.getIsAutocomplete() != null)
 				vo.IsAutocomplete = "Y".equals(userDef.getIsAutocomplete());
@@ -209,7 +206,7 @@ public class GridFieldVO implements Serializable, Cloneable
 
 	/**
 	 * Create GridFieldVO from db resultset. 
-	 * No further processing is apply to the vo and the vo is safe to cache through clone 
+	 * No further processing is apply to the VO and the VO is safe to cache through clone. 
 	 * @param ctx
 	 * @param WindowNo
 	 * @param TabNo
@@ -283,7 +280,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.IsQuickForm = "Y".equals(rs.getString ("IsQuickForm"));
 			{
 				vo.ColumnSQL = rs.getString("ColumnSQL");
-				if (vo.ColumnSQL != null && !vo.ColumnSQL.startsWith("@SQL=") && !vo.ColumnSQL.startsWith("@SQLFIND=") && vo.ColumnSQL.contains("@")) {
+				if (vo.ColumnSQL != null && !vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) && !vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX) && vo.ColumnSQL.contains("@")) {
 					// NOTE: cannot use window context because this is set globally on the query, not per record
 					vo.ColumnSQL = Env.parseContext(ctx, -1, vo.ColumnSQL, false, true);
 				}			
@@ -320,7 +317,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	}
 
 	/**
-	 *  Init Field for Process Parameter
+	 *  Create Field VO for Process Parameter
 	 *  @param ctx context
 	 *  @param WindowNo window
 	 *  @param ProcessIDOfPanel
@@ -334,11 +331,15 @@ public class GridFieldVO implements Serializable, Cloneable
 		return GridFieldVO.createParameter(ctx, WindowNo, 0, ProcessIDOfPanel, WindowIDOfPanel, InfoWindowIDOfPanel, rs);
 	}
 	/**
-	 *  Init Field for Process Parameter
+	 *  Create Field VO for Process Parameter
 	 *  @param ctx context
 	 *  @param WindowNo window
+	 *  @param TabNo
+	 *  @param ProcessIDOfPanel
+	 *  @param WindowIDOfPanel
+	 *  @param InfoWindowIDOfPanel
 	 *  @param rs result set AD_Process_Para
-	 *  @return MFieldVO
+	 *  @return GridFieldVO
 	 */
 	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int TabNo, int ProcessIDOfPanel, int WindowIDOfPanel, int InfoWindowIDOfPanel, ResultSet rs)
 	{
@@ -354,7 +355,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		try
 		{
 			vo.AD_Table_ID = 0;
-			vo.AD_Column_ID = rs.getInt("AD_Process_Para_ID");	//	**
+			vo.AD_Column_ID = rs.getInt("AD_Process_Para_ID");
 			vo.ColumnName = rs.getString("ColumnName");
 			vo.Header = rs.getString("Name");
 			vo.Description = rs.getString("Description");
@@ -542,13 +543,13 @@ public class GridFieldVO implements Serializable, Cloneable
 	}
 
 	/**
-	 *  Make a standard field (Created/Updated/By)
+	 *  Create standard field (Created/Updated/By) VO.
 	 *  @param ctx context
 	 *  @param WindowNo window
 	 *  @param TabNo tab
 	 *  @param AD_Window_ID window
 	 *  @param AD_Tab_ID tab
-	 *  @param tabReadOnly rab is r/o
+	 *  @param tabReadOnly tab is r/o
 	 *  @param isCreated is Created field
 	 *  @param isTimestamp is the timestamp (not by)
 	 *  @return GridFieldVO
@@ -572,9 +573,8 @@ public class GridFieldVO implements Serializable, Cloneable
 		vo.initFinish();
 		return vo;
 	}   //  initStdField
-
 	
-	/**************************************************************************
+	/**
 	 *  Private constructor.
 	 *  @param Ctx context
 	 *  @param windowNo window
@@ -603,8 +603,8 @@ public class GridFieldVO implements Serializable, Cloneable
 	/** AD_Winmdow_ID               */
 	public int          AD_Window_ID;
 	/** 
-	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
-	 *  it's difference with AD_Process_ID
+	 *  When this field is inside process parameter panel, AD_Process_ID_Of_Panel is id of process that will run in this panel. 
+	 *  This is different from AD_Process_ID of field.
 	 */
 	public int          AD_Process_ID_Of_Panel;
 	/**
@@ -612,7 +612,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	 */
 	public int          AD_Window_ID_Of_Panel;
 	/**
-	 * AD_Infowindow_ID call process. user in case from info window call process.
+	 * AD_Infowindow_ID of containing panel
 	 */
 	public int          AD_InfoWindow_ID_Of_Panel;
 	/** AD_Tab_ID					*/
@@ -633,7 +633,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	public int          displayType = 0;
 	/**	Table ID		*/
 	public int          AD_Table_ID = 0;
-	/**	Clumn ID		*/
+	/**	Column ID		*/
 	public int          AD_Column_ID = 0;
 	/**	Display Length	*/
 	public int          DisplayLength = 0;
@@ -647,7 +647,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	public int			SeqNo = 0;
 	/** Grid Display sequence	*/
 	public int			SeqNoGrid = 0;
-	/**	Dislay Logic, never set null for it	*/
+	/**	Display Logic, never set null for it	*/
 	public String       DisplayLogic = "";
 	/**	Default Value, never set null for it	*/	
 	public String       DefaultValue = "";
@@ -775,7 +775,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	public boolean IsShowNegateButton = false;
 
 	/**
-	 *  Set Context including contained elements
+	 *  Set context including context of lookupInfo.
 	 *  @param newCtx new context
 	 */
 	public void setCtx (Properties newCtx)
@@ -814,7 +814,6 @@ public class GridFieldVO implements Serializable, Cloneable
 		if (Placeholder == null)
 			Placeholder = "";
 
-
 		//  Create Lookup, if not ID
 		if (DisplayType.isLookup(displayType) && IsDisplayed)
 		{
@@ -843,8 +842,8 @@ public class GridFieldVO implements Serializable, Cloneable
 	}
 
 	/**
-	 * 	Clone Field.
-	 *	@param Ctx ctx
+	 * 	Clone Field VO.
+	 *	@param ctx context
 	 *	@param windowNo window no
 	 *	@param tabNo tab no
 	 *	@param ad_Window_ID window id
@@ -902,7 +901,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	}	//	toString
 	
 	/**
-	 * 
+	 * Comparator for GridFieldVO.SeqNo
 	 * @author a42niem
 	 * IDEMPIERE-1120 Implement Field SeqNo customization
 	 */

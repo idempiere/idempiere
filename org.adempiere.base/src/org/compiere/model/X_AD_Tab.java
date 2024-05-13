@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tab
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tab")
-public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent 
+public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -95,6 +95,68 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Tab (Properties ctx, String AD_Tab_UU, String trxName)
+    {
+      super (ctx, AD_Tab_UU, trxName);
+      /** if (AD_Tab_UU == null)
+        {
+			setAD_Tab_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setHasTree (false);
+			setIsAdvancedTab (false);
+// N
+			setIsInsertRecord (true);
+// Y
+			setIsReadOnly (false);
+			setIsSingleRow (true);
+// Y
+			setIsSortTab (false);
+// N
+			setIsTranslationTab (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Tab WHERE AD_Window_ID=@AD_Window_ID@
+			setTabLevel (0);
+			setTreeDisplayedOn (null);
+// B
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tab (Properties ctx, String AD_Tab_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tab_UU, trxName, virtualColumns);
+      /** if (AD_Tab_UU == null)
+        {
+			setAD_Tab_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setHasTree (false);
+			setIsAdvancedTab (false);
+// N
+			setIsInsertRecord (true);
+// Y
+			setIsReadOnly (false);
+			setIsSingleRow (true);
+// Y
+			setIsSortTab (false);
+// N
+			setIsTranslationTab (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Tab WHERE AD_Window_ID=@AD_Window_ID@
+			setTabLevel (0);
+			setTreeDisplayedOn (null);
+// B
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Tab (Properties ctx, ResultSet rs, String trxName)
     {
@@ -102,7 +164,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -502,10 +564,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isHasTree()
 	{
 		Object oo = get_Value(COLUMNNAME_HasTree);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -585,10 +647,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isAdvancedTab()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAdvancedTab);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -607,10 +669,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isAllowAdvancedLookup()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowAdvancedLookup);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -653,10 +715,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isInfoTab()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInfoTab);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -676,10 +738,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isInsertRecord()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInsertRecord);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -699,10 +761,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isLookupOnlySelection()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLookupOnlySelection);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -722,10 +784,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -745,10 +807,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isSingleRow()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSingleRow);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -768,10 +830,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isSortTab()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSortTab);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -791,10 +853,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isTranslationTab()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTranslationTab);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -838,7 +900,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -900,10 +962,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

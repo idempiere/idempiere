@@ -25,9 +25,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *
+ * Factory interface for {@link Doc}.
  * @author hengsin
- *
  */
 public interface IDocFactory {
 	

@@ -18,9 +18,13 @@ import java.util.List;
 
 import org.compiere.model.MLookup;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.SvrProcess;
 
 /**
- * 
+ * Interface to provide server process access to UI.<br/>
+ * iDempiere process usually extends {@link SvrProcess} and uses the protected processUI reference.<br/>
+ * Process must perform null check when using the SvrProcess.processUI field since it will be null when a process is not launch
+ * from the client end (for e.g from scheduler).  
  * @author hengsin
  *
  */
@@ -80,19 +84,24 @@ public interface IProcessUI {
 	 */
 	public void ask(String message, Callback<Boolean> callback);
 	
+	/**
+	 * ask for input from user
+	 * @param message
+	 * @param callback
+	 */
 	public void askForInput(String message, Callback<String> callback);
 	
 	/**
-	 * Prompt for user secret input.
+	 * Prompt for secret input (for e.g password) from user.
 	 * 
-	 * @param title
+	 * @param message
 	 * @param callback
 	 */
 	public void askForSecretInput(String message, Callback<String> callback);
 
 	/**
 	 * Prompt user for input with a configurable DisplayType (String, Number, TableDir or Search)
-	 *
+	 * <p>
 	 * Usage is the same from ask and askForInput methods with some additional parameters
 	 *
 	 * muriloht - devCoffee #3390
@@ -122,7 +131,7 @@ public interface IProcessUI {
 	default public void showReports(List<File> pdfList)
 	{
 		throw new RuntimeException();
-}
+	}
 
 	/**
 	 * show an info window from inside a process with user defined parameters

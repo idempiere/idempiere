@@ -18,37 +18,99 @@ import java.text.SimpleDateFormat;
 import org.compiere.util.Language;
 
 /**
+ * Interface for display type factory.
  * @author Jan Thielemann - jan.thielemann@evenos-consulting.de
  * @author evenos Consulting GmbH - www.evenos.org
  */
-
 public interface IDisplayTypeFactory {
-	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of int ID type
+	 */
 	public boolean isID(int displayType);
+	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of UUID type
+	 */
+	public default boolean isUUID(int displayType) {
+		return false;
+	}
+	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of numeric type
+	 */
 	public boolean isNumeric(int displayType);
+	
+	/**
+	 * @param displayType
+	 * @return default numeric precision for displayType
+	 */
 	public Integer getDefaultPrecision(int displayType);
+	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of text type
+	 */
 	public boolean isText(int displayType);
+	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of date type
+	 */
 	public boolean isDate (int displayType);
 	public default boolean isList (int displayType) {
 		return false;
 	}
+	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of lookup type (usually a foreign key type)
+	 */
 	public boolean isLookup(int displayType);
+	
+	/**
+	 * @param displayType
+	 * @return true if displayType is of LOB type
+	 */
 	public boolean isLOB (int displayType);
+	
+	/**
+	 * @param displayType
+	 * @param language
+	 * @param pattern
+	 * @return DecimalFormat
+	 */
 	public DecimalFormat getNumberFormat(int displayType, Language language, String pattern);
+	
+	/**
+	 * @param displayType
+	 * @param language
+	 * @param pattern
+	 * @return SimpleDateFormat
+	 */
 	public SimpleDateFormat getDateFormat (int displayType, Language language, String pattern);
+	
+	/**
+	 * @param displayType
+	 * @param yesNoAsBoolean
+	 * @return Java type for displayType
+	 */
 	public Class<?> getClass (int displayType, boolean yesNoAsBoolean);
+	
+	/**
+	 * @param displayType
+	 * @param columnName
+	 * @param fieldLength
+	 * @return SQL data type for displayType
+	 */
 	public String getSQLDataType (int displayType, String columnName, int fieldLength);
+	
+	/**
+	 * @param displayType
+	 * @return description for displayType
+	 */
 	public String getDescription (int displayType);
 
 }
-
-
-
-
-
-
-
-
-
-
-

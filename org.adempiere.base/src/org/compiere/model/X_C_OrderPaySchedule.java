@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_OrderPaySchedule
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderPaySchedule")
-public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_Persistent 
+public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_OrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName)
@@ -70,6 +70,40 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_OrderPaySchedule (Properties ctx, String C_OrderPaySchedule_UU, String trxName)
+    {
+      super (ctx, C_OrderPaySchedule_UU, trxName);
+      /** if (C_OrderPaySchedule_UU == null)
+        {
+			setC_Order_ID (0);
+			setC_OrderPaySchedule_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
+			setDueAmt (Env.ZERO);
+			setDueDate (new Timestamp( System.currentTimeMillis() ));
+			setIsValid (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderPaySchedule (Properties ctx, String C_OrderPaySchedule_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderPaySchedule_UU, trxName, virtualColumns);
+      /** if (C_OrderPaySchedule_UU == null)
+        {
+			setC_Order_ID (0);
+			setC_OrderPaySchedule_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
+			setDueAmt (Env.ZERO);
+			setDueDate (new Timestamp( System.currentTimeMillis() ));
+			setIsValid (false);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_OrderPaySchedule (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +111,7 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -228,7 +262,7 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getDiscountDate()));
     }
@@ -282,10 +316,10 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -305,10 +339,10 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -327,10 +361,10 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

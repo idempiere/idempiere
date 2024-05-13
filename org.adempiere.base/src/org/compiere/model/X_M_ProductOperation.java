@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductOperation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductOperation")
-public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_Persistent 
+public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName)
@@ -59,6 +59,30 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ProductOperation (Properties ctx, String M_ProductOperation_UU, String trxName)
+    {
+      super (ctx, M_ProductOperation_UU, trxName);
+      /** if (M_ProductOperation_UU == null)
+        {
+			setM_Product_ID (0);
+			setM_ProductOperation_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductOperation (Properties ctx, String M_ProductOperation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductOperation_UU, trxName, virtualColumns);
+      /** if (M_ProductOperation_UU == null)
+        {
+			setM_Product_ID (0);
+			setM_ProductOperation_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ProductOperation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +90,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -203,7 +227,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

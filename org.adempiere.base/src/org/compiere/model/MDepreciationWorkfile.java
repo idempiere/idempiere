@@ -14,6 +14,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.fa.feature.UseLife;
 import org.idempiere.fa.feature.UseLifeImpl;
 import org.idempiere.fa.service.api.DepreciationDTO;
@@ -29,9 +30,21 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	implements UseLife
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3814417671427820714L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Depreciation_Workfile_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDepreciationWorkfile(Properties ctx, String A_Depreciation_Workfile_UU, String trxName) {
+        super(ctx, A_Depreciation_Workfile_UU, trxName);
+		if (Util.isEmpty(A_Depreciation_Workfile_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Default Constructor
@@ -43,16 +56,21 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	{
 		super (ctx,A_Depreciation_Workfile_ID, trxName);
 		if (A_Depreciation_Workfile_ID == 0)
-		{
-			setPostingType(POSTINGTYPE_Actual);
-			setA_QTY_Current(Env.ZERO);
-			setA_Asset_Cost(Env.ZERO);
-			setA_Accumulated_Depr(Env.ZERO);
-			setA_Period_Posted(0);
-			setA_Current_Period(0);
-		}
+			setInitialDefaults();
 	}	//	MDepreciationWorkfile
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPostingType(POSTINGTYPE_Actual);
+		setA_QTY_Current(Env.ZERO);
+		setA_Asset_Cost(Env.ZERO);
+		setA_Accumulated_Depr(Env.ZERO);
+		setA_Period_Posted(0);
+		setA_Current_Period(0);
+	}
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context
@@ -71,8 +89,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return getAsset(false);
 	}
 	
-	/**	Get asset using this trxName
-	 *	@param	requery	requery asset
+	/**	
+	 *  Get asset using this trxName
+	 *	@param	requery	true to re-query from DB
 	 *	@return parent asset
 	 */
 	public MAsset getAsset(boolean requery)
@@ -86,8 +105,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return m_asset;
 	}
 	
-	/**	Set asset
-	 *	@param	asset
+	/**	
+	 *  Set asset
+	 *	@param asset
 	 */
 	public void setAsset(MAsset asset)
 	{
@@ -95,10 +115,10 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		m_asset = asset;
 	}
 	
-	/**	Gets asset's service date (commissioning)
+	/**	
+	 *  Gets asset's service date (commissioning)
 	 *	@return asset service date
-	 */
-	
+	 */	
 	public Timestamp getAssetServiceDate()
 	{
 		MAsset asset = getAsset();
@@ -108,11 +128,14 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return asset.getAssetServiceDate();
 	}
 	
-	/**	After save
+	/**
+	 *  After save
 	 *	@param	newRecord
+	 *  @param  success
 	 *	@return true on success
 	 */
-	protected boolean afterSave (boolean newRecord)
+	@Override
+	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if(m_buildDepreciation)
 		{
@@ -121,7 +144,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return true;
 	}
 	
-	
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("Entering: trxName=" + get_TrxName());
@@ -219,7 +242,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 *
+	 * @param asset
+	 * @param postingType
+	 * @param assetgrpacct
 	 */
 	public MDepreciationWorkfile(MAsset asset, String postingType, MAssetGroupAcct assetgrpacct)
 	{
@@ -261,7 +286,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDepreciationWorkfile(MDepreciationWorkfile copy) 
@@ -270,7 +295,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -280,7 +305,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -295,6 +320,12 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	/** Logger										*/
 	private CLogger log = CLogger.getCLogger(getClass());
 
+	/**
+	 * @param ctx
+	 * @param asset_id
+	 * @param trxName
+	 * @return collection of MDepreciationWorkfile
+	 */
 	public static Collection<MDepreciationWorkfile> forA_Asset_ID(Properties ctx, int asset_id, String trxName)
 	{
 		return new Query(ctx, Table_Name, MDepreciationWorkfile.COLUMNNAME_A_Asset_ID+"=?", trxName)
@@ -303,7 +334,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 * 
 	 * @param ctx
 	 * @param A_Asset_ID
 	 * @param postingType
@@ -316,7 +346,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 * 
 	 * @param ctx
 	 * @param A_Asset_ID
 	 * @param postingType
@@ -356,14 +385,16 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return get(ctx, A_Asset_ID, postingType, trxName, 0);		
 	}
 	
-	/**	Returns the date of the last action
+	/**	
+	 * @return last day of previous month of DateAcct
 	 */
 	public Timestamp getLastActionDate()
 	{
 		return TimeUtil.getMonthLastDay(TimeUtil.addMonths(getDateAcct(), -1));
 	}
 	
-	/**	Check if the asset is depreciated at the specified date
+	/**	
+	 *  Check if the asset is depreciated at the specified date
 	 *	@param date
 	 *	@return true if you amortized until the specified date, otherwise false
 	 */
@@ -378,6 +409,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	
 	/**
 	 * Get Asset Accounting for this workfile
+	 * @param dateAcct
+	 * @param trxName
 	 * @return asset accounting model
 	 */
 	public MAssetAcct getA_AssetAcct(Timestamp dateAcct, String trxName)
@@ -385,7 +418,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return MAssetAcct.forA_Asset_ID(getCtx(), getC_AcctSchema_ID(), getA_Asset_ID(), getPostingType(), dateAcct, trxName);
 	}
 
-	/**	Returns the current cost of FAs. It is calculated as the difference between acquisition value and the value that you (A_Salvage_Value)
+	/**	
+	 * Returns the current cost of FAs. It is calculated as the difference between acquisition value and salvage value (A_Salvage_Value).
 	 * @return the current cost of FAs
 	 */
 	public BigDecimal getActualCost()
@@ -393,17 +427,20 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		return getActualCost(getA_Asset_Cost());
 	}
 	
-	/**	*/
+	/**
+	 * @param assetCost
+	 * @return assetCost - A_Salvage_Value
+	 */
 	public BigDecimal getActualCost(BigDecimal assetCost)
 	{
 		return assetCost.subtract(getA_Salvage_Value());
 	}
 	
 	/**
-	 * 
+	 * Adjust asset cost and qty with deltaAmt and deltaQty
 	 * @param deltaAmt
 	 * @param deltaQty
-	 * @param reset
+	 * @param reset true to use deltaAmt and deltaQty as current asset cost and qty
 	 */
 	public void adjustCost(BigDecimal deltaAmt, BigDecimal deltaQty, boolean reset)
 	{
@@ -427,8 +464,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	 * Adjust Accumulated depreciation
 	 * @param amt
 	 * @param amt_F
-	 * @param reset
-	 * @return
+	 * @param reset true to use amt and amt_F as new value
+	 * @return true
 	 */
 	public boolean adjustAccumulatedDepr(BigDecimal amt, BigDecimal amt_F, boolean reset)
 	{
@@ -447,6 +484,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 
 	/**
 	 * Adjust use life years
+	 * @param deltaUseLifeYears
+	 * @param deltaUseLifeYears_F
+	 * @param reset true to use deltaUseLifeYears and deltaUseLifeYears_F as new value
 	 */
 	public void adjustUseLife(int deltaUseLifeYears, int deltaUseLifeYears_F, boolean reset)
 	{
@@ -458,32 +498,44 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		if (log.isLoggable(Level.FINE)) log.fine("Leaving");
 	}
 	
-	/**	*/
+	/**
+	 * @param fiscal true for UseLifeMonths_F, false for getUseLifeMonths
+	 * @return use life in months
+	 */
 	public int getUseLifeMonths(boolean fiscal)
 	{
 		return fiscal ? getUseLifeMonths_F() : getUseLifeMonths();
 	}
 	
-	/**	*/
+	/**
+	 * @param fiscal true for A_Accumulated_Depr_F, false for A_Accumulated_Depr
+	 * @return accumulated depreciation
+	 */
 	public BigDecimal getA_Accumulated_Depr(boolean fiscal)
 	{
 		return fiscal ? getA_Accumulated_Depr_F() : getA_Accumulated_Depr();
 	}
 	
-	/**	*/
+	/**
+	 * @return accumulated cost
+	 */
 	public BigDecimal getAccumulatedCost()
 	{
 		return getA_Accumulated_Depr(isFiscal());
 	}
 	
-	/**	*/
+	/**
+	 * @return re-evaluation cost
+	 */
 	public BigDecimal getReevaluationCost()
 	{
 		return Env.ZERO;
 	}
 	
 	/**
-	 * Returns the residual (remaining) value
+	 * @param accumAmt null to use current A_Accumulated_Depr/A_Accumulated_Depr_F value
+	 * @param fiscal true for A_Accumulated_Depr_F, false for A_Accumulated_Depr
+	 * @return residual (remaining) value (actual cost - accumulated depreciation)
 	 */
 	public BigDecimal getRemainingCost(BigDecimal accumAmt, boolean fiscal)
 	{
@@ -495,14 +547,19 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 * Returns the residual (remaining) value
+	 * @param accumAmt
+	 * @return residual (remaining) value (actual cost - accumulated depreciation)
 	 */
 	public BigDecimal getRemainingCost(BigDecimal accumAmt)
 	{
 		return getRemainingCost(accumAmt, isFiscal());
 	}
 	
-	/**	*/
+	/**
+	 * @param A_Current_Period
+	 * @param method
+	 * @return remaining periods
+	 */
 	public int getRemainingPeriods(int A_Current_Period, MDepreciation method)
 	{
 		int useLifePeriods = getUseLifeMonths(isFiscal());
@@ -512,7 +569,11 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		int currentPeriod = (A_Current_Period >= 0 ? A_Current_Period : getA_Current_Period());
 		return useLifePeriods - currentPeriod;
 	}
-	/**	*/
+	
+	/**
+	 * @param A_Current_Period
+	 * @return remaining periods
+	 */
 	public int getRemainingPeriods(int A_Current_Period)
 	{
 		return getRemainingPeriods(A_Current_Period, null);
@@ -520,13 +581,17 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	
 	/**	*/
 	private boolean m_isFiscal = false;
-	/**	*/
+	
+	/**
+	 * @return true for fiscal, false otherwise
+	 */
 	public boolean isFiscal()
 	{
 		return m_isFiscal;
 	}
+	
 	/**
-	 * Set fiscal flag (temporary - is not modifing the workfile)
+	 * Set fiscal flag (in memory only - this is not modifying the work file)
 	 * @param fiscal
 	 */
 	public void setFiscal(boolean fiscal)
@@ -534,7 +599,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		m_isFiscal = fiscal;
 	}
 	
-	/**	Increment the current period (A_Current_Period) 1, and a month DateAcct */
+	/**	
+	 * Increment the current period (A_Current_Period) 1, and a month DateAcct. 
+	 */
 	public void incA_Current_Period()
 	{
 		int old_period = getA_Current_Period();
@@ -548,8 +615,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 * Set A Current Period (and Data Act) processed just after the last expense. 
-	 * Do not save.
+	 * Set A Current Period (and Data Act) to period after the latest expense (MDepreciationExp) record. 
+	 * This method do not save to DB.
 	 */
 	public void setA_Current_Period()
 	{
@@ -572,7 +639,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		}
 		else
 		{
-			log.info("There are no records from which to infer its");
+			log.info("There are no MDepreciationExp records from which to set current period and accounting date");
 		}
 
 	}
@@ -581,11 +648,10 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	private boolean m_buildDepreciation = false;
 	
 	/**
-	 * Build depreciation (A_Depreciation_Exp) entries. More exactly, is deleting not Processed entries.
+	 * Build depreciation (A_Depreciation_Exp) entries. More exactly, is deleting not Processed entries
 	 * and create new ones again.
-	 * WARNING: IS NOT modifying workfile (this)
+	 * WARNING: IS NOT modifying workfile (this).
 	 */
-
 	public void buildDepreciation()
 	{
 		if (!isDepreciated())
@@ -746,7 +812,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}	//	truncDepreciation
 	
 	/**
-	 * Update Founding Mode related fields
+	 * Update Funding Mode related fields
 	 * @param m model
 	 * @param changedColumnName column name that has been changed
 	 */
@@ -806,18 +872,23 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		}
 	}
 	
+	@Override
 	public boolean set_AttrValue(String ColumnName, Object value) {
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 			return false;
 		return set_ValueNoCheck(ColumnName, value);
 	}
+	
+	@Override
 	public Object get_AttrValue(String ColumnName) {
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 			return null;
 		return get_Value(index);
 	}
+	
+	@Override
 	public boolean is_AttrValueChanged(String ColumnName) {
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)

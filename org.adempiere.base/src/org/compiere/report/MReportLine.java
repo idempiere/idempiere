@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.X_PA_ReportLine;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -46,6 +47,20 @@ public class MReportLine extends X_PA_ReportLine
 	private BasicStroke			overline_Stroke;
 	private Stroke				underline_Stroke;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ReportLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportLine(Properties ctx, String PA_ReportLine_UU, String trxName) {
+        super(ctx, PA_ReportLine_UU, trxName);
+		if (Util.isEmpty(PA_ReportLine_UU))
+			setInitialDefaults();
+		else
+			loadSources();
+    }
+
 	/**
 	 * 	Constructor
 	 * 	@param ctx context
@@ -56,14 +71,19 @@ public class MReportLine extends X_PA_ReportLine
 	{
 		super (ctx, PA_ReportLine_ID, trxName);
 		if (PA_ReportLine_ID == 0)
-		{
-			setSeqNo (0);
-		//	setIsSummary (false);		//	not active in DD 
-			setIsPrinted (false);
-		}
+			setInitialDefaults();
 		else
 			loadSources();
 	}	//	MReportLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setSeqNo (0);
+		//	setIsSummary (false);		//	not active in DD 
+		setIsPrinted (false);
+	}
 
 	/**
 	 * 	Constructor
@@ -77,7 +97,7 @@ public class MReportLine extends X_PA_ReportLine
 		loadSources();
 	}	//	MReportLine
 
-	/**	Containt Sources				*/
+	/**	Contained Sources				*/
 	private MReportSource[]		m_sources = null;
 	/** Cache result					*/
 	private String				m_whereClause = null;

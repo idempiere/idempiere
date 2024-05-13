@@ -28,6 +28,7 @@ import javax.swing.filechooser.FileFilter;
  *  @author Jorg Janke
  *  @version  $Id: ExtensionFileFilter.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class ExtensionFileFilter extends FileFilter
 	implements Serializable
 {

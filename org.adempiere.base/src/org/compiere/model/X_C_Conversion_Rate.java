@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Conversion_Rate
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Conversion_Rate")
-public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Persistent 
+public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Conversion_Rate (Properties ctx, int C_Conversion_Rate_ID, String trxName)
@@ -68,6 +68,38 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Conversion_Rate (Properties ctx, String C_Conversion_Rate_UU, String trxName)
+    {
+      super (ctx, C_Conversion_Rate_UU, trxName);
+      /** if (C_Conversion_Rate_UU == null)
+        {
+			setC_Conversion_Rate_ID (0);
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+			setC_Currency_ID_To (0);
+			setDivideRate (Env.ZERO);
+			setMultiplyRate (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Conversion_Rate (Properties ctx, String C_Conversion_Rate_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Conversion_Rate_UU, trxName, virtualColumns);
+      /** if (C_Conversion_Rate_UU == null)
+        {
+			setC_Conversion_Rate_ID (0);
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+			setC_Currency_ID_To (0);
+			setDivideRate (Env.ZERO);
+			setMultiplyRate (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Conversion_Rate (Properties ctx, ResultSet rs, String trxName)
     {
@@ -75,7 +107,7 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -121,7 +153,7 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Conversion_Rate_ID()));
     }

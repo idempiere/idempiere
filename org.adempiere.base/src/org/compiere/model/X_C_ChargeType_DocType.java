@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_ChargeType_DocType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ChargeType_DocType")
-public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent 
+public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ChargeType_DocType (Properties ctx, String C_ChargeType_DocType_UU, String trxName)
+    {
+      super (ctx, C_ChargeType_DocType_UU, trxName);
+      /** if (C_ChargeType_DocType_UU == null)
+        {
+			setC_ChargeType_ID (0);
+			setC_DocType_ID (0);
+			setIsAllowNegative (true);
+// Y
+			setIsAllowPositive (true);
+// Y
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ChargeType_DocType (Properties ctx, String C_ChargeType_DocType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ChargeType_DocType_UU, trxName, virtualColumns);
+      /** if (C_ChargeType_DocType_UU == null)
+        {
+			setC_ChargeType_ID (0);
+			setC_DocType_ID (0);
+			setIsAllowNegative (true);
+// Y
+			setIsAllowPositive (true);
+// Y
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ChargeType_DocType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -86,7 +116,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_ChargeType_DocType[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -173,10 +203,10 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	public boolean isAllowNegative()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowNegative);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -195,10 +225,10 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	public boolean isAllowPositive()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowPositive);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

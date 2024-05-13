@@ -42,12 +42,16 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *
+ * Static helper methods for promotion rule (M_Promotion)
  * @author hengsin
- *
  */
 public class PromotionRule {
 
+	/**
+	 * Apply promotion rules to order
+	 * @param order
+	 * @throws Exception
+	 */
 	public static void applyPromotions(MOrder order) throws Exception {
 		//key = C_OrderLine, value = Qty to distribution
 		Map<Integer, BigDecimal> orderLineQty = new LinkedHashMap<Integer, BigDecimal>();
@@ -288,6 +292,16 @@ public class PromotionRule {
 		}
 	}
 
+	/**
+	 * Add discount line (order line with charge)
+	 * @param order
+	 * @param ol
+	 * @param discount
+	 * @param qty
+	 * @param C_Charge_ID
+	 * @param promotion
+	 * @throws Exception
+	 */
 	private static void addDiscountLine(MOrder order, MOrderLine ol, BigDecimal discount,
 			BigDecimal qty, int C_Charge_ID, I_M_Promotion promotion) throws Exception {
 		MOrderLine nol = new MOrderLine(order.getCtx(), 0, order.get_TrxName());
@@ -322,7 +336,7 @@ public class PromotionRule {
 	}
 
 	/**
-	 *
+	 * Find applicable promotion rules.
 	 * @param order
 	 * @return Map<M_Promotion_ID, List<M_PromotionLine_ID>>
 	 * @throws Exception
@@ -403,7 +417,7 @@ public class PromotionRule {
 	}
 
 	/**
-	 *
+	 * Calculate distribution quantity for order lines
 	 * @param distribution
 	 * @param prevSet
 	 * @param orderLineQty
@@ -534,7 +548,6 @@ public class PromotionRule {
 	}
 
 	/**
-	 *
 	 * @param promotion_ID
 	 * @param order
 	 * @return List<M_PromotionLine_ID>
@@ -600,15 +613,23 @@ public class PromotionRule {
 		return applicable;
 	}
 
-	static class DistributionSet {
+	protected static class DistributionSet {
 		//<C_OrderLine_Id, DistributionQty>
 		Map<Integer, BigDecimal> orderLines = new LinkedHashMap<Integer, BigDecimal>();
 		BigDecimal setQty = BigDecimal.ZERO;
 	}
 
-	static class OrderLineComparator implements Comparator<Integer> {
-		Map<Integer, MOrderLine> index;
-		OrderLineComparator(Map<Integer, MOrderLine> olIndex) {
+	/**
+	 * Price actual comparator for order line
+	 */
+	protected static class OrderLineComparator implements Comparator<Integer> {
+		/** C_OrderLine_ID:MOrderLine */
+		protected Map<Integer, MOrderLine> index;
+		
+		/**
+		 * @param olIndex order lines
+		 */
+		protected OrderLineComparator(Map<Integer, MOrderLine> olIndex) {
 			index = olIndex;
 		}
 

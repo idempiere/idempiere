@@ -31,7 +31,7 @@ import org.compiere.util.DB;
 public class MAddressValidation extends X_C_AddressValidation {	
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8194097022422808757L;
 	
@@ -39,11 +39,11 @@ public class MAddressValidation extends X_C_AddressValidation {
 	private static CLogger	s_log	= CLogger.getCLogger(MAddressValidation.class);
 	
 	/**
-	 * Get default address validation
+	 * Get default address validation model
 	 * @param ctx
 	 * @param AD_Client_ID
 	 * @param trxName
-	 * @return address validation
+	 * @return address validation model
 	 */
 	public static MAddressValidation getDefaultAddressValidation(Properties ctx, int AD_Client_ID, String trxName) 
 	{
@@ -54,11 +54,11 @@ public class MAddressValidation extends X_C_AddressValidation {
 	}
 	
 	/**
-	 * Get address validations
+	 * Get address validation models
 	 * @param ctx
 	 * @param AD_Client_ID
 	 * @param trxName
-	 * @return array of address validation
+	 * @return array of address validation model
 	 */
 	public static MAddressValidation[] getAddressValidation(Properties ctx, int AD_Client_ID, String trxName) 
 	{
@@ -104,50 +104,94 @@ public class MAddressValidation extends X_C_AddressValidation {
 		return retValue;
 	}
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_AddressValidation_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAddressValidation(Properties ctx, String C_AddressValidation_UU, String trxName) {
+        super(ctx, C_AddressValidation_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param C_AddressValidation_ID
+     * @param trxName
+     */
 	public MAddressValidation(Properties ctx, int C_AddressValidation_ID, String trxName) {
 		super(ctx, C_AddressValidation_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAddressValidation(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * @return Java class name of address validation service
+	 */
 	public String getAddressValidationClass()
 	{
 		return getC_AddressValidationCfg().getAddressValidationClass();
 	}
 	
+	/**
+	 * @return host address of address validation service
+	 */
 	public String getHostAddress()
 	{
 		return getC_AddressValidationCfg().getHostAddress();
 	}
 	
+	/**
+	 * @return host port of address validation service
+	 */
 	public int getHostPort()
 	{
 		return getC_AddressValidationCfg().getHostPort();
 	}
 	
+	/**
+	 * @return proxy address of address validation service
+	 */
 	public String getProxyAddress()
 	{
 		return getC_AddressValidationCfg().getProxyAddress();
 	}
 	
+	/**
+	 * @return proxy port of address validation service
+	 */
 	public int getProxyPort()
 	{
 		return getC_AddressValidationCfg().getProxyPort();
 	}
 	
+	/**
+	 * @return proxy logon of address validation service
+	 */
 	public String getProxyLogon()
 	{
 		return getC_AddressValidationCfg().getProxyLogon();
 	}
 	
+	/**
+	 * @return proxy password of of address validation service
+	 */
 	public String getProxyPassword()
 	{
 		return getC_AddressValidationCfg().getProxyPassword();
 	}
 	
+	/**
+	 * @return service path of address validation service
+	 */
 	public String getServicePath()
 	{
 		return getC_AddressValidationCfg().getServicePath();

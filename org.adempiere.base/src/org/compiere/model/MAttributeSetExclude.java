@@ -37,9 +37,19 @@ import org.compiere.util.Env;
 public class MAttributeSetExclude extends X_M_AttributeSetExclude {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2977401481745176882L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_AttributeSetExclude_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAttributeSetExclude(Properties ctx, String M_AttributeSetExclude_UU, String trxName) {
+        super(ctx, M_AttributeSetExclude_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
@@ -60,7 +70,7 @@ public class MAttributeSetExclude extends X_M_AttributeSetExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAttributeSetExclude(MAttributeSetExclude copy) {
@@ -68,7 +78,7 @@ public class MAttributeSetExclude extends X_M_AttributeSetExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -77,7 +87,7 @@ public class MAttributeSetExclude extends X_M_AttributeSetExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

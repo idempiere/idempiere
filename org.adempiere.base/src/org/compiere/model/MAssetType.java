@@ -15,7 +15,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5511421754249363729L;
 
@@ -70,20 +70,38 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 		return null;
 	}
 	
-	/** Standard Constructor */
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Type_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetType(Properties ctx, String A_Asset_Type_UU, String trxName) {
+        super(ctx, A_Asset_Type_UU, trxName);
+    }
+
+	/**
+	 * @param ctx
+	 * @param A_Asset_Type_ID
+	 * @param trxName
+	 */
 	public MAssetType (Properties ctx, int A_Asset_Type_ID, String trxName)
 	{
 		super (ctx, A_Asset_Type_ID, trxName);
 	}
 	
-	/** Load Constructor */
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAssetType (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAssetType(MAssetType copy) 
@@ -92,7 +110,7 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -102,7 +120,7 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -113,24 +131,38 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/** Is Fixed Asset
+	/** 
+	 * @return true if this is of Fixed Asset type
 	 */
 	public boolean isFixedAsset()
 	{
 		return A_ASSET_TYPE_MFX.equals(getValue());
 	}
 	
+	/**
+	 * @param A_Asset_ID
+	 * @return true if asset is of Fixed Asset type
+	 */
 	public static boolean isFixedAsset(int A_Asset_ID)
 	{
 		MAsset asset = MAsset.get(Env.getCtx(), A_Asset_ID, null);
 		return isFixedAsset(asset);
 	}
 	
+	/**
+	 * @param asset
+	 * @return true if asset is of Fixed Asset type
+	 */
 	public static boolean isFixedAsset(MAsset asset)
 	{
 		return asset != null && A_ASSET_TYPE_MFX.equals(asset.getA_Asset_Type().getValue());
 	}
 	
+	/**
+	 * @param ctx
+	 * @param A_Asset_Group_ID
+	 * @return true if asset group is of Fixed Asset type
+	 */
 	public static boolean isFixedAssetGroup(Properties ctx, int A_Asset_Group_ID)
 	{
 		if (A_Asset_Group_ID <= 0)
@@ -145,13 +177,19 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 		return assetType.isFixedAsset();
 	}
 	
-	/** Is Inventory Object
+	/** 
+	 * @return true if this if of Inventory Object type
 	 */
 	public boolean isInventoryObject() {
 		return A_ASSET_TYPE_INV.equals(getValue());
 	}
 	
-	/** Convert an Yes-No-Unknown field to Boolean */
+	/** 
+	 * Convert an Yes-No-Unknown field to Boolean
+	 * @param value N=FALSE, Y=FALSE, X=default(use second character as default)
+	 * @param useDefaults
+	 * @return converted Boolean value or null
+	 */
 	protected static Boolean getBoolean (String value, boolean useDefaults)
 	{
 		if (value == null || value.length() == 0)
@@ -204,10 +242,10 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 	 * Update the given SetGetModel; Does not set A_Asset_Type_ID
 	 * @param model
 	 * @param useDefaults in case is not a concrete value, use defaults
+	 * @return always return true
 	 */
 	public boolean update(SetGetModel model, boolean useDefaults)
 	{
-//		boolean useDefaults = true;
 		Boolean f = getBoolean(getIsOwned(), useDefaults);
 		if (f != null)
 			model.set_AttrValue("IsOwned", f);
@@ -237,9 +275,17 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 		return this;
 	}
 
-	/** Callout Class */
+	/** Callout Class for A_Asset_Type_ID */
 	public static class Callout extends CalloutEngine
 	{
+		/**
+		 * @param ctx
+		 * @param WindowNo
+		 * @param mTab
+		 * @param mField
+		 * @param value
+		 * @return error message or empty string
+		 */
 		public String assetType(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
 			if (isCalloutActive())
 				return "";

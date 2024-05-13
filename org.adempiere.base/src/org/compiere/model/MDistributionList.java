@@ -27,7 +27,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	Material Distribution List
+ *	Material Distribution List.<br/>
+ *  Note: feature not fully implemented and have been marked as inactive in application dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MDistributionList.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -35,9 +36,19 @@ import org.compiere.util.Env;
 public class MDistributionList extends X_M_DistributionList
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1570304450929416071L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_DistributionList_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDistributionList(Properties ctx, String M_DistributionList_UU, String trxName) {
+        super(ctx, M_DistributionList_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -62,8 +73,8 @@ public class MDistributionList extends X_M_DistributionList
 	}	//	MDistributionList
 	
 	/**
-	 * 	Get Distibution Lines.
-	 * 	Add/Correct also Total Ratio
+	 * 	Get Distribution Lines.
+	 * 	Add/Correct also Total Ratio.
 	 *	@return array of lines
 	 */
 	public MDistributionListLine[] getLines()
@@ -109,8 +120,5 @@ public class MDistributionList extends X_M_DistributionList
 		MDistributionListLine[] retValue = new MDistributionListLine[list.size ()];
 		list.toArray (retValue);
 		return retValue;
-	}	//	getLines
-	
-	
-	
+	}	//	getLines			
 }	//	MDistributionList

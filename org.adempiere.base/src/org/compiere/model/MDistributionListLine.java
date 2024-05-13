@@ -22,9 +22,9 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 
-
 /**
- *	Distribution List Line
+ *	Material Distribution List Line.<br/>
+ *  Note: feature not fully implemented and have been marked as inactive in application dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MDistributionListLine.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
@@ -32,10 +32,20 @@ import org.compiere.util.Env;
 public class MDistributionListLine extends X_M_DistributionListLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8227610572847013425L;
 
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_DistributionListLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDistributionListLine(Properties ctx, String M_DistributionListLine_UU, String trxName) {
+        super(ctx, M_DistributionListLine_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -58,12 +68,12 @@ public class MDistributionListLine extends X_M_DistributionListLine
 	{
 		super(ctx, rs, trxName);
 	}	//	MDistributionListLine
-	
-	
+		
 	/**
-	 * 	Get Min Qty
-	 *	@return min Qty or 0
+	 * 	Get Minimum Qty
+	 *	@return minimum Qty or 0
 	 */
+	@Override
 	public BigDecimal getMinQty ()
 	{
 		BigDecimal minQty = super.getMinQty ();
@@ -71,12 +81,12 @@ public class MDistributionListLine extends X_M_DistributionListLine
 			return Env.ZERO;
 		return minQty;
 	}	//	getMinQty
-	
-	
+		
 	/**
 	 * 	Get Ratio
 	 *	@return ratio or 0
 	 */
+	@Override
 	public BigDecimal getRatio ()
 	{
 		BigDecimal ratio = super.getRatio();

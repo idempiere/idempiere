@@ -21,14 +21,13 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -39,6 +38,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 
 /**
+ *  <pre>
  *	Transaction Management.
  *	- Create new Transaction by Trx.get(name);
  *	- ..transactions..
@@ -46,12 +46,12 @@ import org.compiere.model.PO;
  *	----	start();
  *	----	commit();
  *	- close();
- *	
+ *	</pre>
  *  @author Jorg Janke
  *  @author Low Heng Sin
- *  - added rollback(boolean) and commit(boolean) [20070105]
- *  - remove unnecessary use of savepoint
- *  - use UUID for safer transaction name generation
+ *  <li>added rollback(boolean) and commit(boolean) [20070105]
+ *  <li>remove unnecessary use of savepoint
+ *  <li>use UUID for safer transaction name generation
  *  @author Teo Sarca, http://www.arhipac.ro
  *  			<li>FR [ 2080217 ] Implement TrxRunnable
  *  			<li>BF [ 2876927 ] Oracle JDBC driver problem
@@ -89,6 +89,7 @@ public class Trx
 	 *	@param con Connection
 	 *	@return Transaction or null
 	 */
+	@Deprecated
 	public static Trx get (String trxName, boolean createNew, Connection con)
 	{
 		if (trxName == null || trxName.length() == 0)
@@ -103,12 +104,12 @@ public class Trx
 		return retValue;
 	}	//	get
 	
-	/**	Transaction Cache					*/
+	/**	Transaction Cache */
 	private static final Map<String,Trx> s_cache = new ConcurrentHashMap<String, Trx>(); 
-	
+	/** Transaction timeout monitor */
 	private static final Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
-	
-	private List<TrxEventListener> listeners = new ArrayList<TrxEventListener>();
+	/** Transaction event listeners */
+	private ConcurrentLinkedQueue<TrxEventListener> listeners = new ConcurrentLinkedQueue<TrxEventListener>();
 	
 	protected Exception trace;
 	
@@ -116,6 +117,9 @@ public class Trx
 	
 	private boolean m_changesMadeByEventListener = false;
 
+	/**
+	 * Start transaction timeout monitor (run every 5 minutes) 
+	 */
 	public static void startTrxMonitor()
 	{
 		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
@@ -124,7 +128,7 @@ public class Trx
 	/**
 	 * 	Create unique Transaction Name
 	 *	@param prefix optional prefix
-	 *	@return unique name
+	 *	@return unique transaction name
 	 */
 	public static String createTrxName (String prefix)
 	{
@@ -158,31 +162,30 @@ public class Trx
 	{
 		return createTrxName(null);
 	}	//	createTrxName
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Transaction Constructor
 	 * 	@param trxName unique name
 	 */
 	private Trx (String trxName)
 	{
-		this (trxName, null);
-	}	//	Trx
-
-	/**
-	 * 	Transaction Constructor
-	 * 	@param trxName unique name
-	 *  @param con optional connection ( ignore for remote transaction )
-	 * 	 */
-	private Trx (String trxName, Connection con)
-	{
-	//	log.info (trxName);
 		setTrxName (trxName);
 		if (trxName.length() < 36)
 		{
 			String msg = "Illegal transaction name format, not prefix+UUID or UUID: " + trxName;
 			log.log(Level.SEVERE, msg, new Exception(msg));
 		}
+	}	//	Trx
+
+	/**
+	 * 	Transaction Constructor
+	 * 	@param trxName unique name
+	 *  @param con optional connection ( ignore for remote transaction )
+	 */
+	@Deprecated
+	private Trx (String trxName, Connection con)
+	{
+		this(trxName);
 		setConnection (con);
 	}	//	Trx
 
@@ -271,7 +274,7 @@ public class Trx
 
 	/**
 	 * 	Get Name
-	 *	@return name
+	 *	@return transaction name
 	 */
 	public String getTrxName()
 	{
@@ -305,7 +308,7 @@ public class Trx
 	
 	/**
 	 * 	Transaction is Active
-	 *	@return true if transaction active  
+	 *	@return true if transaction is active  
 	 */
 	public boolean isActive()
 	{
@@ -346,9 +349,12 @@ public class Trx
 		return false;
 	}	//	rollback
 	
+	/**
+	 * Fire after rollback event
+	 * @param success
+	 */
 	private void fireAfterRollbackEvent(boolean success) {
-		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
-		for(TrxEventListener l : copies) {
+		for(TrxEventListener l : listeners) {
 			l.afterRollback(this, success);
 		}
 	}
@@ -367,7 +373,7 @@ public class Trx
 	}
 
 	/**
-	 * 	Rollback
+	 * 	Rollback to save point
 	 *  @param savepoint
 	 *	@return true if success, false if failed or transaction already rollback
 	 *  @throws SQLException
@@ -432,9 +438,12 @@ public class Trx
 		return false;
 	}	//	commit
 	
+	/**
+	 * Fire after commit event
+	 * @param success
+	 */
 	private void fireAfterCommitEvent(boolean success) {
-		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
-		for(TrxEventListener l : copies) {
+		for(TrxEventListener l : listeners) {
 			l.afterCommit(this, success);
 		}
 	}
@@ -455,35 +464,26 @@ public class Trx
 		}
 	}
 	
-
 	/**
-	 * 	Rollback and End Transaction, Close Connection and Throws an Exception
+	 * 	Rollback and close transaction.<br/>
+	 *  This is means to be called by the timeout monitor and developer usually shouldn't call this directly.
 	 *	@return true if success
 	 */
-	public synchronized boolean rollbackAndCloseOnTimeout() {
-		s_cache.remove(getTrxName());
-
-		//local
-		if (m_connection == null)
-			return true;
-
-		if (isActive())
-			rollback();
-
-		//	Close Connection
+	public boolean rollbackAndCloseOnTimeout() {
+		boolean success = false;
 		try
 		{
-			m_connection.close();
-			m_connection = null;
-			m_active = false;
-			fireAfterCloseEvent();
+			rollback(true);
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, m_trxName, e);
 		}
-		log.config(m_trxName);
-		return true;
+		finally
+		{
+			success = close();
+		}
+		return success;
 	}
 
 	/**
@@ -539,20 +539,22 @@ public class Trx
 		trace = null;
 		m_active = false;
 		fireAfterCloseEvent();
-		log.config(m_trxName);
+		if (log.isLoggable(Level.CONFIG)) log.config(m_trxName);
 		return true;
 	}	//	close
 	
+	/**
+	 * Fire after close event
+	 */
 	private void fireAfterCloseEvent() {
-		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
-		for(TrxEventListener l : copies) {
+		for(TrxEventListener l : listeners) {
 			l.afterClose(this);
 		}
 	}
 	
 	/**
-	 * 
-	 * @param name
+	 * Set transaction save point
+	 * @param name optional savepoint name
 	 * @return Savepoint
 	 * @throws SQLException
 	 */
@@ -572,10 +574,20 @@ public class Trx
 
 	private Savepoint m_lastWFSavepoint = null; 
 
+	/**
+	 * Set last workflow save point.<br/>
+	 * For workflow engine use, developer usually shouldn't call this method directly.
+	 * @param savepoint
+	 */
 	public synchronized void setLastWFSavepoint(Savepoint savepoint) {
 		m_lastWFSavepoint = savepoint;
 	}
 
+	/**
+	 * Get last set workflow save point.
+	 * For workflow engine use, developer usually shouldn't call this method directly.
+	 * @return last set workflow save point or null
+	 */
 	public synchronized Savepoint getLastWFSavepoint() {
 		return m_lastWFSavepoint;
 	}
@@ -612,6 +624,7 @@ public class Trx
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("Trx[");
@@ -622,7 +635,8 @@ public class Trx
 	}	//	toString
 
 	/**
-	 * @return Trx[]
+	 * Get register transactions
+	 * @return array of register transactions
 	 */
 	public static Trx[] getOpenTransactions()
 	{
@@ -651,7 +665,7 @@ public class Trx
 	}
 	
 	/**
-	 * Execute runnable object using provided transaction.
+	 * Execute runnable object using provided transaction.<br/>
 	 * If execution fails, database operations will be rolled back.
 	 * <p>
 	 * Example: <pre>
@@ -719,6 +733,7 @@ public class Trx
 	}
 	
 	/**
+	 * Get transaction timout value
 	 * @return trx timoue value in second
 	 */
 	public int getTimeout() {
@@ -726,7 +741,7 @@ public class Trx
 	}
 
 	/**
-	 * set transaction timeout ( in seconds )
+	 * set transaction timeout value ( in seconds )
 	 * @param timeout
 	 */
 	public void setTimeout(int timeout) {
@@ -734,21 +749,26 @@ public class Trx
 	}
 
 	/**
-	 * 
+	 * Add transaction event listener
 	 * @param listener
 	 */
 	public void addTrxEventListener(TrxEventListener listener) {
-		synchronized (listeners) {
-			listeners.add(listener);
-		}		
+		listeners.add(listener);
 	}
 	
+	/**
+	 * Remove transaction event listener
+	 * @param listener
+	 * @return true if listener is found and remove
+	 */
 	public boolean removeTrxEventListener(TrxEventListener listener) {
-		synchronized (listeners) {
-			return listeners.remove(listener);
-		}
+		return listeners.remove(listener);
 	}
 	
+	/**
+	 * Get stack trace save
+	 * @return stack trace save or empty string
+	 */
 	public String getStrackTrace()
 	{
 		if (trace != null)
@@ -764,18 +784,26 @@ public class Trx
 		}
 	}
 	
+	/**
+	 * Get transaction display name. Fall back to transaction name if display name is not set.
+	 * @return display name or name
+	 */
 	public String getDisplayName()
 	{
 		return m_displayName != null ? m_displayName : m_trxName;
 	}
 	
+	/**
+	 * Set transaction display name
+	 * @param displayName
+	 */
 	public void setDisplayName(String displayName)
 	{
 		m_displayName = displayName;
 	}
 	
 	/**
-	 * Indicate additional db changes have been made by event listener
+	 * Indicate additional DB changes have been made by a transaction event listener
 	 * @param changesMade
 	 */
 	public void setChangesMadeByEventListener(boolean changesMade)
@@ -784,7 +812,7 @@ public class Trx
 	}
 	
 	/**
-	 * 
+	 * Is there additional changes make by transaction event listener 
 	 * @return true if event listener(s) has flag that additional db changes have been made 
 	 */
 	public boolean hasChangesMadeByEventListener()
@@ -792,7 +820,8 @@ public class Trx
 		return m_changesMadeByEventListener;
 	}
 	
-	static class TrxMonitor implements Runnable
+	/** Transaction timeout monitor class */
+	public static class TrxMonitor implements Runnable
 	{
 
 		public void run()
@@ -820,6 +849,10 @@ public class Trx
 		}
 	}
 
+	/**
+	 * @param trxName
+	 * @return true if trxName is a local transaction
+	 */
 	private boolean isLocalTrx(String trxName)
 	{
 		return trxName == null

@@ -18,20 +18,28 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
- * Forecast Model
+ * Material Forecast Model.<br/>
+ * Note: not fully develop and have been marked as inactive in Application Dictionary.
  * 
  * @author victor.perez@e-evolution.com, www.e-evolution.com     
  */
-public class MForecast extends  X_M_Forecast
+public class MForecast extends X_M_Forecast
 {
-
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 66771328316032322L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Forecast_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MForecast(Properties ctx, String M_Forecast_UU, String trxName) {
+        super(ctx, M_Forecast_UU, trxName);
+    }
 
 	/**
 	 * Standard Constructor

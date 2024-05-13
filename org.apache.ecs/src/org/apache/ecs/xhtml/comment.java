@@ -73,7 +73,7 @@ public class comment extends MultiPartElement implements Printable
 
 	/**
 	 * 
-	 * Create a comment object containg this element.
+	 * Create a comment object containing this element.
 	 *  
 	 */
 
@@ -86,7 +86,7 @@ public class comment extends MultiPartElement implements Printable
 
 	/**
 	 * 
-	 * Create a comment object containg this element.
+	 * Create a comment object containing this element.
 	 *  
 	 */
 

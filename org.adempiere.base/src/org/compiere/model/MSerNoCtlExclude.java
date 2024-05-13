@@ -33,12 +33,21 @@ import org.compiere.util.Env;
 public class MSerNoCtlExclude extends X_M_SerNoCtlExclude {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5338323423136199056L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_SerNoCtlExclude_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSerNoCtlExclude(Properties ctx, String M_SerNoCtlExclude_UU, String trxName) {
+        super(ctx, M_SerNoCtlExclude_UU, trxName);
+    }
+
 	/**
-	 * 
 	 * @param ctx
 	 * @param M_SerNoCtlExclude_ID
 	 * @param trxName
@@ -48,7 +57,6 @@ public class MSerNoCtlExclude extends X_M_SerNoCtlExclude {
 	}
 
 	/**
-	 * 
 	 * @param ctx
 	 * @param rs
 	 * @param trxName
@@ -58,7 +66,7 @@ public class MSerNoCtlExclude extends X_M_SerNoCtlExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MSerNoCtlExclude(MSerNoCtlExclude copy) {
@@ -66,7 +74,7 @@ public class MSerNoCtlExclude extends X_M_SerNoCtlExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -75,7 +83,7 @@ public class MSerNoCtlExclude extends X_M_SerNoCtlExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

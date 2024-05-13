@@ -56,9 +56,19 @@ import com.google.api.client.json.gson.GsonFactory;
  */
 public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5410915257751308490L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AuthorizationCredential_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAuthorizationCredential(Properties ctx, String AD_AuthorizationCredential_UU, String trxName) {
+        super(ctx, AD_AuthorizationCredential_UU, trxName);
+    }
 
 	/**
 	 * Create empty Authorization Credential
@@ -86,7 +96,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 * Create or Update an Account based on the token received
 	 * @param code
 	 * @param pinstance 
-	 * @return String message indicating success
+	 * @return error message or null
 	 */
 	public String processToken(String code, MPInstance pinstance) {
 		String msg = null;
@@ -127,7 +137,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 * @param code
 	 * @param paramScope
 	 * @param pilog       MPInstanceLog to set the log message and record_ID, it is not saved, the caller must save it
-	 * @return String message indicating success
+	 * @return error message or null
 	 */
 	public String processToken(Properties ctx, String code, String paramScope, MPInstanceLog pilog) {
 		String msg = null;
@@ -271,7 +281,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
 	 * Get the scope URL for the authorization provider
 	 * @param scopes
-	 * @return scope url
+	 * @return scope urls (separated by space)
 	 */
 	private String findScopeUrl(String scopes) {
 		StringBuilder urlBuilder = new StringBuilder();

@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.io.File;
@@ -17,9 +38,9 @@ import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
+import org.compiere.util.Util;
 import org.idempiere.fa.exceptions.AssetArrayException;
 import org.idempiere.fa.exceptions.AssetException;
-
 
 /**
  * Depreciation Entry
@@ -28,44 +49,67 @@ import org.idempiere.fa.exceptions.AssetException;
 public class MDepreciationEntry extends X_A_Depreciation_Entry
 implements DocAction
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 6631244784741228058L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Depreciation_Entry_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDepreciationEntry(Properties ctx, String A_Depreciation_Entry_UU, String trxName) {
+        super(ctx, A_Depreciation_Entry_UU, trxName);
+		if (Util.isEmpty(A_Depreciation_Entry_UU))
+			setInitialDefaults();
+    }
 
-	/** Standard Constructor */
+	/**
+	 * @param ctx
+	 * @param A_Depreciation_Entry_ID
+	 * @param trxName
+	 */
 	public MDepreciationEntry(Properties ctx, int A_Depreciation_Entry_ID, String trxName)
 	{
 		super (ctx, A_Depreciation_Entry_ID, trxName);
 		if (A_Depreciation_Entry_ID == 0)
-		{
-			MAcctSchema acctSchema = MClient.get(getCtx()).getAcctSchema();
-			setC_AcctSchema_ID(acctSchema.get_ID());
-			setC_Currency_ID(acctSchema.getC_Currency_ID());
-			setA_Entry_Type (A_ENTRY_TYPE_Depreciation); // TODO: workaround
-			setPostingType (POSTINGTYPE_Actual);	// A
-			setProcessed (false);
-			setProcessing (false);
-			setPosted(false);
-		}
+			setInitialDefaults();
 	}
 	
-	/** Load Constructor */
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		MAcctSchema acctSchema = MClient.get(getCtx()).getAcctSchema();
+		setC_AcctSchema_ID(acctSchema.get_ID());
+		setC_Currency_ID(acctSchema.getC_Currency_ID());
+		setA_Entry_Type (A_ENTRY_TYPE_Depreciation); // TODO: workaround
+		setPostingType (POSTINGTYPE_Actual);	// A
+		setProcessed (false);
+		setProcessing (false);
+		setPosted(false);
+	}
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MDepreciationEntry (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 	
-	
+	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
 		setC_Period_ID();
 		return true;
 	}
 
-	
+	@Override
 	protected boolean afterSave(boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -79,7 +123,7 @@ implements DocAction
 		return true;
 	}
 	
-	
+	@Override
 	protected boolean afterDelete(boolean success)
 	{
 		if (!success)
@@ -91,6 +135,9 @@ implements DocAction
 		return true;
 	}
 	
+	/**
+	 * Set period from DateAcct
+	 */
 	public void setC_Period_ID()
 	{
 		MPeriod period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), get_TrxName());
@@ -101,6 +148,9 @@ implements DocAction
 		setC_Period_ID(period.get_ID());
 	}
 
+	/**
+	 * Disconnect lines (MDepreciationExp) by setting A_Depreciation_Entry_ID to null
+	 */
 	private void unselectLines()
 	{
 		String sql = "UPDATE " + MDepreciationExp.Table_Name + " SET "
@@ -116,6 +166,9 @@ implements DocAction
 		if (log.isLoggable(Level.FINE)) log.fine("Updated #" + no);
 	}
 	
+	/**
+	 * Select/connect lines (MDepreciationExp) by setting A_Depreciation_Entry_ID to the id of this record.
+	 */
 	private void selectLines()
 	{
 		// Reset selected lines:
@@ -136,6 +189,8 @@ implements DocAction
 	
 	/**
 	 * Get Lines
+	 * @param onlyNotProcessed
+	 * @return lines (MDepreciationExp) iterator
 	 */
 	public Iterator<MDepreciationExp> getLinesIterator(boolean onlyNotProcessed)
 	{
@@ -164,7 +219,7 @@ implements DocAction
 		return it;
 	}
 
-	
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -177,20 +232,20 @@ implements DocAction
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
-	
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 		return true;
 	}	//	unlockIt
 	
-	
+	@Override
 	public boolean invalidateIt()
 	{
 		return false;
 	}
 	
-	
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -214,7 +269,7 @@ implements DocAction
 		return DocAction.STATUS_InProgress;
 	}
 	
-	
+	@Override
 	public boolean approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
@@ -222,7 +277,7 @@ implements DocAction
 		return true;
 	}
 	
-	
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
@@ -230,7 +285,7 @@ implements DocAction
 		return true;
 	}	//	rejectIt
 	
-	
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -295,74 +350,77 @@ implements DocAction
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
 	
-	
+	@Override
 	public boolean voidIt()
 	{
 		return false;
 	}
 	
-	
+	@Override
 	public boolean closeIt()
 	{
 		setDocAction(DOCACTION_None);
 		return true;
 	}
 	
-	
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		return false;
 	}
 	
-	
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		return false;
 	}
 	
-	
+	@Override
 	public boolean reActivateIt()
 	{
 		return false;
 	}	//	reActivateIt
-	
-	
-	
+		
+	@Override
 	public String getSummary()
 	{
 		return toString();
 	}
 
-	
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
 	}
 	
-	
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getCreatedBy();
 	}
 
-	
+	@Override
 	public BigDecimal getApprovalAmt()
 	{
 		return null;
 	}
 	
-	
+	@Override
 	public File createPDF ()
 	{
 		return null;
 	}
 	
-	
+	@Override
 	public String getDocumentInfo()
 	{
 		return getDocumentNo();
 	}
 	
+	/**
+	 * Delect Fact_Acct entries for this record
+	 * @param depexp
+	 */
 	public static void deleteFacts(MDepreciationExp depexp)
 	{
 		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=? AND Line_ID=?";

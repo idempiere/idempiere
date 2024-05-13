@@ -43,6 +43,7 @@ import org.compiere.apps.form.PayPrint;
 import org.compiere.apps.form.PaySelect;
 import org.compiere.apps.form.PaySelect.BankInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MBPartner;
@@ -69,7 +70,6 @@ import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
 public class PaySelectFormTest extends AbstractTestCase {
@@ -164,8 +164,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 			
 			//create pay selection check
 			int AD_Process_ID = SystemIDs.PROCESS_C_PAYSELECTION_CREATEPAYMENT;
-			MPInstance mpi = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
-			mpi.setRecord_ID(paySelection.get_ID());
+			MPInstance mpi = new MPInstance(Env.getCtx(), AD_Process_ID, MPaySelection.Table_ID, paySelection.get_ID(), paySelection.getC_PaySelection_UU());
 			mpi.saveEx();
 			MPInstancePara para = new MPInstancePara(mpi, 10);
 			para.setParameter(MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice, false);
@@ -242,6 +241,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 								hdr.deleteEx(true);
 							}
 							DB.executeUpdateEx("UPDATE C_Invoice SET C_Payment_ID=NULL WHERE C_Payment_ID=?", new Object[] {payment.get_ID()}, null);
+							DB.executeUpdateEx("DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?", new Object[] {MPayment.Table_ID, payment.get_ID()}, null);
 							payment.deleteEx(true);
 						}						
 					}
@@ -264,6 +264,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 					MAllocationHdr hdr = new MAllocationHdr(Env.getCtx(), i, null);
 					hdr.deleteEx(true);
 				}
+				DB.executeUpdateEx("DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?", new Object[] {MInvoice.Table_ID, invoice.get_ID()}, null);
 				invoice.deleteEx(true);
 			}
 		}

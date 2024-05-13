@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Channel
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Channel")
-public class X_C_Channel extends PO implements I_C_Channel, I_Persistent 
+public class X_C_Channel extends PO implements I_C_Channel, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Channel (Properties ctx, int C_Channel_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_C_Channel extends PO implements I_C_Channel, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Channel (Properties ctx, String C_Channel_UU, String trxName)
+    {
+      super (ctx, C_Channel_UU, trxName);
+      /** if (C_Channel_UU == null)
+        {
+			setC_Channel_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Channel (Properties ctx, String C_Channel_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Channel_UU, trxName, virtualColumns);
+      /** if (C_Channel_UU == null)
+        {
+			setC_Channel_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Channel (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_C_Channel extends PO implements I_C_Channel, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -183,7 +205,7 @@ public class X_C_Channel extends PO implements I_C_Channel, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

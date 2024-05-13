@@ -30,6 +30,7 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.util.IProcessUI;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 
 
 /**
@@ -49,6 +50,18 @@ public class MYear extends X_C_Year
 	 */
 	private static final long serialVersionUID = 2110541427179611810L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Year_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MYear(Properties ctx, String C_Year_UU, String trxName) {
+        super(ctx, C_Year_UU, trxName);
+		if (Util.isEmpty(C_Year_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -59,10 +72,15 @@ public class MYear extends X_C_Year
 	{
 		super (ctx, C_Year_ID, trxName);
 		if (C_Year_ID == 0)
-		{
-			setProcessing (false);	// N
-		}		
+			setInitialDefaults();
 	}	//	MYear
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessing (false);	// N
+	}
 
 	/**
 	 * 	Load Constructor

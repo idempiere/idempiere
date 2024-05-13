@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ElementValue
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_ElementValue")
-public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent 
+public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_ElementValue (Properties ctx, String I_ElementValue_UU, String trxName)
+    {
+      super (ctx, I_ElementValue_UU, trxName);
+      /** if (I_ElementValue_UU == null)
+        {
+			setI_ElementValue_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_ElementValue (Properties ctx, String I_ElementValue_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_ElementValue_UU, trxName, virtualColumns);
+      /** if (I_ElementValue_UU == null)
+        {
+			setI_ElementValue_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_ElementValue (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -338,10 +360,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -361,10 +383,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isDocControlled()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDocControlled);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -384,10 +406,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -467,10 +489,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isPostActual()
 	{
 		Object oo = get_Value(COLUMNNAME_PostActual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -490,10 +512,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isPostBudget()
 	{
 		Object oo = get_Value(COLUMNNAME_PostBudget);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -513,10 +535,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isPostEncumbrance()
 	{
 		Object oo = get_Value(COLUMNNAME_PostEncumbrance);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -536,10 +558,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isPostStatistical()
 	{
 		Object oo = get_Value(COLUMNNAME_PostStatistical);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -559,10 +581,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -581,10 +603,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -609,7 +631,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

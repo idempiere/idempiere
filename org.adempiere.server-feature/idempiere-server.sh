@@ -31,6 +31,7 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Djetty.home=$BASE/jettyhome
 -Djetty.base=$BASE/jettyhome
 -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml,etc/jetty-threadpool.xml,etc/jetty-http-forwarded.xml
+-Dorg.apache.cxf.osgi.http.transport.disable=true
 -Dosgi.console=$HOST:$TELNET_PORT
 -Dmail.mime.encodefilename=true
 -Dmail.mime.decodefilename=true

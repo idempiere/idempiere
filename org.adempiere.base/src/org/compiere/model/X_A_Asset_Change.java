@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Change
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Change")
-public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persistent 
+public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Change (Properties ctx, int A_Asset_Change_ID, String trxName)
@@ -66,6 +66,36 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Change (Properties ctx, String A_Asset_Change_UU, String trxName)
+    {
+      super (ctx, A_Asset_Change_UU, trxName);
+      /** if (A_Asset_Change_UU == null)
+        {
+			setA_Asset_Change_ID (0);
+			setA_Asset_ID (0);
+			setAssetValueAmt (Env.ZERO);
+// 0
+			setChangeType (null);
+			setTextDetails (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Change (Properties ctx, String A_Asset_Change_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Change_UU, trxName, virtualColumns);
+      /** if (A_Asset_Change_UU == null)
+        {
+			setA_Asset_Change_ID (0);
+			setA_Asset_ID (0);
+			setAssetValueAmt (Env.ZERO);
+// 0
+			setChangeType (null);
+			setTextDetails (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Change (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +103,7 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -208,7 +238,7 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Change_ID()));
     }
@@ -1203,10 +1233,10 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public boolean isDepreciated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDepreciated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1226,10 +1256,10 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public boolean isDisposed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisposed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1249,10 +1279,10 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public boolean isFullyDepreciated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFullyDepreciated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1272,10 +1302,10 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public boolean isInPosession()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInPosession);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1295,10 +1325,10 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public boolean isOwned()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOwned);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

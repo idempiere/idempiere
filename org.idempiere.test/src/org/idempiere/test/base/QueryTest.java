@@ -48,6 +48,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.MTest;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
@@ -56,6 +57,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -253,7 +255,7 @@ public class QueryTest extends AbstractTestCase {
 	public void testPaging() {
 		DB.executeUpdateEx("DELETE FROM Test WHERE Name LIKE 'QueryTest%'", getTrxName());
 		for (int i=101; i<=130; i++) {
-			PO testPo = new MTest(Env.getCtx(), "QueryTest", i);
+			PO testPo = new MTest(Env.getCtx(), "QueryTest", i, getTrxName());
 			testPo.save();
 		}
 		Query query = new Query(Env.getCtx(), MTest.Table_Name, "Name LIKE 'QueryTest%'", getTrxName())
@@ -364,7 +366,7 @@ public class QueryTest extends AbstractTestCase {
 		int count = DB.getSQLValueEx(null, "SELECT Count(AD_PInstance_ID) FROM AD_PInstance");
 		if (count == 0) {
 			//Generate Shipments (manual)
-			new MPInstance(MProcess.get(Env.getCtx(), 199), 0);
+			new MPInstance(MProcess.get(Env.getCtx(), 199), 0, 0, null);
 		}
 		
 		// Get one AD_PInstance_ID
@@ -395,7 +397,7 @@ public class QueryTest extends AbstractTestCase {
 	@Test
 	public void testVirtualColumnLoad() {
 		// create bogus record
-		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 		testPo.save();
 
 		BigDecimal expected = new BigDecimal("123.45");
@@ -421,4 +423,15 @@ public class QueryTest extends AbstractTestCase {
 		assertEquals(expected, testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
 	}
 
+	@Test
+	public void testTableDirectJoin() {
+		Query query = new Query(Env.getCtx(), MUser.Table_Name, MUser.COLUMNNAME_AD_User_ID + "=?", getTrxName());
+		query.addTableDirectJoin("C_BPartner");
+		query.setParameters(DictionaryIDs.AD_User.GARDEN_USER.id);
+		MUser user = query.first();
+		assertNotNull(user, "Failed to retrieve garden user record");
+		
+		String sql = query.getSQL();
+		assertTrue(sql.toLowerCase().contains("inner join c_bpartner on (ad_user.c_bpartner_id=c_bpartner.c_bpartner_id)"), "Unexpected SQL clause generated from query");
+	}
 }

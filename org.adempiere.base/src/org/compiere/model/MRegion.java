@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import static org.compiere.model.SystemIDs.COUNTRY_JAPAN;
-
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.text.Collator;
@@ -27,14 +25,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Location Region Model (Value Object)
+ *	Location Region Model
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: MRegion.java,v 1.3 2006/07/30 00:58:36 jjanke Exp $
@@ -43,7 +40,7 @@ public class MRegion extends X_C_Region
 	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6956706379305907673L;
 
@@ -72,9 +69,9 @@ public class MRegion extends X_C_Region
 	}	//	loadAllRegions
 
 	/**
-	 * 	Get Country (cached)
+	 * 	Get Region (cached)
 	 *	@param C_Region_ID ID
-	 *	@return Country
+	 *	@return Region
 	 */
 	public static synchronized MRegion get (int C_Region_ID)
 	{
@@ -82,9 +79,9 @@ public class MRegion extends X_C_Region
 	}
 	
 	/**
-	 * 	Get Country (immutable, cached)
+	 * 	Get Region (immutable, cached)
 	 *	@param C_Region_ID ID
-	 *	@return Country
+	 *	@return Region
 	 */
 	public static synchronized MRegion get (Properties ctx, int C_Region_ID)
 	{
@@ -108,6 +105,7 @@ public class MRegion extends X_C_Region
 	 *	@return Region or null
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static synchronized MRegion getDefault (Properties ctx)
 	{
 		return getDefault();
@@ -127,9 +125,10 @@ public class MRegion extends X_C_Region
 	/**
 	 *	Return Regions as Array
 	 * 	@param ctx ignore
-	 *  @return MCountry Array
+	 *  @return Region Array
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static synchronized MRegion[] getRegions(Properties ctx)
 	{
 		return getRegions();
@@ -137,7 +136,7 @@ public class MRegion extends X_C_Region
 	
 	/**
 	 *	Return Regions as Array
-	 *  @return MCountry Array
+	 *  @return Region Array
 	 */
 	public static synchronized MRegion[] getRegions()
 	{
@@ -149,19 +148,20 @@ public class MRegion extends X_C_Region
 	}	//	getRegions
 
 	/**
-	 *	Return Array of Regions of Country
+	 *	Return Array of Regions of a Country
 	 * 	@param ctx ignore
 	 *  @param C_Country_ID country
 	 *  @return MRegion Array
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static synchronized MRegion[] getRegions (Properties ctx, int C_Country_ID)
 	{
 		return getRegions(C_Country_ID);
 	}
 	
 	/**
-	 *	Return Array of Regions of Country
+	 *	Return Array of Regions of a Country
 	 *  @param C_Country_ID country
 	 *  @return MRegion Array
 	 */
@@ -181,10 +181,18 @@ public class MRegion extends X_C_Region
 	private static MRegion		s_default = null;
 	/**	Static Logger				*/
 	private static CLogger		s_log = CLogger.getCLogger (MRegion.class);
-
 	
-	/**************************************************************************
-	 *	Create empty Region
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Region_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRegion(Properties ctx, String C_Region_UU, String trxName) {
+        super(ctx, C_Region_UU, trxName);
+    }
+
+	/**
 	 * 	@param ctx context
 	 * 	@param C_Region_ID id
 	 *	@param trxName transaction
@@ -192,9 +200,6 @@ public class MRegion extends X_C_Region
 	public MRegion (Properties ctx, int C_Region_ID, String trxName)
 	{
 		super (ctx, C_Region_ID, trxName);
-		if (C_Region_ID == 0)
-		{
-		}
 	}   //  MRegion
 
 	/**
@@ -221,7 +226,7 @@ public class MRegion extends X_C_Region
 	}   //  MRegion
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRegion(MRegion copy) 
@@ -230,7 +235,7 @@ public class MRegion extends X_C_Region
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -240,7 +245,7 @@ public class MRegion extends X_C_Region
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -252,17 +257,17 @@ public class MRegion extends X_C_Region
 	}
 	
 	/**
-	 *	Return Name
-	 *  @return Name
+	 *  @return translated Name
 	 */
+	@Override
 	public String toString()
 	{
 		return getTrlName();
 	}   //  toString
 
 	/**
-     *     Get Translated Name
-     *    @return name
+     * Get Translated Name
+     * @return translated name
      */
     public String getTrlName()
     {
@@ -270,9 +275,9 @@ public class MRegion extends X_C_Region
     }    //    getTrlName
     
     /**
-     *     Get Translated Name
+     *  Get Translated Name
      *  @param language 
-     *    @return name
+     *  @return translated name
      */
     public String getTrlName(String language)
     {
@@ -283,8 +288,9 @@ public class MRegion extends X_C_Region
 	 *  Compare
 	 *  @param o1 object 1
 	 *  @param o2 object 2
-	 *  @return -1,0, 1
+	 *  @return -1, 0, 1
 	 */
+    @Override
 	public int compare(Object o1, Object o2)
 	{
 		String s1 = o1.toString();
@@ -306,200 +312,4 @@ public class MRegion extends X_C_Region
 		return this;
 	}
 
-	/**
-	 * 	Test / Load
-	 *	@param args
-	 */
-	public static void main (String[] args)
-	{
-		Adempiere.startup(true);
-		/** To add your regions, complete the code below.
-		 * 	Please make sure that the file is converted via the Java utility
-		 * 	native2ascii - i.e. all seven bit code with /u0000 unicode stuff 
-		 */
-		int C_Country_ID = COUNTRY_JAPAN;		//	Japan
-		MCountry country = new MCountry(Env.getCtx(), C_Country_ID, null); 
-		// Hokkaido
-		MRegion temp = new MRegion (country, "\u5317\u6d77\u9053");
-		temp.setDescription( "\u5317\u6d77\u9053(Hokkaido)" );
-		temp.saveEx();
-		// Aomori
-		temp = new MRegion (country, "\u9752\u68ee\u770c");
-		temp.setDescription( "\u9752\u68ee\u770c(Aomori)" );
-		temp.saveEx();
-		// Iwate
-		temp = new MRegion (country, "\u5ca9\u624b\u770c");
-		temp.setDescription( "\u5ca9\u624b\u770c(Iwate)" );
-		temp.saveEx();
-		// Miyagi
-		temp = new MRegion (country, "\u5bae\u57ce\u770c");
-		temp.setDescription( "\u5bae\u57ce\u770c(Miyagi)" );
-		temp.saveEx();
-		// Akita
-		temp = new MRegion (country, "\u79cb\u7530\u770c");
-		temp.setDescription( "\u79cb\u7530\u770c(Akita)" );
-		temp.saveEx();
-		// Yamagata
-		temp = new MRegion (country, "\u5c71\u5f62\u770c");
-		temp.setDescription( "\u5c71\u5f62\u770c(Yamagata)" );
-		temp.saveEx();
-		// Fukushima
-		temp = new MRegion (country, "\u798f\u5cf6\u770c");
-		temp.setDescription( "\u798f\u5cf6\u770c(Fukushima)" );
-		temp.saveEx();
-		// Ibaraki
-		temp = new MRegion (country, "\u8328\u57ce\u770c");
-		temp.setDescription( "\u8328\u57ce\u770c(Ibaraki)" );
-		temp.saveEx();
-		// Gunma
-		temp = new MRegion (country, "\u7fa4\u99ac\u770c");
-		temp.setDescription( "\u7fa4\u99ac\u770c(Gunma)" );
-		temp.saveEx();
-		// Saitama
-		temp = new MRegion (country, "\u57fc\u7389\u770c");
-		temp.setDescription( "\u57fc\u7389\u770c(Saitama)" );
-		temp.saveEx();
-		// Chiba
-		temp = new MRegion (country, "\u5343\u8449\u770c");
-		temp.setDescription( "\u5343\u8449\u770c(Chiba)" );
-		temp.saveEx();
-		// Tokyo
-		temp = new MRegion (country, "\u6771\u4eac\u90fd");
-		temp.setDescription( "\u6771\u4eac\u90fd(Tokyo)" );
-		temp.saveEx();
-		// Kanagawa
-		temp = new MRegion (country, "\u795e\u5948\u5ddd\u770c");
-		temp.setDescription( "\u795e\u5948\u5ddd\u770c(Kanagawa)" );
-		temp.saveEx();
-		// Niigata
-		temp = new MRegion (country, "\u65b0\u6f5f\u770c");
-		temp.setDescription( "\u65b0\u6f5f\u770c(Niigata)" );
-		temp.saveEx();
-		// Toyama
-		temp = new MRegion (country, "\u5bcc\u5c71\u770c");
-		temp.setDescription( "\u5bcc\u5c71\u770c(Toyama)" );
-		temp.saveEx();
-		// Ishikawa
-		temp = new MRegion (country, "\u77f3\u5ddd\u770c");
-		temp.setDescription( "\u77f3\u5ddd\u770c(Ishikawa)" );
-		temp.saveEx();
-		// Fukui
-		temp = new MRegion (country, "\u798f\u4e95\u770c");
-		temp.setDescription( "\u798f\u4e95\u770c(Fukui)" );
-		temp.saveEx();
-		// Yamanashi
-		temp = new MRegion (country, "\u5c71\u68a8\u770c");
-		temp.setDescription( "\u5c71\u68a8\u770c(Yamanashi)" );
-		temp.saveEx();
-		// Gifu
-		temp = new MRegion (country, "\u5c90\u961c\u770c");
-		temp.setDescription( "\u5c90\u961c\u770c(Gifu)" );
-		temp.saveEx();
-		// Shizuoka
-		temp = new MRegion (country, "\u9759\u5ca1\u770c");
-		temp.setDescription( "\u9759\u5ca1\u770c(Shizuoka)" );
-		temp.saveEx();
-		// Aichi
-		temp = new MRegion (country, "\u611b\u77e5\u770c");
-		temp.setDescription( "\u611b\u77e5\u770c(Aichi)" );
-		temp.saveEx();
-		// Mie
-		temp = new MRegion (country, "\u4e09\u91cd\u770c");
-		temp.setDescription( "\u4e09\u91cd\u770c(Mie)" );
-		temp.saveEx();
-		// Siga
-		temp = new MRegion (country, "\u6ecb\u8cc0\u770c");
-		temp.setDescription( "\u6ecb\u8cc0\u770c(Siga)" );
-		temp.saveEx();
-		// Kyoto
-		temp = new MRegion (country, "\u4eac\u90fd\u5e9c");
-		temp.setDescription( "\u4eac\u90fd\u5e9c(Kyoto)" );
-		temp.saveEx();
-		// Osaka
-		temp = new MRegion (country, "\u5927\u962a\u5e9c");
-		temp.setDescription( "\u5927\u962a\u5e9c(Osaka)" );
-		temp.saveEx();
-		// Hyogo
-		temp = new MRegion (country, "\u5175\u5eab\u770c");
-		temp.setDescription( "\u5175\u5eab\u770c(Hyogo)" );
-		temp.saveEx();
-		// Nara
-		temp = new MRegion (country, "\u5948\u826f\u770c");
-		temp.setDescription( "\u5948\u826f\u770c(Nara)" );
-		temp.saveEx();
-		// Wakayama
-		temp = new MRegion (country, "\u548c\u6b4c\u5c71\u770c");
-		temp.setDescription( "\u548c\u6b4c\u5c71\u770c(Wakayama)" );
-		temp.saveEx();
-		// Tottori
-		temp = new MRegion (country, "\u9ce5\u53d6\u770c");
-		temp.setDescription( "\u9ce5\u53d6\u770c(Tottori)" );
-		temp.saveEx();
-		// Shimane
-		temp = new MRegion (country, "\u5cf6\u6839\u770c");
-		temp.setDescription( "\u5cf6\u6839\u770c(Shimane)" );
-		temp.saveEx();
-		// Okayama
-		temp = new MRegion (country, "\u5ca1\u5c71\u770c");
-		temp.setDescription( "\u5ca1\u5c71\u770c(Okayama)" );
-		temp.saveEx();
-		// Hiroshima
-		temp = new MRegion (country, "\u5e83\u5cf6\u770c");
-		temp.setDescription( "\u5e83\u5cf6\u770c(Hiroshima)" );
-		temp.saveEx();
-		// Yamaguchi
-		temp = new MRegion (country, "\u5c71\u53e3\u770c");
-		temp.setDescription( "\u5c71\u53e3\u770c(Yamaguchi)" );
-		temp.saveEx();
-		// Tokushima
-		temp = new MRegion (country, "\u5fb3\u5cf6\u770c");
-		temp.setDescription( "\u5fb3\u5cf6\u770c(Tokushima)" );
-		temp.saveEx();
-		// Kagawa
-		temp = new MRegion (country, "\u9999\u5ddd\u770c");
-		temp.setDescription( "\u9999\u5ddd\u770c(Kagawa)" );
-		temp.saveEx();
-		// Ehime
-		temp = new MRegion (country, "\u611b\u5a9b\u770c");
-		temp.setDescription( "\u611b\u5a9b\u770c(Ehime)" );
-		temp.saveEx();
-		// Kouchi
-		temp = new MRegion (country, "\u9ad8\u77e5\u770c");
-		temp.setDescription( "\u9ad8\u77e5\u770c(Kouchi)" );
-		temp.saveEx();
-		// Fukuoka
-		temp = new MRegion (country, "\u798f\u5ca1\u770c");
-		temp.setDescription( "\u798f\u5ca1\u770c(Fukuoka)" );
-		temp.saveEx();
-		// Saga
-		temp = new MRegion (country, "\u4f50\u8cc0\u770c");
-		temp.setDescription( "\u4f50\u8cc0\u770c(Saga)" );
-		temp.saveEx();
-		// Nagasaki
-		temp = new MRegion (country, "\u9577\u5d0e\u770c");
-		temp.setDescription( "\u9577\u5d0e\u770c(Nagasaki)" );
-		temp.saveEx();
-		// Kumamoto
-		temp = new MRegion (country, "\u718a\u672c\u770c");
-		temp.setDescription( "\u718a\u672c\u770c(Kumamoto)" );
-		temp.saveEx();
-		// Ohita
-		temp = new MRegion (country, "\u5927\u5206\u770c");
-		temp.setDescription( "\u5927\u5206\u770c(Ohita)" );
-		temp.saveEx();
-		// Miyasaki
-		temp = new MRegion (country, "\u5bae\u5d0e\u770c");
-		temp.setDescription( "\u5bae\u5d0e\u770c(Miyasaki)" );
-		temp.saveEx();
-		// Kagoshima
-		temp = new MRegion (country, "\u9e7f\u5150\u5cf6\u770c");
-		temp.setDescription( "\u9e7f\u5150\u5cf6\u770c(Kagoshima)" );
-		temp.saveEx();
-		// Okinawa
-		temp = new MRegion (country, "\u6c96\u7e04\u770c");
-		temp.setDescription( "\u6c96\u7e04\u770c(Okinawa)" );
-		temp.saveEx();
-
-	}	//	main
-	
 }	//	MRegion

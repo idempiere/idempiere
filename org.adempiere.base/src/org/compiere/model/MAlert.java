@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.TreeSet;
 
+import org.compiere.util.Util;
+
 /**
  *	Alert Model
  *	
@@ -36,9 +38,21 @@ import java.util.TreeSet;
 public class MAlert extends X_AD_Alert
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5684705878618526801L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Alert_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAlert(Properties ctx, String AD_Alert_UU, String trxName) {
+        super(ctx, AD_Alert_UU, trxName);
+		if (Util.isEmpty(AD_Alert_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -50,12 +64,17 @@ public class MAlert extends X_AD_Alert
 	{
 		super (ctx, AD_Alert_ID, trxName);
 		if (AD_Alert_ID == 0)
-		{
-			setEnforceClientSecurity (true);	// Y
-			setEnforceRoleSecurity (true);	// Y
-			setIsValid (true);	// Y
-		}	
+			setInitialDefaults();
 	}	//	MAlert
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEnforceClientSecurity (true);	// Y
+		setEnforceRoleSecurity (true);	// Y
+		setIsValid (true);	// Y
+	}
 
 	/**
 	 * 	Load Constructor
@@ -67,7 +86,6 @@ public class MAlert extends X_AD_Alert
 	{
 		super(ctx, rs, trxName);
 	}	//	MAlert
-
 	
 	/**	The Rules						*/
 	private MAlertRule[]		m_rules	= null;
@@ -76,7 +94,7 @@ public class MAlert extends X_AD_Alert
 
 	/**
 	 * 	Get Rules
-	 *	@param reload reload data
+	 *	@param reload true to always reload from DB
 	 *	@return array of rules
 	 */
 	public MAlertRule[] getRules (boolean reload)
@@ -124,7 +142,7 @@ public class MAlert extends X_AD_Alert
 	}	//	getRecipients
 
 	/**
-	 * 	Get First Role if exist
+	 * 	Get First Recipient Role if exist
 	 *	@return AD_Role_ID or -1
 	 */
 	public int getFirstAD_Role_ID()

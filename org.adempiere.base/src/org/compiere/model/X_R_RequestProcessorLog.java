@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for R_RequestProcessorLog
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessorLog")
-public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorLog, I_Persistent 
+public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorLog, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_RequestProcessorLog (Properties ctx, String R_RequestProcessorLog_UU, String trxName)
+    {
+      super (ctx, R_RequestProcessorLog_UU, trxName);
+      /** if (R_RequestProcessorLog_UU == null)
+        {
+			setIsError (false);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessorLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessorLog (Properties ctx, String R_RequestProcessorLog_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessorLog_UU, trxName, virtualColumns);
+      /** if (R_RequestProcessorLog_UU == null)
+        {
+			setIsError (false);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessorLog_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_RequestProcessorLog (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -130,10 +154,10 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

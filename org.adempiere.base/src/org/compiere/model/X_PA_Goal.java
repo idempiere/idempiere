@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Goal
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_Goal")
-public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent 
+public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_Goal (Properties ctx, int PA_Goal_ID, String trxName)
@@ -80,6 +80,50 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_Goal (Properties ctx, String PA_Goal_UU, String trxName)
+    {
+      super (ctx, PA_Goal_UU, trxName);
+      /** if (PA_Goal_UU == null)
+        {
+			setChartType (null);
+// BC
+			setGoalPerformance (Env.ZERO);
+			setIsSummary (false);
+			setMeasureActual (Env.ZERO);
+			setMeasureScope (null);
+			setMeasureTarget (Env.ZERO);
+			setName (null);
+			setPA_ColorSchema_ID (0);
+			setPA_Goal_ID (0);
+			setRelativeWeight (Env.ZERO);
+// 1
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Goal (Properties ctx, String PA_Goal_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Goal_UU, trxName, virtualColumns);
+      /** if (PA_Goal_UU == null)
+        {
+			setChartType (null);
+// BC
+			setGoalPerformance (Env.ZERO);
+			setIsSummary (false);
+			setMeasureActual (Env.ZERO);
+			setMeasureScope (null);
+			setMeasureTarget (Env.ZERO);
+			setName (null);
+			setPA_ColorSchema_ID (0);
+			setPA_Goal_ID (0);
+			setRelativeWeight (Env.ZERO);
+// 1
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_Goal (Properties ctx, ResultSet rs, String trxName)
     {
@@ -87,7 +131,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -292,10 +336,10 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -420,7 +464,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

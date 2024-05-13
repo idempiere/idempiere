@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Fund
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_Fund")
-public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent 
+public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_Fund (Properties ctx, int GL_Fund_ID, String trxName)
@@ -62,6 +62,32 @@ public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_Fund (Properties ctx, String GL_Fund_UU, String trxName)
+    {
+      super (ctx, GL_Fund_UU, trxName);
+      /** if (GL_Fund_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setGL_Fund_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Fund (Properties ctx, String GL_Fund_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Fund_UU, trxName, virtualColumns);
+      /** if (GL_Fund_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setGL_Fund_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_Fund (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +95,7 @@ public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -257,7 +283,7 @@ public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

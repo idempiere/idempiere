@@ -31,14 +31,14 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 
 /**
- *	GL Journal Generator Model
+ *	GL Journal Generator Line Model
  *
  *  @author Carlos Ruiz - GlobalQSS
  */
 public class MJournalGeneratorLine extends X_GL_JournalGeneratorLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8151648371117046820L;
 
@@ -46,7 +46,17 @@ public class MJournalGeneratorLine extends X_GL_JournalGeneratorLine
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MJournalGeneratorLine.class);
 
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param GL_JournalGeneratorLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MJournalGeneratorLine(Properties ctx, String GL_JournalGeneratorLine_UU, String trxName) {
+        super(ctx, GL_JournalGeneratorLine_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param GL_JournalGeneratorLine_ID id

@@ -17,9 +17,8 @@ import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 /**
- * 
+ * Callable to support distributed cache management
  * @author hengsin
- *
  */
 public class CacheNewRecordCallable implements Callable<Integer>, Serializable 
 {

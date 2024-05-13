@@ -210,7 +210,7 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 
 		// Following lines of code are optional.
 		// Begin optional code for displaying SDK errors ...
-		// It is used to read any errors that might have occured in the SDK.
+		// It is used to read any errors that might have occurred in the SDK.
 		// Get the transaction errors.
 
 		String transErrors = m_pp.getTransactionContext().toString();

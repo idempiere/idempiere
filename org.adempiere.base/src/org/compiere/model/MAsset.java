@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.math.BigDecimal;
@@ -14,6 +35,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * Asset Model
@@ -41,7 +63,7 @@ public class MAsset extends X_A_Asset {
 	 * @param ctx
 	 * @param M_Product_ID (optional)
 	 * @param M_ASI_ID
-	 * @return array of MAsset
+	 * @return collection of MAsset
 	 */
 	public static Collection<MAsset> forASI(Properties ctx, int M_Product_ID, int M_ASI_ID)
 	{
@@ -58,15 +80,36 @@ public class MAsset extends X_A_Asset {
 					.list();
 	}
 	
-	/** Create constructor */
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAsset(Properties ctx, String A_Asset_UU, String trxName) {
+        super(ctx, A_Asset_UU, trxName);
+		if (Util.isEmpty(A_Asset_UU))
+			setInitialDefaults();
+    }
+
+	/**
+	 * @param ctx
+	 * @param A_Asset_ID
+	 * @param trxName
+	 */
 	public MAsset (Properties ctx, int A_Asset_ID, String trxName)
 	{
 		super (ctx, A_Asset_ID,trxName);
 		if (A_Asset_ID == 0)
-		{
-			setA_Asset_Status(A_ASSET_STATUS_New);
-		}
+			setInitialDefaults();
 	}	//	MAsset
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setA_Asset_Status(A_ASSET_STATUS_New);
+	}
 
 	/**
 	 * Load Constructor
@@ -168,6 +211,12 @@ public class MAsset extends X_A_Asset {
 		setDescription(project.getDescription());
 	}
 	
+	/**
+	 * Create asset from material receipt line
+	 * @param mInOut
+	 * @param sLine
+	 * @param deliveryCount
+	 */
 	public MAsset(MInOut mInOut, MInOutLine sLine, int deliveryCount) {
 		this(mInOut.getCtx(), 0, mInOut.get_TrxName());
 		setIsOwned(false);
@@ -232,15 +281,11 @@ public class MAsset extends X_A_Asset {
 			setProcessed(true);
 		}
 		
-		//added by @win
 		setA_Asset_Status(A_ASSET_STATUS_New);
-		//end added by @win
-		
-		
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAsset(MAsset copy) 
@@ -249,7 +294,7 @@ public class MAsset extends X_A_Asset {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -259,7 +304,7 @@ public class MAsset extends X_A_Asset {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -276,13 +321,16 @@ public class MAsset extends X_A_Asset {
 	}
 
 	/**
-	 * Set Asset Group; also it sets other default fields
+	 * Set Asset Group
 	 * @param assetGroup
 	 */
 	public void setAssetGroup(MAssetGroup assetGroup) {
 		setA_Asset_Group_ID(assetGroup.getA_Asset_Group_ID());
 	}
 	
+	/**
+	 * @return MAssetGroup
+	 */
 	public MAssetGroup getAssetGroup() {
 		return MAssetGroup.getCopy(getCtx(), getA_Asset_Group_ID(), get_TrxName());
 	}
@@ -302,7 +350,7 @@ public class MAsset extends X_A_Asset {
 	 * @param newRecord new
 	 * @return true
 	 */
-	
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		// Set parent asset:
@@ -348,7 +396,7 @@ public class MAsset extends X_A_Asset {
 		return true;
 	}	//	beforeSave
 	
-	
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if(!success)
@@ -436,7 +484,7 @@ public class MAsset extends X_A_Asset {
 		return true;
 	}	//	afterSave
 	
-	
+	@Override
 	protected boolean beforeDelete()
 	{
 		// delete addition
@@ -456,10 +504,10 @@ public class MAsset extends X_A_Asset {
 			if (log.isLoggable(Level.INFO)) log.info("@C_InvoiceLine@ @Updated@ #" + no);
 		}
 		return true;
-	}       //      beforeDelete
+	}       // beforeDelete
 	
 	/**
-	 * 
+	 * Update various status related flag
 	 * @see #beforeSave(boolean)
 	 */
 	public void updateStatus()
@@ -514,7 +562,7 @@ public class MAsset extends X_A_Asset {
 		}
 		// Disposal
 		if(newStatus.equals(A_ASSET_STATUS_Disposed))
-		{ // casat, vandut
+		{
 			setAssetDisposalDate(date);
 		}
 		
@@ -522,42 +570,48 @@ public class MAsset extends X_A_Asset {
 		setA_Asset_Status(newStatus);
 	}	//	changeStatus
 	
-	// Temporary used variables:
-	/**			*/
+	/** Temporary variables for {@link MDepreciationWorkfile}: */
+	/**	useful life in months	*/
 	private int m_UseLifeMonths_F = 0;
 	public int getUseLifeMonths_F()											{	return m_UseLifeMonths_F;	}
 	public void setUseLifeMonths_F(int UseLifeMonths_F)						{	m_UseLifeMonths_F = UseLifeMonths_F; }
-	/**			*/
+	/**	current period id	*/
 	private int m_A_Current_Period = 0;
 	public int getA_Current_Period()										{	return m_A_Current_Period;	}
 	public void setA_Current_Period(int A_Current_Period)					{	m_A_Current_Period = A_Current_Period; }
-	/**			*/
+	/**	accounting date		*/
 	private Timestamp m_DateAcct = null;
 	public Timestamp getDateAcct()											{	return m_DateAcct;	}
 	public void setDateAcct(Timestamp DateAcct)								{	m_DateAcct = DateAcct; }
-	/**			*/
+	/**	A_Depreciation_ID	*/
 	private int m_A_Depreciation_ID = 0;
 	public int getA_Depreciation_ID()										{	return m_A_Depreciation_ID;	}
 	public void setA_Depreciation_ID(int A_Depreciation_ID)					{	m_A_Depreciation_ID = A_Depreciation_ID; }
-	/**			*/
+	/**	A_Depreciation_Forecast_ID	*/
 	private int m_A_Depreciation_F_ID = 0;
 	public int getA_Depreciation_F_ID()										{	return m_A_Depreciation_F_ID;	}
 	public void setA_Depreciation_F_ID(int A_Depreciation_F_ID)				{	m_A_Depreciation_F_ID = A_Depreciation_F_ID; }
-	/**			*/
-	private BigDecimal m_A_Asset_Cost = Env.ZERO;
-	private BigDecimal m_A_Accumulated_Depr = Env.ZERO;
-	private BigDecimal m_A_Accumulated_Depr_F = Env.ZERO;
+	/**	Asset cost	*/
+	private BigDecimal m_A_Asset_Cost = Env.ZERO;		
 	public BigDecimal getA_Asset_Cost()										{	return m_A_Asset_Cost;	}
 	public void setA_Asset_Cost(BigDecimal A_Asset_Cost)					{	m_A_Asset_Cost = A_Asset_Cost; }
+	/** Accumulated depreciation */
+	private BigDecimal m_A_Accumulated_Depr = Env.ZERO;
 	public BigDecimal getA_Accumulated_Depr()								{	return m_A_Accumulated_Depr;	}
 	public void setA_Accumulated_Depr(BigDecimal A_Accumulated_Depr)		{	m_A_Accumulated_Depr = A_Accumulated_Depr; }
+	/** Accumulated depreciation forecast */
+	private BigDecimal m_A_Accumulated_Depr_F = Env.ZERO;
 	public BigDecimal getA_Accumulated_Depr_F()								{	return m_A_Accumulated_Depr_F;	}
 	public void setA_Accumulated_Depr_F(BigDecimal A_Accumulated_Depr_F)	{	m_A_Accumulated_Depr_F = A_Accumulated_Depr_F; }
-	
+	/** Fixed asset import */
 	private MIFixedAsset m_I_FixedAsset = null;
 	public MIFixedAsset getI_FixedAsset()										{	return m_I_FixedAsset;	}
 	public void setI_FixedAsset(MIFixedAsset I_FixedAsset)					{	m_I_FixedAsset = I_FixedAsset; }
 
+	/**
+	 * Methods below have been created for compilation of org.compiere.process.AssetDelivery and it is not working in any meaningful way.
+	 */
+	
 	public MAssetDelivery confirmDelivery(EMail email, int ad_User_ID) {
 		// TODO Auto-generated method stub
 		return null;

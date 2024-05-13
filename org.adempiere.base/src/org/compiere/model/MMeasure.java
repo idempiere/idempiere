@@ -38,7 +38,6 @@ import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  * 	Performance Measure
  *	
@@ -54,7 +53,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3584012092877837973L;
 
@@ -93,6 +92,16 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MMeasure> s_cache 
 		= new ImmutableIntPOCache<Integer, MMeasure> (Table_Name, 10);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_Measure_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMeasure(Properties ctx, String PA_Measure_UU, String trxName) {
+        super(ctx, PA_Measure_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -116,7 +125,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}	//	MMeasure
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MMeasure(MMeasure copy) 
@@ -125,7 +134,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -135,7 +144,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -146,6 +155,11 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
+	/**
+	 * Get chart columns
+	 * @param goal
+	 * @return list of GraphColumn
+	 */
 	public ArrayList<GraphColumn> getGraphColumnList(MGoal goal)
 	{
 		ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();
@@ -328,6 +342,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MMeasure[");
@@ -340,6 +355,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (MEASURETYPE_Calculated.equals(getMeasureType())
@@ -381,6 +397,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return succes
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		//	Update Goals with Manual Measure
@@ -391,7 +408,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}	//	afterSave
 	
 	/**
-	 * 	Update/save Goals
+	 * 	Update Goals
 	 * 	@return true if updated
 	 */
 	public boolean updateGoals()
@@ -484,7 +501,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}	//	updateAchievementGoals
 
 	/**
-	 * 	Update/save Goals with Calculation
+	 * 	Update Goals with Calculation measure type (MEASURETYPE_Calculated)
 	 * 	@return true if updated
 	 */
 	private boolean updateCalculatedGoals()
@@ -531,7 +548,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}	//	updateCalculatedGoals
 	
 	/**
-	 * 	Update/save Goals with Ratios
+	 * 	Update Goals with Ratios measure type (MEASURETYPE_Ratio)
 	 * 	@return true if updated
 	 */
 	private boolean updateRatios()
@@ -542,7 +559,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}		//	updateRatios
 	
 	/**
-	 * 	Update/save Goals with Requests
+	 * 	Update Goals with Requests measure type (MEASURETYPE_Request)
 	 * 	@return true if updated
 	 */
 	private boolean updateRequests()
@@ -585,7 +602,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	}		//	updateRequests
 
 	/**
-	 * 	Update/save Goals with Projects
+	 * 	Update Goals with Projects measure type (MEASURETYPE_Project)
 	 * 	@return true if updated
 	 */
 	private boolean updateProjects()
@@ -627,7 +644,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 		return true;
 	}	//	updateProjects
 	/**
-	 * 	Update/save update User Defined
+	 * 	Update goals with User Defined measure type
 	 * 	@return true if updated
 	 */
 	private boolean updateUserDefined()

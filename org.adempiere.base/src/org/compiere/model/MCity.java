@@ -36,7 +36,7 @@ public class MCity extends X_C_City
 	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3716470269471334172L;
 
@@ -77,9 +77,17 @@ public class MCity extends X_C_City
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCity.class);
 
-	/**	Region Cache				*/
-	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_City_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCity(Properties ctx, String C_City_UU, String trxName) {
+        super(ctx, C_City_UU, trxName);
+    }
+
+	/**
 	 *	Create empty City
 	 * 	@param ctx context
 	 * 	@param C_City_ID id
@@ -88,12 +96,8 @@ public class MCity extends X_C_City
 	public MCity (Properties ctx, int C_City_ID, String trxName)
 	{
 		super (ctx, C_City_ID, trxName);
-		if (C_City_ID == 0)
-		{
-		}
 	}   //  MCity
-	
-	
+		
 	/**
 	 *	Create City from current row in ResultSet
 	 * 	@param ctx context
@@ -118,7 +122,7 @@ public class MCity extends X_C_City
 	}   //  MCity
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCity(MCity copy) 
@@ -127,7 +131,7 @@ public class MCity extends X_C_City
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -137,7 +141,7 @@ public class MCity extends X_C_City
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -151,6 +155,7 @@ public class MCity extends X_C_City
 	 *	Return Name
 	 *  @return Name
 	 */
+	@Override
 	public String toString()
 	{
 		return getName();
@@ -162,6 +167,7 @@ public class MCity extends X_C_City
 	 *  @param o2 object 2
 	 *  @return -1,0, 1
 	 */
+	@Override
 	public int compare(Object o1, Object o2)
 	{
 		String s1 = o1.toString();

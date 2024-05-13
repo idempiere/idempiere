@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Table_Header
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Table_Header")
-public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciation_Table_Header, I_Persistent 
+public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciation_Table_Header, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Depreciation_Table_Header (Properties ctx, String A_Depreciation_Table_Header_UU, String trxName)
+    {
+      super (ctx, A_Depreciation_Table_Header_UU, trxName);
+      /** if (A_Depreciation_Table_Header_UU == null)
+        {
+			setA_Depreciation_Table_Code (null);
+			setA_Depreciation_Table_Header_ID (0);
+			setA_Table_Rate_Type (null);
+			setA_Term (null);
+			setDescription (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Table_Header (Properties ctx, String A_Depreciation_Table_Header_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Table_Header_UU, trxName, virtualColumns);
+      /** if (A_Depreciation_Table_Header_UU == null)
+        {
+			setA_Depreciation_Table_Code (null);
+			setA_Depreciation_Table_Header_ID (0);
+			setA_Table_Rate_Type (null);
+			setA_Term (null);
+			setDescription (null);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -130,7 +160,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Table_Header_ID()));
     }
@@ -224,10 +254,10 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_TaxProviderCfg
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxProviderCfg")
-public class X_C_TaxProviderCfg extends PO implements I_C_TaxProviderCfg, I_Persistent 
+public class X_C_TaxProviderCfg extends PO implements I_C_TaxProviderCfg, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxProviderCfg (Properties ctx, int C_TaxProviderCfg_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_C_TaxProviderCfg extends PO implements I_C_TaxProviderCfg, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_TaxProviderCfg (Properties ctx, String C_TaxProviderCfg_UU, String trxName)
+    {
+      super (ctx, C_TaxProviderCfg_UU, trxName);
+      /** if (C_TaxProviderCfg_UU == null)
+        {
+			setC_TaxProviderCfg_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxProviderCfg (Properties ctx, String C_TaxProviderCfg_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxProviderCfg_UU, trxName, virtualColumns);
+      /** if (C_TaxProviderCfg_UU == null)
+        {
+			setC_TaxProviderCfg_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_TaxProviderCfg (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_C_TaxProviderCfg extends PO implements I_C_TaxProviderCfg, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

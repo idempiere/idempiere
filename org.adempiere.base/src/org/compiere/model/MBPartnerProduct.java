@@ -20,31 +20,54 @@
  * Created on May 10, 2006
  */
 
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 public class MBPartnerProduct extends X_C_BPartner_Product
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3890764013045208949L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BPartner_Product_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBPartnerProduct(Properties ctx, String C_BPartner_Product_UU, String trxName) {
+        super(ctx, C_BPartner_Product_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param C_BpartnerProduct_ID
+     * @param m_trxName
+     */
 	public MBPartnerProduct(Properties ctx, int C_BpartnerProduct_ID, String m_trxName)
     {
         super(ctx, C_BpartnerProduct_ID, m_trxName);
-        
     }
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MBPartnerProduct(Properties ctx, ResultSet rs, String trxName) 
 	{
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_BPartner_Product_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MBPartnerProduct(Properties ctx, int C_BPartner_Product_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_BPartner_Product_ID, trxName, virtualColumns);
 	}

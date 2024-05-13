@@ -32,8 +32,8 @@ public abstract class Convert_SQL92 extends Convert {
 	private static final CLogger	log	= CLogger.getCLogger (Convert_SQL92.class);
 	
 	/**************************************************************************
-	 *  Convert Outer Join.
-	 *  Converting joins can ve very complex when multiple tables/keys are involved.
+	 *  Convert Outer Join.<br/>
+	 *  Converting joins can be very complex when multiple tables/keys are involved.
 	 *  The main scenarios supported are two tables with multiple key columns
 	 *  and multiple tables with single key columns.
 	 *  <pre>{@code
@@ -57,10 +57,7 @@ public abstract class Convert_SQL92 extends Convert {
 		//
 		int fromIndex = Util.findIndexOf (sqlStatement.toUpperCase(), " FROM ");
 		int whereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " WHERE ");
-		//begin vpj-cd e-evolution 03/14/2005 PostgreSQL
-		//int endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " GRPUP BY ");
 		int endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " GROUP BY ");
-        //end vpj-cd e-evolution 03/14/2005	PostgreSQL
 		if (endWhereIndex == -1)
 			endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " ORDER BY ");
 		if (endWhereIndex == -1)
@@ -69,7 +66,6 @@ public abstract class Convert_SQL92 extends Convert {
 		if (trace)
 		{
 			if (log.isLoggable(Level.INFO)) log.info("OuterJoin<== " + sqlStatement);
-		//	log.info("From=" + fromIndex + ", Where=" + whereIndex + ", End=" + endWhereIndex + ", Length=" + sqlStatement.length());
 		}
 		//
 		String selectPart = sqlStatement.substring(0, fromIndex);
@@ -109,7 +105,6 @@ public abstract class Convert_SQL92 extends Convert {
 				end = newWherePart.indexOf(" OR ", pos);
 			if (end == -1)
 				end = newWherePart.length();
-		//	log.info("<= " + newWherePart + " - Start=" + start + "+" + startOffset + ", End=" + end);
 
 			//  extract condition
 			String condition = newWherePart.substring(start+startOffset, end);
@@ -118,7 +113,6 @@ public abstract class Convert_SQL92 extends Convert {
 				if (log.isLoggable(Level.INFO)) log.info("->" + condition);
 			//  new WHERE clause
 			newWherePart = newWherePart.substring(0, start) + newWherePart.substring(end);
-		//	log.info("=> " + newWherePart);
 			//
 			pos = newWherePart.indexOf("(+)");
 		}
@@ -264,7 +258,7 @@ public abstract class Convert_SQL92 extends Convert {
 						.append(" ON (").append(second.getCondition());
 					joins.remove(j);                            //  remove from join list
 					fromAlias.remove(second.getJoinAlias());    //  remove from table list
-					//  additional join colums would come here
+					//  additional join columns would come here
 					newFrom.append(")");    //  close ON
 					//----
 					for (int k = i+1; k < joins.size(); k++)
@@ -287,7 +281,7 @@ public abstract class Convert_SQL92 extends Convert {
 								.append(" ON (").append(third.getCondition());
 							joins.remove(k);                            //  remove from join list
 							fromAlias.remove(third.getJoinAlias());     //  remove from table list
-							//  additional join colums would come here
+							//  additional join columns would come here
 							newFrom.append(")");    //  close ON
 						}
 						else if (trace)
@@ -321,7 +315,7 @@ public abstract class Convert_SQL92 extends Convert {
 		return retValue.toString();
 	}   //  convertOuterJoin
 	
-	/**************************************************************************
+	/**
 	 *  Converts Decode.
 	 *  <pre>{@code
 	 *      DECODE (a, 1, 'one', 2, 'two', 'none')
@@ -332,7 +326,6 @@ public abstract class Convert_SQL92 extends Convert {
 	 */
 	protected String convertDecode(String sqlStatement, int fromIndex)
 	{
-	//	log.info("DECODE<== " + sqlStatement);
 		String statement = sqlStatement;
 		StringBuilder sb = new StringBuilder("CASE");
 
@@ -362,7 +355,6 @@ public abstract class Convert_SQL92 extends Convert {
 		//  find the expression "a" - find first , ignoring ()
 		index = Util.findIndexOf (statement, ',');
 		String expression = statement.substring(0, index).trim();
-	//	log.info("Expression=" + expression);
 
 		//  Pairs "1, 'one',"
 		statement = statement.substring(index+1);
@@ -372,7 +364,6 @@ public abstract class Convert_SQL92 extends Convert {
 			String first = statement.substring(0, index);
 			char cc = statement.charAt(index);
 			statement = statement.substring(index+1);
-		//	log.info("First=" + first + ", Char=" + cc);
 			//
 			boolean error = false;
 			if (cc == ',')
@@ -385,7 +376,6 @@ public abstract class Convert_SQL92 extends Convert {
 					String second = statement.substring(0, index);
 					sb.append(" WHEN ").append(expression).append("=").append(first.trim())
 						.append(" THEN ").append(second.trim());
-		//			log.info(">>" + sb.toString());
 					statement = statement.substring(index+1);
 					index = Util.findIndexOf (statement, ',',')');
 				}
@@ -393,7 +383,6 @@ public abstract class Convert_SQL92 extends Convert {
 			else if (cc == ')')
 			{
 				sb.append(" ELSE ").append(first.trim()).append(" END");
-		//		log.info(">>" + sb.toString());
 				index = -1;
 			}
 			else
@@ -410,11 +399,10 @@ public abstract class Convert_SQL92 extends Convert {
 		}
 		sb.append(statement);
 		sb.insert(0, firstPart);
-	//	log.info("DECODE==> " + sb.toString());
 		return sb.toString();
 	}	//  convertDecode
 	
-	/***************************************************************************
+	/**
 	 * Converts Delete.
 	 * 
 	 * <pre>
@@ -437,9 +425,9 @@ public abstract class Convert_SQL92 extends Convert {
 	} // convertDelete
 	
 	/**
-	 * Is character a valid sql operator
+	 * Is character a valid SQL operator
 	 * @param c
-	 * @return boolean
+	 * @return true if c is SQL operator
 	 */
 	protected boolean isOperator(char c)
 	{

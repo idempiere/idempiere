@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationProvider
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationProvider")
-public class X_AD_AuthorizationProvider extends PO implements I_AD_AuthorizationProvider, I_Persistent 
+public class X_AD_AuthorizationProvider extends PO implements I_AD_AuthorizationProvider, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationProvider (Properties ctx, int AD_AuthorizationProvider_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_AuthorizationProvider (Properties ctx, String AD_AuthorizationProvider_UU, String trxName)
+    {
+      super (ctx, AD_AuthorizationProvider_UU, trxName);
+      /** if (AD_AuthorizationProvider_UU == null)
+        {
+			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationType (null);
+			setAuthorizationEndpoint (null);
+			setName (null);
+			setTokenEndpoint (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AuthorizationProvider (Properties ctx, String AD_AuthorizationProvider_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AuthorizationProvider_UU, trxName, virtualColumns);
+      /** if (AD_AuthorizationProvider_UU == null)
+        {
+			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationType (null);
+			setAuthorizationEndpoint (null);
+			setName (null);
+			setTokenEndpoint (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_AuthorizationProvider (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -213,7 +241,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

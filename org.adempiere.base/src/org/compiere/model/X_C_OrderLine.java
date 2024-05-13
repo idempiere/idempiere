@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_OrderLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderLine")
-public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent 
+public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_OrderLine (Properties ctx, int C_OrderLine_ID, String trxName)
@@ -120,6 +120,90 @@ public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_OrderLine (Properties ctx, String C_OrderLine_UU, String trxName)
+    {
+      super (ctx, C_OrderLine_UU, trxName);
+      /** if (C_OrderLine_UU == null)
+        {
+			setC_BPartner_Location_ID (0);
+// @C_BPartner_Location_ID@
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_Order_ID (0);
+			setC_OrderLine_ID (0);
+			setC_Tax_ID (0);
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @DateOrdered@
+			setFreightAmt (Env.ZERO);
+			setIsDescription (false);
+// N
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_OrderLine WHERE C_Order_ID=@C_Order_ID@
+			setLineNetAmt (Env.ZERO);
+			setM_AttributeSetInstance_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setPriceActual (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setProcessed (false);
+			setQtyDelivered (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 1
+			setQtyInvoiced (Env.ZERO);
+			setQtyLostSales (Env.ZERO);
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReserved (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderLine (Properties ctx, String C_OrderLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderLine_UU, trxName, virtualColumns);
+      /** if (C_OrderLine_UU == null)
+        {
+			setC_BPartner_Location_ID (0);
+// @C_BPartner_Location_ID@
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_Order_ID (0);
+			setC_OrderLine_ID (0);
+			setC_Tax_ID (0);
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @DateOrdered@
+			setFreightAmt (Env.ZERO);
+			setIsDescription (false);
+// N
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_OrderLine WHERE C_Order_ID=@C_Order_ID@
+			setLineNetAmt (Env.ZERO);
+			setM_AttributeSetInstance_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setPriceActual (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setProcessed (false);
+			setQtyDelivered (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 1
+			setQtyInvoiced (Env.ZERO);
+			setQtyLostSales (Env.ZERO);
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReserved (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_OrderLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -127,7 +211,7 @@ public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -369,7 +453,7 @@ public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Order_ID()));
     }
@@ -713,10 +797,10 @@ public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
 	public boolean isDescription()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDescription);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1063,10 +1147,10 @@ public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

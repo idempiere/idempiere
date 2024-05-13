@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_OrgInfo
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_OrgInfo")
-public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent 
+public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_OrgInfo (Properties ctx, String AD_OrgInfo_UU, String trxName)
+    {
+      super (ctx, AD_OrgInfo_UU, trxName);
+      /** if (AD_OrgInfo_UU == null)
+        {
+			setDUNS (null);
+			setReceiptFooterMsg (null);
+// 1
+			setTaxID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_OrgInfo (Properties ctx, String AD_OrgInfo_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_OrgInfo_UU, trxName, virtualColumns);
+      /** if (AD_OrgInfo_UU == null)
+        {
+			setDUNS (null);
+			setReceiptFooterMsg (null);
+// 1
+			setTaxID (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_OrgInfo (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -82,7 +108,7 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_OrgInfo[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -422,6 +448,22 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	public String getTaxID()
 	{
 		return (String)get_Value(COLUMNNAME_TaxID);
+	}
+
+	/** Set Time Zone.
+		@param TimeZone Time zone name
+	*/
+	public void setTimeZone (String TimeZone)
+	{
+		set_Value (COLUMNNAME_TimeZone, TimeZone);
+	}
+
+	/** Get Time Zone.
+		@return Time zone name
+	  */
+	public String getTimeZone()
+	{
+		return (String)get_Value(COLUMNNAME_TimeZone);
 	}
 
 	public org.compiere.model.I_C_Bank getTransferBank() throws RuntimeException

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobAssignment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_JobAssignment")
-public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persistent 
+public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_JobAssignment (Properties ctx, int C_JobAssignment_ID, String trxName)
@@ -60,6 +60,32 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_JobAssignment (Properties ctx, String C_JobAssignment_UU, String trxName)
+    {
+      super (ctx, C_JobAssignment_UU, trxName);
+      /** if (C_JobAssignment_UU == null)
+        {
+			setAD_User_ID (0);
+			setC_JobAssignment_ID (0);
+			setC_Job_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobAssignment (Properties ctx, String C_JobAssignment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobAssignment_UU, trxName, virtualColumns);
+      /** if (C_JobAssignment_UU == null)
+        {
+			setAD_User_ID (0);
+			setC_JobAssignment_ID (0);
+			setC_Job_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_JobAssignment (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +93,7 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -184,7 +210,7 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Job_ID()));
     }

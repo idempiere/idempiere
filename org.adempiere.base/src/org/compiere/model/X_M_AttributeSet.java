@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeSet")
-public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
+public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -75,6 +75,48 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_AttributeSet (Properties ctx, String M_AttributeSet_UU, String trxName)
+    {
+      super (ctx, M_AttributeSet_UU, trxName);
+      /** if (M_AttributeSet_UU == null)
+        {
+			setIsGuaranteeDate (false);
+			setIsGuaranteeDateMandatory (false);
+			setIsInstanceAttribute (false);
+			setIsLot (false);
+			setIsLotMandatory (false);
+			setIsSerNo (false);
+			setIsSerNoMandatory (false);
+			setMandatoryType (null);
+			setM_AttributeSet_ID (0);
+			setM_AttributeSet_Type (null);
+// MMS
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeSet (Properties ctx, String M_AttributeSet_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeSet_UU, trxName, virtualColumns);
+      /** if (M_AttributeSet_UU == null)
+        {
+			setIsGuaranteeDate (false);
+			setIsGuaranteeDateMandatory (false);
+			setIsInstanceAttribute (false);
+			setIsLot (false);
+			setIsLotMandatory (false);
+			setIsSerNo (false);
+			setIsSerNoMandatory (false);
+			setMandatoryType (null);
+			setM_AttributeSet_ID (0);
+			setM_AttributeSet_Type (null);
+// MMS
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_AttributeSet (Properties ctx, ResultSet rs, String trxName)
     {
@@ -82,7 +124,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -151,10 +193,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isAutoGenerateLot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoGenerateLot);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -174,10 +216,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isGuaranteeDate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGuaranteeDate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -197,10 +239,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isGuaranteeDateMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGuaranteeDateMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -220,10 +262,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isInstanceAttribute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInstanceAttribute);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -243,10 +285,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isLot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLot);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -266,10 +308,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isLotMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLotMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -289,10 +331,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isSerNo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSerNo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -312,10 +354,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isSerNoMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSerNoMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -510,7 +552,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -560,10 +602,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public boolean isUseGuaranteeDateForMPolicy()
 	{
 		Object oo = get_Value(COLUMNNAME_UseGuaranteeDateForMPolicy);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

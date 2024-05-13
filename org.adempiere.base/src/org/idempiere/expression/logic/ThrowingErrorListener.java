@@ -30,9 +30,8 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 /**
- * 
+ * Syntax error listener
  * @author hengsin
- *
  */
 public class ThrowingErrorListener extends BaseErrorListener {
 

@@ -38,7 +38,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2378841146277294989L;
 
@@ -76,9 +76,18 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer, MProjectType> s_cache 
 		= new ImmutableIntPOCache<Integer, MProjectType> (Table_Name, 20);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_ProjectType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MProjectType(Properties ctx, String C_ProjectType_UU, String trxName) {
+        super(ctx, C_ProjectType_UU, trxName);
+    }
+
+	/**
 	 * 	Standrad Constructor
 	 *	@param ctx context
 	 *	@param C_ProjectType_ID id
@@ -101,7 +110,7 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	}	//	MProjectType
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MProjectType(MProjectType copy) 
@@ -110,7 +119,7 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -120,7 +129,7 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -135,6 +144,7 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return	info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MProjectType[")
@@ -143,11 +153,10 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 			.append("]");
 		return sb.toString();
 	}	//	toString
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Project Type Phases
-	 *	@return Array of phases
+	 *	@return Array of MProjectTypePhase
 	 */
 	public MProjectTypePhase[] getPhases()
 	{
@@ -180,13 +189,13 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	}	//	getPhases
 
 	/**
-	 * 	Get Sql to return single value for the Performance Indicator
+	 * 	Get SQL for Performance Indicator
 	 *	@param restrictions array of goal restrictions
-	 *	@param MeasureScope scope of this value  
-	 *	@param MeasureDataType data type
-	 *	@param reportDate optional report date
+	 *	@param MeasureScope measurement display scope (MGoal.MEASUREDISPLAY_*)  
+	 *	@param MeasureDataType measurement data type (MMeasure.MEASUREDATATYPE_*)
+	 *	@param reportDate optional report date, null to use current date
 	 *	@param role role
-	 *	@return sql for performance indicator
+	 *	@return SQL for performance indicator
 	 */
 	public String getSqlPI (MGoalRestriction[] restrictions, 
 		String MeasureScope, String MeasureDataType, Timestamp reportDate, MRole role)
@@ -217,8 +226,6 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureScope))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		;
 			sb.append(" AND TRUNC(")
 				.append(dateColumn).append(",'").append(trunc).append("')=TRUNC(")
 				.append(DB.TO_DATE(reportDate)).append(",'").append(trunc).append("')");
@@ -232,13 +239,13 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	}	//	getSql
 	
 	/**
-	 * 	Get Sql to value for the bar chart
+	 * 	Get SQL for bar chart
 	 *	@param restrictions array of goal restrictions
-	 *	@param MeasureDisplay scope of this value  
-	 *	@param MeasureDataType data type
+	 *	@param MeasureDisplay measurement display scope (MGoal.MEASUREDISPLAY_*)  
+	 *	@param MeasureDataType measurement data type (MMeasure.MEASUREDATATYPE_*)
 	 *	@param startDate optional report start date
 	 *	@param role role
-	 *	@return sql for Bar Chart
+	 *	@return SQL for Bar Chart
 	 */
 	public String getSqlBarChart (MGoalRestriction[] restrictions, 
 		String MeasureDisplay, String MeasureDataType, 

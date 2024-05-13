@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionLine")
-public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Persistent 
+public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CommissionLine (Properties ctx, int C_CommissionLine_ID, String trxName)
@@ -73,6 +73,44 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CommissionLine (Properties ctx, String C_CommissionLine_UU, String trxName)
+    {
+      super (ctx, C_CommissionLine_UU, trxName);
+      /** if (C_CommissionLine_UU == null)
+        {
+			setAmtMultiplier (Env.ZERO);
+			setAmtSubtract (Env.ZERO);
+			setC_Commission_ID (0);
+			setC_CommissionLine_ID (0);
+			setCommissionOrders (false);
+			setIsPositiveOnly (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CommissionLine WHERE C_Commission_ID=@C_Commission_ID@
+			setQtyMultiplier (Env.ZERO);
+			setQtySubtract (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionLine (Properties ctx, String C_CommissionLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionLine_UU, trxName, virtualColumns);
+      /** if (C_CommissionLine_UU == null)
+        {
+			setAmtMultiplier (Env.ZERO);
+			setAmtSubtract (Env.ZERO);
+			setC_Commission_ID (0);
+			setC_CommissionLine_ID (0);
+			setCommissionOrders (false);
+			setIsPositiveOnly (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CommissionLine WHERE C_Commission_ID=@C_Commission_ID@
+			setQtyMultiplier (Env.ZERO);
+			setQtySubtract (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CommissionLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +118,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -226,7 +264,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Commission_ID()));
     }
@@ -282,10 +320,10 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	public boolean isCommissionOrders()
 	{
 		Object oo = get_Value(COLUMNNAME_CommissionOrders);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -349,10 +387,10 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	public boolean isPositiveOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPositiveOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for A_Asset_Product
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Product")
-public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persistent 
+public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Product (Properties ctx, int A_Asset_Product_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Product (Properties ctx, String A_Asset_Product_UU, String trxName)
+    {
+      super (ctx, A_Asset_Product_UU, trxName);
+      /** if (A_Asset_Product_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Product_ID (0);
+			setA_QTY_Current (Env.ZERO);
+// 0
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Product (Properties ctx, String A_Asset_Product_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Product_UU, trxName, virtualColumns);
+      /** if (A_Asset_Product_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Product_ID (0);
+			setA_QTY_Current (Env.ZERO);
+// 0
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Product (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

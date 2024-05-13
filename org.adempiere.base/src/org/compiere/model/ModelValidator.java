@@ -32,23 +32,26 @@ public interface ModelValidator
 	/** Model Change Type New		*/
 	public static final int TYPE_BEFORE_NEW = 1;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_NEW = 1;
+	@Deprecated
 	public static final int	CHANGETYPE_NEW = 1;				// Compatibility with Compiere 260c
 	public static final int TYPE_AFTER_NEW = 4;			// teo_sarca [ 1675490 ]
 	public static final int TYPE_AFTER_NEW_REPLICATION = 7;	// @Trifon
 	/** Model Change Type Change	*/
 	public static final int	TYPE_BEFORE_CHANGE = 2;		// teo_sarca [ 1675490 ]
 	public static final int	TYPE_CHANGE = 2;
+	@Deprecated
 	public static final int	CHANGETYPE_CHANGE = 2;			// Compatibility with Compiere 260c
 	public static final int	TYPE_AFTER_CHANGE = 5;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_AFTER_CHANGE_REPLICATION = 8; // @Trifon
 	/** Model Change Type Delete	*/
 	public static final int	TYPE_BEFORE_DELETE = 3;		// teo_sarca [ 1675490 ]
 	public static final int	TYPE_DELETE = 3;
+	@Deprecated
 	public static final int	CHANGETYPE_DELETE = 3;			// Compatibility with Compiere 260c
 	public static final int	TYPE_AFTER_DELETE = 6;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_BEFORE_DELETE_REPLICATION = 9; // @Trifon
 
-	// Correlation between constant events and list of event script model validators
+	// Correlation between AD_Table_ScriptValidator.EventModelValidator constants and model change TYPE_ constants.
 	public static String[] tableEventValidators = new String[] {
 		"", // 0
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableBeforeNew,    // TYPE_BEFORE_NEW = 1
@@ -62,7 +65,7 @@ public interface ModelValidator
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableBeforeDeleteReplication   // TYPE_BEFORE_DELETE_REPLICATION = 9
 	};
 
-	// Correlation between constant events and list of osgi event topic
+	// Correlation between OSGi event topic and model change TYPE_ constants
 	public static String[] tableEventTopics = new String[] {
 		"", // 0
 		IEventTopics.PO_BEFORE_NEW,    // TYPE_BEFORE_NEW = 1
@@ -78,6 +81,7 @@ public interface ModelValidator
 
 	/** Called before document is prepared */
 	public static final int TIMING_BEFORE_PREPARE = 1;
+	@Deprecated
 	public static final int DOCTIMING_BEFORE_PREPARE = 1; // Compatibility with Compiere 260c
 	/** Called before document is void */
 	public static final int TIMING_BEFORE_VOID = 2;
@@ -95,6 +99,7 @@ public interface ModelValidator
 	public static final int TIMING_AFTER_PREPARE = 8;
 	/** Called after document is completed */
 	public static final int TIMING_AFTER_COMPLETE = 9;
+	@Deprecated
 	public static final int DOCTIMING_AFTER_COMPLETE = 9; // Compatibility with Compiere 260c
 	/** Called after document is void */
 	public static final int TIMING_AFTER_VOID = 10;
@@ -111,7 +116,7 @@ public interface ModelValidator
 	/** Called after document is posted */
 	public static final int TIMING_AFTER_POST = 16;
 
-	// Correlation between constant events and list of event script model validators
+	// Correlation between AD_Table_ScriptValidator.EventModelValidator constants and document change TIMING_ constants.
 	public static String[] documentEventValidators = new String[] {
 		"", // 0
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_DocumentBeforePrepare,        // TIMING_BEFORE_PREPARE = 1
@@ -132,7 +137,7 @@ public interface ModelValidator
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_DocumentAfterPost             // TIMING_AFTER_POST = 16
 	};
 
-	// Correlation between constant events and list of osgi event topics
+	// Correlation between OSGi event topics and document change TIMING_ constants.
 	public static String[] documentEventTopics = new String[] {
 		"", // 0
 		IEventTopics.DOC_BEFORE_PREPARE,        // TIMING_BEFORE_PREPARE = 1
@@ -154,21 +159,21 @@ public interface ModelValidator
 	};
 
 	/**
-	 * 	Initialize Validation
+	 * 	Initialize validator.
 	 * 	@param engine validation engine
-	 *	@param client client
+	 *	@param client optional client. null for validator that's applicable to all client.
 	 */
 	public void initialize (ModelValidationEngine engine, MClient client);
 
 	/**
 	 * 	Get Client to be monitored
-	 *	@return AD_Client_ID
+	 *	@return AD_Client_ID or 0
 	 */
 	public int getAD_Client_ID();
 
 	/**
-	 * 	User logged in
-	 * 	Called before preferences are set
+	 * 	User logged in.
+	 * 	Called before preferences are set.
 	 *	@param AD_Org_ID org
 	 *	@param AD_Role_ID role
 	 *	@param AD_User_ID user
@@ -176,24 +181,19 @@ public interface ModelValidator
 	 */
 	public String login (int AD_Org_ID, int AD_Role_ID, int AD_User_ID);
 
-
     /**
-     * 	Model Change of a monitored Table.
-     * 	Called after PO.beforeSave/PO.beforeDelete
-     * 	when you called addModelChange for the table
+     * 	Model change event of a Table.
      * 	@param po persistent object
-     * 	@param type TYPE_
+     * 	@param type TYPE_ event
      *	@return error message or null
      *	@exception Exception if the recipient wishes the change to be not accept.
      */
 	public String modelChange (PO po, int type) throws Exception;
 
-
 	/**
-	 * 	Validate Document.
+	 * 	Validate Document Action.<br/>
 	 * 	Called as first step of DocAction.prepareIt
-	 * 	or at the end of DocAction.completeIt
-     * 	when you called addDocValidate for the table.
+	 * 	or at the end of DocAction.completeIt.<br/>
      * 	Note that totals, etc. may not be correct before the prepare stage.
 	 *	@param po persistent object
 	 *	@param timing see TIMING_ constants

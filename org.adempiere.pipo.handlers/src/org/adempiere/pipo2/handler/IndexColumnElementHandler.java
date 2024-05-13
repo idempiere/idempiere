@@ -54,11 +54,11 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 			MIndexColumn mIndexColumn = findPO(ctx, element);
 			if (mIndexColumn == null) {
 				int parentId = 0;
-				if (getParentId(element, MTableIndex.Table_Name) > 0) {
-					parentId = getParentId(element, MTableIndex.Table_Name);
+				if ((Integer)getParentId(element, MTableIndex.Table_Name) > 0) {
+					parentId = (Integer)getParentId(element, MTableIndex.Table_Name);
 				} else {
 					Element pfElement = element.properties.get(MIndexColumn.COLUMNNAME_AD_TableIndex_ID);
-					parentId = ReferenceUtils.resolveReference(ctx.ctx, pfElement, getTrxName(ctx));
+					parentId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, pfElement, getTrxName(ctx));
 				}
 				if (parentId <= 0) {
 					element.defer = true;
@@ -80,7 +80,7 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 			int columnId = 0;
 			Element columnElement = element.properties.get("AD_Column_ID");
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				columnId = ReferenceUtils.resolveReference(ctx.ctx, columnElement, getTrxName(ctx));
+				columnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, columnElement, getTrxName(ctx));
 			}
 			if (columnId > 0)
 				mIndexColumn.setAD_Column_ID(columnId);

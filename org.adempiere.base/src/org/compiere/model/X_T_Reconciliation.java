@@ -21,22 +21,22 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for T_Reconciliation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_Reconciliation")
-public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Persistent 
+public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName)
+    public X_T_Reconciliation (Properties ctx, String T_Reconciliation_UU, String trxName)
     {
-      super (ctx, T_Reconciliation_ID, trxName);
-      /** if (T_Reconciliation_ID == 0)
+      super (ctx, T_Reconciliation_UU, trxName);
+      /** if (T_Reconciliation_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setFact_Acct_ID (0);
@@ -44,10 +44,10 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
     }
 
     /** Standard Constructor */
-    public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName, String ... virtualColumns)
+    public X_T_Reconciliation (Properties ctx, String T_Reconciliation_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_Reconciliation_ID, trxName, virtualColumns);
-      /** if (T_Reconciliation_ID == 0)
+      super (ctx, T_Reconciliation_UU, trxName, virtualColumns);
+      /** if (T_Reconciliation_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setFact_Acct_ID (0);
@@ -61,7 +61,7 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +78,7 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_Reconciliation[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

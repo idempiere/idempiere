@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for PP_Order_Cost
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Cost")
-public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent 
+public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Order_Cost (Properties ctx, int PP_Order_Cost_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Order_Cost (Properties ctx, String PP_Order_Cost_UU, String trxName)
+    {
+      super (ctx, PP_Order_Cost_UU, trxName);
+      /** if (PP_Order_Cost_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setM_CostType_ID (0);
+			setM_Product_ID (0);
+			setPP_Order_Cost_ID (0);
+			setPP_Order_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Cost (Properties ctx, String PP_Order_Cost_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Cost_UU, trxName, virtualColumns);
+      /** if (PP_Order_Cost_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setM_CostType_ID (0);
+			setM_Product_ID (0);
+			setPP_Order_Cost_ID (0);
+			setPP_Order_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Order_Cost (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

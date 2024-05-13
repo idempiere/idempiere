@@ -25,13 +25,13 @@ import java.util.logging.Level;
 import org.compiere.Adempiere;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Session Model.
- *	Maintained in AMenu.
  *	
  *  @author Jorg Janke
  *  @version $Id: MSession.java,v 1.3 2006/07/30 00:58:05 jjanke Exp $
@@ -43,10 +43,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MSession extends X_AD_Session implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = 480745219310430126L;
-
+	private static final long serialVersionUID = -5836154187760734691L;
 
 	/**
 	 * 	Get existing or create local session
@@ -55,6 +54,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 *	@return session session
 	 *	@deprecated use Get and Create functions.
 	 */
+	@Deprecated
 	public static MSession get (Properties ctx, boolean createNew)
 	{
 		MSession session = get(ctx);
@@ -64,9 +64,9 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	get
 	
 	/**
-	 * 	Get existing local session
+	 * 	Get session from context
 	 *	@param ctx context
-	 *	@return session session
+	 *	@return session
 	 */
 	public static MSession get (Properties ctx)
 	{
@@ -88,11 +88,9 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	get
 	
 	/**
-	 * 	Get existing or create local session
+	 * 	Create new session for context
 	 *	@param ctx context
-	 *	@param createNew create if not found
-	 *	@param isImmutable return Immutable Session Object (from Cache)
-	 *	@return session session
+	 *	@return session
 	 */
 	public static MSession create (Properties ctx)
 	{
@@ -104,7 +102,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	get
 	
 	/**
-	 * 	Get existing or create remote session
+	 * 	Get existing or create new session
 	 *	@param ctx context
 	 *	@param Remote_Addr remote address
 	 *	@param Remote_Host remote host
@@ -139,9 +137,20 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 			return 0; // do not remove the session on update
 		};
 	};
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Session_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSession(Properties ctx, String AD_Session_UU, String trxName) {
+        super(ctx, AD_Session_UU, trxName);
+		if (Util.isEmpty(AD_Session_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Session_ID id
@@ -151,13 +160,18 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	{
 		super(ctx, AD_Session_ID, trxName);
 		if (AD_Session_ID == 0)
-		{
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MSession
 
 	/**
-	 * 	Load Costructor
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessed (false);
+	}
+
+	/**
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -168,7 +182,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	MSession
 
 	/**
-	 * 	New (remote) Constructor
+	 * 	New Session Constructor
 	 *	@param ctx context
 	 *	@param Remote_Addr remote address
 	 *	@param Remote_Host remote host
@@ -194,7 +208,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	MSession
 
 	/**
-	 * 	New (local) Constructor
+	 * 	New Session Constructor
 	 *	@param ctx context
 	 *	@param trxName transaction
 	 */
@@ -220,7 +234,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	MSession
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MSession(MSession copy) 
@@ -229,7 +243,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -239,7 +253,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -255,7 +269,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	
 	/**
 	 * 	Is it a Web Store Session
-	 *	@return Returns true if Web Store Session.
+	 *	@return true if this is a Web Store Session.
 	 */
 	public boolean isWebStoreSession ()
 	{
@@ -264,7 +278,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	
 	/**
 	 * 	Set Web Store Session
-	 *	@param webStoreSession The webStoreSession to set.
+	 *	@param webStoreSession Web Store Session flag 
 	 */
 	public void setWebStoreSession (boolean webStoreSession)
 	{
@@ -275,6 +289,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MSession[")
@@ -292,7 +307,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	toString
 
 	/**
-	 * 	Session Logout
+	 * 	Logout this session
 	 */
 	public void logout()
 	{
@@ -304,8 +319,9 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 
 	/**
 	 * 	Preserved for backward compatibility
-	 *@deprecated
+	 *  @deprecated
 	 */
+	@Deprecated
 	public MChangeLog changeLog (
 		String TrxName, int AD_ChangeLog_ID,
 		int AD_Table_ID, int AD_Column_ID, int Record_ID,
@@ -313,12 +329,12 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 		Object OldValue, Object NewValue)
 	{
 		return changeLog(TrxName, AD_ChangeLog_ID, AD_Table_ID, AD_Column_ID,
-				Record_ID, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
+				Record_ID, null, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
 				(String) null);
 	}	// changeLog
 
 	/**
-	 * 	Create Change Log only if table is logged
+	 * 	Create Change Log (if table is logged)
 	 * 	@param TrxName transaction name
 	 *	@param AD_ChangeLog_ID 0 for new change log
 	 *	@param AD_Table_ID table
@@ -328,6 +344,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 *	@param AD_Org_ID org
 	 *	@param OldValue old
 	 *	@param NewValue new
+	 *  @param event
 	 *	@return saved change log or null
 	 */
 	public MChangeLog changeLog (
@@ -336,6 +353,35 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 		int AD_Client_ID, int AD_Org_ID,
 		Object OldValue, Object NewValue, String event)
 	{
+		return changeLog(TrxName, AD_ChangeLog_ID, AD_Table_ID, AD_Column_ID,
+				Record_ID, null, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
+				(String) null);
+	}
+
+	/**
+	 * 	Create Change Log (if table is logged)
+	 * 	@param TrxName transaction name
+	 *	@param AD_ChangeLog_ID 0 for new change log
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param AD_Client_ID client
+	 *	@param AD_Org_ID org
+	 *	@param OldValue old
+	 *	@param NewValue new
+	 *  @param event
+	 *	@return saved change log or null
+	 */
+	public MChangeLog changeLog (
+		String TrxName, int AD_ChangeLog_ID,
+		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
+		int AD_Client_ID, int AD_Org_ID,
+		Object OldValue, Object NewValue, String event)
+	{
+		// never log change log itself (recursive error)
+		if (AD_Table_ID == MChangeLog.Table_ID)
+			return null;
 		//	Null handling
 		if (OldValue == null && NewValue == null)
 			return null;
@@ -359,12 +405,11 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				+ ": " + OldValue + " -> " + NewValue);
 		try
 		{
-			PO.setCrossTenantSafe();
 			MChangeLog cl = new MChangeLog(getCtx(), 
 				AD_ChangeLog_ID, TrxName, getAD_Session_ID(),
-				AD_Table_ID, AD_Column_ID, Record_ID, AD_Client_ID, AD_Org_ID,
+				AD_Table_ID, AD_Column_ID, Record_ID, Record_UU, AD_Client_ID, AD_Org_ID,
 				OldValue, NewValue, event);
-			if (cl.save())
+			if (cl.saveCrossTenantSafe())
 				return cl;
 		}
 		catch (Exception e)
@@ -374,10 +419,6 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				+ ", AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID, e);
 			return null;
 		}
-		finally
-		{
-			PO.clearCrossTenantSafe();
-		}
 		log.log(Level.SEVERE, "AD_ChangeLog_ID=" + AD_ChangeLog_ID
 			+ ", AD_Session_ID=" + getAD_Session_ID()
 			+ ", AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID);
@@ -385,7 +426,6 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	changeLog
 
 	/**
-	 * 
 	 * @return number of cached sessions
 	 */
 	public static int getCachedSessionCount() {

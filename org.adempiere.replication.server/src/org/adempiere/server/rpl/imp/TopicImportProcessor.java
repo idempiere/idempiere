@@ -126,7 +126,7 @@ public class TopicImportProcessor implements IImportProcessor {
 		
 		if ( topicListener != null ) {
 			topicListener.stop();
-			log.info("Stoped topicListener." );
+			log.info("Stopped topicListener." );
 		}
 		
 	}

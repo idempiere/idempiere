@@ -553,6 +553,16 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum M_SerNoCtl {
+		SERIAL_NO_EXAMPLE(100);
+		
+		public final int id;
+		
+		private M_SerNoCtl(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum M_Shipper {
 		UPS(100),
 		FERTILIZER_INTERNAL_SHIPPER(50001),

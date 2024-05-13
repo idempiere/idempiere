@@ -24,22 +24,22 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_1099Extract
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_1099Extract")
-public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent 
+public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_1099Extract (Properties ctx, int T_1099Extract_ID, String trxName)
+    public X_T_1099Extract (Properties ctx, String T_1099Extract_UU, String trxName)
     {
-      super (ctx, T_1099Extract_ID, trxName);
-      /** if (T_1099Extract_ID == 0)
+      super (ctx, T_1099Extract_UU, trxName);
+      /** if (T_1099Extract_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setC_BPartner_ID (0);
@@ -49,10 +49,10 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
     }
 
     /** Standard Constructor */
-    public X_T_1099Extract (Properties ctx, int T_1099Extract_ID, String trxName, String ... virtualColumns)
+    public X_T_1099Extract (Properties ctx, String T_1099Extract_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_1099Extract_ID, trxName, virtualColumns);
-      /** if (T_1099Extract_ID == 0)
+      super (ctx, T_1099Extract_UU, trxName, virtualColumns);
+      /** if (T_1099Extract_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setC_BPartner_ID (0);
@@ -68,7 +68,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -85,7 +85,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_1099Extract[")
-        .append(get_ID()).append(",Name=").append(getName()).append("]");
+        .append(get_UUID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -1,3 +1,27 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - Elaine Tan                         							   *
+ **********************************************************************/
 package org.adempiere.webui.panel;
 
 import java.util.List;
@@ -21,6 +45,9 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 
+/**
+ * Popup panel with menu type filter and flat view toggle for a tree.
+ */
 public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, IdSpace {
 
 	private static final String ORIGINAL_SIBLING = "original.sibling";
@@ -31,12 +58,17 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 	
 	public static final String MENU_TREE_FILTER_CHECKED_QUEUE = "MENU_TREE_FILTER_CHECKED_QUEUE";
 	
+	/** Tree to apply menu type filter and flat view toggle */
 	private Tree tree;
 	@SuppressWarnings("unused")
 	private TreeSearchPanel searchPanel;
 
 	private Checkbox flatView;
 
+	/**
+	 * @param tree
+	 * @param panel
+	 */
 	public MenuTreeFilterPanel(Tree tree, TreeSearchPanel panel) {
 		super();
 		this.tree = tree;
@@ -114,6 +146,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		appendChild(box);
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		final Checkbox chk = (Checkbox) event.getTarget();
 		EventQueues.lookup(MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).publish(new Event(Events.ON_CHECK, null, chk));
@@ -130,7 +163,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 	}
 	
 	/**
-	 * 
+	 * Turn flat view on/off for tree
 	 * @param tree
 	 * @param chk checkbox for flat view toggle
 	 */
@@ -238,6 +271,11 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		});
 	}
 
+	/**
+	 * Put treeItem back to its original position in tree
+	 * @param treechildren
+	 * @param treeItem
+	 */
 	private static void reattachSibling(Treechildren treechildren, Treeitem treeItem) {
 		Treeitem sibling = (Treeitem) treeItem.getAttribute(ORIGINAL_SIBLING);
 		if (sibling != null)
@@ -247,6 +285,12 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		treechildren.insertBefore(treeItem, sibling);
 	}
 
+	/**
+	 * Find next sibling that's of same menu type (sorted by label).
+	 * @param treechildren
+	 * @param treeItem
+	 * @return Next sibling or null
+	 */
 	private static Component findFlatViewSibling(Treechildren treechildren, Treeitem treeItem) {
 		List<Component> childrens = treechildren.getChildren();
 		if (childrens.isEmpty()) {			
@@ -276,6 +320,11 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		return null;
 	}
 
+	/**
+	 * Handle menu type toggle
+	 * @param tree
+	 * @param chk
+	 */
 	public static void toggle(Tree tree, final Checkbox chk) {
 		TreeUtils.traverse(tree, new TreeItemAction() {
 			public void run(Treeitem treeItem) {

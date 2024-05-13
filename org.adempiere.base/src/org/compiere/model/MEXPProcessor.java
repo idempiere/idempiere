@@ -45,7 +45,7 @@ import org.compiere.util.DB;
  */
 public class MEXPProcessor extends X_EXP_Processor {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2925330684523283775L;
 	/**	Static Logger	*/
@@ -54,27 +54,58 @@ public class MEXPProcessor extends X_EXP_Processor {
 	private volatile static MEXPProcessor processor= null;
 	private X_EXP_ProcessorParameter[] parameters = null;
 	
+	/**
+	 * Get MEXPProcessor via id
+	 * @param ctx
+	 * @param EXP_Processor_ID
+	 * @param trxName
+	 * @return MEXPProcessor
+	 */
 	public static MEXPProcessor get(Properties ctx, int EXP_Processor_ID, String trxName)
 	{
 	    if(processor == null)
 	    {
-		processor = new MEXPProcessor(ctx, EXP_Processor_ID, trxName);
+	    	processor = new MEXPProcessor(ctx, EXP_Processor_ID, trxName);
 	    }
 	    return processor;
 	}
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param EXP_Processor_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MEXPProcessor(Properties ctx, String EXP_Processor_UU, String trxName) {
+        super(ctx, EXP_Processor_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param EXP_Processor_ID
+     * @param trxName
+     */
 	public MEXPProcessor(Properties ctx, int EXP_Processor_ID, String trxName) {
 		super(ctx, EXP_Processor_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MEXPProcessor(Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
 	}
 	
-	public X_EXP_ProcessorParameter[] getEXP_ProcessorParameters(String trxName) {
-	    
+	/**
+	 * Get parameters
+	 * @param trxName
+	 * @return array of X_EXP_ProcessorParameter
+	 */
+	public X_EXP_ProcessorParameter[] getEXP_ProcessorParameters(String trxName) {	    
 	    if(parameters != null)
-		return parameters;
+	    	return parameters;
 	    
 		List<X_EXP_ProcessorParameter> resultList = new ArrayList<X_EXP_ProcessorParameter>();
 		                   
@@ -106,7 +137,5 @@ public class MEXPProcessor extends X_EXP_Processor {
 		X_EXP_ProcessorParameter[] result = (X_EXP_ProcessorParameter[])resultList.toArray( new X_EXP_ProcessorParameter[0]);
 		parameters = result;
 		return result;
-	}
-
-	
+	}	
 }

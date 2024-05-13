@@ -44,14 +44,14 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.ext.Selectable;
 
 /**
- * Read only grid view for single or multi selection
+ * Read only grid view for single or multiple selection
  * @author Low Heng Sin
  *
  */
 public class GridTabSelectionListView extends Vlayout
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4145737989132101461L;
 
@@ -63,33 +63,45 @@ public class GridTabSelectionListView extends Vlayout
 	
 	private int pageSize = 100;
 	
+	/** GridFields of {@link #gridTab} */
 	private GridField[] gridField;
+	/** Table model (GridTable) of {@link #gridTab} */
 	private AbstractTableModel tableModel;
 	
+	/** length of {@link #gridField} */ 
 	private int numColumns = 5;
 	
 	private int windowNo;
 	
 	private GridTab gridTab;
 	
+	/** true if {@link #init(GridTab)} have been called */
 	private boolean init;
 
+	/** Model of {@link #listbox} */
 	private SimpleGridTableListModel listModel;
 
+	/** Renderer of {@link #listbox} */
 	private GridTabSelectionListViewRenderer renderer;
 
 	private Box labelBox;
 	
+	/** Custom column width from {@link MTabCustomization} */
 	private Map<Integer, String> columnWidthMap;
 
+	/** Show number of selected row */
 	private Label selectedLabel;
 	
+	/**
+	 * @param multiple
+	 */
 	public GridTabSelectionListView(boolean multiple)
 	{
 		this(multiple, 0);
 	}
 	
 	/**
+	 * @param multiple true for multiple selection mode, false for single selection mode
 	 * @param windowNo
 	 */
 	public GridTabSelectionListView(boolean multiple, int windowNo)
@@ -110,7 +122,6 @@ public class GridTabSelectionListView extends Vlayout
 	}
 
 	/**
-	 * 
 	 * @param gridTab
 	 */
 	public void init(GridTab gridTab)
@@ -125,6 +136,10 @@ public class GridTabSelectionListView extends Vlayout
 		this.init = true;
 	}
 
+	/**
+	 * 
+	 * @param gridTab
+	 */
 	private void setupFields(GridTab gridTab) {
 		this.gridTab = gridTab;
 		tableModel = gridTab.getTableModel();						
@@ -161,8 +176,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * 
-	 * @return boolean
+	 * @return true if {@link #init(GridTab)} have been called
 	 */
 	public boolean isInit() {
 		return init;
@@ -186,7 +200,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * 
+	 * Refresh (re-query) gridTab and call {@link #init(GridTab)} again.
 	 * @param gridTab
 	 */
 	public void refresh(GridTab gridTab) {
@@ -209,11 +223,17 @@ public class GridTabSelectionListView extends Vlayout
 		this.pageSize = pageSize;
 	}
 	
+	/**
+	 * Remove all child components
+	 */
 	public void clear()
 	{
 		this.getChildren().clear();
 	}
 	
+	/**
+	 * Setup {@link #listbox} columns
+	 */
 	private void setupColumns()
 	{		
 		if (init) return;
@@ -257,6 +277,11 @@ public class GridTabSelectionListView extends Vlayout
 		listbox.appendChild(header);
 	}
 	
+	/**
+	 * 
+	 * @param columnName
+	 * @return column index
+	 */
 	private int getColumnIndex(String columnName) {
 		for(int i = 0; i < gridTab.getTableModel().getColumnCount(); i++) {
 			if (gridTab.getTableModel().getColumnName(i).equals(columnName)) {
@@ -266,6 +291,9 @@ public class GridTabSelectionListView extends Vlayout
 		return -1;
 	}
 
+	/**
+	 * render {@link #listbox}
+	 */
 	private void render()
 	{
 		listbox.setStyle("min-height: 200px");
@@ -285,6 +313,9 @@ public class GridTabSelectionListView extends Vlayout
 		labelBox.appendChild(selectedLabel);
 	}
 	
+	/**
+	 * Update model and renderer of {@link #listbox}
+	 */
 	private void updateModel() {
 		listModel = new SimpleGridTableListModel((GridTable)tableModel, windowNo);	
 		listModel.setMultiple(listbox.isMultiple());
@@ -296,7 +327,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * deactive panel
+	 * deactivate panel
 	 */
 	public void deactivate() {
 	}
@@ -317,12 +348,15 @@ public class GridTabSelectionListView extends Vlayout
 		this.windowNo = windowNo;
 	}
 	
+	/**
+	 * @return GridField[]
+	 */
 	public GridField[] getFields() {
 		return gridField;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.zkoss.zk.ui.AbstractComponent#addEventListener(int, java.lang.String, org.zkoss.zk.ui.event.EventListener)
+	/**
+	 * If evtnm is ON_SElECT, add to {@link #listbox}, otherwise add to this component
 	 */
 	@Override
 	public boolean addEventListener(int priority, String evtnm,
@@ -334,6 +368,10 @@ public class GridTabSelectionListView extends Vlayout
 		}
 	}
 
+	/**
+	 * Set selected indices for {@link #listbox}
+	 * @param selectedIndices
+	 */
 	public void setSelectedIndices(int[] selectedIndices) {
 		ListModel<Object> model = listbox.getModel();
 		if (model != null && model instanceof Selectable) {
@@ -351,6 +389,9 @@ public class GridTabSelectionListView extends Vlayout
 		selectedLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected") + " : " + selectedIndices.length);
 	}
 
+	/**
+	 * Clear {@link #listbox} selections
+	 */
 	public void clearSelection() {
 		ListModel<Object> model = listbox.getModel();
 		if (model != null && model instanceof Selectable) {
@@ -362,6 +403,10 @@ public class GridTabSelectionListView extends Vlayout
 		selectedLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected") + " : 0");
 	}
 
+	/**
+	 * 
+	 * @param selected
+	 */
 	public void setSelectedIndex(int selected) {
 		ListModel<Object> model = listbox.getModel();
 		if (model != null && model instanceof Selectable) {

@@ -34,6 +34,7 @@ import javax.swing.ImageIcon;
 
 import org.adempiere.base.Core;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -47,7 +48,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MImage extends X_AD_Image implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serual id
 	 */
 	private static final long serialVersionUID = 1850627989276185947L;
 	
@@ -109,6 +110,19 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MImage> s_cache = new ImmutableIntPOCache<Integer,MImage>(Table_Name, 20, 10);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Image_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MImage(Properties ctx, String AD_Image_UU, String trxName) {
+        super(ctx, AD_Image_UU, trxName);
+		if (Util.isEmpty(AD_Image_UU))
+			setName("-");
+		initImageStoreDetails(ctx, trxName);
+    }
+
 	/**
 	 *  Constructor
 	 *  @param ctx context
@@ -136,7 +150,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	}	//	MImage
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MImage(MImage copy) 
@@ -145,7 +159,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -155,7 +169,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -259,7 +273,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 
 	/**
 	 * 	Get URL
-	 *	@return url or null
+	 *	@return image url or null
 	 */
 	private URL getURL()
 	{
@@ -299,7 +313,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	
 	/**
 	 * 	Set Binary Data
-	 *	@param BinaryData data
+	 *	@param BinaryData binary data of an image
 	 */
 	@Override
 	public void setBinaryData (byte[] BinaryData)
@@ -311,6 +325,9 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 			prov.save(this,provider,BinaryData);
 	}	//	setBinaryData
 	
+	/**
+	 * Load binary data through storage provider
+	 */
 	@Override
 	public byte[] getBinaryData() {		
 		IImageStore prov = provider.getImageStore();
@@ -321,7 +338,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 
 	/**
 	 * 	Get Data 
-	 *	@return data
+	 *	@return binary data of an image
 	 */
 	public byte[] getData()
 	{
@@ -372,6 +389,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	 *  String Representation
 	 *  @return String
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder msgreturn = new StringBuilder("MImage[ID=").append(get_ID()).append(",Name=").append(getName()).append("]");
@@ -384,6 +402,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
@@ -391,6 +410,9 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 
+	/**
+	 * @return relative image storage path (without the image id/name)
+	 */
 	public String getImageStoragePath() {
 		StringBuilder path = new StringBuilder("AD_Image").append(File.separator)
 				.append(this.getAD_Client_ID()).append(File.separator);
@@ -411,8 +433,8 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Set Storage Provider
-	 * Used temporarily for the process to migrate storage provider
+	 * Set Storage Provider. <br/>
+	 * Used by storage provider migration process to migrate storage provider.
 	 * @param p Storage provider
 	 */
 	public void setStorageProvider(MStorageProvider p) {
@@ -420,10 +442,17 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 		setAD_StorageProvider_ID(p.getAD_StorageProvider_ID());
 	}
 	
+	/**
+	 * @return binary data of image
+	 */
 	public byte[] getByteData(){
 		return super.getBinaryData();
 	}
 	
+	/**
+	 * Set binary data of image
+	 * @param BinaryData
+	 */
 	public void setByteData(byte[] BinaryData){
 		super.setBinaryData(BinaryData);
 	}

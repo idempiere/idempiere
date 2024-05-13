@@ -24,7 +24,6 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 
-
 /**
  *	RfQ Topic Subscriber Model
  *	
@@ -34,9 +33,19 @@ import org.compiere.util.DB;
 public class MRfQTopicSubscriber extends X_C_RfQ_TopicSubscriber
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 7364350828501354344L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQ_TopicSubscriber_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRfQTopicSubscriber(Properties ctx, String C_RfQ_TopicSubscriber_UU, String trxName) {
+        super(ctx, C_RfQ_TopicSubscriber_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -65,8 +74,8 @@ public class MRfQTopicSubscriber extends X_C_RfQ_TopicSubscriber
 	
 	/**
 	 * 	Get Restriction Records
-	 *	@param requery requery
-	 *	@return arry of onlys
+	 *	@param requery true to re-query only
+	 *	@return array of MRfQTopicSubscriberOnly
 	 */
 	public MRfQTopicSubscriberOnly[] getRestrictions (boolean requery)
 	{
@@ -100,12 +109,11 @@ public class MRfQTopicSubscriber extends X_C_RfQ_TopicSubscriber
 		list.toArray (m_restrictions);
 		return m_restrictions;
 	}	//	getRestrictions
-	
-	
+		
 	/**
 	 * 	Is the product included?
 	 *	@param M_Product_ID product
-	 *	@return true if no restrictions or included in "positive" only list
+	 *	@return true if no restrictions or included in restriction (product or product category)
 	 */
 	public boolean isIncluded (int M_Product_ID)
 	{

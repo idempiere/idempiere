@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Model
@@ -36,12 +37,12 @@ import org.compiere.util.TimeUtil;
 public class MRfQ extends X_C_RfQ
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5332116213254863257L;
 
 	/**
-	 * 	Get MRfQ from Cache (immutable)
+	 * 	Get MRfQ from DB
 	 *	@param C_RfQ_ID id
 	 *	@return MRfQ
 	 */
@@ -51,7 +52,7 @@ public class MRfQ extends X_C_RfQ
 	}
 	
 	/**
-	 * 	Get MRfQ from db
+	 * 	Get MRfQ from DB
 	 *	@param C_RfQ_ID id
 	 *	@param trxName transaction
 	 *	@return MRfQ
@@ -62,7 +63,7 @@ public class MRfQ extends X_C_RfQ
 	}
 	
 	/**
-	 * 	Get MRfQ from db
+	 * 	Get MRfQ from DB
 	 *	@param ctx context
 	 *	@param C_RfQ_ID id
 	 *	@param trxName transaction
@@ -78,6 +79,18 @@ public class MRfQ extends X_C_RfQ
 		return null;
 	}	//	get
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQ_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRfQ(Properties ctx, String C_RfQ_UU, String trxName) {
+        super(ctx, C_RfQ_UU, trxName);
+		if (Util.isEmpty(C_RfQ_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -88,18 +101,23 @@ public class MRfQ extends X_C_RfQ
 	{
 		super (ctx, C_RfQ_ID, trxName);
 		if (C_RfQ_ID == 0)
-		{
-			setDateResponse (new Timestamp(System.currentTimeMillis()));
-			setDateWorkStart (new Timestamp(System.currentTimeMillis()));
-			setIsInvitedVendorsOnly (false);
-			setQuoteType (QUOTETYPE_QuoteSelectedLines);
-			setIsQuoteAllQty (false);
-			setIsQuoteTotalAmt (false);
-			setIsRfQResponseAccepted (true);
-			setIsSelfService (true);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MRfQ
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateResponse (new Timestamp(System.currentTimeMillis()));
+		setDateWorkStart (new Timestamp(System.currentTimeMillis()));
+		setIsInvitedVendorsOnly (false);
+		setQuoteType (QUOTETYPE_QuoteSelectedLines);
+		setIsQuoteAllQty (false);
+		setIsQuoteTotalAmt (false);
+		setIsRfQResponseAccepted (true);
+		setIsSelfService (true);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -113,7 +131,7 @@ public class MRfQ extends X_C_RfQ
 	}	//	MRfQ
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRfQ(MRfQ copy) 
@@ -122,7 +140,7 @@ public class MRfQ extends X_C_RfQ
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -132,7 +150,7 @@ public class MRfQ extends X_C_RfQ
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -144,8 +162,8 @@ public class MRfQ extends X_C_RfQ
 	}
 	
 	/**
-	 * 	Get active Lines
-	 *	@return array of lines
+	 * 	Get active RFQ Lines
+	 *	@return array of RFQ lines
 	 */
 	public MRfQLine[] getLines()
 	{
@@ -180,8 +198,8 @@ public class MRfQ extends X_C_RfQ
 	/**
 	 * 	Get RfQ Responses
 	 * 	@param activeOnly active responses only
-	 * 	@param completedOnly complete responses only
-	 *	@return array of lines
+	 * 	@param completedOnly completed responses only
+	 *	@return array of RFQ response
 	 */
 	public MRfQResponse[] getResponses (boolean activeOnly, boolean completedOnly)
 	{
@@ -221,6 +239,7 @@ public class MRfQ extends X_C_RfQ
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRfQ[");
@@ -229,11 +248,10 @@ public class MRfQ extends X_C_RfQ
 			.append("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Is Quote Total Amt Only
-	 *	@return true if total amout only
+	 *	@return true if quote total amount only (QUOTETYPE_QuoteTotalOnly)
 	 */
 	public boolean isQuoteTotalAmtOnly()
 	{
@@ -242,7 +260,7 @@ public class MRfQ extends X_C_RfQ
 	
 	/**
 	 * 	Is Quote Selected Lines
-	 *	@return true if quote selected lines
+	 *	@return true if quote selected lines (QUOTETYPE_QuoteSelectedLines)
 	 */
 	public boolean isQuoteSelectedLines()
 	{
@@ -251,7 +269,7 @@ public class MRfQ extends X_C_RfQ
 
 	/**
 	 * 	Is Quote All Lines
-	 *	@return true if quote selected lines
+	 *	@return true if quote all lines (QUOTETYPE_QuoteAllLines)
 	 */
 	public boolean isQuoteAllLines()
 	{
@@ -283,12 +301,12 @@ public class MRfQ extends X_C_RfQ
 		return null;
 	}	//	checkQuoteTotalAmtOnly
 		
-	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Calculate Complete Date (also used to verify)

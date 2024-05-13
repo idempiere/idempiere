@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order")
-public class X_PP_Order extends PO implements I_PP_Order, I_Persistent 
+public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Order (Properties ctx, int PP_Order_ID, String trxName)
@@ -139,6 +139,108 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Order (Properties ctx, String PP_Order_UU, String trxName)
+    {
+      super (ctx, PP_Order_UU, trxName);
+      /** if (PP_Order_UU == null)
+        {
+			setAD_Workflow_ID (0);
+			setC_DocTypeTarget_ID (0);
+// 0
+			setC_UOM_ID (0);
+// @UOMConversion@=Y | @Processed@='Y'
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setDateStartSchedule (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// --
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setIsPrinted (false);
+// N
+			setIsSelected (false);
+// N
+			setIsSOTrx (false);
+// N
+			setLine (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_ID (0);
+			setPP_Product_BOM_ID (0);
+			setPriorityRule (null);
+			setProcessed (false);
+// N
+			setQtyDelivered (Env.ZERO);
+// 0
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReject (Env.ZERO);
+// 0
+			setQtyScrap (Env.ZERO);
+// 0
+			setS_Resource_ID (0);
+			setYield (Env.ZERO);
+// 100
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order (Properties ctx, String PP_Order_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_UU, trxName, virtualColumns);
+      /** if (PP_Order_UU == null)
+        {
+			setAD_Workflow_ID (0);
+			setC_DocTypeTarget_ID (0);
+// 0
+			setC_UOM_ID (0);
+// @UOMConversion@=Y | @Processed@='Y'
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setDateStartSchedule (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// --
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setIsPrinted (false);
+// N
+			setIsSelected (false);
+// N
+			setIsSOTrx (false);
+// N
+			setLine (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_ID (0);
+			setPP_Product_BOM_ID (0);
+			setPriorityRule (null);
+			setProcessed (false);
+// N
+			setQtyDelivered (Env.ZERO);
+// 0
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReject (Env.ZERO);
+// 0
+			setQtyScrap (Env.ZERO);
+// 0
+			setS_Resource_ID (0);
+			setYield (Env.ZERO);
+// 100
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Order (Properties ctx, ResultSet rs, String trxName)
     {
@@ -146,7 +248,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -701,7 +803,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -756,10 +858,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -779,10 +881,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -802,10 +904,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isQtyPercentage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQtyPercentage);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -824,10 +926,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isSelected()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelected);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -847,10 +949,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1032,10 +1134,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1149,10 +1251,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1190,10 +1292,10 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

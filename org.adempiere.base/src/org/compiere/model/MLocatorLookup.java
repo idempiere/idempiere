@@ -36,19 +36,18 @@ import org.compiere.util.Util;
 
 /**
  *	Warehouse Locator Lookup Model.
- * 	(Lookup Model is model.Lookup.java)
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: MLocatorLookup.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1892920 ] Locators fieldshould be ordered by Warehouse/Value
  *              <li>FR [ 2306161 ] Removed limit of 200 on max number of locators.
  */
 public final class MLocatorLookup extends Lookup implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6041455174391573888L;
 
@@ -121,7 +120,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 
 	/**
 	 * 	Get Only Wahrehouse
-	 *	@return	warehouse
+	 *	@return	M_Warehouse_ID
 	 */
 	public int getOnly_Warehouse_ID()
 	{
@@ -139,7 +138,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 
 	/**
 	 * 	Get Only Product
-	 *	@return	Product
+	 *	@return	M_Product_ID
 	 */
 	public int getOnly_Product_ID()
 	{
@@ -149,6 +148,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	/**
 	 *  Wait until async Load Complete
 	 */
+	@Override
 	public void loadComplete()
 	{
 		if (m_loader != null)
@@ -165,10 +165,12 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	}   //  loadComplete
 
 	/**
-	 *	Get value
-	 *  @param key key
-	 *  @return value value
+	 *	Get KeyNamePair via key value.
+	 *  Delegate to {@link #getDirect(Object, boolean, String)} if key not in local lookup cache({@link #m_lookup}).
+	 *  @param key key value
+	 *  @return KeyNamePair
 	 */
+	@Override
 	public NamePair get (Object key)
 	{
 		if (key == null)
@@ -195,18 +197,19 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	}	//	get
 
 	/**
-	 *	Get Display value
-	 *  @param value value
-	 *  @return String to display
+	 *	Get Display text
+	 *  @param key key value
+	 *  @return display text
 	 */
-	public String getDisplay (Object value)
+	@Override
+	public String getDisplay (Object key)
 	{
-		if (value == null)
+		if (key == null)
 			return "";
 		//
-		NamePair display = get (value);
+		NamePair display = get (key);
 		if (display == null){
-			StringBuilder msgreturn = new StringBuilder("<").append(value.toString()).append(">");
+			StringBuilder msgreturn = new StringBuilder("<").append(key.toString()).append(">");
 			return msgreturn.toString();
 		}
 		return display.toString();
@@ -217,22 +220,27 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 *  @param key key
 	 *  @return true, if lookup contains key
 	 */
+	@Override
 	public boolean containsKey (Object key)
 	{
 		return m_lookup.containsKey(key);
 	}   //  containsKey
 
+	/**
+	 * Same as {@link #containsKey(Object)} in this lookup implementation.
+	 */
+	@Override
 	public boolean containsKeyNoDirect (Object key)
 	{
 		return containsKey(key);
 	}
 
 	/**
-	 *	Get Data Direct from Table
+	 *	Get from MLocator cache or DB
 	 *  @param keyValue integer key value
-	 *  @param saveInCache save in cache
+	 *  @param saveInCache true save in lookup cache
 	 *  @param trxName transaction
-	 *  @return Object directly loaded
+	 *  @return KeyNamePair
 	 */
 	public NamePair getDirect (Object keyValue, boolean saveInCache, String trxName)
 	{
@@ -248,10 +256,10 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	}	//	getDirect
 
 	/**
-	 *	Get Data Direct from Table
+	 *	Get from MLocator cache or DB
 	 *  @param keyValue integer key value
 	 *  @param trxName transaction
-	 *  @return Object directly loaded
+	 *  @return MLocator
 	 */
 	public MLocator getMLocator (Object keyValue, String trxName)
 	{
@@ -274,6 +282,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	/**
 	 * @return  a string representation of the object.
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder msgreturn = new StringBuilder("MLocatorLookup[Size=").append(m_lookup.size()).append("]");
@@ -312,6 +321,9 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return false;
 	}	//	isValid
 
+	/**
+	 * @return true if local lookup cache need refresh
+	 */
 	private boolean isNeedRefresh()
 	{
 		if (!Util.isEmpty(m_validationCode))
@@ -342,13 +354,13 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return false;
 	}
 	
-	/**************************************************************************
-	 *	Loader
+	/**
+	 *	Data Loader
 	 */
 	class Loader extends Thread implements Serializable
 	{
 		/**
-		 * 
+		 * generated serial id
 		 */
 		private static final long serialVersionUID = 3472186635409000236L;
 
@@ -361,7 +373,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		}	//	Loader
 
 		/**
-		 *	Load Lookup
+		 *	Load Lookup Data
 		 */
 		public void run()
 		{
@@ -449,8 +461,8 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	}	//	Loader
 
 	/**
-	 *	Return info as ArrayList containing Locator, waits for the loader to finish
-	 *  @return Collection of lookup values
+	 *	Return data as Locator ArrayList, waits for loader to finish if loading is in progress.
+	 *  @return Collection of MLocator
 	 */
 	public Collection<MLocator> getData ()
 	{
@@ -474,13 +486,14 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	}	//	getData
 
 	/**
-	 *	Return data as sorted ArrayList
+	 *	Get lookup data
 	 *  @param mandatory mandatory
 	 *  @param onlyValidated only validated
 	 *  @param onlyActive only active
 	 * 	@param temporary force load for temporary display
 	 *  @return ArrayList of lookup values
 	 */
+	@Override
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
 		//	create list
@@ -497,11 +510,11 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return list;
 	}	//	getArray
 
-
 	/**
-	 *	Refresh Values
+	 *	Refresh local lookup cache
 	 *  @return new size of lookup
 	 */
+	@Override
 	public int refresh()
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("start");
@@ -518,6 +531,10 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return m_lookup.size();
 	}	//	refresh
 
+	/**
+	 * Call {@link #refresh()} if {@link #isNeedRefresh()} return true.
+	 * @return lookup size
+	 */
 	public int refreshIfNeeded()
 	{
 		if (m_loader != null && m_loader.isAlive())
@@ -541,5 +558,14 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	{
 		m_ctx = ctx;
 		m_parsedValidation = null;		
+	}
+	
+	/**
+	 * Set SQL validation code for lookup
+	 * @param validationCode
+	 */
+	public void setValidationCode(String validationCode) 
+	{
+		m_validationCode = validationCode;
 	}
 }	//	MLocatorLookup

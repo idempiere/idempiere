@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_LotCtl
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_LotCtl")
-public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent 
+public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_LotCtl (Properties ctx, int M_LotCtl_ID, String trxName)
@@ -67,6 +67,40 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_LotCtl (Properties ctx, String M_LotCtl_UU, String trxName)
+    {
+      super (ctx, M_LotCtl_UU, trxName);
+      /** if (M_LotCtl_UU == null)
+        {
+			setCurrentNext (0);
+// 100
+			setIncrementNo (0);
+// 1
+			setM_LotCtl_ID (0);
+			setName (null);
+			setStartNo (0);
+// 100
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_LotCtl (Properties ctx, String M_LotCtl_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_LotCtl_UU, trxName, virtualColumns);
+      /** if (M_LotCtl_UU == null)
+        {
+			setCurrentNext (0);
+// 100
+			setIncrementNo (0);
+// 1
+			setM_LotCtl_ID (0);
+			setName (null);
+			setStartNo (0);
+// 100
+        } */
+    }
+
     /** Load Constructor */
     public X_M_LotCtl (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +108,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -205,7 +239,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

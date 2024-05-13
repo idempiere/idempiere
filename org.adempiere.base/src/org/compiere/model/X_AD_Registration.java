@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_Registration
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Registration")
-public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent 
+public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)
@@ -73,6 +73,46 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Registration (Properties ctx, String AD_Registration_UU, String trxName)
+    {
+      super (ctx, AD_Registration_UU, trxName);
+      /** if (AD_Registration_UU == null)
+        {
+			setAD_Registration_ID (0);
+// 0
+			setAD_System_ID (0);
+// 0
+			setIsAllowPublish (true);
+// Y
+			setIsAllowStatistics (true);
+// Y
+			setIsInProduction (false);
+			setIsRegistered (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Registration (Properties ctx, String AD_Registration_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Registration_UU, trxName, virtualColumns);
+      /** if (AD_Registration_UU == null)
+        {
+			setAD_Registration_ID (0);
+// 0
+			setAD_System_ID (0);
+// 0
+			setIsAllowPublish (true);
+// Y
+			setIsAllowStatistics (true);
+// Y
+			setIsInProduction (false);
+			setIsRegistered (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Registration (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +120,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -268,10 +308,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	public boolean isAllowPublish()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowPublish);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -291,10 +331,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	public boolean isAllowStatistics()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowStatistics);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -314,10 +354,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	public boolean isInProduction()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInProduction);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -337,10 +377,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	public boolean isRegistered()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRegistered);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -394,10 +434,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

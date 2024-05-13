@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_IndexColumn
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_IndexColumn")
-public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persistent 
+public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_IndexColumn (Properties ctx, int AD_IndexColumn_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_IndexColumn (Properties ctx, String AD_IndexColumn_UU, String trxName)
+    {
+      super (ctx, AD_IndexColumn_UU, trxName);
+      /** if (AD_IndexColumn_UU == null)
+        {
+			setAD_IndexColumn_ID (0);
+			setAD_TableIndex_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_IndexColumn (Properties ctx, String AD_IndexColumn_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_IndexColumn_UU, trxName, virtualColumns);
+      /** if (AD_IndexColumn_UU == null)
+        {
+			setAD_IndexColumn_ID (0);
+			setAD_TableIndex_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_IndexColumn (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

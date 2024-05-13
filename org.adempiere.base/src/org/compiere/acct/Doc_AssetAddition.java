@@ -18,36 +18,43 @@ import org.compiere.model.X_C_Project_Acct;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
-
 /**
+ * Posting for {@link MAssetAddition} document. DOCBASETYPE_GLDocument.
  * @author Teo_Sarca, SC ARHIPAC SERVICE SRL
  */
 public class Doc_AssetAddition extends Doc
 {
+	/**
+	 * @param as
+	 * @param rs
+	 * @param trxName
+	 */
 	public Doc_AssetAddition (MAcctSchema as, ResultSet rs, String trxName)
 	{
 		super(as, MAssetAddition.class, rs, MDocType.DOCBASETYPE_GLDocument, trxName);
 	}
 
-	
+	@Override
 	protected String loadDocumentDetails()
 	{
 		return null;
 	}
 
-	
+	@Override
 	public BigDecimal getBalance()
 	{
 		return Env.ZERO;
 	}
 
 	/**
-	 * Produce inregistrarea:
+	 * Produce posting:
 	 * <pre>
 	 *	20.., 21..[A_Asset_Acct]			=	23..[P_Asset_Acct/Project Acct]
 	 * </pre>
+	 * @param as
+	 * @return facts
 	 */
-	
+	@Override
 	public ArrayList<Fact> createFacts(MAcctSchema as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
@@ -83,11 +90,18 @@ public class Doc_AssetAddition extends Doc
 		return facts;
 	}
 	
+	/**
+	 * @return MAssetAddition
+	 */
 	private MAssetAddition getAssetAddition()
 	{
 		return (MAssetAddition)getPO();
 	}
 	
+	/**
+	 * @param as
+	 * @return account for credit side (project, charge or expense)
+	 */
 	private MAccount getP_Asset_Acct(MAcctSchema as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
@@ -118,13 +132,22 @@ public class Doc_AssetAddition extends Doc
 		return pAssetAcct;
 	}
 	
+	/**
+	 * @param M_Product_ID
+	 * @param as
+	 * @return expense account
+	 */
 	public MAccount getP_Expense_Acct(int M_Product_ID, MAcctSchema as)
 	{
 		ProductCost pc = new ProductCost(getCtx(), M_Product_ID, 0, null);
 		return pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 	}
 	
-	
+	/**
+	 * @param prj
+	 * @param as
+	 * @return project wip or asset account
+	 */
 	private MAccount getProjectAcct(I_C_Project prj, MAcctSchema as)
 	{
 		// TODO: keep in sync with org.compiere.acct.Doc_ProjectIssue.createFacts(MAcctSchema) logic
@@ -142,6 +165,10 @@ public class Doc_AssetAddition extends Doc
 		return MAccount.get(getCtx(), acct_id);
 	}
 
+	/**
+	 * @param as
+	 * @return asset account
+	 */
 	private MAccount getA_Asset_Acct(MAcctSchema as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
@@ -151,6 +178,9 @@ public class Doc_AssetAddition extends Doc
 		return MAccount.get(getCtx(), acct_id);
 	}
 
+	/**
+	 * @return C_BPartner_ID from invoice or 0
+	 */
 	public int getInvoicePartner_ID()
 	{
 		MAssetAddition assetAdd = getAssetAddition();
@@ -164,6 +194,10 @@ public class Doc_AssetAddition extends Doc
 			return 0;
 		}
 	}
+	
+	/**
+	 * @return C_Project_ID from invoice line or 0
+	 */
 	public int getInvoiceProject_ID()
 	{
 		MAssetAddition assetAdd = getAssetAddition();

@@ -39,7 +39,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8489673276196368210L;
 
@@ -79,8 +79,17 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCountryGroup.class);
 
-	/*************************************************************************
-	 *	Create empty Country
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CountryGroup_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCountryGroup(Properties ctx, String C_CountryGroup_UU, String trxName) {
+        super(ctx, C_CountryGroup_UU, trxName);
+    }
+
+	/**
 	 * 	@param ctx context
 	 * 	@param C_CountryGroup_ID ID
 	 *	@param trxName transaction
@@ -91,7 +100,7 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 	}   //  MCountryGroup
 
 	/**
-	 *	Create Country Group from current row in ResultSet
+	 *	Load Country Group from current row in ResultSet
 	 * 	@param ctx context
 	 *  @param rs ResultSet
 	 *	@param trxName transaction
@@ -102,7 +111,7 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 	}	//	MCountryGroup
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCountryGroup(MCountryGroup copy) 
@@ -111,7 +120,7 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -121,7 +130,7 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -141,6 +150,11 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 		return this;
 	}
 	
+	/**
+	 * @param c_CountryGroup_ID
+	 * @param c_Country_ID
+	 * @return true if country (C_Country_ID) is part of country group (C_CountryGroup_ID)
+	 */
 	public static boolean countryGroupContains(int c_CountryGroup_ID, int c_Country_ID) {
 		
 		if (c_CountryGroup_ID == 0 || c_Country_ID == 0)

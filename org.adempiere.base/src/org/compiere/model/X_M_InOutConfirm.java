@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOutConfirm
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_InOutConfirm")
-public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persistent 
+public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_InOutConfirm (Properties ctx, int M_InOutConfirm_ID, String trxName)
@@ -79,6 +79,50 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_InOutConfirm (Properties ctx, String M_InOutConfirm_UU, String trxName)
+    {
+      super (ctx, M_InOutConfirm_UU, trxName);
+      /** if (M_InOutConfirm_UU == null)
+        {
+			setConfirmType (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setIsCancelled (false);
+			setIsInDispute (false);
+// N
+			setM_InOutConfirm_ID (0);
+			setM_InOut_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_InOutConfirm (Properties ctx, String M_InOutConfirm_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_InOutConfirm_UU, trxName, virtualColumns);
+      /** if (M_InOutConfirm_UU == null)
+        {
+			setConfirmType (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setIsCancelled (false);
+			setIsInDispute (false);
+// N
+			setM_InOutConfirm_ID (0);
+			setM_InOut_ID (0);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_InOutConfirm (Properties ctx, ResultSet rs, String trxName)
     {
@@ -86,7 +130,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -339,7 +383,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -358,10 +402,10 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -381,10 +425,10 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public boolean isCancelled()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCancelled);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -404,10 +448,10 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public boolean isInDispute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInDispute);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -520,10 +564,10 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -542,10 +586,10 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

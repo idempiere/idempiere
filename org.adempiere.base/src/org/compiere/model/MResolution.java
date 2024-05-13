@@ -31,7 +31,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7430644542278601152L;
 
@@ -84,9 +84,17 @@ public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MResolution>	s_cache	= new ImmutableIntPOCache<Integer,MResolution>(Table_Name, 10);
 	
-	
-	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_Resolution_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MResolution(Properties ctx, String R_Resolution_UU, String trxName) {
+        super(ctx, R_Resolution_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_Resolution_ID id
@@ -109,7 +117,7 @@ public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 	}	//	MResolution
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MResolution(MResolution copy) 
@@ -118,7 +126,7 @@ public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -128,7 +136,7 @@ public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

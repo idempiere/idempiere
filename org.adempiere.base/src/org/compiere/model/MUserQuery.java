@@ -284,6 +284,16 @@ public class MUserQuery extends X_AD_UserQuery
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MUserQuery.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserQuery_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserQuery(Properties ctx, String AD_UserQuery_UU, String trxName) {
+        super(ctx, AD_UserQuery_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -330,7 +340,7 @@ public class MUserQuery extends X_AD_UserQuery
 				get_Value(COLUMNNAME_AD_User_ID) == null) //Cannot save privately (user-specific) an already existing global query
 			return false;
 
-		return !getCode().startsWith("@SQL=");
+		return !getCode().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}
 	
 	/**
@@ -343,7 +353,7 @@ public class MUserQuery extends X_AD_UserQuery
         		getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) //Cannot modify a query from another client (e.g. System) 
 			return false;
 
-		return !getCode().startsWith("@SQL=");
+		return !getCode().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}
 
 }	//	MUserQuery

@@ -13,22 +13,33 @@
  *****************************************************************************/
 package org.adempiere.util;
 
+import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 
-
-
 /**
- * Interface for callout Ask For Input
+ * Interface for callout to Ask For Input. <br/>
+ * Callout will call {@link GridTab#getCalloutUI()} to get access to it.
  *
  * @author Murilo H. Torquato (devCoffee, http://devcoffee.com.br)
  *
  */
 public interface ICalloutUI {
 
+	/**
+	 * ask for input from user
+	 * @param message
+	 * @param lookup
+	 * @param displayType
+	 * @param callback
+	 */
 	default public void askForInput(String message, MLookup lookup, int displayType, Callback<Object> callback){
 		throw new RuntimeException("Not Implemented");
 	}
 
+	/**
+	 * Set desktop reference
+	 * @param desktop
+	 */
 	public void setDesktop(Object desktop);
 
 }

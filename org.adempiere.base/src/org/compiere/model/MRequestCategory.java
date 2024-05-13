@@ -31,14 +31,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 984010124643923205L;
 
 	/**
-	 * 	Get MCategory from Cache (immutable)
+	 * 	Get MRequestCategory from Cache (immutable)
 	 *	@param R_Category_ID id
-	 *	@return MCategory
+	 *	@return MRequestCategory
 	 */
 	public static MRequestCategory get (int R_Category_ID)
 	{
@@ -46,10 +46,10 @@ public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get MCategory from Cache (immutable)
+	 * 	Get MRequestCategory from Cache (immutable)
 	 *	@param ctx context
 	 *	@param R_Category_ID id
-	 *	@return MCategory
+	 *	@return MRequestCategory
 	 */
 	public static MRequestCategory get (Properties ctx, int R_Category_ID)
 	{
@@ -84,9 +84,18 @@ public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MRequestCategory>	s_cache	
 		= new ImmutableIntPOCache<Integer,MRequestCategory>(Table_Name, 20);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_Category_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRequestCategory(Properties ctx, String R_Category_UU, String trxName) {
+        super(ctx, R_Category_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_Category_ID id
@@ -109,7 +118,7 @@ public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 	}	//	MCategory
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRequestCategory(MRequestCategory copy) 
@@ -118,7 +127,7 @@ public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -128,7 +137,7 @@ public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

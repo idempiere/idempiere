@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Task
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Task")
-public class X_C_Task extends PO implements I_C_Task, I_Persistent 
+public class X_C_Task extends PO implements I_C_Task, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Task (Properties ctx, int C_Task_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Task (Properties ctx, String C_Task_UU, String trxName)
+    {
+      super (ctx, C_Task_UU, trxName);
+      /** if (C_Task_UU == null)
+        {
+			setC_Phase_ID (0);
+			setC_Task_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_Task WHERE C_Phase_ID=@C_Phase_ID@
+			setStandardQty (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Task (Properties ctx, String C_Task_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Task_UU, trxName, virtualColumns);
+      /** if (C_Task_UU == null)
+        {
+			setC_Phase_ID (0);
+			setC_Task_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_Task WHERE C_Phase_ID=@C_Phase_ID@
+			setStandardQty (Env.ZERO);
+// 1
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Task (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -239,7 +271,7 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

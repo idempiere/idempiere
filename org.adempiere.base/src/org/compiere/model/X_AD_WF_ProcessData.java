@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ProcessData
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ProcessData")
-public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Persistent 
+public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_ProcessData (Properties ctx, int AD_WF_ProcessData_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_ProcessData (Properties ctx, String AD_WF_ProcessData_UU, String trxName)
+    {
+      super (ctx, AD_WF_ProcessData_UU, trxName);
+      /** if (AD_WF_ProcessData_UU == null)
+        {
+			setAD_WF_ProcessData_ID (0);
+			setAD_WF_Process_ID (0);
+			setAttributeName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_ProcessData (Properties ctx, String AD_WF_ProcessData_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_ProcessData_UU, trxName, virtualColumns);
+      /** if (AD_WF_ProcessData_UU == null)
+        {
+			setAD_WF_ProcessData_ID (0);
+			setAD_WF_Process_ID (0);
+			setAttributeName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_ProcessData (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -153,7 +177,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Process_ID()));
     }

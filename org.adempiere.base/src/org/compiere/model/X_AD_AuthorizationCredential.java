@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationCredential
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationCredential")
-public class X_AD_AuthorizationCredential extends PO implements I_AD_AuthorizationCredential, I_Persistent 
+public class X_AD_AuthorizationCredential extends PO implements I_AD_AuthorizationCredential, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationCredential (Properties ctx, int AD_AuthorizationCredential_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_AuthorizationCredential (Properties ctx, String AD_AuthorizationCredential_UU, String trxName)
+    {
+      super (ctx, AD_AuthorizationCredential_UU, trxName);
+      /** if (AD_AuthorizationCredential_UU == null)
+        {
+			setAD_AuthorizationCredential_ID (0);
+			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationScopeList (null);
+			setAuthorizationClientId (null);
+			setAuthorizationClientSecret (null);
+			setAuthorizationRedirectURL (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AuthorizationCredential (Properties ctx, String AD_AuthorizationCredential_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AuthorizationCredential_UU, trxName, virtualColumns);
+      /** if (AD_AuthorizationCredential_UU == null)
+        {
+			setAD_AuthorizationCredential_ID (0);
+			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationScopeList (null);
+			setAuthorizationClientId (null);
+			setAuthorizationClientSecret (null);
+			setAuthorizationRedirectURL (null);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_AuthorizationCredential (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -264,7 +296,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

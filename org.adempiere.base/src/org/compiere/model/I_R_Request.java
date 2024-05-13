@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_Request
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_R_Request 
 {
@@ -674,6 +674,15 @@ public interface I_R_Request
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name Record_UU */
+    public static final String COLUMNNAME_Record_UU = "Record_UU";
+
+	/** Set Record UUID	  */
+	public void setRecord_UU (String Record_UU);
+
+	/** Get Record UUID	  */
+	public String getRecord_UU();
 
     /** Column name RequestAmt */
     public static final String COLUMNNAME_RequestAmt = "RequestAmt";

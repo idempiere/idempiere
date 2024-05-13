@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Warehouse")
-public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent 
+public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -67,6 +67,40 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Warehouse (Properties ctx, String M_Warehouse_UU, String trxName)
+    {
+      super (ctx, M_Warehouse_UU, trxName);
+      /** if (M_Warehouse_UU == null)
+        {
+			setC_Location_ID (0);
+			setIsDisallowNegativeInv (false);
+// N
+			setM_Warehouse_ID (0);
+			setName (null);
+			setSeparator (null);
+// *
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Warehouse (Properties ctx, String M_Warehouse_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Warehouse_UU, trxName, virtualColumns);
+      /** if (M_Warehouse_UU == null)
+        {
+			setC_Location_ID (0);
+			setIsDisallowNegativeInv (false);
+// N
+			setM_Warehouse_ID (0);
+			setName (null);
+			setSeparator (null);
+// *
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Warehouse (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +108,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -153,10 +187,10 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	public boolean isDisallowNegativeInv()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisallowNegativeInv);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -176,10 +210,10 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	public boolean isInTransit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInTransit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -297,7 +331,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

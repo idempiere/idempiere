@@ -32,7 +32,7 @@ import io.github.classgraph.ScanResult;
 
 /**
  * Translates table names into model classes having the {@link Model} annotation. Relies on
- * {@link DefaultModelFactory} for everything else.
+ * {@link DefaultModelFactory} for everything else.<br/>
  * This factory is designed to have a service rank higher than {@link DefaultModelFactory}, as class
  * discovery using SPI is preferred over reflection-based methods.
  * @author Saulo Gil
@@ -77,6 +77,11 @@ public class AnnotationBasedModelFactory extends AnnotationBasedFactory implemen
 		return patterns;
 	}
 	
+	/**
+	 * Scan annotation upon activation of component
+	 * @param context
+	 * @throws ClassNotFoundException
+	 */
 	@Activate
 	public void activate(ComponentContext context) throws ClassNotFoundException {
 		long start = System.currentTimeMillis();
@@ -125,6 +130,11 @@ public class AnnotationBasedModelFactory extends AnnotationBasedFactory implemen
 		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
 	}
 
+	/**
+	 * Process annotation scan result
+	 * @param classLoader
+	 * @param scanResult
+	 */
 	private void processResults(ClassLoader classLoader, ScanResult scanResult ) {
         BiConsumer<String,ClassNotFoundException> exceptionHandler = (className, exception) -> 
         	s_log.severe(String.format("exception while loading class %s - %s", className, exception.getMessage()));
@@ -202,6 +212,14 @@ public class AnnotationBasedModelFactory extends AnnotationBasedFactory implemen
 	@Override
 	public PO getPO(String tableName, int Record_ID, String trxName) {
 		return AbstractModelFactory.getPO(getClass(tableName), tableName, Record_ID, trxName);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PO getPO(String tableName, String Record_UU, String trxName) {
+		return AbstractModelFactory.getPO(getClass(tableName), tableName, Record_UU, trxName);
 	}
 
 	/**

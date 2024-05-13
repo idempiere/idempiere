@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatType")
-public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent 
+public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_CM_ChatType (Properties ctx, String CM_ChatType_UU, String trxName)
+    {
+      super (ctx, CM_ChatType_UU, trxName);
+      /** if (CM_ChatType_UU == null)
+        {
+			setAD_Table_ID (0);
+			setCM_ChatType_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatType (Properties ctx, String CM_ChatType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatType_UU, trxName, virtualColumns);
+      /** if (CM_ChatType_UU == null)
+        {
+			setAD_Table_ID (0);
+			setCM_ChatType_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_CM_ChatType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -210,7 +234,7 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

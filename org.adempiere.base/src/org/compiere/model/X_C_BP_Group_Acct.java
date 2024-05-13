@@ -19,19 +19,19 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_BP_Group_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Group_Acct")
-public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persistent 
+public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName)
@@ -73,6 +73,46 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BP_Group_Acct (Properties ctx, String C_BP_Group_Acct_UU, String trxName)
+    {
+      super (ctx, C_BP_Group_Acct_UU, trxName);
+      /** if (C_BP_Group_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Prepayment_Acct (0);
+			setC_Receivable_Acct (0);
+			setC_Receivable_Services_Acct (0);
+			setNotInvoicedReceipts_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
+			setV_Liability_Acct (0);
+			setV_Prepayment_Acct (0);
+			setWriteOff_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_Group_Acct (Properties ctx, String C_BP_Group_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_Group_Acct_UU, trxName, virtualColumns);
+      /** if (C_BP_Group_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Prepayment_Acct (0);
+			setC_Receivable_Acct (0);
+			setC_Receivable_Services_Acct (0);
+			setNotInvoicedReceipts_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
+			setV_Liability_Acct (0);
+			setV_Prepayment_Acct (0);
+			setWriteOff_Acct (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BP_Group_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +120,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -97,7 +137,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_BP_Group_Acct[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -172,12 +212,12 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_BP_Group_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getC_BP_Group_ID()));
     }
 
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException
@@ -343,10 +383,10 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

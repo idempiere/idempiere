@@ -30,9 +30,11 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.factory.IEditorFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.util.DisplayType;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * Field editor factory for {@link DisplayType#SchedulerState}
  * @author hengsin
  *
  */
@@ -40,8 +42,6 @@ import org.osgi.service.component.annotations.Component;
 		   property = {"service.ranking:Integer=1"})
 public class SchedulerStateEditorFactory implements IEditorFactory {
 
-	private final static int SCHEDULER_STATE_AD_REFERENCE_ID = 200173;
-	
 	/**
 	 * default constructor 
 	 */
@@ -56,7 +56,7 @@ public class SchedulerStateEditorFactory implements IEditorFactory {
 	@Override
 	public WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor,
 			IEditorConfiguration editorConfiguration) {
-		if (gridField != null && gridField.getDisplayType() == SCHEDULER_STATE_AD_REFERENCE_ID) {
+		if (gridField != null && gridField.getDisplayType() == DisplayType.SchedulerState) {
 			return new SchedulerStateEditor(gridField, tableEditor, editorConfiguration);
 		}
 		return null;

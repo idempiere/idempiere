@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_UOM
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_C_UOM 
 {
@@ -177,6 +177,19 @@ public interface I_C_UOM
 	  * Rule for rounding  calculated amounts
 	  */
 	public int getStdPrecision();
+
+    /** Column name UNCEFACT */
+    public static final String COLUMNNAME_UNCEFACT = "UNCEFACT";
+
+	/** Set UN/CEFACT Code.
+	  * Code for Units of Measure used in International Trade
+	  */
+	public void setUNCEFACT (String UNCEFACT);
+
+	/** Get UN/CEFACT Code.
+	  * Code for Units of Measure used in International Trade
+	  */
+	public String getUNCEFACT();
 
     /** Column name UOMSymbol */
     public static final String COLUMNNAME_UOMSymbol = "UOMSymbol";

@@ -23,7 +23,7 @@ import org.compiere.model.I_M_RMALine;
 import org.compiere.model.I_M_RequisitionLine;
 
 /**
- * Product Price Calculations
+ * Interface for Product Price Calculations
  */
 public interface IProductPricing {
 

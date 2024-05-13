@@ -49,6 +49,16 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 
 	private static final Map<Integer, List<MUserDefInfo>> m_fullMap = new HashMap<Integer, List<MUserDefInfo>>();
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Info_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefInfo(Properties ctx, String AD_UserDef_Info_UU, String trxName) {
+        super(ctx, AD_UserDef_Info_UU, trxName);
+    }
+
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency

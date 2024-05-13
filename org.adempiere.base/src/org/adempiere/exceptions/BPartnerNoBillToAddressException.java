@@ -22,7 +22,7 @@ import org.compiere.model.I_C_BPartner;
 public class BPartnerNoBillToAddressException extends BPartnerException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8423260338845096466L;
 	public static final String AD_Message = "BPartnerNoBillToAddress";

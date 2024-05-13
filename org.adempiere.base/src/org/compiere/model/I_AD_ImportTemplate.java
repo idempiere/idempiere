@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ImportTemplate
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_ImportTemplate 
 {
@@ -166,6 +166,15 @@ public interface I_AD_ImportTemplate
 	  */
 	public String getDescription();
 
+    /** Column name ImportTemplateType */
+    public static final String COLUMNNAME_ImportTemplateType = "ImportTemplateType";
+
+	/** Set Import Template Type	  */
+	public void setImportTemplateType (String ImportTemplateType);
+
+	/** Get Import Template Type	  */
+	public String getImportTemplateType();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -191,6 +200,24 @@ public interface I_AD_ImportTemplate
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name QuoteChar */
+    public static final String COLUMNNAME_QuoteChar = "QuoteChar";
+
+	/** Set Quote Char	  */
+	public void setQuoteChar (String QuoteChar);
+
+	/** Get Quote Char	  */
+	public String getQuoteChar();
+
+    /** Column name SeparatorChar */
+    public static final String COLUMNNAME_SeparatorChar = "SeparatorChar";
+
+	/** Set Separator Character	  */
+	public void setSeparatorChar (String SeparatorChar);
+
+	/** Get Separator Character	  */
+	public String getSeparatorChar();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

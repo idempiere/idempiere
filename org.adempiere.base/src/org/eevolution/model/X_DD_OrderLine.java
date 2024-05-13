@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for DD_OrderLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="DD_OrderLine")
-public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent 
+public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_DD_OrderLine (Properties ctx, int DD_OrderLine_ID, String trxName)
@@ -85,6 +85,54 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_DD_OrderLine (Properties ctx, String DD_OrderLine_UU, String trxName)
+    {
+      super (ctx, DD_OrderLine_UU, trxName);
+      /** if (DD_OrderLine_UU == null)
+        {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setDD_Order_ID (0);
+			setDD_OrderLine_ID (0);
+			setIsDescription (false);
+// N
+			setIsInvoiced (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM DD_OrderLine WHERE DD_Order_ID=@DD_Order_ID@
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setM_LocatorTo_ID (0);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+			setQtyOrdered (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_DD_OrderLine (Properties ctx, String DD_OrderLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, DD_OrderLine_UU, trxName, virtualColumns);
+      /** if (DD_OrderLine_UU == null)
+        {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setDD_Order_ID (0);
+			setDD_OrderLine_ID (0);
+			setIsDescription (false);
+// N
+			setIsInvoiced (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM DD_OrderLine WHERE DD_Order_ID=@DD_Order_ID@
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setM_LocatorTo_ID (0);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+			setQtyOrdered (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_DD_OrderLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -92,7 +140,7 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -454,10 +502,10 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
 	public boolean isDescription()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDescription);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -477,10 +525,10 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
 	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -508,7 +556,7 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
@@ -732,10 +780,10 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

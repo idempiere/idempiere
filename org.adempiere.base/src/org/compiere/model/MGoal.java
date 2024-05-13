@@ -31,6 +31,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Performance Goal
@@ -46,12 +47,12 @@ import org.compiere.util.Msg;
 public class MGoal extends X_PA_Goal
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4612113288233473730L;
 
 	/**
-	 * 	Get User Goals
+	 * 	Get User Goals (will call updateGoal for each record)
 	 *	@param ctx context
 	 *	@param AD_User_ID user
 	 *	@return array of goals
@@ -102,7 +103,7 @@ public class MGoal extends X_PA_Goal
 	}	//	getUserGoals
 
 	/**
-	 * 	Get Accessible Goals
+	 * 	Get Accessible Goals ((will call updateGoal for each record)
 	 *	@param ctx context
 	 *	@return array of goals
 	 */
@@ -120,10 +121,9 @@ public class MGoal extends X_PA_Goal
 		list.toArray (retValue);
 		return retValue;
 	}	//	getGoals
-
 	
 	/**
-	 * 	Create Test Goals
+	 * 	Create Dummy Test Goals
 	 *	@param ctx context
 	 *	@return array of goals
 	 */
@@ -142,9 +142,9 @@ public class MGoal extends X_PA_Goal
 	}	//	getTestGoals
 
 	/**
-	 * 	Get Goals with Measure
+	 * 	Get Goals for a performance measurement
 	 *	@param ctx context
-	 *	@param PA_Measure_ID measure
+	 *	@param PA_Measure_ID performance measurement
 	 *	@return goals
 	 */
 	public static MGoal[] getMeasureGoals (Properties ctx, int PA_Measure_ID)
@@ -177,9 +177,9 @@ public class MGoal extends X_PA_Goal
 	}	//	getMeasureGoals
 	
 	/**
-	 * 	Get Multiplier from Scope to Display
+	 * 	Get Multiplier for the goal's combination of Measurement Scope and Measurement Display
 	 *	@param goal goal
-	 *	@return null if error or multiplier
+	 *	@return multiplier value or 1 (measure display is null) or null (for MEASURESCOPE_Total and MEASUREDISPLAY_Total)
 	 */
 	public static BigDecimal getMultiplier (MGoal goal)
 	{
@@ -255,7 +255,19 @@ public class MGoal extends X_PA_Goal
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MGoal.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_Goal_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MGoal(Properties ctx, String PA_Goal_UU, String trxName) {
+        super(ctx, PA_Goal_UU, trxName);
+		if (Util.isEmpty(PA_Goal_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param PA_Goal_ID id
@@ -265,16 +277,21 @@ public class MGoal extends X_PA_Goal
 	{
 		super (ctx, PA_Goal_ID, trxName);
 		if (PA_Goal_ID == 0)
-		{
-			setSeqNo (0);
-			setIsSummary (false);
-			setMeasureScope (MEASUREDISPLAY_Year);
-			setGoalPerformance (Env.ZERO);
-			setRelativeWeight (Env.ONE);
-			setMeasureTarget (Env.ZERO);
-			setMeasureActual (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MGoal
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setSeqNo (0);
+		setIsSummary (false);
+		setMeasureScope (MEASUREDISPLAY_Year);
+		setGoalPerformance (Env.ZERO);
+		setRelativeWeight (Env.ONE);
+		setMeasureTarget (Env.ZERO);
+		setMeasureActual (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -288,10 +305,9 @@ public class MGoal extends X_PA_Goal
 	}	//	MGoal
 
 	/**
-	 * 	Base Constructor
 	 *	@param ctx context
 	 *	@param Name Name
-	 *	@param Description Decsription
+	 *	@param Description Description
 	 *	@param MeasureTarget target
 	 *	@param trxName trx
 	 */
@@ -303,7 +319,6 @@ public class MGoal extends X_PA_Goal
 		setDescription(Description);
 		setMeasureTarget(MeasureTarget);
 	}	//	MGoal
-
 	
 	/** Restrictions					*/
 	private MGoalRestriction[] 	m_restrictions = null;
@@ -312,7 +327,7 @@ public class MGoal extends X_PA_Goal
 
 	/**
 	 * 	Get Restriction Lines
-	 *	@param reload reload data
+	 *	@param reload true to reload data
 	 *	@return array of lines
 	 */
 	public MGoalRestriction[] getRestrictions (boolean reload)
@@ -359,11 +374,10 @@ public class MGoal extends X_PA_Goal
 			return MMeasure.get(getPA_Measure_ID());
 		return null;
 	}	//	getMeasure
-	
-	
-	/**************************************************************************
-	 * 	Update/save Goals for the same measure
-	 * 	@param force force to update goal (default once per day)
+		
+	/**
+	 * 	Update/save measurement for Goals
+	 * 	@param force force to update goal even if it has not reach the next update interval (default is 30 minutes interval)
 	 * 	@return true if updated
 	 */
 	public boolean updateGoal(boolean force)
@@ -393,9 +407,10 @@ public class MGoal extends X_PA_Goal
 	}	//	updateGoal
 	
 	/**
-	 * 	Set Measure Actual
+	 * 	Set Actual Measurement value
 	 *	@param MeasureActual actual
 	 */
+	@Override
 	public void setMeasureActual (BigDecimal MeasureActual)
 	{
 		if (MeasureActual == null)
@@ -406,7 +421,7 @@ public class MGoal extends X_PA_Goal
 	}	//	setMeasureActual
 	
 	/**
-	 * 	Calculate Performance Goal as multiplier
+	 * Calculate Performance Goal
 	 */
 	public void setGoalPerformance ()
 	{
@@ -420,8 +435,8 @@ public class MGoal extends X_PA_Goal
 	}	//	setGoalPerformance
 	
 	/**
-	 * 	Get Goal Performance as Double
-	 *	@return performance as multipier
+	 * 	Get Goal Performance value as Double
+	 *	@return goal performance value
 	 */
 	public double getGoalPerformanceDouble()
 	{
@@ -430,8 +445,8 @@ public class MGoal extends X_PA_Goal
 	}	//	getGoalPerformanceDouble
 	
 	/**
-	 * 	Get Goal Performance in Percent
-	 *	@return performance in percent
+	 * 	Get Goal Performance value in Percent
+	 *	@return goal performance value in percent (i.e 5 percent if value is 0.05)
 	 */
 	public int getPercent()
 	{
@@ -466,7 +481,7 @@ public class MGoal extends X_PA_Goal
 	
 	/**
 	 * 	Get Measure Display
-	 *	@return Measure Display
+	 *	@return Measure Display (MEASUREDISPLAY_*)
 	 */
 	public String getMeasureDisplay ()
 	{
@@ -485,7 +500,7 @@ public class MGoal extends X_PA_Goal
 	
 	/**
 	 * 	Get Measure Display Text
-	 *	@return Measure Display Text
+	 *	@return Measure Display Text for X axis
 	 */
 	public String getXAxisText ()
 	{
@@ -505,7 +520,7 @@ public class MGoal extends X_PA_Goal
 	
 	/**
 	 * 	Goal has Target
-	 *	@return true if target
+	 *	@return true if has measurement target value
 	 */
 	public boolean isTarget()
 	{
@@ -516,6 +531,7 @@ public class MGoal extends X_PA_Goal
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MGoal[");
@@ -531,6 +547,7 @@ public class MGoal extends X_PA_Goal
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Measure required if nor Summary
@@ -583,6 +600,7 @@ public class MGoal extends X_PA_Goal
 	 *	@param success success
 	 *	@return true
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -596,6 +614,5 @@ public class MGoal extends X_PA_Goal
 
 		return success;
 	}
-	
-	
+		
 }	//	MGoal

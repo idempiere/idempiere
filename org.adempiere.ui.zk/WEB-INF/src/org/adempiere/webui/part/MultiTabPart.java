@@ -21,7 +21,7 @@ import org.adempiere.webui.component.Tabs;
 import org.zkoss.zk.ui.Component;
 
 /**
- * 
+ * Tabbox based UI block 
  * @author Low Heng Sin
  *
  */
@@ -33,10 +33,10 @@ public class MultiTabPart extends AbstractUIPart
     {
     }
     
+    @Override
     protected Component doCreatePart(Component parent)
     {
         tabbox = new Tabbox();
-//        tabbox.setSclass("lite");
         
         Tabpanels tabpanels = new Tabpanels();
         Tabs tabs = new Tabs();
@@ -52,11 +52,24 @@ public class MultiTabPart extends AbstractUIPart
         return tabbox;
     }
 
+    /**
+     * Add comp as new tab
+     * @param comp
+     * @param title
+     * @param closeable
+     */
     public void addTab(Component comp, String title, boolean closeable)
     {
         addTab(comp, title, closeable, true);
     }
 
+    /**
+     * Add comp as new tab
+     * @param comp
+     * @param title
+     * @param closeable
+     * @param enable
+     */
     public void addTab(Component comp, String title, boolean closeable, boolean enable)
     {
         Tab tab = new Tab();
@@ -78,16 +91,26 @@ public class MultiTabPart extends AbstractUIPart
         	setSelectedTab(tab);        
     }
 
+    /**
+     * Set selected tab
+     * @param tab
+     */
     public void setSelectedTab(Tab tab)
     {
     	tabbox.setSelectedTab(tab);
     }
 
+    /**
+     * Close selected tab
+     */
     public void removeTab()
     {
     	tabbox.getSelectedTab().onClose();
     }
 
+    /**
+     * @return Tabbox 
+     */
 	public Tabbox getComponent() {
 		return tabbox;
 	}

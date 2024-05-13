@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.sql.PreparedStatement;
@@ -15,23 +36,50 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Online shipping transaction model
+ */
 public class MShippingTransaction extends X_M_ShippingTransaction 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2444841696998774096L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ShippingTransaction_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MShippingTransaction(Properties ctx, String M_ShippingTransaction_UU, String trxName) {
+        super(ctx, M_ShippingTransaction_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param M_ShippingTransaction_ID
+     * @param trxName
+     */
 	public MShippingTransaction(Properties ctx, int M_ShippingTransaction_ID, String trxName) 
 	{
 		super(ctx, M_ShippingTransaction_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MShippingTransaction(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * @param whereClause
+	 * @return array of MShippingTransactionLine
+	 */
 	public MShippingTransactionLine[] getLines(String whereClause)
 	{
 		StringBuilder whereClauseFinal = new StringBuilder(MShippingTransactionLine.COLUMNNAME_M_ShippingTransaction_ID + "=? ");
@@ -49,16 +97,27 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 	/** Error Message						*/
 	private String				m_errorMessage = null;
 	
+	/**
+	 * Set error message 
+	 * @param errorMessage
+	 */
 	public void setErrorMessage(String errorMessage)
 	{
 		m_errorMessage = errorMessage;
 	}
 	
+	/**
+	 * @return error message
+	 */
 	public String getErrorMessage()
 	{
 		return m_errorMessage;
 	}
 	
+	/**
+	 * Submit online shipping request (shipment, rate inquiry or void shipment)
+	 * @return true if success
+	 */
 	public boolean processOnline()
 	{
 		setErrorMessage(null);
@@ -107,34 +166,41 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			msg.append(getErrorMessage());
 		msg.append("\nAction: " + getAction());
 		history.setTextMsg(msg.toString());
-		try {
-			PO.setCrossTenantSafe();
-			history.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		history.saveCrossTenantSafeEx();
 
 		setProcessed(processed);
 		return processed;
 	}
 	
+	/**
+	 * @return shipper
+	 */
 	public MShipper getMShipper()
 	{
 		return new MShipper(getCtx(), getM_Shipper_ID(), get_TrxName());
 	}
 	
+	/**
+	 * @return true if this is an international shipment
+	 */
 	public boolean isInternational()
 	{
 		MShipperFacade facade = new MShipperFacade(getMShipper());
 		return facade.isInternational();
 	}
 	
+	/**
+	 * @return currency ISO code
+	 */
 	public String getCurrencyCode() 
 	{
 		MCurrency currency = MCurrency.get(getCtx(), getC_Currency_ID());
 		return currency.getISO_Code();
 	}
 	
+	/**
+	 * @return true if freight charges will be pay by sender
+	 */
 	public boolean isPayBySender() 
 	{
 		// Payment Type must be SENDER or THIRD_PARTY when COD is requested		
@@ -146,29 +212,44 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			return false;
 	}
 	
+	/**
+	 * @return product id for freight charges
+	 */
 	public int getProductFreightID()
 	{
 		return DB.getSQLValue(null, "SELECT M_ProductFreight_ID FROM AD_Clientinfo WHERE AD_Client_ID = ?", getAD_Client_ID());
 	}
 	
+	/**
+	 * @return true if shipping label is print as image
+	 */
 	public boolean isPrintLabelAsImage() 
 	{
 		MShipperLabels label = new MShipperLabels(getCtx(), getM_ShipperLabels_ID(), get_TrxName());
 		return MShipperLabels.LABELPRINTMETHOD_Image.equals(label.getLabelPrintMethod());
 	}
 	
+	/**
+	 * @return true if shipping label is for printing via Zebra label printer 
+	 */
 	public boolean isPrintZebraLabel() 
 	{
 		MShipperLabels label = new MShipperLabels(getCtx(), getM_ShipperLabels_ID(), get_TrxName());
 		return MShipperLabels.LABELPRINTMETHOD_Zebra.equals(label.getLabelPrintMethod());
 	}
 	
+	/**
+	 * @return true if shipping label is for printing via Eltron label printer
+	 */
 	public boolean isPrintEltronLabel() 
 	{
 		MShipperLabels label = new MShipperLabels(getCtx(), getM_ShipperLabels_ID(), get_TrxName());
 		return MShipperLabels.LABELPRINTMETHOD_Eltron.equals(label.getLabelPrintMethod());
 	}
 	
+	/**
+	 * @return payor account
+	 */
 	public String getPayorAccount() 
 	{
 		if (isPayBySender()) 
@@ -188,6 +269,9 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		}
 	}
 	
+	/**
+	 * @return payor account for duties
+	 */
 	public String getDutiesPayorAccount() 
 	{
 		if (isPayBySender()) 
@@ -213,6 +297,9 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		}
 	}
 	
+	/**
+	 * @return country code of payor
+	 */
 	public String getPayorCountryCode() 
 	{
 		if (!isPayBySender()) 
@@ -232,16 +319,26 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		}
 	}
 	
+	/**
+	 * @return true if freight charges is to be collected from receiver
+	 */
 	public boolean isCollect() 
 	{
 		return MShippingTransaction.FREIGHTCHARGES_Collect.equals(getFreightCharges());
 	}
 	
+	/**
+	 * @return true if freight charges is pay by third party
+	 */
 	public boolean is3rdParty() 
 	{
 		return MShippingTransaction.FREIGHTCHARGES_3rdParty.equals(getFreightCharges());
 	}
 	
+	/**
+	 * @param M_Product_ID
+	 * @return X_M_CommodityShipment
+	 */
 	public X_M_CommodityShipment getCommodityShipment(int M_Product_ID)
 	{
 		X_M_CommodityShipment commodityShipment = null;
@@ -283,30 +380,50 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		return commodityShipment;
 	}
 	
+	/**
+	 * @param M_Product_ID
+	 * @return M_CommodityShipment_ID
+	 */
 	public int getCommodityShipmentID(int M_Product_ID) 
 	{
 		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getM_CommodityShipment_ID();
 	}
 
+	/**
+	 * @param M_Product_ID
+	 * @return commodity shipment description
+	 */
 	public String getCommodityDescription(int M_Product_ID) 
 	{
 		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getDescription();		
 	}
 
+	/**
+	 * @param M_Product_ID
+	 * @return harmonized code of community shipment
+	 */
 	public String getHarmonizedCode(int M_Product_ID) 
 	{
 		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getHarmonizedCode();
 	}
 	
+	/**
+	 * @param M_Product_ID
+	 * @return export license number of commodity shipment
+	 */
 	public String getExportLicenseNum(int M_Product_ID) 
 	{
 		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getExportLicenseNum();
 	}
 	
+	/**
+	 * @param M_Product_ID
+	 * @return country code of manufacture country (from commodity shipment)
+	 */
 	public String getCountryOfManufacture(int M_Product_ID) 
 	{
 		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
@@ -317,6 +434,9 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 	
 	private PartyInfo senderInfo, recipientInfo;
 	
+	/**
+	 * @return sender details
+	 */
 	public PartyInfo getSenderInfo()
 	{
 		if (senderInfo != null)
@@ -343,6 +463,9 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		return partyInfo;
 	}
 	
+	/**
+	 * @return recipient details
+	 */
 	public PartyInfo getRecipientInfo()
 	{
 		if (recipientInfo != null)
@@ -368,6 +491,9 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		return partyInfo;
 	}
 	
+	/**
+	 * Sender/Recipient party value object
+	 */
 	public class PartyInfo
 	{
 		private String companyName;

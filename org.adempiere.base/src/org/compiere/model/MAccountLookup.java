@@ -37,7 +37,7 @@ import org.compiere.util.NamePair;
 public final class MAccountLookup extends Lookup implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6307559127917670193L;
 
@@ -60,10 +60,11 @@ public final class MAccountLookup extends Lookup implements Serializable
 	private String		Description;
 
 	/**
-	 *	Get Display for Value
+	 *	Get Display Text for Value
 	 *  @param value value
-	 *  @return String
+	 *  @return Display text
 	 */
+	@Override
 	public String getDisplay (Object value)
 	{
 		if (!containsKey (value)){
@@ -74,10 +75,11 @@ public final class MAccountLookup extends Lookup implements Serializable
 	}	//	getDisplay
 
 	/**
-	 *	Get Object of Key Value
-	 *  @param value value
-	 *  @return Object or null
+	 *	Get KeyNamePair of Key Value
+	 *  @param value key value
+	 *  @return KeyNamePair or null
 	 */
+	@Override
 	public NamePair get (Object value)
 	{
 		if (value == null)
@@ -92,6 +94,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 	 *  @param key key
 	 *  @return true if exists
 	 */
+	@Override
 	public boolean containsKey (Object key)
 	{
 		int intValue = 0;
@@ -103,6 +106,10 @@ public final class MAccountLookup extends Lookup implements Serializable
 		return load (intValue);
 	}   //  containsKey
 
+	/**
+	 * Delegate to {@link #containsKey(Object)}
+	 */
+	@Override
 	public boolean containsKeyNoDirect (Object key)
 	{
 		return containsKey(key);
@@ -160,6 +167,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 	 *	Get underlying fully qualified Table.Column Name
 	 *  @return ""
 	 */
+	@Override
 	public String getColumnName()
 	{
 		return "";
@@ -167,13 +175,14 @@ public final class MAccountLookup extends Lookup implements Serializable
 
 	/**
 	 *	Return data as sorted Array.
-	 *  Used in Web Interface
 	 *  @param mandatory mandatory
 	 *  @param onlyValidated only valid
 	 *  @param onlyActive only active
 	 * 	@param temporary force load for temporary display
+	 *  @param isshortlist ignore
 	 *  @return ArrayList with KeyNamePair
 	 */
+	@Override
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, 
 		boolean onlyActive, boolean temporary, boolean isshortlist) // IDEMPIERE 90
 	{

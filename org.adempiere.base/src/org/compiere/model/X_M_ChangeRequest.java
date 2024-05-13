@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ChangeRequest
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ChangeRequest")
-public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persistent 
+public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ChangeRequest (Properties ctx, int M_ChangeRequest_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ChangeRequest (Properties ctx, String M_ChangeRequest_UU, String trxName)
+    {
+      super (ctx, M_ChangeRequest_UU, trxName);
+      /** if (M_ChangeRequest_UU == null)
+        {
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setM_ChangeRequest_ID (0);
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ChangeRequest (Properties ctx, String M_ChangeRequest_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ChangeRequest_UU, trxName, virtualColumns);
+      /** if (M_ChangeRequest_UU == null)
+        {
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setM_ChangeRequest_ID (0);
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ChangeRequest (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -142,7 +172,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -177,10 +207,10 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -337,10 +367,10 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

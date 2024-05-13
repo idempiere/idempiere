@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_TimeType")
-public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent 
+public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_TimeType (Properties ctx, int S_TimeType_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_TimeType (Properties ctx, String S_TimeType_UU, String trxName)
+    {
+      super (ctx, S_TimeType_UU, trxName);
+      /** if (S_TimeType_UU == null)
+        {
+			setName (null);
+			setS_TimeType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_TimeType (Properties ctx, String S_TimeType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_TimeType_UU, trxName, virtualColumns);
+      /** if (S_TimeType_UU == null)
+        {
+			setName (null);
+			setS_TimeType_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_TimeType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -134,7 +156,7 @@ public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

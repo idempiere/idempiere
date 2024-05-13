@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CashLine")
-public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent 
+public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CashLine (Properties ctx, String C_CashLine_UU, String trxName)
+    {
+      super (ctx, C_CashLine_UU, trxName);
+      /** if (C_CashLine_UU == null)
+        {
+			setAmount (Env.ZERO);
+			setCashType (null);
+// E
+			setC_Cash_ID (0);
+			setC_CashLine_ID (0);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_CashLine WHERE C_Cash_ID=@C_Cash_ID@
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashLine (Properties ctx, String C_CashLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashLine_UU, trxName, virtualColumns);
+      /** if (C_CashLine_UU == null)
+        {
+			setAmount (Env.ZERO);
+			setCashType (null);
+// E
+			setC_Cash_ID (0);
+			setC_CashLine_ID (0);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_CashLine WHERE C_Cash_ID=@C_Cash_ID@
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CashLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -206,7 +240,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Cash_ID()));
     }
@@ -409,10 +443,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	public boolean isGenerated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGenerated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -451,10 +485,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_ClientException
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_ClientException")
-public class X_ASP_ClientException extends PO implements I_ASP_ClientException, I_Persistent 
+public class X_ASP_ClientException extends PO implements I_ASP_ClientException, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_ASP_ClientException (Properties ctx, int ASP_ClientException_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_ClientException (Properties ctx, String ASP_ClientException_UU, String trxName)
+    {
+      super (ctx, ASP_ClientException_UU, trxName);
+      /** if (ASP_ClientException_UU == null)
+        {
+			setASP_ClientException_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_ClientException (Properties ctx, String ASP_ClientException_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_ClientException_UU, trxName, virtualColumns);
+      /** if (ASP_ClientException_UU == null)
+        {
+			setASP_ClientException_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_ClientException (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {

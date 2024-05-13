@@ -26,11 +26,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -54,7 +52,7 @@ import org.compiere.util.Util;
 public class MSequence extends X_AD_Sequence
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -750059366190164777L;
 
@@ -62,18 +60,22 @@ public class MSequence extends X_AD_Sequence
 	
 	private static final String NoYearNorMonth = "-";
 
+	/**
+	 * @param AD_Client_ID
+	 * @param TableName
+	 * @return next id from table id sequence
+	 */
 	public static int getNextID (int AD_Client_ID, String TableName)
 	{
 		return getNextID(AD_Client_ID, TableName, null);
 	}
 
 	/**
-	 *
-	 *	Get next number for Key column = 0 is Error.
+	 *	Get next number from table id sequence
 	 *  @param AD_Client_ID client
 	 *  @param TableName table name
 	 * 	@param trxName
-	 *  @return next no or (-1=not found, -2=error)
+	 *  @return next id or (-1=not found, -2=error)
 	 */
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
@@ -269,8 +271,8 @@ public class MSequence extends X_AD_Sequence
 		return retValue;
 	}	//	getNextID
 
-	/**************************************************************************
-	 * 	Get Document No from table
+	/**
+	 * 	Get next Document No for table
 	 *	@param AD_Client_ID client
 	 *	@param TableName table name
 	 * 	@param trxName optional Transaction Name
@@ -281,8 +283,9 @@ public class MSequence extends X_AD_Sequence
 		return getDocumentNo(AD_Client_ID, TableName, trxName, null);
 
 	}
-	/**************************************************************************
-	 * 	Get Document No from table (when the document doesn't have a c_doctype)
+	
+	/**
+	 * 	Get next Document No for table (when the document doesn't have a c_doctype)
 	 *	@param AD_Client_ID client
 	 *	@param TableName table name
 	 * 	@param trxName optional Transaction Name
@@ -306,6 +309,13 @@ public class MSequence extends X_AD_Sequence
 		return getDocumentNoFromSeq(seq, trxName, po);
 	}	//	getDocumentNo
 
+	/**
+	 * Get next document no from sequence
+	 * @param seq
+	 * @param trxName
+	 * @param po
+	 * @return document no or null
+	 */
 	public static String getDocumentNoFromSeq(MSequence seq, String trxName, PO po) {
 		//	Check AdempiereSys
 		boolean adempiereSys = false;
@@ -562,13 +572,14 @@ public class MSequence extends X_AD_Sequence
 	 *	@return document no or null
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static String getDocumentNo(int C_DocType_ID, String trxName)
 	{
 		return getDocumentNo (C_DocType_ID, trxName, false);
 	}	//	getDocumentNo
 
 	/**
-	 * 	Get Document No based on Document Type
+	 * 	Get next Document No based on Document Type
 	 *	@param C_DocType_ID document type
 	 * 	@param trxName optional Transaction Name
 	 *  @param definite asking for a definitive or temporary sequence
@@ -580,7 +591,7 @@ public class MSequence extends X_AD_Sequence
 	}
 
 	/**
-	 * 	Get Document No based on Document Type
+	 * 	Get next Document No based on Document Type
 	 *	@param C_DocType_ID document type
 	 * 	@param trxName optional Transaction Name
 	 *  @param definite asking for a definitive or temporary sequence
@@ -624,8 +635,7 @@ public class MSequence extends X_AD_Sequence
 		return getDocumentNoFromSeq(seq, trxName, po);
 	}	//	getDocumentNo
 
-
-	/**************************************************************************
+	/**
 	 *	Check/Initialize Client DocumentNo/Value Sequences
 	 *	@param ctx context
 	 *	@param AD_Client_ID client
@@ -686,16 +696,23 @@ public class MSequence extends X_AD_Sequence
 		return success;
 	}	//	checkClientSequences
 
-
+	/**
+	 * Create Table ID Sequence
+	 * @param ctx
+	 * @param TableName
+	 * @param trxName
+	 * @return true if created
+	 */
 	public static boolean createTableSequence (Properties ctx, String TableName, String trxName) {
 		return createTableSequence (ctx, TableName, trxName, true);
 	}
 
 	/**
-	 * 	Create Table ID Sequence
+	 * 	Create Table Sequence
 	 * 	@param ctx context
 	 * 	@param TableName table name
 	 *	@param trxName transaction
+	 *  @param tableID true for table id sequence, false for documentno/value sequence
 	 * 	@return true if created
 	 */
 	public static boolean createTableSequence (Properties ctx, String TableName, String trxName, boolean tableID)
@@ -740,7 +757,6 @@ public class MSequence extends X_AD_Sequence
 		return true;
 	}	//	createTableSequence
 
-
 	/**
 	 * 	Get Sequence
 	 *	@param ctx context
@@ -752,7 +768,13 @@ public class MSequence extends X_AD_Sequence
 		return get(ctx, tableName, null);
 	}
 
-	/* Get the tableID sequence based on the TableName */
+	/**
+	 *  Get the tableID sequence based on the TableName 
+	 *  @param ctx
+	 *  @param tableName
+	 *  @param trxName
+	 *  @return sequence
+	 */
 	public static MSequence get (Properties ctx, String tableName, String trxName)
 	{
 		return get (ctx, tableName, trxName, true);
@@ -763,7 +785,7 @@ public class MSequence extends X_AD_Sequence
 	 *	@param ctx context
 	 *	@param tableName table name
 	 *  @param trxName optional transaction name
-	 *  @param tableID
+	 *  @param tableID IsTableID flag
 	 *	@return Sequence
 	 */
 	public static MSequence get (Properties ctx, String tableName, String trxName, boolean tableID)
@@ -815,8 +837,19 @@ public class MSequence extends X_AD_Sequence
 	/** Static Logger			*/
 	private static CLogger 		s_log = CLogger.getCLogger(MSequence.class);
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Sequence_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSequence(Properties ctx, String AD_Sequence_UU, String trxName) {
+        super(ctx, AD_Sequence_UU, trxName);
+		if (Util.isEmpty(AD_Sequence_UU))
+			setInitialDefaults();
+    }
 
-	/**************************************************************************
+	/**
 	 *	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Sequence_ID id
@@ -826,17 +859,22 @@ public class MSequence extends X_AD_Sequence
 	{
 		super(ctx, AD_Sequence_ID, trxName);
 		if (AD_Sequence_ID == 0)
-		{
-			setIsTableID(false);
-			setStartNo (INIT_NO);
-			setCurrentNext (INIT_NO);
-			setCurrentNextSys (INIT_SYS_NO);
-			setIncrementNo (1);
-			setIsAutoSequence (true);
-			setIsAudited(false);
-			setStartNewYear(false);
-		}
+			setInitialDefaults();
 	}	//	MSequence
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsTableID(false);
+		setStartNo (INIT_NO);
+		setCurrentNext (INIT_NO);
+		setCurrentNextSys (INIT_SYS_NO);
+		setIncrementNo (1);
+		setIsAutoSequence (true);
+		setIsAudited(false);
+		setStartNewYear(false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -883,11 +921,12 @@ public class MSequence extends X_AD_Sequence
 		setCurrentNextSys(StartNo/10);
 	}	//	MSequence;
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Next No and increase current next
 	 *	@return next no to use
+	 *  @deprecated use the static getNextID or getDocumentNo method instead
 	 */
+	@Deprecated
 	public int getNextID()
 	{
 		int retValue = getCurrentNext();
@@ -897,6 +936,10 @@ public class MSequence extends X_AD_Sequence
 		return retValue;
 	}	//	getNextNo
 
+	/**
+	 * Validate Table Sequence Values
+	 * @return info
+	 */
 	public String validateTableIDValue()
 	{
 		return validateTableIDValue(null);
@@ -905,7 +948,7 @@ public class MSequence extends X_AD_Sequence
 	/**
 	 * 	Validate Table Sequence Values
 	 *  trxName the Transaction
-	 *	@return true if updated
+	 *	@return info
 	 */
 	public String validateTableIDValue(String trxName)
 	{
@@ -992,115 +1035,17 @@ public class MSequence extends X_AD_Sequence
 			super.setCurrentNext(CurrentNext);			
 		}
 	}
-	/**************************************************************************
-	 *	Test
-	 *	@param args ignored
-	 */
-	static public void main (String[] args)
-	{
-		org.compiere.Adempiere.startup(true);
-		CLogMgt.setLevel(Level.SEVERE);
-		CLogMgt.setLoggerLevel(Level.SEVERE, null);
-		s_list = new Vector<Integer>(1000);
-
-		/** Time Test	*/
-		long time = System.currentTimeMillis();
-		Thread[] threads = new Thread[10];
-		for (int i = 0; i < 10; i++)
-		{
-			Runnable r = new GetIDs(i);
-			threads[i] = new Thread(r);
-			threads[i].start();
-		}
-		for (int i = 0; i < 10; i++)
-		{
-			try
-			{
-				threads[i].join();
-			}
-			catch (InterruptedException e)
-			{
-			}
-		}
-		time = System.currentTimeMillis() - time;
-
-		System.out.println("-------------------------------------------");
-		System.out.println("Size=" + s_list.size() + " (should be 1000)");
-		Integer[] ia = new Integer[s_list.size()];
-		s_list.toArray(ia);
-		Arrays.sort(ia);
-		Integer last = null;
-		int duplicates = 0;
-		for (int i = 0; i < ia.length; i++)
-		{
-			if (last != null)
-			{
-				if (last.compareTo(ia[i]) == 0)
-				{
-					duplicates++;
-				}
-			}
-			last = ia[i];
-		}
-		System.out.println("-------------------------------------------");
-		System.out.println("Size=" + s_list.size() + " (should be 1000)");
-		System.out.println("Duplicates=" + duplicates);
-		System.out.println("Time (ms)=" + time + " - " + ((float)time/s_list.size()) + " each" );
-		System.out.println("-------------------------------------------");
-	}	//	main
-
-	/** Test		*/
-	private static Vector<Integer> s_list = null;
 
 	/**
-	 * 	Test Sequence - Get IDs
-	 *
-	 *  @author Jorg Janke
-	 *  @version $Id: MSequence.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
-	 */
-	public static class GetIDs implements Runnable
-	{
-		/**
-		 * 	Get IDs
-		 *	@param i
-		 */
-		public GetIDs (int i)
-		{
-			m_i = i;
-		}
-		@SuppressWarnings("unused")
-		private int m_i;
-
-		/**
-		 * 	Run
-		 */
-		public void run()
-		{
-			for (int i = 0; i < 100; i++)
-			{
-				try
-				{
-					int no = DB.getNextID(0, "Test", null);
-					s_list.add(Integer.valueOf(no));
-				}
-				catch (Exception e)
-				{
-					System.err.println(e.getMessage());
-				}
-			}
-		}
-	}	//	GetIDs
-
-	/**
-	 *	Get next number for Key column
+	 *	Get next official id through http call
 	 *  @param TableName table name
-	 *  @return next no or (-1=error)
+	 *  @return next official id or (-1=error)
 	 */
 	public static synchronized int getNextOfficialID_HTTP (String TableName)
 	{
 		String website = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_WEBSITE); // "http://developer.adempiere.com/cgi-bin/get_ID";
-		String prm_USER = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USER);  // "globalqss";
-		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_PASSWORD);  // "password_inseguro";
+		String prm_USER = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USER);  
+		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_PASSWORD);  
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
 		String prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
@@ -1111,9 +1056,9 @@ public class MSequence extends X_AD_Sequence
 	}
 
 	/**
-	 *	Get next number for Key column
+	 *	Get next centralized id through http call
 	 *  @param TableName table name
-	 *  @return next no or (-1=error)
+	 *  @return next centralized id or (-1=error)
 	 */
 	public static synchronized int getNextProjectID_HTTP (String TableName)
 	{
@@ -1129,6 +1074,18 @@ public class MSequence extends X_AD_Sequence
 				prm_PASSWORD, prm_TABLE, prm_ALTKEY, prm_COMMENT, prm_PROJECT);
 	}
 
+	/**
+	 * Get next id through http call
+	 * @param TableName
+	 * @param website
+	 * @param prm_USER
+	 * @param prm_PASSWORD
+	 * @param prm_TABLE
+	 * @param prm_ALTKEY
+	 * @param prm_COMMENT
+	 * @param prm_PROJECT
+	 * @return next id or -1 if there's error
+	 */
 	private static int getNextID_HTTP(String TableName,
 			String website, String prm_USER, String prm_PASSWORD,
 			String prm_TABLE, String prm_ALTKEY, String prm_COMMENT,
@@ -1178,6 +1135,7 @@ public class MSequence extends X_AD_Sequence
 		return retValue;
 	}
 
+	/** List of table that shouldn't use centralized id */
 	private static String [] dontUseCentralized = new String[] {
 			"AD_ACCESSLOG",
 			"AD_ALERTPROCESSORLOG",
@@ -1238,7 +1196,7 @@ public class MSequence extends X_AD_Sequence
 	
 	/**
 	 * @param tableName
-	 * @return true if tableName has entity type column name
+	 * @return true if table has entity type column
 	 */
 	public static synchronized boolean isTableWithEntityType(String tableName) {
 		if (tablesWithEntityType.size() == 0) {

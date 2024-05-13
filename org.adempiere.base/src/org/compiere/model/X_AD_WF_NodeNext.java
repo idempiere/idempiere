@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NodeNext
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_NodeNext")
-public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persistent 
+public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_NodeNext (Properties ctx, int AD_WF_NodeNext_ID, String trxName)
@@ -69,6 +69,42 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_NodeNext (Properties ctx, String AD_WF_NodeNext_UU, String trxName)
+    {
+      super (ctx, AD_WF_NodeNext_UU, trxName);
+      /** if (AD_WF_NodeNext_UU == null)
+        {
+			setAD_WF_Next_ID (0);
+			setAD_WF_Node_ID (0);
+// @1|AD_WF_Node_ID@
+			setAD_WF_NodeNext_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsStdUserWorkflow (false);
+			setSeqNo (0);
+// 10
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_NodeNext (Properties ctx, String AD_WF_NodeNext_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_NodeNext_UU, trxName, virtualColumns);
+      /** if (AD_WF_NodeNext_UU == null)
+        {
+			setAD_WF_Next_ID (0);
+			setAD_WF_Node_ID (0);
+// @1|AD_WF_Node_ID@
+			setAD_WF_NodeNext_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsStdUserWorkflow (false);
+			setSeqNo (0);
+// 10
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_NodeNext (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +112,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -156,7 +192,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Node_ID()));
     }
@@ -247,10 +283,10 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	public boolean isStdUserWorkflow()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStdUserWorkflow);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

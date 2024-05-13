@@ -30,7 +30,9 @@ package org.idempiere.zk.billboard;
  *
  */
 public class Version {
-	/** Returns the version UID.
+	/** 
+	 * Returns the version UID.<br/>
+	 * Must match with version-uid value in lang-addon.xml
 	 */
-	public static final String UID = "3.5.1.20220908";
+	public static final String UID = "3.10.3.20231118";
 }

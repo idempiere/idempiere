@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -41,14 +42,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MDocType extends X_C_DocType implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1830844263371227816L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
 	 * @param DocBaseType
-	 * @return
+	 * @return C_DocType_ID
 	 */
 	static public int getDocType(String DocBaseType)
 	{
@@ -121,7 +122,19 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	/**	Cache					*/
 	static private ImmutableIntPOCache<Integer,MDocType>	s_cache = new ImmutableIntPOCache<Integer,MDocType>(Table_Name, 20);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_DocType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDocType(Properties ctx, String C_DocType_UU, String trxName) {
+        super(ctx, C_DocType_UU, trxName);
+		if (Util.isEmpty(C_DocType_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_DocType_ID id
@@ -131,20 +144,25 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	{
 		super(ctx, C_DocType_ID, trxName);
 		if (C_DocType_ID == 0)
-		{
-			setDocumentCopies (0);
-			setHasCharges (false);
-			setIsDefault (false);
-			setIsDocNoControlled (false);
-			setIsSOTrx (false);
-			setIsPickQAConfirm(false);
-			setIsShipConfirm(false);
-			setIsSplitWhenDifference(false);
-			setIsCreateCounter(true);
-			setIsDefaultCounterDoc(false);
-			setIsIndexed(true);
-		}
+			setInitialDefaults();
 	}	//	MDocType
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocumentCopies (0);
+		setHasCharges (false);
+		setIsDefault (false);
+		setIsDocNoControlled (false);
+		setIsSOTrx (false);
+		setIsPickQAConfirm(false);
+		setIsShipConfirm(false);
+		setIsSplitWhenDifference(false);
+		setIsCreateCounter(true);
+		setIsDefaultCounterDoc(false);
+		setIsIndexed(true);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -158,7 +176,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}	//	MDocType
 
 	/**
-	 * 	New Constructor
+	 * 	New MDocType Constructor
 	 *	@param ctx context
 	 *	@param DocBaseType document base type
 	 *	@param Name name
@@ -175,7 +193,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}	//	MDocType
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDocType(MDocType copy) 
@@ -184,7 +202,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -194,7 +212,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -219,7 +237,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 
 	
 	/**
-	 * 	Set SOTrx based on document base type
+	 * 	Set IsSOTrx based on document base type
 	 */
 	public void setIsSOTrx ()
 	{
@@ -233,6 +251,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MDocType[");
@@ -272,12 +291,11 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 				|| DOCSUBTYPESO_Quotation.equals(getDocSubTypeSO()))
 			&& DOCBASETYPE_SalesOrder.equals(getDocBaseType());
 	}	//	isOffer
-
 	
 	/**
 	 * 	Get Print Name
 	 * 	@param AD_Language language
-	 *	@return print Name if available translated
+	 *	@return print name if available translated
 	 */
 	public String getPrintName (String AD_Language)
 	{
@@ -291,6 +309,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		return true;
@@ -302,6 +321,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)
@@ -340,6 +360,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	 *
 	 *	@return true if delete is a success
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		// delete access records
@@ -350,9 +371,9 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}   //  beforeDelete
 
 	/**
-     * Returns Document type for the shipment/receipt based
-     * on Document type provided for order/rma
-     * @param docTypeId
+     * Get shipment/receipt document type based
+     * on document type (docTypeId) provided
+     * @param docTypeId order/rma/vendor return/return material
      * @return shipment/receipt doctype id
      */
     public static int getShipmentReceiptDocType(int docTypeId)

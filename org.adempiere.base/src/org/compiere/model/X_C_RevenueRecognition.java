@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition")
-public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition, I_Persistent 
+public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition (Properties ctx, int C_RevenueRecognition_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RevenueRecognition (Properties ctx, String C_RevenueRecognition_UU, String trxName)
+    {
+      super (ctx, C_RevenueRecognition_UU, trxName);
+      /** if (C_RevenueRecognition_UU == null)
+        {
+			setC_RevenueRecognition_ID (0);
+			setIsTimeBased (false);
+			setName (null);
+			setRecognitionFrequency (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RevenueRecognition (Properties ctx, String C_RevenueRecognition_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RevenueRecognition_UU, trxName, virtualColumns);
+      /** if (C_RevenueRecognition_UU == null)
+        {
+			setC_RevenueRecognition_ID (0);
+			setIsTimeBased (false);
+			setName (null);
+			setRecognitionFrequency (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RevenueRecognition (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -173,10 +199,10 @@ public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition
 	public boolean isTimeBased()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTimeBased);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -201,7 +227,7 @@ public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

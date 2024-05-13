@@ -17,7 +17,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.Properties;
+
+import org.adempiere.exceptions.DBException;
+import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *	Lot Control Model
@@ -30,7 +36,19 @@ public class MLotCtl extends X_M_LotCtl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1020114756336617138L;
+	private static final long serialVersionUID = -5538987472159034317L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_LotCtl_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLotCtl(Properties ctx, String M_LotCtl_UU, String trxName) {
+        super(ctx, M_LotCtl_UU, trxName);
+		if (Util.isEmpty(M_LotCtl_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -42,12 +60,17 @@ public class MLotCtl extends X_M_LotCtl
 	{
 		super (ctx, M_LotCtl_ID, trxName);
 		if (M_LotCtl_ID == 0)
-		{
-			setStartNo (1);
-			setCurrentNext (1);
-			setIncrementNo (1);
-		}
+			setInitialDefaults();
 	}	//	MLotCtl
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setStartNo (1);
+		setCurrentNext (1);
+		setIncrementNo (1);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -61,28 +84,73 @@ public class MLotCtl extends X_M_LotCtl
 	}	//	MLotCtl
 
 	/**
-	 * 	Create new Lot.
-	 * 	Increments Current Next and Commits
+	 * 	Create and save new Lot.
+	 * 	Increments Current Next and Save.
 	 *	@param M_Product_ID product
-	 *	@return saved Lot
+	 *	@return new Lot
 	 */
 	public MLot createLot (int M_Product_ID)
 	{
-		StringBuilder name = new StringBuilder();
-		if (getPrefix() != null)
-			name.append(getPrefix());
-		int no = getCurrentNext();
-		name.append(no);
-		if (getSuffix() != null)
-			name.append(getSuffix());
-		//
-		no += getIncrementNo();
-		setCurrentNext(no);
-		saveEx();
-		//
-		MLot retValue = new MLot (this, M_Product_ID, name.toString());
-		retValue.saveEx();
-		return retValue;
+		//use optimistic locking and try 3 time
+		set_OptimisticLockingColumns(new String[]{COLUMNNAME_CurrentNext});
+		set_UseOptimisticLocking(true);
+		for(int i = 0; i < 3; i++)
+		{
+			this.load(get_TrxName());
+			//create savepoint for rollback (if in trx)
+			Trx trx = null;
+			Savepoint savepoint = null;
+			if (get_TrxName() != null)
+				trx = Trx.get(get_TrxName(), false);
+			if (trx != null) {
+				try {
+					savepoint = trx.setSavepoint(null);
+				} catch (SQLException e) {
+					throw new DBException(e);
+				}
+			}
+			try {
+				StringBuilder name = new StringBuilder();
+				if (getPrefix() != null)
+					name.append(getPrefix());
+				int no = getCurrentNext();
+				name.append(no);
+				if (getSuffix() != null)
+					name.append(getSuffix());
+				//
+				no += getIncrementNo();
+				setCurrentNext(no);
+				saveEx();
+				MLot retValue = new MLot (this, M_Product_ID, name.toString());
+				retValue.saveEx();
+				return retValue;
+			} catch (RuntimeException e) {
+				if (savepoint != null) {
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e1) {
+						throw new DBException(e1);
+					}
+					savepoint = null;
+				}
+				if (i == 2)
+					throw e;
+				//wait 500ms for other trx
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+				}
+			} finally {
+				if (savepoint != null) {
+					try {
+						trx.releaseSavepoint(savepoint);
+					} catch (SQLException e) {
+					}
+				}
+			}
+		}
+		//should never reach here
+		return null;
 	}	//	createLot
 
 }	//	MLotCtl

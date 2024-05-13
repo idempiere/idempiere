@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_LdapProcessorLog
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapProcessorLog")
-public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, I_Persistent 
+public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessorLog (Properties ctx, int AD_LdapProcessorLog_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_LdapProcessorLog (Properties ctx, String AD_LdapProcessorLog_UU, String trxName)
+    {
+      super (ctx, AD_LdapProcessorLog_UU, trxName);
+      /** if (AD_LdapProcessorLog_UU == null)
+        {
+			setAD_LdapProcessor_ID (0);
+			setAD_LdapProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LdapProcessorLog (Properties ctx, String AD_LdapProcessorLog_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LdapProcessorLog_UU, trxName, virtualColumns);
+      /** if (AD_LdapProcessorLog_UU == null)
+        {
+			setAD_LdapProcessor_ID (0);
+			setAD_LdapProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_LdapProcessorLog (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -195,10 +219,10 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

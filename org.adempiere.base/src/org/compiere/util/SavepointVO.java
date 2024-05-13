@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
+@Deprecated
 public class SavepointVO implements Savepoint, Serializable {
 
 	/**

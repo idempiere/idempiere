@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for PP_Cost_CollectorMA
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Cost_CollectorMA")
-public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, I_Persistent 
+public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Cost_CollectorMA (Properties ctx, int PP_Cost_CollectorMA_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Cost_CollectorMA (Properties ctx, String PP_Cost_CollectorMA_UU, String trxName)
+    {
+      super (ctx, PP_Cost_CollectorMA_UU, trxName);
+      /** if (PP_Cost_CollectorMA_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+			setPP_Cost_Collector_ID (0);
+			setPP_Cost_CollectorMA_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Cost_CollectorMA (Properties ctx, String PP_Cost_CollectorMA_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Cost_CollectorMA_UU, trxName, virtualColumns);
+      /** if (PP_Cost_CollectorMA_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+			setPP_Cost_Collector_ID (0);
+			setPP_Cost_CollectorMA_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Cost_CollectorMA (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

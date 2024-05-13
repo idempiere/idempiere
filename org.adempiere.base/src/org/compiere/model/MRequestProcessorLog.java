@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
 
 /**
  *	Request Processor Log
@@ -30,28 +31,47 @@ public class MRequestProcessorLog extends X_R_RequestProcessorLog
 	implements AdempiereProcessorLog
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 3295903266591998482L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_RequestProcessorLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRequestProcessorLog(Properties ctx, String R_RequestProcessorLog_UU, String trxName) {
+        super(ctx, R_RequestProcessorLog_UU, trxName);
+		if (Util.isEmpty(R_RequestProcessorLog_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_RequestProcessorLog_ID id
+	 *  @param trxName
 	 */
 	public MRequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
 	{
 		super (ctx, R_RequestProcessorLog_ID, trxName);
 		if (R_RequestProcessorLog_ID == 0)
-		{
-			setIsError (false);
-		}	
+			setInitialDefaults();
 	}	//	MRequestProcessorLog
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsError (false);
+	}
 
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
+	 *  @param trxName
 	 */
 	public MRequestProcessorLog (Properties ctx, ResultSet rs, String trxName)
 	{
@@ -70,6 +90,5 @@ public class MRequestProcessorLog extends X_R_RequestProcessorLog
 		setR_RequestProcessor_ID(parent.getR_RequestProcessor_ID());
 		setSummary(summary);
 	}	//	MRequestProcessorLog
-
 	
 }	//	MRequestProcessorLog

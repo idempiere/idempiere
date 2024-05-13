@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for I_Order
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_Order")
-public class X_I_Order extends PO implements I_I_Order, I_Persistent 
+public class X_I_Order extends PO implements I_I_Order, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_Order (Properties ctx, int I_Order_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_Order (Properties ctx, String I_Order_UU, String trxName)
+    {
+      super (ctx, I_Order_UU, trxName);
+      /** if (I_Order_UU == null)
+        {
+			setI_IsImported (false);
+			setI_Order_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Order (Properties ctx, String I_Order_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Order_UU, trxName, virtualColumns);
+      /** if (I_Order_UU == null)
+        {
+			setI_IsImported (false);
+			setI_Order_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_Order (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -941,10 +963,10 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1001,10 +1023,10 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1235,10 +1257,10 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1257,10 +1279,10 @@ public class X_I_Order extends PO implements I_I_Order, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -36,12 +36,14 @@ import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegistration;
 import org.compiere.model.MMailText;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Email based Multi-factor authentication implementation. 
+ */
 public class EMailMechanism implements IMFAMechanism {
 
 	/**
@@ -52,7 +54,7 @@ public class EMailMechanism implements IMFAMechanism {
 	 * @param method
 	 * @param prm     email
 	 * @param trxName
-	 * @return Object[] - first object is the String with the instructions to follow
+	 * @return Object[] - first object is the String with the instructions to follow,
 	 *         second object is the registration generated
 	 */
 	@Override
@@ -274,12 +276,7 @@ public class EMailMechanism implements IMFAMechanism {
 	 * @param reg
 	 */
 	private void saveRegistration(MMFARegistration reg) {
-		try {
-			PO.setCrossTenantSafe();
-			reg.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		reg.saveCrossTenantSafeEx();
 	}
 
 }

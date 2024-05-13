@@ -16,9 +16,8 @@ package org.adempiere.model;
 import java.math.BigDecimal;
 
 /**
- * 
+ * Shipping package value object
  * @author Elaine
- *
  */
 public class ShippingPackage 
 {
@@ -28,42 +27,76 @@ public class ShippingPackage
 	private BigDecimal width;
 	private String description;
 	
+	/**
+	 * @return package weight
+	 */
 	public BigDecimal getWeight() {
 		return weight;
 	}
 	
+	/**
+	 * Set package weight
+	 * @param weight
+	 */
 	public void setWeight(BigDecimal weight) {
 		this.weight = weight;
 	}
 	
+	/**
+	 * @return package height
+	 */
 	public BigDecimal getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Set package height
+	 * @param height
+	 */
 	public void setHeight(BigDecimal height) {
 		this.height = height;
 	}
 	
+	/**
+	 * @return package length
+	 */
 	public BigDecimal getLength() {
 		return length;
 	}
 	
+	/**
+	 * Set package length
+	 * @param length
+	 */
 	public void setLength(BigDecimal length) {
 		this.length = length;
 	}
 	
+	/**
+	 * @return package width
+	 */
 	public BigDecimal getWidth() {
 		return width;
 	}
 	
+	/**
+	 * Set package width
+	 * @param width
+	 */
 	public void setWidth(BigDecimal width) {
 		this.width = width;
 	}
 	
+	/**
+	 * @return description
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * @param description
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}

@@ -22,8 +22,8 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.fa.exceptions.AssetAlreadyDepreciatedException;
-
 
 /**
  *  Asset Transfer Model
@@ -34,36 +34,65 @@ public class MAssetTransfer extends X_A_Asset_Transfer
 implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2997284714883099922L;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
     
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Transfer_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetTransfer(Properties ctx, String A_Asset_Transfer_UU, String trxName) {
+        super(ctx, A_Asset_Transfer_UU, trxName);
+		if (Util.isEmpty(A_Asset_Transfer_UU))
+			setInitialDefaults();
+    }
+
+    /**
+     * @param ctx
+     * @param X_A_Asset_Transfer_ID
+     * @param trxName
+     */
 	public MAssetTransfer (Properties ctx, int X_A_Asset_Transfer_ID, String trxName)
     {
 		super (ctx,X_A_Asset_Transfer_ID, trxName);
 		if (X_A_Asset_Transfer_ID == 0)
-		{
-		    setDocStatus(DOCSTATUS_Drafted);
-			setDocAction(DOCACTION_Complete);
-			setProcessed(false);
-		}
-		
+			setInitialDefaults();
 	}
-	
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+	    setDocStatus(DOCSTATUS_Drafted);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
+	}
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MAssetTransfer (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
 	}
 	
-	
+	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
 		setC_Period_ID();
 		return true;
 	}
 	
+	/**
+	 * Set C_Period_ID value from DateAcct
+	 */
 	public void setC_Period_ID() 
 	{
 		MPeriod period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), get_TrxName());
@@ -74,52 +103,61 @@ implements DocAction
 		setC_Period_ID(period.get_ID());
 	}
 
-	
+	@Override
 	public boolean approveIt() {
 		return false;
 	}
 	
+	@Override
 	public boolean closeIt() {
 		setDocAction(DOCACTION_None);
 		return true;
 	}
 	
+	@Override
 	public File createPDF() {
 		return null;
 	}
 	
+	@Override
 	public BigDecimal getApprovalAmt() {
 		return Env.ZERO;
 	}
 	
+	@Override
 	public int getC_Currency_ID() {
 		return 0;
 	}
 	
+	@Override
 	public int getDoc_User_ID() {
 		return getCreatedBy();
 	}
 	
+	@Override
 	public String getDocumentInfo() {
 		return getDocumentNo() + "/" + getDateAcct();
 	}
 	
+	@Override
 	public String getProcessMsg() {
 		return m_processMsg;
 	}
 	private String m_processMsg = null;
 	
-	
+	@Override
 	public String getSummary() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("@DocumentNo@ #").append(getDocumentNo());
 		return sb.toString();
 	}
 	
+	@Override
 	public boolean invalidateIt() {
 		return false;
 	}
 	
+	@Override
 	public String prepareIt()
 	{
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
@@ -179,7 +217,7 @@ implements DocAction
 		return DocAction.STATUS_InProgress;
 	}
 	
-	
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -221,38 +259,44 @@ implements DocAction
 		return DocAction.STATUS_Completed;
 	}
 	
-	
+	@Override
 	public boolean processIt(String action) throws Exception {
 		m_processMsg = null;
 		DocumentEngine engine = new DocumentEngine (this, getDocStatus());
 		return engine.processIt (action, getDocAction());
 	}
 	
+	@Override
 	public boolean reActivateIt() {
 		return false;
 	}
 	
+	@Override
 	public boolean rejectIt() {
 		return false;
 	}
 	
+	@Override
 	public boolean reverseAccrualIt() {
 		return false;
 	}
 	
+	@Override
 	public boolean reverseCorrectIt() {
 		return false;
 	}
 	
+	@Override
 	public boolean unlockIt() {
 		return false;
 	}
 	
+	@Override
 	public boolean voidIt() {
 		return false;
 	}
 
-	
+	@Override
 	public String getDocumentNo() {
 		// TODO Auto-generated method stub
 		return null;

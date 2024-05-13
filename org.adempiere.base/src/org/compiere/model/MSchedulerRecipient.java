@@ -31,9 +31,19 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4928359768598663557L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_SchedulerRecipient_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSchedulerRecipient(Properties ctx, String AD_SchedulerRecipient_UU, String trxName) {
+        super(ctx, AD_SchedulerRecipient_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -41,8 +51,7 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements Immu
 	 *	@param AD_SchedulerRecipient_ID id
 	 *	@param trxName transaction
 	 */	
-	public MSchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID,
-		String trxName)
+	public MSchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
 	{
 		super (ctx, AD_SchedulerRecipient_ID, trxName);
 	}	//	MSchedulerRecipient
@@ -59,7 +68,7 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements Immu
 	}	//	MSchedulerRecipient
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MSchedulerRecipient(MSchedulerRecipient copy) 
@@ -68,7 +77,7 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements Immu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -78,7 +87,7 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements Immu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

@@ -20,15 +20,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Any exception that occurs inside the Adempiere core
+ * Runtime exception that occurs inside iDempiere core
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
 public class AdempiereException extends RuntimeException {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2340179640558569534L;
-
 
 	/**
 	 * Default Constructor (saved logger error will be used as message)
@@ -37,7 +36,6 @@ public class AdempiereException extends RuntimeException {
 		this(getMessageFromLogger());
 	}
 	
-
 	/**
 	 * @param message
 	 */
@@ -67,10 +65,13 @@ public class AdempiereException extends RuntimeException {
 		return msg;
 	}
 	
+	/**
+	 * Get environment context
+	 * @return context
+	 */
 	protected Properties getCtx() {
 		return Env.getCtx();
 	}
-
 
 	/**
 	 * @return error message from logger

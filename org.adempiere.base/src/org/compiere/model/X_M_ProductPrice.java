@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPrice
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductPrice")
-public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persistent 
+public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ProductPrice (Properties ctx, String M_ProductPrice_UU, String trxName)
+    {
+      super (ctx, M_ProductPrice_UU, trxName);
+      /** if (M_ProductPrice_UU == null)
+        {
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setPriceStd (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductPrice (Properties ctx, String M_ProductPrice_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductPrice_UU, trxName, virtualColumns);
+      /** if (M_ProductPrice_UU == null)
+        {
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setPriceStd (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ProductPrice (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

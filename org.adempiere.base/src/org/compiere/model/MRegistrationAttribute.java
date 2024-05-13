@@ -33,7 +33,9 @@ import org.idempiere.cache.ImmutablePOSupport;
  *	
  *  @author Jorg Janke
  *  @version $Id: MRegistrationAttribute.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 public class MRegistrationAttribute extends X_A_RegistrationAttribute implements ImmutablePOSupport
 {
 	/**
@@ -43,7 +45,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute implements
 
 	/**
 	 * 	Get All Asset Registration Attributes (not cached).
-	 * 	Refreshes Cache for direct addess
+	 * 	Refreshes Cache for direct address
 	 *	@param ctx context
 	 *	@return array of Registration Attributes
 	 */
@@ -151,6 +153,16 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute implements
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MRegistrationAttribute> s_cache 
 		= new ImmutableIntPOCache<Integer,MRegistrationAttribute>(Table_Name, 20);
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_RegistrationAttribute_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRegistrationAttribute(Properties ctx, String A_RegistrationAttribute_UU, String trxName) {
+        super(ctx, A_RegistrationAttribute_UU, trxName);
+    }
 
 	/**************************************************************************
 	 * 	Standard Constructor

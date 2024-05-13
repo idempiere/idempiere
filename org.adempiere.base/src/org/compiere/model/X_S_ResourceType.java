@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceType")
-public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persistent 
+public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_ResourceType (Properties ctx, int S_ResourceType_ID, String trxName)
@@ -98,6 +98,70 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_ResourceType (Properties ctx, String S_ResourceType_UU, String trxName)
+    {
+      super (ctx, S_ResourceType_UU, trxName);
+      /** if (S_ResourceType_UU == null)
+        {
+			setAllowUoMFractions (false);
+// N
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsDateSlot (false);
+			setIsSingleAssignment (false);
+			setIsTimeSlot (false);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setOnFriday (true);
+// Y
+			setOnMonday (true);
+// Y
+			setOnSaturday (false);
+			setOnSunday (false);
+			setOnThursday (true);
+// Y
+			setOnTuesday (true);
+// Y
+			setOnWednesday (true);
+// Y
+			setS_ResourceType_ID (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceType (Properties ctx, String S_ResourceType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceType_UU, trxName, virtualColumns);
+      /** if (S_ResourceType_UU == null)
+        {
+			setAllowUoMFractions (false);
+// N
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsDateSlot (false);
+			setIsSingleAssignment (false);
+			setIsTimeSlot (false);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setOnFriday (true);
+// Y
+			setOnMonday (true);
+// Y
+			setOnSaturday (false);
+			setOnSunday (false);
+			setOnThursday (true);
+// Y
+			setOnTuesday (true);
+// Y
+			setOnWednesday (true);
+// Y
+			setS_ResourceType_ID (0);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_ResourceType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -105,7 +169,7 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -140,10 +204,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isAllowUoMFractions()
 	{
 		Object oo = get_Value(COLUMNNAME_AllowUoMFractions);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -253,10 +317,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isDateSlot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDateSlot);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -276,10 +340,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isSingleAssignment()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSingleAssignment);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -299,10 +363,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isTimeSlot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTimeSlot);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -355,7 +419,7 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -374,10 +438,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnFriday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnFriday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -397,10 +461,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnMonday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnMonday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -420,10 +484,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnSaturday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnSaturday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -443,10 +507,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnSunday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnSunday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -466,10 +530,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnThursday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnThursday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -489,10 +553,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnTuesday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnTuesday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -512,10 +576,10 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	public boolean isOnWednesday()
 	{
 		Object oo = get_Value(COLUMNNAME_OnWednesday);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

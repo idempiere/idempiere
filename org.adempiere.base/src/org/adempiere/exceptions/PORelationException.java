@@ -15,12 +15,13 @@ package org.adempiere.exceptions;
 
 import java.util.logging.Level;
 
+import org.adempiere.model.MRelationType;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Exception related to invalid {@link MRelationType} configuration.
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
  */
@@ -54,10 +55,15 @@ public class PORelationException extends AdempiereException {
 	public final Object[] msgParams;
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -906400765022362887L;
 
+	/**
+	 * @param msg
+	 * @param adMsg
+	 * @param msgParams
+	 */
 	private PORelationException(final String msg, final String adMsg,
 			final Object... msgParams) {
 
@@ -67,6 +73,10 @@ public class PORelationException extends AdempiereException {
 		this.msgParams = msgParams;
 	}
 
+	/**
+	 * Throw wrong number of key column count exception 
+	 * @param po
+	 */
 	public static void throwWrongKeyColumnCount(final PO po) {
 
 		if (logger.isLoggable(Level.FINE)) logger.fine("Invoked with po " + po);
@@ -88,6 +98,13 @@ public class PORelationException extends AdempiereException {
 				msgParams);
 	}
 
+	/**
+	 * throw missing AD_Window_ID exception 
+	 * @param po
+	 * @param referenceName
+	 * @param tableName
+	 * @param isSOTrx
+	 */
 	public static void throwMissingWindowId(final PO po,
 			final String referenceName, final String tableName,
 			final boolean isSOTrx) {

@@ -23,7 +23,9 @@ import java.math.BigDecimal;
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: Measure.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
+ *  @deprecated Half build and not use in current code
  */
+@Deprecated
 public interface Measure
 {
 	/**

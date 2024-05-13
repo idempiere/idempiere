@@ -173,7 +173,7 @@ public class PoFiller{
 	 *
 	 * @param qName
 	 */
-	public int setTableReference(String qName) {
+	public Object setTableReference(String qName) {
 		Element e = element.properties.get(qName);
 		if (e == null)
 			return 0;
@@ -181,20 +181,35 @@ public class PoFiller{
 		String value = e.contents.toString();
 		String columnName = qName;
 		if (value != null && value.trim().length() > 0) {
-			int id = ReferenceUtils.resolveReference(ctx.ctx, e, po.get_TrxName());
-			if (columnName.equals("AD_Client_ID") && id > 0) {
-				if (id != Env.getAD_Client_ID(ctx.ctx)) {
-					return -1;
-				}
-			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
 				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName, po.get_TrxName());
+				if (col == null) {
+					POInfo poInfo = POInfo.getPOInfo(ctx.ctx, po.get_Table_ID(), po.get_TrxName());
+					col = new MColumn(ctx.ctx, poInfo.getAD_Column_ID(columnName), po.get_TrxName());
+					if (col.get_ID() == 0)
+						return -1;
+				}
+				boolean isMulti = DisplayType.isMultiID(col.getAD_Reference_ID());
+				Object id;
+				if (isMulti)
+					id = ReferenceUtils.resolveReferenceMulti(ctx.ctx, e, po.get_TrxName());
+				else
+					id = ReferenceUtils.resolveReference(ctx.ctx, e, po.get_TrxName());
+				if (columnName.equals("AD_Client_ID") && ((Number)id).intValue() > 0) {
+					if (((Number)id).intValue() != Env.getAD_Client_ID(ctx.ctx)) {
+						return -1;
+					}
+				}
 				MTable foreignTable = null;
-				String refTableName = col.getReferenceTableName();
+				String refTableName;
+				if (isMulti)
+					refTableName = col.getMultiReferenceTableName();
+				else
+					refTableName = col.getReferenceTableName();
 				if (refTableName != null) {
 					foreignTable = MTable.get(Env.getCtx(), refTableName, po.get_TrxName());
 				} else {
-					if ("Record_ID".equalsIgnoreCase(columnName)) {
+					if ("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) {
 						// special case - get the foreign table using AD_Table_ID
 						int tableID = 0;
 						try {
@@ -214,31 +229,30 @@ public class PoFiller{
 						}
 					}
 				}
-				if (id > 0 && refTableName != null) {
+				if (id != null && refTableName != null) {
 					if (foreignTable != null) {
-						/* Allow to read here from another tenant, cross tenant control is implemented later in a safe way */
-						PO subPo = null;
-		    			try {
-		    				PO.setCrossTenantSafe();
-		    				subPo = foreignTable.getPO(id, po.get_TrxName());
-		    			} finally {
-		    				PO.clearCrossTenantSafe();
-		    			}
-						if (subPo != null && subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
-							String accessLevel = foreignTable.getAccessLevel();
-							if ((MTable.ACCESSLEVEL_All.equals(accessLevel)
-									|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
-									|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) && 
-									subPo.getAD_Client_ID() != 0)
+						if (isMulti) {
+							for (String idstring : id.toString().split(",")) {
+								if (!isValidTenant(foreignTable, idstring, isMulti))
+									return -1;
+							}
+						} else {
+							if (!isValidTenant(foreignTable, id, isMulti))
 								return -1;
 						}
 					}
 
-					if (po.get_ValueAsInt(columnName) != id) {
-						po.set_ValueNoCheck(columnName, id);
-					}
+    				if (id instanceof String) {
+    					if (!((String)id).equals(po.get_ValueAsString(columnName))) {
+    						po.set_ValueNoCheck(columnName, id);
+    					}
+    				} else {
+    					if (po.get_ValueAsInt(columnName) != ((Number)id).intValue()) {
+    						po.set_ValueNoCheck(columnName, id);
+    					}
+    				}
 					return id;
-				} else if (id == 0) {
+				} else if (id instanceof Number && ((Number)id).intValue() == 0) {
 					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
 						po.set_ValueNoCheck(columnName, id);
 						return id;
@@ -252,6 +266,38 @@ public class PoFiller{
 			po.set_ValueNoCheck(columnName, null);
 			return 0;
 		}
+	}
+
+	private boolean isValidTenant(MTable foreignTable, Object id, boolean isMulti) {
+		/* Allow to read here from another tenant, cross tenant control is implemented later in a safe way */
+		PO subPo = null;
+		try {
+			PO.setCrossTenantSafe();
+			if (id instanceof String) {
+				if (isMulti) {
+					subPo = foreignTable.getPO(Integer.valueOf(id.toString()), po.get_TrxName());
+				} else {
+					subPo = foreignTable.getPOByUU((String)id, po.get_TrxName());
+				}
+			} else {
+				if (((Number)id).intValue() == 0 && MTable.isZeroIDTable(foreignTable.getTableName()))
+					return true;
+				subPo = foreignTable.getPO(((Number)id).intValue(), po.get_TrxName());
+			}
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+		if (subPo != null && subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
+			String accessLevel = foreignTable.getAccessLevel();
+			if ((MTable.ACCESSLEVEL_All.equals(accessLevel)
+					|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+					|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) && 
+					subPo.getAD_Client_ID() != 0)
+				return false;
+		}
+		if (subPo.is_new())
+			return false;
+		return true;
 	}
 
 	/**
@@ -283,7 +329,7 @@ public class PoFiller{
 			} else if (sAD_Org_ID != null && sAD_Org_ID.equals("@AD_Org_ID@")) {
 				po.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx));
 			} else {
-				if (setTableReference("AD_Client_ID") >= 0)
+				if (((Number)setTableReference("AD_Client_ID")).intValue() >= 0)
 					setTableReference("AD_Org_ID");
 			}
 		}
@@ -304,8 +350,8 @@ public class PoFiller{
 			}
 			Element e = element.properties.get(qName);
 			if (ReferenceUtils.isLookup(e)) {
-				int id = setTableReference(qName);
-				if (id < 0) {
+				Object id = setTableReference(qName);
+				if (id == null || (id instanceof Number && ((Number)id).intValue() < 0)) {
 					notFounds.add(qName);
 				}
 			} else {

@@ -33,16 +33,16 @@ import org.compiere.util.Util;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event handle for process related event.<br/>
+ * Developers usually don't have to use this class directly; instead, the recommended approach is 
+ * to subclass {@link ProcessEventDelegate} and use process event topic annotations. 
  * @author hengsin
- *
  */
 public class ProcessEventHandler extends BaseEventHandler {
 
 	private Function<Event, ? extends ProcessEventDelegate> supplier;
 	
 	/**
-	 * 
 	 * @param delegateClass
 	 * @param processUUID filter by process uuid (null for all process)
 	 * @param supplier

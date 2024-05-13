@@ -42,6 +42,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.GridField;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
@@ -55,17 +56,24 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 
 /**
+ * Default editor for {@link DisplayType#TimeZoneId}.<br/>
+ * Implemented with {@link Combobox} component.
  * @author hengsin
  *
  */
 public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 	
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE};
+	/** Time zone context menu name/id */
 	private static final String TIME_ZONE = "TIME_ZONE";
+	/** Context popup menu attribute to indicate time zone context menu items have been added */
 	private static final String TIME_ZONE_ADDED = "TIME_ZONE_ADDED";
+	/** Context menu attribute to indicate this is a context menu item */
 	private static final String TIME_ZONE_ITEM_ATTR = "TIME_ZONE_ITEM";
+	/** Context menu attribute to store time zone id */
 	private static final String TIME_ZONE_ID_ATTR = "TIME_ZONE_ID";
 		
+	/** Time zone id */
 	private String oldValue;
 	
 	/**
@@ -77,7 +85,7 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 
 	/**
 	 * @param gridField
-	 * @param rowIndex
+	 * @param tableEditor
 	 */
 	public WTimeZoneEditor(GridField gridField, boolean tableEditor) {
 		super(new Combobox(), gridField);
@@ -114,6 +122,9 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		init();
 	}
 
+	/**
+	 * Init component and context menu
+	 */
 	private void init() {
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
@@ -150,6 +161,9 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		getComponent().addEventListener(Events.ON_BLUR, e -> onBlur());
 	}
 	
+	/**
+	 * Handle onBlur event of component
+	 */
 	private void onBlur() {
 		Comboitem item = getComponent().getSelectedItem();
 		if (item == null) 
@@ -178,6 +192,10 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		}
 	}
 
+	/**
+	 * @param newValue
+	 * @return true if newValue is different from {@link #oldValue}
+	 */
 	private boolean isValueChange(String newValue) {
 		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null) 
 			|| ((oldValue != null && newValue != null) && !oldValue.equals(newValue));
@@ -214,6 +232,11 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		}
 	}
 
+	/**
+	 * Process customId enter by user
+	 * @param customId
+	 * @return true if customId is valid and added to Combobox
+	 */
 	private boolean processCustomZoneId(String customId) {
     	TimeZone timeZone = TimeZone.getTimeZone(customId);
     	if (timeZone != null && timeZone.getID().equals(customId)) {
@@ -327,6 +350,10 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		
 	}
 
+	/**
+	 * Process time zone id from time zone context menu
+	 * @param id
+	 */
 	private void setTimeZoneFromContextMenu(String id) {
 		String newValue = id;
 		String currentValue = oldValue;
@@ -349,14 +376,17 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
     }
 	
 	/**
+	 * Add time zone menu item to context menu popup
 	 * @param popupMenu
 	 */
     private void addTimeZoneMenu(WEditorPopupMenu popupMenu) {
 		if (popupMenu != null && isReadWrite() && popupMenu.getAttribute(TIME_ZONE_ADDED) == null) {
+			//time zone id from browser
 			ClientInfo clientInfo = SessionManager.getAppDesktop().getClientInfo();
 			if (clientInfo != null && clientInfo.timeZone != null) {
 				TimeZone firstSameRule = null;
 				TimeZone found = null;
+				//match by id, fallback to first with same rawOffset+DSTSavings+useDayLightTime
 				for(int i = 0; i < getComponent().getItemCount(); i++) {
 					String id = getComponent().getItemAtIndex(i).getValue();
 					TimeZone tz = TimeZone.getTimeZone(id);
@@ -385,6 +415,7 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 				if (popupMenu.getAttribute(TIME_ZONE_ADDED) == null) {
 					List<String> labels = new ArrayList<String>();
 					List<String> ids = new ArrayList<String>();
+					//match by rawOffset
 					for(int i = 0; i < getComponent().getItemCount(); i++) {
 						String id = getComponent().getItemAtIndex(i).getValue();
 						tz = TimeZone.getTimeZone(id);

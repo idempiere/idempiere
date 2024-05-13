@@ -172,6 +172,58 @@ public class AllocationTest extends AbstractTestCase {
 	}
 
 	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5723
+	 */
+	public void testAllocateInvoiceArAp() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
+		
+		Timestamp date = TimeUtil.getDay(null);
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		
+		int payterm = DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id; //(2%10 Net 30)
+		int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
+
+		MInvoice invoiceAr = createInvoice(true, false, date,  date,
+				bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
+		assertEquals(invoiceAr.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+		assertEquals(invoiceAr.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
+
+		completeDocument(invoiceAr);
+		postDocument(invoiceAr);
+		
+		MInvoice invoiceAp = createInvoice(false, false, date,  date,
+				bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
+		
+		completeDocument(invoiceAp);
+		postDocument(invoiceAp);
+		
+		
+		MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date, usd.getC_Currency_ID(), Env.getContext(Env.getCtx(), "#AD_User_Name"), getTrxName());
+		alloc.setAD_Org_ID(invoiceAr.getAD_Org_ID());
+		int doctypeAlloc = MDocType.getDocType(MDocType.DOCBASETYPE_PaymentAllocation);
+		alloc.setC_DocType_ID(doctypeAlloc);
+		//alloc.setDescription(alloc.getDescriptionForManualAllocation(payment.getC_BPartner_ID(), getTrxName()));
+		alloc.saveEx();
+
+		MAllocationLine aLine1 = new MAllocationLine(alloc, invoiceAp.getOpenAmt(), Env.ZERO, Env.ZERO, Env.ZERO);
+		aLine1.setDocInfo(invoiceAp.getC_BPartner_ID(), 0, invoiceAp.getC_Invoice_ID());
+		aLine1.saveEx();
+		
+		MAllocationLine aLine2 = new MAllocationLine(alloc, invoiceAr.getOpenAmt(), Env.ZERO, Env.ZERO, Env.ZERO);
+		aLine2.setDocInfo(invoiceAr.getC_BPartner_ID(), 0, invoiceAr.getC_Invoice_ID());
+		aLine2.saveEx();
+
+		completeDocument(alloc);
+		postDocument(alloc);
+		
+		alloc.load(getTrxName());
+		
+		assertTrue(alloc.isPosted(), "Allocation not posted");
+		
+	}
+	
+	@Test
 	public void testAllocateCustomerInvoice() {
 		int severeCount = 0;
 		LogRecord[] errorLogs = CLogErrorBuffer.get(true).getRecords(true);

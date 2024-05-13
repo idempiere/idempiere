@@ -19,13 +19,13 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Throwed when desired document type was not found
+ * Throw when desired document type was not found
  * @author Teo Sarca, www.arhipac.ro
  */
 public class DocTypeNotFoundException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4218893853798807816L;
 	/** Doc Base Type */
@@ -41,6 +41,9 @@ public class DocTypeNotFoundException extends AdempiereException
 		m_docBaseType = docBaseType;
 	}
 	
+	/**
+	 * @return Document Base Type
+	 */
 	public String getDocBaseType()
 	{
 		return m_docBaseType;
@@ -58,7 +61,5 @@ public class DocTypeNotFoundException extends AdempiereException
 			sb.append(" (").append(additionalInfo).append(")");
 		}
 		return sb.toString();
-	}
-
-	
+	}	
 }

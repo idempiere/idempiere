@@ -54,9 +54,10 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript-module name="chosenbox" version="202205100600"/>
 	<javascript-module name="zkforge.keylistener" version="202012120100"/>
 	<javascript-module name="dragdrop.attachment" version="202207280400"/>
+	<javascript-module name="pdf.js" version="4.0.379"/>
 	
 	<!-- this js module doesn't actually exists and it is here for default theme version -->
 	<!-- since loading of  js module is on demand, it doesn't cause any error as long as you don't try to load it -->
-	<javascript-module name="idempiere.theme.default" version="202303211501" />
+	<javascript-module name="idempiere.theme.default" version="202402261244" />
 
 </language>

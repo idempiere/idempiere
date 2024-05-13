@@ -35,9 +35,19 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPriceListVersion extends X_M_PriceList_Version implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1625884461739604147L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_PriceList_Version_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPriceListVersion(Properties ctx, String M_PriceList_Version_UU, String trxName) {
+        super(ctx, M_PriceList_Version_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -73,7 +83,7 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	}	//	MPriceListVersion
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPriceListVersion(MPriceListVersion copy) 
@@ -82,7 +92,7 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -92,7 +102,7 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -162,7 +172,7 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	
 	/**
 	 * 	Set Name to Valid From Date.
-	 * 	If valid from not set, use today
+	 * 	If valid from not set, use today.
 	 */
 	public void setName()
 	{
@@ -181,6 +191,7 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		setName();

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ReportLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_ReportLine")
-public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent 
+public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_ReportLine (Properties ctx, int I_ReportLine_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_ReportLine (Properties ctx, String I_ReportLine_UU, String trxName)
+    {
+      super (ctx, I_ReportLine_UU, trxName);
+      /** if (I_ReportLine_UU == null)
+        {
+			setI_IsImported (false);
+			setI_ReportLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_ReportLine (Properties ctx, String I_ReportLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_ReportLine_UU, trxName, virtualColumns);
+      /** if (I_ReportLine_UU == null)
+        {
+			setI_IsImported (false);
+			setI_ReportLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_ReportLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -199,10 +221,10 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -259,10 +281,10 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -282,10 +304,10 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -334,7 +356,7 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -522,10 +544,10 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -544,10 +566,10 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

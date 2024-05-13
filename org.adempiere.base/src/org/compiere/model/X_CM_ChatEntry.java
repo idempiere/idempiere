@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatEntry
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatEntry")
-public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent 
+public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_CM_ChatEntry (Properties ctx, int CM_ChatEntry_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_CM_ChatEntry (Properties ctx, String CM_ChatEntry_UU, String trxName)
+    {
+      super (ctx, CM_ChatEntry_UU, trxName);
+      /** if (CM_ChatEntry_UU == null)
+        {
+			setCharacterData (null);
+			setChatEntryType (null);
+// N
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
+			setConfidentialType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatEntry (Properties ctx, String CM_ChatEntry_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatEntry_UU, trxName, virtualColumns);
+      /** if (CM_ChatEntry_UU == null)
+        {
+			setCharacterData (null);
+			setChatEntryType (null);
+// N
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
+			setConfidentialType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_CM_ChatEntry (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -213,7 +243,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getCM_ChatEntry_ID()));
     }

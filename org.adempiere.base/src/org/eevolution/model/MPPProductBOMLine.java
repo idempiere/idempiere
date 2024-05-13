@@ -88,6 +88,16 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		return retValue;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PP_Product_BOMLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPPProductBOMLine(Properties ctx, String PP_Product_BOMLine_UU, String trxName) {
+        super(ctx, PP_Product_BOMLine_UU, trxName);
+    }
+
 	/**
 	 *  Default Constructor
 	 *  @param ctx context

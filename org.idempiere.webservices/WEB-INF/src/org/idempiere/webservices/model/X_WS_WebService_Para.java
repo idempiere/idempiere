@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for WS_WebService_Para
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebService_Para")
-public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_Persistent 
+public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebService_Para (Properties ctx, String WS_WebService_Para_UU, String trxName)
+    {
+      super (ctx, WS_WebService_Para_UU, trxName);
+      /** if (WS_WebService_Para_UU == null)
+        {
+			setParameterType (null);
+			setWS_WebService_Para_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebService_Para (Properties ctx, String WS_WebService_Para_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebService_Para_UU, trxName, virtualColumns);
+      /** if (WS_WebService_Para_UU == null)
+        {
+			setParameterType (null);
+			setWS_WebService_Para_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebService_Para (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

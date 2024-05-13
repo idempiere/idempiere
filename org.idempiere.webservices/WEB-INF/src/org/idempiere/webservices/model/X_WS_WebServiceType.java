@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceType")
-public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent 
+public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebServiceType (Properties ctx, String WS_WebServiceType_UU, String trxName)
+    {
+      super (ctx, WS_WebServiceType_UU, trxName);
+      /** if (WS_WebServiceType_UU == null)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebService_ID (0);
+			setWS_WebServiceMethod_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceType (Properties ctx, String WS_WebServiceType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceType_UU, trxName, virtualColumns);
+      /** if (WS_WebServiceType_UU == null)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebService_ID (0);
+			setWS_WebServiceMethod_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebServiceType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -184,7 +212,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

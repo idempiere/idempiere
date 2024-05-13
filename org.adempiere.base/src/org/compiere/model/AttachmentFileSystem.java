@@ -44,18 +44,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * File system backed implementation of {@link IAttachmentStore}
  * @author juliana
- *
  */
 public class AttachmentFileSystem implements IAttachmentStore {
 
-	// TODO: Implement FileSystemFallbackDB
-
 	private final CLogger log = CLogger.getCLogger(getClass());
 	
-	/**
-	 *
-	 */
 	@Override
 	public boolean save(MAttachment attach,MStorageProvider prov) {
 		String attachmentPathRoot = getAttachmentPathRoot(prov);
@@ -216,7 +211,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 			if(filePath!=null){
 				filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
-				//just to be shure...
+				//just to be sure...
 				String replaceSeparator = File.separator;
 				if(!replaceSeparator.equals("/")){
 					replaceSeparator = "\\\\";
@@ -243,7 +238,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 	/**
 	 * Get the entries from the XML
 	 * @param data
-	 * @return
+	 * @return xml node list
 	 */
 	private NodeList getEntriesFromXML(byte[] data) {
 		NodeList entries = null;
@@ -276,13 +271,17 @@ public class AttachmentFileSystem implements IAttachmentStore {
 
 	/**
 	 * Returns a path snippet, containing client, org, table and record id.
-	 * @return String
+	 * @return path snippet
 	 */
 	private String getAttachmentPathSnippet(MAttachment attach){
 		
 		StringBuilder msgreturn = new StringBuilder().append(attach.getAD_Client_ID()).append(File.separator)
 				.append(attach.getAD_Org_ID()).append(File.separator)
-				.append(attach.getAD_Table_ID()).append(File.separator).append(attach.getRecord_ID());
+				.append(attach.getAD_Table_ID()).append(File.separator);
+		if (attach.getRecord_ID() > 0)
+			msgreturn.append(attach.getRecord_ID());
+		else
+			msgreturn.append(attach.getRecord_UU());
 		return msgreturn.toString();
 	}
 
@@ -322,6 +321,10 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		return true;
 	}
 
+	/**
+	 * @param prov
+	 * @return root path
+	 */
 	private String getAttachmentPathRoot(MStorageProvider prov) {
 		String attachmentPathRoot = prov.getFolder();
 		if (attachmentPathRoot == null)

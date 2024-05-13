@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_BudgetControl
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_BudgetControl")
-public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Persistent 
+public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName)
@@ -67,6 +67,40 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_BudgetControl (Properties ctx, String GL_BudgetControl_UU, String trxName)
+    {
+      super (ctx, GL_BudgetControl_UU, trxName);
+      /** if (GL_BudgetControl_UU == null)
+        {
+			setBudgetControlScope (null);
+			setC_AcctSchema_ID (0);
+			setCommitmentType (null);
+// C
+			setGL_BudgetControl_ID (0);
+			setGL_Budget_ID (0);
+			setIsBeforeApproval (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_BudgetControl (Properties ctx, String GL_BudgetControl_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_BudgetControl_UU, trxName, virtualColumns);
+      /** if (GL_BudgetControl_UU == null)
+        {
+			setBudgetControlScope (null);
+			setC_AcctSchema_ID (0);
+			setCommitmentType (null);
+// C
+			setGL_BudgetControl_ID (0);
+			setGL_Budget_ID (0);
+			setIsBeforeApproval (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_BudgetControl (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +108,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -290,10 +324,10 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	public boolean isBeforeApproval()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBeforeApproval);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -318,7 +352,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

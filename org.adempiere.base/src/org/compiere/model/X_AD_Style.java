@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Style
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Style")
-public class X_AD_Style extends PO implements I_AD_Style, I_Persistent 
+public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Style (Properties ctx, int AD_Style_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 			setAD_Style_UU (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsWrapWithSpan (false);
+// N
 			setName (null);
         } */
     }
@@ -56,6 +58,40 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 			setAD_Style_UU (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsWrapWithSpan (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Style (Properties ctx, String AD_Style_UU, String trxName)
+    {
+      super (ctx, AD_Style_UU, trxName);
+      /** if (AD_Style_UU == null)
+        {
+			setAD_Style_ID (0);
+			setAD_Style_UU (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsWrapWithSpan (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Style (Properties ctx, String AD_Style_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Style_UU, trxName, virtualColumns);
+      /** if (AD_Style_UU == null)
+        {
+			setAD_Style_ID (0);
+			setAD_Style_UU (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsWrapWithSpan (false);
+// N
 			setName (null);
         } */
     }
@@ -67,7 +103,7 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -159,6 +195,29 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+
+	/** Set Wrap With Span.
+		@param IsWrapWithSpan Wrap content in Span and apply the Style to it.
+	*/
+	public void setIsWrapWithSpan (boolean IsWrapWithSpan)
+	{
+		set_Value (COLUMNNAME_IsWrapWithSpan, Boolean.valueOf(IsWrapWithSpan));
+	}
+
+	/** Get Wrap With Span.
+		@return Wrap content in Span and apply the Style to it.
+	  */
+	public boolean isWrapWithSpan()
+	{
+		Object oo = get_Value(COLUMNNAME_IsWrapWithSpan);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

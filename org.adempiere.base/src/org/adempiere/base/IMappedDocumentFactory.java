@@ -31,7 +31,7 @@ import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
 
 /**
- * 
+ * Factory interface for mapping between tableName+gaap to {@link Doc} implementation.
  * @author hengsin
  *
  */
@@ -46,16 +46,14 @@ public interface IMappedDocumentFactory {
 	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends Doc> supplier);
 
 	/**
-	 * 
+	 * Remove mapping
 	 * @param gaap
 	 * @param tableName
 	 */
 	public void removeMapping(String gaap, String tableName);
 
 	/**
-	 * 
-	 * parameter class for doc supplier
-	 *
+	 * Parameter class for doc supplier
 	 */
 	public final static class Parameter {
 		public MAcctSchema as;

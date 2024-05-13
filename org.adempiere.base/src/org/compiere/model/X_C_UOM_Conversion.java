@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM_Conversion
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_UOM_Conversion")
-public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Persistent 
+public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_UOM_Conversion (Properties ctx, int C_UOM_Conversion_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_UOM_Conversion (Properties ctx, String C_UOM_Conversion_UU, String trxName)
+    {
+      super (ctx, C_UOM_Conversion_UU, trxName);
+      /** if (C_UOM_Conversion_UU == null)
+        {
+			setC_UOM_Conversion_ID (0);
+			setC_UOM_ID (0);
+			setC_UOM_To_ID (0);
+			setDivideRate (Env.ZERO);
+			setMultiplyRate (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_UOM_Conversion (Properties ctx, String C_UOM_Conversion_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_UOM_Conversion_UU, trxName, virtualColumns);
+      /** if (C_UOM_Conversion_UU == null)
+        {
+			setC_UOM_Conversion_ID (0);
+			setC_UOM_ID (0);
+			setC_UOM_To_ID (0);
+			setDivideRate (Env.ZERO);
+			setMultiplyRate (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_UOM_Conversion (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -116,7 +144,7 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_UOM_Conversion_ID()));
     }

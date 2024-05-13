@@ -42,7 +42,7 @@ public class Element {
 	//parent element
 	public Element parent;
 	//resolved db recordid, store for reference by child element
-	public int recordId = 0;
+	public Object recordId = null;
 	//unresolved dependency
 	public String unresolved = "";
 	//number of pass

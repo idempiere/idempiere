@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Commission Run Amounts
@@ -32,9 +33,21 @@ import org.compiere.util.Env;
 public class MCommissionAmt extends X_C_CommissionAmt
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1747802539808391638L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_CommissionAmt_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCommissionAmt(Properties ctx, String C_CommissionAmt_UU, String trxName) {
+        super(ctx, C_CommissionAmt_UU, trxName);
+		if (Util.isEmpty(C_CommissionAmt_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -46,12 +59,17 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	{
 		super(ctx, C_CommissionAmt_ID, trxName);
 		if (C_CommissionAmt_ID == 0)
-		{
-			setActualQty (Env.ZERO);
-			setCommissionAmt (Env.ZERO);
-			setConvertedAmt (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MCommissionAmt
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setActualQty (Env.ZERO);
+		setCommissionAmt (Env.ZERO);
+		setConvertedAmt (Env.ZERO);
+	}
 
 	/**
 	 * 	Parent Constructor
@@ -77,6 +95,12 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		super(ctx, rs, trxName);
 	}	//	MCommissionAmt
 
+	/**
+	 * @param ctx
+	 * @param C_CommissionAmt_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCommissionAmt(Properties ctx, int C_CommissionAmt_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_CommissionAmt_ID, trxName, virtualColumns);
 	}
@@ -131,14 +155,14 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		//
 		setCommissionAmt(amt.add(qty));
 	}	//	calculateCommission
-	
-	
+		
 	/**
 	 * 	After Save
 	 *	@param newRecord new
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -153,6 +177,7 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)
@@ -161,7 +186,7 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Amt Header
+	 * 	Update Header (MCommissionRun) amount
 	 */
 	private void updateRunHeader()
 	{

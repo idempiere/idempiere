@@ -27,7 +27,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
-
 /**
  *	LDAP Server Model
  *	
@@ -37,13 +36,13 @@ import org.compiere.util.Msg;
 public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProcessor
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1477519989047580644L;
 
 	/**
-	 * 	Get Active LDAP Server
-	 *	@return array of Servers
+	 * 	Get Active LDAP Processor
+	 *	@return array of processors
 	 */
 	public static MLdapProcessor[] getActive(Properties ctx)
 	{
@@ -75,7 +74,17 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	/**	Logger	*/
 	private static CLogger log = CLogger.getCLogger (MLdapProcessor.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_LdapProcessor_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLdapProcessor(Properties ctx, String AD_LdapProcessor_UU, String trxName) {
+        super(ctx, AD_LdapProcessor_UU, trxName);
+    }
+
+	/**
 	 * 	Ldap Processor
 	 *	@param ctx context
 	 *	@param AD_LdapProcessor_ID id
@@ -110,6 +119,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	 * 	Get Server ID
 	 *	@return id
 	 */
+	@Override
 	public String getServerID ()
 	{
 		return "Ldap" + get_ID();
@@ -174,8 +184,8 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	}	//	getLogs
 
 	/**
-	 * 	Delete old Request Log
-	 *	@return number of records
+	 * 	Delete old processor logs
+	 *	@return number of records deleted
 	 */
 	public int deleteLog()
 	{
@@ -199,7 +209,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 
 	/**
 	 * 	Get Frequency Type (n/a)
-	 *	@return minute
+	 *	@return FREQUENCYTYPE_Minute
 	 */
 	public String getFrequencyType()
 	{
@@ -210,6 +220,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MLdapProcessor[");
@@ -218,9 +229,8 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Authenticate and Authorize
 	 *  @param ldapUser MLdapUser object
 	 *	@param usr user name
@@ -477,8 +487,9 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	
 	/**
 	 * 	Find Interest Area
-	 *	@param interset Name client name
-	 *	@return AD_Client_ID
+	 *	@param AD_Client_ID
+	 *  @param interestArea
+	 *	@return R_InterestArea_ID
 	 */
 	private int findInterestArea (int AD_Client_ID, String interestArea)
 	{

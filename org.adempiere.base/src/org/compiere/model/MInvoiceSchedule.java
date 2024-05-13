@@ -29,7 +29,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Invoice Schedule Model
+ *	Invoicing Schedule Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MInvoiceSchedule.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2480759794244343907L;
 
@@ -86,9 +86,18 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePO
 
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MInvoiceSchedule>	s_cache	= new ImmutableIntPOCache<Integer,MInvoiceSchedule>(Table_Name, 5);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_InvoiceSchedule_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MInvoiceSchedule(Properties ctx, String C_InvoiceSchedule_UU, String trxName) {
+        super(ctx, C_InvoiceSchedule_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_InvoiceSchedule_ID id
@@ -110,8 +119,8 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePO
 		super(ctx, rs, trxName);
 	}	//	MInvoiceSchedule
 	
-	/**
-	 * 
+	/**constructor
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MInvoiceSchedule(MInvoiceSchedule copy) 
@@ -120,7 +129,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePO
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -130,7 +139,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePO
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

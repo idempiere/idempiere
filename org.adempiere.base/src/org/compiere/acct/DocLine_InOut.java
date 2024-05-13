@@ -28,6 +28,7 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.PO;
 
 /**
+ * DocLine for {@link MInOutLine}.
  * @author etantg
  */
 public class DocLine_InOut extends DocLine 

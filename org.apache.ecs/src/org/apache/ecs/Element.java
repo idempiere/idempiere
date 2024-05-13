@@ -85,7 +85,7 @@ public interface Element extends ElementRegistry
     public String getElementType();
 
     /**
-        Set wether or not this Element needs a closing tag
+        Set whether or not this Element needs a closing tag
     */
     public void setNeedClosingTag(boolean close_tag);
 
@@ -130,7 +130,7 @@ public interface Element extends ElementRegistry
     public char getEndTagChar();
 
     /*
-        Set a modifer for the start of the tag.
+        Set a modifier for the start of the tag.
     */
     public Element setBeginStartModifier(char start_modifier);
 
@@ -140,7 +140,7 @@ public interface Element extends ElementRegistry
     public char getBeginStartModifier();
 
     /**
-        Set a modifer for the end of the tag.
+        Set a modifier for the end of the tag.
     */
     public Element setBeginEndModifier(char start_modifier);
 
@@ -150,7 +150,7 @@ public interface Element extends ElementRegistry
     public char getBeginEndModifier();
 
     /*
-        Set a modifer for the start of the tag.
+        Set a modifier for the start of the tag.
     */
     public Element setEndStartModifier(char start_modifier);
 
@@ -160,7 +160,7 @@ public interface Element extends ElementRegistry
     public char getEndStartModifier();
 
     /**
-        Set a modifer for the end of the tag.
+        Set a modifier for the end of the tag.
     */
     public Element setEndEndModifier(char start_modifier);
 

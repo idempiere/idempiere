@@ -40,6 +40,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MProcessDrillRulePara;
@@ -370,7 +371,8 @@ public class DrillReportCtl {
 
 	/**
 	 * 	Launch Report
-	 * 	@param pf print format
+	 *  @param ad_PrintFormat_ID print format
+	 *  @param tableName
 	 */
 	public void launchTableDrillReport (int ad_PrintFormat_ID, String tableName)
 	{
@@ -474,7 +476,8 @@ public class DrillReportCtl {
 
 	/**
 	 * 	Fill Parameter
-	 *	@param pInstance process instance
+	 *  @param pi process info
+	 *  @param processDrillRule
 	 */
 	protected void fillParameter(ProcessInfo pi, MProcessDrillRule processDrillRule)
 	{
@@ -658,7 +661,7 @@ public class DrillReportCtl {
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
 			value = null;
-		else if (variable.startsWith("@SQL=")) {
+		else if (variable.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			String	defStr = "";
 			String sql = variable.substring(5);	//	w/o tag
 			//hengsin, capture unparseable error to avoid subsequent sql exception

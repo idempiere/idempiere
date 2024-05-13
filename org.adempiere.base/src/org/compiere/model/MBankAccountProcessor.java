@@ -35,13 +35,24 @@ import org.compiere.util.Msg;
 public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -9082774421123292838L;
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MBankAccountProcessor.class);
 	
+	/**
+	 * @param ctx
+	 * @param tender
+	 * @param CCType
+	 * @param AD_Client_ID
+	 * @param AD_Org_ID
+	 * @param C_Currency_ID
+	 * @param Amt
+	 * @param trxName
+	 * @return Array of Bank Account Payment Processor or null
+	 */
 	public static MBankAccountProcessor[] find (Properties ctx,
 			String tender, String CCType,
 			int AD_Client_ID, int AD_Org_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
@@ -58,7 +69,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 	 *  @param C_Currency_ID Currency (ignored)
 	 *  @param Amt Amount (ignored)
 	 *	@param trxName transaction
-	 *  @return Array of BankAccount[0] and PaymentProcessor[1] or null
+	 *  @return Array of Bank Account Payment Processor or null
 	 */
 	public static MBankAccountProcessor[] find (Properties ctx,
 		String tender, String CCType,
@@ -131,6 +142,13 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		return retValue;
 	}   //  find
 	
+	/**
+	 * @param ctx
+	 * @param C_BankAccount_ID
+	 * @param C_PaymentProcessor_ID
+	 * @param trxName
+	 * @return MBankAccountProcessor
+	 */
 	public static MBankAccountProcessor get(Properties ctx, int C_BankAccount_ID, int C_PaymentProcessor_ID, String trxName) 
 	{
 		final String whereClause = MBankAccountProcessor.COLUMNNAME_C_BankAccount_ID + "=? AND " + MBankAccountProcessor.COLUMNNAME_C_PaymentProcessor_ID + "=?";
@@ -140,6 +158,21 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		return retValue;
 	}
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BankAccount_Processor_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBankAccountProcessor(Properties ctx, String C_BankAccount_Processor_UU, String trxName) {
+        super(ctx, C_BankAccount_Processor_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param ignored
+     * @param trxName
+     */
 	public MBankAccountProcessor (Properties ctx, int ignored, String trxName)
 	{
 		super(ctx, 0, trxName);
@@ -147,11 +180,22 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 			throw new IllegalArgumentException("Multi-Key");
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MBankAccountProcessor (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param C_BankAccount_ID
+	 * @param C_PaymentProcessor_ID
+	 * @param trxName
+	 */
 	public MBankAccountProcessor (Properties ctx, int C_BankAccount_ID, int C_PaymentProcessor_ID, String trxName)
 	{
 		this (ctx, 0, trxName);
@@ -176,7 +220,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 	 * 	Does Payment Processor accepts tender / CC
 	 *	@param TenderType tender type
 	 *	@param CreditCardType credit card type
-	 *	@return true if acceptes
+	 *	@return true if accepted
 	 */
 	public boolean accepts (String TenderType, String CreditCardType)
 	{
@@ -216,6 +260,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		}
 	}	//	accepts
 	
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MBankAccountProcessor[")
@@ -225,36 +270,54 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		return sb.toString ();
 	}
 	
+	/**
+	 * @return payment processor host address
+	 */
 	public String getHostAddress() 
 	{
 		MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
 		return pp.getHostAddress();
 	}
 	
+	/**
+	 * @return payment processor host port
+	 */
 	public int getHostPort() 
 	{
 		MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
 		return pp.getHostPort();
 	}
 	
+	/**
+	 * @return payment processor proxy address
+	 */
 	public String getProxyAddress() 
 	{
 		MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
 		return pp.getProxyAddress();
 	}
 	
+	/**
+	 * @return payment processor proxy port
+	 */
 	public int getProxyPort()
 	{
 		MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
 		return pp.getProxyPort();
 	}
 	
+	/**
+	 * @return payment processor proxy login
+	 */
 	public String getProxyLogon()
 	{
 		MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
 		return pp.getProxyLogon();
 	}
 	
+	/**
+	 * @return payment processor proxy password
+	 */
 	public String getProxyPassword()
 	{
 		MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());

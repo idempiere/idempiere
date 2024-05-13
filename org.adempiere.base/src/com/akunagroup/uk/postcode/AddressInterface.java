@@ -30,7 +30,9 @@ package com.akunagroup.uk.postcode;
  * Interface for Address Lookup Web Service.
  * https://sourceforge.net/p/adempiere/feature-requests/137/
  * The Address Structure
+ * @deprecated
  */
+@Deprecated(forRemoval = true, since = "11")
 public interface AddressInterface
 {
 	public int size();

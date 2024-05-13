@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_UUID_Map
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_UUID_Map")
-public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, I_Persistent 
+public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, int AD_Package_UUID_Map_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Package_UUID_Map (Properties ctx, String AD_Package_UUID_Map_UU, String trxName)
+    {
+      super (ctx, AD_Package_UUID_Map_UU, trxName);
+      /** if (AD_Package_UUID_Map_UU == null)
+        {
+			setAD_Package_UUID_Map_ID (0);
+			setAD_Package_UUID_Map_UU (null);
+			setAD_Table_ID (0);
+			setSource_UUID (null);
+			setTarget_UUID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_UUID_Map (Properties ctx, String AD_Package_UUID_Map_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_UUID_Map_UU, trxName, virtualColumns);
+      /** if (AD_Package_UUID_Map_UU == null)
+        {
+			setAD_Package_UUID_Map_ID (0);
+			setAD_Package_UUID_Map_UU (null);
+			setAD_Table_ID (0);
+			setSource_UUID (null);
+			setTarget_UUID (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -173,7 +201,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getSource_UUID());
     }

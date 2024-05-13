@@ -23,7 +23,6 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Form Model
  *	
@@ -33,7 +32,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MForm extends X_AD_Form implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3617225890452735325L;
 	
@@ -71,6 +70,16 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 		return null;
 	}	//	get
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Form_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MForm(Properties ctx, String AD_Form_UU, String trxName) {
+        super(ctx, AD_Form_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -94,7 +103,7 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 	}	//	MForm
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -103,7 +112,7 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -120,6 +129,7 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_LabelCategory
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelCategory")
-public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Persistent 
+public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_LabelCategory (Properties ctx, int AD_LabelCategory_ID, String trxName)
@@ -52,6 +52,26 @@ public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_LabelCategory (Properties ctx, String AD_LabelCategory_UU, String trxName)
+    {
+      super (ctx, AD_LabelCategory_UU, trxName);
+      /** if (AD_LabelCategory_UU == null)
+        {
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelCategory (Properties ctx, String AD_LabelCategory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelCategory_UU, trxName, virtualColumns);
+      /** if (AD_LabelCategory_UU == null)
+        {
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_LabelCategory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -59,7 +79,7 @@ public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -175,10 +195,10 @@ public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Pers
 	public boolean isCanBeUsedInAllTables()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCanBeUsedInAllTables);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
