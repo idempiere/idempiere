@@ -106,6 +106,9 @@ public class ModelInterfaceGenerator
 	/** Logger */
 	private static final CLogger log = CLogger.getCLogger(ModelInterfaceGenerator.class);
 
+	public final static String GEN_SOURCE_INTERFACE = "I";
+	public final static String GEN_SOURCE_CLASS = "C";
+	
 	/**
 	 * @param AD_Table_ID
 	 * @param directory
@@ -779,6 +782,18 @@ public class ModelInterfaceGenerator
 	 */
 	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)
 	{
+		generateSource(GEN_SOURCE_INTERFACE, sourceFolder, packageName, entityType, tableName, columnEntityType);
+	}
+
+	/**
+	 * @param sourceFolder
+	 * @param packageName
+	 * @param entityType
+	 * @param tableName table Like
+	 * @param columnEntityType
+	 */
+	public static void generateSource(String type, String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)
+	{
 		if (sourceFolder == null || sourceFolder.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify source folder");
 
@@ -792,7 +807,7 @@ public class ModelInterfaceGenerator
 		if (tableName == null || tableName.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify table name");
 
-		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase());
+		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase().replaceAll("'", ""));
 
 		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)
@@ -801,7 +816,7 @@ public class ModelInterfaceGenerator
 			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
 			int i = 0;
 			while(tokenizer.hasMoreTokens()) {
-				StringBuilder token = new StringBuilder(tokenizer.nextToken().trim());
+				StringBuilder token = new StringBuilder().append(tokenizer.nextToken().trim());
 				if (!token.toString().startsWith("'") || !token.toString().endsWith("'"))
 					token = new StringBuilder("'").append(token).append("'");
 				if (i > 0)
@@ -826,7 +841,7 @@ public class ModelInterfaceGenerator
 			directory = new StringBuilder(directory.toString().replaceAll("[\\\\]", File.separator));
 		else
 			directory = new StringBuilder(directory.toString().replaceAll("[/]", File.separator));
-		directory = new StringBuilder(directory).append(packagePath);
+		directory.append(packagePath);
 		file = new File(directory.toString());
 		if (!file.exists())
 			file.mkdirs();
@@ -892,7 +907,10 @@ public class ModelInterfaceGenerator
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
+				if (type.equals(GEN_SOURCE_INTERFACE))
+					new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
+				else if (type.equals(GEN_SOURCE_CLASS))
+					new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
 			}
 		}
 		catch (SQLException e)
