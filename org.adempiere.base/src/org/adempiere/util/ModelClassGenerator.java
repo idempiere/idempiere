@@ -913,6 +913,6 @@ public class ModelClassGenerator
 	 */
 	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)
 	{
-		ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, sourceFolder, packageName, entityType, tableName, columnEntityType);
+		ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_CLASS, sourceFolder, packageName, entityType, tableName, columnEntityType);
 	}
 }
