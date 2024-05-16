@@ -31,7 +31,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
@@ -914,121 +913,6 @@ public class ModelClassGenerator
 	 */
 	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)
 	{
-		if (sourceFolder == null || sourceFolder.trim().length() == 0)
-			throw new IllegalArgumentException("Must specify source folder");
-
-		File file = new File(sourceFolder);
-		if (!file.exists())
-			throw new IllegalArgumentException("Source folder doesn't exists. sourceFolder="+sourceFolder);
-
-		if (packageName == null || packageName.trim().length() == 0)
-			throw new IllegalArgumentException("Must specify package name");
-
-		if (tableName == null || tableName.trim().length() == 0)
-			throw new IllegalArgumentException("Must specify table name");
-
-		StringBuilder tableLike = new StringBuilder().append(tableName.trim());
-		if (!tableLike.toString().startsWith("'") || !tableLike.toString().endsWith("'"))
-			tableLike = new StringBuilder("'").append(tableLike).append("'");
-
-		StringBuilder entityTypeFilter = new StringBuilder();
-		if (entityType != null && entityType.trim().length() > 0)
-		{
-			entityTypeFilter.append("EntityType IN (");
-			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
-			int i = 0;
-			while(tokenizer.hasMoreTokens()) {
-				StringBuilder token = new StringBuilder().append(tokenizer.nextToken().trim());
-				if (!token.toString().startsWith("'") || !token.toString().endsWith("'"))
-					token = new StringBuilder("'").append(token).append("'");
-				if (i > 0)
-					entityTypeFilter.append(",");
-				entityTypeFilter.append(token);
-				i++;
-			}
-			entityTypeFilter.append(")");
-		}
-		else
-		{
-			entityTypeFilter.append("EntityType IN ('U','A')");
-		}
-
-		StringBuilder directory = new StringBuilder().append(sourceFolder.trim());
-		String packagePath = packageName.replace(".", File.separator);
-		if (!(directory.toString().endsWith("/") || directory.toString().endsWith("\\")))
-		{
-			directory.append(File.separator);
-		}
-		if (File.separator.equals("/"))
-			directory = new StringBuilder(directory.toString().replaceAll("[\\\\]", File.separator));
-		else
-			directory = new StringBuilder(directory.toString().replaceAll("[/]", File.separator));
-		directory.append(packagePath);
-		file = new File(directory.toString());
-		if (!file.exists())
-			file.mkdirs();
-
-		//	complete sql
-		String filterViews = null;
-		if (tableLike.toString().contains("%")) {
-			filterViews = " AND (TableName IN ('RV_WarehousePrice','RV_BPartner') OR IsView='N')"; 	//	special views
-		}
-		if (tableLike.toString().equals("'%'")) {
-			filterViews += " AND TableName NOT LIKE 'W|_%' ESCAPE '|'"; 	//	exclude webstore from general model generator
-		}
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT AD_Table_ID ")
-			.append("FROM AD_Table ")
-			.append("WHERE IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
-		// Autodetect if we need to use IN or LIKE clause - teo_sarca [ 3020640 ]
-		if (tableLike.indexOf(",") == -1)
-			sql.append(" AND TableName LIKE ").append(tableLike);
-		else
-			sql.append(" AND TableName IN (").append(tableLike).append(")"); // only specific tables
-		sql.append(" AND ").append(entityTypeFilter.toString());
-		if (filterViews != null) {
-			sql.append(filterViews);
-		}
-		sql.append(" ORDER BY TableName");
-		//
-		StringBuilder columnFilterBuilder = new StringBuilder();
-		if (!Util.isEmpty(columnEntityType, true))
-		{
-			columnFilterBuilder.append("EntityType IN (");
-			StringTokenizer tokenizer = new StringTokenizer(columnEntityType, ",");
-			int i = 0;
-			while(tokenizer.hasMoreTokens()) {
-				StringBuilder token = new StringBuilder().append(tokenizer.nextToken().trim());
-				if (!token.toString().startsWith("'") || !token.toString().endsWith("'"))
-					token = new StringBuilder("'").append(token).append("'");
-				if (i > 0)
-					columnFilterBuilder.append(",");
-				columnFilterBuilder.append(token);
-				i++;
-			}
-			columnFilterBuilder.append(")");
-		}
-		String columnFilter = columnFilterBuilder.length() > 0 ? columnFilterBuilder.toString() : null;
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
-			}
-		}
-		catch (SQLException e)
-		{
-			throw new DBException(e, sql.toString());
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_CLASS, sourceFolder, packageName, entityType, tableName, columnEntityType);
 	}
 }
