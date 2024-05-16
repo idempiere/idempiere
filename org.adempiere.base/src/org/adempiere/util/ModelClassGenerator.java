@@ -19,8 +19,6 @@
  *****************************************************************************/
 package org.adempiere.util;
 
-import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -470,13 +468,6 @@ public class ModelClassGenerator
 		{
 			String staticVar = addListValidation (sb, AD_Reference_ID, columnName);
 			sb.insert(0, staticVar);
-		}
-		
-		//	Payment Validation
-		if (displayType == DisplayType.Payment)
-		{
-			String staticVar = addListValidation (sb, REFERENCE_PAYMENTRULE, columnName);
-			sb.insert(0, staticVar);			
 		}
 
 		//	setValue ("ColumnName", xx);
