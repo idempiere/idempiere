@@ -106,6 +106,10 @@ public interface IReportViewerRenderer {
 				prefix.append("_");
 			}
 		}
+
+		if (prefix.length() < 3)
+			prefix.append(String.format("%" + (3 - prefix.length()) + "s", "_"));
+
 		return prefix.toString();
 	}
 }
