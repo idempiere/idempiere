@@ -86,8 +86,6 @@ public class PDFReportViewerRenderer implements IReportViewerRenderer {
 		try {
 			String path = System.getProperty("java.io.tmpdir");
 			String prefix = makePrefix(reportEngine.getName());
-			if (prefix.length() < 3)
-				prefix += "_".repeat(3-prefix.length());
 			if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 			File file = FileUtil.createTempFile(prefix, "."+getFileExtension(), new File(path));
 			IReportRenderer<IReportRendererConfiguration> renderer = Core.getReportRenderer(getId());
