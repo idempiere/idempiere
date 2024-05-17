@@ -582,7 +582,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				else if (DisplayType.isDate(displayType))
 					colClass = Timestamp.class;
 				//  ignore Binary, Button, ID, RowID
-				else if (displayType == DisplayType.List)
+				else if (displayType == DisplayType.List || displayType == DisplayType.RadiogroupList  || displayType == DisplayType.Payment)
 				{
 					if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
 						colSql = new StringBuffer("(SELECT l.Name FROM AD_Ref_List l WHERE l.AD_Reference_ID=")
@@ -602,7 +602,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass, true, columnName ));
 					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
-				else if (isDisplayed && DisplayType.isLookup(displayType))
+				else if (isDisplayed && DisplayType.isLookup(displayType)
+						&& !(displayType == DisplayType.ChosenMultipleSelectionTable || displayType == DisplayType.ChosenMultipleSelectionSearch || displayType == DisplayType.ChosenMultipleSelectionList))
 				{
 					ColumnInfo colInfo = createLookupColumnInfo(Msg.translate(Env.getCtx(), columnName), columnName, displayType, AD_Reference_Value_ID, AD_Column_ID, colSql.toString());
 					if (colInfo != null)

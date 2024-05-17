@@ -63,10 +63,24 @@ public class TablePartitionService implements ITablePartitionService {
 			""";
 		return DB.getSQLValueEx(trxName, sql, table.getTableName()) == 1;
 	}
-
-	private String getDefaultPartitionName(MTable table)
+	
+	/**
+	 * Get default partition name for table
+	 * @param table
+	 * @return String default partition name for table
+	 */
+	public String getDefaultPartitionName(MTable table)
 	{
-		return table.getTableName() + "_default_partition";
+		return getDefaultPartitionName(table.getTableName());
+	}
+	
+	/**
+	 * Get default partition name for table
+	 * @param tableName
+	 * @return String default partition name for table
+	 */
+	public String getDefaultPartitionName(String tableName) {
+		return tableName + "_default_partition";
 	}
 	
 	/**
@@ -235,8 +249,17 @@ public class TablePartitionService implements ITablePartitionService {
 			//unique index must include partition key column
 			String indexdef = uniqueMap.get(indexName);
 			for(String partitionKey : partitionKeyColumnNames) {
-				if (!indexdef.contains(partitionKey.toLowerCase()+",") && !indexdef.contains(partitionKey.toLowerCase()+")"))
-					indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+				if (!indexdef.contains(partitionKey.toLowerCase()+",") && !indexdef.contains(partitionKey.toLowerCase()+")")) {
+					int whereIndex = indexdef.toLowerCase().indexOf(" where ");
+					if (whereIndex > 0) {
+						String whereClause = indexdef.substring(whereIndex);
+						indexdef = indexdef.substring(0, whereIndex);
+						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+						indexdef = indexdef + whereClause;
+					} else {
+						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+					}
+				}
 			}			
 			StringBuilder alter = new StringBuilder("DROP INDEX ").append(indexName);
 			DB.executeUpdateEx(alter.toString(), trxName);
@@ -890,6 +913,7 @@ public class TablePartitionService implements ITablePartitionService {
 		updateStmt.append(partitionKeyColumn.getColumnName()).append("=");						
 				
 		if (DisplayType.isText(partitionKeyColumn.getAD_Reference_ID()) || partitionKeyColumn.getAD_Reference_ID() == DisplayType.YesNo 
+			|| DisplayType.isList(partitionKeyColumn.getAD_Reference_ID())
 			|| "EntityType".equals(partitionKeyColumn.getColumnName())
 			|| "AD_Language".equals(partitionKeyColumn.getColumnName()))
 			updateStmt.append("'").append(listValue).append("' ");

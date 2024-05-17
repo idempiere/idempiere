@@ -96,6 +96,7 @@
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema.source"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema@default:default"/>
         <setEntry value="com.fasterxml.woodstox.woodstox-core@default:default"/>
+        <setEntry value="com.github.ben-manes.caffeine@default:default"/>
         <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
         <setEntry value="com.github.librepdf.openpdf@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
@@ -447,8 +448,10 @@
         <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:false"/>
+        <setEntry value="org.idempiere.zk.breeze.theme@default:false"/>
         <setEntry value="org.idempiere.zk.datatable@default:false"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
+        <setEntry value="org.idempiere.zk.iceblue_c.theme@default:false"/>
         <setEntry value="org.idempiere.zk.pivot@default:false"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>

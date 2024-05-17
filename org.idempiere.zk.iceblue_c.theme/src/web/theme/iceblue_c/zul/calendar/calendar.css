@@ -1,0 +1,1002 @@
+.float-left {
+	float: left;
+}
+.float-right {
+	float: right;
+	margin-top: 5px;
+	padding-right: 10px;
+}
+.refresh {
+	background: none !important;
+	border: 0 !important;
+	color: #354050 !important;
+}
+.tabs * {
+	background: none;
+	cursor: pointer;
+}
+.tabs .bd {
+	zoom: 1;
+}
+.tabs .t1, .tabs .t2, .tabs .t3 {
+	font-size: 0;
+	line-height: 0;
+	margin: 0 2px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+}
+.tabs .t2 {
+	margin: 0 1px;
+}
+.tabs .t3 {
+	background: white;
+	height: 1px;
+	margin: 0 1px;
+}
+.tabs .b1, .tabs .b2, .tabs .b3 {
+	background: none;
+	font-size: 0;
+	line-height: 0;
+	margin: 0 2px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+}
+.tabs .b2 {
+	margin: 0 1px;
+}
+.tabs .b3 {
+	background: white;
+	height: 1px;
+	margin: 0 1px;
+}
+.tabs .cm {
+	background: #ffffff;
+	margin: 0 1px;
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+}
+.tabs .cm :hover {
+	background: #7ac8ff;
+}
+.tabs .text {
+	line-height: 1.2em;
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+	white-space: nowrap;
+	padding: 2px 5px;
+}
+.tabs .text, .tabs .text * {
+	background: none;
+}
+.cnt {
+	position: relative;
+}
+.top {
+	background: #ffffff;
+	border-bottom: 0.2em solid #ffffff;
+	overflow: hidden;
+	height: 0.7em;
+	position: absolute;
+	right: 0px;
+	left: 0px;
+	top: 0px;
+}
+.ie6 .top {
+	width: 100%;
+}
+.calendar-toolbar .z-toolbar-body {
+	width: 100%;
+	padding-left: 2px;
+}
+.calendar-toolbar {
+	margin: -3px;
+	padding-top: 5px;
+}
+.calendar-toolbar .z-toolbarbutton img {
+	height: 16px;
+	width: 16px;
+}
+.gecko2 .calendar-toolbar {
+	margin: -3px;
+}
+.arrows .cnt {
+	zoom: 1;
+}
+.arrow-left {
+	border-color: #0093f9 #f2f9ff #0093f9 #0093f9;
+	border-style: solid;
+	border-width: 5px;
+	height: 0;
+	width: 0;
+	position: absolute;
+	left: 0px;
+	font-size: 0;
+	line-height: 0;
+}
+.arrow-right {
+	border-color: #0093f9 #0093f9 #0093f9 #f2f9ff;
+	border-style: solid;
+	border-width: 5px;
+	height: 0;
+	width: 0;
+	position: absolute;
+	font-size: 0;
+	line-height: 0;
+}
+.arrow-over .cnt {
+	background-color: #f2f9ff;
+}
+.arrow-over .arrow-left {
+	border-color: #f2f9ff #0093f9 #f2f9ff #f2f9ff ;
+}
+.arrow-over .arrow-right {
+	border-color: #f2f9ff #f2f9ff #f2f9ff #0093f9;
+}
+.blue *, .red *, .green *, .purple *, .khaki * {
+	color: white;
+	text-align: center;
+}
+.red {
+	background: #D96666!important;
+}
+.blue {
+	background: #668CD9!important;
+}
+.green {
+	background: #4CB052!important;
+}
+.khaki {
+	background: #BFBF4D!important;
+}
+.purple {
+	background: #B373B3!important;
+}
+/* start devcoffee */
+.z-calendar{
+	font-family:Arial,Sans-serif;
+	font-size:12px;
+	font-weight:normal;
+	font-style:normal;
+	color:#636363;
+	border:1px solid #cfcfcf;
+	min-width:230px;
+	padding:2px
+}
+
+.z-calendar a{
+	text-decoration:none
+}
+
+.z-calendar th{
+	font-weight:bold;
+	padding:12px 3px
+}
+
+.z-calendar table{
+	width:100%
+}
+
+.z-calendar-title{
+	font-weight:bold;
+	color:#636363;
+	width:100%;
+	padding:5px 24px;
+	line-height:14px;
+	text-align:center
+}
+
+.z-calendar-title:hover{
+	color:#636363
+}
+
+.z-calendar-header{
+	position:relative
+}
+
+.z-calendar-header>a{
+	display:inline-block;line-height:normal
+}
+
+.z-calendar-body{
+	height:100%
+}
+
+.z-calendar-decade{
+	min-height:162px
+}
+
+.z-calendar-month,.z-calendar-year{
+	min-height:162px
+}
+
+.z-calendar-month .z-calendar-cell,.z-calendar-year .z-calendar-cell{
+	min-height:48px;line-height:42px
+}
+
+.z-calendar-cell{
+	font-size:11px;
+	color:#636363;
+	min-width:24px;
+	min-height:24px;
+	padding:3px 0;
+	line-height:17px;
+	background:#fff;
+	text-align:center;
+	cursor:pointer
+}
+
+.z-calendar-cell:hover{
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	-o-border-radius:4px;
+	-ms-border-radius:4px;
+	border-radius:4px;
+	background:#d6f0fd
+}
+
+.z-calendar-weekend{
+	color:#0093f9;
+	background:#f2f2f2
+}
+
+.z-calendar-weekday{
+	color:#636363;
+	background:#fff
+}
+
+.z-calendar-outrange{
+	color:#aaa;
+	text-shadow:none
+}
+
+.z-calendar-weekofyear{
+	font-style:italic;
+	color:#fff;
+	background:#636363;
+	cursor:default
+}
+
+.z-calendar-weekofyear:hover{
+	color:#fff;
+	-webkit-border-radius:0;
+	-moz-border-radius:0;
+	-o-border-radius:0;
+	-ms-border-radius:0;
+	border-radius:0;
+	background:#636363
+}
+
+.z-calendar-anima{
+	overflow:hidden;
+	position:relative
+}
+
+.z-calendar-anima-inner{
+	width:200%;
+	position:absolute
+}
+
+.z-calendar-anima-inner table{
+	width:50%;
+	float:left
+}
+
+.z-calendar-selected{
+	color:#888a85;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	-o-border-radius:4px;
+	-ms-border-radius:4px;
+	border-radius:4px;
+	background:#d3edfa
+}
+
+.z-calendar-selected:hover{
+	color:#008bb6;
+	background:#0093f9
+}
+
+.z-calendar-outside{
+	color:#aaa;
+	text-shadow:none
+}
+
+.z-calendar-icon{
+	font-size:20px;
+	color:#636363;
+	width:24px;
+	height:24px;
+	padding:0 8px;
+	position:absolute
+}
+
+.z-calendar-icon:hover{
+	color:#636363
+}
+
+.z-calendar-right{
+	right:0
+}
+
+.z-calendar-left{
+	left:0
+}
+
+.z-calendar-left[disabled],.z-calendar-right[disabled],.z-calendar-disabled{
+	color:#aaa!important;
+	opacity:.4;
+	filter:alpha(opacity=40);
+	text-shadow:none!important;
+	cursor:default!important
+}
+
+.z-calendar-left[disabled]:hover,.z-calendar-right[disabled]:hover,.z-calendar-disabled:hover{
+	background:#fff
+}
+
+.z-datebox-popup{
+	position:absolute
+}
+.z-datebox-popup .z-calendar{
+	border:0
+}
+
+.z-datebox-popup .z-calendar.z-timebox{
+	margin:5px
+}
+
+.z-datebox-popup .z-calendar ~ .z-datebox-timezone{
+	margin:0 5px 5px
+}
+
+.z-datebox-timezone{
+	font-family:Arial,Sans-serif;
+	font-size:12px;
+	font-weight:normal
+}
+
+.ie8 .z-calendar{
+	min-width:224px
+}
+
+.ie8 .z-calendar-cell{
+	min-height:18px
+}
+
+/* segunda parte */
+
+.z-calendars{
+	height:100%
+}
+
+.z-calendars-fl{
+	background:transparent no-repeat 0 bottom;
+	padding-left:6px;
+	zoom:1
+}
+
+.z-calendars-fr{
+	background:transparent no-repeat right bottom;
+	padding-right:6px;
+	zoom:1
+}
+
+.z-calendars-fm{
+	background:transparent repeat-x 0 0;
+	height:6px;
+	font-size:0;
+	line-height:0;
+	zoom:1
+}
+
+.z-calendars-header .z-toolbar{
+	background:0;
+	border:0
+}
+
+.z-calendars-body{
+	background:#FFFFFF;
+	zoom:1
+}
+
+.z-calendars-inner{
+	background: #FFFFFF;
+	padding-bottom:5px;
+	padding-left:5px;
+	margin:0 1px;
+	border-left:1px solid white;
+	border-right:1px solid white
+}
+
+.z-calendars-t1,.z-calendars-t2,.z-calendars-t3{
+	background:#FFFFFF;
+	font-size:0;
+	line-height:0;
+	margin:0 2px;
+	height:1px;
+	padding:0;
+	overflow:hidden
+}
+
+.z-calendars-t2{
+	margin:0 1px
+}
+
+.z-calendars-t3{
+	background:white;
+	height:1px;
+	margin:0 1px
+}
+
+.z-calendars-b1,.z-calendars-b2,.z-calendars-b3{
+	background:none;
+	font-size:0;
+	line-height:0;
+	margin:0 2px;
+	height:1px;
+	padding:0;
+	overflow:hidden
+}
+
+.z-calendars-b2{
+	margin:0 1px
+}
+
+.z-calendars-b3{
+	background:white;
+	height:1px;
+	margin:0 1px
+}
+
+.z-calendars-week{
+	position:relative;
+	overflow:hidden;
+	height:300px;
+	width:100%
+}
+
+.z-calendars-week-header{
+	font-size:11px;
+}
+
+.z-calendars-week-header-cnt{
+	table-layout:fixed;
+	width:100%;
+	overflow:hidden;
+	line-height:14px
+}
+
+.z-calendars-day-of-week-inner{
+	color:#5f5f61;
+	margin-left:4px;
+	padding:3px 2px 2px 3px;
+	white-space:nowrap;
+	font-size: 16px;
+}
+
+.z-calendars-day-of-week-end{
+	width:18px;
+	padding:0;
+	margin:0
+}
+
+.z-calendars-daylong-body{
+	background-color:#f0f3f5;
+	border-color:white white white white;
+	border-style:solid;
+	border-width:1px
+}
+
+.z-calendars-daylong-cnt{
+	position:relative;
+	table-layout:fixed;
+	width:100%
+}
+
+.z-calendars-daylong-evt{
+	border-left:3px solid #FFFFFF;
+	padding:1px 0 0 2px;
+	vertical-align:top
+}
+
+.z-calendars-daylong-end{
+	height:5px;
+	font-size:0;
+	line-height:0
+}
+
+.z-calendars-daylong-more{
+	padding-bottom:2px
+}
+
+.z-calendars-daylong-faker-more,.z-calendars-evt-faker-more{
+	text-decoration:underline;
+	color:white;
+	text-align:center;
+	font-size:11px;
+	cursor:pointer;
+	background:#354050
+}
+
+.z-calendars-evt-faker-more{
+	color:#0f3b82;
+	background:transparent
+}
+
+.z-calendars-evt-faker-nomore{
+	color:white
+}
+
+.z-calendars-daylong-faker-nomore,.z-calendars-evt-faker-nomore{
+	background:0;
+	cursor:default
+}
+
+.ie .z-calendars-daylong-faker-nomore{
+	color:#e2eef5
+}
+
+.z-calendars-week-body{
+	border-color:white;
+	border-style:solid;
+	border-width:1px;
+	position:relative;
+	overflow-x:hidden;
+	overflow-y:scroll;
+	padding:0;
+	margin:0
+}
+
+.z-calendars-week-cnt{
+	padding:0;
+	margin:0;
+	background-color:#f0f3f5;
+	table-layout:fixed;
+	width:100%
+}
+
+.ie .z-calendars-week-cnt{
+	margin-right:-17px
+}
+
+.ie6 .z-calevent-inner dl{
+	width:100%
+}
+
+.z-calendars-hour{
+	position:relative;
+	top:2px;
+	height:1px
+}
+
+.z-calendars-hour-inner{
+	position:absolute;
+	width:100%
+}
+
+.z-calendars-hour-sep{
+	box-sizing:content-box;
+	-moz-box-sizing:content-box;
+	-webkit-box-sizing:content-box;
+	height:22px;
+	border-bottom:1px dotted #FFFFFF;
+	border-top:1px solid #FFFFFF;
+	line-height:22px;
+	margin-bottom:22px;
+	font-size:22px
+}
+
+.z-calendars-hour-of-day{
+	box-sizing:content-box;
+	-moz-box-sizing:content-box;
+	-webkit-box-sizing:content-box;
+	padding-right:2px;
+	border-bottom:1px solid #FFFFFF;
+	color:#f0f3f5;
+	text-align:center;
+	font-size:11px;
+}
+
+.z-calendars-day-of-week-inner.z-calendars-week-today{
+	background-color:#0093f9;
+	border-color:white white white white;
+	border-style:solid;
+	border-width:1px;
+	font-weight:bold;
+	padding-top:2px;
+	padding-bottom:1px;
+	color:#ffffff
+}
+
+.z-calendars-week-day.z-calendars-week-today{
+	background-color:#0093f9
+}
+
+.z-calendars-week-day{
+	border-left:3px solid #FFFFFF;
+	overflow:hidden;
+	vertical-align:top
+}
+
+.z-calendars-week-day-cnt{
+	margin-right:12px;
+	position:relative
+}
+
+.z-calendars-day-over,z-calendars-month-day-over{
+	cursor:pointer;
+	text-decoration:underline
+}
+
+.z-calendars-month .z-calendars-inner{
+	padding-right:5px
+}
+
+.z-calendars-month-cnt{
+	overflow:hidden;
+	height:300px;
+	width:100%
+}
+
+.z-calendars-month-cnt-inner{
+	height:100%;
+	position:relative;
+	white-space:nowrap
+}
+
+.z-calendars-month-header{
+	color:#F48533;
+	position:absolute;
+	top:0;
+	left:0;
+	table-layout:fixed;
+	width:100%;
+	background-color:#FFFFFF;
+	line-height:15px
+}
+
+.z-calendars-month-header .z-calendars-day-of-week{
+	color:#5f5f61;
+	padding:1px;
+	font-size:18px;
+}
+
+.z-calendars-month-body{
+	overflow:hidden;
+	position:absolute;
+	top:17px;
+	width:100%;
+	bottom:0;
+	left:0;
+	background-color:white
+}
+
+.z-calendars-month-week{
+	left:0;
+	overflow:hidden;
+	position:absolute;
+	width:100%
+}
+
+.z-calendars-day-of-month-bg{
+	height:100%;
+	width:100%;
+	left:0;
+	top:0;
+	table-layout:fixed;
+	position:absolute
+}
+
+.z-calendars-day-of-month-bg td{
+    border-left: 4px solid #FFFFFF;
+    background: #FFFFFF;
+}
+
+.z-calendars-day-of-month-body{
+	position:relative;
+	table-layout:fixed;
+	width:100%
+}
+
+.z-calendars-month-date{
+	background-color: #f0f3f5;
+    border-left: 4px solid #FFFFFF;
+    border-top: 4px solid #FFFFFF;
+    color: #000000;
+    line-height: 16px;
+    overflow: hidden;
+    padding-right: 2px;
+    text-align: center;
+    font-size: 14px;
+	padding-top: 4px;
+	padding-bottom: 3px;
+}
+
+.z-calendars-month-date-evt{
+	padding:1px 1px 0 2px;
+	vertical-align:top;
+	line-height:14px
+}
+
+.z-calendars-month-date-off{
+    background-color: #74777b;
+    color: #FFFFFF;
+}
+
+.z-calendars-month-date.z-calendars-week-today{
+	 background-color:#0093f9 !important;
+	 color: #ffffff;
+	 font-weight: bold;
+}
+
+.z-calendars-day-of-month-bg .z-calendars-week-today{
+	background-color:#FFFFFF;
+}
+
+.z-calendars-timezone{
+	color:#000000;
+	width:80px;
+	overflow:hidden
+}
+
+.z-calendars-day-header .z-calendars-timezone{
+	text-align:center;
+	vertical-align:bottom;
+	padding-bottom:3px;
+	padding-right:2px;
+	font-weight:normal
+}
+
+.z-calendars-week-cnt .z-calendars-timezone{
+	background-color:#74777b;
+	border-right:1px solid #FFFFFF;
+	color:#f0f3f5;
+	overflow:hidden;
+	padding:1px 1px 0 0;
+	text-align:right;
+	vertical-align:top;
+}
+
+.z-calendars-week-cnt .z-calendars-timezone-end{
+	border-right:0;
+	padding-right:2px
+}
+
+.z-calendars-week-header-arrow{
+	border-top:5px solid #888;
+	border-left:5px solid white;
+	border-right:5px solid white;
+	border-bottom:0;
+	height:0;
+	width:0;
+	position:absolute;
+	top:25px;
+	cursor:pointer;
+	font-size:0;
+	line-height:0
+}
+
+.z-calendars-week-header-arrow-close{
+	border-left:5px solid #888;
+	border-top:5px solid white;
+	border-bottom:5px solid white;
+	border-right:0;
+	top:21px
+}
+
+.z-calevent{
+	color:white;
+	overflow:hidden;
+	cursor:pointer
+}
+
+.z-calevent-body{
+	background:#354050;
+	zoom:1
+}
+
+.z-calevent-inner{
+	margin:0 1px;
+	border-left:1px solid white;
+	border-right:1px solid white
+}
+
+.z-calevent-inner dt,.z-calevent-inner dd,.z-calevent-inner dl{
+	margin:0;
+	padding:0;
+	overflow:hidden;
+	text-align:left
+}
+
+.z-calevent-inner dl{
+	background:none
+}
+
+.z-calevent-t1,.z-calevent-t2,.z-calevent-t3{
+	background:none;
+	font-size:0;
+	line-height:0;
+	margin:0 2px;
+	height:1px;
+	padding:0;
+	overflow:hidden
+}
+
+.z-calevent-t2{
+	margin:0 0px;
+}
+
+.z-calevent-t3{
+	background:white;
+	height:1px;
+	margin:0 0px;
+}
+
+.z-calevent-b1,.z-calevent-b2,.z-calevent-b3{
+	background:none;
+	font-size:0;
+	line-height:0;
+	margin:0 2px;
+	height:1px;
+	padding:0;
+	overflow:hidden
+}
+
+.z-calevent-b2{
+	margin:0 0px;
+}
+
+.z-calevent-b3{
+	background:white;
+	height:1px;
+	margin:0 0px;
+}
+
+.z-calevent-header{
+	background:none;
+	font-size:10px;
+	font-weight:bold;
+	line-height:14px;
+	color:white;
+	white-space:nowrap
+}
+
+.z-calevent-inner .z-calevent-cnt{
+	background:none;
+	font-size:11px;
+	padding-left:1px;
+	padding-right:1px;
+	line-height:14px;
+	color:white;
+
+}
+
+.z-calevent-resizer{
+	bottom:2px;
+	cursor:s-resize;
+	height:7px;
+	line-height:7px;
+	position:absolute;
+	width:100%;
+	left:0
+}
+
+.z-calevent-resizer-icon{
+	border-top:3px solid white;
+	font-size:0;
+	line-height:0;
+	margin:0 auto;
+	width:10px
+}
+
+.z-calendars-daylong-evt .z-calevent-inner .z-calevent-left-arrow,.z-calevent-daylong-month .z-calevent-inner .z-calevent-left-arrow,.z-calevent-left-more-faker .z-calevent-inner .z-calevent-left-arrow{
+	padding-left:10px;
+	zoom:1
+}
+
+.z-calendars-daylong-evt .z-calevent-inner .z-calevent-right-arrow,.z-calevent-daylong-month .z-calevent-inner .z-calevent-right-arrow,.z-calevent-right-more-faker .z-calevent-inner .z-calevent-right-arrow{
+	padding-right:7px;
+	zoom:1
+}
+
+.z-calendars-daylong-evt .z-calevent-text,.z-calevent-daylong-month .z-calevent-text,.z-calpp .z-calevent-text,.z-calpp-month .z-calevent-text,.z-calendars-evt-faker-dd .z-calevent-text{
+	height:14px;
+	width:100%;
+	white-space:nowrap;
+	overflow:hidden
+}
+
+.z-calevent-left-arrow-icon,.z-calevent-right-arrow-icon{
+	border-bottom:4px solid none;
+	border-top:4px solid none;
+	font-size:0;
+	height:0;
+	line-height:0;
+	margin-bottom:-8px;
+	position:relative;
+	top:2px;
+	width:0
+}
+
+.z-calevent-left-arrow-icon{
+	border-right:4px solid white;
+	margin-left:-7px;
+	margin-right:auto
+}
+
+.z-calevent-right-arrow-icon{
+	border-left:4px solid white;
+	margin-right:-5px;
+	margin-left:auto
+}
+
+.z-calendars-week-day-cnt .z-calevent{
+	width:100%;
+	position:absolute
+}
+
+.z-calendars-daylong-evt .z-calevent-cnt,.z-calevent-daylong-month .z-calevent-cnt{
+	padding:1px 1px 1px 3px;
+	white-space:nowrap;
+	cursor:pointer;
+	overflow:hidden
+}
+
+.z-calevent-daylong-month .z-calevent-t3, .z-calevent-daylong-month .z-calevent-b3, .z-calpp-month-evt-cnt .z-calevent-t3, .z-calpp-month-evt-cnt .z-calevent-b3 {
+    background: #354050;
+}
+
+.z-calevent-daylong-month .z-calevent-inner, .z-calpp-month-evt-cnt .z-calevent-inner {
+    border-left-color: #354050;
+    border-bottom-color: #354050;
+    border-right-color: #354050;
+    border-top-color: #354050;
+}
+
+.z-calevent-month .z-calevent-header {
+    background: transparent;
+    color: #354050;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.z-calevent-month .z-calevent-cnt {
+    background: transparent;
+    color: #354050;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+  .z-calpp-inner, .z-calpp-month-inner {
+    background: #ffffff;
+    padding: 5px;
+    margin: 0 1px;
+    border-left: 1px solid #354050;
+    border-right: 1px solid #354050;
+}
+
+.z-calevent-left-arrow-icon, .z-calevent-right-arrow-icon {
+    border-bottom: 4px solid #354050;
+    border-top: 4px solid #354050;
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+    margin-bottom: -8px;
+    position: relative;
+    top: 2px;
+    width: 0;
+}
+
+a.refresh > span.z-toolbarbutton-content {
+	background-color: #0093f9;
+    color: white;
+    padding: 5px;
+}
+
+/*notes: without this fix calendar increases repeatedly height when switching between home and window tab in dashboard row orientation*/
+.z-calendars-month-cnt {
+	height: 300px !important;
+}

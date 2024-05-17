@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2009 Low Heng Sin
+Copyright (C) 2009 Idalica Corporation
+-->
+<zk>
+
+<div style="margin: 5px;"
+	if="${desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) or desktop.execution.serverName.startsWith(&quot;demo&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;)  or desktop.execution.serverName.startsWith(&quot;test-&quot;) or desktop.execution.serverName.startsWith(&quot;triage&quot;)}">
+	<hbox align="center">
+		<a href="http://www.idempiere.org" target="_blank"><image src="~./theme/iceblue_c/images/login-logo.png"/></a>
+		<label value="iDempiere 12 Development Build Online Demonstration"
+			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
+	</hbox>
+</div>
+<div style="height: 90px" if="${! desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) and ! desktop.execution.serverName.startsWith(&quot;demo&quot;) and ! desktop.execution.serverName.startsWith(&quot;test&quot;) and ! desktop.execution.serverName.startsWith(&quot;triage&quot;)}">
+	<space/>
+</div>
+
+</zk>

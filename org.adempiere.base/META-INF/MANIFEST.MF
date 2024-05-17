@@ -70,7 +70,10 @@ Export-Package: bsh,
  org.idempiere.process
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
-Import-Package: com.google.zxing,
+Import-Package: com.github.benmanes.caffeine;version="3.1.8",
+ com.github.benmanes.caffeine.cache;version="3.1.8",
+ com.github.benmanes.caffeine.cache.stats;version="3.1.8",
+ com.google.zxing,
  com.google.zxing.qrcode.decoder,
  com.google.zxing.qrcode.encoder,
  com.sun.mail.smtp;version="1.5",

@@ -1,0 +1,12 @@
+<div class="tabs" forward="onUpdateView(${arg.text})">
+	<div class="t1" />
+	<div class="t2">
+		<div class="t3" />
+	</div>
+	<div class="bd">
+		<div class="cm cnt">
+			<div class="top" />
+			<div class="text">${arg.text}</div>
+		</div>
+	</div>
+</div>

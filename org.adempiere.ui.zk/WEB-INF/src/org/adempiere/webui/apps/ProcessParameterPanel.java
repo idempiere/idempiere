@@ -104,7 +104,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8847249274740131848L;
+	private static final long serialVersionUID = -8476698839617674953L;
 
 	/** Event post from {@link #valueChange(ValueChangeEvent)} **/
 	private static final String ON_POST_EDITOR_VALUE_CHANGE_EVENT = "onPostEditorValueChange";
@@ -1325,6 +1325,11 @@ public class ProcessParameterPanel extends Panel implements
 	 */
 	public void setProcessInfo(ProcessInfo processInfo) {
 		m_processInfo = processInfo;
+	}
+	
+	
+	public ProcessInfo getProcessInfo() {
+		return m_processInfo;
 	}
 	
 	/**

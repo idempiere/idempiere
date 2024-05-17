@@ -12,7 +12,7 @@
 	<properties>
 		<revision>12.0.0-SNAPSHOT</revision>
 		<jdk.version>17</jdk.version>
-		<tycho.version>4.0.4</tycho.version>
+		<tycho.version>4.0.7</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
@@ -196,6 +196,25 @@
 										</versionRange>
 										<goals>
 											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											tycho-bnd-plugin
+										</artifactId>
+										<versionRange>
+											[4.0.7,)
+										</versionRange>
+										<goals>
+											<goal>process</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

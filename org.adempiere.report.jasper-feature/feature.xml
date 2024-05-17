@@ -134,10 +134,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="com.fasterxml.jackson.module.jackson-module-jsonSchema.source"
-         version="0.0.0"/>
-
-   <plugin
          id="com.fasterxml.jackson.datatype.jackson-datatype-json-org"
          version="0.0.0"/>
 

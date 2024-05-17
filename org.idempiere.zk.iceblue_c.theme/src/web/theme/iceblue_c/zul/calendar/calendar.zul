@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?component name="divtab" macro-uri="~./theme/iceblue_c/zul/calendar/divtab.zul"?>
+<?component name="divarrow" macro-uri="~./theme/iceblue_c/zul/calendar/divarrow.zul"?>
+<zk>
+<zscript><![CDATA[
+	import org.compiere.util.Msg;
+	import org.compiere.util.Env;
+	import org.compiere.util.Util;
+	import org.adempiere.webui.theme.ThemeManager;
+
+	var today = Msg.getMsg(Env.getCtx(),"Today");
+	var refresh = Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Refresh"));
+	var switchTimeZone = Msg.getMsg(Env.getCtx(),"SwitchTimeZone");
+	var Day = Msg.getMsg(Env.getCtx(),"Day");
+	var Week = Msg.getMsg(Env.getCtx(),"Week");
+	var Month = Msg.getMsg(Env.getCtx(),"Month");
+	var Days = Msg.getMsg(Env.getCtx(),"5Days");
+	var EventsAnalysis = Msg.getMsg(Env.getCtx(),"EventsAnalysis");
+	var FirstDayofWeek = Msg.getMsg(Env.getCtx(),"FirstDayofWeek");
+	var RequestType = Msg.getElement(Env.getCtx(),"RequestType");
+
+	var isFontIcon = ThemeManager.isUseFontIconForImage();
+	var leftBtn = isFontIcon ?  "z-icon-PreviousRecord" : "arrow-left";
+	var rightBtn = isFontIcon ?  "z-icon-NextRecord" : "arrow-right";
+	var fontClass = isFontIcon ? "z-font-Calendar" : "";
+	var calendarClass = isFontIcon ? "z-cal-font-theme" : "";
+
+]]></zscript>
+<style src="~./theme/iceblue_c/zul/calendar/calendar.css"/>
+<borderlayout id="main">
+<center border="none">
+<calendars class="${calendarClass}" firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
+	<toolbar sclass="calendar-toolbar">
+		<div class="float-left">
+			<hbox sclass="cal-header-filter">
+				<divarrow id="divArrowLeft" type="${leftBtn}" fontClass="${fontClass}"/>
+				<divarrow id="divArrowRight" type="${rightBtn}" fontClass="${fontClass}"/>
+				<div>
+					<button id="btnCurrentDate" mold="os" label="${today}"/>
+					<button id="btnSwitchTimeZone" mold="os" label="${switchTimeZone}"/>
+					<span id="FDOW">
+						${FirstDayofWeek}:
+						<listbox id="lbxFDOW" mold="select"/>
+				    </span>
+					<span>
+						${RequestType}:
+						<listbox id="lbxRequestTypes" mold="select"/>
+					</span>
+				    <separator orient="vertical"/>
+					<label id="lblDate"/>
+					<toolbarbutton id="btnRefresh" label="${refresh}" class="refresh"/>
+				</div>
+			</hbox>
+		</div>
+		<div class="float-right">
+			<hbox>
+				<divtab id="divTabDay" text="${Day}"/>
+				<divtab id="divTabWeek" text="${Week}"/>
+				<divtab id="divTabWeekdays" text="${Days}"/>
+				<divtab id="divTabMonth" text="${Month}"/>
+			</hbox>
+		</div>
+	</toolbar>
+</calendars>
+</center>
+<south open="false" size="300px" title="${EventsAnalysis}" collapsible="true">
+	<image id="mychart" vflex="1" hflex="1"/>
+</south>
+</borderlayout>
+
+<popup id="updateMsg" width="320px">
+	<image src="~./zk/img/progress2.gif"/>
+	<label id="popupLabel"/>
+	<timer id="timer" delay="1000" running="false">
+		<attribute name="onTimer">
+			updateMsg.close();
+		</attribute>
+	</timer>
+</popup>
+</zk>

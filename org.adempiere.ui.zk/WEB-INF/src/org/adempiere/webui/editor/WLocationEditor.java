@@ -189,13 +189,13 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
 				@Override
 				public void onEvent(Event event) throws Exception {
-					getComponent().getTextbox().focus();
-					m_value = ld.getValue();
+					getComponent().getTextbox().focus();					
 		            //
 					if (!ld.isChanged())
 		                return;
 		    
 		            //  Data Binding
+					m_value = ld.getValue();
 		            int C_Location_ID = 0;
 		            if (m_value != null)
 		                C_Location_ID = m_value.getC_Location_ID();
@@ -206,7 +206,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		                ValueChangeEvent vc = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,ii);
 		                fireValueChange(vc);
 		            }
-		            setValue(ii);					
+		            getComponent().setText(m_value != null ? m_value.toString() : null);				
 				}
 			});
             ld.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {

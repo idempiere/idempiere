@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2009 Low Heng Sin
+Copyright (C) 2009 Idalica Corporation
+-->
+<zk>
+<zscript>
+	import org.compiere.Adempiere;
+	var mainVersion = Adempiere.getVersion();
+	var dbVersion = Adempiere.getDatabaseVersion();
+	var vendor = Adempiere.getImplementationVendor();
+	var jvm = Adempiere.getJavaInfo();
+	var os = Adempiere.getOSInfo();
+	var isVersionShown = Adempiere.isVersionShown();
+	var isDBVersionShown = Adempiere.isDBVersionShown();
+	var isVendorShown = Adempiere.isVendorShown();
+	var isJVMShown = Adempiere.isJVMShown();
+	var isOSShown = Adempiere.isOSShown();
+	var isHostShown = Adempiere.isHostShown();
+	var isInfoShown = isVersionShown || isDBVersionShown || isVendorShown || isJVMShown || isOSShown || isHostShown;
+</zscript>
+<html>
+<![CDATA[
+<style>
+	.versionInfoBox {
+		background-color: #9CBDFF;
+		margin: 5px;
+		padding: 3px;
+		margin-top: 20px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		font-size: 8pt;
+	}
+</style>
+]]>
+<div class="versionInfoBox" if="${isInfoShown == true}">
+	<table border="0">
+		<tr if="${isVersionShown == true}">
+			<td align="right">Version</td>
+			<td>:</td>
+			<td align="left">${mainVersion}</td>
+		</tr>
+		<tr if="${isDBVersionShown == true}">
+			<td align="right">Database Version</td>
+			<td>:</td>
+			<td align="left">${dbVersion}</td>
+		</tr>
+		<tr if="${isVendorShown == true}">
+			<td align="right">Vendor</td>
+			<td>:</td>
+			<td align="left">${vendor}</td>
+		</tr>
+		<tr if="${isJVMShown == true}">
+			<td align="right">JVM</td>
+			<td>:</td>
+			<td align="left">${jvm}</td>
+		</tr>
+		<tr if="${isOSShown == true}">
+			<td align="right">OS</td>
+			<td>:</td>
+			<td align="left">${os}</td>
+		</tr>
+		<tr if="${isHostShown == true}">
+			<td align="right">Host</td>
+			<td>:</td>
+			<td align="left">${desktop.execution.serverName}</td>
+		</tr>
+	</table>
+</div>
+
+</html>
+</zk>

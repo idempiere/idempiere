@@ -323,7 +323,7 @@ public interface AdempiereDatabase
 	public boolean isPagingSupported();
 
 	/**
-	 * modify sql to return a subset of the query result
+	 * modify sql to return a subset of the query result. use 1 base index for start and end parameter
 	 * @param sql
 	 * @param start
 	 * @param end
@@ -487,6 +487,13 @@ public interface AdempiereDatabase
 			.append(")");
 		return sb.toString();
 	}	//	getSQLCreate
+	
+	/**
+	 * Convert blob to hex encoded string and return SQL function that will convert the hex encoded string back to blob
+	 * @param blob
+	 * @return SQL statement
+	 */
+	public String TO_Blob(byte[] blob);
 	
 	/**
 	 * @param column

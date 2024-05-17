@@ -1,0 +1,46 @@
+/* Adempiere Root (c) Jorg Janke */
+/* $Id: standard.css,v 1.1 2006/04/21 18:04:14 jjanke Exp $ */
+body{
+	background-color: #FFFFFF;
+	color: #000000;
+	font-size: 0.8em;
+  	font-family: Verdana, Arial, sans-serif;
+  	line-height: 1.3em;
+}
+
+a{
+	color: #3465a4;
+	text-decoration: none;
+}
+
+a:hover{
+	color: #24272c;
+}
+
+h1{
+	color: #FF0000;
+	font-size: x-large;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
+
+hr{
+	color: #000099;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+table {
+	font-size: 1em;
+	column-span: none;
+	border-collapse: collapse;
+}
+
+p{
+	text-align: justify;
+}
+
+th{
+	background-color: #E6E6FA;
+	text-align: left;
+}

@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -167824144142429242L;
+	private static final long serialVersionUID = 6774131577483620665L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -623,6 +623,40 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}	//	getPO
 
+	private static final ThreadLocal<Map<Integer, String[]>> partialPOResultSetColumns = new ThreadLocal<>();
+	
+	/**
+	 * Get columns included in result set of {@link #getPO(int, String)} call.<br/>
+	 * Use by {@link #getPartialPO(ResultSet, String[], String)}.
+	 * @param rs result set
+	 * @return columns included in result set of {@link #getPO(int, String)} call
+	 */
+	protected static final String[] getPartialPOResultSetColumns(ResultSet rs) {
+		Map<Integer, String[]> map = partialPOResultSetColumns.get();
+		return map != null ? map.get(rs.hashCode()) : null;
+	}
+	
+	/**
+	 * 	Get PO Instance from result set that only include some of the columns of the PO model.
+	 *	@param rs result set
+	 *  @param selectColumns 
+	 *	@param trxName transaction
+	 *	@return immutable PO instance
+	 */
+	public final PO getPartialPO (ResultSet rs, String[] selectColumns, String trxName)
+	{
+		try {
+			HashMap<Integer, String[]> map = new HashMap<Integer, String[]>();
+			map.put(rs.hashCode(), selectColumns);
+			partialPOResultSetColumns.set(map);
+			PO po = getPO(rs, trxName);
+			po.makeImmutable();
+			return po;
+		} finally {
+			partialPOResultSetColumns.remove();
+		}
+	}
+	
 	/**
 	 * 	Get PO Instance from result set
 	 *	@param rs result set
@@ -1089,4 +1123,41 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return indexName.toString();
 	}
 
+	private Boolean hasCustomTree = null;
+
+	/**
+	 * If the table has a custom tree defined
+	 * @return
+	 */
+	public boolean hasCustomTree() {
+		if (hasCustomTree == null) {
+			int exists = DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM AD_Tree WHERE TreeType=? AND AD_Table_ID=? AND IsActive='Y'", MTree_Base.TREETYPE_CustomTable, getAD_Table_ID());
+			hasCustomTree = Boolean.valueOf(exists == 1);
+		}
+		return hasCustomTree.booleanValue();
+	}
+
+	/**
+	 * Get Partition Name of the table of the given level
+	 * @param tableName
+	 * @param primaryLevelOnly - if true, ignore the sub-partition, if exists
+	 * @return table partition name, or empty
+	 */
+	public static String getPartitionName(Properties ctx, String tableName, boolean primaryLevelOnly, String trxName) {
+		if(Util.isEmpty(tableName))
+			return "";
+		
+		String[] partitionColsAll = MTablePartition.getPartitionKeyColumns(ctx, tableName, trxName);
+		
+		if(partitionColsAll.length == 0)
+			return tableName;
+		
+		int level = primaryLevelOnly ? 1 : partitionColsAll.length;
+		StringBuilder partitionName = new StringBuilder();
+		partitionName.append(tableName);
+		for(int i = 0; i < level; i++) {
+			partitionName.append("_").append(partitionColsAll[i]);
+		}
+		return partitionName.toString();
+	}
 }	//	MTable
