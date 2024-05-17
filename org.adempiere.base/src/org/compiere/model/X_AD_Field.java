@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Field")
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240517L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -55,6 +55,8 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			setIsEncrypted (false);
 			setIsFieldOnly (false);
 			setIsHeading (false);
+			setIsHtml (null);
+// N
 			setIsQuickEntry (false);
 // N
 			setIsQuickForm (false);
@@ -85,6 +87,8 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			setIsEncrypted (false);
 			setIsFieldOnly (false);
 			setIsHeading (false);
+			setIsHtml (null);
+// N
 			setIsQuickEntry (false);
 // N
 			setIsQuickForm (false);
@@ -115,6 +119,8 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			setIsEncrypted (false);
 			setIsFieldOnly (false);
 			setIsHeading (false);
+			setIsHtml (null);
+// N
 			setIsQuickEntry (false);
 // N
 			setIsQuickForm (false);
@@ -145,6 +151,8 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			setIsEncrypted (false);
 			setIsFieldOnly (false);
 			setIsHeading (false);
+			setIsHtml (null);
+// N
 			setIsQuickEntry (false);
 // N
 			setIsQuickForm (false);
@@ -238,6 +246,43 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Field.
+		@param AD_Field_ID Field on a database table
+	*/
+	public void setAD_Field_ID (int AD_Field_ID)
+	{
+		if (AD_Field_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
+	}
+
+	/** Get Field.
+		@return Field on a database table
+	  */
+	public int getAD_Field_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set AD_Field_UU.
+		@param AD_Field_UU AD_Field_UU
+	*/
+	public void setAD_Field_UU (String AD_Field_UU)
+	{
+		set_Value (COLUMNNAME_AD_Field_UU, AD_Field_UU);
+	}
+
+	/** Get AD_Field_UU.
+		@return AD_Field_UU	  */
+	public String getAD_Field_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_Field_UU);
+	}
+
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
@@ -261,28 +306,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public int getAD_FieldGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Field.
-		@param AD_Field_ID Field on a database table
-	*/
-	public void setAD_Field_ID (int AD_Field_ID)
-	{
-		if (AD_Field_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
-	}
-
-	/** Get Field.
-		@return Field on a database table
-	  */
-	public int getAD_Field_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -314,21 +337,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set AD_Field_UU.
-		@param AD_Field_UU AD_Field_UU
-	*/
-	public void setAD_Field_UU (String AD_Field_UU)
-	{
-		set_Value (COLUMNNAME_AD_Field_UU, AD_Field_UU);
-	}
-
-	/** Get AD_Field_UU.
-		@return AD_Field_UU	  */
-	public String getAD_Field_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_Field_UU);
 	}
 
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
@@ -905,6 +913,29 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** IsHtml AD_Reference_ID=319 */
+	public static final int ISHTML_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISHTML_No = "N";
+	/** Yes = Y */
+	public static final String ISHTML_Yes = "Y";
+	/** Set HTML.
+		@param IsHtml Text has HTML tags
+	*/
+	public void setIsHtml (String IsHtml)
+	{
+
+		set_Value (COLUMNNAME_IsHtml, IsHtml);
+	}
+
+	/** Get HTML.
+		@return Text has HTML tags
+	  */
+	public String getIsHtml()
+	{
+		return (String)get_Value(COLUMNNAME_IsHtml);
 	}
 
 	/** IsMandatory AD_Reference_ID=319 */

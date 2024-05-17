@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Field
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Field")
 public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240517L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -152,34 +152,6 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
-			.getPO(getAD_FieldGroup_ID(), get_TrxName());
-	}
-
-	/** Set Field Group.
-		@param AD_FieldGroup_ID Logical grouping of fields
-	*/
-	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
-	{
-		if (AD_FieldGroup_ID < 1)
-			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
-	}
-
-	/** Get Field Group.
-		@return Logical grouping of fields
-	  */
-	public int getAD_FieldGroup_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
@@ -215,6 +187,34 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Field_ID()));
     }
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID Logical grouping of fields
+	*/
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1)
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
 	{
@@ -654,6 +654,29 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public String getIsDisplayedGrid()
 	{
 		return (String)get_Value(COLUMNNAME_IsDisplayedGrid);
+	}
+
+	/** IsHtml AD_Reference_ID=319 */
+	public static final int ISHTML_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISHTML_No = "N";
+	/** Yes = Y */
+	public static final String ISHTML_Yes = "Y";
+	/** Set HTML.
+		@param IsHtml Text has HTML tags
+	*/
+	public void setIsHtml (String IsHtml)
+	{
+
+		set_Value (COLUMNNAME_IsHtml, IsHtml);
+	}
+
+	/** Get HTML.
+		@return Text has HTML tags
+	  */
+	public String getIsHtml()
+	{
+		return (String)get_Value(COLUMNNAME_IsHtml);
 	}
 
 	/** IsMandatory AD_Reference_ID=319 */

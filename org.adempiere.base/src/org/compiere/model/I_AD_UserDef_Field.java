@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_UserDef_Field 
 {
@@ -60,21 +60,6 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_FieldGroup_ID */
-    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
-
-	/** Set Field Group.
-	  * Logical grouping of fields
-	  */
-	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
-
-	/** Get Field Group.
-	  * Logical grouping of fields
-	  */
-	public int getAD_FieldGroup_ID();
-
-	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
-
     /** Column name AD_Field_ID */
     public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
 
@@ -89,6 +74,21 @@ public interface I_AD_UserDef_Field
 	public int getAD_Field_ID();
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
+
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_FieldStyle_ID */
     public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
@@ -393,6 +393,19 @@ s active status or processed status. This logic Applicable only if Always Updata
 
 	/** Get Show in Grid	  */
 	public String getIsDisplayedGrid();
+
+    /** Column name IsHtml */
+    public static final String COLUMNNAME_IsHtml = "IsHtml";
+
+	/** Set HTML.
+	  * Text has HTML tags
+	  */
+	public void setIsHtml (String IsHtml);
+
+	/** Get HTML.
+	  * Text has HTML tags
+	  */
+	public String getIsHtml();
 
     /** Column name IsMandatory */
     public static final String COLUMNNAME_IsMandatory = "IsMandatory";
