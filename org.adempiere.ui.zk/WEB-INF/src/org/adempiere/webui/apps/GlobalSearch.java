@@ -102,7 +102,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
 		bandbox.addEventListener(Events.ON_FOCUS, e -> {
 			bandbox.setOpen(true);
-			if (Util.isEmpty(bandbox.getValue(), true) && tabbox.getSelectedIndex() == 0)
+			if (tabbox.getSelectedIndex() == 0)
 				menuController.updateRecentItems();
 		});
 		
