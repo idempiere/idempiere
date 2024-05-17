@@ -220,6 +220,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 					MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
 					Object value = null;
 					String headName = header[idxfld];
+					int refid = column.getAD_Reference_ID();
 					if(DisplayType.Location == field.getDisplayType()){
 					   Object fResolved =resolveValue(gridTab, table, column, idxrow, column.getColumnName());  
 					   if (fResolved!=null)  		   
@@ -228,7 +229,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 					   continue;
 					}else if (DisplayType.Payment == field.getDisplayType()){
 					   value = MRefList.getListName(Env.getCtx(),REFERENCE_PAYMENTRULE, gridTab.getValue(idxrow, header[idxfld]).toString()); 		 
-					}else{	
+					}else if(DisplayType.ChosenMultipleSelectionSearch==refid || DisplayType.ChosenMultipleSelectionTable==refid) {
+						value = resolveValueMultiSelection(gridTab, table, column, idxrow, headName);
+					}
+					else{	
 					   value = resolveValue(gridTab, table, column, idxrow, headName);
 					}
 					row.put(headName,value);
@@ -350,6 +354,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 		    	int specialRecordId = 0;
 		    	for(GridField field : childTabDetail.getValue()){
 				    MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
+				    int refid = column.getAD_Reference_ID();
 					if(DisplayType.Location == column.getAD_Reference_ID()){
 					   specialDetDispayType = DisplayType.Location;
 					   Object fResolved = resolveValue(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow,column.getColumnName());
@@ -360,7 +365,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 				    }
 				    MTable tableDetail = MTable.get(Env.getCtx(), childTab.getTableName());
 				    String headName = headArray.get(headArray.indexOf(childTab.getTableName()+">"+resolveColumnName(tableDetail,column))); 
-				    value = resolveValue(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow, headName.substring(headName.indexOf(">")+ 1,headName.length()));
+				    if(DisplayType.ChosenMultipleSelectionSearch==refid || DisplayType.ChosenMultipleSelectionTable==refid) 
+				    	value = resolveValueMultiSelection(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow, headName.substring(headName.indexOf(">")+ 1,headName.length()));
+				    else
+				    	value = resolveValue(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow, headName.substring(headName.indexOf(">")+ 1,headName.length()));
 				    
 				    if(DisplayType.Payment == field.getDisplayType() && value != null)
 					   value = MRefList.getListName(Env.getCtx(),REFERENCE_PAYMENTRULE, value.toString()); 
@@ -456,6 +464,46 @@ public class GridTabCSVExporter implements IGridTabExporter
 	}
 	
 	/**
+	 * @param gridTab
+	 * @param table
+	 * @param column
+	 * @param i row index
+	 * @param headName
+	 * @return column value
+	 */
+	private Object resolveValueMultiSelection(GridTab gridTab, MTable table, MColumn column, int i, String headName) {
+		Object retValue = null;
+		if (headName.indexOf("[") >= 0 && headName.endsWith("]")) {
+			String foreignTable = column.getMultiReferenceTableName();
+			Object idO = gridTab.getValue(i, column.getColumnName());
+			if (idO != null && idO instanceof String) {
+					List<Object> params = new ArrayList<>();
+					String[] values = ((String)idO).split(",");
+					int start = headName.indexOf("[")+1;
+					int end = headName.length()-1;
+					String foreignColumn = headName.substring(start, end);
+					StringBuilder select = new StringBuilder("SELECT ")
+							.append(foreignColumn).append(" FROM ")
+							.append(foreignTable).append(" WHERE ")
+							.append(foreignTable).append("_ID IN (");
+					
+					for(int idx=0;idx<values.length;idx++) {
+						if(idx==values.length-1)
+							select.append("?)");
+						else
+							select.append("?,");
+						params.add(Integer.valueOf(values[idx]));
+					}
+					
+					retValue = DB.getSQLValueStringConcatMultipleResultsEx(null,select.toString(),params);
+			}
+		} else {
+			retValue = gridTab.getValue(i, headName);
+		}
+		return retValue;
+	}
+	
+	/**
 	 * @param selectColumn
 	 * @param tableName
 	 * @param record_id
@@ -480,7 +528,11 @@ public class GridTabCSVExporter implements IGridTabExporter
 		StringBuilder name = new StringBuilder(column.getColumnName());
 		if (DisplayType.isLookup(column.getAD_Reference_ID())) {
 			// resolve to identifier - search for value first, if not search for name - if not use the ID
-			String foreignTable = column.getReferenceTableName();
+			String foreignTable = null;
+			if(DisplayType.isChosenMultipleSelection(column.getAD_Reference_ID()))
+				foreignTable = column.getMultiReferenceTableName();
+			else
+				foreignTable = column.getReferenceTableName();
 			if ("AD_EntityType".equals(foreignTable) && I_AD_EntityType.COLUMNNAME_AD_EntityType_ID.equals(column.getColumnName())){
 				name.append("[EntityType]"); // ColumnName is unique value IDEMPIERE-3375
 			}else if ( ! ("AD_Language".equals(foreignTable) || "AD_EntityType".equals(foreignTable) || "AD_Ref_List".equals(foreignTable))) {

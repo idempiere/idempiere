@@ -1457,6 +1457,64 @@ public final class DB
     	}
     	return retValue;
     }
+    
+    /**
+     * get concatenated string values from sql
+     * @param trxName optional transaction name
+     * @param sql
+     * @param params list of parameters
+     * @return first value or null
+     * @throws DBException if there is any SQLException
+     */
+    public static String getSQLValueStringConcatMultipleResultsEx (String trxName, String sql, List<Object> params)
+    {
+    	StringBuilder retValue = new StringBuilder();
+    	PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	Connection conn = null;
+    	if (trxName == null)
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
+    	try
+    	{
+    		if (conn != null)
+    		{
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
+    		}
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
+    		setParameters(pstmt, params);
+    		rs = pstmt.executeQuery();
+    		while (rs.next())
+    			retValue.append(rs.getString(1)+",");
+    	}
+    	catch (SQLException e)
+    	{
+    		if (conn != null)
+    		{
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+    		}
+    		throw new DBException(e, sql);
+    	}
+    	finally
+    	{
+    		close(rs, pstmt);
+    		rs = null; pstmt = null;
+    		if (conn != null)
+    		{
+    			closeAndResetReadonlyConnection(conn);
+    		}
+    	}
+    	String retValueString = retValue.toString();
+    	return retValueString.substring(0,retValueString.lastIndexOf(","));
+    }
 
     /**
      * Get String Value from sql

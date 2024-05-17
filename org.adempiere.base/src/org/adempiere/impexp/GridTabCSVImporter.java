@@ -1021,11 +1021,18 @@ public class GridTabCSVImporter implements IGridTabImporter
 			} 
 			
 			if (isForeing && value != null && !"(null)".equals(value)){
-				String foreignTable = column.getReferenceTableName();
+				String foreignTable = null;
+				if(DisplayType.isChosenMultipleSelection(column.getAD_Reference_ID()))
+					foreignTable = column.getMultiReferenceTableName();
+				else
+					foreignTable = column.getReferenceTableName();
 				String idS = null;
 				int id = -1;
+				int refid = column.getAD_Reference_ID();
 				if("AD_Ref_List".equals(foreignTable))
 				   idS= resolveForeignList(column,foreignColumn,value,null);
+				else if(DisplayType.ChosenMultipleSelectionSearch==refid || DisplayType.ChosenMultipleSelectionTable==refid)
+					idS = resolveForeignMultipleSelection(foreignTable, foreignColumn, value, field, null);
 				else 
 				   id = resolveForeign(foreignTable,foreignColumn,value,field,null);
 				
@@ -1242,6 +1249,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				   MColumn column = MColumn.get(Env.getCtx(),field.getAD_Column_ID());
 				   if (isForeing){
 						String foreignTable = column.getReferenceTableName();
+						int refid = column.getAD_Reference_ID();
 						if ("AD_Ref_List".equals(foreignTable)) {
 							String idS = resolveForeignList(column, foreignColumn, value,trx);
 							if(idS == null)	
@@ -1249,7 +1257,16 @@ public class GridTabCSVImporter implements IGridTabImporter
 							
 							setValue = idS;
 							isThereRow =true;
-						} else {
+						}else if(DisplayType.ChosenMultipleSelectionSearch==refid || DisplayType.ChosenMultipleSelectionTable==refid) {
+							foreignTable = column.getMultiReferenceTableName();
+							String idS = resolveForeignMultipleSelection(foreignTable, foreignColumn, value, field, trx);
+							if(idS == null)
+								return Msg.getMsg(Env.getCtx(),"ForeignNotResolved", new Object[] {header.get(i),value});
+							
+							setValue = idS;
+							isThereRow =true;
+						}
+						else {
 							
 							int id = resolveForeign(foreignTable, foreignColumn, value,field,trx);
 							if(id < 0)	
@@ -1650,6 +1667,95 @@ public class GridTabCSVImporter implements IGridTabImporter
 			}
 		}
 		return -3;   // no values found, error ForeignNotResolved
+	}
+	
+	/**
+	 * @param foreignTable
+	 * @param foreignColumn
+	 * @param value
+	 * @param field
+	 * @param trx
+	 * @return null for not found
+	 */
+	private String resolveForeignMultipleSelection(String foreignTable, String foreignColumn, Object value, GridField field, Trx trx) {
+		boolean systemAccess = false;
+		if (!"AD_Client".equals(foreignTable)) {
+			MTable ft = MTable.get(Env.getCtx(), foreignTable);
+			String accessLevel = ft.getAccessLevel();
+			if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+				|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+				|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+				systemAccess = true;
+			}
+		}
+		int thisClientId = Env.getAD_Client_ID(Env.getCtx());
+
+		String trxName = (trx!=null?trx.getTrxName():null); 
+
+		StringBuilder postSelect = new StringBuilder(" FROM ")
+			.append(foreignTable).append(" WHERE IsActive='Y' AND AD_Client_ID=? AND ").append(foreignColumn).append(" IN(");
+		
+		if(!(value instanceof String))
+			return null;
+		
+		String[] values = ((String)value).split(",");
+		List<Object> params = new ArrayList<>();
+		params.add(thisClientId);
+		
+		for(int idx = 0; idx<values.length;idx++) {
+			if(idx==values.length-1)
+				postSelect.append("?)");
+			else
+				postSelect.append("?,");
+			params.add(values[idx]);
+		}
+		
+	  if (field != null ) {
+		if (!Util.isEmpty(field.getVO().ValidationCode)) {
+			String dynamicValid = Env.parseContext(Env.getCtx(), field.getWindowNo(), field.getGridTab().getTabNo(), field.getVO().ValidationCode, false);
+			if (Util.isEmpty(dynamicValid)) {
+				return null;// it's parse error but simple consider like ForeignNotResolved
+			}else {
+				postSelect.append(" AND (").append(dynamicValid).append(")");
+			}
+		}
+		int ref = field.getVO().displayType;
+		int refval = field.getVO().AD_Reference_Value_ID;
+		if (refval > 0 && (ref == DisplayType.Table || ref == DisplayType.Search)) {
+			final MRefTable refTable = new Query(Env.getCtx(), MRefTable.Table_Name, "AD_Reference_ID=?", trxName)
+					.setParameters(refval)
+					.firstOnly();
+			String whereClause = refTable.getWhereClause();
+			if (!Util.isEmpty(whereClause)) {
+				String dynamicValid = Env.parseContext(Env.getCtx(), field.getWindowNo(), field.getGridTab().getTabNo(), whereClause, false);
+				if (Util.isEmpty(dynamicValid)) {
+					return null;// it's parse error but simple consider like ForeignNotResolved
+				}else {
+					postSelect.append(" AND (").append(dynamicValid).append(")");
+				}
+			}
+		}
+	  }
+	  
+		StringBuilder selectCount = new StringBuilder("SELECT COUNT(*)").append(postSelect);
+		StringBuilder selectId = new StringBuilder("SELECT ").append(foreignTable).append("_ID").append(postSelect);
+		int count = DB.getSQLValueEx(trxName, selectCount.toString(), params);
+		if (count != 0) { // value found, OK
+			return DB.getSQLValueStringConcatMultipleResultsEx(trxName, selectId.toString(), params);
+		} else if (count == 0) { // no values found, error ForeignNotResolved
+			if (systemAccess && thisClientId != 0) {
+				params.remove(0);//Remove Client defined
+				params.add(0,0);// Add System
+				// not found in client, try with System
+				count = DB.getSQLValueEx(trxName, selectCount.toString(), params);
+				if (count != 0) { //  value found, OK
+					return DB.getSQLValueStringConcatMultipleResultsEx(trxName, selectId.toString(), params);
+				} else {
+					return null;
+				}
+			}
+		}
+		return null;   // no values found, error ForeignNotResolved
 	}
 
 	//Copy from GridTable
