@@ -87,10 +87,7 @@ public class CSVReportViewerRenderer implements IReportViewerRenderer {
 		try {
 			String path = System.getProperty("java.io.tmpdir");
 			String prefix = makePrefix(reportEngine.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
+			if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 			File file = FileUtil.createTempFile(prefix, "."+getFileExtension(), new File(path));
 			IReportRenderer<IReportRendererConfiguration> renderer = Core.getReportRenderer(getId());
 			CSVReportRendererConfiguration config = new CSVReportRendererConfiguration()
