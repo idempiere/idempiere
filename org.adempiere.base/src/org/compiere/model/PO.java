@@ -4180,7 +4180,7 @@ public abstract class PO
 					delete_Tree(MTree_Base.TREETYPE_CustomTable);
 				}
 
-				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
+				if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable()) {
 					//delete cascade only for single key column record
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
 					//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
