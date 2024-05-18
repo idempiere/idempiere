@@ -463,10 +463,8 @@ public class FileUtil
 
     public static File createTempFile(String prefix, String suffix, File directory) throws IOException
 	{
-        if (prefix.length() < 3) {
-            throw new IllegalArgumentException("Prefix string \"" + prefix +
-                "\" too short: length must be at least 3");
-        }
+        if (Util.isEmpty(prefix))
+            throw new IllegalArgumentException("Prefix is required");
 
         prefix = Util.setFilenameCorrect(prefix);
 
