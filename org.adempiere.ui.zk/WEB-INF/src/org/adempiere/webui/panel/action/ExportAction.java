@@ -15,12 +15,12 @@ package org.adempiere.webui.panel.action;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
@@ -99,8 +99,8 @@ public class ExportAction implements EventListener<Event>
 	 */
 	public void export()
 	{
-		exporterMap = new HashMap<String, IGridTabExporter>();
-		extensionMap = new HashMap<String, String>();
+		exporterMap = new TreeMap<String, IGridTabExporter>();
+		extensionMap = new TreeMap<String, String>();
 		List<IGridTabExporter> exporterList = EquinoxExtensionLocator.instance().list(IGridTabExporter.class).getExtensions();
 		MRole role = MRole.getDefault();
 		for(IGridTabExporter exporter : exporterList)
@@ -130,11 +130,8 @@ public class ExportAction implements EventListener<Event>
 			cboType.setMold("select");
 
 			cboType.getItems().clear();
-			List<String> keys = new ArrayList<>(extensionMap.keySet());
-		    Collections.sort(keys);
-			for(String key : keys)
-			{
-				cboType.appendItem(key, key);
+			for (Entry<String, String> extension : extensionMap.entrySet()) {
+				cboType.appendItem(extension.getKey(), extension.getValue());
 			}
 
 			cboType.setSelectedIndex(0);
@@ -352,12 +349,12 @@ public class ExportAction implements EventListener<Event>
 	 */
 	protected IGridTabExporter getExporter() {
 		ListItem li = cboType.getSelectedItem();
-		if(li == null || li.getValue() == null)
+		if(li == null || li.getLabel() == null)
 		{
 			return null;
 		}
 
-		String ext = li.getValue().toString();
+		String ext = li.getLabel().toString();
 		IGridTabExporter exporter = exporterMap.get(ext);
 		return exporter;
 	} 
