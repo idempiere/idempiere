@@ -887,7 +887,7 @@ public class MLookupFactory
 	 * @param list
 	 * @param baseTable
 	 * @return display columns
-	 */
+	 	 */
 	private static StringBuilder getDisplayColumn(Language language,
 			String TableName, ArrayList<LookupDisplayColumn> list,
 			String baseTable) {
@@ -903,7 +903,7 @@ public class MLookupFactory
 					.append("'|| " );
 			}
 			LookupDisplayColumn ldc = (LookupDisplayColumn)list.get(i);
-			StringBuilder msg = new StringBuilder().append(TableName).append(".").append(ldc.ColumnName);
+			StringBuilder msg = new StringBuilder().append("alias").append(".").append(ldc.ColumnName);
 			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();
 
 			displayColumn.append("NVL(");
@@ -1026,7 +1026,7 @@ public class MLookupFactory
 
 		StringBuilder displayColumn = getDisplayColumn(language, TableName, list, BaseTable);
 		embedSQL.append(displayColumn.toString());
-		embedSQL.append(" FROM ").append(TableName);
+		embedSQL.append(" FROM ").append(TableName).append(" alias");
 		//  Translation
 		if (   isTranslated && !Env.isBaseLanguage(language, TableName)
 			&& !(TableName+"_Trl").equalsIgnoreCase(BaseTable))  // IDEMPIERE-1070
@@ -1044,7 +1044,7 @@ public class MLookupFactory
 		} else {
 			embedSQL.append(BaseColumn);
 		}
-		embedSQL.append("=").append(TableName).append(".").append(ColumnName);
+		embedSQL.append("=").append("alias").append(".").append(ColumnName);
 		//
 		return embedSQL.toString();
 	}	//  getLookup_TableDirEmbed
