@@ -185,6 +185,14 @@ span.grid-combobox-editor {
 .html-field {
 	cursor: pointer;
 	overflow: auto;
+	border: 1px solid #ECECEC;
+	border-radius: 4px;
+}
+.html-field:hover {
+	border-color: #A8A8A8;
+}
+.html-field:focus {
+	border-color: #0093F9;
 }
 
 <%-- dashboard content editor --%>
