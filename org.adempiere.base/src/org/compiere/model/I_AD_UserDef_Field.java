@@ -60,21 +60,6 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Field_ID */
-    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
-
-	/** Set Field.
-	  * Field on a database table
-	  */
-	public void setAD_Field_ID (int AD_Field_ID);
-
-	/** Get Field.
-	  * Field on a database table
-	  */
-	public int getAD_Field_ID();
-
-	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
-
     /** Column name AD_FieldGroup_ID */
     public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
 
@@ -104,6 +89,21 @@ public interface I_AD_UserDef_Field
 	public int getAD_FieldStyle_ID();
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
+
+    /** Column name AD_Field_ID */
+    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
+
+	/** Set Field.
+	  * Field on a database table
+	  */
+	public void setAD_Field_ID (int AD_Field_ID);
+
+	/** Get Field.
+	  * Field on a database table
+	  */
+	public int getAD_Field_ID();
+
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_LabelStyle_ID */
     public static final String COLUMNNAME_AD_LabelStyle_ID = "AD_LabelStyle_ID";
