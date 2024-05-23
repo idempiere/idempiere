@@ -808,8 +808,10 @@ public class MOrderLine extends X_C_OrderLine
 		
 		//	R/O Check - Product/Warehouse Change
 		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
-			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
+			&& (   is_ValueChanged("M_Product_ID")
+				|| is_ValueChanged("M_Warehouse_ID")
+				|| (   !getParent().isProcessed()
+					&& getM_AttributeSetInstance_ID() != get_ValueOldAsInt(COLUMNNAME_M_AttributeSetInstance_ID))))
 		{
 			if (!canChangeWarehouse())
 				return false;
