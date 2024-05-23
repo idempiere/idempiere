@@ -599,7 +599,7 @@ public class MLookupFactory
 		retValue.DisplayColumn = lookupDisplayColumn;		
 		retValue.InfoWindowId = infoWindowId;
 		retValue.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
-		List<String> lookupDisplayColumns = new ArrayList<String>();
+				List<String> lookupDisplayColumns = new ArrayList<String>();
 		if (isValueDisplayed)
 			lookupDisplayColumns.add("Value");
 		lookupDisplayColumns.add(lookupDisplayColumn != null ? lookupDisplayColumn : DisplayColumn);
