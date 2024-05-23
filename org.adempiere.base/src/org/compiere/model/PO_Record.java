@@ -28,6 +28,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Maintain AD_Table_ID/Record_ID constraint
@@ -47,10 +48,11 @@ public class PO_Record
 	 * 	Delete Cascade including (selected)parent relationships
 	 *	@param AD_Table_ID table
 	 *	@param Record_IDorUU record ID (int) or UUID (String)
+	 *  @param whereTables filter for the Tables
 	 *	@param trxName transaction
 	 *	@return false if could not be deleted
 	 */
-	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String trxName)
+	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String whereTables, String trxName)
 	{
 		int refId;
 		String columnName;
@@ -63,7 +65,7 @@ public class PO_Record
 		} else {
 			throw new IllegalArgumentException(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
 		}
-		KeyNamePair[] cascades = getTablesWithConstraintType(refId, MColumn.FKCONSTRAINTTYPE_ModelCascade, trxName);
+		KeyNamePair[] cascades = getTablesWithConstraintType(refId, MColumn.FKCONSTRAINTTYPE_ModelCascade, whereTables, trxName);
 		//	Table Loop
 		StringBuilder whereClause = new StringBuilder("AD_Table_ID=? AND ").append(columnName).append("=?");
 		for (KeyNamePair table : cascades)
@@ -279,6 +281,18 @@ public class PO_Record
 	 * @return array of KeyNamePair<AD_Table_ID, TableName> 
 	 */
 	private static KeyNamePair[] getTablesWithConstraintType(int refId, String constraintType, String trxName) {
+		return getTablesWithConstraintType(refId, constraintType, null, trxName);
+	}
+
+	/**
+	 * Get array of tables which has a refId column with the defined Constraint Type
+	 * @param refId AD_Reference_ID - Record_ID or Record_UU
+	 * @param constraintType - FKConstraintType of AD_Column
+	 * @param whereTables - optional filter
+	 * @param trxName
+	 * @return array of KeyNamePair<AD_Table_ID, TableName> 
+	 */
+	private static KeyNamePair[] getTablesWithConstraintType(int refId, String constraintType, String whereTables, String trxName) {
 		String columnName;
 		if (refId == DisplayType.RecordID) {
 			columnName = "Record_ID";
@@ -288,11 +302,14 @@ public class PO_Record
 			log.warning(refId + " not supported for ID/UUID");
 			return null;
 		}
-		StringBuilder key = new StringBuilder(constraintType).append("|").append(refId);
+		StringBuilder key = new StringBuilder(constraintType).append("|").append(refId).append("|").append(whereTables);
 		KeyNamePair[] tables = s_po_record_tables_cache.get(key.toString());
 		if (tables != null)
 			return tables;
-		List<MTable> listTables = new Query(Env.getCtx(), MTable.Table_Name, "c.AD_Reference_ID=? AND c.FKConstraintType=? AND AD_Table.IsView='N' AND c.ColumnName=?", trxName)
+		String whereClause = "c.AD_Reference_ID=? AND c.FKConstraintType=? AND AD_Table.IsView='N' AND c.ColumnName=?";
+		if (! Util.isEmpty(whereTables))
+			whereClause = whereClause + " AND (" + whereTables + ")";
+		List<MTable> listTables = new Query(Env.getCtx(), MTable.Table_Name, whereClause, trxName)
 				.addJoinClause("JOIN AD_Column c ON (c.AD_Table_ID=AD_Table.AD_Table_ID)")
 				.setOnlyActiveRecords(true)
 				.setParameters(refId, constraintType, columnName)
