@@ -151,21 +151,21 @@ public class PO_Record
 		KeyNamePair[] tables = s_po_record_tables_cache.get(key.toString());
 		if (tables != null)
 			return tables;
-		final String sql = ""
-				+ "SELECT t.AD_Table_ID, "
-				+ "       c.ColumnName "
-				+ "FROM   AD_Column c "
-				+ "       JOIN AD_Table t ON c.AD_Table_ID = t.AD_Table_ID "
-				+ "       LEFT JOIN AD_Ref_Table r ON c.AD_Reference_Value_ID = r.AD_Reference_ID "
-				+ "       LEFT JOIN AD_Table tr ON r.AD_Table_ID = tr.AD_Table_ID "
-				+ "WHERE  t.IsView = 'N' "
-				+ "       AND t.IsActive = 'Y' "
-				+ "       AND c.IsActive = 'Y' "
-				+ "       AND ( ( c.AD_Reference_ID = ? "
-				+ "               AND c.ColumnName = ? || '_ID' ) "
-				+ "              OR ( c.AD_Reference_ID IN (? , ?) "
-				+ "                   AND ( tr.TableName = ? OR ( tr.TableName IS NULL AND c.ColumnName = ? || '_ID' ) ) ) ) "
-				+ "       AND c.FKConstraintType = ?";
+		final String sql = """
+			SELECT t.AD_Table_ID, 
+			       c.ColumnName 
+			FROM   AD_Column c 
+			       JOIN AD_Table t ON c.AD_Table_ID = t.AD_Table_ID 
+			       LEFT JOIN AD_Ref_Table r ON c.AD_Reference_Value_ID = r.AD_Reference_ID 
+			       LEFT JOIN AD_Table tr ON r.AD_Table_ID = tr.AD_Table_ID 
+			WHERE  t.IsView = 'N' 
+			       AND t.IsActive = 'Y' 
+			       AND c.IsActive = 'Y' 
+			       AND ( ( c.AD_Reference_ID = ? 
+			               AND c.ColumnName = ? || '_ID' ) 
+			              OR ( c.AD_Reference_ID IN (? , ?) 
+			                   AND ( tr.TableName = ? OR ( tr.TableName IS NULL AND c.ColumnName = ? || '_ID' ) ) ) ) 
+			       AND c.FKConstraintType = ?""";
 		List<List<Object>> dependents = DB.getSQLArrayObjectsEx(trxName, sql, 
 				refTableDirId, tableName, refTableId, refTableSearchId, tableName, tableName, MColumn.FKCONSTRAINTTYPE_ModelCascade);
 		if (dependents != null) {
