@@ -4183,14 +4183,14 @@ public abstract class PO
 				if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable()) {
 					//delete cascade only for single key column record
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
-					//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
-					PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, localTrxName);
+					//	Delete Cascade AD_Table_ID/Record_ID except Attachments/Archive (that's postponed until trx commit)
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName NOT IN ('AD_Attachment','AD_Archive')", localTrxName);
 					// Set referencing Record_ID Null AD_Table_ID/Record_ID
 					PO_Record.setRecordNull(AD_Table_ID, Record_ID, localTrxName);
 				}
 				if (Record_UU != null) {
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_UU, localTrxName);
-					PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, localTrxName);
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName NOT IN ('AD_Attachment','AD_Archive')", localTrxName);
 					PO_Record.setRecordNull(AD_Table_ID, Record_UU, localTrxName);
 				}
 		
@@ -4331,9 +4331,10 @@ public abstract class PO
 			}
 			else
 			{
-				if (CacheMgt.get().hasCache(p_info.getTableName())) {
-					Trx trxdel = Trx.get(get_TrxName(), false);
-					if (trxdel != null) {
+				Trx trxdel = Trx.get(get_TrxName(), false);
+				if (trxdel != null) {
+					// Schedule the reset cache for after committed the delete
+					if (CacheMgt.get().hasCache(p_info.getTableName())) {
 						trxdel.addTrxEventListener(new TrxEventListener() {
 							@Override
 							public void afterRollback(Trx trxdel, boolean success) {
@@ -4350,6 +4351,28 @@ public abstract class PO
 							}
 						});
 					}
+					// trigger the deletion of attachments and archives for after committed the delete
+					trxdel.addTrxEventListener(new TrxEventListener() {
+						@Override
+						public void afterRollback(Trx trxdel, boolean success) {
+							trxdel.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterCommit(Trx trxdel, boolean success) {
+							if (success) {
+								if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
+									// Delete Cascade AD_Table_ID/Record_ID on Attachments/Archive
+									// after commit because operations on external storage providers don't have rollback
+									PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+								if (Record_UU != null)
+									PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+							}
+							trxdel.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterClose(Trx trxdel) {
+						}
+					});
 				}
 				if (localTrx != null)
 				{
