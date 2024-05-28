@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.util.ServerContextPropertiesWrapper;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
@@ -346,7 +347,7 @@ public class GenericPO extends PO implements DocAction {
  * @author Low Heng Sin
  *
  */
-class PropertiesWrapper extends Properties {
+class PropertiesWrapper extends ServerContextPropertiesWrapper {
 	/**
 	 * generated serial id
 	 */
