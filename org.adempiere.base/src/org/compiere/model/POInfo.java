@@ -584,6 +584,7 @@ public class POInfo implements Serializable
 		}
 		catch (Exception e)
 		{
+			CLogger.get().log(Level.WARNING, "Cannot create Lookup for " + m_columns[index].ColumnName + "[" + m_columns[index].AD_Column_ID + "]", e);
 			lookup = null;          //  cannot create Lookup
 		}
 		return lookup;
