@@ -346,8 +346,9 @@ public class PayPrint {
 			if (pdfFile != null)
 			{
 				// increase the check document no by the number of pages of the generated pdf file
-				PdfReader document = new PdfReader(pdfFile.getAbsolutePath());
-				lastDocumentNo += document.getNumberOfPages(); 
+				try (PdfReader document = new PdfReader(pdfFile.getAbsolutePath())) {
+					lastDocumentNo += document.getNumberOfPages();
+				}
 				pdfList.add(pdfFile);
 			}
 		}
