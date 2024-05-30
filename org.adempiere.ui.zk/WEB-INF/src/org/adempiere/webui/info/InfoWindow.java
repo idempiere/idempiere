@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -224,10 +225,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	/** true to auto collapse parameter panel after execution of query */
 	private boolean autoCollapsedParameterPanel = false;
-
-	protected Lookup lookupModel = null;
-
-	private ArrayList<String> lookupIdentifiers;
 	
 	/**
 	 * @param WindowNo
@@ -288,25 +285,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
-		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, 
-			(field != null ? field.getLookup() : null));
-	}
-	
-	/**
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param queryValue
-	 * @param multipleSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 * @param lookup
-	 * @param field
-	 * @param predefinedContextVariables
-	 * @param lookupModel
-	 */
-	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
-			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables, Lookup lookupModel) {
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
 				lookup, AD_InfoWindow_ID, queryValue);		
 		this.m_gridfield = field;
@@ -337,14 +315,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
    		Env.setPredefinedVariables(Env.getCtx(), getWindowNo(), predefinedContextVariables);
 		infoContext = new Properties(Env.getCtx());
-		if (lookupModel != null) {
-			this.lookupModel = lookupModel;
-			if (lookupModel instanceof MLookup mLookup) {
-				if (mLookup.getLookupInfo().lookupDisplayColumnNames != null && mLookup.getLookupInfo().lookupDisplayColumnNames.size() > 0) {
-					this.lookupIdentifiers = new ArrayList<String>(mLookup.getLookupInfo().lookupDisplayColumnNames);
-				}
-			}
-		}
 		p_loadedOK = loadInfoDefinition(); 
 		
 		// make process button only in window mode
@@ -743,12 +713,57 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 	
 	protected void testQueryForSplit(String [] values) {
-		// do fill value to editor
-		for(int i = 0; i < values.length && i < identifiers.size(); i++) {
-			WEditor editor = identifiers.get(i);
-			editor.setValue(values[i].trim());
+		// store identifiers on info window, sort to follow identifier on m_table
+		List<WEditor> fillIdentifiers = new ArrayList<>();
+		// store query value, ignore value for identifier not exists on info window
+		// this list is sync with fillIdentifiers (size and order)
+		List<String> fillValues = new ArrayList<>();
+		
+		List<String> tableIdentifiers = null;
+		if (m_gridfield != null && m_gridfield.getLookup() != null 
+				&& m_gridfield.getLookup() instanceof MLookup) {
+			
+			MLookup mLookup = (MLookup)m_gridfield.getLookup();
+			if (mLookup.getLookupInfo().lookupDisplayColumnNames.size() > 0)
+				tableIdentifiers = mLookup.getLookupInfo().lookupDisplayColumnNames;
+		}
+		
+		if (tableIdentifiers != null) {
+			for (int i = 0; i < tableIdentifiers.size(); i++) {
+				// final local variable to access inside lambda expression
+				int indexFinal = i;
+				List<String> tableIdentifiersFinal = tableIdentifiers;
+				
+				// sort identifiers of info window to follow m_table
+				// ignore identifiers exists on m_table but not exists on info window
+				identifiers.forEach((Consumer<WEditor>)(identifierEditor) -> {
+					if (identifierEditor.getColumnName().equals(tableIdentifiersFinal.get(indexFinal))) {
+						fillIdentifiers.add(identifierEditor);
+						fillValues.add(values[indexFinal]);
+					}
+				});
+			}
+		}
+		
+		// case not exists mLookup.getLookupInfo().lookupDisplayColumnNames
+		// or no identifiers on info window exists on m_table
+		// fall back to old logic and just set values to identifiers
+		if (fillIdentifiers.size() == 0) {
+			for(int i = 0; i < values.length && i < identifiers.size(); i++) {
+				fillIdentifiers.add(identifiers.get(i));
+				fillValues.add(values[i]);
+			}
+		}
+		
+
+
+		// do fill value to editor (for both corrected order and fall back)
+		for(int i = 0; i < fillIdentifiers.size(); i++) {
+			WEditor editor = fillIdentifiers.get(i);
+			editor.setValue(fillValues.get(i).trim());
 		}
 		testCount(false);
+
 	}
 	
 	@Override
@@ -1888,20 +1903,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if (!isAutoComplete)
 			dynamicDisplay(null);
-		
-		//if using lookupIdentifiers, sort identifiers in the order of lookupIdentifiers 
-		if (lookupIdentifiers != null && lookupIdentifiers.size() > 0 && identifiers.size() > 0) {
-			List<WEditor> list = new ArrayList<WEditor>();
-			for(String columnName : lookupIdentifiers) {
-				for(WEditor editor : identifiers) {
-					if (columnName.equals(editor.getColumnName())) {
-						list.add(editor);
-						break;
-					}
-				}
-			}
-			identifiers = list;
-		}
 	}
 
 	/**
@@ -2020,12 +2021,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         
         editor.showMenu();
         
-        //if MLookup is available, use display columns of MLookup instead of InfoColumn's IsIdentifier flag
-        if (lookupIdentifiers != null && lookupIdentifiers.size() > 0) {
-        	if (lookupIdentifiers.contains(infoColumn.getColumnName()) ) {
-        		identifiers.add(editor);
-        	}
-        } else if (infoColumn.isIdentifier()) {
+        if (infoColumn.isIdentifier()) {
         	identifiers.add(editor);
         }
 
