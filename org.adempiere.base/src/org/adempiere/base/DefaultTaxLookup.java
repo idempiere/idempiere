@@ -51,8 +51,17 @@ public class DefaultTaxLookup implements ITaxLookup {
 	public int get(Properties ctx, int M_Product_ID, int C_Charge_ID, Timestamp billDate, Timestamp shipDate,
 			int AD_Org_ID, int M_Warehouse_ID, int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
 			boolean IsSOTrx, String deliveryViaRule, String trxName) {
-		return Tax.get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, 
+		return Tax.get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
 				IsSOTrx, deliveryViaRule, trxName);
+	}
+
+	@Override
+	public int get(Properties ctx, int M_Product_ID, int C_Charge_ID, Timestamp billDate, Timestamp shipDate,
+			int AD_Org_ID, int M_Warehouse_ID, int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
+			int dropshipC_BPartner_Location_ID,
+			boolean IsSOTrx, String deliveryViaRule, String trxName) {
+		return Tax.get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, 
+				dropshipC_BPartner_Location_ID, IsSOTrx, deliveryViaRule, trxName);
 	}
 
 	@Override
@@ -60,6 +69,13 @@ public class DefaultTaxLookup implements ITaxLookup {
 			int shipToC_Location_ID, Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID,
 			String trxName) {
 		return Tax.get(ctx, C_TaxCategory_ID, IsSOTrx, shipDate, shipFromC_Location_ID, shipToC_Location_ID, billDate, billFromC_Location_ID, billToC_Location_ID, trxName);
+	}
+
+	@Override
+	public int get(Properties ctx, int C_TaxCategory_ID, boolean IsSOTrx, Timestamp shipDate, int shipFromC_Location_ID,
+			int shipToC_Location_ID, int dropshipC_Location_ID, Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID,
+			String trxName) {
+		return Tax.get(ctx, C_TaxCategory_ID, IsSOTrx, shipDate, shipFromC_Location_ID, shipToC_Location_ID, dropshipC_Location_ID, billDate, billFromC_Location_ID, billToC_Location_ID, trxName);
 	}
 
 }
