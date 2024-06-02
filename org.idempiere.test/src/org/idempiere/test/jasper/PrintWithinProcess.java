@@ -40,6 +40,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
@@ -232,6 +233,60 @@ public class PrintWithinProcess extends AbstractTestCase {
 				assertFalse(pi.isError(), pi.getSummary());
 				assertFalse(pi.getPDFReport() == null);
 				pdfList.add(pi.getPDFReport());
+			}
+			assertFalse(pdfList.isEmpty());
+		} finally {
+			rollback();
+			if (process != null) {
+				int oldRole = Env.getAD_Role_ID(ctx);
+				try {
+					PO.setCrossTenantSafe();
+					Env.setContext(ctx, Env.AD_ROLE_ID, 0); // to allow deleting process
+					process.deleteEx(true);
+				} finally {
+					Env.setContext(ctx, Env.AD_ROLE_ID, oldRole);
+					PO.clearCrossTenantSafe();
+				}
+			}
+			commit();
+		}
+	}
+	
+	@Test
+	public void testEncryptReport() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MProcess process = null;
+		try {
+			process = setupProcess(ctx, trxName, "bundle:org.idempiere.test:/AR_Invoice_Bundle.jrxml");
+			List<MInvoice> invoices = new Query(ctx, MInvoice.Table_Name, "C_Invoice_ID IN (?,?)", trxName)
+					.setClient_ID()
+					.setOnlyActiveRecords(true)
+					.setParameters(103, 109)
+					.list();
+			for (MInvoice invoice : invoices) {
+				invoice.setDescription("Test Printing within a Process");
+				invoice.saveEx();
+			}
+
+			ProcessInfo pi = setupProcessInfo(process);
+			pi.setExport(true);
+			Trx trx = Trx.get(trxName, false);
+			ProcessInfoParameter [] parameter = new ProcessInfoParameter [] 
+					{new ProcessInfoParameter("isEncrypted", true, null, null, null),
+					new ProcessInfoParameter("readPassword", "readPassword", null, null, null),
+					new ProcessInfoParameter("createPassword", "createPassword", null, null, null)};
+			
+			pi.setParameter(parameter);
+			
+			List<File> pdfList = new ArrayList<File>();
+			for (MInvoice invoice : invoices) {
+				pi.setRecord_ID(invoice.getC_Invoice_ID());
+				ProcessUtil.startJavaProcess(Env.getCtx(), pi, trx, false);
+				assertFalse(pi.isError(), pi.getSummary());
+				assertFalse(pi.getExportFile() == null);
+				pdfList.add(pi.getExportFile());
 			}
 			assertFalse(pdfList.isEmpty());
 		} finally {
