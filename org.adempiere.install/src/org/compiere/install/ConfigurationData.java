@@ -831,6 +831,13 @@ public class ConfigurationData
 				if (log.isLoggable(Level.FINE)) log.fine(host + ":" + port + " - " + e.getMessage());
 			return false;
 		}
+		finally
+		{
+			if (pingSocket != null)
+				try {
+					pingSocket.close();
+				} catch (IOException e) {}
+		}
 		if (!shouldBeUsed)
 			log.warning("Open Socket " + host + ":" + port + " - " + pingSocket);
 

@@ -39,22 +39,6 @@ public interface IInfoFactory {
 	public InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup);
-	
-	/**
-	 * 
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param value
-	 * @param multiSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 * @param lookup
-	 * @return {@link InfoPanel}
-	 */
-	public InfoPanel create (int WindowNo,
-            String tableName, String keyColumn, String value,
-            boolean multiSelection, String whereClause, int AD_InfoWindow_ID, Lookup lookup);
 
 	/**
 	 * 

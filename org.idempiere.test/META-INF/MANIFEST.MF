@@ -44,5 +44,4 @@ Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.idempiere.test
 Bundle-ClassPath: .
-Service-Component: OSGI-INF/org.idempiere.test.event.MyComponent.xml,
- OSGI-INF/org.idempiere.test.jasper.HandleSetupConfigurationPdfExport.xml
+Service-Component: OSGI-INF/*.xml
