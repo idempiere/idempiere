@@ -195,7 +195,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		South southPane = new South();
 		mainPanel.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
-		ZKUpdateUtil.setHeight(southPane, "30px");
+		ZKUpdateUtil.setVflex(southPane, "min");		
 		
 		if(ThemeManager.isUseFontIconForImage())
 			bOk.setIconSclass("z-icon-Ok");

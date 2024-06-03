@@ -25,7 +25,6 @@
 package org.adempiere.webui.info;
 
 import org.compiere.model.GridField;
-import org.compiere.model.Lookup;
 
 /**
  * Info window for M_InOut
@@ -89,25 +88,4 @@ public class InfoInOutWindow extends InfoWindow {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	}
-
-	/**
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param queryValue
-	 * @param multipleSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 * @param lookup
-	 * @param field
-	 * @param predefinedContextVariables
-	 * @param lookupModel
-	 */
-	public InfoInOutWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
-			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field,
-			String predefinedContextVariables, Lookup lookupModel) {
-		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, field,
-				predefinedContextVariables, lookupModel);
-	}	
-	
 }

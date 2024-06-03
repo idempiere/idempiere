@@ -85,9 +85,9 @@ import org.zkoss.zul.Vbox;
  */
 public class AboutWindow extends Window implements EventListener<Event> {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -4235323239552159150L;
+	private static final long serialVersionUID = -5590393631865037228L;
 
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(AboutWindow.class);
@@ -104,6 +104,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 	protected Button btnAdempiereLog;
 	protected Button btnReloadLogProps;
+	protected Button btnGC;
 
 	private Listbox levelListBox;
 
@@ -120,9 +121,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	 */
 	private void init() {
 
-		System.runFinalization();
-		System.gc();
-		
 		this.setPosition("center");
 		this.setTitle(ThemeManager.getBrowserTitle());
 		this.setSclass("popup-dialog about-window");
@@ -251,11 +249,11 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			}
 		}
 
+		MUser user = MUser.get(Env.getCtx());
 		levelListBox.setEnabled(false);
-		if (Env.getAD_Client_ID(Env.getCtx()) == 0)
+		if (user.isAdministrator())
 		{
-			MUser user = MUser.get(Env.getCtx());
-			if (user.isAdministrator())
+			if (Env.getAD_Client_ID(Env.getCtx()) == 0)
 			{
 				levelListBox.setEnabled(true);
 				levelListBox.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
@@ -268,6 +266,13 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				hbox.appendChild(new Space());
 				hbox.appendChild(btnAdempiereLog);
 
+				ZKUpdateUtil.setHflex(hbox, "1");
+				ZKUpdateUtil.setVflex(hbox, "0");
+				vbox.appendChild(hbox);
+				hbox = new Hbox();
+				hbox.setAlign("center");
+				hbox.setPack("start");
+
 				btnReloadLogProps = new Button("Reload Log Props");
 				btnReloadLogProps.setTooltiptext("Reload the configuration of log levels from idempiere.properties file");
 				LayoutUtils.addSclass("txt-btn", btnReloadLogProps);
@@ -275,6 +280,12 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				hbox.appendChild(new Space());
 				hbox.appendChild(btnReloadLogProps);
 			}
+			btnGC = new Button("Garbage Collect");
+			btnGC.setTooltiptext("Perform a Garbage Collection on the JVM");
+			LayoutUtils.addSclass("txt-btn", btnGC);
+			btnGC.addEventListener(Events.ON_CLICK, this);
+			hbox.appendChild(new Space());
+			hbox.appendChild(btnGC);
 		}
 
 		ZKUpdateUtil.setHflex(hbox, "1");
@@ -500,6 +511,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			downloadAdempiereLogFile();
 		else if (event.getTarget() == btnReloadLogProps)
 			reloadLogProps();
+		else if (event.getTarget() == btnGC)
+			garbageCollection();
 		else if (event.getTarget() == levelListBox)
 			setTraceLevel();
 		else if (Events.ON_CLICK.equals(event.getName()))
@@ -554,6 +567,29 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Call JVM GC
+	 */
+	private void garbageCollection() {
+		Runtime runtime = Runtime.getRuntime();
+		long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
+		System.runFinalization();
+		System.gc();
+        try {Thread.sleep(1000);} catch (InterruptedException e) {} // Wait 1 second for GC to complete
+		long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
+		long freedMemory = usedMemoryAfter - usedMemoryBefore;
+		String msg = String.format("Memory: total %,d, before gc: %,d, after gc %,d, freed by gc %,d bytes%n", runtime.totalMemory(), usedMemoryBefore, usedMemoryAfter, freedMemory);
+		log.warning(msg);
+		msg = String.format("Memory in bytes:<ul>"
+				+ "<li>Total = %,d</li>"
+				+ "<li>Used before gc = %,d</li>"
+				+ "<li>Used after gc = %,d</li>"
+				+ "<li>Freed by gc = %,d</li>"
+				+ "</ul>",
+				runtime.totalMemory(), usedMemoryBefore, usedMemoryAfter, freedMemory);
+		Dialog.info(0, "", msg, "JVM Garbage Collection");
 	}
 
 	/**

@@ -525,7 +525,7 @@ public class CalloutInOut extends CalloutEngine
 				mTab.setValue("M_Locator_ID", Integer.valueOf(M_Locator_ID));
 		}
 		else
-			mTab.setValue("M_AttributeSetInstance_ID", null);
+			mTab.setValue("M_AttributeSetInstance_ID", 0);
 		//
 		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 		boolean IsSOTrx = "Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx"));

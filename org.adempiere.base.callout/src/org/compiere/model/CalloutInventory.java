@@ -60,7 +60,7 @@ public class CalloutInventory extends CalloutEngine
 
 		if ("M_Product_ID".equals(mField.getColumnName())) {
 			// product changed - remove old ASI
-			mTab.setValue("M_AttributeSetInstance_ID", null);
+			mTab.setValue("M_AttributeSetInstance_ID", 0);
 		}
 
 		//	Get Book Value
@@ -96,7 +96,7 @@ public class CalloutInventory extends CalloutEngine
 			if (M_AttributeSetInstance_ID != 0)
 				mTab.setValue(MInventoryLine.COLUMNNAME_M_AttributeSetInstance_ID, M_AttributeSetInstance_ID);
 			else
-				mTab.setValue(MInventoryLine.COLUMNNAME_M_AttributeSetInstance_ID, null);
+				mTab.setValue(MInventoryLine.COLUMNNAME_M_AttributeSetInstance_ID, 0);
 		}
 			
 		// Set QtyBook from first storage location

@@ -58,9 +58,9 @@ import org.compiere.util.ValueNamePair;
 public final class MLookup extends Lookup implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 2288661955135689187L;
+	private static final long serialVersionUID = 3339750658316918418L;
 
 	/**
 	 *  MLookup Constructor
@@ -1083,9 +1083,9 @@ public final class MLookup extends Lookup implements Serializable
 	protected class MLoader extends ContextRunnable implements Serializable
 	{
 		/**
-		 * generated serial id
+		 * 
 		 */
-		private static final long serialVersionUID = -7868426685745727939L;
+		private static final long serialVersionUID = -5752931726580011885L;
 
 		/**
 		 * 	MLoader Constructor
@@ -1228,7 +1228,13 @@ public final class MLookup extends Lookup implements Serializable
 			try
 			{
 				//	SELECT Key, Value, Name, IsActive FROM ...
-				pstmt = DB.prepareStatement(sql.toString(), null);
+				String sqlFirstRows = DB.getDatabase().addPagingSQL(sql.toString(), 1, MAX_ROWS+1);
+				pstmt = DB.prepareStatement(sqlFirstRows, null);
+				if (! DB.getDatabase().isPagingSupported())
+					pstmt.setMaxRows(MAX_ROWS+1);
+				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+				if (timeout > 0)
+					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
 
 				//	Get first ... rows
@@ -1237,19 +1243,10 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					if (rows++ > MAX_ROWS)
 					{
-						StringBuilder s = new StringBuilder().append(m_info.KeyColumn).append(": Loader - Too many records");
-						if (m_info.Column_ID > 0) 
-						{
-							MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
-							String column = mColumn.getColumnName();
-							s.append(", Column=").append(column);
-							String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
-							s.append(", Table=").append(tableName);
-						}
-						log.warning(s.toString());
+						logLookup(Level.WARNING, "Too many records");
 						break;
 					}
-					//  check for interrupted every 10 rows
+					//  check for interrupted every 20 rows
 					if (rows % 20 == 0 && Thread.interrupted())
 						break;
 
@@ -1294,8 +1291,11 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, m_info.KeyColumn + ", " + m_info.Column_ID + " : Loader - " + sql, e);
 				m_allLoaded = false;
+				if (DB.getDatabase().isQueryTimeout(e))
+					logLookup(Level.WARNING, "Too slow query");
+				else
+					logLookup(Level.SEVERE, e.getLocalizedMessage());
 			}
 			finally {
 				DB.close(rs, pstmt);
@@ -1307,6 +1307,25 @@ public final class MLookup extends Lookup implements Serializable
 					+ " - ms=" + String.valueOf(System.currentTimeMillis()-m_startTime)
 					+ " (" + String.valueOf(System.currentTimeMillis()-startTime) + ")");
 		}	//	run
+
+		/**
+		 * Log a warning for the lookup problem found
+		 * @param problem
+		 */
+		private void logLookup(Level level, String problem) {
+			if (log.isLoggable(level)) {
+				StringBuilder msg = new StringBuilder().append(m_info.KeyColumn).append(": Loader - ").append(problem);
+				if (m_info.Column_ID > 0) {
+					MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
+					String column = mColumn.getColumnName();
+					msg.append(", Column=").append(column);
+					String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
+					msg.append(", Table=").append(tableName);
+				}
+				log.log(level, msg.toString());
+			}
+		}
+
 	}	//	Loader
 
 }	//	MLookup
