@@ -116,6 +116,7 @@ public class ServerReportCtl {
 			{
 				if (pi != null && pi.isBatch() && pi.isPrintPreview())
 				{
+					re.setProcessInfo(pi);
 					if ("HTML".equals(pi.getReportType())) 
 					{
 						pi.setExport(true);

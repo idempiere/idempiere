@@ -862,7 +862,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = FileUtil.createTempFile (makePrefix(getName()), ".pdf");
+				file = m_pi == null ? FileUtil.createTempFile (makePrefix(getName()), ".pdf") :
+					new File(m_pi.getPDFFileName());
 		}
 		catch (IOException e)
 		{
