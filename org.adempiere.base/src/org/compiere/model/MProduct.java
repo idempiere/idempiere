@@ -594,13 +594,13 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	}	//	isItem
 		
 	/**
-	 * 	Product is an Item and is Stocked
-	 *	@return true if stocked and is item
+	 * 	Product is an Item or Expense and is Stocked
+	 *	@return true if stocked and is item or expense type
 	 */
 	@Override
 	public boolean isStocked ()
 	{
-		return super.isStocked() && isItem();
+        return super.isStocked() && (isItem() || PRODUCTTYPE_ExpenseType.equals(getProductType()));
 	}	//	isStocked
 	
 	/**
@@ -672,7 +672,9 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			((is_ValueChanged("IsActive") && !isActive())		//	now not active 
 			|| (is_ValueChanged("IsStocked") && !isStocked())	//	now not stocked
 			|| (is_ValueChanged("ProductType") 					//	from Item to non-Item
-				&& PRODUCTTYPE_Item.equals(get_ValueOld("ProductType")))))
+				&& PRODUCTTYPE_Item.equals(get_ValueOld("ProductType"))) //	from Item to non-Item
+				|| (is_ValueChanged("ProductType") 					
+						&& PRODUCTTYPE_ExpenseType.equals(get_ValueOld("ProductType")) &&  (Boolean)get_ValueOld("IsStocked")))) //	from stocked Expense type to any other type
 		{
 			// Disallow change if there are on hand, ordered or reserved quantity
 			String errMsg = verifyStorage();
@@ -702,8 +704,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			return false; 
 		}
 		
-		// Reset IsStocked to false if not Item product type
-		if (!PRODUCTTYPE_Item.equals(getProductType()))
+		// Reset IsStocked to false if product type is neither Item or Expense
+		if (!PRODUCTTYPE_Item.equals(getProductType()) && !PRODUCTTYPE_ExpenseType.equals(getProductType()))
 			setIsStocked(false);
 		
 		// reset UOM precision 
@@ -933,7 +935,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		{
 			throw new AdempiereException("@S_Resource_ID@<>0");
 		}
-		// Can't delete product has on hand, ordered or reserved quanttiy
+		// Can't delete product has on hand, ordered or reserved quantity
 		if (isStocked() || PRODUCTTYPE_Item.equals(getProductType()))
 		{
 			String errMsg = verifyStorage();

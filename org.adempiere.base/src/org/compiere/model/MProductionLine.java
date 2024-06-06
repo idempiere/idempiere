@@ -409,6 +409,13 @@ public class MProductionLine extends X_M_ProductionLine {
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
+		MProduct product = MProduct.get(getM_Product_ID());
+        if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType())) {
+        	log.saveError("BOMExpenseTypeComponentNotAllowed", "");
+        	return false;
+        }
+        
+        
 		if (productionParent == null && getM_Production_ID() > 0)
 			productionParent = new MProduction(getCtx(), getM_Production_ID(), get_TrxName());
 
