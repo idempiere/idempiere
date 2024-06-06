@@ -54,6 +54,10 @@ import org.compiere.util.Trx;
  */
 public final class MSetup
 {
+
+	public final static String TRXNAME_PREFIX = "InitialClientSetup";
+	public final static String TRX_DISPLAYNAME = "org.compiere.model.MSetup_createClient";
+
 	/**
 	 *  Constructor
 	 *  @param ctx context
@@ -80,7 +84,7 @@ public final class MSetup
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
 
-	private Trx				m_trx = Trx.get(Trx.createTrxName("Setup"), true);
+	private Trx				m_trx = Trx.get(Trx.createTrxName(TRXNAME_PREFIX), true);
 	private Properties      m_ctx;
 	private String          m_lang;
 	private int             m_WindowNo;
@@ -136,7 +140,7 @@ public final class MSetup
 		String adminEmail, String userEmail, boolean isSetInitialPassword)
 	{
 		log.info(clientName);
-		m_trx.setDisplayName(getClass().getName()+"_createClient");
+		m_trx.setDisplayName(TRX_DISPLAYNAME);
 		m_trx.start();
 		
 		//  info header
