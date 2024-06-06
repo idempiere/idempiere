@@ -1,8 +1,31 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
+
 package org.idempiere.test.jasper;
 
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.IEventManager;
+import org.adempiere.report.jasper.JREventManage;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.osgi.service.component.annotations.Component;
@@ -18,28 +41,22 @@ reference = @Reference(
 )
 public class HandleSetupConfigurationPdfExport extends AbstractEventHandler {
 
-	// constant from JREventManage
-	public final static String JP_PDF_EXPORT_CONFIG_EVENT = "JP_PDF_EXPORT_CONFIG_EVENT";
-	public final static String JP_KEY_PDF_EXPORT_EXPORTER = "EXPORTER";
-	public final static String JP_KEY_PDF_EXPORT_CONFIG = "CONFIG";
-	public final static String JP_KEY_PROCESS_INFO = "PROCESS_INFO";
-	
 	@Override
 	protected void initialize() {
-		registerEvent(JP_PDF_EXPORT_CONFIG_EVENT, null);	
+		registerEvent(JREventManage.JP_PDF_EXPORT_CONFIG_EVENT, null);	
 
 	}
 	
 	@Override
 	protected void doHandleEvent(Event event) {
 		// just handle pdf export event
-		if (!JP_PDF_EXPORT_CONFIG_EVENT.equals(event.getTopic()))
+		if (!JREventManage.JP_PDF_EXPORT_CONFIG_EVENT.equals(event.getTopic()))
 			return;
 		
 		// get common object from event info
-		SimplePdfExporterConfiguration pdfExporterConfig = (SimplePdfExporterConfiguration)event.getProperty(JP_KEY_PDF_EXPORT_CONFIG);
+		SimplePdfExporterConfiguration pdfExporterConfig = (SimplePdfExporterConfiguration)event.getProperty(JREventManage.JP_KEY_PDF_EXPORT_CONFIG);
 		//JRPdfExporter pdfExporter = (JRPdfExporter)event.getProperty(JP_KEY_PDF_EXPORT_EXPORTER);
-		ProcessInfo pi = (ProcessInfo)event.getProperty(JP_KEY_PROCESS_INFO);
+		ProcessInfo pi = (ProcessInfo)event.getProperty(JREventManage.JP_KEY_PROCESS_INFO);
 		
 		// can apply passowrd or not up to parameter
 		boolean isEncrypted = false;
