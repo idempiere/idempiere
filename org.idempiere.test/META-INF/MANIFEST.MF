@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.idempiere.test
 Bundle-Version: 11.0.0.qualifier
 Bundle-Vendor: iDempiere
 Automatic-Module-Name: org.idempiere.test
-Import-Package: org.assertj.core.api;version="3.22.0",
+Import-Package: net.sf.jasperreports.export,
+ org.adempiere.report.jasper,
+ org.assertj.core.api;version="3.22.0",
  org.assertj.core.api.junit.jupiter;version="3.22.0",
  org.junit.jupiter.api;version="5.9.0",
  org.junit.jupiter.api.condition;version="5.9.0",
