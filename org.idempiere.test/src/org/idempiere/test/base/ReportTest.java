@@ -27,6 +27,8 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
@@ -54,8 +56,11 @@ public class ReportTest extends AbstractTestCase {
 	public void testPDFFileName() {
 		MProcess orderReport = MProcess.get(Env.getCtx(), Order_Print_Process);
 		MOrder order = new MOrder(Env.getCtx(),  108, getTrxName()); // Garden Order 60000
+
+		String tmpdirname = getTempFolder();
+		File tmpdir = new File(tmpdirname);
+		tmpdir.mkdirs();
 		
-		String tmpdirname = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator");
 		String fileName = order.getDocumentNo() + ".pdf";
 
 		ProcessInfo pi = new ProcessInfo(orderReport.getName(), orderReport.getAD_Process_ID());
@@ -70,8 +75,18 @@ public class ReportTest extends AbstractTestCase {
 		instance.saveEx();
 		ServerProcessCtl.process(pi, null);
 		File file = pi.getPDFReport();
-		
+
 		assertEquals(file.getName(), fileName);
 
+	}
+
+	private String getTempFolder() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		String dt = sdf.format(cal.getTime());
+		String tmpdirname = System.getProperty("java.io.tmpdir");
+		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
+
+		return tmpdirname;
 	}
 }
