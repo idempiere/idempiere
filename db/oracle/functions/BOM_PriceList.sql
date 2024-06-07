@@ -27,6 +27,7 @@ AS
 		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=Product_ID
 		  AND b.M_ProductBOM_ID != Product_ID
+		  AND p.IsVerified='Y'
 		  AND b.IsActive='Y';
 	--
 BEGIN
