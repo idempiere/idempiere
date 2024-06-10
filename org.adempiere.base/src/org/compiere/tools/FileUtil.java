@@ -471,12 +471,7 @@ public class FileUtil
         if (suffix == null)
             suffix = ".tmp";
 
-        Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		String dt = sdf.format(cal.getTime());
-		String tmpdirname = (directory != null) ? directory.getCanonicalPath() : System.getProperty("java.io.tmpdir");
-		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
-
+		String tmpdirname = getTempFolderName(directory);
 		File tmpdir = new File(tmpdirname);
 		tmpdir.mkdirs();
 
@@ -486,10 +481,46 @@ public class FileUtil
 
         return f;	
 	}
+    
+    public static String getTempFolderName(File directory) throws IOException {
+    	Calendar cal = Calendar.getInstance();
+ 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+ 		String dt = sdf.format(cal.getTime());
+ 		String tmpdirname = (directory != null) ? directory.getCanonicalPath() : System.getProperty("java.io.tmpdir");
+ 		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
+
+    	return tmpdirname;
+    }
 
     public static File createTempFile(String prefix, String suffix) throws IOException
     {
         return createTempFile(prefix, suffix, null);
+    }
+    
+    /**
+     * Create a file with the given filename
+     * If the filename includes the path - creates the file as requested
+     * If it only includes the name, it creates the file in a safe-thread temporary folder  
+     * @param fileName
+     * @return file
+     * @throws IOException
+     */
+    public static File createFile(String fileName) throws IOException {
+    	if (Util.isEmpty(fileName))
+    		throw new IllegalArgumentException("Name is required");
+
+    	File file = null;
+    	if (fileName.contains(System.getProperty("file.separator"))) {
+    		file = new File(fileName);
+    	} else {
+    		String tmpdirname = getTempFolderName(null);
+    		File tmpdir = new File(tmpdirname);
+    		tmpdir.mkdirs();
+
+    		file = new File(tmpdirname, fileName);
+    	}
+
+    	return file;	
     }
 	
 	/**

@@ -604,7 +604,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		{
 			File pdfFile = null;
 			if (processInfo.getPDFFileName() != null) {
-				pdfFile = new File(processInfo.getPDFFileName());
+				pdfFile = FileUtil.createFile(processInfo.getPDFFileName());
 			} else {
 				pdfFile = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
 			}

@@ -186,6 +186,7 @@ public class ServerReportCtl {
 		if (pi != null) {
 			jasperProcessInfo.setPrintPreview(pi.isPrintPreview());
 			jasperProcessInfo.setIsBatch(pi.isBatch());
+		    jasperProcessInfo.setPDFFileName(pi.getPDFFileName());
 		} else {
 			jasperProcessInfo.setPrintPreview( !IsDirectPrint );
 		}
