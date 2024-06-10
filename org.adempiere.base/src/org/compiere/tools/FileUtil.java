@@ -522,6 +522,24 @@ public class FileUtil
 
     	return file;	
     }
+    
+	/**
+	 * Creates a valid file name prefix from "name"
+	 * @param name
+	 * @return file name prefix
+	 */
+    public static String makePrefix(String name) {
+		StringBuilder prefix = new StringBuilder();
+		char[] nameArray = name.toCharArray();
+		for (char ch : nameArray) {
+			if (Character.isLetterOrDigit(ch)) {
+				prefix.append(ch);
+			} else {
+				prefix.append("_");
+			}
+		}
+		return prefix.toString();
+	}
 	
 	/**
 	 * 

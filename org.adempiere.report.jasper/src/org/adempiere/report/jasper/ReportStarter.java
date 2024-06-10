@@ -515,7 +515,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	    		processInfo.setPDFReport(batchPDFExportList.get(0));
 	    	} else {
 	    		try {
-					File pdfFile = File.createTempFile(makePrefix(processInfo.getTitle()), ".pdf");
+					File pdfFile = File.createTempFile(FileUtil.makePrefix(processInfo.getTitle()), ".pdf");
 					Util.mergePdf(batchPDFExportList, pdfFile);					
 					processInfo.setPDFReport(pdfFile);
 				} catch (Exception e) {
@@ -565,7 +565,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     }
 
 	private File createMultiFileArchive(List<File> exportFileList) throws Exception {
-		File archiveFile = File.createTempFile(makePrefix(processInfo.getTitle()), ".zip");
+		File archiveFile = File.createTempFile(FileUtil.makePrefix(processInfo.getTitle()), ".zip");
 		try (FileOutputStream out = new FileOutputStream(archiveFile)) {
 			try (ZipOutputStream zip = new ZipOutputStream(out);) {
 				zip.setMethod(ZipOutputStream.DEFLATED);
@@ -606,7 +606,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			if (processInfo.getPDFFileName() != null) {
 				pdfFile = FileUtil.createFile(processInfo.getPDFFileName());
 			} else {
-				pdfFile = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
+				pdfFile = File.createTempFile(FileUtil.makePrefix(jasperPrint.getName()), ".pdf");
 			}
 			
 			JRPdfExporter exporter = new JRPdfExporter(jasperReportContext);                    		
@@ -666,7 +666,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		    				else
 		    					newQueryText = originalQueryText + " WHERE " + query.toString();
 		    				
-		    			    File jrxmlFile = File.createTempFile(makePrefix(jasperReport.getName()), ".jrxml");
+		    			    File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
 		            		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
 		            		
 		            		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
@@ -759,7 +759,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			ext = "pdf";
 		
 		try {						
-			File exportFile = File.createTempFile(makePrefix(jasperPrint.getName()), "." + ext);
+			File exportFile = File.createTempFile(FileUtil.makePrefix(jasperPrint.getName()), "." + ext);
 
 			try (FileOutputStream outputStream = new FileOutputStream(exportFile);) {
 
@@ -879,19 +879,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return viewerLauncher;
 	}	
 	
-    private String makePrefix(String name) {
-		StringBuilder prefix = new StringBuilder();
-		char[] nameArray = name.toCharArray();
-		for (char ch : nameArray) {
-			if (Character.isLetterOrDigit(ch)) {
-				prefix.append(ch);
-			} else {
-				prefix.append("_");
-			}
-		}
-		return prefix.toString();
-	}
-
 	private WebResourceLoader getWebResourceLoader() {
 		if (webResourceLoader == null)
 			webResourceLoader = new WebResourceLoader(getLocalDownloadFolder());
