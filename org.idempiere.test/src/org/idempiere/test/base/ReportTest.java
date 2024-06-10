@@ -27,8 +27,6 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
