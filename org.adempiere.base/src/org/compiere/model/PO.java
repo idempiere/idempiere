@@ -5051,7 +5051,6 @@ public abstract class PO
 	 * @param tableName
 	 * @param clientID
 	 * @param trxName
-	 * @param parent id 
 	 */
 	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName) {
 		return retrieveIdOfParentValue(value, tableName, null, 0, clientID, trxName);

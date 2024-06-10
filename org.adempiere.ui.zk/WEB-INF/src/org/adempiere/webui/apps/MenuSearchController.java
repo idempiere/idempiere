@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.panel.AbstractMenuPanel;
+import org.adempiere.webui.panel.MenuTreePanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
@@ -113,7 +114,7 @@ public class MenuSearchController implements EventListener<Event>{
 	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
 	
 	/**
-	 * @param tree usually the tree instance from {@link}
+	 * @param tree usually the tree instance from {@link MenuTreePanel}
 	 */
 	public MenuSearchController(Tree tree) {
 		this.tree = tree;

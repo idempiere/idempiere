@@ -76,7 +76,7 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	 * @param Table_ID
 	 * @param Record_ID
 	 * @return true if record has any label assigned
- 	 * @deprecated Use {@link MLabelAssignment#hasAnyAssignment(int, String)} instead
+ 	 * @deprecated Use {@link MLabelAssignment#hasAnyAssignment(int, int, String)} instead
 	 */
 	public static boolean hasAnyAssignment(int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_ID=?";
