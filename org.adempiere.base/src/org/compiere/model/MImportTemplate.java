@@ -238,8 +238,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	 */
 	public InputStream validateFile(InputStream in) {
 
-		if (   MImportTemplate.IMPORTTEMPLATETYPE_XLS.equals(getImportTemplateType())
-			|| MImportTemplate.IMPORTTEMPLATETYPE_XLSX.equals(getImportTemplateType())) {
+		if (MImportTemplate.IMPORTTEMPLATETYPE_ExcelXLSXLSX.equals(getImportTemplateType())) {
 			try {
 				in = convertExcelToCSV(in);
 			} catch (Exception e) {
