@@ -26,6 +26,7 @@ package org.adempiere.webui.event;
 public interface ContextMenuListener
 {
 	/**
+	 * On context menu event
 	 * @param evt
 	 */
     public void onMenu(ContextMenuEvent evt);

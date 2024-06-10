@@ -36,7 +36,7 @@ public class Menupopup extends org.zkoss.zul.Menupopup {
 	private List<XulElement> elementList = new ArrayList<XulElement>();
 
 	/**
-	 * add xul element that want to use this as the context menu
+	 * Add xul element that want to use this as the context menu
 	 * @param element XulElement
 	 */
 	public void addContextElement(XulElement element) {
@@ -47,7 +47,7 @@ public class Menupopup extends org.zkoss.zul.Menupopup {
 	}
 	
 	/**
-	 * stop the xul element from using this as the context menu
+	 * Stop the xul element from using this as the context menu
 	 * @param element
 	 * @return true if exists and remove from the added xul element list
 	 */

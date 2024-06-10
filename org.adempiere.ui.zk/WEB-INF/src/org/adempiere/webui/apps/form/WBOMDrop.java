@@ -399,7 +399,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}	//	getInvoices
 
 	/**
-	 * Create Main Panel.
+	 * Create Main Panel.<br/>
 	 * Called after change of selected product.
 	 */	
 	private void createMainPanel ()

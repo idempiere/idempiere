@@ -851,7 +851,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	}
 
 	/**
-	 * Reset the renderer.
+	 * Reset the renderer.<br/>
 	 * This should be called if the table using this renderer is cleared.
 	 */
 	public void clearColumns()

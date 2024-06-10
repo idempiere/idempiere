@@ -41,7 +41,7 @@ public class ContextMenuEvent
     }
     
     /**
-     * 
+     * Get event name
      * @return event name
      */
     public String getContextEvent()
@@ -50,7 +50,7 @@ public class ContextMenuEvent
     }
     
     /**
-     * 
+     * Set event target
      * @param target
      */
     public void setTarget(Component target) {
@@ -58,7 +58,7 @@ public class ContextMenuEvent
 	}
 	
     /**
-     * 
+     * Get event target
      * @return target component
      */
 	public Component getTarget() {

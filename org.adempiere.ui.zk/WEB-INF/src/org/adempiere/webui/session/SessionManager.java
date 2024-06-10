@@ -40,6 +40,7 @@ public class SessionManager
     public static final String SESSION_APPLICATION = "SessionApplication";
     
     /**
+     * Is ctx with user login details
      * @param ctx
      * @return true if user has logged in
      */
@@ -59,6 +60,7 @@ public class SessionManager
     }
     
     /**
+     * Store {@link IWebClient} instance as desktop attribute
      * @param app
      */
     public static void setSessionApplication(IWebClient app)
@@ -69,6 +71,7 @@ public class SessionManager
     }
     
     /**
+     * Get IDesktop instance
      * @see DefaultDesktop
      * @return IDesktop instance
      */
@@ -79,6 +82,7 @@ public class SessionManager
     }
     
     /**
+     * Get IWebClient instance
      * @see AdempiereWebUI
      * @return IWebClient instance
      */
@@ -117,6 +121,7 @@ public class SessionManager
     }
     
     /**
+     * Execute change role for user
      * @param user
      */
     public static void changeRole(MUser user){

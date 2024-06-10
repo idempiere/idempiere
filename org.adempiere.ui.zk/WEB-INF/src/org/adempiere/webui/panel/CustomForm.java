@@ -22,6 +22,9 @@
  **********************************************************************/
 package org.adempiere.webui.panel;
 
+/**
+ * Empty ADForm for form controller to render to.
+ */
 @org.idempiere.ui.zk.annotation.Form
 public class CustomForm extends ADForm
 {

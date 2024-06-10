@@ -138,7 +138,10 @@ public final class SortComparator implements Comparator<Object>, Serializable
 		return m_collator.compare(s, cmp2.toString()) * m_multiplier;  // teo_sarca [ 1672820 ]
 	}	//	compare
 
-
+	/**
+	 * Get column index
+	 * @return column index
+	 */
 	public int getColumnIndex() {
 		return columnIndex;
 	}

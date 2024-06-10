@@ -52,7 +52,6 @@ public class WLogin extends AbstractUIPart
 	private LoginWindow loginWindow;
 
 	/**
-	 * 
 	 * @param app
 	 */
     public WLogin(IWebClient app)

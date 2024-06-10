@@ -45,6 +45,7 @@ import org.zkoss.zul.West;
 import org.zkoss.zul.Borderlayout;
 
 /**
+ * Status bar of window and form.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
  * @version $Revision: 0.10 $

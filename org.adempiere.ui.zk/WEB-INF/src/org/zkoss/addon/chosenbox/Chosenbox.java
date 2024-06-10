@@ -1,7 +1,4 @@
-/******************************************************************************
- * Project: Trek Global ERP                                                   *
- * 															
- * Chosenbox.java
+/* Chosenbox.java
 
 	Purpose:
 		

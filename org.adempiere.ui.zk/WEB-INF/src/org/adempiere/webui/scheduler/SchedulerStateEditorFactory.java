@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Component;
 /**
  * Field editor factory for {@link DisplayType#SchedulerState}
  * @author hengsin
- *
  */
 @Component(name = "org.adempiere.webui.scheduler.SchedulerStateEditorFactory", service = {IEditorFactory.class}, 
 		   property = {"service.ranking:Integer=1"})

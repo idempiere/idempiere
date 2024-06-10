@@ -59,7 +59,7 @@ public class SessionContextListener implements ExecutionInit,
     public static final String SESSION_CTX = "WebUISessionContext";
 
     /**
-     * Get environment context from session cache or create a new one (no cache context or cache context is invalid)
+     * Get environment context from session cache or create a new one (if no cache context or cache context is invalid)
      * @param exec
      */
     public static void setupExecutionContextFromSession(Execution exec) {
@@ -184,7 +184,8 @@ public class SessionContextListener implements ExecutionInit,
     }
 
     /**
-     * @return true if session context is valid
+     * Is current context valid
+     * @return true if current context is valid
      */
 	public static boolean isContextValid() {
 		Execution exec = Executions.getCurrent();
@@ -279,6 +280,7 @@ public class SessionContextListener implements ExecutionInit,
 	}
 
 	/**
+	 * Is session has zero active Zk desktop
 	 * @param list
 	 * @param session
 	 * @return true if session has no active desktop
@@ -321,11 +323,13 @@ public class SessionContextListener implements ExecutionInit,
 			return;
 		
 		desktop.addListener(new ValidateReadonlyComponent());
-		
+		//validate current context
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
 			setupExecutionContextFromSession(Executions.getCurrent());
     	}
+		
+		//check is current MSession processed
 		MSession mSession = MSession.get(Env.getCtx());
 		if(mSession!=null){
 			if (mSession.isProcessed()) {
@@ -358,6 +362,7 @@ public class SessionContextListener implements ExecutionInit,
 	}
 	
 	/**
+	 * Get context attribute key for session desktop list
 	 * @param AD_Session_ID
 	 * @return desktop list key
 	 */

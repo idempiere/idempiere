@@ -79,13 +79,13 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 
 /**
- *
+ * About dialog for iDempiere
  * @author Low Heng Sin
  *
  */
 public class AboutWindow extends Window implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5590393631865037228L;
 

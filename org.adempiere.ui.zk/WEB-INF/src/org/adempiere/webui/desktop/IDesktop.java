@@ -29,9 +29,8 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.EventQueue;
 
 /**
- * Desktop interface
+ * Interface for iDempiere desktop
  * @author hengsin
- *
  */
 public interface IDesktop extends UIPart {
 
@@ -39,11 +38,11 @@ public interface IDesktop extends UIPart {
 	/** {@link EventQueue} name for activities (workflow activities, request, notice and unprocessed documents) */
 	public static final String ACTIVITIES_EVENT_QUEUE = "ActivitiesEventQueue";
 	public static final String ON_ACTIVITIES_CHANGED_EVENT = "onActivitiesChanged";
-	/** Event when closing window/tab with shortcut */
+	/** Event when closing window/tab with ESC shortcut key */
     public static final String ON_CLOSE_WINDOW_SHORTCUT_EVENT = "onCloseWindowShortcut";
 
 	/**
-	 *
+	 * Get client (browser) info
 	 * @return ClientInfo
 	 */
 	public ClientInfo getClientInfo();
@@ -61,53 +60,54 @@ public interface IDesktop extends UIPart {
 	public void onNewRecord(int menuId);
 	
 	/**
-	 *
+	 * Register new window
 	 * @param window
-	 * @return windowNo
+	 * @return windowNo for new window
 	 */
 	public int registerWindow(Object window);
 
 	/**
-	 *
+	 * Find window via registered window no
 	 * @param WindowNo
 	 * @return Object
 	 */
 	public Object findWindow(int WindowNo);
 
 	/**
+	 * Find registered window no via component tree
 	 * @param component
 	 * @return register window no or -1 if not found
 	 */
 	public int findWindowNo(Component component);
 
 	/**
-	 * close active window
+	 * Close active window
 	 * @return boolean
 	 */
 	public boolean closeActiveWindow();
 	
 	/**
-	 * get active window
+	 * Get active window
 	 * @return Component
 	 */
 	public Component getActiveWindow();
 
 	/**
-	 *
+	 * Close window via registered window no
 	 * @param windowNo
 	 * @return boolean
 	 */
 	public boolean closeWindow(int windowNo);
 
 	/**
-	 *
+	 * Show URL in desktop window
 	 * @param url
 	 * @param closeable
 	 */
 	public void showURL(String url, boolean closeable);
 
 	/**
-	 *
+	 * Show HTML content in desktop window
 	 * @param content
 	 * @param title
 	 * @param closeable
@@ -115,27 +115,26 @@ public interface IDesktop extends UIPart {
 	public void showHTMLContent(String content, String title, boolean closeable);
 
 	/**
-	 *
+	 * Show window in desktop
 	 * @param win
 	 */
 	public void showWindow(Window win);
 
 	/**
-	 *
+	 * Show window in desktop
 	 * @param win
 	 * @param position
 	 */
 	public void showWindow(Window win, String position);
 
 	/**
-	 *
-	 * @param window_ID
+	 * Zoom to AD window and show in desktop
+	 * @param window_ID AD_Window_ID
 	 * @param query
 	 */
 	public void showZoomWindow(int window_ID, MQuery query);
 
 	/**
-	 *
 	 * @param window_ID
 	 * @param query
 	 * @deprecated
@@ -143,13 +142,13 @@ public interface IDesktop extends UIPart {
 	public void showWindow(int window_ID, MQuery query);
 
 	/**
-	 *
+	 * Remove registered window
 	 * @param windowNo
 	 */
 	public void unregisterWindow(int windowNo);
 
 	/**
-     *
+     * Open process dialog in desktop
      * @param processId
      * @param soTrx
      * @return ProcessDialog
@@ -157,28 +156,28 @@ public interface IDesktop extends UIPart {
 	public ProcessDialog openProcessDialog(int processId, boolean soTrx);
 
 	/**
-     *
+     * Open AD form in desktop
      * @param formId
      * @return ADWindow
      */
 	public ADForm openForm(int formId);
 	
 	/**
-    *
-    * @param infoId
-    */
+     * Open info window in desktop
+     * @param infoId
+     */
 	public void openInfo(int infoId);
 
 	/**
-	 *
-	 * @param windowId
+	 * Open AD window in desktop
+	 * @param windowId AD_Window_ID
 	 * @param callback
 	 */
 	public void openWindow(int windowId, Callback<ADWindow> callback);
 
 	/**
-	 *
-	 * @param windowId
+	 * Open AD window in desktop 
+	 * @param windowId AD_Window_ID
 	 * @param query
 	 * @param callback
 	 */
@@ -191,13 +190,13 @@ public interface IDesktop extends UIPart {
 	public void openTask(int task_ID);
 
 	/**
-	 *
+	 * Open workflow window in desktop
 	 * @param workflow_ID
 	 */
 	public void openWorkflow(int workflow_ID);
 
 	/**
-	 * Get the root component of the desktop
+	 * Get root component of desktop
 	 * @return Component
 	 */
 	public Component getComponent();
@@ -209,6 +208,7 @@ public interface IDesktop extends UIPart {
 	public void setPage(Page page);
 
 	/**
+	 * Set client (browser) info
 	 * @param clientInfo
 	 */
 	public void setClientInfo(ClientInfo clientInfo);
@@ -219,7 +219,7 @@ public interface IDesktop extends UIPart {
 	public void logout();
 	
 	/**
-	 * 
+	 * Logout from desktop (call {@link #logout()}.
 	 * @param callback callback after logout
 	 */
 	public default void logout(Callback<Boolean> callback) {
@@ -230,27 +230,27 @@ public interface IDesktop extends UIPart {
 	}
 	
 	/**
-	 * update help content in help/info panel
+	 * Update help content in help/info panel
 	 * @param infoWindowId
 	 * @param infoPanel
 	 */
 	public void updateHelpContext(String ctxType, int infoWindowId, InfoPanel infoPanel);
 	
 	/**
-	 * update help content in help/info panel
+	 * Update help content in help/info panel
 	 * @param ctxType
 	 * @param recordId
 	 */
 	public void updateHelpContext(String ctxType, int recordId);
 	
 	/**
-	 * update tooltip content in help/info panel
+	 * Update tooltip content in help/info panel
 	 * @param gridField
 	 */
 	public void updateHelpTooltip(GridField gridField);
 
 	/**
-	 * update tooltip content in help/info panel
+	 * Update tooltip content in help/info panel
 	 * @param hdr
 	 * @param desc
 	 * @param help
@@ -260,43 +260,43 @@ public interface IDesktop extends UIPart {
 	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent, String entityType);
 
 	/**
-	 * update quick info (status line) in help/info panel
+	 * Update quick info (status line) in help/info panel
 	 * @param gridTab
 	 */
 	public void updateHelpQuickInfo(GridTab gridTab);
 	
 	/**
-	 * update quick info (status line) in help/info panel
+	 * Update quick info (status line) in help/info panel
 	 * @param infoPanel
 	 */
 	public void updateHelpQuickInfo(InfoPanel infoPanel);
 
 	/**
-	 * 
+	 * Is pending changes to be saved
 	 * @return true if there are changes not save yet
 	 */
 	public boolean isPendingWindow();
 
 	/**
-	 * update tab title by windowNo
+	 * Update tab title by windowNo
 	 * @param title
 	 * @param windowNo
 	 */
 	public void setTabTitle(String title, int windowNo);
 	
 	/**
-	 * render home tab
+	 * Render home tab
 	 */
 	public void renderHomeTab();
 	
 	/**
-	 * Is closing tab with shortcut allowed
+	 * Is closing tab with ESC shortcut key allowed
 	 * @return true if allowed
 	 */
 	public boolean isCloseTabWithShortcut();
 	
 	/**
-	 * Set if closing tab with shortcut is allowed
+	 * Set if closing tab with ESC shortcut key is allowed
 	 * @param isCloseTabWithShortcut
 	 */
 	public void setCloseTabWithShortcut(boolean isCloseTabWithShortcut);

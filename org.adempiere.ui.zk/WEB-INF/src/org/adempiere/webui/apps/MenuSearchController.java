@@ -427,7 +427,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 
 	/**
-	 * Echo {@link #ON_LOAD_MORE_EVENT} if selected is of type "...".
+	 * Echo {@link #ON_LOAD_MORE_EVENT} if selected is of type "...".<br/>
 	 * Otherwise delegate to {@link #selectTreeitem(Object, Boolean)}.
 	 * @param selected
 	 * @param newRecord true if event is originated from new record button
@@ -452,7 +452,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 
 	/**
-	 * Load {@link #fullModel} to {@link #listbox}.
+	 * Load {@link #fullModel} to {@link #listbox}.<br/>
 	 * Only first {@link #INITIAL_LOADING_SIZE} loaded to {@link #listbox} initially.
 	 */
 	private void loadMore() {
@@ -554,8 +554,8 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 
 	/**
-	 * Update {@link #listbox} with newModel.
-	 * If newModel has > {@link #INITIAL_LOADING_SIZE} items, only first {@link #INITIAL_LOADING_SIZE} is loaded into {@link #listbox}. 
+	 * Update {@link #listbox} with newModel.<br/>
+	 * If newModel has > {@link #INITIAL_LOADING_SIZE} items, only first {@link #INITIAL_LOADING_SIZE} is loaded into {@link #listbox}.<br/>
 	 * User has to click the load more link (...) to load the rest of the items into {@link #listbox}.
 	 * @param newModel
 	 */
@@ -610,7 +610,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * select ListItem that comes before the current selected ListItem.
+	 * Select ListItem that comes before the current selected ListItem.
 	 * @return new selected {@link MenuItem}
 	 */
 	public MenuItem selectPrior() {
@@ -627,7 +627,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * select ListItem that comes after the current selected ListItem.
+	 * Select ListItem that comes after the current selected ListItem.
 	 * @return new selected {@link MenuItem}
 	 */
 	public MenuItem selectNext() {

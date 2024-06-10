@@ -432,7 +432,6 @@ public class WPaySelect extends PaySelect
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}	//	dispose
 
-	
 	/**
 	 * Event Listener
 	 * @param e event

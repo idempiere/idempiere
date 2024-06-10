@@ -147,7 +147,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	 * 	Layout {@link #form}
 	 * 	@throws java.lang.Exception
 	 */
-	void zkInit () throws Exception
+	protected void zkInit () throws Exception
 	{
 		form.appendChild (mainLayout);
 		ZKUpdateUtil.setHeight(mainLayout, "100%");

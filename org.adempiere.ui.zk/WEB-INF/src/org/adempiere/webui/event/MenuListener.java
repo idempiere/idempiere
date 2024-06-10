@@ -26,6 +26,7 @@ package org.adempiere.webui.event;
 public interface MenuListener
 {
 	/**
+	 * On menu selected event
 	 * @param menuId AD_Menu_ID
 	 */
     public void onMenuSelected(int menuId);

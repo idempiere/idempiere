@@ -14,7 +14,6 @@
  * Posterita Ltd., 3, Draper Avenue, Quatre Bornes, Mauritius                 *
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
-
 package org.adempiere.webui;
 
 import java.lang.ref.WeakReference;
@@ -83,7 +82,7 @@ import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
 /**
- * Entry point for iDempiere web client
+ * Entry point for iDempiere web client (index.zul)
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -161,7 +160,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	this.setVisible(false);
 
     	userPreference = new UserPreference();
-    	// preserve the original URL parameters as is destroyed later on login
+    	// preserve the original URL parameters as it is destroyed later on login
     	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
     	
     	this.addEventListener(ON_LOGIN_COMPLETED, this);
@@ -189,6 +188,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         
         Properties ctx = Env.getCtx();
         langSession = Env.getContext(ctx, Env.LANGUAGE);
+        // Open login dialog or if with valid login session, goes to desktop
         if (session.getAttribute(SessionContextListener.SESSION_CTX) == null || !SessionManager.isUserLoggedIn(ctx))
         {
             loginDesktop = new WLogin(this);
@@ -302,6 +302,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	Env.verifyLanguage(ctx, language);
     	Env.setContext(ctx, Env.LANGUAGE, language.getAD_Language()); //Bug
 
+    	//script for calendar
     	StringBuilder calendarMsgScript = new StringBuilder();
 		String monthMore = Msg.getMsg(ctx,"more");
 		String dayMore = Msg.getMsg(ctx,"more");
@@ -312,7 +313,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		AuScript auscript = new AuScript(calendarMsgScript.toString());
 		Clients.response(auscript);
 
-		//	Create adempiere Session - user id in ctx
+		// Create AD_Session
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
@@ -326,17 +327,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		currSess.setAttribute(CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
 
-		//enable full interface, relook into this when doing preference
+		// Enable full interface
 		Env.setContext(ctx, Env.SHOW_TRANSLATION, true);
 		Env.setContext(ctx, Env.SHOW_ACCOUNTING, MRole.getDefault().isShowAcct());
 
 		// to reload preferences when the user refresh the browser
 		userPreference = loadUserPreference(Env.getAD_User_ID(ctx));
     	userPreferences = MUserPreference.getUserPreference(Env.getAD_User_ID(ctx), Env.getAD_Client_ID(ctx));
-
-		//auto commit user preference
     	userPreferences.fillPreferences();
 
+    	// Setup global key listener
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
 		keyListener.setCtrlKeys("@a@c@d@e@f@g@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
@@ -356,7 +356,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		if (!this.getPage().getDesktop().isServerPushEnabled())
 			this.getPage().getDesktop().enableServerPush(true);
 		
-		//update session context
+		// Store session context into http session
 		currSess.setAttribute(SessionContextListener.SESSION_CTX, ServerContext.getCurrentInstance());
 		
 		MUser user = MUser.get(ctx);

@@ -263,7 +263,7 @@ public class DunningPrint extends SvrProcess
 		if (processUI != null)
 		{
 			processUI.showReports(pdfList);
-			}
+		}
 		
 		StringBuilder msgreturn = new StringBuilder("@Printed@=").append(count);
 		return msgreturn.toString();

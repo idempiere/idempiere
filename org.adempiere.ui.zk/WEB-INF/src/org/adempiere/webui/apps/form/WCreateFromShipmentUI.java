@@ -367,7 +367,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		window.tableChanged(null);
 	}   //  vetoableChange
 	
-	/**************************************************************************
+	/**
 	 *  Load BPartner Field
 	 *  @param forInvoice true if Invoices are to be created, false receipts
 	 *  @throws Exception if Lookups cannot be initialized

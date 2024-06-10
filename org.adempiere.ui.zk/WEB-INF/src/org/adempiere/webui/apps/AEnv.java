@@ -120,7 +120,7 @@ public final class AEnv
 	}   //  showCenterScreen
 
 	/**
-	 *  Set window position ({@link org.zkoss.zul.Window#setPosition(String)}) and show it.
+	 *  Show window at position ({@link org.zkoss.zul.Window#setPosition(String)}) and show it.
 	 * 	@param window Window to position
 	 * 	@param position
 	 */
@@ -130,7 +130,7 @@ public final class AEnv
 	}   //  showScreen
 
 	/**
-	 *	Position window in center of the parent window.
+	 *	Show window in center of the parent window.
 	 * 	@param parent Parent Window
 	 * 	@param window Window to position
 	 */
@@ -155,8 +155,7 @@ public final class AEnv
 
 	}   //  getMnemonic
 
-
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
@@ -175,7 +174,7 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
 	 *	@param AD_Table_ID
 	 *	@param Record_UU
@@ -195,7 +194,7 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
@@ -211,7 +210,7 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
 	 *	@param AD_Table_ID
 	 *	@param Record_UU
@@ -369,7 +368,7 @@ public final class AEnv
 	}   //  getWindow
 
 	/**
-	 *  Post Immediate.
+	 *  Post Immediate.<br/>
 	 *  Call {@link Doc#manualPosting(int, int, int, int, boolean)}.
 	 *  @param  WindowNo 		window
 	 *  @param  AD_Table_ID     Table ID of Document
@@ -421,7 +420,7 @@ public final class AEnv
             lookup.fillComboBox(mandatory, true, false, false, shortList); // IDEMPIERE 90
     }
     /**
-     * zoom to AD Window
+     * Zoom to AD Window
      * @param lookup lookup for zoom destination table
      * @param value record key
      */
@@ -532,7 +531,7 @@ public final class AEnv
     }
     
     /**
-     * open zoom window with query
+     * Open zoom window with query
      * @param AD_Window_ID
      * @param query
      */
@@ -616,7 +615,9 @@ public final class AEnv
 
     /**
      * @return true if client browser is firefox 2+
+     * @deprecated
      */
+    @Deprecated
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -635,6 +636,7 @@ public final class AEnv
      * @return boolean
      * @deprecated See IDEMPIERE-1022
      */
+    @Deprecated
     public static boolean isBrowserSupported() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -666,7 +668,9 @@ public final class AEnv
 
     /**
      * @return true if user agent is internet explorer
+     * @deprecated
      */
+    @Deprecated
     public static boolean isInternetExplorer()
     {
     	Execution execution = Executions.getCurrent();
@@ -685,6 +689,7 @@ public final class AEnv
     }
 
     /**
+     * Is parent == child or parent is ancestor of child.
      * @param parent
      * @param child
      * @return true if parent == child or parent is ancestor of child.
@@ -744,6 +749,7 @@ public final class AEnv
 	}	//	getHeader
 
 	/**
+	 * Get language of context
 	 * @param ctx
 	 * @return {@link Language}
 	 */
@@ -752,6 +758,7 @@ public final class AEnv
 	}
 
 	/**
+	 * Get locale of context
 	 * @param ctx
 	 * @return {@link Locale}
 	 */
@@ -810,7 +817,7 @@ public final class AEnv
 	}
 	
 	/**
-	 * Execute synchronous task in UI thread.
+	 * Execute synchronous task in UI thread.<br/>
 	 * Use {@link Executions#activate(Desktop)} and {@link Executions#deactivate(Desktop)} pair if current thread is not UI/Listener thread.
 	 * @param runnable
 	 */
@@ -841,7 +848,9 @@ public final class AEnv
 	}
 	
 	/**
-	 * Get current desktop
+	 * Get current desktop.<br/>
+	 * Get from current executions (Executions.getCurrent()) if current thread is UI thread.<br/>
+	 * Otherwise, get from {@link DesktopRunnable#getThreadLocalDesktop()}.
 	 * @return {@link Desktop}
 	 */
 	public static Desktop getDesktop() {
@@ -884,7 +893,7 @@ public final class AEnv
 	}
 	
 	/**
-	 * 
+	 * Create WTableDirEditor for language with IsLoginLocale=Y.
 	 * @param client
 	 * @return {@link WTableDirEditor} for Language if client is with IsMultiLingualDocument=Y
 	 * @throws Exception
@@ -923,6 +932,7 @@ public final class AEnv
 	}
 
 	/**
+	 * Get link for direct access to the record using AD_Table_ID+Record_UUID
 	 * @param po
 	 * @return URL link for direct access to the record using AD_Table_ID+Record_UUID
 	 */
@@ -932,6 +942,7 @@ public final class AEnv
 	}
 
 	/**
+	 * Get link for direct access to the record using AD_Table_ID+Record_ID
 	 * @param po
 	 * @return URL link for direct access to the record using AD_Table_ID+Record_ID
 	 */
@@ -941,6 +952,7 @@ public final class AEnv
 	}
 
 	/**
+	 * Get link for direct access to the record using TableName+Record_ID
 	 * @param po
 	 * @return URL link for direct access to the record using TableName+Record_ID
 	 */

@@ -126,9 +126,10 @@ import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * Search dialog that works in two mode. <br/>
- * Lookup mode: Search and return selection to lookup field. <br/>
- * Window mode: Search and view search results. Optional support for execution of process.
+ * Abstract base class for info panel and info window.<br/>
+ * Info window that works in two mode. <br/>
+ * Lookup mode: Popup dialog for a field. Search and return selection to lookup field. <br/>
+ * Viewing mode: Independent popup or embedded window. Search and view search results. Optional support for execution of process.
  *
  * @author Sendy Yagambrum
  * @author Elaine

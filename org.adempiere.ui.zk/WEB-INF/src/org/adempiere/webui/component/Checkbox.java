@@ -50,7 +50,7 @@ public class Checkbox extends org.zkoss.zul.Checkbox
     }
 
     /**
-     * alias for setLabel, added to ease porting of swing form
+     * Alias for setLabel, added to ease porting of swing form
      * @param label
      */
 	public void setText(String label) {
@@ -60,7 +60,7 @@ public class Checkbox extends org.zkoss.zul.Checkbox
 	}
 
 	/**
-	 * alias for isChecked, to ease porting of swing form
+	 * Alias for isChecked, to ease porting of swing form
 	 * @return
 	 */
 	public boolean isSelected() {
@@ -68,7 +68,7 @@ public class Checkbox extends org.zkoss.zul.Checkbox
 	}
 
 	/**
-	 * alias for setChecked, to ease porting of swing form
+	 * Alias for setChecked, to ease porting of swing form
 	 * @param checked
 	 */
 	public void setSelected(boolean checked) {
@@ -76,7 +76,7 @@ public class Checkbox extends org.zkoss.zul.Checkbox
 	}
 
 	/**
-	 * alias for addEventListener(Events.ON_CHECK, listener), to ease porting of swing form
+	 * Shortcut for addEventListener(Events.ON_CHECK, listener), to ease porting of swing form
 	 * @param listener
 	 */
 	public void addActionListener(EventListener<?> listener) {

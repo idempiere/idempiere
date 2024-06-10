@@ -86,7 +86,7 @@ public class Button extends org.zkoss.zul.Button
     }
 
     /**
-     * shortcut for addEventListener(Events.ON_CLICK, listener) to ease porting of swing form
+     * Shortcut for addEventListener(Events.ON_CLICK, listener) to ease porting of swing form
      * @param listener
      */
 	public void addActionListener(EventListener<?> listener) {

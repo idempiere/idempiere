@@ -31,7 +31,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * Panel to edit grouping of print format
+ * Wizard panel to edit grouping of print format
  */
 public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListener<Event> {
 	/**

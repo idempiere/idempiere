@@ -82,7 +82,7 @@ import org.zkoss.zul.Tabs;
 import org.zkoss.zul.Toolbar;
 
 /**
- * Detail panel that display the child tabs of a parent {@link ADTabpanel} tab.
+ * Detail panel that display the child tabs of a parent {@link ADTabpanel} tab.<br/>
  * Implemented as a panel with {@link Tabbox}.
  * 
  * @author hengsin
@@ -149,7 +149,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private int prevSelectedIndex = 0;
 
 	/**
-	 * On activate event for detail tab.
+	 * On activate event for detail tab.<br/>
 	 * Use to activate detail tab or notify detail tab after header tab change.
 	 */
 	public static final String ON_ACTIVATE_DETAIL_EVENT = "onActivateDetail";
@@ -170,7 +170,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	public static final String ON_QUICK_FORM_EVENT = "onQuickForm";
 	
 	/**
-	 * Record navigation event for selected tab.
+	 * Record navigation event for selected tab.<br/>
 	 * Event data is the navigation action (previous, next, first and last).
 	 */
 	public static final String ON_RECORD_NAVIGATE_EVENT = "onRecordNavigate";
@@ -204,6 +204,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
+	 * Get selected tab index
 	 * @return selected tab index
 	 */
 	public int getSelectedIndex() {
@@ -211,7 +212,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
-	 * set selected tab index 
+	 * Set selected tab index 
 	 * @param curTabIndex
 	 */
 	public void setSelectedIndex(int curTabIndex) {
@@ -220,6 +221,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
+	 * Get number of tabs
 	 * @return number of tabs
 	 */
 	public int getTabcount() {
@@ -231,14 +233,14 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
-	 * undo last tab selection
+	 * Undo last tab selection
 	 */
 	public void undoLastTabSelection() {
 		tabbox.setSelectedIndex(prevSelectedIndex);
 	}
 
 	/**
-	 * redraw tabbox
+	 * Redraw tabbox
 	 */
 	public void refresh() {
 		tabbox.invalidate();
@@ -566,7 +568,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
-	 * toggle between grid and form view
+	 * Toggle between grid and form view
 	 * @param e
 	 */
 	protected void onToggle(Event e) {
@@ -604,7 +606,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
-	 * open process list popup
+	 * Open process list popup
 	 * @param button
 	 */
 	protected void onProcess(Component button) {
@@ -627,7 +629,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
-	 * remove all tabs and tabpanels
+	 * Remove all tabs and tabpanels
 	 */
 	public void reset() {
 		if (tabbox.getTabs() != null) {
@@ -640,6 +642,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
+	 * Get IADTabpanel at index
 	 * @param index
 	 * @return IADTabpanel at index
 	 */
@@ -656,6 +659,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
+	 * Get IADTabpanel for selected tab
 	 * @return selected IADTabpanel
 	 */
 	public IADTabpanel getSelectedADTabpanel() {
@@ -670,6 +674,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
+	 * Get tab panel of selected tab
 	 * @return selected {@link Tabpanel}
 	 */
 	public Tabpanel getSelectedPanel() {
@@ -881,7 +886,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
-	 * update toolbar button state 
+	 * Update toolbar button state 
 	 * @param changed
 	 * @param readOnly
 	 */
@@ -984,7 +989,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
-	 * Edit current record of selected tab.
+	 * Edit current record of selected tab.<br/>
 	 * This event will make the selected tab becomes the new header tab, i.e become the selected tab of {@link CompositeADTabbox}.
 	 * @param formView true to force form view.
 	 * @throws Exception
@@ -1005,6 +1010,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
+	 * Set visibility of tab at tabIndex
 	 * @param tabIndex
 	 * @param visible
 	 */
@@ -1023,6 +1029,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
+	 * Is tab at tabIndex visible
 	 * @param tabIndex
 	 * @return true if tab at tabIndex is visible
 	 */
@@ -1034,6 +1041,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
+	 * Is tab at tabIndex enable
 	 * @param tabIndex
 	 * @return true if tab at tabIndex is enable
 	 */
@@ -1046,6 +1054,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
+	 * Enable/disable tab at tabIndex
 	 * @param tabIndex
 	 * @param enabled
 	 */
@@ -1091,7 +1100,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 
 	/**
-	 * add new row
+	 * Add new row
 	 * @throws Exception
 	 */
 	public void onNew() throws Exception {
@@ -1184,7 +1193,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 
 		/**
-		 * update toolbar state after toggle between grid and form view
+		 * Update toolbar state after toggle between grid and form view
 		 */
 		public void afterToggle() {
 			if (getPagingControl() != null)
@@ -1202,7 +1211,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 
 		/**
-		 * set form view state
+		 * Set form view state of selected tab
 		 * @param b
 		 */
 		public void setToggleToFormView(boolean b) {
@@ -1210,6 +1219,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 
 		/**
+		 * Is selected tab in form view
 		 * @return true if tab have been toggle to form view
 		 */
 		public boolean isToggleToFormView() {
@@ -1343,7 +1353,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	/**
-	 * record navigation toolbar
+	 * Record navigation toolbar
 	 * @author hengsin
 	 *
 	 */

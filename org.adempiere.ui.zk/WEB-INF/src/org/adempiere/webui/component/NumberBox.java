@@ -470,7 +470,7 @@ public class NumberBox extends Div
 	}
 	
 	/**
-	 * Set enable/disable.
+	 * Set enable/disable.<br/>
 	 * Hide calculator button if set to disable.
 	 * @param enabled
 	 */
@@ -505,7 +505,7 @@ public class NumberBox extends Div
 	}
 	
 	/**
-	 * If evtnm is ON_CLICK, add listener to {@link #btn}.
+	 * If evtnm is ON_CLICK, add listener to {@link #btn}.<br/>
 	 * Otherwise, add listener to {@link #decimalBox}.
 	 * @param evtnm
 	 * @param listener

@@ -26,7 +26,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Util;
 
 /**
- *
+ * Controller for user preference (AD_Preference)
  * @author hengsin
  * @author Teo Sarca, www.arhipac.ro
  *			<li>FR [ 2694043 ] Query. first/firstOnly usage best practice

@@ -81,7 +81,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Image;
 
 /**
- * Select role panel
+ * Select role panel of {@link LoginWindow}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -91,7 +91,7 @@ import org.zkoss.zul.Image;
 public class RolePanel extends Window implements EventListener<Event>, Deferrable
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8077156023041816851L;
 
@@ -819,7 +819,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     }
     
     /**
-     * show UI for change role
+     * Show UI for change role
      * @param ctx env context
      */
     public void changeRole(Properties ctx) {
@@ -841,7 +841,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     /**
      * Validate fields
      * @param isMFAValidated
-     *
      */
     public void validateRoles(boolean isMFAValidated)
     {
@@ -943,6 +942,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	}
 
     /**
+     * Is show role selection panel to user
      * @return true if role selection panel will be shown to user
      */
 	public boolean show() {

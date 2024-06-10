@@ -66,7 +66,6 @@ import org.zkoss.zul.South;
 /**
  * Window to capture feedback request from user.
  * @author hengsin
- *
  */
 public class FeedbackRequestWindow extends Window implements EventListener<Event> {
 	

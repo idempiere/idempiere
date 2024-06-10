@@ -28,8 +28,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
+ * DisplayType.PAttribute editor for info window selection criteria field
  * @author hengsin
- *
  */
 public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor {
 

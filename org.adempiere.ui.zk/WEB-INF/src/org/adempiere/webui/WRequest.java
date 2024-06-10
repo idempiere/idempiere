@@ -36,8 +36,8 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Popup;
 
 /**
- *	Handle Request Button Action.
- *	Show Popup Menu.
+ *	Handle Request Button Action. <br/>
+ *	Create and Show Popup Menu.
  *	
  *  @author Jorg Janke
  *  @version $Id: ARequest.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $

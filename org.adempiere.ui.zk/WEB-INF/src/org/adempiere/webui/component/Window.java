@@ -74,7 +74,7 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
     }
     
     /**
-     * alias for detach, to ease porting of swing form
+     * Alias for detach, to ease porting of swing form
      */
     public void dispose()
     {

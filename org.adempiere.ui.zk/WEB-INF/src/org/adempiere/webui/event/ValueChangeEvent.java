@@ -66,6 +66,7 @@ public class ValueChangeEvent
     }
 
     /**
+     * Get new value
      * @return new value
      */
     public Object getNewValue()
@@ -74,6 +75,7 @@ public class ValueChangeEvent
     }
 
     /**
+     * Get old value
      * @return old/previous value
      */
     public Object getOldValue()
@@ -82,6 +84,7 @@ public class ValueChangeEvent
     }
 
     /**
+     * Get property name
      * @return property name
      */
     public String getPropertyName()
@@ -89,12 +92,17 @@ public class ValueChangeEvent
         return propertyName;
     }
 
+    /**
+     * Get event source
+     * @return event source object
+     */
     public Object getSource()
     {
         return source;
     }
 
 	/**
+	 * Is initial edit that have not been completed yet
 	 * @return indicate this event is by user start edit this field but not yet complete edit
 	 */
 	public boolean isInitEdit() {

@@ -78,7 +78,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	}
 
 	/**
-	 * override "shallIgnoreClick_"
+	 * Override "shallIgnoreClick_"
 	 */
 	private void override() {
 		// idempiere always want to show context ever on disable control
@@ -130,7 +130,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	}
 	
 	/**
-	 * remove all items, to ease porting of swing form
+	 * Remove all items
 	 */
 	public void removeAllItems() {
 		int cnt = getItemCount();
@@ -140,7 +140,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	}
 
 	/**
-	 * add new combo item
+	 * Add new combo item
 	 * @param name
 	 * @param value
 	 */
@@ -216,7 +216,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     }
     
     /**
-     * add widget listener to auto scroll selected item to view (i.e make visible)
+     * Add widget listener to auto scroll selected item to view (i.e make visible)
      */
     public void addScrollSelectedIntoViewListener() {
     	String script = "(function(me){let id='#'+me.uuid+'-pp .z-comboitem-selected';let selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();})(this)";

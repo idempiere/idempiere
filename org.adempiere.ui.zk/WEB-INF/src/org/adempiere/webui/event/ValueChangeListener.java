@@ -26,6 +26,7 @@ package org.adempiere.webui.event;
 public interface ValueChangeListener
 {
 	/**
+	 * On value change event
 	 * @param evt
 	 */
     public void valueChange(ValueChangeEvent evt);

@@ -132,6 +132,7 @@ public abstract class AnnotationBasedFormFactory extends AnnotationBasedFactory 
 	}
 	
 	/**
+	 * Get list of package to scan for annotation
 	 * @return packages to scan
 	 */
 	protected abstract String[] getPackages();

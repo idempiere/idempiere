@@ -23,7 +23,7 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 
 /**
- * List model and List item renderer implementation for list of AD_Tab label.
+ * List model and List item renderer implementation for list of AD_Tab label.<br/>
  * ADTabLabel class aside, this is not use any more.  
  */
 public class ADTabListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt {

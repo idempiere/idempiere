@@ -35,6 +35,7 @@ public class ListItem extends org.zkoss.zul.Listitem
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8052056834118074979L;
+	@Deprecated
 	private PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
     
 	/**
@@ -56,7 +57,9 @@ public class ListItem extends org.zkoss.zul.Listitem
     
     /**
      * @param l PropertyChangeListener
+     * @deprecated not implemented
      */
+    @Deprecated
     public synchronized void addPropertyChangeListener(PropertyChangeListener l)
 	{
 		m_propertyChangeListeners.addPropertyChangeListener(l);

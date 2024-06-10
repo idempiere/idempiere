@@ -60,7 +60,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Dialog to view, remove or upload new image
+ *  Dialog to view, remove or upload new image (AD_Image)
  *  @author Low Heng Sin 
  *  
  */
