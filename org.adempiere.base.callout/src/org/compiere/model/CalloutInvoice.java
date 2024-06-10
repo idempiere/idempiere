@@ -325,7 +325,7 @@ public class CalloutInvoice extends CalloutEngine
 			&& Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID") != 0)
 			mTab.setValue("M_AttributeSetInstance_ID", Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID"));
 		else
-			mTab.setValue("M_AttributeSetInstance_ID", null);
+			mTab.setValue("M_AttributeSetInstance_ID", 0);
 
 		/*****	Price Calculation see also qty	****/
 		boolean IsSOTrx = Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y");
@@ -488,8 +488,9 @@ public class CalloutInvoice extends CalloutEngine
 
 		//
 		String deliveryViaRule = getLineDeliveryViaRule(ctx, WindowNo, mTab);
+		int dropshipLocationId = getDropShipLocationId(ctx, WindowNo, mTab);
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
-			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
+			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipLocationId,
 			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
@@ -501,6 +502,13 @@ public class CalloutInvoice extends CalloutEngine
 		return amt (ctx, WindowNo, mTab, mField, value);
 	}	//	tax
 
+	/**
+	 * Get the delivery via rule from the related order
+	 * @param ctx
+	 * @param windowNo
+	 * @param mTab
+	 * @return
+	 */
 	private String getLineDeliveryViaRule(Properties ctx, int windowNo, GridTab mTab) {
 		if (mTab.getValue("C_OrderLine_ID") != null) {
 			int C_OrderLine_ID = (Integer) mTab.getValue("C_OrderLine_ID");
@@ -523,7 +531,30 @@ public class CalloutInvoice extends CalloutEngine
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Get the drop shipment location ID from the related order
+	 * @param ctx
+	 * @param windowNo
+	 * @param mTab
+	 * @return
+	 */
+	private int getDropShipLocationId(Properties ctx, int windowNo, GridTab mTab) {
+		if (mTab.getValue("C_OrderLine_ID") != null) {
+			int C_OrderLine_ID = (Integer) mTab.getValue("C_OrderLine_ID");
+			if (C_OrderLine_ID > 0) {
+				MOrderLine orderLine = new MOrderLine(ctx, C_OrderLine_ID, null);
+				return orderLine.getParent().getDropShip_Location_ID();
+			}
+		}
+		int C_Order_ID = Env.getContextAsInt(ctx, windowNo, "C_Order_ID", true);
+		if (C_Order_ID > 0) {
+			MOrder order = new MOrder(ctx, C_Order_ID, null);
+			return order.getDropShip_Location_ID();
+		}
+		return -1;
+	}
+
 	/**
 	 *	Invoice - Amount.
 	 *		- called from QtyInvoiced, PriceActual

@@ -759,7 +759,7 @@ public class CalloutOrder extends CalloutEngine
 			&& Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID") != 0)
 			mTab.setValue("M_AttributeSetInstance_ID", Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID"));
 		else
-			mTab.setValue("M_AttributeSetInstance_ID", null);
+			mTab.setValue("M_AttributeSetInstance_ID", 0);
 
 		/*****	Price Calculation see also qty	****/
 		int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_ID");
@@ -972,8 +972,9 @@ public class CalloutOrder extends CalloutEngine
 
 		//
 		String deliveryViaRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_DeliveryViaRule, true);
+		int dropshipLocationId = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_DropShip_Location_ID, true);
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
-			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
+			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipLocationId,
 			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//

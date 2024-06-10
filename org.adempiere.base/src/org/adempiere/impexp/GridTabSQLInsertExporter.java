@@ -86,7 +86,7 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	        ZipEntry fileEntry = new ZipEntry("oracle/" + table.getTableName() + ".sql");
 	        zos.putNextEntry(fileEntry);
 	        for(String oracle : oracles)
-	        	zos.write((oracle+"\n;\n").getBytes());
+	        	zos.write(!(oracle.endsWith("/")) ? (oracle+"\n;\n").getBytes() : (oracle+"\n").getBytes());
 	        zos.closeEntry();
 	        
 	        fileEntry = new ZipEntry("postgresql/" + table.getTableName() + ".sql");
@@ -137,9 +137,8 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	 * @param pgs list to add postgresql insert script
 	 */
 	protected void addSQLInsert(PO po, List<String> oracles, List<String> pgs) {
-		String sql = po.toInsertSQL();
-		String oracle = Database.getDatabase(Database.DB_ORACLE).convertStatement(sql);
-		String pg = Database.getDatabase(Database.DB_POSTGRESQL).convertStatement(sql);
+		String oracle = Database.getDatabase(Database.DB_ORACLE).convertStatement(po.toInsertSQL(Database.DB_ORACLE));
+		String pg = Database.getDatabase(Database.DB_POSTGRESQL).convertStatement(po.toInsertSQL(Database.DB_POSTGRESQL));
 		oracles.add(oracle);
 		pgs.add(pg);
 	}
