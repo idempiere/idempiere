@@ -120,12 +120,14 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 
 	/**
 	 * 	Query per Product Attribute.
-	 *  <code>
+	 *  <pre>
+	 *  {@code
 	 * 	Available synonyms:
 	 *		M_Product p
 	 *		M_ProductPrice pr
 	 *		M_AttributeSet pa
-	 *	</code>
+	 *	}
+	 *  </pre>
 	 */
 	protected void cmd_InfoPAttribute()
 	{

@@ -1140,12 +1140,14 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 
 	/**
 	 * 	Query per Product Attribute.
-	 *  <code>
+	 *  <pre>
+	 *  {@code
 	 * 	Available synonyms:
 	 *		M_Product p
 	 *		M_ProductPrice pr
 	 *		M_AttributeSet pa
-	 *	</code>
+	 *	}
+	 *  </pre>
 	 */
 	private void cmd_InfoPAttribute()
 	{
