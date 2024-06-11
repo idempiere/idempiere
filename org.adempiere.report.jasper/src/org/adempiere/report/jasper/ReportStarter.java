@@ -237,10 +237,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         String[] reportPathList = reportFilePath.split(";");
 	    for (String reportPath : reportPathList) {
 	        if (Util.isEmpty(reportPath, true))
-			{
-	            pi.setSummary("Invalid report file path: " + reportFilePath, true);
-	            return false;
-	        }
+	        	throw new AdempiereException("Invalid report file path: " + reportFilePath);
 	        if (reportPath.startsWith("@#LocalHttpAddr@")) {
 	        	String localaddr = Env.getContext(Env.getCtx(), Env.LOCAL_HTTP_ADDRESS);
 	        	if (!Util.isEmpty(localaddr)) {
@@ -272,11 +269,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			}
 	
 			if (reportFile == null && reportURL == null)
-			{
-				String tmp = "Can not load report from path: " + reportPath;
-				pi.setSummary(tmp, true);
-				return false;
-			}
+	        	throw new AdempiereException("Can not load report from path: " + reportPath);
 			
 			JasperInfo jasperInfo = reportFile != null ? getJasperInfo(reportFile) : getJasperInfo(reportURL);			
 			JasperReport jasperReport = jasperInfo.getJasperReport();
