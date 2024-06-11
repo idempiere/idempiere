@@ -69,7 +69,6 @@ import org.zkoss.zul.event.ListDataEvent;
  *	Tab to maintain Order/Sequence
  *
  * 	@author 	Jorg Janke
- * 	@version 	$Id: VSortTab.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  *
  *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				FR [ 1779410 ] VSortTab: display ID for not visible columns

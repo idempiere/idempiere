@@ -44,9 +44,7 @@ import org.zkoss.zul.South;
 /**
  *  Dialog to execute OS Task
  *
- *  @author     Jorg Janke
- *  @version    $Id: ATask.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
- *
+ *  @author Jorg Janke
  *  @author Low Heng Sin
  */
 public class WTask extends Window implements EventListener<Event>, IHelpContext

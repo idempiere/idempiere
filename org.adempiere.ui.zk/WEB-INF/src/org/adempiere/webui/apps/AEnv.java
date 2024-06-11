@@ -89,7 +89,6 @@ import com.lowagie.text.DocumentException;
  *  Static application environment and utilities methods.
  *
  *  @author 	Jorg Janke
- *  @version 	$Id: AEnv.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *
  *  Colin Rooney (croo) and kstan_79 RFE#1670185
  */

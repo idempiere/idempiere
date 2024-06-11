@@ -66,7 +66,6 @@ import org.zkoss.zul.Vlayout;
  *  To delete a preference, select a null value and save.
  *
  *  @author Jorg Janke
- *  @version  $Id: ValuePreference.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
 public class ValuePreference extends Window implements EventListener<Event>
 {

@@ -53,7 +53,6 @@ import org.zkoss.zul.Hbox;
  *
  *  @see WPAttributeDialog
  *  @author     Jorg Janke
- *  @version    $Id: PAttributeInstance.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  */
 public class WPAttributeInstance extends Window implements EventListener<Event> 
 {

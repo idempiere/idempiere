@@ -40,9 +40,8 @@ import org.zkoss.zul.Popup;
  *	Create and Show Popup Menu.
  *	
  *  @author Jorg Janke
- *  @version $Id: ARequest.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1904928 ] Request: Related Request field not filled
  */
 public class WRequest implements EventListener<Event>
