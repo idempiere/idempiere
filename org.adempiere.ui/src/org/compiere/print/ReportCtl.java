@@ -476,8 +476,12 @@ public class ReportCtl
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)
 			{
-				ServerReportCtl.runJasperProcess(Record_ID, re, IsDirectPrint, printerName);
-				if (IsDirectPrint) {
+				int jasperRecordId = Record_ID;
+				if (re.getPrintInfo() != null && re.getPrintInfo().getRecord_ID() > 0)
+					jasperRecordId = re.getPrintInfo().getRecord_ID();
+				boolean result = ServerReportCtl.runJasperProcess(jasperRecordId, re, IsDirectPrint, printerName);
+				if (result && IsDirectPrint)
+				{
 					ReportEngine.printConfirm(type, Record_ID);
 				}
 			}

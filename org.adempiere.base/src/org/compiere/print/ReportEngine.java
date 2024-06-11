@@ -1686,10 +1686,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if (DocSubTypeSO == null)
 			DocSubTypeSO = "";
 		//	WalkIn Receipt, WalkIn Invoice,
-		if (DocSubTypeSO.equals("WR") || DocSubTypeSO.equals("WI"))
+		if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS) || DocSubTypeSO.equals(MOrder.DocSubTypeSO_OnCredit))
 			what[0] = INVOICE;
 		//	WalkIn Pickup,
-		else if (DocSubTypeSO.equals("WP"))
+		else if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_Warehouse))
 			what[0] = SHIPMENT;
 		//	Offer Binding, Offer Nonbinding, Standard Order
 		else
