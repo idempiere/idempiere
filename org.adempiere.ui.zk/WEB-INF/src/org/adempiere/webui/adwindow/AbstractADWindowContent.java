@@ -151,7 +151,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Feb 25, 2007
- * @version $Revision: 0.10 $
  *
  * @author Cristina Ghita, www.arhipac.ro
  * see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/p/adempiere/feature-requests/855/

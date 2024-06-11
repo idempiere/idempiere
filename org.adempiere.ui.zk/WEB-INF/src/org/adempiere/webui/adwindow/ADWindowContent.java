@@ -50,7 +50,6 @@ import org.zkoss.zul.Vlayout;
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ADWindowContent extends AbstractADWindowContent
 {

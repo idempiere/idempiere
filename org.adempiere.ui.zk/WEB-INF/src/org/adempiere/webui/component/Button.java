@@ -24,7 +24,6 @@ import org.zkoss.zk.ui.event.Events;
  * Extend {@link org.zkoss.zul.Button}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class Button extends org.zkoss.zul.Button
 {

@@ -44,7 +44,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * Extend {@link org.zkoss.zul.Tab}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Tab extends org.zkoss.zul.Tab
 {

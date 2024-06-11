@@ -25,7 +25,6 @@ import org.compiere.util.Env;
  * Extend {@link org.zkoss.zul.Datebox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Datebox extends org.zkoss.zul.Datebox
 {

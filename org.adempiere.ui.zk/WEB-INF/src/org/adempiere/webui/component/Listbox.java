@@ -33,7 +33,6 @@ import org.zkoss.zul.Listitem;
  * Extend {@link org.zkoss.zul.Listbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Event>
 {

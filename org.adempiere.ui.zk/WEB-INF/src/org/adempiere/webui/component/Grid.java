@@ -31,7 +31,6 @@ import org.zkoss.zk.ui.event.EventListener;
  * Extend {@link org.zkoss.zul.Grid}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Grid extends org.zkoss.zul.Grid implements IdSpace
 {

@@ -32,7 +32,6 @@ import org.zkoss.zul.Tabpanels;
  * Extend {@link org.zkoss.zul.Tabs}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 2, 2007
- * @version $Revision: 0.10 $
  */
 public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 {

@@ -48,7 +48,6 @@ import org.zkoss.zul.Borderlayout;
  * Status bar of window and form.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class StatusBarPanel extends Panel implements EventListener<Event>, IStatusBar
 {

@@ -107,7 +107,6 @@ import org.zkoss.zul.West;
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Mar 2, 2007
- * @version $Revision: 0.10 $
  * @author Deepak Pansheriya/Vivek - Adding support for message broadcasting
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup

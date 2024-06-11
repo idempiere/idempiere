@@ -49,7 +49,6 @@ import org.zkoss.zul.Space;
  * 
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class StatusBar extends Panel implements EventListener<Event> 
 {

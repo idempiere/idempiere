@@ -33,7 +33,6 @@ import org.zkoss.zk.ui.Desktop;
  * Zk session related static methods
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class SessionManager
 {

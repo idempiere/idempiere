@@ -21,7 +21,6 @@ package org.adempiere.webui.event;
  * Value change event for a named property.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
- * @version $Revision: 0.10 $
  */
 public class ValueChangeEvent
 {

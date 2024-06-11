@@ -34,7 +34,6 @@ import org.zkoss.zul.Comboitem;
  * Extend {@link org.zkoss.zul.Combobox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 {

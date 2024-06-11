@@ -42,7 +42,6 @@ import org.zkoss.zul.Vbox;
  * Composite component of {@link Decimalbox} and {@link Button}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  * 
  * @author Low Heng Sin
  */

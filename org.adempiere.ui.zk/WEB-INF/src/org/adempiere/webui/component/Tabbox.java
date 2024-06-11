@@ -34,7 +34,6 @@ import org.zkoss.zul.Tabs;
  * Extend {@link org.zkoss.zul.Tabbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 {

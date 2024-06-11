@@ -41,7 +41,6 @@ import org.zkoss.zk.ui.Component;
  * Controller for AD_Window UI
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ADWindow extends AbstractUIPart
 {

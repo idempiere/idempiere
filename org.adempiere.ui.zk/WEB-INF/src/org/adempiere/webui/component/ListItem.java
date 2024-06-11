@@ -27,7 +27,6 @@ import org.compiere.util.ValueNamePair;
  * Extend {@link org.zkoss.zul.Listitem}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ListItem extends org.zkoss.zul.Listitem
 {

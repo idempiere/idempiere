@@ -50,7 +50,6 @@ import org.zkoss.zk.ui.util.ExecutionInit;
  * Zk listener to manage environment context for execution and session
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class SessionContextListener implements ExecutionInit,
         ExecutionCleanup, EventThreadInit, DesktopCleanup, DesktopInit
