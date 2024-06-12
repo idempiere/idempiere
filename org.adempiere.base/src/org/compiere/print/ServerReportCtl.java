@@ -94,6 +94,7 @@ public class ServerReportCtl {
 			{
 				if (pi != null && pi.isBatch() && pi.isPrintPreview())
 				{
+					re.setProcessInfo(pi);
 					if ("HTML".equals(pi.getReportType())) 
 					{
 						pi.setExport(true);
@@ -163,6 +164,7 @@ public class ServerReportCtl {
 		if (pi != null) {
 			jasperProcessInfo.setPrintPreview(pi.isPrintPreview());
 			jasperProcessInfo.setIsBatch(pi.isBatch());
+		    jasperProcessInfo.setPDFFileName(pi.getPDFFileName());
 		} else {
 			jasperProcessInfo.setPrintPreview( !IsDirectPrint );
 		}
