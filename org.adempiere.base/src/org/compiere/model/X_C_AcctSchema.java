@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema")
 public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240118L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
@@ -583,6 +583,29 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public boolean isAllowNegativePosting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowNegativePosting);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Delete Reverse Correct Posting.
+		@param IsDeleteReverseCorrectPosting This flag controls if Adempiere must delete the posting line when reverse correct document.
+	*/
+	public void setIsDeleteReverseCorrectPosting (boolean IsDeleteReverseCorrectPosting)
+	{
+		set_Value (COLUMNNAME_IsDeleteReverseCorrectPosting, Boolean.valueOf(IsDeleteReverseCorrectPosting));
+	}
+
+	/** Get Delete Reverse Correct Posting.
+		@return This flag controls if Adempiere must delete the posting line when reverse correct document.
+	  */
+	public boolean isDeleteReverseCorrectPosting()
+	{
+		Object oo = get_Value(COLUMNNAME_IsDeleteReverseCorrectPosting);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
