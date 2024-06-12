@@ -687,18 +687,25 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	}	//	getInternetAddress
 
 	/**
-	 * 	Validate Email (does not work).
-	 * 	Check DNS MX record
+	 * 	Validate Email
 	 * 	@param ia email
 	 *	@return error message or ""
 	 */
 	private String validateEmail (InternetAddress ia)
 	{
 		if (ia == null)
+		{
 			return "NoEmail";
-        else 
-        	return ia.getAddress();
-
+		}
+        else
+        {
+        	try {
+				ia.validate();
+			} catch (AddressException e) {
+				return e.getLocalizedMessage();
+			}
+        	return "";
+        }
 	}	//	validateEmail
 	
 	/**
@@ -707,7 +714,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 */
 	public boolean isEMailValid()
 	{
-		return validateEmail(getInternetAddress()) != null;
+		return Util.isEmpty(validateEmail(getInternetAddress()), true);
 	}	//	isEMailValid
 	
 	/**
