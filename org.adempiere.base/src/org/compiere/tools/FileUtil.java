@@ -482,6 +482,15 @@ public class FileUtil
         return f;	
 	}
     
+    /**
+     * Generates a unique temporary folder name based on the current timestamp and session ID. <br/>
+     * The folder name is either within the specified directory or the default temporary directory.
+     *
+     * @param directory the base directory where the temporary folder will be created; 
+     *                  if null, the system's default temporary directory is used
+     * @return a string representing the path to the unique temporary folder
+     * @throws IOException
+     */
     public static String getTempFolderName(File directory) throws IOException {
     	Calendar cal = Calendar.getInstance();
  		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -498,9 +507,9 @@ public class FileUtil
     }
     
     /**
-     * Create a file with the given filename
-     * If the filename includes the path - creates the file as requested
-     * If it only includes the name, it creates the file in a safe-thread temporary folder  
+     * Creates a file with the given filename. <br/>
+     * If the filename includes the path, the file is created as requested. <br/>
+     * If it only includes the name, the file is created in a thread-safe temporary folder.
      * @param fileName
      * @return file
      * @throws IOException
