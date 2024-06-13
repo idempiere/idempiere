@@ -85,7 +85,10 @@ public class ServerReportCtl {
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)	
 			{
-				boolean result = runJasperProcess(Record_ID, re, true, printerName, pi);
+				int jasperRecordId = Record_ID;
+				if (re.getPrintInfo() != null && re.getPrintInfo().getRecord_ID() > 0)
+					jasperRecordId = re.getPrintInfo().getRecord_ID();
+				boolean result = runJasperProcess(jasperRecordId, re, true, printerName, pi);
 				return(result);
 			}
 			else

@@ -427,7 +427,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
 			try {
 				attachment = getPDF();
-				return new AMedia(m_title+"."+PDF_FILE_EXT, PDF_FILE_EXT, PDF_MIME_TYPE, attachment, true);			
+				return new AMedia(attachment.getName(), PDF_FILE_EXT, PDF_MIME_TYPE, attachment, true);			
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
