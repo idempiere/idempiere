@@ -31,6 +31,7 @@ import java.io.File;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
@@ -45,14 +46,12 @@ public class ReportTest extends AbstractTestCase {
 	public ReportTest() {
 	}
 
-	private static final int Order_Print_Process = 110;
-
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-6165
 	 */
 	@Test
 	public void testPDFFileName() {
-		MProcess orderReport = MProcess.get(Env.getCtx(), Order_Print_Process);
+		MProcess orderReport = MProcess.get(Env.getCtx(), SystemIDs.PROCESS_RPT_C_ORDER);
 		MOrder order = new MOrder(Env.getCtx(),  108, getTrxName()); // Garden Order 60000
 
 		String fileName = order.getDocumentNo() + ".pdf";
