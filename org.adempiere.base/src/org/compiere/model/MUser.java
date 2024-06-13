@@ -675,8 +675,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		try
 		{
 			InternetAddress ia = new InternetAddress (email, true);
-			if (ia != null)
-				ia.validate();	//	throws AddressException
 			return ia;
 		}
 		catch (AddressException ex)
