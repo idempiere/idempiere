@@ -687,34 +687,12 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	}	//	getInternetAddress
 
 	/**
-	 * 	Validate Email
-	 * 	@param ia email
-	 *	@return error message or ""
-	 */
-	private String validateEmail (InternetAddress ia)
-	{
-		if (ia == null)
-		{
-			return "NoEmail";
-		}
-        else
-        {
-        	try {
-				ia.validate();
-			} catch (AddressException e) {
-				return e.getLocalizedMessage();
-			}
-        	return "";
-        }
-	}	//	validateEmail
-	
-	/**
 	 * 	Is the email valid
 	 * 	@return return true if email is valid (artificial check)
 	 */
 	public boolean isEMailValid()
 	{
-		return Util.isEmpty(validateEmail(getInternetAddress()), true);
+		return EMail.validate(getEMail());
 	}	//	isEMailValid
 	
 	/**
@@ -981,7 +959,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 
 		// IDEMPIERE-1409 Validate Email
 		if (!Util.isEmpty(getEMail()) && (newRecord || is_ValueChanged("EMail"))) {
-			if (! EMail.validate(getEMail())) {
+			if (! isEMailValid()) {
 				log.saveError("SaveError", Msg.getMsg(getCtx(), "InvalidEMailFormat") + Msg.getElement(getCtx(), COLUMNNAME_EMail) + " - [" + getEMail() + "]");
 				return false;
 			}
