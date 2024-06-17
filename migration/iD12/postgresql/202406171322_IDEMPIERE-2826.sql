@@ -85,3 +85,9 @@ UPDATE M_PromotionReward SET IsSameDistribution='Y' WHERE IsSameDistribution IS 
 INSERT INTO t_alter_column values('m_promotionreward','IsSameDistribution',null,'NOT NULL',null)
 ;
 
+UPDATE AD_ModelValidator
+SET IsActive='N',
+Help = CASE WHEN Help IS NULL THEN '' ELSE Help || ' / ' END || 'Deprecated, use instead the plugin org.idempiere.promotions'
+WHERE ModelValidationClass='org.adempiere.model.PromotionValidator' AND IsActive='Y'
+;
+
