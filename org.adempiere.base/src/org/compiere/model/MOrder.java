@@ -2195,7 +2195,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
 			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
 			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)			//	(W)alkIn(R)eceipt
-			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
+			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInout()) 
 		{
 			if (!DELIVERYRULE_Force.equals(getDeliveryRule()))
 			{
@@ -2217,7 +2217,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Create SO Invoice - Always invoice complete Order
 		if ( MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)
 			|| MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO) 	
-			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
+			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInvoice()) 
 		{
 			MInvoice invoice = createInvoice (dt, shipment, realTimePOS ? null : getDateOrdered());
 			if (invoice == null)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_DocType 
 {
@@ -44,8 +44,8 @@ public interface I_C_DocType
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_C_DocType
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -332,6 +332,32 @@ public interface I_C_DocType
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAutoGenerateInout */
+    public static final String COLUMNNAME_IsAutoGenerateInout = "IsAutoGenerateInout";
+
+	/** Set Generate Shipment.
+	  * Automatically Generate Shipment after (Sales/Purchase) Order completed
+	  */
+	public void setIsAutoGenerateInout (boolean IsAutoGenerateInout);
+
+	/** Get Generate Shipment.
+	  * Automatically Generate Shipment after (Sales/Purchase) Order completed
+	  */
+	public boolean isAutoGenerateInout();
+
+    /** Column name IsAutoGenerateInvoice */
+    public static final String COLUMNNAME_IsAutoGenerateInvoice = "IsAutoGenerateInvoice";
+
+	/** Set Generate Invoice.
+	  * Automatically Generate Invoice after (Sales/Purchase) Order completed
+	  */
+	public void setIsAutoGenerateInvoice (boolean IsAutoGenerateInvoice);
+
+	/** Get Generate Invoice.
+	  * Automatically Generate Invoice after (Sales/Purchase) Order completed
+	  */
+	public boolean isAutoGenerateInvoice();
 
     /** Column name IsChargeOrProductMandatory */
     public static final String COLUMNNAME_IsChargeOrProductMandatory = "IsChargeOrProductMandatory";
