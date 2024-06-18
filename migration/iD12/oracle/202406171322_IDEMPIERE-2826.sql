@@ -89,8 +89,7 @@ ALTER TABLE M_PromotionReward MODIFY IsSameDistribution NOT NULL
 ;
 
 UPDATE AD_ModelValidator
-SET IsActive='N',
-Help = CASE WHEN Help IS NULL THEN '' ELSE Help || ' / ' END || 'Deprecated, use instead the plugin org.idempiere.promotions'
-WHERE ModelValidationClass='org.adempiere.model.PromotionValidator' AND IsActive='Y'
+SET Help = CASE WHEN Help IS NULL THEN '' ELSE Help || ' / ' END || 'Deprecated, use instead the plugin org.idempiere.promotions'
+WHERE ModelValidationClass='org.adempiere.model.PromotionValidator'
 ;
 
