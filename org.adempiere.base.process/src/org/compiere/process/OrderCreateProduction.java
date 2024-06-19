@@ -37,6 +37,7 @@ import org.compiere.model.MWarehouse;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.eevolution.model.MPPProductBOM;
 
 /**
  *
@@ -90,11 +91,13 @@ public class OrderCreateProduction extends SvrProcess {
 
 			MProduction production = new MProduction(line);
 			MProduct product = new MProduct(getCtx(), line.getM_Product_ID(), get_TrxName());
+			MPPProductBOM productBOM = MPPProductBOM.getDefault(product, get_TrxName());
 
 			production.setM_Product_ID(line.getM_Product_ID());
 			production.setProductionQty(line.getQtyOrdered().subtract(line.getQtyDelivered()));
 			production.setDatePromised(line.getDatePromised());
 			production.setC_OrderLine_ID(line.getC_OrderLine_ID());
+			production.setPP_Product_BOM_ID(productBOM.getPP_Product_BOM_ID());
 
 			int locator = product.getM_Locator_ID();
 			if (locator == 0)
