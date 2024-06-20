@@ -45,6 +45,7 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderTax;
@@ -1643,13 +1644,12 @@ public class SalesOrderTest extends AbstractTestCase {
 	}
 	
 	/**
-	 * Test cases for Prepay Order
+	 * Test cases for Prepay Order - auto generate Shipment and Invoice
 	 */
 	@Test
-	public void testPrepayOrder() {
-		
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-		
+	public void testPrepayOrderAutoGenerate() {
+	    Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+	    	    
 	    // Create an order
 	    MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 	    order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Prepay);
@@ -1675,6 +1675,12 @@ public class SalesOrderTest extends AbstractTestCase {
 	    order.load(getTrxName());
 	    assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 	    order.saveEx();
+	    
+	    // Set both IsAutoGenerateInout and IsAutoGenerateInvoice
+	    MDocType doctype = new MDocType(Env.getCtx(), order.getC_DocType_ID(), getTrxName());
+	    doctype.setIsAutoGenerateInout(true);
+	    doctype.setIsAutoGenerateInvoice(true);
+	    doctype.saveEx();
 
 	    // Create the payment
 	    MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
@@ -1692,22 +1698,102 @@ public class SalesOrderTest extends AbstractTestCase {
 	    assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 
 	    // Check if a shipment was generated
-	    MDocType doctype = new MDocType(Env.getCtx(), order.getC_DocType_ID(), getTrxName());
-	    if (doctype.isAutoGenerateInout()) {
-	        MInOut[] shipments = order.getShipments();
-	        assertTrue(shipments.length > 0, "No shipment was generated");
-	    } else {
-	        MInOut[] shipments = order.getShipments();
-	        assertEquals(0, shipments.length, "Shipment was generated but it shouldn't have been");
-	    }
+	    MInOut[] shipments = order.getShipments();
+	    assertTrue(shipments.length > 0, "No shipment was generated");
 
 	    // Check if an invoice was generated
-	    if (doctype.isAutoGenerateInvoice()) {
-	        MInvoice[] invoices = order.getInvoices();
-	        assertTrue(invoices.length > 0, "No invoice was generated");
-	    } else {
-	        MInvoice[] invoices = order.getInvoices();
-	        assertEquals(0, invoices.length, "Invoice was generated but it shouldn't have been");
-	    }
+	    MInvoice[] invoices = order.getInvoices();
+	    assertTrue(invoices.length > 0, "No invoice was generated");
+	}
+	
+	/**
+	 * Test cases for Prepay Order - if the invoice is not auto-generated, allocate for order
+	 */
+	@Test
+	public void testPrepayOrderAllocateFromOrder() {
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id);
+	    
+	    // Create an order
+	    MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+	    order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Prepay);
+	    order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+	    order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+	    order.setDocStatus(DocAction.STATUS_Drafted);
+	    order.setDocAction(DocAction.ACTION_Complete);
+	    order.setDateOrdered(today);
+	    order.setDatePromised(today);
+	    order.saveEx();
+	    
+	    // Add an order line
+	    MOrderLine line1 = new MOrderLine(order);
+	    line1.setLine(10);
+	    line1.setProduct(product);
+	    line1.setQty(Env.ONE);
+	    line1.setDatePromised(today);
+	    line1.saveEx();
+
+	    // Complete the order
+	    ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+	    assertFalse(info.isError(), info.getSummary());
+	    order.load(getTrxName());
+	    assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+	    order.saveEx();
+	    
+	    // Do not auto-generate Shipment nor Invoice
+	    MDocType doctype = new MDocType(Env.getCtx(), order.getC_DocType_ID(), getTrxName());
+	    doctype.setIsAutoGenerateInout(false);
+	    doctype.setIsAutoGenerateInvoice(false);
+	    doctype.saveEx();
+	    
+	    // Create the payment
+	    MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+	    payment.setC_Order_ID(order.getC_Order_ID());
+	    payment.setC_BPartner_ID(order.getC_BPartner_ID());
+	    payment.setPayAmt(order.getGrandTotal());
+	    payment.setC_Currency_ID(order.getC_Currency_ID());
+	    payment.setDocAction(DocAction.ACTION_Complete);
+	    payment.saveEx();
+	    
+	    // No Invoice should be created yet
+	    MInvoice[] invoices = order.getInvoices();
+	    assertTrue(invoices.length == 0, "Invoice already exists");
+	    
+	    // No Shipment should be created
+	    MInOut[] shipments = order.getShipments();
+	    assertTrue(shipments.length == 0, "Shipment already exists");
+		
+	    // Create the Invoice
+	    MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setOrder(order);
+		invoice.setDateAcct(order.getDateOrdered());
+		invoice.setSalesRep_ID(order.getSalesRep_ID());
+		invoice.setC_BPartner_ID(order.getBill_BPartner_ID());
+		invoice.setC_BPartner_Location_ID(order.getBill_Location_ID());
+		invoice.setAD_User_ID(order.getBill_User_ID());
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		// Add an Invoice Line
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setC_OrderLine_ID(line1.get_ID());
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(product);
+		invoiceLine.setQty(Env.ONE);
+		invoiceLine.saveEx();
+		
+		// Complete the Invoice
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		
+		// Test the allocation
+		assertEquals(true, invoice.isPaid(), "Invoice is not paid");
+		MAllocationHdr[] allocs = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
+		assertEquals(1, allocs.length);
+		assertEquals(DocAction.STATUS_Completed, allocs[0].getDocStatus());
 	}
 }
