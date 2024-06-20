@@ -57,8 +57,7 @@ UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2024-06-18 10:46:25','YYYY-MM-
 ;
 
 -- Jun 18, 2024, 10:56:01 AM CEST
-UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | 
-@OrderType@=''PR''', SeqNo=90,Updated=TO_TIMESTAMP('2024-06-18 10:56:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1094
+UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | @OrderType@=''PR''', SeqNo=90,Updated=TO_TIMESTAMP('2024-06-18 10:56:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1094
 ;
 
 -- Jun 18, 2024, 10:56:01 AM CEST
@@ -66,8 +65,7 @@ UPDATE AD_Field SET DisplayLogic='@OrderType@=''PR'' | @OrderType@=''SO''', SeqN
 ;
 
 -- Jun 18, 2024, 10:56:01 AM CEST
-UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | @OrderType@=''WP'' | 
-@OrderType@=''OB''', SeqNo=300,Updated=TO_TIMESTAMP('2024-06-18 10:56:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1104
+UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | @OrderType@=''WP'' | @OrderType@=''OB''', SeqNo=300,Updated=TO_TIMESTAMP('2024-06-18 10:56:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1104
 ;
 
 -- Jun 18, 2024, 10:56:01 AM CEST
@@ -75,7 +73,6 @@ UPDATE AD_Field SET SeqNo=580,Updated=TO_TIMESTAMP('2024-06-18 10:56:01','YYYY-M
 ;
 
 -- Jun 18, 2024, 10:59:31 AM CEST
-UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | @OrderType@=''WP'' | 
-@OrderType@=''PR''', SeqNo=300,Updated=TO_TIMESTAMP('2024-06-18 10:59:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1104
+UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | @OrderType@=''WP'' | @OrderType@=''PR''', SeqNo=300,Updated=TO_TIMESTAMP('2024-06-18 10:59:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1104
 ;
 

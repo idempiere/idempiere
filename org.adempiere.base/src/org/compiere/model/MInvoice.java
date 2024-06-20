@@ -3372,20 +3372,16 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND C_Invoice_ID IS NULL ");
 
 		// Parse Orders
-		if(orderIDSet.size() == 1) {
-			whereClause.append(" AND C_Order_ID = ?");
-		} else {
-			whereClause.append(" AND C_Order_ID IN ( ");
-			Iterator<Integer> iterator = orderIDSet.iterator();
-			while(iterator.hasNext()) {
-				iterator.next();
-				whereClause.append("?");
-				if(iterator.hasNext())
-					whereClause.append(", ");
-			}
-
-			whereClause.append(" ) ");
+		whereClause.append(" AND C_Order_ID IN ( ");
+		Iterator<Integer> iterator = orderIDSet.iterator();
+		while(iterator.hasNext()) {
+			iterator.next();
+			whereClause.append("?");
+			if(iterator.hasNext())
+				whereClause.append(", ");
 		}
+
+		whereClause.append(" ) ");
 
 		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause.toString(), get_TrxName())
 		.setParameters(orderIDSet.toArray())
