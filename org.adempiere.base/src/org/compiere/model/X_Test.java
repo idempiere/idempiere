@@ -34,7 +34,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240226L;
+	private static final long serialVersionUID = 20240620L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -108,30 +108,6 @@ public class X_Test extends PO implements I_Test, I_Persistent
       return sb.toString();
     }
 
-	public I_C_ValidCombination getAccount_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getAccount_Acct(), get_TrxName());
-	}
-
-	/** Set Account_Acct.
-		@param Account_Acct Account_Acct
-	*/
-	public void setAccount_Acct (int Account_Acct)
-	{
-		set_Value (COLUMNNAME_Account_Acct, Integer.valueOf(Account_Acct));
-	}
-
-	/** Get Account_Acct.
-		@return Account_Acct	  */
-	public int getAccount_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Account_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -160,23 +136,44 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		return ii.intValue();
 	}
 
+	public I_C_ValidCombination getAccount_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getAccount_Acct(), get_TrxName());
+	}
+
+	/** Set Account_Acct.
+		@param Account_Acct Account_Acct
+	*/
+	public void setAccount_Acct (int Account_Acct)
+	{
+		set_Value (COLUMNNAME_Account_Acct, Integer.valueOf(Account_Acct));
+	}
+
+	/** Get Account_Acct.
+		@return Account_Acct	  */
+	public int getAccount_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Account_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Binary Data.
 		@param BinaryData Binary Data
 	*/
-	public void setBinaryData (int BinaryData)
+	public void setBinaryData (byte[] BinaryData)
 	{
-		set_Value (COLUMNNAME_BinaryData, Integer.valueOf(BinaryData));
+		set_Value (COLUMNNAME_BinaryData, BinaryData);
 	}
 
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public int getBinaryData()
+	public byte[] getBinaryData()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BinaryData);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
@@ -235,22 +232,6 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Character Data.
-		@param CharacterData Long Character Field
-	*/
-	public void setCharacterData (String CharacterData)
-	{
-		set_Value (COLUMNNAME_CharacterData, CharacterData);
-	}
-
-	/** Get Character Data.
-		@return Long Character Field
-	  */
-	public String getCharacterData()
-	{
-		return (String)get_Value(COLUMNNAME_CharacterData);
-	}
-
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
@@ -277,21 +258,6 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Color.
-		@param Color Color
-	*/
-	public void setColor (String Color)
-	{
-		set_Value (COLUMNNAME_Color, Color);
-	}
-
-	/** Get Color.
-		@return Color	  */
-	public String getColor()
-	{
-		return (String)get_Value(COLUMNNAME_Color);
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
@@ -350,6 +316,37 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Character Data.
+		@param CharacterData Long Character Field
+	*/
+	public void setCharacterData (String CharacterData)
+	{
+		set_Value (COLUMNNAME_CharacterData, CharacterData);
+	}
+
+	/** Get Character Data.
+		@return Long Character Field
+	  */
+	public String getCharacterData()
+	{
+		return (String)get_Value(COLUMNNAME_CharacterData);
+	}
+
+	/** Set Color.
+		@param Color Color
+	*/
+	public void setColor (String Color)
+	{
+		set_Value (COLUMNNAME_Color, Color);
+	}
+
+	/** Get Color.
+		@return Color	  */
+	public String getColor()
+	{
+		return (String)get_Value(COLUMNNAME_Color);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -385,7 +382,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Set JSON Data.
 		@param JsonData The json field stores json data.
 	*/
-	public void setJsonData (Object JsonData)
+	public void setJsonData (String JsonData)
 	{
 		set_Value (COLUMNNAME_JsonData, JsonData);
 	}
@@ -393,9 +390,9 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get JSON Data.
 		@return The json field stores json data.
 	  */
-	public Object getJsonData()
+	public String getJsonData()
 	{
-				return get_Value(COLUMNNAME_JsonData);
+		return (String)get_Value(COLUMNNAME_JsonData);
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException
@@ -608,60 +605,6 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_T_DateTime);
 	}
 
-	/** Set Test ID.
-		@param Test_ID Test ID
-	*/
-	public void setTest_ID (int Test_ID)
-	{
-		if (Test_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_Test_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_Test_ID, Integer.valueOf(Test_ID));
-	}
-
-	/** Get Test ID.
-		@return Test ID	  */
-	public int getTest_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Test_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Test_UU.
-		@param Test_UU Test_UU
-	*/
-	public void setTest_UU (String Test_UU)
-	{
-		set_Value (COLUMNNAME_Test_UU, Test_UU);
-	}
-
-	/** Get Test_UU.
-		@return Test_UU	  */
-	public String getTest_UU()
-	{
-		return (String)get_Value(COLUMNNAME_Test_UU);
-	}
-
-	/** Set Virtual Quantity.
-		@param TestVirtualQty Used only for testing purposes
-	*/
-	public void setTestVirtualQty (BigDecimal TestVirtualQty)
-	{
-		throw new IllegalArgumentException ("TestVirtualQty is virtual column");	}
-
-	/** Get Virtual Quantity.
-		@return Used only for testing purposes
-	  */
-	public BigDecimal getTestVirtualQty()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TestVirtualQty);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	/** Set Integer.
 		@param T_Integer Integer
 	*/
@@ -730,5 +673,59 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	public Timestamp getT_Timestamp()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_T_Timestamp);
+	}
+
+	/** Set Virtual Quantity.
+		@param TestVirtualQty Used only for testing purposes
+	*/
+	public void setTestVirtualQty (BigDecimal TestVirtualQty)
+	{
+		throw new IllegalArgumentException ("TestVirtualQty is virtual column");	}
+
+	/** Get Virtual Quantity.
+		@return Used only for testing purposes
+	  */
+	public BigDecimal getTestVirtualQty()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TestVirtualQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Test ID.
+		@param Test_ID Test ID
+	*/
+	public void setTest_ID (int Test_ID)
+	{
+		if (Test_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_Test_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_Test_ID, Integer.valueOf(Test_ID));
+	}
+
+	/** Get Test ID.
+		@return Test ID	  */
+	public int getTest_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Test_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Test_UU.
+		@param Test_UU Test_UU
+	*/
+	public void setTest_UU (String Test_UU)
+	{
+		set_Value (COLUMNNAME_Test_UU, Test_UU);
+	}
+
+	/** Get Test_UU.
+		@return Test_UU	  */
+	public String getTest_UU()
+	{
+		return (String)get_Value(COLUMNNAME_Test_UU);
 	}
 }
