@@ -2322,9 +2322,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 		
-		boolean isAllocateFromOrder = allocateFromOrder();
-		
-		if (PAYMENTRULE_Cash.equals(getPaymentRule()) || isAllocateFromOrder) {
+		if (PAYMENTRULE_Cash.equals(getPaymentRule()) || allocateFromOrder()) {
 			if (testAllocation(true)) {
 				saveEx();
 			}
@@ -3370,45 +3368,40 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			 I_C_OrderLine orderLine = line.getC_OrderLine();
 			 if(orderLine == null)
 				 continue;
-
-			 orderIDSet.add(orderLine.getC_Order_ID());
+			 if (line.getC_OrderLine_ID() > 0)
+				 orderIDSet.add(orderLine.getC_Order_ID());
 		}
 
-		if(orderIDSet.size() <= 0)
+		if(orderIDSet.isEmpty())
 			return false;
 
-		String whereClause = "docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' ";
+		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND COALESCE(C_Invoice_ID, 0)=0");
 
-		ArrayList<Integer> parameters = new ArrayList<>();
-		parameters.addAll(orderIDSet);
 		// Parse Orders
 		if(orderIDSet.size() == 1) {
-			whereClause += " AND C_Order_ID = ?";
+			whereClause.append(" AND C_Order_ID = ?");
 		} else {
-			whereClause += " AND C_Order_ID IN ( ";
+			whereClause.append(" AND C_Order_ID IN ( ");
 			Iterator<Integer> iterator = orderIDSet.iterator();
 			while(iterator.hasNext()) {
 				iterator.next();
-				whereClause += "?";
+				whereClause.append("?");
 				if(iterator.hasNext())
-					whereClause += ", ";
+					whereClause.append(", ");
 			}
 
-			whereClause += " ) ";
+			whereClause.append(" ) ");
 		}
 
-		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause, get_TrxName())
-		.setParameters(parameters.toArray())
+		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause.toString(), get_TrxName())
+		.setParameters(orderIDSet)
 		.setOrderBy(MPayment.COLUMNNAME_DateAcct)
 		.list();
 
 		for(MPayment payment : paymentsList) {
-			if(payment.getC_Invoice_ID() > 0)
-				continue;	// Skip Payment with connected Invoices
-
 			payment.setC_Invoice_ID(getC_Invoice_ID());
 			if(!payment.allocateIt())
-				log.severe(" Payment Not Allocated ");
+				throw new AdempiereException(Msg.getMsg(getCtx(), "PaymentNotAllocated"));
 
 			payment.saveEx();
 		}
