@@ -1937,6 +1937,13 @@ public class MPayment extends X_C_Payment
 				int length = invoices.length;
 				if (length > 0)		//	get last invoice
 					setC_Invoice_ID (invoices[length-1].getC_Invoice_ID());
+				//
+				MDocType orderDocType = new MDocType(getCtx(), order.getC_DocType_ID(), get_TrxName());
+				if (orderDocType.isAutoGenerateInvoice() && getC_Invoice_ID() == 0)
+				{
+					m_processMsg = "@NotFound@ @C_Invoice_ID@";
+					return DocAction.STATUS_Invalid;
+				}
 			}	//	WaitingPayment
 		}
 		

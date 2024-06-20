@@ -40,6 +40,7 @@ import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
@@ -1639,5 +1640,74 @@ public class SalesOrderTest extends AbstractTestCase {
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
 		assertTrue(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
+	}
+	
+	/**
+	 * Test cases for Prepay Order
+	 */
+	@Test
+	public void testPrepayOrder() {
+		
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		
+	    // Create an order
+	    MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+	    order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Prepay);
+	    order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+	    order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+	    order.setDocStatus(DocAction.STATUS_Drafted);
+	    order.setDocAction(DocAction.ACTION_Complete);
+	    order.setDateOrdered(today);
+	    order.setDatePromised(today);
+	    order.saveEx();
+
+	    // Add an order line
+	    MOrderLine line1 = new MOrderLine(order);
+	    line1.setLine(10);
+	    line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+	    line1.setQty(Env.ONE);
+	    line1.setDatePromised(today);
+	    line1.saveEx();
+
+	    // Complete the order
+	    ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+	    assertFalse(info.isError(), info.getSummary());
+	    order.load(getTrxName());
+	    assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+	    order.saveEx();
+
+	    // Create the payment
+	    MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+	    payment.setC_Order_ID(order.getC_Order_ID());
+	    payment.setC_BPartner_ID(order.getC_BPartner_ID());
+	    payment.setPayAmt(order.getGrandTotal());
+	    payment.setC_Currency_ID(order.getC_Currency_ID());
+	    payment.setDocAction(DocAction.ACTION_Complete);
+	    payment.saveEx();
+
+	    // Complete the payment
+	    info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+	    assertFalse(info.isError(), info.getSummary());
+	    payment.load(getTrxName());
+	    assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+
+	    // Check if a shipment was generated
+	    MDocType doctype = new MDocType(Env.getCtx(), order.getC_DocType_ID(), getTrxName());
+	    if (doctype.isAutoGenerateInout()) {
+	        MInOut[] shipments = order.getShipments();
+	        assertTrue(shipments.length > 0, "No shipment was generated");
+	    } else {
+	        MInOut[] shipments = order.getShipments();
+	        assertEquals(0, shipments.length, "Shipment was generated but it shouldn't have been");
+	    }
+
+	    // Check if an invoice was generated
+	    if (doctype.isAutoGenerateInvoice()) {
+	        MInvoice[] invoices = order.getInvoices();
+	        assertTrue(invoices.length > 0, "No invoice was generated");
+	    } else {
+	        MInvoice[] invoices = order.getInvoices();
+	        assertEquals(0, invoices.length, "Invoice was generated but it shouldn't have been");
+	    }
 	}
 }

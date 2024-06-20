@@ -3362,20 +3362,14 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MInvoiceLine[] lines = getLines();
 		for(MInvoiceLine line : lines) {
-			if(line.getC_OrderLine_ID() <= 0)
-				continue;
-
-			 I_C_OrderLine orderLine = line.getC_OrderLine();
-			 if(orderLine == null)
-				 continue;
-			 if (line.getC_OrderLine_ID() > 0)
-				 orderIDSet.add(orderLine.getC_Order_ID());
-		}
+			if (line.getC_OrderLine_ID() > 0)
+			     orderIDSet.add(line.getC_OrderLine().getC_Order_ID());
+		   }
 
 		if(orderIDSet.isEmpty())
 			return false;
 
-		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND COALESCE(C_Invoice_ID, 0)=0");
+		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND C_Invoice_ID IS NULL ");
 
 		// Parse Orders
 		if(orderIDSet.size() == 1) {
@@ -3394,7 +3388,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		}
 
 		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause.toString(), get_TrxName())
-		.setParameters(orderIDSet)
+		.setParameters(orderIDSet.toArray())
 		.setOrderBy(MPayment.COLUMNNAME_DateAcct)
 		.list();
 
