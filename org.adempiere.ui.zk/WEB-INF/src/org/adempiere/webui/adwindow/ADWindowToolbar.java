@@ -46,6 +46,7 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MUserQuery;
 import org.compiere.util.CLogger;
@@ -54,7 +55,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
-import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -325,61 +325,46 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("W", null);
         for (MToolBarButton button : officialButtons) {
         	if (!button.isActive() || !hasAccess(BTNPREFIX+button.getComponentName())) {
-        		buttons.remove(button.getComponentName());
+        		ADWindowToolbar.removeButton(buttons, button.getComponentName());
         	} else {
         		if (button.isCustomization()) {
         			String actionId = button.getActionClassName();
-        			IServiceHolder<IAction> serviceHolder = Actions.getAction(actionId);
-        			IAction action = serviceHolder.getService();
+        			IServiceHolder<IAction> serviceHolder = null;
+        			IAction action = null;
+        			
+        			if (isOfficialButton(button) && Util.isEmpty(actionId, true)) {
+        				// for official button, in case not setting IAction then use default setting (label, icon, event handle...)
+        			}else {
+        				serviceHolder = Actions.getAction(actionId);
+            			action = serviceHolder.getService();
+        			}
+        			ToolBarButton btn = null;
+        			if (isOfficialButton(button))
+    					btn = buttons.get(button.getComponentName());// maybe already created above as new button
+        			
         			if (serviceHolder != null && action != null) {
-        				String labelKey = actionId + ".label";
-        				String tooltipKey = actionId + ".tooltip";
-        				String label = Msg.getMsg(Env.getCtx(), labelKey, true);
-        				String tooltiptext = Msg.getMsg(Env.getCtx(), labelKey, false);
-        				if (Util.isEmpty(tooltiptext, true))
-        					tooltiptext = Msg.getMsg(Env.getCtx(), tooltipKey, true);
-        				else
-        					tooltipKey = labelKey;
-        				if (labelKey.equals(label)) {
-        					label = button.getName();
+        				if (btn == null){// sometime official button not yet create above as print format editor
+        					btn = createButton(button.getComponentName(), null, null);//TODO:fix tooltip
+        					btn.setId(button.getName());
+        					btn.setDisabled(false);
         				}
-        				if (tooltipKey.equals(tooltiptext) || labelKey.equals(tooltiptext)) {
-        					tooltipKey = null;
-        				}
-        				ToolBarButton btn = createButton(button.getComponentName(), null, tooltipKey);
+        				// remove default event handle, use ToolbarCustomButton to handle so use IAction service
         				btn.removeEventListener(Events.ON_CLICK, this);
-        				btn.setId(button.getName());
-        				btn.setDisabled(false);
-
-        				btn.setIconSclass(null);
-        				if (ThemeManager.isUseFontIconForImage()) {
-        					String iconSclass = Actions.getActionIconSclass(actionId);
-        					if (!Util.isEmpty(iconSclass, true)) {
-        						btn.setIconSclass(iconSclass);
-        						LayoutUtils.addSclass("font-icon-toolbar-button", btn);
-        					}
-        				}
-        				//not using font icon, fallback to image or label
-        				if (Util.isEmpty(btn.getIconSclass(), true)) {
-	        				AImage aImage = Actions.getActionImage(actionId);
-	        				if (aImage != null) {
-	        					btn.setImageContent(aImage);
-	        				} else {
-	        					btn.setLabel(label);
-	        				}
-        				}
-
-        				ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(button, btn, actionId, windowNo);
-        				toolbarCustomButtons.add(toolbarCustomBtn);
-
+        				
+        				action.decorate(btn, button);
         				if (ClientInfo.isMobile() && button.isShowMore()) 
         					mobileShowMoreButtons.add(btn);
         				else if (!button.isShowMore()) {
             				this.appendChild(btn);
-            				action.decorate(btn);        					
         				}
         			}
+        			
+        			// also registry ToolbarCustomButton to handle onclick mean use IAction service to handle onclick
+        			// in case official button without IAction, it still safe
+        			ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(button, btn, actionId, windowNo);
+    				toolbarCustomButtons.add(toolbarCustomBtn);
         		}
+
         		if (buttons.get(button.getComponentName()) != null) {
         			if (ClientInfo.isMobile() && button.isShowMore()) 
     					mobileShowMoreButtons.add(buttons.get(button.getComponentName()));
@@ -451,6 +436,23 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         return btn;
     }
     
+    public static ToolBarButton removeButton(HashMap<String, ToolBarButton> officialButtons, String name)
+    {
+    	ToolBarButton removeButton = officialButtons.remove(name);
+    	if (removeButton != null) {
+    		removeButton.setDisabled(true);// so disable shortcut key also
+    		// this.enableNew is called somewhere and reset disable = false
+    		// so need this on to disable shortcut key
+    		// it happen on case set official button to inactive
+    		removeButton.setVisible(false);
+    		
+    	}
+    	return removeButton;
+    }
+    
+    public static boolean isOfficialButton(MToolBarButton button) {
+    	return button.getAD_ToolBarButton_ID() <= MTable.MAX_OFFICIAL_ID;
+    }
     /**
      * Get ToolBarButton by name
      * @param name

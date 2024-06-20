@@ -22,6 +22,7 @@ import org.adempiere.base.Service;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.CCache;
+import org.compiere.util.Util;
 import org.zkoss.image.AImage;
 
 /**
@@ -34,13 +35,21 @@ public class Actions {
 	private static final String ACTION_IMAGES_PATH = "/action/images/";
 	private static CCache<String, IServiceHolder<IAction>> trackerCache = new CCache<String, IServiceHolder<IAction>>(null, "ActionsServiceTracker", 5, false);
 	private static CCache<String, AImage> imageCache = new CCache<String, AImage>(null, "ActionsImages",5, false);
+	private static String defaultAction = "org.adempiere.webui.action.DefaultToolbarAction";
 	
 	/**
+	 * in case button don't setup a action, it should use default action (example to show hello)
+	 * in case no default action then it should return null shouldn't return first registered service
 	 * 
+     * think about use a default IAction for case setup action (actionId isn't empty) but not yet registered service
 	 * @param actionId
 	 * @return {@link IServiceHolder}
 	 */
 	public static IServiceHolder<IAction> getAction(String actionId) {
+		
+		if (Util.isEmpty(actionId, true))
+			actionId = defaultAction;
+		
 		IServiceHolder<IAction> action = null;
 		synchronized (trackerCache) {
 			action = trackerCache.get(actionId);

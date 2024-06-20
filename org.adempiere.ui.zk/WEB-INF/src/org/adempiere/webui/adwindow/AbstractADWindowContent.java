@@ -2178,7 +2178,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         IADTabpanel adtab = adTabbox.getSelectedTabpanel();
         toolbar.enableProcessButton(adtab != null && adtab.isEnableProcessButton());
         toolbar.enableCustomize(adtab.isEnableCustomizeButton());
-
+        toolbar.dynamicDisplay();
     }
 
 	/**
