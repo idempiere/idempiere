@@ -1597,9 +1597,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (detailPane.getParent() == null) {
 			formContainer.appendSouth(detailPane);
 		}
+		
 		IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    
     	if (tabPanel != null) {
-    		if (!tabPanel.isActivated()) {
+    		if (!tabPanel.isActivated() || !detailPane.isVisible()) {
+    			if (!detailPane.isVisible())
+    				detailPane.setVisible(true);
     			tabPanel.activate(true);
     		} else {
     			tabPanel.getGridView().invalidateGridView();
