@@ -17,6 +17,8 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -304,12 +306,25 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return get_Translation (COLUMNNAME_PrintName, AD_Language);
 	}	//	getPrintName
 	
+	/** List of document sub-types which are always auto-generating Shipment */
+	List<String> autoGenerateInOutList = Collections.unmodifiableList(Arrays.asList(
+		DOCSUBTYPESO_POSOrder,
+	    DOCSUBTYPESO_OnCreditOrder,
+	    DOCSUBTYPESO_WarehouseOrder
+	));
+
+	/** List of document sub-types which are always auto-generating Invoice */
+	List<String> autoGenerateInvoiceList = Collections.unmodifiableList(Arrays.asList(
+		DOCSUBTYPESO_POSOrder,
+	    DOCSUBTYPESO_OnCreditOrder
+	));
+	
 	@Override
 	protected boolean beforeSave (boolean newRecord) {
 		if(newRecord || is_ValueChanged(COLUMNNAME_IsAutoGenerateInout) || is_ValueChanged(COLUMNNAME_IsAutoGenerateInvoice)) {
 			if(!DOCSUBTYPESO_PrepayOrder.equals(getDocSubTypeSO())) {
-				setIsAutoGenerateInout(false);
-				setIsAutoGenerateInvoice(false);
+				setIsAutoGenerateInout(autoGenerateInOutList.contains(getDocSubTypeSO()));
+				setIsAutoGenerateInvoice(autoGenerateInvoiceList.contains(getDocSubTypeSO()));
 			}
 		}
 		return true;

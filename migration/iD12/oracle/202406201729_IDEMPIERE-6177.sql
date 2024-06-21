@@ -5,11 +5,11 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- Jun 20, 2024, 5:29:29 PM CEST
-UPDATE AD_Field SET DisplayLogic='(@DocBaseType@=''SOO'' | @DocBaseType@=''POO'') & @DocSubTypeSO@=''PR''', SeqNo=350,Updated=TO_TIMESTAMP('2024-06-20 17:29:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208492
+UPDATE AD_Field SET DisplayLogic='(@DocBaseType@=''SOO'' | @DocBaseType@=''POO'') & (@DocSubTypeSO@=''WR'' | @DocSubTypeSO@=''WI'' | @DocSubTypeSO@=''PR'' | @DocSubTypeSO@=''WP'')', SeqNo=350,Updated=TO_TIMESTAMP('2024-06-20 17:29:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208492
 ;
 
 -- Jun 20, 2024, 5:31:34 PM CEST
-UPDATE AD_Field SET DisplayLogic='(@DocBaseType@=''SOO'' | @DocBaseType@=''POO'') & @DocSubTypeSO@=''PR''', SeqNo=360,Updated=TO_TIMESTAMP('2024-06-20 17:31:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208493
+UPDATE AD_Field SET DisplayLogic='(@DocBaseType@=''SOO'' | @DocBaseType@=''POO'') & (@DocSubTypeSO@=''WR'' | @DocSubTypeSO@=''WI'' | @DocSubTypeSO@=''PR'')', SeqNo=360,Updated=TO_TIMESTAMP('2024-06-20 17:31:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208493
 ;
 
 -- Jun 20, 2024, 5:36:07 PM CEST

@@ -76,3 +76,15 @@ UPDATE AD_Field SET SeqNo=580,Updated=TO_TIMESTAMP('2024-06-18 10:56:01','YYYY-M
 UPDATE AD_Field SET DisplayLogic='@OrderType@=''SO'' | @OrderType@=''WP'' | @OrderType@=''PR''', SeqNo=300,Updated=TO_TIMESTAMP('2024-06-18 10:59:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1104
 ;
 
+-- set IsAutoGenerateInout for existing documents (Y for OnCredit, Warehouse, POS, Prepay)
+UPDATE C_DocType 
+SET IsAutoGenerateInout = 'Y' 
+WHERE DocSubTypeSO IN ('WI', 'WP', 'WR', 'PR')
+;
+
+-- set IsAutoGenerateInvoice for existing documents (Y for OnCredit, POS, Prepay)
+UPDATE C_DocType 
+SET IsAutoGenerateInvoice = 'Y' 
+WHERE DocSubTypeSO IN ('WI', 'WR', 'PR')
+;
+
