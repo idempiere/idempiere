@@ -14,7 +14,7 @@
       <unit id="zul" version="10.0.1"/>
       <unit id="zweb" version="10.0.1"/>
       <unit id="zweb-dsp" version="10.0.1"/>
-      <repository id="zk" location="http://localhost:8082/p2.zk"/>
+      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/10.0.1"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
