@@ -27,8 +27,11 @@ import org.zkoss.zul.event.ListDataEvent;
  */
 public class WTableModelEvent extends ListDataEvent
 {
-
-    /** Specifies all rows. */
+	/**
+	 * generated serial id
+	 */
+    private static final long serialVersionUID = 8787799536970587401L;
+	/** Specifies all rows. */
     public static final int ALL_ROWS = -1;
 	/** Specifies all columns in a row or rows. */
 	public static final int ALL_COLUMNS = -1;

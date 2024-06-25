@@ -27,12 +27,12 @@
 								<artifactItem>
 									<groupId>io.keikai</groupId>
 									<artifactId>keikai-oss</artifactId>
-									<version>5.0.0.1</version>
+									<version>5.0.0.1.zk10</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>io.keikai</groupId>
 									<artifactId>keikai-model-oss</artifactId>
-									<version>5.0.0.1</version>
+									<version>5.0.0.1.zk10</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.zkoss.poi</groupId>

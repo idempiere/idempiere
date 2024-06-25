@@ -208,9 +208,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
         Executions.getCurrent().getDesktop().addListener(new DrillCommand());
         Executions.getCurrent().getDesktop().addListener(new TokenCommand());
-        Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
-        
-        eventThreadEnabled = Executions.getCurrent().getDesktop().getWebApp().getConfiguration().isEventThreadEnabled();        
+        Executions.getCurrent().getDesktop().addListener(new ZoomCommand());        
     }
 
 	/**

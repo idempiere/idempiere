@@ -2,11 +2,10 @@ target "idempiere-12"
 
 with source configurePhase allEnvironments
 
-location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.4" {
+location zk "https://idempiere.github.io/binary.file/p2.zk/10.0.1" {
 	zcommon
 	zel
 	zhtml
-	zjavassist
 	zk
 	zkbind
 	zkplus

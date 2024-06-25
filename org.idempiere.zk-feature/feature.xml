@@ -50,10 +50,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="zjavassist"
-         version="0.0.0"/>
-
-   <plugin
          id="org.idempiere.zk.extra"
          version="0.0.0"/>
 

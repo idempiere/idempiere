@@ -295,7 +295,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		ZKUpdateUtil.setHflex(vlayout, "1");
 		this.appendChild(vlayout);
 		
-		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentAction");
+		setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentAction");
 		Grid grid = GridFactory.newGridLayout();
         grid.setStyle("background-image: none;");
         LayoutUtils.addSclass("dialog-content", grid);

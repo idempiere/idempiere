@@ -93,7 +93,6 @@
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jaxb-annotations@default:default"/>
-        <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema.source"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema@default:default"/>
         <setEntry value="com.fasterxml.woodstox.woodstox-core@default:default"/>
         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
@@ -137,6 +136,7 @@
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.soap-api@default:default"/>
         <setEntry value="jakarta.xml.ws-api@default:default"/>
+        <setEntry value="javassist@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>
         <setEntry value="javax.interceptor-api@default:default"/>
         <setEntry value="javax.validation.api@default:default"/>
@@ -156,6 +156,8 @@
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-configuration2@default:default"/>
+        <setEntry value="org.apache.commons.commons-fileupload2-core@default:default"/>
+        <setEntry value="org.apache.commons.commons-fileupload2-javax@default:default"/>
         <setEntry value="org.apache.commons.commons-fileupload@default:default"/>
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-net@default:default"/>
@@ -408,7 +410,6 @@
         <setEntry value="zcommon@default:default"/>
         <setEntry value="zel@default:default"/>
         <setEntry value="zhtml@default:default"/>
-        <setEntry value="zjavassist@default:default"/>
         <setEntry value="zk@default:default"/>
         <setEntry value="zkbind@default:default"/>
         <setEntry value="zkplus@default:default"/>
