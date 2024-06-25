@@ -305,10 +305,10 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		txt3 = new Textbox();
 		txt4 = new Textbox();
 		
-		txt1.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox1");
-		txt2.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox2");
-		txt3.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox3");
-		txt4.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
+		txt1.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox1");
+		txt2.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox2");
+		txt3.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox3");
+		txt4.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
 
 		lbl1 = new Label();
 		lbl2 = new Label();

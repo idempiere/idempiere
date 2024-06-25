@@ -867,9 +867,6 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 										public ForEachStatus getPrevious() {
 											return null;
 										}
-										public Object getEach() {
-											return data;
-										}
 										public int getIndex() {
 											return index;
 										}

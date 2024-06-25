@@ -349,7 +349,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		});
 		
-		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
+		setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
 		
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
@@ -476,7 +476,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         if (isLookup())
         	addEventListener(Events.ON_CANCEL, this);
         contentPanel.setOddRowSclass(null);
-        contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
+        contentPanel.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
         contentPanel.addEventListener("onAfterRender", this);
         contentPanel.setSclass("z-word-nowrap");
         

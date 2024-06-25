@@ -93,7 +93,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 	 */
     private void init()
     {
-    	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
+    	setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
         statusDB = new Label("  ");
         statusLine = new Label();
         selectedLine = new Label();

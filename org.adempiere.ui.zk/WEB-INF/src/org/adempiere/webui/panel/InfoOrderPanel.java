@@ -164,21 +164,21 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         txtDescription = new Textbox();
         txtOrderRef = new Textbox();
 
-        txtDocumentNo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentNo");
-        txtDescription.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "description");
-        txtOrderRef.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "orderReference");
+        txtDocumentNo.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentNo");
+        txtDescription.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "description");
+        txtOrderRef.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "orderReference");
         
         dateFrom = new Datebox();
         dateTo= new Datebox();
         
-        dateFrom.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateFrom");
-        dateTo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateTo");
+        dateFrom.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateFrom");
+        dateTo.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateTo");
 
         amountFrom = new NumberBox(false);
         amountTo = new NumberBox(false);
         
-        amountFrom.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "amountFrom");
-        amountTo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "amountTo");
+        amountFrom.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "amountFrom");
+        amountTo.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "amountTo");
 
         isSoTrx = new Checkbox();
         isSoTrx.setLabel(Msg.translate(Env.getCtx(), "IsSOTrx"));
@@ -188,7 +188,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         editorBPartner = new WSearchEditor(lookupBP, Msg.translate(
                 Env.getCtx(), "C_BPartner_ID"), "", true, false, true);
         editorBPartner.addValueChangeListener(this);
-        editorBPartner.getComponent().setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "bpartnerLookup");
+        editorBPartner.getComponent().setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "bpartnerLookup");
 
     }
 

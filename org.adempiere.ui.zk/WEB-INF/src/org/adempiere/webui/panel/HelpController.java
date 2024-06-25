@@ -15,6 +15,8 @@
 package org.adempiere.webui.panel;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Anchorchildren;
+import org.adempiere.webui.component.Anchorlayout;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.ZoomEvent;
@@ -50,8 +52,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Anchorchildren;
-import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Panel;

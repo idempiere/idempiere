@@ -3731,7 +3731,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				{					
 					final WCreateFromWindow window = (WCreateFromWindow) cf.getWindow();
 					if (SystemProperties.isZkUnitTest())
-						window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
+						window.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
 					window.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
@@ -4207,7 +4207,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		infoWindow.setContentStyle("overflow: auto");
 
 		if (SystemProperties.isZkUnitTest())
-			infoWindow.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
+			infoWindow.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
 		infoWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -4441,7 +4441,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	@Override
 	public void onProcess() {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
-		popup.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
+		popup.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
 		IADTabpanel adtab = adTabbox.getSelectedTabpanel();
 		popup.render(adtab.getToolbarButtons());
 		if (popup.getChildren().size() > 0) {

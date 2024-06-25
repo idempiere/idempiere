@@ -93,7 +93,7 @@
 <%-- dropdown menu icon --%>
 .adwindow-breadcrumb-menu::after {
 	font-family: FontAwesome;
-	font-weight: normal;
+	font-weight: 900;
     font-style: normal;
 	font-size: 12px;
     content: "\f0d7";

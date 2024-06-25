@@ -111,7 +111,7 @@ public class ADTreePanel extends Panel implements EventListener<Event>
      */
     private void init()
     {
-    	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "treepanel");
+    	setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "treepanel");
     	ZKUpdateUtil.setWidth(this, "100%");
     	ZKUpdateUtil.setHeight(this, "100%");
     	

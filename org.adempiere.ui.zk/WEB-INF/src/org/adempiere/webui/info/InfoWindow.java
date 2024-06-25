@@ -1804,7 +1804,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void layoutParameterGrid(boolean update) {
 		if (!update) {
 			parameterGrid = GridFactory.newGridLayout();
-			parameterGrid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
+			parameterGrid.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
 			parameterGrid.setStyle("width: 95%; margin: auto !important;");
 		}
 		if (parameterGrid.getColumns() != null)
