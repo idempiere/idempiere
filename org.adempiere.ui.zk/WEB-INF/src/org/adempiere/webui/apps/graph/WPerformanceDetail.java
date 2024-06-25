@@ -16,7 +16,6 @@ import org.zkoss.zk.ui.event.KeyEvent;
  * 	Window with Chart and Details for {@link MGoal}
  *	
  *  @author Jorg Janke
- *  @version $Id: PerformanceDetail.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPerformanceDetail extends Window implements EventListener<Event>
 {

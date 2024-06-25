@@ -103,18 +103,16 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.West;
 
 /**
- *
  * Default {@link IDesktop} implementation.
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Mar 2, 2007
- * @version $Revision: 0.10 $
  * @author Deepak Pansheriya/Vivek - Adding support for message broadcasting
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {		
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1019213060161640026L;
 
@@ -823,6 +821,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	/**
 	 * @param page
 	 */
+	@Override
 	public void setPage(Page page) {
 		if (this.page != page) {
 			layout.setPage(page);
@@ -842,6 +841,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	 * Get the root component
 	 * @return Component
 	 */
+	@Override
 	public Component getComponent() {
 		return layout;
 	}
@@ -1088,13 +1088,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		ADForm form = super.openForm(formId);
 		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Form, formId);
 		return form;
-	}
-
-	@Override
-	public void openInfo(int infoId) {
-		super.openInfo(infoId);
-		// updateHelpContext is already called in InfoPanel onPageAttached method - IDEMPIERE-5772
-//		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoId);
 	}
 
 	@Override

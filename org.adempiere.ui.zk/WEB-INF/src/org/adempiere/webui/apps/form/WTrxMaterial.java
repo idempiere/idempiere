@@ -129,7 +129,7 @@ public class WTrxMaterial extends TrxMaterial
 	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
-	void zkInit() throws Exception
+	protected void zkInit() throws Exception
 	{
 		form.appendChild(mainPanel);
 		mainPanel.setStyle("width: 100%; height: 100%; border: none; padding: 0; margin: 0");

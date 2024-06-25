@@ -29,9 +29,11 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Vbox;
 
 /**
- * A custom accordion implementation using borderlayout
+ * A custom accordion implementation using borderlayout.<br/>
+ * - north is selected tab label<br/>
+ * - center is seelcted tab content<br/>
+ * - south is the list of not selected tabs
  * @author hengsin
- *
  */
 public class Accordion extends Borderlayout implements EventListener<Event> {
 	/**
@@ -74,9 +76,9 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
-	 * @param component
-	 * @param label
+	 * Add new component
+	 * @param component content of accordion tab
+	 * @param label accordion tab label
 	 */
 	public void add(Component component, String label) {
 		ToolBarButton button = new ToolBarButton();
@@ -95,7 +97,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
+	 * Set label of accordion tab
 	 * @param index
 	 * @param label
 	 */
@@ -107,6 +109,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 		}
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() instanceof ToolBarButton) {			
 			ToolBarButton button = (ToolBarButton) event.getTarget();
@@ -120,7 +123,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
+	 * Set selected accordion tab
 	 * @param index
 	 */
 	public void setSelectedIndex(int index) {
@@ -128,6 +131,10 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 		render(index);
 	}
 
+	/**
+	 * Render content of accordion tab
+	 * @param index
+	 */
 	private void render(int index) {
 		northBox.getChildren().clear();
 		southBox.getChildren().clear();

@@ -76,7 +76,6 @@ import org.zkoss.zul.impl.XulElement;
  * Base class for field editor.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  */
 public abstract class WEditor implements EventListener<Event>, PropertyChangeListener, IInputValidator
 {

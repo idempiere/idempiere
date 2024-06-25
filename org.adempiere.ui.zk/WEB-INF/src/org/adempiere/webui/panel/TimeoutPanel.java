@@ -34,9 +34,8 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
 /**
- * session timeout counter window
+ * Session timeout counter window
  * @author Deepak Pansheriya
- *
  */
 public class TimeoutPanel extends Window implements
 		org.zkoss.zk.ui.event.EventListener<Event> {

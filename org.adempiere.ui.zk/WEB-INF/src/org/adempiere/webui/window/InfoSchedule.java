@@ -68,7 +68,6 @@ import org.zkoss.zul.Vbox;
  *	Schedule - Resource availability and assignment.
  *
  * 	@author 	Jorg Janke
- * 	@version 	$Id: InfoSchedule.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  * 
  *  Zk Port
  *  @author Low Heng Sin

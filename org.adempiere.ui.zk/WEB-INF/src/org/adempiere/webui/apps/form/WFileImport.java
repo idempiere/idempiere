@@ -255,8 +255,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	
 	/**
 	 *	Dynamic Init
-	 */
-	
+	 */	
 	private void dynInit()
 	{
 		//	Load Formats
@@ -308,7 +307,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		confirmPanel.setEnabled("Ok", false);
 	}	//	dynInit
 
-	
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		if (e instanceof UploadEvent) 
@@ -403,8 +402,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	
 	/**
 	 * Reload/Load file
-	 */
-	
+	 */	
 	private void cmd_reloadFile()
 	{
 		if (m_file_istream == null)
@@ -471,8 +469,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 
 	/**
 	 *	Load Format
-	 */
-	
+	 */	
 	private void cmd_loadFormat()
 	{
 		//	clear panel
@@ -580,10 +577,9 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		}
 	}	//	cmd_applyFormat
 
-	/**************************************************************************
+	/**
 	 *	Process File
-	 */
-	
+	 */	
 	private void cmd_process()
 	{
 		if (m_format == null)

@@ -55,8 +55,6 @@ public class KillAllSession extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-
-
 		String sql = "SELECT servername FROM ad_session WHERE ad_session_id=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

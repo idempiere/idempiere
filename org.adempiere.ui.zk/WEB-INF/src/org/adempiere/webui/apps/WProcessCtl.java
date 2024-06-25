@@ -49,7 +49,6 @@ import org.zkoss.zk.ui.event.EventListener;
  * 
  * @author hengsin
  * @contributor red1 IDEMPIERE-1711 with final review by Hengsin
- *
  */
 public class WProcessCtl extends AbstractProcessCtl {
 	

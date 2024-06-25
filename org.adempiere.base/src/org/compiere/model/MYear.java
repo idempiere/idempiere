@@ -187,8 +187,8 @@ public class MYear extends X_C_Year
 	
 	/**
 	 * 	Create 12 Standard (Jan-Dec) Periods. <br/>
-	 * 	Creates also Period Control from DocType.
-	 * 	@see DocumentTypeVerify#createPeriodControls(Properties, int, SvrProcess, String)
+	 * 	Creates also Period Control from DocType.<br/>
+	 * 	Cross Reference: org.compiere.process.DocumentTypeVerify.createPeriodControls(Properties, int, SvrProcess, String)
 	 * 	@param locale locale 
 	 */
 	public void createStdPeriods(Locale locale)

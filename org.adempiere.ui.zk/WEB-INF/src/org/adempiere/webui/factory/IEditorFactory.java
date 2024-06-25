@@ -26,6 +26,7 @@ import org.compiere.model.GridTab;
 public interface IEditorFactory {
 
 	/**
+	 * Get field editor
 	 * @param gridTab
 	 * @param gridField
 	 * @param tableEditor
@@ -34,7 +35,7 @@ public interface IEditorFactory {
 	public WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor);
 	
 	/**
-	 * 
+	 * Get field editor
 	 * @param gridTab
 	 * @param gridField
 	 * @param tableEditor

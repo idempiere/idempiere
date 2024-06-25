@@ -51,7 +51,6 @@ import org.zkoss.zul.Vlayout;
 
 /**
  * @author hengsin
- *
  */
 public class DocumentSearchController implements EventListener<Event>{
 	
@@ -108,7 +107,7 @@ public class DocumentSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * Handle {@link #ON_SEARCH_DOCUMENTS_EVENT} event.
+	 * Handle {@link #ON_SEARCH_DOCUMENTS_EVENT} event.<br/>
 	 * Delegate execution of search to {@link #doSearch(String)}.
 	 * @param searchString
 	 */

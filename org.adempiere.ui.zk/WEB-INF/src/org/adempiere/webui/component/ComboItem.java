@@ -23,7 +23,6 @@ import org.zkoss.zul.Comboitem;
  * Extend {@link Comboitem}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
- * @version $Revision: 0.10 $
  */
 public class ComboItem extends org.zkoss.zul.Comboitem
 {

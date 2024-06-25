@@ -23,7 +23,6 @@ import org.zkoss.zul.Div;
  * Extend {@link Div}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Panel extends Div 
 {

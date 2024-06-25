@@ -31,7 +31,6 @@ import org.zkoss.zk.ui.event.EventListener;
  * Extend {@link org.zkoss.zul.Grid}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Grid extends org.zkoss.zul.Grid implements IdSpace
 {
@@ -39,7 +38,7 @@ public class Grid extends org.zkoss.zul.Grid implements IdSpace
 	 * Generated serial id
 	 */
 	private static final long serialVersionUID = -4483759833677794926L;
-	/** Event Name:List&lt;EventListenerInfo&gt; */
+	/** Event Name:List&lt;EventListenerInfo&gt;, for implementation of {@link #copyEventListeners(Grid)} */
 	private transient Map<String, List<EventListenerInfo>> listeners;
 	
 	/**
@@ -68,6 +67,9 @@ public class Grid extends org.zkoss.zul.Grid implements IdSpace
 		return rows;
 	}
 
+	/**
+	 * Override to maintain {@link #listeners}
+	 */
 	@Override
 	public boolean addEventListener(int priority, String evtnm,
 			EventListener<? extends Event> listener) {
@@ -95,6 +97,9 @@ public class Grid extends org.zkoss.zul.Grid implements IdSpace
 		return b;
 	}
 
+	/**
+	 * Override to maintain {@link #listeners}
+	 */
 	@Override
 	public boolean removeEventListener(String evtnm,
 			EventListener<? extends Event> listener) {
@@ -116,8 +121,8 @@ public class Grid extends org.zkoss.zul.Grid implements IdSpace
 	}
 	
 	/**
-	 * Copy event listeners from another grid.
-	 * Use in the re-initialization grid view.
+	 * Copy event listeners from another grid.<br/>
+	 * Use in the re-initialization of grid view.
 	 * @param grid
 	 */
 	public void copyEventListeners(Grid grid) {

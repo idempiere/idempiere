@@ -31,7 +31,6 @@ import org.zkoss.zul.ext.Sortable;
 /**
  * ListModel for {@link GridTabSelectionListView}
  * @author Low Heng Sin
- *
  */
 public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> implements TableModelListener, Sortable<Object> {
 	

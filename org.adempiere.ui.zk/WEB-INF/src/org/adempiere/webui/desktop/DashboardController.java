@@ -1587,9 +1587,7 @@ public class DashboardController implements EventListener<Event> {
 			.replace("<", "&lt;");
 		return htmlString;
 	}
-	
-	
-	
+		
 	/**
 	 * Run report
 	 * @param AD_Process_ID
@@ -1871,6 +1869,13 @@ public class DashboardController implements EventListener<Event> {
 		return true;
 	}
 
+	/**
+	 * Get display text for CSV values
+	 * @param i
+	 * @param ip
+	 * @param values comma separated value
+	 * @return display text
+	 */
 	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String values) {
 		String returnValue = "";
 		String[] splittedValues = values.split("[,]");
@@ -1882,6 +1887,13 @@ public class DashboardController implements EventListener<Event> {
 		return returnValue;
 	}
 	
+	/**
+	 * Get display text for value
+	 * @param i
+	 * @param ip
+	 * @param value
+	 * @return display text
+	 */
 	private String getDisplay(MPInstance i, MPInstancePara ip, Object value) {
 		try {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());

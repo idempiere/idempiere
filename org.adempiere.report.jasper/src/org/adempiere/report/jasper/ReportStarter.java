@@ -190,7 +190,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
     /**
 	 *  Start the Jasper Report process.<br/>
 	 *  Setup context class loader and do the actual work in {@link #startProcess0(Properties, ProcessInfo, Trx)}.
-	 *  @author rlemeill
 	 *  @param ctx context
 	 *  @param pi standard process info
 	 *  @param trx

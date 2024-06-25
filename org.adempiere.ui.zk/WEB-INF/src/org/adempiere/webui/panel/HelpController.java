@@ -61,9 +61,8 @@ import org.zkoss.zul.Style;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 
+ * Controller for context help, context tool tip and context quick info gadget.
  * @author Elaine
- *
  */
 public class HelpController
 {	
@@ -849,7 +848,7 @@ public class HelpController
 	
 	private class ContextHelpMenupopup extends Menupopup implements EventListener<Event> {
 		/**
-		 * 
+		 * generated serial id
 		 */
 		private static final long serialVersionUID = 5430991475805225567L;
 

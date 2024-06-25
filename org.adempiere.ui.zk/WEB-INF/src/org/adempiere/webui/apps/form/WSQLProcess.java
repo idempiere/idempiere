@@ -293,6 +293,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
      *  Process the events for this form
      *  @param event
      */
+    @Override
     public void onEvent(Event event) throws Exception {
     	if (event.getTarget() == m_btnSql)
     		m_txbResultField.setText(processStatements (m_txbSqlField.getText()));

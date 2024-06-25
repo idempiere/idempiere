@@ -44,7 +44,6 @@ import org.zkoss.zul.Menuitem;
  * Popup context menu for {@link WEditor}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
- * @version $Revision: 0.10 $
  */
 public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 {

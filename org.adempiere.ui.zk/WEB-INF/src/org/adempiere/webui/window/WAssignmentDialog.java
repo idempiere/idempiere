@@ -67,7 +67,6 @@ import org.zkoss.zul.Listitem;
  *	Resource Assignment Dialog
  *
  * 	@author 	Jorg Janke
- * 	@version 	$Id: VAssignmentDialog.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  * 
  *  Zk Port
  *  @author Low Heng Sin

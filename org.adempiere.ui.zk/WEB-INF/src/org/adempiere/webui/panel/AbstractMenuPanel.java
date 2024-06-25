@@ -51,7 +51,8 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * Abstract base class for Menu Panel
+ * Abstract base class for Menu Tree Panel.<br/>
+ * Menu tree component is loaded and created but not added to panel.
  * @author Elaine
  * @date July 31, 2012
  */
@@ -390,7 +391,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 	}
 
 	/**
-	 * @return Tree
+	 * @return Menu Tree
 	 */
 	public Tree getMenuTree() 
 	{

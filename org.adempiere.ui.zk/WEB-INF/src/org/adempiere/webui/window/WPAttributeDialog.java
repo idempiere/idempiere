@@ -48,6 +48,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -91,6 +92,7 @@ import org.zkoss.zul.Space;
 
 /**
  *  Product Instance/Non-Instance attribute Dialog.
+ *  @see WPAttributeEditor
  *  @author hengsin
  */
 public class WPAttributeDialog extends Window implements EventListener<Event>

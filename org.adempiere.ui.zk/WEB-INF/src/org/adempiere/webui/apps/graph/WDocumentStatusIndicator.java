@@ -95,7 +95,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		return m_documentStatus;
 	}	//	getGoal
 
-     /**
+    /**
 	 * 	Init Document Status Display
 	 */
 	private void init()

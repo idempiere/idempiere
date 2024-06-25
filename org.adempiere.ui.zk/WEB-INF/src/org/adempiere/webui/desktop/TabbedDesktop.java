@@ -69,6 +69,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @param soTrx
      * @return ProcessDialog
      */
+	@Override
 	public ProcessDialog openProcessDialog(int processId, boolean soTrx) {
 		ProcessDialog pd = new ProcessDialog (processId, soTrx, getPredefinedContextVariables());
 
@@ -88,6 +89,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @param formId
      * @return ADForm
      */
+	@Override
 	public ADForm openForm(int formId) {
 		ADForm form = ADForm.openForm(formId, null, null, getPredefinedContextVariables(), isMenuSOTrx());
 
@@ -130,6 +132,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	/**
 	 * @param workflow_ID
 	 */
+	@Override
 	public void openWorkflow(int workflow_ID) {
 		WFPanel p = new WFPanel();
 		p.load(workflow_ID);
@@ -144,6 +147,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 * @param windowId
 	 * @param callback
 	 */
+	@Override
 	public void openWindow(int windowId, Callback<ADWindow> callback) {
 		openWindow(windowId, null, callback);
 	}
@@ -153,6 +157,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @param query
      * @param callback
 	 */
+	@Override
 	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback) {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
@@ -174,6 +179,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	/**
      * @param taskId
      */
+	@Override
 	public void openTask(int taskId) {
 		MTask task = new MTask(Env.getCtx(), taskId, null);
 		new WTask(task.getName(), task);
@@ -182,6 +188,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	/**
 	 * @param url
 	 */
+	@Override
 	public void showURL(String url, boolean closeable)
     {
     	showURL(url, url, closeable);
@@ -241,6 +248,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @param AD_Window_ID
      * @param query
      */
+    @Override
     public void showZoomWindow(int AD_Window_ID, MQuery query)
     {
     	final ADWindow wnd = new ADWindow(Env.getCtx(), AD_Window_ID, query);
@@ -330,8 +338,10 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
 	/**
+	 * Get component of active tab
 	 * @return Component
 	 */
+	@Override
 	public Component getActiveWindow()
 	{
 		return windowContainer.getSelectedTab().getLinkedPanel().getFirstChild();
@@ -341,6 +351,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 * @param windowNo
 	 * @return true if found and close
 	 */
+	@Override
 	public boolean closeWindow(int windowNo)
 	{
 		Tabbox tabbox = windowContainer.getComponent();
@@ -423,6 +434,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 * @param title
 	 * @param windowNo 
 	 */
+	@Override
 	public void setTabTitle(String title, int windowNo) {
 		windowContainer.setTabTitle(title, windowNo);		
 	}

@@ -127,11 +127,10 @@ import org.zkoss.zul.West;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * UI for an AD_Tab content (AD_Tab + AD_Fields).
+ * Panel for an AD_Tab content (AD_Tab + AD_Fields).
  *
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
- * @version $Revision: 0.10 $
  *
  * @author Low Heng Sin
  */
@@ -287,7 +286,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
 	/**
-	 * init components and event listeners
+	 * Initialize components and event listeners
 	 */
     private void init()
     {
@@ -355,7 +354,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
-     * Setup client side form swipe listener for mobile.
+     * Setup client side form swipe listener for mobile.<br/>
      * Send onSwipeRight and onSwipeLeft event to server.
      */
 	private void setupFormSwipeListener() {
@@ -431,7 +430,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
     
     /**
-     * init tab panel layout ({@link #formContainer} and listeners
+     * Initialize tab panel layout ({@link #formContainer} and listeners
      * @param winPanel
      * @param gridTab
      */
@@ -532,9 +531,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
     }
 
-	/**
-     * Create UI for AD_Fields
-     */
     @Override
     public void createUI()
     {
@@ -986,6 +982,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
+     * Find editor for field
      * @param field
      * @return {@link WEditor} or null if not found
      */
@@ -1031,10 +1028,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		return new Space();
 	}
 
-	/**
-	 * Update state of fields (visibility, style, writable, etc)
-	 * @param col
-	 */
 	@Override
 	public void dynamicDisplay (int col)
 	{
@@ -1265,6 +1258,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
+	/**
+	 * Handle after slide event
+	 * @param e
+	 */
 	private void onAfterSlide(Event e) {
 		//delay to let animation complete
 		try {
@@ -1275,7 +1272,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * echo set selected node event for tree
+	 * Echo set selected node event for tree
 	 */
 	private void echoDeferSetSelectedNodeEvent() {
 		if (getAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR) == null) {
@@ -1284,65 +1281,42 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 	}
 	
-    /**
-     * @return display logic
-     */
     @Override
     public String getDisplayLogic()
     {
         return gridTab.getDisplayLogic();
     }
 
-    /**
-     * @return title of tab
-     */
     @Override
     public String getTitle()
     {
         return gridTab.getName();
     } // getTitle
 
-    /**
-     * @param variableName
-     * @return value
-     */
     @Override
     public String get_ValueAsString(String variableName)
     {
     	return new DefaultEvaluatee(getGridTab(), windowNo, tabNo).get_ValueAsString(Env.getCtx(), variableName);
     } // get_ValueAsString
 
-    /**
-     * @return The tab level of this Tabpanel
-     */
     @Override
     public int getTabLevel()
     {
         return gridTab.getTabLevel();
     }
 
-    /**
-     * @return The tablename of this Tabpanel
-     */
     @Override
     public String getTableName()
     {
         return gridTab.getTableName();
     }
 
-    /**
-     * @return The record ID of current row
-     */
     @Override
     public int getRecord_ID()
     {
         return gridTab.getRecord_ID();
     }
 
-    /**
-     * Is panel need refresh
-     * @return true if GridTab need refresh
-     */
     @Override
     public boolean isCurrent()
     {
@@ -1350,7 +1324,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
-     *
+     * Get window number
      * @return windowNo
      */
     public int getWindowNo()
@@ -1359,7 +1333,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
-     * Retrieve from db.
+     * Retrieve from DB.<br/>
      * Delegate to {@link GridTab#query(boolean)}
      */
     @Override
@@ -1371,12 +1345,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	gridTab.getTableModel().fireTableDataChanged();
     }
 
-    /**
-     * Retrieve from db
-     * @param onlyCurrentRows True to show only unprocessed or the one updated within x days (default is 1 day before today)
-     * @param onlyCurrentDays if > 0, filter records with created >= current_date - onlyCurrentDays
-     * @param maxRows if > 0, maximum number of rows to load
-     */
     @Override
     public void query (boolean onlyCurrentRows, int onlyCurrentDays, int maxRows)
     {
@@ -1386,10 +1354,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	gridTab.getTableModel().fireTableDataChanged();
     }
 
-    /**
-     * Reset detail data grid for new parent record that's not saved yet.
-     * Delegate to {@link GridTab#resetDetailForNewParentRecord()}.
-     */
     @Override
 	public void resetDetailForNewParentRecord ()
     {
@@ -1404,23 +1368,20 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
     }
     
-    /**
-     * @return GridTab
-     */
+    @Override
     public GridTab getGridTab()
     {
         return gridTab;
     }
 
-    /**
-     * @return ADTreePanel
-     */
+    @Override
     public ADTreePanel getTreePanel()
     {
     	return treePanel;
     }
 
     /**
+     * When tree should be visible
      * @return master, detail or both
      */
     public String getTreeDisplayedOn()
@@ -1428,19 +1389,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	return gridTab.getTreeDisplayedOn();
     }
 
-    /**
-     * Refresh current row
-     */
     @Override
     public void refresh()
     {
         gridTab.dataRefresh();
     }
 
-    /**
-     * Activate/deactivate panel
-     * @param activate
-     */
     @Override
     public void activate(boolean activate)
     {
@@ -1474,9 +1428,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         Events.postEvent(event);
     }
 
-    /**
-	 * set focus to first active editor
-	 */
     @Override
     public void focusToFirstEditor() {
     	focusToFirstEditor(false);
@@ -1509,10 +1460,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 	}
 
-    /**
-     * @param event
-     * @see EventListener#onEvent(Event)
-     */
     @SuppressWarnings("unchecked")
     @Override
 	public void onEvent(Event event)
@@ -1576,7 +1523,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
-     * set selected tree node for current row (if there's tree)
+     * Set selected tree node for current row (if there's tree)
      */
 	public void setSelectedNode() {
 		if (gridTab.getRecord_ID() >= 0 && gridTab.isTreeTab() && treePanel != null) {
@@ -1585,7 +1532,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * handle open/close event of south panel (detail pane)
+	 * Handle open/close event of south panel (detail pane)
 	 * @param event
 	 */
     private void onSouthEvent(SouthEvent event) {
@@ -1620,6 +1567,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
     
     /**
+     * Is detail pane open/visible
      * @return true if detail pane is open/visible
      */
     private boolean isOpenDetailPane() {
@@ -1638,6 +1586,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
+     * Get height of detail pane from user preference
      * @return height of detail pane from user preference
      */
     private String heigthDetailPane() {
@@ -1651,6 +1600,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
+     * Get width of tree panel from user preference
      * @return width of tree panel from user preference (or default if no user preference)
      */
     private String widthTreePanel() {
@@ -1696,10 +1646,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		windowPanel.onTreeNavigate(gridTab, row);				
 	}
 
-    /**
-     * @param e
-     * @see DataStatusListener#dataStatusChanged(DataStatusEvent)
-     */
     @Override
 	public void dataStatusChanged(DataStatusEvent e)
     {
@@ -1833,7 +1779,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
-     * delete tree node by recordId
+     * Delete tree node by recordId
      * @param recordId
      */
     private void deleteNode(int recordId) {
@@ -1857,7 +1803,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
     /**
-     * add new tree node for current row
+     * Add new tree node for current row
      */
 	private void addNewNode() {
     	if (gridTab.getRecord_ID() > 0) {
@@ -1897,7 +1843,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * set selected tree node by recordId
+	 * Set selected tree node by recordId
 	 * @param recordId
 	 */
 	private void setSelectedNode(int recordId) {
@@ -1976,9 +1922,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 	}
 
-	/**
-	 * Toggle between form and grid view
-	 */
+	@Override
 	public void switchRowPresentation() {
 		if (form.isVisible()) {
 			form.setVisible(false);
@@ -2002,6 +1946,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		Events.sendEvent(this, new Event(ON_SWITCH_VIEW_EVENT, this));
 	}
 
+	/**
+	 * Listener for zoom event
+	 */
 	static class ZoomListener implements EventListener<Event> {
 
 		private IZoomableEditor zoomableEditor;
@@ -2035,7 +1982,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * 
+	 * Set field focus by column name 
 	 * @param columnName
 	 */
 	public void setFocusToField(String columnName) {
@@ -2062,18 +2009,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		return false;
 	}
 
-	/**
-	 * @return true if list/grid view is visible
-	 */
 	@Override
 	public boolean isGridView() {
 		return listPanel.isVisible();
 	}
 
-	/**
-	 *
-	 * @return {@link GridView}
-	 */
 	@Override
 	public GridView getGridView() {
 		return listPanel;
@@ -2127,10 +2067,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 	}
 	
-	/**
-	 * Get all visible toolbar button editors
-	 * @return List<Button>
-	 */
+	@Override
 	public List<Button> getToolbarButtons() {
 		List<Button> buttonList = new ArrayList<Button>();
 		for(WButtonEditor editor : toolbarButtonEditors) {
@@ -2174,7 +2111,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * activate selected detail tab if it is visible
+	 * Activate selected detail tab if it is visible
 	 */
 	public void activateDetailIfVisible() {
 		if (isDetailVisible()) {
@@ -2197,10 +2134,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}		
 	}
 	
-	/**
-	 * 
-	 * @return true if {@link DetailPane} is visible
-	 */
 	@Override
 	public boolean isDetailVisible() {
 		if (formContainer.getSouth() == null || !formContainer.getSouth().isVisible()
@@ -2212,7 +2145,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 	
 	/**
-	 * 
+	 * Is selected header tab has one or more detail tab
 	 * @return true if selected tab has one or more detail/child tab
 	 */
 	public boolean hasDetailTabs() {
@@ -2224,7 +2157,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 	
 	/**
-	 * set focus to next readwrite editor from ref
+	 * Set focus to next readwrite editor from ref
 	 * @param ref
 	 */
 	@Override
@@ -2249,7 +2182,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 	
 	/**
-	 * 
+	 * Set focus to editor
 	 * @param toFocus
 	 * @param checkCurrent true to check if form currently has focus (using zk.currentFocus)
 	 */
@@ -2286,6 +2219,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
+	 * Is tree order by value
 	 * @return true if tree is order by value
 	 */
 	private boolean isTreeDrivenByValue() {
@@ -2296,6 +2230,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
+	 * Is value shown in tree
 	 * @return true if value is shown in tree
 	 */
 	private boolean isValueDisplayed() {
@@ -2383,6 +2318,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	};
 	
 	/**
+	 * Is client using mobile browser
 	 * @return true if client is mobile
 	 */
 	protected boolean isMobile() {
@@ -2450,7 +2386,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 	
 	/**
-	 * 
+	 * Get parent AD window
 	 * @return {@link AbstractADWindowContent}
 	 */
 	public AbstractADWindowContent getADWindowContent()

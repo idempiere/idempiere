@@ -61,7 +61,6 @@ import org.zkoss.zul.Vlayout;
  * 	Chat dialog (CM_Chat)
  *
  *  @author Jorg Janke
- *  @version $Id: AChat.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  */
 public class WChat extends Window implements EventListener<Event>, DialogEvents
 {

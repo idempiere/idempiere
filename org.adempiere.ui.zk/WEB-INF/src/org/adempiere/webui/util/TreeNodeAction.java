@@ -16,14 +16,13 @@ package org.adempiere.webui.util;
 import org.zkoss.zul.DefaultTreeNode;
 
 /**
- * 
+ * Interface for action on {@link DefaultTreeNode}
  * @author hengsin
- *
  */
 public interface TreeNodeAction {
 
 	/**
-	 * 
+	 * Perform action on treeNode 
 	 * @param treeNode
 	 */
 	public void run(DefaultTreeNode<?> treeNode);

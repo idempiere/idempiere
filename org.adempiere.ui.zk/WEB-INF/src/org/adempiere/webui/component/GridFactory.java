@@ -13,9 +13,8 @@
 package org.adempiere.webui.component;
 
 /**
- * 
+ * Static method to create new grid layout
  * @author Low Heng Sin
- *
  */
 public class GridFactory {
 

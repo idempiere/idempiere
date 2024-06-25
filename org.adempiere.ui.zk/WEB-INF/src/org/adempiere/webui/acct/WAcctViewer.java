@@ -101,7 +101,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Account Viewer : Based on class AcctViewer
+ *  Account Viewer
  *
  *  @author Niraj Sohun
  *  		July 27, 2007
@@ -255,7 +255,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 
 	/**
-	 *  Static Init.
+	 *  Layout window
 	 *  <pre>
 	 *  - mainPanel
 	 *      - tabbedPane
@@ -745,7 +745,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		this.detach();
 	} // dispose;
 
-	/**************************************************************************
+	/**
 	 *  After Tab Selection Changed
 	 */
 	public void stateChanged()
@@ -763,6 +763,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	 *  Event Performed (Event Listener)
 	 *  @param e Event
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		Object source = e.getTarget();
@@ -819,8 +820,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // onEvent
 
 	/**
-	 * export to excel
-	 * show excel viewer if available
+	 * Export to excel.<br/>
+	 * Show excel viewer if available.
 	 */
 	private void actionExport() {
 		if (m_rmodel != null && m_rmodel.getRowCount() > 0) {
@@ -1148,7 +1149,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 			table.appendChild(listhead);
 		}
-		// Elaine 2008/07/28
 		else
 		{
 			Listhead listhead = table.getListhead();
@@ -1234,8 +1234,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // actionTable
 
 	/**
-	 *  Handle Info Button action
-	 *  Show info window
+	 *  Handle Info Button action.<br/>
+	 *  Show info window.
 	 *
 	 *  @param button pressed button
 	 *  @throws Exception
@@ -1298,6 +1298,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		final String tableName = lookupColumn.substring(0, lookupColumn.length()-3);
 
+		// Show info window
 		final InfoPanel info = InfoPanel.create(m_data.WindowNo, tableName, lookupColumn, "", false, whereClause);
 
 		if (!info.loadedOK())
@@ -1376,7 +1377,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // actionRePost
 
 	/**
-	 * zoom to table id + record id
+	 * Zoom to table id + record id
 	 */
 	private void actionZoom()
 	{
@@ -1397,7 +1398,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 
 	/**
-	 * zoom to fact acct window (double click action)
+	 * Zoom to fact acct window (double click action)
 	 */
 	private void actionZoomFactAcct() {
 		int selected = table.getSelectedIndex();

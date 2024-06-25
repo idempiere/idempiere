@@ -28,8 +28,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
+ * DisplayType.PAttribute editor for info window selection criteria field
  * @author hengsin
- *
  */
 public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor {
 
@@ -120,12 +120,14 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 
 	/**
 	 * 	Query per Product Attribute.
-	 *  <code>
+	 *  <pre>
+	 *  {@code
 	 * 	Available synonyms:
 	 *		M_Product p
 	 *		M_ProductPrice pr
 	 *		M_AttributeSet pa
-	 *	</code>
+	 *	}
+	 *  </pre>
 	 */
 	protected void cmd_InfoPAttribute()
 	{

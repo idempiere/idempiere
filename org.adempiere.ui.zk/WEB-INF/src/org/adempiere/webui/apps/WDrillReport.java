@@ -101,7 +101,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private int windowNo = 0;
 
 	/**
-	 *
 	 * @param data
 	 * @param windowNo
 	 */
@@ -110,7 +109,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 *
 	 * @param data
 	 * @param windowNo
 	 * @param processID
@@ -165,7 +163,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Header text
+	 * Get header table component
 	 * @return {@link Table}
 	 */
 	private Table getHeader()
@@ -221,7 +219,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Tabbox with Drill Rules and Related Tables tab.
+	 * Get Tabbox with Drill Rules and Related Tables tab.
 	 * @return {@link Tabbox}
 	 */
 	private Tabbox getContent()
@@ -259,7 +257,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Table with links for all process and nested table for print formats for each process.
+	 * Get Table with links for all process and nested table for print formats for each process.
 	 * @param tabIndex
 	 * @param drillTables [AD_Process_ID,Process Name]
 	 * @param drillPrintFormatMap AD_Process_ID:[AD_Process_DrillRule_ID,Name]
@@ -322,7 +320,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Table with process name and print formats
+	 * Get Table with process name and print formats
 	 * @param drillTable [AD_Process_ID,Process Name]
 	 * @param tabIndex
 	 * @param groupIndex
@@ -418,6 +416,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
+	 * Find print format via table id
 	 * @param drillTable KeyNamePair(AD_Process_ID,Process Name)
 	 * @return KeyNamePair(AD_PrintFormat_ID,Name)
 	 */
@@ -430,7 +429,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Link for process in drillTables
+	 * Get link for process in drillTables
 	 * @param tabIndex
 	 * @param drillTables [AD_Process_ID,Process Name]
 	 * @return {@link Table}
@@ -486,7 +485,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Link and description for print format. 
+	 * Get link and description for print format. 
 	 * @param drillPrintFormat KeyNamePair(AD_PrintFormat_ID,Name)
 	 * @param reportIndex
 	 * @param formatIndex

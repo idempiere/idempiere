@@ -46,7 +46,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 
 /**
- * Popup panel with menu type filter and flat view toggle for a tree.
+ * Popup panel with menu type filter and flat view toggle for a menu tree.
  */
 public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, IdSpace {
 

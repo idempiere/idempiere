@@ -38,7 +38,6 @@ import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Div;
@@ -46,12 +45,11 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
 
 /**
- * Content area of {@link ADWindow}.
+ * Controller for {@link ADWindow} content.
  * 
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ADWindowContent extends AbstractADWindowContent
 {
@@ -74,7 +72,7 @@ public class ADWindowContent extends AbstractADWindowContent
     }
 
 	/**
-	 * Layout UI.
+	 * Layout UI.<br/>
 	 * Vertical layout of toolbar, breadCrumb, statusBar and {@link #contentArea}.
 	 */
 	@Override
@@ -148,10 +146,6 @@ public class ADWindowContent extends AbstractADWindowContent
 		return layout;
 	}
 
-	/**
-     * @param event
-     * @see EventListener#onEvent(Event)
-     */
 	@Override
     public void onEvent(Event event) {
     	if (Events.ON_CTRL_KEY.equals(event.getName())) {

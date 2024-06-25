@@ -28,7 +28,6 @@ import org.zkoss.zul.Tab;
  * Extend {@link org.zkoss.zul.Tabpanel}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISupportMask
 {
