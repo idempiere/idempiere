@@ -2321,10 +2321,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				}
 			}
 		}
-		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
-		MDocType orderDocType = new MDocType(getCtx(), order.getC_DocType_ID(), get_TrxName());
+		MOrder order = getC_Order_ID() > 0 ? new MOrder(getCtx(), getC_Order_ID(), get_TrxName()) : null;
+		MDocType orderDocType = order != null ? MDocType.get(getCtx(), order.getC_DocType_ID()) : null;
 		if (PAYMENTRULE_Cash.equals(getPaymentRule()) 
-				|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(orderDocType.getDocSubTypeSO()) && !orderDocType.isAutoGenerateInvoice() && allocateFromOrder())) {
+				|| orderDocType == null 
+				|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(orderDocType.getDocSubTypeSO()) && !orderDocType.isAutoGenerateInvoice() && allocateFromOrder()))
+		{
 			if (testAllocation(true)) {
 				saveEx();
 			}
