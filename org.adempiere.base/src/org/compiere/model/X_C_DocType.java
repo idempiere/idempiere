@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240618L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -45,6 +45,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
@@ -77,6 +81,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
@@ -109,6 +117,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
@@ -141,6 +153,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
@@ -680,6 +696,52 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isHasProforma()
 	{
 		Object oo = get_Value(COLUMNNAME_HasProforma);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Generate Shipment.
+		@param IsAutoGenerateInout Automatically Generate Shipment after (Sales/Purchase) Order completed
+	*/
+	public void setIsAutoGenerateInout (boolean IsAutoGenerateInout)
+	{
+		set_Value (COLUMNNAME_IsAutoGenerateInout, Boolean.valueOf(IsAutoGenerateInout));
+	}
+
+	/** Get Generate Shipment.
+		@return Automatically Generate Shipment after (Sales/Purchase) Order completed
+	  */
+	public boolean isAutoGenerateInout()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInout);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Generate Invoice.
+		@param IsAutoGenerateInvoice Automatically Generate Invoice after (Sales/Purchase) Order completed
+	*/
+	public void setIsAutoGenerateInvoice (boolean IsAutoGenerateInvoice)
+	{
+		set_Value (COLUMNNAME_IsAutoGenerateInvoice, Boolean.valueOf(IsAutoGenerateInvoice));
+	}
+
+	/** Get Generate Invoice.
+		@return Automatically Generate Invoice after (Sales/Purchase) Order completed
+	  */
+	public boolean isAutoGenerateInvoice()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInvoice);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
