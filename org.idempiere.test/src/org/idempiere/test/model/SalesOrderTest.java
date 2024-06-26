@@ -1685,7 +1685,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		    ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		    assertFalse(info.isError(), info.getSummary());
 		    order.load(getTrxName());
-		    assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		    assertEquals(DocAction.STATUS_WaitingPayment, order.getDocStatus());
 		    order.saveEx();
 	
 		    // Create the payment
@@ -1695,6 +1695,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		    payment.setPayAmt(order.getGrandTotal());
 		    payment.setC_Currency_ID(order.getC_Currency_ID());
 		    payment.setDocAction(DocAction.ACTION_Complete);
+		    payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
 		    payment.saveEx();
 	
 		    // Complete the payment
@@ -1761,7 +1762,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		    line1.saveEx();
 		    
 		    // Do not auto-generate Shipment nor Invoice
-		    doctype = new MDocType(Env.getCtx(), order.getC_DocType_ID(), null); // outside of trx
+		    doctype = new MDocType(Env.getCtx(), order.getC_DocTypeTarget_ID(), null); // outside of trx
 		    doctype.setIsAutoGenerateInout(false);
 		    doctype.setIsAutoGenerateInvoice(false);
 		    doctype.saveEx();
@@ -1770,7 +1771,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		    ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		    assertFalse(info.isError(), info.getSummary());
 		    order.load(getTrxName());
-		    assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		    assertEquals(DocAction.STATUS_WaitingPayment, order.getDocStatus());
 		    order.saveEx();
 		    
 		    // Create the payment
@@ -1780,6 +1781,13 @@ public class SalesOrderTest extends AbstractTestCase {
 		    payment.setPayAmt(order.getGrandTotal());
 		    payment.setC_Currency_ID(order.getC_Currency_ID());
 		    payment.setDocAction(DocAction.ACTION_Complete);
+		    payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
+		    payment.saveEx();
+
+		    info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		    assertFalse(info.isError(), info.getSummary());
+		    payment.load(getTrxName());
+		    assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		    payment.saveEx();
 		    
 		    // No Invoice should be created yet
@@ -1798,7 +1806,7 @@ public class SalesOrderTest extends AbstractTestCase {
 			invoice.setC_BPartner_ID(order.getBill_BPartner_ID());
 			invoice.setC_BPartner_Location_ID(order.getBill_Location_ID());
 			invoice.setAD_User_ID(order.getBill_User_ID());
-			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 			invoice.setDocStatus(DocAction.STATUS_Drafted);
 			invoice.setDocAction(DocAction.ACTION_Complete);
 			invoice.saveEx();
