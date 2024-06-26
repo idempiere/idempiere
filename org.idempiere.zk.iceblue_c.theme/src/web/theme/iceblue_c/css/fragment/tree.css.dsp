@@ -7,14 +7,6 @@
 .z-treecell-content {
 	padding: 2px 1px;
 }
-.z-treerow > .z-treecell > .z-treecell-content > .z-tree-line.z-tree-spacer + .z-tree-icon::before {
-	content: " ";
-	display: inline-block;
-	width: 4px;
-    height: 16px;
-    line-height: 16px;
-    vertical-align: middle;
-}
 .z-treecell-content > .menu-href.z-a {
 	margin-left: 8px;
 }
