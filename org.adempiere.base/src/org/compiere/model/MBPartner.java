@@ -686,7 +686,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	
 	/**
 	 * 	Get Primary AD_User_ID
-	 *	@return AD_User_ID or 0
+	 *	@return AD_User_ID or -1
 	 */
 	public int getPrimaryAD_User_ID()
 	{
@@ -697,7 +697,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 				setPrimaryAD_User_ID(users[0].getAD_User_ID());
 		}
 		if (m_primaryAD_User_ID == null)
-			return 0;
+			return -1;
 		return m_primaryAD_User_ID.intValue();
 	}	//	getPrimaryAD_User_ID
 
