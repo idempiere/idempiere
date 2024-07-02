@@ -47,6 +47,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
+import org.apache.ecs.xhtml.input;
 import org.apache.ecs.xhtml.link;
 import org.apache.ecs.xhtml.script;
 import org.apache.ecs.xhtml.span;
@@ -173,7 +174,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 		Map<HTMLReportRenderer.CSSInfo, List<HTMLReportRenderer.ColumnInfo>> mapCssInfo = new HashMap<>();
 		try
 		{
-			DataTableOptions dataTableOptions = new DataTableOptions(language.getLanguageCode());
+			DataTableOptions dataTableOptions = new DataTableOptions(language.getLocale().toLanguageTag());
 			//collect column to print
 			List<Object> columns = new ArrayList<>();
 			List<InstanceAttributeData> asiElements = new ArrayList<>();
@@ -280,14 +281,10 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 					doc.appendHead(jslink);
 				}
 				
-				appendStyles(doc, isExport);
+				appendStyles(doc, isExport, dataTableOptions.geti18nURL());
 
 				appendScripts (doc, isExport);
 
-				//FIXME Better implementation of Javascript
-				doc.appendHead("<script type=\"text/javascript\" charset=\"utf8\" src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js\"></script>");
-				doc.appendHead("<script type=\"text/javascript\" charset=\"utf8\" src=\"//cdn.datatables.net/plug-ins/1.10.15/sorting/datetime-moment.js\"></script>");
-				
 				if (extension != null && !isExport){
 					extension.setWebAttribute(doc.getBody());
 				}				
@@ -401,27 +398,8 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				w.print(HTMLReportRenderer.compress(table.toString(), minify));
 			}
 			
-			w.print("<tfoot>");
-			tr tfoot = new tr();
-
-			for (int col = 0; col < printFormat.getItemCount(); col++)
-			{
-				MPrintFormatItem item = printFormat.getItem(col);
-				if (item.isPrinted())
-				{
-					var printName = item.getPrintName(language);
-					if (!Util.isEmpty(printName))
-					{
-						th th = new th();
-						tfoot.addElement(th);
-						th.setTagText(printName);
-					}
-				}
-			}
-			tfoot.output(w);
-			w.print("</tfoot>");
-			
 			thead thead = new thead();
+			thead.setClass("sticky");
 			tbody tbody = new tbody();
 			tbody.setNeedClosingTag(false);
 			
@@ -434,10 +412,33 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			int printColIndex = -1;
 			HashMap<Integer, th> suppressMap = new HashMap<>();
 			
+			//search input at header
+			{
+				tr tr = new tr();
+				for (int col = 0; col < printFormat.getItemCount(); col++)
+				{
+					MPrintFormatItem item = printFormat.getItem(col);
+					if (item.isPrinted())
+					{
+						var printName = item.getPrintName(language);
+						if (!Util.isEmpty(printName))
+						{
+							th th = new th();
+							th.addAttribute("data-dt-order", "disable");
+							tr.addElement(th);
+							input searchInput = new input();
+							searchInput.addAttribute("placeholder", "Search "+printName);								
+							th.addElement(searchInput);
+						}
+					}
+				}
+				thead.addElement(tr);
+			}
+			
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < printData.getRowCount(); row++)
 			{
-				tr tr = new tr();
+				tr tr = new tr();				
 				if (row != -1)
 				{
 					printData.setRowIndex(row);
@@ -687,7 +688,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				
 			}	//	for all rows
 			
-			w.print("</tbody>");
+			w.print("</tbody>");						
 			w.print("</table>");
 			if (suppressMap.size() > 0) 
 			{
@@ -707,7 +708,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			{
 				w.print("</div>");
 				w.print("</div>");
-				String dataTableOptionString = dataTableOptions.getDataTableOptions("~./web/js");
+				String dataTableOptionString = dataTableOptions.getDataTableOptions();
 				if( dataTableOptionString != null ) {
 					w.print("<script type=\"text/javascript\"> ");
 					w.print(HTMLReportRenderer.compress(
@@ -733,11 +734,11 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 						 """,true));
 					String jsDataTables = "$(document).ready(function() { "
 							+ "  let t = $('#"+JS_DATA_IDENTIFIER+"').DataTable( " + dataTableOptionString + " ); "
-							+ " });"
-							+ " $('#"+JS_DATA_IDENTIFIER+" tfoot th').each(function () {\r\n"
-							+ "        var title = $(this).text();\r\n"
-							+ "        $(this).html('<input type=\"text\"   placeholder=\"Search ' + title + '\" />');\r\n" //placeholder=\"Search ' + title + '\"
-							+ "    }); " ;
+							+ " });";
+//							+ " $('#"+JS_DATA_IDENTIFIER+" thead th').each(function () {\r\n"
+//							+ "        var title = $(this).text();\r\n"
+//							+ "        $(this).append('<input type=\"text\"   placeholder=\"Search ' + title + '\" />');\r\n" //placeholder=\"Search ' + title + '\"
+//							+ "    }); " ;
 
 					w.print(jsDataTables);
 					w.print("</script>");
@@ -782,8 +783,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	 * @throws URISyntaxException 
 	 */
 	private void appendScripts (XhtmlDocument doc, boolean isExport) throws IOException, URISyntaxException{
-		List<String> urls = Arrays.asList("~./js/datatables/jquery.min.js","~./js/datatables/jquery.floatThead.min.js"
-				,"~./js/datatables/datatables.js","~./js/datatables/jquery.dataTables.min.js","~./js/datatables/dataTables.rowGroup.min.js");		
+		List<String> urls = Arrays.asList("~./js/datatables/datatables.min.js");		
 		if (isExport){
 			// embed script by content
 			for (String extraScriptPath : urls){
@@ -802,11 +802,12 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	 * If isExport, embed css content, otherwise embed css url
 	 * @param doc
 	 * @param isExport
+	 * @param i18nURL
 	 * @throws IOException
 	 * @throws URISyntaxException 
 	 */
-	private void appendStyles (XhtmlDocument doc, boolean isExport) throws IOException, URISyntaxException{
-		List<String> urls = Arrays.asList("~./js/datatables/datatables.css");		
+	private void appendStyles (XhtmlDocument doc, boolean isExport, String i18nURL) throws IOException, URISyntaxException{
+		List<String> urls = Arrays.asList("~./js/datatables/datatables.min.css", "~./js/datatables/customization.css");		
 		if (isExport){
 			// embed css by content
 			for (String extraStylePath : urls){
@@ -817,6 +818,13 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			// embed css by link
 			for (String extraStyleUrl : urls){
 				embedStyleLink (doc, Executions.encodeURL(extraStyleUrl));
+				if (i18nURL != null) {
+					link link = new link();
+					link.setHref(i18nURL);
+					link.setRel("prefetch");
+					link.setType("application/json");
+					doc.appendHead(link);
+				}
 			}
 		}	
 	}

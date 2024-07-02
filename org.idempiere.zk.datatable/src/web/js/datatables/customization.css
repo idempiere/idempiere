@@ -1,0 +1,5 @@
+table.dataTable thead.sticky {
+    position: sticky;
+    z-index: 12;
+    top: 0;
+}
