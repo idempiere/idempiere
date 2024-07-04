@@ -3094,6 +3094,7 @@ public class GridTable extends AbstractTableModel
 			catch (SQLException e)
 			{
 				if (DB.getDatabase().isQueryTimeout(e)) {
+					m_rowLoadTimeout = true;
 					throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE), e);
 				} else {
 					log.saveError(e.getLocalizedMessage(), e);
