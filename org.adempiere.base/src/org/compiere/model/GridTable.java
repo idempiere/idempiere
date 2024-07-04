@@ -98,7 +98,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2602189278069194311L;
+	private static final long serialVersionUID = 3948220810042370826L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
@@ -172,6 +172,7 @@ public class GridTable extends AbstractTableModel
 	/**	Rowcount                    */
 	private int				    m_rowCount = 0;
 	private boolean				m_rowCountTimeout = false;
+	private boolean				m_rowLoadTimeout = false;
 	/**	Has Data changed?           */
 	private boolean			    m_changed = false;
 	/** Index of changed row via SetValueAt */
@@ -1160,6 +1161,9 @@ public class GridTable extends AbstractTableModel
 			if (savedEx != null)
 				throw new IllegalStateException(savedEx);
 		}
+		// zero rows found without load timeout
+		if (row == 0 && m_sort.size() == 0 && m_rowCountTimeout && !m_rowLoadTimeout)
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FindZeroRecords"));
 		if (row >= m_sort.size()) {
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			//adjust row count
@@ -1268,6 +1272,7 @@ public class GridTable extends AbstractTableModel
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		m_rowLoadTimeout = false;
 		try
 		{
 			stmt = DB.prepareStatement(sql.toString(), null);
@@ -1305,6 +1310,8 @@ public class GridTable extends AbstractTableModel
 		}
 		catch (SQLException e)
 		{
+			if (DB.getDatabase().isQueryTimeout(e))
+				m_rowLoadTimeout = true;
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
 		finally
