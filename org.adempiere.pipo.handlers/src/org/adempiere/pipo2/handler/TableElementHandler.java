@@ -157,7 +157,7 @@ public class TableElementHandler extends AbstractElementHandler {
 		}
 
 		try {
-			DatabaseViewValidate.validateDatabaseView(ctx.ctx, table, trx.getTrxName(), null);
+			DatabaseViewValidate.validateDatabaseView(ctx.ctx, table, trx.getTrxName());
 			if (MSysConfig.getBooleanValue(MSysConfig.TWOPACK_COMMIT_DDL, false)) {
 				trx.commit(true);
 			}
