@@ -332,7 +332,7 @@ public class MMailText extends X_R_MailText
 		m_MailText3 = super.getMailText3();
 		if ((m_bpartner != null && m_bpartner.getAD_Language() != null) || !Util.isEmpty(m_language))
 		{
-			String adLanguage = m_bpartner != null ? m_bpartner.getAD_Language() : m_language;
+			String adLanguage = m_bpartner != null && m_bpartner.getAD_Language() != null ? m_bpartner.getAD_Language() : m_language;
 			StringBuilder key = new StringBuilder().append(adLanguage).append(get_ID());
 			MMailTextTrl trl = s_cacheTrl.get(key.toString());
 			if (trl == null)
