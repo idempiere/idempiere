@@ -41,12 +41,9 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -887,16 +884,7 @@ public class MOrder extends X_C_Order implements DocAction
 	@Override
 	public File createPDF ()
 	{
-		try
-		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
-			return createPDF (temp);
-		}
-		catch (Exception e)
-		{
-			log.severe("Could not create PDF - " + e.getMessage());
-		}
-		return null;
+		return createPDF (null);
 	}	//	getPDF
 
 	/**
@@ -909,21 +897,6 @@ public class MOrder extends X_C_Order implements DocAction
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.ORDER, getC_Order_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		MPrintFormat format = re.getPrintFormat();
-		// We have a Jasper Print Format
-		// ==============================
-		if(format.getJasperProcess_ID() > 0)
-		{
-			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Order_ID() );
-			pi.setIsBatch(true);
-			
-			ServerProcessCtl.process(pi, null);
-			
-			return pi.getPDFReport();
-		}
-		// Standard Print Format (Non-Jasper)
-		// ==================================
 		return re.getPDF(file);
 	}	//	createPDF
 	
