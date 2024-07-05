@@ -1050,7 +1050,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				pi.setIsBatch(true);
 				pi.setPDFFileName(fileName);
 				pi.setTransientObject(m_printFormat);
-				ServerProcessCtl.process(pi, (m_trxName == null ? null : Trx.get(m_trxName, false)));
+				ServerProcessCtl.process(pi, (m_trxName == null ? null : Trx.get(m_trxName, false)), false);
 			} else {
 				PDFReportRendererConfiguration config = new PDFReportRendererConfiguration().setOutputFile(file);
 				new PDFReportRenderer().renderReport(this, config);
