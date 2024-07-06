@@ -32,6 +32,7 @@ import org.compiere.util.Util;
 import org.idempiere.zk.datatable.DatatableReportRenderer.FunctionTypes;
 import org.json.JSONArray;
 import org.json.JSONString;
+import org.zkoss.zk.ui.Executions;
 
 public class DataTableOptions {
 	
@@ -68,29 +69,53 @@ public class DataTableOptions {
 	
 	/**
 	 * Get datatables settings
-	 * @param path
 	 * @return json datatables settings
 	 */
-	public String getDataTableOptions(String path) {
+	public String getDataTableOptions() {
+		String localePath = geti18nURL();
+		String i18nPath = localePath != null && Executions.getCurrent() != null ? Executions.encodeURL(localePath) : null;		
 		StringBuilder dataOptions = new StringBuilder();
 		dataOptions.append(" { ");
 		dataOptions.append(" pageLength: ").append(250);
 		dataOptions.append(", lengthMenu: [ [250, 500, 1000, -1], [250, 500, 1000,\"").append(Msg.getMsg( Language.getAD_Language(locale), "All")).append("\" ] ] ");
-		dataOptions.append(", colReorder: ").append(true);
-		dataOptions.append(", responsive: ").append(true);
-		dataOptions.append(", ordering: ").append(true);
-		dataOptions.append(", search: { return: ").append(true).append(" }");
-		dataOptions.append(", language: { url: '").append(path).append("DataTables/i18n/").append(this.locale).append(".json' }");
-		dataOptions.append(", dom: \"lfrtip\" ");	
+		dataOptions.append(", colReorder: true");
+		dataOptions.append(", responsive: false");
+		dataOptions.append(", ordering: true");
+		if (i18nPath != null)
+			dataOptions.append(", language: { url: '").append(i18nPath).append("' }");
+		dataOptions.append(", layout: {topStart:['buttons'], topEnd:['pageLength'], bottomStart: ['info'], bottomEnd: ['paging']} ");
+		dataOptions.append("""
+			, buttons: [{extend: 'colvis', collectionLayout: 'fixed columns'},
+			  { text: 'Responsive', 
+			    action: function ( e, dt, node, config ) {
+			       let option = dt.init(); 
+			       option.responsive = !option.responsive;
+				   option.buttons[1].text = option.responsive ? 'Responsive ✓' : 'Responsive';
+				   dt.destroy(); 
+				   $('#JS_DataTable').DataTable(option);
+			    }
+			  }]""");
 		
-		dataOptions.append(", initComplete:").append(" function () "
-					+ "{ this.api().columns().every( function () "
-					+ "{ var that = this; $('input', this.footer()).on('keyup change clear', function () "
-					+ "{ if (that.search() !== this.value) "
-					+ "{  that.search(this.value).draw();}});});}");
+		dataOptions.append(", initComplete:").append("""
+			 function () { 	
+			   let tbl = this;		   
+			   this.api().columns().every(function () {
+				  let that = this;
+				  let selector = 'th[data-dt-column="' + this.index() + '"]';
+				  let headerCell = tbl.find(selector);
+				  if (headerCell.length) {
+				  	let input = headerCell.find('input');
+				  	input.on('keyup change clear', 
+				      function () { 
+					      if (that.search() !== this.value) {  
+					         that.search(this.value).draw();
+					      }
+					  });
+				  } 				  
+			   });
+		     }""");
 		
 		String orderBy = getOrderBy();
-
 
 		if(orderBy != null)
 			dataOptions.append(", order: ").append(orderBy);
@@ -115,6 +140,23 @@ public class DataTableOptions {
 		dataOptions.append(" } ");
 		return dataOptions.toString();
 		
+	}
+
+	/**
+	 * Get i18n json URL for datatables
+	 * @return i18n json URL
+	 */
+	public String geti18nURL() {
+		String localePath = "~./js/datatables/i18n/"+this.locale+".json";
+		if (getClass().getResource("/web"+localePath.substring(2)) == null) {
+			if (this.locale.contains("-")) {
+				localePath = "~./js/datatables/i18n/"+this.locale.substring(0, this.locale.indexOf("-")) +".json";
+				if (getClass().getResource("/web"+localePath.substring(2)) == null) {
+					localePath = null;
+				}
+			}
+		}
+		return localePath;
 	}
 	
 	/**
