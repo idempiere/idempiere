@@ -67,7 +67,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7266911648463503849L;
+	private static final long serialVersionUID = 7462078874763391120L;
 
 	/**
 	 * 	Get role for current session/context
@@ -1657,6 +1657,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (log.isLoggable(Level.FINE)) log.fine("#" + m_windowAccess.size());
 		}	//	reload
 		Boolean retValue = m_windowAccess.get(AD_Window_ID);
+		// User Preference window is excluded - otherwise the user would not be able to reset the read-only session preference
+		if (retValue != null && AD_Window_ID != SystemIDs.WINDOW_USER_PREFERENCE && isReadOnlySession())
+			retValue = Boolean.FALSE;
 		if (log.isLoggable(Level.FINE)) log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
 		return retValue;
 	}	//	getWindowAccess
@@ -1749,6 +1752,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getProcessAccess
 
@@ -1838,6 +1843,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getTaskAccess
 
@@ -1927,6 +1934,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getFormAccess
 
@@ -2016,6 +2025,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getWorkflowAccess
 	
@@ -3271,6 +3282,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			setAccessMap("m_infoAccess", mergeAccess(getAccessMap("m_infoAccess"), directAccess, true));
 		}	//	reload
 		Boolean retValue = m_infoAccess.get(AD_InfoWindow_ID);
+		if (retValue != null && isReadOnlySession())
+			retValue = Boolean.FALSE;
 
 		return retValue;
 	}
@@ -3431,6 +3444,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+
+	/**
+	 * Is read only session?  Based on user preference
+	 * @return
+	 */
+	public boolean isReadOnlySession() {
+		return "Y".equals(Env.getContext(Env.getCtx(), "IsReadOnlySession"));
 	}
 
 }	//	MRole
