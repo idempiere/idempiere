@@ -46,7 +46,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.servicemix.bundles.jaxen"
+         id="jaxen"
          version="0.0.0"/>
 
    <plugin

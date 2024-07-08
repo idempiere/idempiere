@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-12" sequenceNumber="20240625">
+<target name="idempiere-12" sequenceNumber="20240704">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="10.0.1"/>
@@ -1142,12 +1142,6 @@ Export-Package:        *;version="${version}";-noimport:=true
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.jaxen</artifactId>
-      <version>1.1.6_1</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.rhino</artifactId>
       <version>1.7.13_1</version>
       <type>jar</type>
@@ -1164,6 +1158,12 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>1.16_1</version>
 	  <type>jar</type>
 	</location>
+    <!-- jaxen -->
+   <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.2.0</version>
+    </location> 
 	<!-- org.springframework -->
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>

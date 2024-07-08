@@ -835,7 +835,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.jaxen:jar:1.1.6_1</id>
+											<id>jaxen:jaxen:jar:1.2.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

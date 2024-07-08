@@ -198,9 +198,9 @@
         <setEntry value="org.apache.neethi@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.batik@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
-        <setEntry value="org.apache.servicemix.bundles.jaxen@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.rhino@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.xerces@default:default"/>
+        <setEntry value="jaxen@default:default"/>
         <setEntry value="org.apache.taglibs.standard-impl@default:default"/>
         <setEntry value="org.apache.taglibs.taglibs-standard-spec@default:default"/>
         <setEntry value="org.apache.ws.xmlschema.core@default:default"/>
