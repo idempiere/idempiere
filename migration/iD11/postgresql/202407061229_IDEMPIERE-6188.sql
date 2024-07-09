@@ -41,3 +41,7 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=150, XPosition=5,Updated=TO_TIMESTAMP
 UPDATE AD_Field SET IsQuickEntry='Y',Updated=TO_TIMESTAMP('2024-07-06 12:31:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208494
 ;
 
+-- Jul 9, 2024, 7:48:40 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Read-only session',0,0,'Y',TO_TIMESTAMP('2024-07-09 19:48:39','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-07-09 19:48:39','YYYY-MM-DD HH24:MI:SS'),100,200900,'ReadOnlySession','D','dc819f55-662d-4d30-b68d-0a93b46a8458')
+;
+

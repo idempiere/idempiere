@@ -383,6 +383,8 @@ public class MGoal extends X_PA_Goal
 	public boolean updateGoal(boolean force)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Force=" + force);
+		if (Env.isReadOnlySession())
+			return false;
 		MMeasure measure = MMeasure.get(getPA_Measure_ID());
 		
 		boolean isUpdateByInterfal = false;
