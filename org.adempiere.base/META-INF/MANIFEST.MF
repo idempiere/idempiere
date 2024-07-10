@@ -182,7 +182,7 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  wrapped.com.google.zxing.javase;bundle-version="3.4.1",
  wrapped.dev.samstevens.totp.totp;bundle-version="1.7.1",
  wrapped.org.apache.poi.poi-ooxml-lite;bundle-version="5.2.2",
- org.apache.logging.log4j.api;bundle-version="2.17.2",
- org.apache.logging.log4j.to-slf4j;bundle-version="2.17.2"
+ org.apache.logging.log4j.api;bundle-version="2.23.1",
+ org.apache.logging.log4j.to.slf4j;bundle-version="2.23.1"
 Automatic-Module-Name: org.adempiere.base
 Bundle-Vendor: iDempiere Community

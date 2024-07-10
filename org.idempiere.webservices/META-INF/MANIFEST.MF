@@ -121,6 +121,7 @@ Export-Package: org.idempiere.webservices.model,
  org.idempiere.webservices.client,
  org.idempiere.webservices.fault
 Web-ContextPath: ADInterface
+Jetty-Environment: ee8
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.idempiere.webservices
 Bundle-Vendor: iDempiere Community

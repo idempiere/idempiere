@@ -31,7 +31,7 @@
 			tofile="../jettyhome/etc/jetty.xml" filtering="yes" overwrite="yes"/>
 		<copy file="../org.adempiere.server-feature/jettyhome/etc/jetty-ssl-template.xml"
 					tofile="../jettyhome/etc/jetty-ssl.xml" filtering="yes" overwrite="yes"/>								
-		<copy file="../org.adempiere.server-feature/jettyhome/etc/jetty-deployer.xml"
+		<copy file="../org.adempiere.server-feature/jettyhome/etc/jetty-deploy.xml"
 					tofile="../jettyhome/etc/jetty-deployer.xml" filtering="no" overwrite="yes"/>
 		<copy file="../org.adempiere.server-feature/jettyhome/etc/jetty-https.xml"
 					tofile="../jettyhome/etc/jetty-https.xml" filtering="no" overwrite="yes"/>
