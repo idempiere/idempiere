@@ -65,7 +65,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${project_loc:org.adempiere.base}/.."/>
     <stringAttribute key="pde.version" value="3.3"/>
-    <stringAttribute key="product" value="org.adempiere.server.server_product"/>
+    <stringAttribute key="product" value="org.adempiere.server.product"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
         <setEntry value="assertj-core@default:default"/>

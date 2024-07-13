@@ -99,7 +99,7 @@
 
    <plugin
          id="org.glassfish.hk2.osgi-resource-locator"
-         version="1.0.3"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.glassfish.hk2.utils"

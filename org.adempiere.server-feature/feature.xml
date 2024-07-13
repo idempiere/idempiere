@@ -344,11 +344,11 @@
 
    <plugin
          id="slf4j.api"
-         version="2.0.12"/>
+         version="0.0.0"/>
 
    <plugin
          id="slf4j.jdk14"
-         version="2.0.12"/>
+         version="0.0.0"/>
 
    <plugin
          id="javax.interceptor-api"
@@ -360,6 +360,10 @@
 
    <plugin
          id="com.sun.jna"
+         version="0.0.0"/>
+
+   <plugin
+         id="javax.security.auth.message-api"
          version="0.0.0"/>
 
 </feature>

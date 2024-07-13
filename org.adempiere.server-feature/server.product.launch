@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
     <setAttribute key="additional_plugins">
+        <setEntry value="com.fasterxml.woodstox.woodstox-core:6.7.0:default:true:default:true"/>
         <setEntry value="org.adempiere.eclipse.equinox.http.servlet:12.0.0.qualifier:default:true:default:true"/>
         <setEntry value="org.adempiere.server:12.0.0.qualifier:default:true:default:true"/>
         <setEntry value="org.adempiere.ui.zk:12.0.0.qualifier:default:true:default:true"/>
@@ -16,14 +17,26 @@
         <setEntry value="org.eclipse.equinox.http.registry:1.3.300.v20230630-1303:default:true:default:true"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator:1.4.300.v20230630-1506:default:true:1:true"/>
         <setEntry value="org.eclipse.jetty.deploy:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.ee8.annotations:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.apache-jsp:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.osgi.boot.jsp:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.osgi.boot:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.ee8.plus:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.ee8.security.jaspi:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.webapp:12.0.11:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.ee8.websocket.common:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.ee8.websocket.javax.client:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.javax.server:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.server:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.http.spi:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.http2.hpack:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.http3.qpack:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.http:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.osgi:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.quic.quic-quiche-jna:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.server:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.core.common:12.0.11:default:true:default:true"/>
+        <setEntry value="org.eclipse.osgi:3.18.500.v20230801-1826:default:true:1:true"/>
         <setEntry value="org.idempiere.felix.webconsole:12.0.0.qualifier:default:true:default:true"/>
         <setEntry value="slf4j.api:2.0.12:default:true:3:true"/>
         <setEntry value="slf4j.jdk14:2.0.12:default:true:3:true"/>
@@ -55,7 +68,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.eclipse.swt.graphics.Resource.reportNonDisposed=true --add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-exports=java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty-bytebufferpool.xml,etc/jetty-threadpool.xml,etc/jetty.xml,etc/jetty-http.xml,etc/jetty-deploy.xml,etc/jetty-ssl-context.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-http-forwarded.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml -Dorg.apache.cxf.osgi.http.transport.disable=true"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${project_loc:org.adempiere.base}/.."/>
     <stringAttribute key="pde.version" value="3.3"/>
-    <stringAttribute key="product" value="org.adempiere.server.server_product"/>
+    <stringAttribute key="product" value="org.adempiere.server.product"/>
     <stringAttribute key="productFile" value="/org.adempiere.server.feature/server.product"/>
     <stringAttribute key="productId" value="org.adempiere.server.product"/>
     <stringAttribute key="productName" value="iDempiere Server"/>
@@ -85,7 +98,7 @@
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jaxb-annotations@default:default"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema@default:default"/>
-        <setEntry value="com.fasterxml.woodstox.woodstox-core@default:default"/>
+        <setEntry value="com.fasterxml.woodstox.woodstox-core@default:true"/>
         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
         <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
         <setEntry value="com.github.librepdf.openpdf@default:default"/>
@@ -131,6 +144,7 @@
         <setEntry value="javassist@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>
         <setEntry value="javax.interceptor-api@default:default"/>
+        <setEntry value="javax.security.auth.message-api@default:default"/>
         <setEntry value="javax.servlet.jsp.jstl-api@default:default"/>
         <setEntry value="javax.validation.api@default:default"/>
         <setEntry value="javax.websocket-api@default:default"/>
@@ -257,36 +271,36 @@
         <setEntry value="org.eclipse.jetty.alpn.client@default:default"/>
         <setEntry value="org.eclipse.jetty.client@default:default"/>
         <setEntry value="org.eclipse.jetty.deploy@default:true"/>
-        <setEntry value="org.eclipse.jetty.ee8.annotations@default:default"/>
+        <setEntry value="org.eclipse.jetty.ee8.annotations@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.apache-jsp@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.glassfish.jstl@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.jndi@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.osgi.boot.jsp@default:false"/>
         <setEntry value="org.eclipse.jetty.ee8.osgi.boot@default:true"/>
-        <setEntry value="org.eclipse.jetty.ee8.plus@default:default"/>
+        <setEntry value="org.eclipse.jetty.ee8.plus@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.proxy@default:default"/>
-        <setEntry value="org.eclipse.jetty.ee8.security.jaspi@default:default"/>
+        <setEntry value="org.eclipse.jetty.ee8.security.jaspi@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.security@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.server@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.servlets@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.webapp@3:true"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.api@default:default"/>
-        <setEntry value="org.eclipse.jetty.ee8.websocket.common@default:default"/>
-        <setEntry value="org.eclipse.jetty.ee8.websocket.javax.client@default:default"/>
+        <setEntry value="org.eclipse.jetty.ee8.websocket.common@default:true"/>
+        <setEntry value="org.eclipse.jetty.ee8.websocket.javax.client@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.javax.common@default:default"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.javax.server@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.server@default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.websocket.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.ee@default:default"/>
-        <setEntry value="org.eclipse.jetty.http.spi@default:default"/>
+        <setEntry value="org.eclipse.jetty.http.spi@default:true"/>
         <setEntry value="org.eclipse.jetty.http2.common@default:default"/>
-        <setEntry value="org.eclipse.jetty.http2.hpack@default:default"/>
+        <setEntry value="org.eclipse.jetty.http2.hpack@default:true"/>
         <setEntry value="org.eclipse.jetty.http2.server@default:default"/>
         <setEntry value="org.eclipse.jetty.http3.common@default:default"/>
-        <setEntry value="org.eclipse.jetty.http3.qpack@default:default"/>
+        <setEntry value="org.eclipse.jetty.http3.qpack@default:true"/>
         <setEntry value="org.eclipse.jetty.http3.server@default:default"/>
-        <setEntry value="org.eclipse.jetty.http@default:default"/>
+        <setEntry value="org.eclipse.jetty.http@default:true"/>
         <setEntry value="org.eclipse.jetty.io@default:default"/>
         <setEntry value="org.eclipse.jetty.jmx@default:default"/>
         <setEntry value="org.eclipse.jetty.jndi@default:default"/>
@@ -296,7 +310,7 @@
         <setEntry value="org.eclipse.jetty.proxy@default:default"/>
         <setEntry value="org.eclipse.jetty.quic.common@default:default"/>
         <setEntry value="org.eclipse.jetty.quic.quic-quiche-common@default:default"/>
-        <setEntry value="org.eclipse.jetty.quic.quic-quiche-jna@default:default"/>
+        <setEntry value="org.eclipse.jetty.quic.quic-quiche-jna@default:true"/>
         <setEntry value="org.eclipse.jetty.quic.server@default:default"/>
         <setEntry value="org.eclipse.jetty.rewrite@default:default"/>
         <setEntry value="org.eclipse.jetty.security@default:default"/>
@@ -308,7 +322,7 @@
         <setEntry value="org.eclipse.jetty.util@default:default"/>
         <setEntry value="org.eclipse.jetty.websocket-api@default:default"/>
         <setEntry value="org.eclipse.jetty.websocket.core.client@default:default"/>
-        <setEntry value="org.eclipse.jetty.websocket.core.common@default:default"/>
+        <setEntry value="org.eclipse.jetty.websocket.core.common@default:true"/>
         <setEntry value="org.eclipse.jetty.websocket.core.server@default:default"/>
         <setEntry value="org.eclipse.jetty.xml@default:default"/>
         <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>

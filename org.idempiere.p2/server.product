@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="12.0.0.qualifier" type="features" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.product" application="org.adempiere.server.application" version="12.0.0.qualifier" type="features" includeLaunchers="true" autoIncludeRequirements="false">
 
    <configIni use="default">
    </configIni>
@@ -36,6 +36,7 @@
    </features>
 
    <configurations>
+      <plugin id="com.fasterxml.woodstox.woodstox-core" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.server" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.ui.zk" autoStart="true" startLevel="0" />
@@ -51,14 +52,26 @@
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.jetty.deploy" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.ee8.annotations" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.ee8.apache-jsp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.ee8.osgi.boot" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.ee8.osgi.boot.jsp" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.ee8.plus" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.ee8.security.jaspi" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.ee8.webapp" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.jetty.ee8.websocket.common" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.ee8.websocket.javax.client" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.ee8.websocket.javax.server" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.ee8.websocket.server" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http.spi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.hpack" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http3.qpack" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.quic.quic-quiche-jna" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.server" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.websocket.core.common" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="slf4j.api" autoStart="true" startLevel="3" />
       <plugin id="slf4j.jdk14" autoStart="true" startLevel="3" />
