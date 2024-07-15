@@ -189,4 +189,12 @@
          id="javassist"
          version="0.0.0"/>
 
+   <plugin
+         id="org.apache.cxf.cxf-rt-rs-extension-providers"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.cxf.cxf-rt-databinding-xmlbeans"
+         version="0.0.0"/>
+
 </feature>

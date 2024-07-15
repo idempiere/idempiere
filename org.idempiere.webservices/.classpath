@@ -13,10 +13,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/idempiere-xmlbeans.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-3.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cxf-rt-databinding-xmlbeans-3.1.18.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cxf-rt-bindings-object-3.1.18.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cxf-rt-rs-extension-providers-3.1.18.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

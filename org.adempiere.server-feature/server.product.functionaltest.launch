@@ -180,9 +180,11 @@
         <setEntry value="org.apache.cxf.cxf-rt-bindings-soap@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-bindings-xml@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-databinding-jaxb@default:default"/>
+        <setEntry value="org.apache.cxf.cxf-rt-databinding-xmlbeans@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-frontend-jaxrs@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-frontend-jaxws@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-frontend-simple@default:default"/>
+        <setEntry value="org.apache.cxf.cxf-rt-rs-extension-providers@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-rs-service-description@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-security@default:default"/>
         <setEntry value="org.apache.cxf.cxf-rt-transports-http@default:default"/>

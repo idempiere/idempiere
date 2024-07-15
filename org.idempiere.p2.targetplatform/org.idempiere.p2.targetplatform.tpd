@@ -32,6 +32,10 @@ location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.
 	com.google.oauth-client
 	// Fragment to add Provide-Capability header to org.eclipse.jetty.servlet-api_4.0.6
 	org.eclipse.jetty.servlet-api.capability
+	// 3.6.3, updated with xmlbeans 5.0.3 support 
+	org.apache.cxf.cxf-rt-databinding-xmlbeans
+	// 3.6.3, updated with xmlbeans 5.0.3 support
+	org.apache.cxf.cxf-rt-rs-extension-providers
 }
 
 location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
