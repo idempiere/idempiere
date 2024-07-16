@@ -468,7 +468,7 @@ public class Doc_MatchInv extends Doc
 			if (qtyCost != null && qtyCost.compareTo(qtyInv) < 0 )
 			{
 				//If current cost qty < invoice qty
-				amtAsset = qtyCost.multiply(ipv).divide(qtyInv);
+				amtAsset = qtyCost.multiply(ipv).divide(qtyInv,as.getCostingPrecision(),RoundingMode.HALF_UP);
 				amtVariance = ipv.subtract(amtAsset);
 				
 			}else{
