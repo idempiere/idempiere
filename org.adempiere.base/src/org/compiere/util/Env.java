@@ -2329,4 +2329,12 @@ public final class Env
 		return false;
 	}
 
+	/**
+	 * Is read only session?  Based on user preference
+	 * @return
+	 */
+	public static boolean isReadOnlySession() {
+		return "Y".equals(Env.getContext(Env.getCtx(), "IsReadOnlySession"));
+	}
+
 }   //  Env

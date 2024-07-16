@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.print.MPrintFormat;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -343,7 +344,10 @@ public class MPInstance extends X_AD_PInstance
 					procMsg.append(proc.get_Translation("Name")).append(" / ");
 				}
 				procMsg.append(proc.getName()).append("]");
-				throw new IllegalStateException(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {procMsg.toString(), role.getName()}));
+				if (Env.isReadOnlySession())
+					throw new AdempiereException(Msg.getMsg(getCtx(), "ReadOnlySession"));
+				else
+					throw new IllegalStateException(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {procMsg.toString(), role.getName()}));
 			}
 		}
 		super.setAD_Process_ID (AD_Process_ID);

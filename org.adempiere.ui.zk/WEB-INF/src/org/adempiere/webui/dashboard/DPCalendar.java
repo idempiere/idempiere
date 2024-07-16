@@ -222,7 +222,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			else if (e.getTarget() == divArrowRight)
 				divArrowClicked(true);
 		}
-		else if (type.equals(ON_EVENT_CREATE_EVENT)) {
+		else if (type.equals(ON_EVENT_CREATE_EVENT) && ! Env.isReadOnlySession()) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);

@@ -28,6 +28,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 
 public class MUserPreference extends X_AD_UserPreference {
@@ -124,8 +125,17 @@ public class MUserPreference extends X_AD_UserPreference {
 
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		if (success)
+		if (success) {
 			fillPreferences();
+			if (is_ValueChanged(COLUMNNAME_IsReadOnlySession)) {
+				// Cache reset in same thread
+				CacheMgt.get().reset(MRole.Table_Name);
+				// reset cache to re-read the ReadOnly logic
+				CacheMgt.get().reset(MWindow.Table_Name);
+				CacheMgt.get().reset(MTab.Table_Name);
+				CacheMgt.get().reset(MField.Table_Name);
+			}
+		}
 		return success;
 	}
 

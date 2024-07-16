@@ -62,21 +62,6 @@ public interface I_AD_UserPreference
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
-
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public void setAD_User_ID (int AD_User_ID);
-
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID();
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
-
     /** Column name AD_UserPreference_ID */
     public static final String COLUMNNAME_AD_UserPreference_ID = "AD_UserPreference_ID";
 
@@ -95,6 +80,21 @@ public interface I_AD_UserPreference
 	/** Get AD_UserPreference_UU	  */
 	public String getAD_UserPreference_UU();
 
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
     /** Column name AutoCommit */
     public static final String COLUMNNAME_AutoCommit = "AutoCommit";
 
@@ -103,6 +103,15 @@ public interface I_AD_UserPreference
 
 	/** Get Automatic Commit	  */
 	public boolean isAutoCommit();
+
+    /** Column name AutoNew */
+    public static final String COLUMNNAME_AutoNew = "AutoNew";
+
+	/** Set Automatic New Record	  */
+	public void setAutoNew (boolean AutoNew);
+
+	/** Get Automatic New Record	  */
+	public boolean isAutoNew();
 
     /** Column name AutomaticDecimalPlacesForAmoun */
     public static final String COLUMNNAME_AutomaticDecimalPlacesForAmoun = "AutomaticDecimalPlacesForAmoun";
@@ -116,15 +125,6 @@ public interface I_AD_UserPreference
 	  * Automatically insert a decimal point
 	  */
 	public int getAutomaticDecimalPlacesForAmoun();
-
-    /** Column name AutoNew */
-    public static final String COLUMNNAME_AutoNew = "AutoNew";
-
-	/** Set Automatic New Record	  */
-	public void setAutoNew (boolean AutoNew);
-
-	/** Get Automatic New Record	  */
-	public boolean isAutoNew();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -176,6 +176,15 @@ public interface I_AD_UserPreference
 
 	/** Get Detailed Zoom Across	  */
 	public boolean isDetailedZoomAcross();
+
+    /** Column name IsReadOnlySession */
+    public static final String COLUMNNAME_IsReadOnlySession = "IsReadOnlySession";
+
+	/** Set Read Only Session	  */
+	public void setIsReadOnlySession (boolean IsReadOnlySession);
+
+	/** Get Read Only Session	  */
+	public boolean isReadOnlySession();
 
     /** Column name IsUseSimilarTo */
     public static final String COLUMNNAME_IsUseSimilarTo = "IsUseSimilarTo";

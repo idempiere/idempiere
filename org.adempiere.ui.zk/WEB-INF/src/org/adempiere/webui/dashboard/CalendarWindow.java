@@ -314,7 +314,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				syncModel();
 			}
 		}
-		else if (type.equals(ON_EVENT_CREATE_EVENT)) {
+		else if (type.equals(ON_EVENT_CREATE_EVENT) && !Env.isReadOnlySession()) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);

@@ -115,7 +115,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6591172659109078284L;
+	private static final long serialVersionUID = 3145791881535121558L;
 
 	/* String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -2345,6 +2345,8 @@ public abstract class PO
 			return true;
 		}
 
+		if (!checkReadOnlySession())
+			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
@@ -2568,6 +2570,32 @@ public abstract class PO
 			}
 		}
 	}	//	save
+
+
+	/**
+	 * Tables allowed to be written in a read-only session
+	 */
+	final Set<String> ALLOWED_TABLES_IN_RO_SESSION = new HashSet<>(Arrays.asList(new String[] {
+			"AD_ChangeLog",
+			"AD_Preference",
+			"AD_Session",
+			"AD_UserPreference",
+			"AD_Wlistbox_Customization"
+	}));
+
+	/**
+	 * Do not allow saving if in a read-only session, except the allowed tables
+	 * @return
+	 */
+	private boolean checkReadOnlySession() {
+		if (Env.isReadOnlySession()) {
+			if (! ALLOWED_TABLES_IN_RO_SESSION.contains(get_TableName())) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ReadOnlySession") + " [" + get_TableName() + "]");
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Update Value or create new record.
@@ -3927,6 +3955,8 @@ public abstract class PO
 		if (is_new())
 			return true;
 
+		if (!checkReadOnlySession())
+			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);

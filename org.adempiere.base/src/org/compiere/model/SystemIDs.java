@@ -230,6 +230,7 @@ public class SystemIDs
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_SALES_ORDER = 143;
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
+	public final static int WINDOW_USER_PREFERENCE = 200073;
 	public final static int WINDOW_VENDOR_RMA = 53099;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
