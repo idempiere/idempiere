@@ -752,11 +752,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	{
 		boolean visible = m_data.documentQuery && tabResult.isSelected();
 
-		bRePost.setVisible(visible);
+		bRePost.setVisible(visible && !Env.isReadOnlySession());
 		bExport.setVisible(tabResult.isSelected());
 		bZoom.setVisible(tabResult.isSelected());
 
-		forcePost.setVisible(visible);
+		forcePost.setVisible(visible && !Env.isReadOnlySession());
 	}   //  stateChanged
 
 	/**
