@@ -15,25 +15,30 @@ location zk "https://idempiere.github.io/binary.file/p2.zk/10.0.1" {
 	zweb-dsp
 }
 
-location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
+location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.0" {
 	// 2.3.3.v2021090100, dependency of com.sun.xml.ws.jaxws-rt_2.3.5, org.idempiere.webservices, 
-	// wrapped.org.apache.cxf.cxf-rt-ws-transfer_3.4.4
+	// wrapped.org.apache.cxf.cxf-rt-ws-transfer_3.6.3
 	jakarta.xml.ws-api
 	// 2.7.2.v202109010034
 	org.atmosphere.runtime
-	// 30.1.1.jre_v202109010034, dependency of com.fasterxml.jackson.datatype.jackson-datatype-guava_2.12.4,
-	// com.google.http-client.google-http-client, com.google.oauth-client_1.31.5, org.passay_1.16.1  
-	com.google.guava
-	// 1.39.2.sp_1_v202109010034, dependency of com.google.oauth-client_1.31.5, wrapped.com.google.http-client.google-http-client-gson_1.39.2.sp1
+	// 1.44.2, repackage to fix dependency to guava
 	com.google.http-client.google-http-client
 	// 1.2.18.v202109010034, dependency of com.sun.xml.bind.jaxb-impl_2.3.5, com.sun.xml.messaging.saaj.impl_1.5.3,
-	// org.apache.cxf.cxf-core_3.4.4
+	// org.apache.cxf.cxf-core_3.6.3
 	com.sun.xml.fastinfoset.FastInfoset
 	// 4.6.4, dependency of org.idempiere.felix.webconsole
 	org.apache.felix.webconsole
+	// 1.36.0, repackage to fix dependency to guava
+	com.google.oauth-client
+	// Fragment to add Provide-Capability header to org.eclipse.jetty.servlet-api_4.0.6
+	org.eclipse.jetty.servlet-api.capability
+	// 3.6.3, updated with xmlbeans 5.0.3 support 
+	org.apache.cxf.cxf-rt-databinding-xmlbeans
+	// 3.6.3, updated with xmlbeans 5.0.3 support
+	org.apache.cxf.cxf-rt-rs-extension-providers
 }
 
-location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
+location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
 	// equinox core framework
 	org.eclipse.osgi
 	org.osgi.annotation.bundle
@@ -99,7 +104,6 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.eclipse.equinox.security
 	org.eclipse.equinox.simpleconfigurator
 	org.eclipse.equinox.simpleconfigurator.manipulator
-	org.eclipse.osgi.services
 	org.eclipse.osgi.util
 	org.sat4j.core
 	org.sat4j.pb
@@ -137,19 +141,22 @@ location eclipse-2023-03 "https://download.eclipse.org/eclipse/updates/4.27" {
 	org.eclipse.jdt.junit5.runtime
 }
 
-location orbit-2021-06-R20210602031627 "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {
+location orbit-2023-09 "https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0" {
 	org.apache.ant
-	org.apache.xml.resolver
+	org.apache.xml.resolver	
+	org.hamcrest.core [1.3.0.v20230809-1000,1.3.0.v20230809-1000]
+	org.apache.xml.serializer
+	org.apache.commons.discovery	
+}	
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository" {
 	org.w3c.css.sac
 	org.w3c.dom.smil
 	org.w3c.dom.svg
 	org.w3c.dom.events
-	org.hamcrest.core
-	javax.xml
-	org.apache.xalan
-	org.apache.xml.serializer
-	org.apache.commons.discovery	
-}	
+	// 1.3.4
+	javax.xml	
+}
 
 location jasperstudio "https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0" {
     org.krysalis.barcode4j
