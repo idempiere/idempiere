@@ -32,7 +32,7 @@ package org.adempiere.webui.editor;
 public interface IInputValidator {
 	
 	/**
-	 * Get Valid Input
+	 * Get text for input validation
 	 * @return Expected input string from user
 	 */
 	public String getValidInput();

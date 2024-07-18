@@ -93,10 +93,9 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Image;
 
 /**
- *
+ * Login panel of {@link LoginWindow}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */

@@ -16,7 +16,14 @@
 * Validate all Eclipse application launch configuration is working.
 * Validate unit test launch configuration is working.
 * Validate application created by mvn verify is working as expected.
-* Update org.idempiere.p2.repository.target - open in target editor, switch to Content tab and update the list of selected bundle.
-* Update org.idempiere.p2.targetplatform.mirror.feature/feature.xml (Follow instructions in org.idempiere.p2.targetplatform.mirror.feature).
-* Update name and "idempiere.target.platform" setup task in utils_dev/oomph/idempiere.setup
+* Validate unit test can be completed successfully using maven (mvn verify -DskipTests=false).
+* If necessary, update name and "idempiere.target.platform" setup task in utils_dev/oomph/idempiere.setup
 
+#Auto generation of local mirror
+* A local mirror of org.idempiere.p2.targetplatform.target is auto generated at target/target-platform-repository
+
+#Usage of files
+* org.idempiere.p2.targetplatform.tpd - to generate org.idempiere.p2.targetplatform.target
+* org.idempiere.p2.targetplatform.target - iDempiere target platform definition
+* org.idempiere.p2.targetplatform.mirror.target - target platform definition for the local mirror of org.idempiere.p2.targetplatform.target at target/target-platform-repository
+* maven.locations.xml - list of maven artifacts location to be appended to the end of the generated org.idempiere.p2.targetplatform.target

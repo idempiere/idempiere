@@ -192,7 +192,7 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	}
 
 	/**
-	 * Evaluate SQL or boolean logic expression.
+	 * Evaluate SQL or boolean logic expression.<br/>
 	 * For SQL expression, return true if the SQL expression has result (it doesn't check the return value of the SQL statement).
 	 * @param logic
 	 * @param tabNo

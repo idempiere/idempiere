@@ -348,7 +348,7 @@ public class MOrderLine extends X_C_OrderLine
 		int ii = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
 			getAD_Org_ID(), getM_Warehouse_ID(),
 			getC_BPartner_Location_ID(),		//	should be bill to
-			getC_BPartner_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(), get_TrxName());
+			getC_BPartner_Location_ID(), getParent().getDropShip_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(), get_TrxName());
 		if (ii == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -802,9 +802,11 @@ public class MOrderLine extends X_C_OrderLine
 			setHeaderInfo(getParent());
 		
 		//	Validate change of warehouse, product or ASI
-		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
-			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
+		if (   !newRecord
+			&& (   is_ValueChanged("M_Product_ID")
+				|| is_ValueChanged("M_Warehouse_ID")
+				|| (   !getParent().isProcessed()
+					&& getM_AttributeSetInstance_ID() != get_ValueOldAsInt(COLUMNNAME_M_AttributeSetInstance_ID))))
 		{
 			if (!canChangeWarehouse())
 				return false;
@@ -897,6 +899,16 @@ public class MOrderLine extends X_C_OrderLine
 			{
 				setQtyLostSales(Env.ZERO);
 			}
+		}
+		
+		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+		if (MOrder.DELIVERYVIARULE_Shipper.equals(getParent().getDeliveryViaRule()) && MOrder.FREIGHTCOSTRULE_FreightIncluded.equals(getParent().getFreightCostRule())
+			&& (   (getM_Product_ID() > 0 && getM_Product_ID() == ci.getM_ProductFreight_ID())
+				|| (getC_Charge_ID() > 0 && getC_Charge_ID() == ci.getC_ChargeFreight_ID())
+			   )
+		   ) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "FreightOrderLineNotAllowed"));
+			return false;
 		}
 		
 		return true;

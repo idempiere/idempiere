@@ -23,7 +23,6 @@ import org.adempiere.webui.component.Panel;
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 2, 2007
- * @version $Revision: 0.10 $
  */
 @Deprecated(forRemoval = true, since = "11")
 public class ConfigurationPanel extends Panel

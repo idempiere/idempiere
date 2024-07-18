@@ -186,22 +186,22 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 		
 		fieldValue = new Textbox();
 		fieldValue.setMaxlength(40);
-		fieldValue.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "value");
+		fieldValue.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "value");
 		fieldName = new Textbox();
 		fieldName.setMaxlength(40);
-		fieldName.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "name");
+		fieldName.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "name");
 		fieldContact = new Textbox();
 		fieldContact.setMaxlength(40);
-		fieldContact.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "contact");
+		fieldContact.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "contact");
 		fieldEMail = new Textbox();
 		fieldEMail.setMaxlength(40);
-		fieldEMail.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "email");
+		fieldEMail.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "email");
 		fieldPostal = new Textbox();
 		fieldPostal.setMaxlength(40);
-		fieldPostal.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "postal");
+		fieldPostal.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "postal");
 		fieldPhone = new Textbox();		
 		fieldPhone.setMaxlength(40);
-		fieldPhone.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "phone");
+		fieldPhone.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "phone");
 		
 		checkAND = new Checkbox();
 		checkAND.setLabel(Msg.getMsg(Env.getCtx(), "SearchAND", true));
@@ -227,7 +227,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 		ZKUpdateUtil.setHflex(fieldPostal, "1");
 		
 		Grid grid = GridFactory.newGridLayout();
-		grid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
+		grid.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
 		
 		Rows rows = new Rows();
 		grid.appendChild(rows);

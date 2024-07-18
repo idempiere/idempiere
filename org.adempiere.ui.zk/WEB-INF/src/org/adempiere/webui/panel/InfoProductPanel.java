@@ -275,20 +275,20 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		m_InfoPAttributeButton.addEventListener(Events.ON_CLICK,this);
 
 		fieldValue = new Textbox();
-		fieldValue.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "value");
+		fieldValue.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "value");
 		fieldName = new Textbox();
-		fieldName.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "name");
+		fieldName.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "name");
 		fieldUPC = new Textbox();
-		fieldUPC.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "upc");
+		fieldUPC.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "upc");
 		fieldSKU = new Textbox();
-		fieldSKU.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "sku");
+		fieldSKU.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "sku");
 		pickPriceList = new Listbox();
 		pickPriceList.setRows(0);
 		pickPriceList.setMultiple(false);
 		pickPriceList.setMold("select");
 		ZKUpdateUtil.setHflex(pickPriceList, "1");
 		pickPriceList.addEventListener(Events.ON_SELECT, this);
-		pickPriceList.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "priceList");
+		pickPriceList.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "priceList");
 
 		// Elaine 2008/11/21
 		pickProductCategory = new Listbox();
@@ -297,7 +297,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickProductCategory.setMold("select");
 		ZKUpdateUtil.setHflex(pickProductCategory, "1");
 		pickProductCategory.addEventListener(Events.ON_SELECT, this);
-		pickProductCategory.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "productCategory");
+		pickProductCategory.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "productCategory");
 		//
 		pickAS = new Listbox();
 		pickAS.setRows(0);
@@ -305,7 +305,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickAS.setMold("select");
 		ZKUpdateUtil.setHflex(pickAS, "1");
 		pickAS.addEventListener(Events.ON_SELECT, this);
-		pickAS.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attributeSet");
+		pickAS.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attributeSet");
 
 		pickWarehouse = new Listbox();
 		pickWarehouse.setRows(0);
@@ -313,7 +313,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickWarehouse.setMold("select");
 		ZKUpdateUtil.setHflex(pickWarehouse, "1");
 		pickWarehouse.addEventListener(Events.ON_SELECT, this);
-		pickWarehouse.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "warehouse");
+		pickWarehouse.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "warehouse");
 
 		fieldVendor = new Textbox();		
 
@@ -1140,12 +1140,14 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 
 	/**
 	 * 	Query per Product Attribute.
-	 *  <code>
+	 *  <pre>
+	 *  {@code
 	 * 	Available synonyms:
 	 *		M_Product p
 	 *		M_ProductPrice pr
 	 *		M_AttributeSet pa
-	 *	</code>
+	 *	}
+	 *  </pre>
 	 */
 	private void cmd_InfoPAttribute()
 	{

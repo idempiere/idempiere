@@ -25,14 +25,18 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.panel.AbstractMenuPanel;
+import org.adempiere.webui.panel.MenuTreePanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
+import org.compiere.model.MPreference;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -68,6 +72,9 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class MenuSearchController implements EventListener<Event>{
 
+	/** Initial number of menu items loaded into listbox */
+	private static final int INITIAL_LOADING_SIZE = 50;
+
 	/** Component attribute to hold reference of {@link MTreeNode} **/
 	public static final String M_TREE_NODE_ATTR = "MTreeNode";
 	
@@ -77,7 +84,7 @@ public class MenuSearchController implements EventListener<Event>{
 	private static final String Z_ICON_STAR = "z-icon-star";
 	/** Event echo from {@link #search(String)} to initiate search action **/
 	private static final String ON_SEARCH_ECHO_EVENT = "onSearchEcho";
-	/** Event to load all menu items into {@link #listbox}. Default is to load the first 50 only. **/
+	/** Event to load all menu items into {@link #listbox}. Default is to load the first {@link #INITIAL_LOADING_SIZE} only. **/
 	private static final String ON_LOAD_MORE_EVENT = "onLoadMore";
 	/** {@link Listitem} attribute to store the last timestamp of ON_CLICK or ON_SELECT event **/
 	private static final String ONSELECT_TIMESTAMP_ATTR = "onselect.timestamp";
@@ -100,20 +107,58 @@ public class MenuSearchController implements EventListener<Event>{
 	
 	private String highlightText = null;
 
+	/** List of recently access menu items (AD_Menu_ID) */
+	private List<String> recentMenuItemIds = new ArrayList<>();
+	
 	/** Event post from {@link #selectTreeitem(Object, Boolean)} **/
 	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
 	
 	/**
-	 * @param tree
+	 * @param tree usually the tree instance from {@link MenuTreePanel}
 	 */
 	public MenuSearchController(Tree tree) {
 		this.tree = tree;
 	}
 	
 	/**
+	 * Load recently access menu items
+	 */
+	private List<String> loadRecentItems() {		
+		List<String> recents = new ArrayList<String>();
+		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
+		int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
+		int AD_Org_ID = 0;
+		String attribute = AD_Role_ID+"|RecentMenuItems";
+		Query query = new Query(Env.getCtx(), MPreference.Table_Name, "PreferenceFor=? AND Attribute=? AND AD_Org_ID=? AND AD_User_ID=? AND AD_Window_ID=?", null);
+		MPreference preference = query.setClient_ID().setParameters("W", attribute, AD_Org_ID, AD_User_ID, SystemIDs.WINDOW_MENU).first();
+		if (preference != null) {
+			String[] recentItems = preference.getValue().split("[,]");
+			for (String recentItem : recentItems) {
+				recents.add(recentItem);
+			}
+		}
+		return recents;
+	}
+	
+	/**
+	 * If there are changes in the recent menu items for user, reload and update menu items model
+	 */
+	public void updateRecentItems() {
+		List<String> recents = loadRecentItems();
+		if (!recents.equals(recentMenuItemIds)) {
+			recentMenuItemIds = recents;
+			sortMenuItemModel();
+			moveRecentItems();
+			if (fullModel != null)
+				updateListboxModel(model);
+		}
+	}
+	
+	/**
 	 * Populate {@link #model} from {@link #tree}
 	 */
 	public void refreshModel() {
+		recentMenuItemIds = loadRecentItems();
 		final List<MenuItem> list = new ArrayList<MenuItem>();
 		if (tree.getModel() == null) {
 	    	TreeUtils.traverse(tree, new TreeItemAction() {
@@ -130,8 +175,15 @@ public class MenuSearchController implements EventListener<Event>{
 	    	});
 		}
 		model = new ListModelList<MenuItem>(list, true);
-		model.sort(new Comparator<MenuItem>() {
-			
+		sortMenuItemModel();		
+		moveRecentItems();
+	}
+
+	/**
+	 * Sort menu items model in alphabetical order
+	 */
+	private void sortMenuItemModel() {
+		model.sort(new Comparator<MenuItem>() {			
 			@Override
 			public int compare(MenuItem o1, MenuItem o2) {
 				return o1.getLabel().compareTo(o2.getLabel());
@@ -139,6 +191,35 @@ public class MenuSearchController implements EventListener<Event>{
 		}, true);
 	}
 	
+	/**
+	 * Move the 7 most recently access menu items to the top of menu items model
+	 */
+	private void moveRecentItems() {
+		if (recentMenuItemIds.size() > 0) {
+			List<MenuItem> recents  = new ArrayList<MenuItem>();
+			for(String id : recentMenuItemIds) {
+				for(int i = 0; i < model.getSize(); i++) {
+					if (model.get(i).getData() instanceof Treeitem ti) {
+						if (ti.getValue() instanceof String tis) {
+							if (tis.equals(id)) {
+								recents.add(model.get(i));
+								break;
+							}
+						}
+					}
+				}
+			}
+			if (recents.size() > 0) {
+				for (MenuItem mi : recents) {
+					model.remove(mi);
+				}
+				for(int i = recents.size()-1; i >= 0; i--) {
+					model.add(0, recents.get(i));
+				}
+			}
+		}
+	}
+
 	/** 
 	 * Add treeNode to list
 	 * @param list
@@ -347,7 +428,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 
 	/**
-	 * Echo {@link #ON_LOAD_MORE_EVENT} if selected is of type "...".
+	 * Echo {@link #ON_LOAD_MORE_EVENT} if selected is of type "...".<br/>
 	 * Otherwise delegate to {@link #selectTreeitem(Object, Boolean)}.
 	 * @param selected
 	 * @param newRecord true if event is originated from new record button
@@ -372,17 +453,17 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 
 	/**
-	 * Load {@link #fullModel} to {@link #listbox}.
-	 * Only first 50 loaded to {@link #listbox} initially.
+	 * Load {@link #fullModel} to {@link #listbox}.<br/>
+	 * Only first {@link #INITIAL_LOADING_SIZE} loaded to {@link #listbox} initially.
 	 */
 	private void loadMore() {
 		ListModel<MenuItem> listModel = listbox.getModel();
 		ListModelList<MenuItem> lml = (ListModelList<MenuItem>) listModel;
 		lml.remove(lml.size()-1);
-		List<MenuItem> subList = fullModel.subList(50, fullModel.size());
+		List<MenuItem> subList = fullModel.subList(INITIAL_LOADING_SIZE, fullModel.size());
 		lml.addAll(subList);
 		fullModel = null;
-		listbox.setSelectedIndex(50);
+		listbox.setSelectedIndex(INITIAL_LOADING_SIZE);
 		Clients.scrollIntoView(listbox.getSelectedItem());
 	}
 	
@@ -430,8 +511,8 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * Handle {@link #ON_POST_SELECT_TREEITEM_EVENT} event.
-	 * Post ON_CLICK event to link ({@link A} or {@link Treerow}).
+	 * Handle {@link #ON_POST_SELECT_TREEITEM_EVENT} event.<br/>
+	 * Post ON_CLICK event to link ({@link A} or {@link Treerow}, handle in {@link AbstractMenuPanel}).
 	 * @param newRecord
 	 */
 	private void onPostSelectTreeitem(Boolean newRecord) {
@@ -441,9 +522,10 @@ public class MenuSearchController implements EventListener<Event>{
 			event = new Event(Events.ON_CLICK, tree.getSelectedItem().getTreerow().getFirstChild().getFirstChild(), newRecord);
 		}
 		else
-		{
+		{			
 			event = new Event(Events.ON_CLICK, tree.getSelectedItem().getTreerow(), newRecord);
 		}
+		
     	Events.postEvent(event);
     }
 	
@@ -473,16 +555,16 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 
 	/**
-	 * Update {@link #listbox} with newModel.
-	 * If newModel has > 50 items, only first 50 is loaded into {@link #listbox}. 
+	 * Update {@link #listbox} with newModel.<br/>
+	 * If newModel has > {@link #INITIAL_LOADING_SIZE} items, only first {@link #INITIAL_LOADING_SIZE} is loaded into {@link #listbox}.<br/>
 	 * User has to click the load more link (...) to load the rest of the items into {@link #listbox}.
 	 * @param newModel
 	 */
 	private void updateListboxModel(ListModelList<MenuItem> newModel) {
 		fullModel = null;
-		if (newModel.size() > 50) {
+		if (newModel.size() > INITIAL_LOADING_SIZE) {
 			List<MenuItem> list = newModel.getInnerList();
-			List<MenuItem> subList = list.subList(0, 50);
+			List<MenuItem> subList = list.subList(0, INITIAL_LOADING_SIZE);
 			fullModel = newModel;
 			newModel = new ListModelList<MenuItem>(subList.toArray(new MenuItem[0]));
 			MenuItem more = new MenuItem();
@@ -529,7 +611,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * select ListItem that comes before the current selected ListItem.
+	 * Select ListItem that comes before the current selected ListItem.
 	 * @return new selected {@link MenuItem}
 	 */
 	public MenuItem selectPrior() {
@@ -546,7 +628,7 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	/**
-	 * select ListItem that comes after the current selected ListItem.
+	 * Select ListItem that comes after the current selected ListItem.
 	 * @return new selected {@link MenuItem}
 	 */
 	public MenuItem selectNext() {
@@ -587,7 +669,8 @@ public class MenuSearchController implements EventListener<Event>{
 		int count = listbox.getItemCount();
 		for(int i = 0; i < count; i++) {
 			ListItem item = listbox.getItemAtIndex(i);
-			String label = item.getLabel();
+			MenuItem menuItem = item.getValue();
+			String label = menuItem.getLabel();
 			if (Util.isEmpty(label)) continue;
 			if (label.equalsIgnoreCase(text)) {
 				exact = item;
@@ -597,11 +680,13 @@ public class MenuSearchController implements EventListener<Event>{
 			}
 		}
 		if (exact != null) {
-			textbox.setText(exact.getLabel());
+			MenuItem menuItem = exact.getValue();
+			textbox.setText(menuItem.getLabel());
 			onSelect(exact, false);
 			return true;
 		} else if (firstStart != null) {
-			textbox.setText(firstStart.getLabel());
+			MenuItem menuItem = firstStart.getValue();
+			textbox.setText(menuItem.getLabel());
 			onSelect(firstStart, false);
 			return true;
 		}

@@ -52,7 +52,8 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Window;
 
 /**
- * Bread crumb component for AD Window
+ * Bread crumb component for AD Window.<br/>
+ * Represent the hierarchical navigation path of a tab
  * @author hengsin
  */
 public class BreadCrumb extends Div implements EventListener<Event> {
@@ -151,12 +152,13 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btnLast.setTooltiptext(btnLast.getTooltiptext()+"    Alt+End");
         toolbar.appendChild(btnLast);
 
-		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
+		setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
 		
 		this.addEventListener(ON_MOUSE_OUT_ECHO_EVENT, this);
 	}
 
 	/**
+	 * Set toolbar listener
 	 * @param listener
 	 */
 	public void setToolbarListener(ToolbarListener listener) {
@@ -164,10 +166,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
-	 * Add path to tab
+	 * Add path for tab
 	 * @param label path label
 	 * @param id path id
-	 * @param clickable true to add clickable {@link BreadCrumbLink} false to add text label
+	 * @param clickable true to add clickable {@link BreadCrumbLink}, false to add text label
 	 */
 	public void addPath(String label, String id, boolean clickable) {
 		if (clickable) {
@@ -210,7 +212,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
-	 * add links to other tabs at the same level
+	 * Add links to other tabs at the same level
 	 * @param links Label:TabIndex map
 	 */
 	public void addLinks(LinkedHashMap<String, String> links) {
@@ -384,7 +386,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	/**
-	 * remove all path and links
+	 * Remove all path and links
 	 */
 	public void reset() {
 		layout.getChildren().clear();
@@ -392,7 +394,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	/**
-	 * enable/disable first record and previous record toolbar button 
+	 * Enable/disable first record and previous record toolbar button 
 	 * @param enabled
 	 */
     public void enableFirstNavigation(boolean enabled)
@@ -402,7 +404,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     }
 
     /**
-     * enable or disable the next record and last record toolbar button
+     * Enable or disable the next record and last record toolbar button
      * @param enabled
      */
     public void enableLastNavigation(boolean enabled)
@@ -504,6 +506,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	/**
+	 * Are there one or more parent link
 	 * @return true if there are one or more parent link
 	 */
 	public boolean hasParentLink() {
@@ -524,6 +527,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
+	 * Is previous button enable
 	 * @return true if previous button is enable
 	 */
 	public boolean isPreviousEnabled() {
@@ -531,6 +535,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
+	 * Is next button enable
 	 * @return true if next button is enable
 	 */
 	public boolean isNextEnabled() {
@@ -538,6 +543,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
+	 * Get next button component
 	 * @return next ToolBarButton
 	 */
 	public ToolBarButton getNextButton() {
@@ -545,6 +551,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
+	 * Get previous button component
 	 * @return previous ToolBarButton
 	 */
 	public ToolBarButton getPreviousButton() {

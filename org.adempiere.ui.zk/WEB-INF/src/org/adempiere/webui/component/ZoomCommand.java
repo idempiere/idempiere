@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * {@link Desktop} listener for onZoom {@link AuRequest}.<br/>
+ * {@link Desktop} listener for onZoom {@link AuRequest} command.<br/>
  * Create {@link ZoomEvent} from {@link AuRequest} and post to the component that send the {@link AuRequest}.
  * @author hengsin
  *

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Breeze Theme
+Bundle-SymbolicName: org.idempiere.zk.breeze.theme
+Bundle-Version: 12.0.0.qualifier
+Eclipse-BundleShape: dir
+Bundle-Vendor: idempiere.org
+Fragment-Host: org.adempiere.ui.zk;bundle-version="12.0.0"
+Automatic-Module-Name: org.idempiere.zk.breeze.theme
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Jetty-WarPrependFragmentResourcePath: /

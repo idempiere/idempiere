@@ -71,7 +71,7 @@ public class CalloutBOM extends CalloutEngine
 	}
         
 	/**
-	 * Callout for C_UOM_ID, QtyEntered and QtyRequired.<br/
+	 * Callout for C_UOM_ID, QtyEntered and QtyRequired.<br/>
 	 * Sync QtyEntered and QtyRequired.
 	 * @param ctx
 	 * @param WindowNo

@@ -38,7 +38,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Separator;
 
 /**
- * Dialog for post it note
+ * Dialog for post it note (AD_PostIt)
  * @author Nico
  *
  */

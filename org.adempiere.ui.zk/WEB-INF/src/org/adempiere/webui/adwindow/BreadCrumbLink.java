@@ -16,7 +16,7 @@ package org.adempiere.webui.adwindow;
 import org.zkoss.zul.A;
 
 /**
- * Link component for {@link BreadCrumb}
+ * Link component for {@link BreadCrumb} path
  * @author hengsin
  */
 public class BreadCrumbLink extends A {
@@ -30,6 +30,7 @@ public class BreadCrumbLink extends A {
 	private String pathId;
 
 	/**
+	 * Get id for path
 	 * @return path id
 	 */
 	public String getPathId() {
@@ -37,6 +38,7 @@ public class BreadCrumbLink extends A {
 	}
 
 	/**
+	 * Set id for path
 	 * @param pathId
 	 */
 	public void setPathId(String pathId) {

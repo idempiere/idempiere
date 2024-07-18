@@ -14,13 +14,12 @@
 package org.adempiere.webui.info;
 
 /**
- * 
+ * Interface for field editor that will create where clause from field value 
  * @author hengsin
- *
  */
 public interface IWhereClauseEditor {
 	/**
-	 * 
+	 * Get where clause
 	 * @return where clause
 	 */
 	public String getWhereClause();

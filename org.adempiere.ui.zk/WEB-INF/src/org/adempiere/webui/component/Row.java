@@ -24,7 +24,6 @@ import org.zkoss.zul.Cell;
  * Extend {@link org.zkoss.zul.Row}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Row extends org.zkoss.zul.Row
 {

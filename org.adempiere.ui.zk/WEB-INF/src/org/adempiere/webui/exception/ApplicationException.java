@@ -20,7 +20,6 @@ package org.adempiere.webui.exception;
 /**
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ApplicationException extends RuntimeException
 {

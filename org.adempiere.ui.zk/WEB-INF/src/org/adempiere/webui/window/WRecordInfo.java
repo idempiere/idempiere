@@ -122,7 +122,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		this.setSizable(true);
 		this.setClosable(true);
 		this.setMaximizable(true);
-		this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "recordInfo");
+		this.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "recordInfo");
 		this.setSclass("popup-dialog record-info-dialog");
 		
 		try

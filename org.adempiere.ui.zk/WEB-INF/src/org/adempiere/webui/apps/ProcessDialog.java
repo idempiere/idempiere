@@ -82,11 +82,13 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- *	Embedded Dialog to Start process or report.
- *	Displays information about the process
- *		and lets the user decide to start it
- *  	and displays results (optionally print them).
+ *  Embedded window to start process or report.<br/>
+ *  <pre>
+ *  Displays information about the process
+ *     and lets the user decide to start it
+ *     and displays results (optionally print them)  
  *  Calls ProcessCtl to execute.
+ *  </pre>
  *  @author 	Low Heng Sin
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
@@ -198,19 +200,13 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		} catch (Exception e) {}
 	}
 
-	/**
-	 * 	Set Visible 
-	 * 	(set focus to OK if visible)
-	 * 	@param visible true if visible
-	 */
+	@Override
 	public boolean setVisible (boolean visible)
 	{
 		return super.setVisible(visible);
 	}	//	setVisible
 
-	/**
-	 *	Dispose
-	 */
+	@Override
 	public void dispose()
 	{
 		super.dispose();
@@ -317,6 +313,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 
 	/**
+	 * Get in progress mask
 	 * @return in progress mask
 	 */
 	private Div getMask() {
@@ -327,7 +324,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 	
 	/**
-	 * show in progress mask
+	 * Show in progress mask
 	 * @param window
 	 */
 	private void showBusyMask(Window window) {
@@ -347,7 +344,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 		
 	/**
-	 * close in progress mask
+	 * Close in progress mask
 	 */
 	private void hideBusyMask() 
 	{
@@ -420,7 +417,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 	
 	/**
-	 * layout process execution result panel
+	 * Layout process execution result panel
 	 * @param topParameterLayout
 	 */
 	private void layoutResultPanel (HtmlBasedComponent topParameterLayout){
@@ -437,7 +434,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 	
 	/**
-	 * replace oldComponent with newComponent
+	 * Replace oldComponent with newComponent
 	 * @param newComponent
 	 * @param oldComponent
 	 */
@@ -447,7 +444,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}	
 	
 	/**
-	 * append m_logs content to {@link #logMessageTable}
+	 * Append m_logs content to {@link #logMessageTable}
 	 * @param m_logs
 	 * @param infoResultContent
 	 */

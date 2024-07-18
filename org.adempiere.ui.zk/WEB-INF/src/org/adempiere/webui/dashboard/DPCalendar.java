@@ -222,7 +222,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			else if (e.getTarget() == divArrowRight)
 				divArrowClicked(true);
 		}
-		else if (type.equals(ON_EVENT_CREATE_EVENT)) {
+		else if (type.equals(ON_EVENT_CREATE_EVENT) && ! Env.isReadOnlySession()) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
@@ -247,7 +247,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	}
 	
 	/**
-	 * TODO move this and ADCalendarEvent to org.adempiere.ui and create unit test for it
+	 * TODO move this and ADCalendarEvent to org.adempiere.ui and create unit test for it.<br/>
 	 * Retrieve events (request) from DB
 	 * @param RequestTypeID
 	 * @param ctx
@@ -400,7 +400,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	}
 
 	/**
-	 * TODO move to MRequestType
+	 * TODO move to MRequestType.<br/>
 	 * Get request types from DB
 	 * @param ctx
 	 * @return X_R_RequestType list

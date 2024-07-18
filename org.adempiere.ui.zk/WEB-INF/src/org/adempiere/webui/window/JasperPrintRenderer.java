@@ -121,7 +121,7 @@ public class JasperPrintRenderer {
 		mediaSuppliers.put(toMediaType(Medias.PDF_MIME_TYPE, Medias.PDF_FILE_EXT), () -> {
 			try {
 				createPDF();
-				return new AMedia(makePrefix(title)+"."+Medias.PDF_FILE_EXT, Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE, pdfFile, true);			
+				return new AMedia(pdfFile.getName(), Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE, pdfFile, true);			
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;

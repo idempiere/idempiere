@@ -44,6 +44,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	private T currentPO = null;
 	/** Should we close the statement and resultSet on any exception that occur ? */
 	private boolean closeOnError = true;
+	private String[] selectColumns;
 
 	/**
 	 * Constructs the POResultSet.<br/>
@@ -87,7 +88,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 		}
 		try {
 			if ( resultSet.next() ) {
-				return (T) table.getPO(resultSet, trxName);
+				return (T) (selectColumns != null && selectColumns.length > 0 ? table.getPartialPO(resultSet, selectColumns, trxName) : table.getPO(resultSet, trxName));
 			} else {
 				this.close(); // close it if there is no more data to read
 				return null;
@@ -134,5 +135,13 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 		this.resultSet = null;
 		this.statement = null;
 		currentPO = null;
+	}
+
+	/**
+	 * Set columns for result set. Use for loading of partial PO. 
+	 * @param selectColumns
+	 */
+	public void setSelectColumns(String[] selectColumns) {
+		this.selectColumns = selectColumns;
 	}
 }

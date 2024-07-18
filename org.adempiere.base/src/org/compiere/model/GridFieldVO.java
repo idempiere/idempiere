@@ -199,6 +199,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				vo.IsAutocomplete = "Y".equals(userDef.getIsAutocomplete());
 			if (userDef.getAD_Chart_ID() > 0)
 				vo.AD_Chart_ID = userDef.getAD_Chart_ID();
+			if (userDef.getIsHtml() != null)
+				vo.IsHtml = "Y".equals(userDef.getIsHtml());
 		}
 		//
 		vo.initFinish();

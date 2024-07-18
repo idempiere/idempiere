@@ -30,15 +30,14 @@ import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.sys.IdGenerator;
 
 /**
- * Id generator for selenium ide recording. 
- * You don't need this to run ztl or zk jq selector based test script but if would help to 
+ * Id generator for selenium ide recording.<br/>
+ * You don't need this to run ztl or zk jq selector based test script but it would help to 
  * code or troubleshoot the test script. 
- * 
+ * <p>
  * DON'T use this for other purpose, you have been warned :)
  * 
  * @author Carlos Ruiz
  * @author hengsin
- *
  */
 public class AdempiereIdGenerator implements IdGenerator {
 

@@ -40,7 +40,6 @@ import org.zkoss.zk.ui.event.Events;
  * Implemented with {@link Datebox} component.
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class WDateEditor extends WEditor implements ContextMenuListener
 {

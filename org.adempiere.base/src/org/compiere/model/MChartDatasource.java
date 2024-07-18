@@ -33,6 +33,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
+/**
+ * Extended model class for AD_ChartDatasource
+ */
 public class MChartDatasource extends X_AD_ChartDatasource {
 	/**
 	 * generated serial id

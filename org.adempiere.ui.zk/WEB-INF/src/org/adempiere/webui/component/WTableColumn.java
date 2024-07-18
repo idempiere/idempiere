@@ -92,7 +92,7 @@ public class WTableColumn
     }
     
     /**
-     * Returns the <code>Object</code> used as the value for the header
+     * Get the <code>Object</code> used as the value for the header
      * renderer.
      *
      * @return	the <code>headerValue</code> property
@@ -196,6 +196,7 @@ public class WTableColumn
 	}
 
 	/**
+	 * Set column type
 	 * @param columnClass
 	 */
 	public void setColumnClass(Class<?> columnClass) 

@@ -26,8 +26,9 @@ package org.adempiere.webui.info;
 
 /**
  * @author hengsin
- *
+ * @deprecated not use
  */
+@Deprecated
 public class InfoPAttributeWindow extends InfoWindow {
 
 	/**

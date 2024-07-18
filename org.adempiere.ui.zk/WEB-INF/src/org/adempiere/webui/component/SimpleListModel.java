@@ -237,6 +237,11 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		fireEvent(ListDataEvent.CONTENTS_CHANGED, index, index);
 	}
 
+	/**
+	 * Get index of value
+	 * @param value
+	 * @return index of value or -1 if not found
+	 */
 	public int indexOf(Object value) {
 		return list.indexOf(value);
 	}

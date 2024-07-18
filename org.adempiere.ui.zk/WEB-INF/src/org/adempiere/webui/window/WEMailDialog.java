@@ -93,7 +93,6 @@ import org.zkoss.zul.South;
  *	Send EMail Dialog
  *
  *  @author 	Jorg Janke
- *  @version 	$Id: EMailDialog.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *  
  *  globalqss: integrate phib fixing bug reported here
  *     https://sourceforge.net/p/adempiere/bugs/62/

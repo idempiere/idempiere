@@ -33,9 +33,8 @@ import org.netbeans.api.visual.layout.LayoutFactory;
 import org.netbeans.api.visual.layout.SceneLayout;
 
 /**
- *
+ * Container for one or more workflow node
  * @author Low Heng Sin
- *
  */
 public class WFNodeContainer
 {
@@ -85,7 +84,10 @@ public class WFNodeContainer
 		matrix = new HashMap<Integer, Integer[]>();
 	}	//	removeAll
 
-
+	/**
+	 * Add workflow node
+	 * @param node
+	 */
 	public void addNode(MWFNode node) {
 		int oldRow = currentRow;
 		int oldColumn = currentColumn;
@@ -159,6 +161,10 @@ public class WFNodeContainer
 		}
 	}
 
+	/**
+	 * Add edge between node
+	 * @param edge
+	 */
 	public void addEdge(MWFNodeNext edge) {
 		graphScene.addEdge(edge);
 		graphScene.setEdgeSource(edge, edge.getAD_WF_Node_ID());
@@ -166,7 +172,7 @@ public class WFNodeContainer
 	}
 
 	/**
-	 *
+	 * Find workflow node widget via row and column
 	 * @param row row #, starting from 1
 	 * @param column column #, starting from 1
 	 * @return WFNodeWidget
@@ -195,11 +201,19 @@ public class WFNodeContainer
 		return new Rectangle(p.x, p.y, WFNodeWidget.NODE_WIDTH, WFNodeWidget.NODE_HEIGHT);
 	}	//	findBounds
 
+	/**
+	 * Get dimension of container
+	 * @return dimension
+	 */
 	public Dimension getDimension()
 	{
 		return new Dimension(noOfColumns * WFGraphLayout.COLUMN_WIDTH, currentRow * WFGraphLayout.ROW_HEIGHT);
 	}
 
+	/**
+	 * Validate layout
+	 * @param graphics
+	 */
 	public void validate(Graphics2D graphics)
 	{
 		GraphLayout<Integer, MWFNodeNext> graphLayout = new WFGraphLayout();
@@ -210,31 +224,58 @@ public class WFNodeContainer
 		graphScene.validate(graphics);
 	}
 
-
+	/**
+	 * Paint container
+	 * @param graphics
+	 */
 	public void paint(Graphics2D graphics) {
 		graphScene.paint(graphics);
 	}
 
+	/**
+	 * Get row count
+	 * @return row count
+	 */
 	public int getRowCount() {
 		return rowCount;
 	}
 
+	/**
+	 * Get current row index
+	 * @return current row index
+	 */
 	public int getCurrentRow() {
 		return currentRow;
 	}
 
+	/**
+	 * Get current column index
+	 * @return current column index
+	 */
 	public int getCurrentColumn() {
 		return currentColumn;
 	}
 
+	/**
+	 * Get column count
+	 * @return column count
+	 */
 	public int getColumnCount() {
 		return noOfColumns;
 	}
 
+	/**
+	 * Get last column with node
+	 * @return last column with node
+	 */
 	public int getMaxColumnWithNode() {
 		return maxColumn;
 	}
 
+	/**
+	 * Get graph scene
+	 * @return graph scene
+	 */
 	public GraphScene<Integer, MWFNodeNext> getGraphScene() {
 		return graphScene;
 	}

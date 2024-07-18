@@ -52,7 +52,7 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Vbox;
 
 /**
- * Panel to edit sorting of print format
+ * Wizard panel to edit sorting of print format
  */
 public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener<Event>
 {

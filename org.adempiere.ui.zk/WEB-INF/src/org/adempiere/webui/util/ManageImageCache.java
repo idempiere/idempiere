@@ -70,7 +70,7 @@ public class ManageImageCache {
 	}
 	
 	/**
-	 * 	nvestigate path of MImage, if path is internal return internal url, otherwise return null.
+	 * Investigate path of MImage, if path is internal return internal url, otherwise return null.
 	 * @param image
 	 * @return URL of image or null
 	 */

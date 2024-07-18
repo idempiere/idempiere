@@ -73,7 +73,7 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vbox;
 
 /**
- * Form to customise print format of a {@link ReportEngine} instance (i.e starting from report output).<br/> 
+ * Form to customize print format of a {@link ReportEngine} instance (i.e starting from report output).<br/> 
  * Open from {@link ZkReportViewer}.
  */
 @org.idempiere.ui.zk.annotation.Form

@@ -24,7 +24,8 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 
 /**
- * Abstract base class to create tab panel to edit properties of print format items
+ * Abstract base class to create wizard panel to edit properties of print format items.
+ * @see WReportCustomization
  */
 public abstract class WRCTabPanel extends Tabpanel {
 	/**

@@ -29,10 +29,8 @@ import org.zkoss.image.AImage;
 /**
  * Static methods for web client theme.
  * @author hengsin
- *
  */
 public final class ThemeManager {
-
 	//zk predefined starting path for classpath resources (src/web)
 	public static final String ZK_PREFIX_FOR_CLASSPATH_RESOURCE = "/web";
 	
@@ -48,6 +46,7 @@ public final class ThemeManager {
 	public static String THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V8;
 	
 	/**
+	 * Get large logo URL
 	 * @return url for large logo
 	 */
 	public static String getLargeLogo() {
@@ -57,6 +56,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Get small logo URL
 	 * @return url for small logo
 	 */
 	public static String getSmallLogo() {
@@ -69,6 +69,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Get name of active theme
 	 * @return name of active theme
 	 */
 	public static String getTheme() {
@@ -88,7 +89,7 @@ public final class ThemeManager {
 						if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) != null) {
 							THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V7;
 						} else {
-							log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to default");
+							log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to " + ITheme.ZK_THEME_DEFAULT);
 							m_brokenTheme = theme;
 							THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V8;
 							theme = ITheme.ZK_THEME_DEFAULT;
@@ -104,6 +105,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Get theme stylesheet URL
 	 * @return url of theme stylesheet
 	 */
 	public static String getStyleSheet() {
@@ -111,6 +113,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Get theme stylesheet URL for specific browsers
 	 * @return url of theme stylesheet by browser
 	 */
 	public static String getStyleSheetByBrowser() {
@@ -118,6 +121,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Get theme preference URL
 	 * @return url of theme preference page
 	 */
 	public static String getPreference() {
@@ -125,6 +129,7 @@ public final class ThemeManager {
 	}
 	
 	/**
+	 * Get title text for browser tab
 	 * @return title text for browser tab
 	 */
 	public static String getBrowserTitle() {		
@@ -132,6 +137,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Get browser tab icon URL
 	 * @return url for browser icon
 	 */
 	public static String getBrowserIcon() {
@@ -141,7 +147,7 @@ public final class ThemeManager {
 	}
 	
 	/**
-	 * Get theme resource url
+	 * Get theme resource URL
 	 * @param name relative resource name from theme root
 	 * @return full resource url
 	 */
@@ -154,8 +160,8 @@ public final class ThemeManager {
 	}
 	
 	/**
-	 * 
-	 * @return client web logo if available
+	 * Get tenant web logi image
+	 * @return tenant web logo if available
 	 * @throws IOException
 	 */
 	public static org.zkoss.image.Image getClientWebLogo() throws IOException {
@@ -175,6 +181,7 @@ public final class ThemeManager {
 	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, 0, false, 0);
 
 	/**
+	 * Is current theme has custom CSS fragment
 	 * @return true if custom css ({theme}/css/fragment/custom.css.dsp) exists
 	 */
 	public static Boolean isThemeHasCustomCSSFragment() {
@@ -193,6 +200,7 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * Is use CSS to define size of dialog
 	 * @return true if css is use to define size of dialog
 	 */
 	public static boolean isUseCSSForWindowSize() {
@@ -200,6 +208,7 @@ public final class ThemeManager {
 	}	
 	
 	/**
+	 * Is use font icon
 	 * @return true if use font icon instead of image 
 	 */
 	public static boolean isUseFontIconForImage() {
@@ -207,6 +216,7 @@ public final class ThemeManager {
 	}
 	
 	/**
+	 * Convert zkResourceURL to class path resource URL (if URL start with ~./)
 	 * @param zkResourceURL zk resource url for classpath resources (url start with ~./)
 	 * @return Resource path for lookup/loading through class loader (absolute path start with /web)
 	 */

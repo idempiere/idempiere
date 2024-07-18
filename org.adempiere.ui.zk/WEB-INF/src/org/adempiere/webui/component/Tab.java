@@ -44,7 +44,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * Extend {@link org.zkoss.zul.Tab}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Tab extends org.zkoss.zul.Tab
 {
@@ -71,7 +70,7 @@ public class Tab extends org.zkoss.zul.Tab
     }
 
     /**
-     * Set decorator for tab label
+     * Decorate tab appearance
      * @param decorateInfo
      */
     public void setDecorateInfo (DecorateInfo decorateInfo){
@@ -95,7 +94,7 @@ public class Tab extends org.zkoss.zul.Tab
 	}
 
 	/**
-	 * home tab don't want to drag and drop. 
+	 * Home tab don't want to drag and drop.<br/> 
 	 * {@link Tab} like that can be set true for this properties.
 	 * @param isDisableDraggDrop
 	 */
@@ -104,9 +103,9 @@ public class Tab extends org.zkoss.zul.Tab
 	}
 
 	/**
-	 * class contain decorate info.<br/>
-	 * at the moment, has only image info
-	 * at the moment, it's use to transfer decorate info from info window, standard window, report, process,... to tab
+	 * Class contain decorate info.<br/>
+	 * At the moment, has only image info.<br/>
+	 * At the moment, it's use to transfer decorate info from info window, standard window, report, process,... to tab
 	 * @author hieplq
 	 *
 	 */
@@ -115,6 +114,7 @@ public class Tab extends org.zkoss.zul.Tab
 		private URL imageIntenalUrl;
 		
 		/**
+		 * Apply custom style to comp
 		 * @param comp
 		 */
 		public void decorate (LabelImageElement comp){
@@ -191,7 +191,7 @@ public class Tab extends org.zkoss.zul.Tab
 	}
 	
 	/**
-	 * copy from {@link org.zkoss.zul.Tab#close()} to work-around for http://tracker.zkoss.org/browse/ZK-3705
+	 * Copy from {@link org.zkoss.zul.Tab#close()} to work-around for http://tracker.zkoss.org/browse/ZK-3705
 	 */
 	@Override
 	public void close() {

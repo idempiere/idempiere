@@ -45,7 +45,8 @@ import org.zkoss.zul.ext.Selectable;
 
 /**
  * Default editor for {@link DisplayType#MultipleSelectionGrid}.
- * Implemented with {@link GridTabSelectionListView} component.
+ * Implemented with {@link GridTabSelectionListView} component.<br/>
+ * Show list view with contents from AD_Field.Included_Tab_ID and save selected row ids as CSV text.
  * @author hengsin
  *
  */

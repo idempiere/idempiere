@@ -126,9 +126,14 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
-										<id>org.idempiere.tablepartition</id>
-										<versionRange>0.0.0</versionRange>
-								</requirement>
+								<id>org.idempiere.tablepartition</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>wrapped.org.apache.xmlbeans.xmlbeans</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>

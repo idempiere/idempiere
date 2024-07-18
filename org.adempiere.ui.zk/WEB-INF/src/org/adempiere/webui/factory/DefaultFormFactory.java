@@ -115,7 +115,7 @@ public class DefaultFormFactory implements IFormFactory {
 	}
 
 	/**
-	 * Convert the rich client class name for a form to its web UI equivalent
+	 * Convert the legacy swing client class name for a form to its web UI equivalent
 	 *
 	 * @param originalName	The full class path to convert
 	 * @return the converted class name

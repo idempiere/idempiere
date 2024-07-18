@@ -38,7 +38,6 @@ import org.zkoss.zul.Window;
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  Low Heng Sin
  * @date    Mar 3, 2007
- * @version $Revision: 0.10 $
  */
 public class WLogin extends AbstractUIPart
 {
@@ -52,7 +51,6 @@ public class WLogin extends AbstractUIPart
 	private LoginWindow loginWindow;
 
 	/**
-	 * 
 	 * @param app
 	 */
     public WLogin(IWebClient app)

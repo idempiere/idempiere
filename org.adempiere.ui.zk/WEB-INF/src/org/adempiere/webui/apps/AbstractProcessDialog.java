@@ -11,7 +11,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
 package org.adempiere.webui.apps;
 
 import java.io.File;
@@ -189,7 +188,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	/**
-	 * layout dialog
+	 * Layout dialog
 	 * 
 	 * @param  ctx
 	 * @param  WindowNo
@@ -343,7 +342,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Layout content of {@link #topParameterLayout}
+	 * Layout content of {@link #topParameterLayout} (process message and parameters)
 	 * @param topParameterLayout
 	 */
 	protected void topLayout(HtmlBasedComponent topParameterLayout) {
@@ -461,7 +460,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Layout content of {@link #bottomParameterLayout}.
+	 * Layout content of {@link #bottomParameterLayout}.<br/>
 	 * Report option, save parameter and action buttons.
 	 * @param bottomParameterLayout
 	 */
@@ -481,7 +480,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Render report option part of {@link #bottomParameterLayout}.
+	 * Render report option part of {@link #bottomParameterLayout} (output type, IsSummary and print format)
 	 * @param bottomParameterLayout
 	 */
 	protected void reportOptionLayout(HtmlBasedComponent bottomParameterLayout) {
@@ -511,10 +510,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		//summary option
 		chbIsSummary = new Checkbox();
 		chbIsSummary.setSclass("option-input-parameter");
+		chbIsSummary.setLabel(Msg.translate(Env.getCtx(), "Summary"));
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		lPrintFormat.setSclass("option-input-parameter print-format-label");
-		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
-		lIsSummary.setSclass("option-input-parameter");
 
 		//print formats
 		MClient client = MClient.get(m_ctx);
@@ -531,11 +529,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		fPrintFormat.getComponent().setSclass("option-input-parameter print-format-list");
 		fPrintFormat.getComponent().setPlaceholder(lPrintFormat.getValue());
-		reportOptionLayout.appendChild(lIsSummary);
 		reportOptionLayout.appendChild(chbIsSummary);
 	}
 
 	/**
+	 * Is current process with IsReport=Y AND JasperReport Is NULL.
 	 * @return true if current process is with IsReport=Y AND JasperReport Is NULL.
 	 */
 	protected boolean isReport () {
@@ -544,6 +542,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
+	 * Is current process with IsReport=Y AND JasperReport Is Not NULL.
 	 * @return true if current process is with IsReport=Y AND JasperReport Is Not NULL.
 	 */
 	protected boolean isJasperReport () {
@@ -780,7 +779,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Auto start process upon instantiation of process dialog.
+	 * Auto start process upon instantiation of process dialog.<br/>
 	 * Delegate to {@link #startProcess0()}.
 	 */
 	protected void autoStart()
@@ -824,7 +823,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Save process parameters and report options.
+	 * Save process parameters and report options.<br/>
 	 * Set MPInstance.Name = saveName.
 	 * @param saveName
 	 */
@@ -971,7 +970,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Run process.
+	 * Run process.<pr/>
 	 * Delegate to {@link #startProcess0()}.
 	 */
 	protected void startProcess()
@@ -1368,7 +1367,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Runnable to run process in background thread.
+	 * Runnable to run process in background thread.<br/>
 	 * Notify process dialog with {@link AbstractProcessDialog#ON_COMPLETE_EVENT} event. 
 	 */
 	private class ProcessDialogRunnable extends ZkContextRunnable
@@ -1402,7 +1401,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Runnable to run process as background job.
+	 * Runnable to run process as background job.<br/>
 	 * Send email or notice notification to user upon completion of job. 
 	 */
 	private class BackgroundJobRunnable implements Runnable

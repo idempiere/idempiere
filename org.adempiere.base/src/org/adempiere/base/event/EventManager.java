@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import org.adempiere.base.BaseActivator;
 import org.adempiere.base.event.annotations.BaseEventHandler;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -332,8 +333,11 @@ public class EventManager implements IEventManager {
 		} else {
 			Map<String, Object> map = new HashMap<String, Object>(3);
 			map.put(EventConstants.EVENT_TOPIC, topic);
-			if (data != null)
+			if (data != null) {
 				map.put(EVENT_DATA, data);
+				if (data instanceof PO po)
+					map.put(TABLE_NAME_PROPERTY, po.get_TableName());
+			}
 			map.put(EVENT_ERROR_MESSAGES, new ArrayList<String>());
 			if (copySessionContext)
 				map.put(EVENT_CONTEXT, getCurrentSessionContext());

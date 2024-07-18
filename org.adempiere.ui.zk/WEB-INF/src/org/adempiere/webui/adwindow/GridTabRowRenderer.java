@@ -151,7 +151,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	};
 	
 	/**
-	 *
 	 * @param gridTab
 	 * @param windowNo
 	 */
@@ -208,6 +207,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Get column index for field
 	 * @param field
 	 * @return column index for field, -1 if not found
 	 */
@@ -221,6 +221,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Create a disabled checkbox component for value
 	 * @param value
 	 * @return readonly checkbox component
 	 */
@@ -235,8 +236,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * Create invisible component for GridField with IsHeading=Y.
-	 * To fill up space allocated for field component.
+	 * Create invisible component for GridField with IsHeading=Y.<br/>
+	 * To fill up space allocated for field editor component.
 	 * @return invisible text box component
 	 */
 	private Component createInvisibleComponent() {
@@ -265,7 +266,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
-	 * call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
+	 * Call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
 	 * @param value
 	 * @param gridField
 	 * @param rowIndex
@@ -400,7 +401,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * set label text, shorten text if length exceed define max length.
+	 * Set label text, shorten text if length exceed define max length.
 	 * @param text
 	 * @param label
 	 */
@@ -415,6 +416,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Get editor list
 	 * @return field editor list
 	 */
 	public List<WEditor> getEditors() {
@@ -426,6 +428,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
+	 * Set paging component
 	 * @param paging
 	 */
 	public void setPaging(Paging paging) {
@@ -700,6 +703,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Set current row
 	 * @param row
 	 */
 	public void setCurrentRow(Row row) {
@@ -755,6 +759,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Get current row
 	 * @return current {@link Row}
 	 */
 	public Row getCurrentRow() {
@@ -834,6 +839,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Is own by DetailPane
 	 * @return true if it is own by {@link DetailPane}.
 	 */
 	private boolean isDetailPane() {
@@ -893,7 +899,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * Set focus to first writable field editor (or default focus field editor if it is writable).
+	 * Set focus to first writable field editor (or default focus field editor if it is writable).<br/>
 	 * If no field editor is writable, set focus to first visible field editor.
 	 */
 	public void focusToFirstEditor() {
@@ -927,6 +933,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Set focus to editor
 	 * @param toFocus
 	 */
 	protected void focusToEditor(WEditor toFocus) {
@@ -942,7 +949,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
-	 * set focus to next writable editor from ref
+	 * Set focus to next writable editor from ref
 	 * @param ref
 	 */
 	public void focusToNextEditor(WEditor ref) {
@@ -1000,6 +1007,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Is current row in edit mode
 	 * @return true if current row is in edit mode, false otherwise
 	 */
 	public boolean isEditing() {
@@ -1007,7 +1015,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * Set AD window content part that own this renderer.
+	 * Set AD window content part that own this renderer.<br/>
 	 * {@link #buttonListener} need this to call {@link AbstractADWindowContent#actionPerformed(ActionEvent)}.
 	 * @param windowPanel
 	 */
@@ -1051,6 +1059,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Is show current row indicator
 	 * @return {@link GridView#isShowCurrentRowIndicatorColumn}
 	 */
 	private boolean isShowCurrentRowIndicatorColumn() {

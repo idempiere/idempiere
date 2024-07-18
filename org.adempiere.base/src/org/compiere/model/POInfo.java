@@ -25,8 +25,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -586,6 +588,7 @@ public class POInfo implements Serializable
 		}
 		catch (Exception e)
 		{
+			CLogger.get().log(Level.WARNING, "Cannot create Lookup for " + m_columns[index].ColumnName + "[" + m_columns[index].AD_Column_ID + "]", e);
 			lookup = null;          //  cannot create Lookup
 		}
 		return lookup;
@@ -880,6 +883,62 @@ public class POInfo implements Serializable
 		return sql;
 	}
 
+	/**
+	 * Is column should always be loaded for partial loading of PO
+	 * @param columnIndex
+	 * @return true if column should always be loaded for partial loading of PO
+	 */
+	protected boolean isColumnAlwaysLoadedForPartialPO(int columnIndex)
+	{
+		String columnName = getColumnName(columnIndex);
+		boolean isKey = isKey(columnIndex);
+		boolean isUUID = columnName.equals(PO.getUUIDColumnName(m_TableName));
+		// Always load key, uuid and standard columns
+		if (isKey || isUUID || columnName.equalsIgnoreCase("ad_client_id") || columnName.equalsIgnoreCase("ad_org_id")
+				|| columnName.equalsIgnoreCase("isactive") || columnName.equalsIgnoreCase("created") || columnName.equalsIgnoreCase("createdby")
+				|| columnName.equalsIgnoreCase("updated") || columnName.equalsIgnoreCase("updatedby"))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Build SQL SELECT statement for columns.
+	 * @param fullyQualified prefix column names with the table name
+	 * @return {@link StringBuilder} instance with the SQL statement.
+	 */
+	public StringBuilder buildSelectForColumns(boolean fullyQualified, String[] columns)
+	{		
+		StringBuilder sql = new StringBuilder("SELECT ");
+		int size = getColumnCount();
+		int count = 0;
+		for (int i = 0; i < size; i++)
+		{
+			String columnName = getColumnName(i);
+			boolean virtual = isVirtualColumn(i);			
+			if (!isColumnAlwaysLoadedForPartialPO(i))
+			{
+				Optional<String> optional = Arrays.stream(columns).filter(e -> e.equalsIgnoreCase(columnName)).findFirst();
+				if (!optional.isPresent())
+					continue;
+			}
+
+			count++;
+			if (count > 1)
+				sql.append(",");
+			String columnSQL = getColumnSQL(i);
+			if (!virtual)
+				columnSQL = DB.getDatabase().quoteColumnName(columnSQL);
+			if (fullyQualified && !virtual)
+				sql.append(getTableName()).append(".");
+			sql.append(columnSQL);	//	Normal and Virtual Column
+			if (fullyQualified && !virtual)
+				sql.append(" AS ").append(m_columns[i].ColumnName);
+		}
+		sql.append(" FROM ").append(getTableName());
+		return sql;
+	}
+	
 	/**
 	 * Is save changes to change log table
 	 * @return if table save change log

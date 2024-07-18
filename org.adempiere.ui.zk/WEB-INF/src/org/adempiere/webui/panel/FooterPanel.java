@@ -27,7 +27,6 @@ import org.zkoss.zul.Separator;
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 3, 2007
- * @version $Revision: 0.10 $
  */
 @Deprecated(forRemoval = true, since = "11")
 public class FooterPanel extends Window
