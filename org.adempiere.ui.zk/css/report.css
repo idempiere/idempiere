@@ -103,12 +103,16 @@ div.rp-table-wrap > table > thead > tr > th {
 
 .z-icon-Report::before {
 	content: "\f1ea";
+	font-family: FontAwesome;
 }
 .z-icon-Window::before {
 	content: "\f022";
+	font-family: FontAwesome;
 }
 .z-icon-Zoom::before {
 	content: "\f14c";
+	font-weight: 900;
+	font-family: FontAwesome;
 }
 [class^="z-icon-"], [class*=" z-icon-"] {
   box-sizing: border-box;
