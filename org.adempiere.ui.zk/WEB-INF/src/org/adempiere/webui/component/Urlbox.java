@@ -23,13 +23,13 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
 
 /**
- * URL Box
+ * URL Input Box. Composite component with {@link Textbox} and {@link A} (as Button).
  * @author Low Heng Sin
  */
 public class Urlbox extends Div 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5493978668402134644L;
 	
@@ -37,6 +37,9 @@ public class Urlbox extends Div
 	protected Textbox txt;
 	protected A btn;
 	
+	/**
+	 * Default constructor
+	 */
 	public Urlbox()
     {
 		initComponents();
@@ -51,6 +54,9 @@ public class Urlbox extends Div
         setText(url);
     }
     
+    /**
+     * Layout component
+     */
     private void initComponents() {
 		txt = new Textbox();
 		appendChild(txt);
@@ -70,7 +76,7 @@ public class Urlbox extends Div
 	}
     
     /**
-	 * @param imageSrc
+	 * @param imageSrc image URL for Button
 	 */
 	public void setButtonImage(String imageSrc) {
 		btn.setImage(imageSrc);
@@ -84,7 +90,7 @@ public class Urlbox extends Div
 	}
 
 	/**
-	 * @param value
+	 * @param value URL text
 	 */
 	public void setText(String value) {
 		txt.setText(value);
@@ -103,12 +109,16 @@ public class Urlbox extends Div
 	}
 
 	/**
-	 * @return text
+	 * @return URL text
 	 */
 	public String getText() {
 		return txt.getText();
 	}
 	
+	/**
+	 * Enable/disable component
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled) {
     	txt.setReadonly(!enabled);
     	if (enabled) {
@@ -119,15 +129,17 @@ public class Urlbox extends Div
 	}
 	
 	/**
-	 * @return boolean
+	 * @return true if enable, false otherwise
 	 */
 	public boolean isEnabled() {
 		return !txt.isReadonly();
 	}
 
 	/**
-	 * @param evtnm
-	 * @param listener
+	 * If evtnm is ON_CLICK, add listener to Button.<br/>
+	 * Otherwise, add listener to Text box.
+	 * @param evtnm Event name
+	 * @param listener EventListener
 	 */
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_CLICK.equals(evtnm)) {
@@ -138,7 +150,7 @@ public class Urlbox extends Div
 	}
 	
 	/**
-	 * @param l
+	 * @param l PropertyChangeListener
 	 */
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
@@ -158,6 +170,10 @@ public class Urlbox extends Div
 		return btn;
 	}
 	
+	/**
+	 * Set grid view or form mode
+	 * @param flag true for grid view, false for form
+	 */
 	public void setTableEditorMode(boolean flag) {
 		if (flag) {
 			ZKUpdateUtil.setHflex(this, "0");
@@ -167,8 +183,7 @@ public class Urlbox extends Div
 			ZKUpdateUtil.setHflex(this, "1");
 			LayoutUtils.removeSclass("grid-editor-input", txt);
 			LayoutUtils.removeSclass("grid-editor-button", btn);
-		}
-			
+		}			
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
@@ -93,7 +94,7 @@ public class CreateWindowFromTable extends SvrProcess
 			else if (name.equals("IsCreateMenu"))
 				p_isCreateMenu = para[i].getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_Table_ID = getRecord_ID();
 	}	//	prepare
@@ -176,6 +177,7 @@ public class CreateWindowFromTable extends SvrProcess
 			}
 
 			MTab tab = new MTab(window);
+			tab.setEntityType(entityType);
 			tab.setSeqNo(tabSeqNo);
 			tab.setName(table.getName());
 			tab.setAD_Table_ID(p_AD_Table_ID);

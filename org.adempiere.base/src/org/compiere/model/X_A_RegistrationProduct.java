@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_RegistrationProduct
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationProduct")
 public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProduct, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_RegistrationProduct (Properties ctx, int A_RegistrationProduct_ID, String trxName)

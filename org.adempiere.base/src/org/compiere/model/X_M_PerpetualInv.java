@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PerpetualInv
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PerpetualInv")
 public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PerpetualInv (Properties ctx, int M_PerpetualInv_ID, String trxName)
@@ -123,7 +123,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 		return false;
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -131,7 +131,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 		set_ValueNoCheck (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -139,7 +139,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
-	/** Set Date next run.
+	/** Set Date Next Run.
 		@param DateNextRun Date the process will run next
 	*/
 	public void setDateNextRun (Timestamp DateNextRun)
@@ -147,7 +147,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 		set_ValueNoCheck (COLUMNNAME_DateNextRun, DateNextRun);
 	}
 
-	/** Get Date next run.
+	/** Get Date Next Run.
 		@return Date the process will run next
 	  */
 	public Timestamp getDateNextRun()

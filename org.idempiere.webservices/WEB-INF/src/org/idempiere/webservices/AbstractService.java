@@ -266,7 +266,7 @@ public class AbstractService {
 			}
 	        if (!bAccess.booleanValue())
 	        {
-	            return "Web Service Error: Login role does not have access to the service type";
+	            return "Web Service Error: Login role does not have access to the service type '" + serviceTypeValue + "'";
 	        }			
 		}
         
@@ -427,7 +427,7 @@ public class AbstractService {
 					int ind = sqlBuilder.lastIndexOf("=");
 					sqlBuilder.replace(ind, sqlBuilder.length(), " Is Null ");
 				}else if (val == null)
-					throw new AdempiereException("Can not resolve varialbe '" + token + "' in sql");
+					throw new AdempiereException("Can not resolve variable '" + token + "' in sql");
 				else{
 					sqlBuilder.append(" ? ");
 					sqlParas.add(val);

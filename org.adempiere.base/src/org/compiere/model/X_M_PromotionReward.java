@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionReward
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionReward")
 public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PromotionReward (Properties ctx, int M_PromotionReward_ID, String trxName)

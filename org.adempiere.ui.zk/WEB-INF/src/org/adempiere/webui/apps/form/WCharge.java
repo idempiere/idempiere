@@ -42,7 +42,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Charge;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -55,13 +55,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 /**
  * This class represents the Custom Form for generating charges
  * from natural accounts.
- *
+ * <br/>
  * The form is comprised of two parts.
  * The upper portion can be used to create new charges using the general charge accounts.
  * The lower portion can be used to create charges based on the natural account.
@@ -77,6 +77,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 	 */
 	private static final long serialVersionUID = 4571016052942218676L;
 
+	/** UI Form instance */
 	private CustomForm form = new CustomForm();
 
 	/** AD_Message for "Create". */
@@ -84,8 +85,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     /** Logger.          */
     private static final CLogger log = CLogger.getCLogger(WCharge.class);
 
-    // new panel
-    /** Grid for components for creating a new charge account. */
+    // new charge panel
+    /** Grid for components for creating a new charge account. North of {@link #form}. */
     private Grid m_grdNew = GridFactory.newGridLayout();
     /** Value (key) field label. */
     private Label m_lblValue = new Label();
@@ -101,11 +102,11 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     private Button m_btnNew = new Button();
 
     // account panel
-    /** Grid for components for creating a charge form a selected account. **/
+    /** Grid for components for creating a charge form a selected account. Center of {@link #form}. */
     private Panel m_pnlAccount = new Panel();
-    /** Button to create charge from selected account. */
+    /** Button to create charge from selected account. South of {@link #m_pnlAccount}. */
     private Button m_btnAccount = new Button();
-    /** Table to hold data of accounts. */
+    /** Table to hold data of accounts. Center of {@link #m_pnlAccount}. */
     private WListbox m_tblData = new WListbox();
     /** selected account count */
 	private int m_selectedCount;
@@ -119,7 +120,6 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         m_WindowNo = form.getWindowNo();
         initForm();
     }
-
 
     /**
      * Initialises the panel.
@@ -137,10 +137,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         {
             log.log(Level.SEVERE, "", e);
         }
-
-        return;
     }
-
 
     /**
      * Initialises the static components of the form.
@@ -149,10 +146,11 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     {
         createNewChargePanel();
         createAccountPanel();
-
-        return;
     }
 
+    /**
+     * Layout {@link #form}
+     */
     private void zkInit()
 	{
 		Borderlayout contentPane = new Borderlayout();
@@ -170,8 +168,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 	}
 
     /**
-     * Creates the account panel.
-     *
+     * Creates the account panel ({@link #m_pnlAccount}).
+     * <br/>
      * The account panel contains:
      * <li>a table detailing all accounts
      * <li>a button for creating charges for selected accounts
@@ -212,13 +210,11 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         m_btnAccount.setDisabled(true);
         southPanel.appendChild(new Separator());
 		southPanel.appendChild(m_btnAccount);
-
-        return;
     }
 
     /**
-     * Creates the New Charge panel.
-     *
+     * Creates the New Charge panel ({@link #m_grdNew}).
+     * <br/>
      * The New Charge panel is used to specify the name and key of an account
      * and whether or not the account is a charge account.
      */
@@ -246,8 +242,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         rows.appendChild(row);
         Label label = new Label(Msg.getMsg(Env.getCtx(), "ChargeNewAccount"));
         label.setStyle("font-weight: bold;");
-        row.appendCellChild(label, 3);
-       
+        row.appendCellChild(label, 3);       
 
     	row = new Row();
         rows.appendChild(row);
@@ -266,8 +261,6 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         row = new Row();
         rows.appendChild(row);
         row.appendCellChild(new Separator(), 3);
-
-        return;
     }
 
 
@@ -302,6 +295,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
      *
      *  @param event event that has been fired.
      */
+    @Override
     public void onEvent(Event event)
     {
         if (log.isLoggable(Level.INFO)) log.info(event.getName());
@@ -319,8 +313,6 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         {
             createAccount();
         }
-
-        return;
     }
 
     /**
@@ -349,21 +341,21 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         int elementValueId = createElementValue (value, name, m_chbIsExpense.isChecked());
         if (elementValueId == 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", name);
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", name);
             return;
         }
         //  Create Charge
         int chargeId = createCharge(name, elementValueId);
         if (chargeId == 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", name);
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", name);
             return;
         }
-        FDialog.info(form.getWindowNo(), form, "ChargeCreated", name);
+        Dialog.info(form.getWindowNo(), "ChargeCreated", name);
     }   //  createNew
 
     /**
-     *  Creates Charges from Accounts.
+     *  Creates Charges from Accounts.<br/>
      *  Charges are created for the selected accounts.
      *  The selection is cleared upon completion.
      */
@@ -372,25 +364,26 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         createAccount(m_tblData);
         if (listCreated.length() > 0)
         {
-            FDialog.info(form.getWindowNo(), form, "ChargeCreated", listCreated.toString());
+            Dialog.info(form.getWindowNo(), "ChargeCreated", listCreated.toString());
         }
         if (listRejected.length() > 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", listRejected.toString());
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", listRejected.toString());
         }
         
         m_selectedCount = 0;
         m_btnAccount.setDisabled(true);
-
-        return;
     }   //  createAccount
 
+    /**
+     * Close form.
+     */
     public void close()
     {
         SessionManager.getAppDesktop().closeActiveWindow();
     }
 
-
+    @Override
 	public ADForm getForm() {
 		return form;
 	}

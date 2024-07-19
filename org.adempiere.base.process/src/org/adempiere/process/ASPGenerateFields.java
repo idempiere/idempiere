@@ -78,7 +78,7 @@ public class ASPGenerateFields extends SvrProcess
 			else if (name.equals("ASP_Status"))
 				p_ASP_Status = (String) para.getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 		p_ASP_Tab_ID = getRecord_ID();
 	}	//	prepare

@@ -46,7 +46,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MSMTP;
 import org.compiere.model.MSysConfig;
@@ -75,7 +74,7 @@ public final class EMail implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5355436165040508855L;
+	private static final long serialVersionUID = -8982983766981221312L;
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
@@ -306,19 +305,16 @@ public final class EMail implements Serializable
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
-		//Timeout for sending the email defaulted to 20 seconds
-		props.put("mail.smtp.timeout", 20000);
+		//Timeout for sending the email defaulted to 20 seconds if not defined in a SysConfig Key
+		props.put("mail.smtp.timeout", MSysConfig.getIntValue(MSysConfig.MAIL_SMTP_TIMEOUT, 20000, Env.getAD_Client_ID(m_ctx)));
 
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");
 		//
 
-		MAuthorizationAccount authAccount = null;
 		boolean isOAuth2 = false;
-		if (m_auth != null) {
-			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
-			isOAuth2 = (authAccount != null);
-		}
+		if (m_auth != null)
+			isOAuth2 = m_auth.isOAuth2();
 
 		Session session = null;
 		try
@@ -343,7 +339,7 @@ public final class EMail implements Serializable
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
-				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
+				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
 			}
 			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());

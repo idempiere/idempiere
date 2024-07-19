@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 
 import org.compiere.model.MLocation;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSystem;
 import org.compiere.model.M_Registration;
 import org.compiere.util.AdempiereUserError;
@@ -46,11 +47,10 @@ public class RegisterSystem extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

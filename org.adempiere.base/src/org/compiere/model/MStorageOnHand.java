@@ -242,7 +242,55 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		list.toArray(retValue);
 		return retValue;
 	}	//	getAll
-
+	
+	/**
+	 * Get Storage Info
+	 * @param ctx context
+	 * @param M_Product_ID product
+	 * @param M_Locator_ID locator
+	 * @param M_AttributeSetInstance_ID instance
+	 * @param dateMPolicy
+	 * @param ignoreZeroQty
+	 * @param trxName transaction
+	 * @return existing or null
+	 */
+	public static MStorageOnHand[] getAll (Properties ctx, 
+		int M_Product_ID, int M_Locator_ID, int M_AttributeSetInstance_ID, Timestamp dateMPolicy, boolean ignoreZeroQty, String trxName)
+	{
+		String sqlWhere = "M_Locator_ID=? AND M_Product_ID=? AND ";
+		
+		if (M_AttributeSetInstance_ID == 0)
+			sqlWhere += "(M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID IS NULL)";
+		else
+			sqlWhere += "M_AttributeSetInstance_ID=?";
+		
+		if(ignoreZeroQty)
+			sqlWhere += " AND QtyOnHand<>0 ";
+		
+		if (dateMPolicy != null)
+			sqlWhere += " AND DateMaterialPolicy=trunc(cast(? as date))";
+		
+		Query query = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName);
+		
+		if (dateMPolicy != null)
+			query.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy);
+		else
+			query.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID);
+		
+		List<MStorageOnHand> list = query.list();
+		
+		if (list == null || list.isEmpty()) {
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Locator_ID=" + M_Locator_ID 
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		} else {
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("Found " + list.size() + " - M_Locator_ID=" + M_Locator_ID 
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		}
+		
+		MStorageOnHand[] retValue = new MStorageOnHand[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getAll
 	
 	/**
 	 * 	Get Storage Info for Product across warehouses
@@ -358,34 +406,38 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			allAttributeInstances = true;		
 		
 		ArrayList<MStorageOnHand> list = new ArrayList<MStorageOnHand>();
-		//	Specific Attribute Set Instance
-		String sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
-			+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
-			+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
-			+ "FROM M_StorageOnHand s"
-			+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ";
-		if (M_Locator_ID > 0)
-			sql += "WHERE l.M_Locator_ID = ?";
-		else
-			sql += "WHERE l.M_Warehouse_ID=?";
-		sql += " AND s.M_Product_ID=?"
-			 + " AND COALESCE(s.M_AttributeSetInstance_ID,0)=? ";
-		if (positiveOnly)
+		String sql;
+		if (! allAttributeInstances)
 		{
-			sql += " AND s.QtyOnHand > 0 ";
+			//	Specific Attribute Set Instance
+			sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
+				+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
+				+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
+				+ "FROM M_StorageOnHand s"
+				+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ";
+			if (M_Locator_ID > 0)
+				sql += "WHERE l.M_Locator_ID = ?";
+			else
+				sql += "WHERE l.M_Warehouse_ID=?";
+			sql += " AND s.M_Product_ID=?"
+				 + " AND COALESCE(s.M_AttributeSetInstance_ID,0)=? ";
+			if (positiveOnly)
+			{
+				sql += " AND s.QtyOnHand > 0 ";
+			}
+			else
+			{
+				sql += " AND s.QtyOnHand <> 0 ";
+			}
+			sql += " ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
+			if (!FiFo)
+				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
+			else
+				sql += ", s.M_AttributeSetInstance_ID ";
 		}
 		else
 		{
-			sql += " AND s.QtyOnHand <> 0 ";
-		}
-		sql += "ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
-		if (!FiFo)
-			sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
-		else
-			sql += ", s.M_AttributeSetInstance_ID ";
-		//	All Attribute Set Instances
-		if (allAttributeInstances)
-		{
+			//	All Attribute Set Instances
 			sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
 				+ " s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
 				+ " s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
@@ -405,16 +457,13 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			{
 				sql += " AND s.QtyOnHand <> 0 ";
 			}
-			
 			if (minGuaranteeDate != null)
 			{
-				sql += "AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
+				sql += " AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
 			}
-			
 			MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
-			
 			if(product.isUseGuaranteeDateForMPolicy()){
-				sql += "ORDER BY l.PriorityNo DESC, COALESCE(asi.GuaranteeDate,s.DateMaterialPolicy)";
+				sql += " ORDER BY l.PriorityNo DESC, COALESCE(asi.GuaranteeDate,s.DateMaterialPolicy)";
 				if (!FiFo)
 					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 				else
@@ -422,13 +471,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			}
 			else
 			{
-				sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+				sql += " ORDER BY l.PriorityNo DESC, s.DateMaterialPolicy";
 				if (!FiFo)
 					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 				else
 					sql += ", s.M_AttributeSetInstance_ID ";
 			}
-			
 			sql += ", s.QtyOnHand DESC";
 		} 
 		PreparedStatement pstmt = null;
@@ -565,14 +613,14 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		MProduct product = MProduct.get(Env.getCtx(), M_Product_ID, trxName);
 		
 		if(product.isUseGuaranteeDateForMPolicy()){
-			sql += "ORDER BY l.PriorityNo DESC, " +
+			sql += " ORDER BY l.PriorityNo DESC, " +
 				   "asi.GuaranteeDate";
 			if (!FiFo)
 				sql += " DESC";
 		}
 		else
 		{
-			sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+			sql += " ORDER BY l.PriorityNo DESC, s.DateMaterialPolicy";
 			if (!FiFo)
 				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 			else
@@ -739,7 +787,14 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
 	{
-		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, trxName);
+		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, null, trxName);
+	}
+	
+	public static boolean add (Properties ctx, int M_Locator_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
+	{
+		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, null, trxName);
 	}
 	
 	/**
@@ -756,7 +811,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 */
 	public static boolean add (Properties ctx, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
-		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
+		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, Timestamp dateLastInventory, String trxName)
 	{
 		if (diffQtyOnHand == null || diffQtyOnHand.signum() == 0)
 			return true;
@@ -776,6 +831,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			return false;
 		}
 
+		if(dateLastInventory != null)
+			storage.updateDateLastInventory(dateLastInventory);
 		storage.addQtyOnHand(diffQtyOnHand);
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(OnHand=").append(diffQtyOnHand).append(") -> ").append(storage.toString());
@@ -804,6 +861,19 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 	}
 
+	/**
+	 * Update Date Last Inventory
+	 * @param dateLastInv
+	 */
+	public void updateDateLastInventory(Timestamp dateLastInv) {
+		final String sql = "UPDATE M_StorageOnHand SET DateLastInventory=? " +
+				"WHERE M_Product_ID=? AND M_Locator_ID=? AND M_AttributeSetInstance_ID=? AND DateMaterialPolicy=?";
+		DB.executeUpdateEx(sql, 
+			new Object[] {dateLastInv, getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
+			get_TrxName());
+		load(get_TrxName());
+	}
+	
 	/**************************************************************************
 	 * 	Get Location with highest Locator Priority and a sufficient OnHand Qty
 	 * 	@param M_Warehouse_ID warehouse

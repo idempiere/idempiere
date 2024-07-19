@@ -33,7 +33,7 @@ import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 
 /**
- *
+ * Abstract base class for header+details AD_Tabs UI for AD_Window.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Feb 25, 2007
@@ -41,21 +41,26 @@ import org.compiere.util.Util;
  */
 public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabbox
 {
-    /** Logger                  */
+    /** Logger **/
     private static final CLogger  log = CLogger.getCLogger (AbstractADTabbox.class);
-    /** List of dependent Variables     */
+    /** List of variables/columnName that's reference by one or more gridTab logic expression **/
     private ArrayList<String>   m_dependents = new ArrayList<String>();
     
-    /** Tabs associated to this tab box */
+    /** List of {@link IADTabpanel} instance manage by this AbstractADTabbox instance **/
     protected List<IADTabpanel> tabPanelList = new ArrayList<IADTabpanel>();
+    /** Parent part, the content part of AD Window **/
 	protected AbstractADWindowContent adWindowPanel;
     
+	/**
+	 * default constructor
+	 */
     public AbstractADTabbox()
     {
     }
     
     /**
-     *  Add Tab
+     *  Add new tab(AD_Tab).
+     *  Delegate to {@link #doAddTab(GridTab, IADTabpanel)}
      *  @param gTab grid tab model
      *  @param tabPanel
      */
@@ -75,23 +80,34 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         doAddTab(gTab, tabPanel);                
     }//  addTab
     
+    /**
+     * Handle add new tab to UI.
+     * Override to implement add new tab to UI.
+     * @param tab
+     * @param tabPanel
+     */
     protected abstract void doAddTab(GridTab tab, IADTabpanel tabPanel);
 
 	/**
      * @param index of tab panel
-     * @return
+     * @return true if enable, false otherwise
      */
     public boolean isEnabledAt(int index) 
     {
     	return true;
     }// isEnabledAt
 
-    private boolean isDisplay(IADTabpanel newTab)
+    /**
+     * Evaluate display logic
+     * @param tabPanel
+     * @return true if visible, false otherwise
+     */
+    private boolean isDisplay(IADTabpanel tabPanel)
     {
-        String logic = newTab.getDisplayLogic();
+        String logic = tabPanel.getDisplayLogic();
         if (logic != null && logic.length() > 0)
         {
-            boolean display = Evaluator.evaluateLogic(newTab, logic);
+            boolean display = Evaluator.evaluateLogic(tabPanel, logic);
             if (!display)
             {
                 log.info("Not displayed - " + logic);
@@ -102,11 +118,13 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     * 
+     * Change selected tab index from oldIndex to newIndex.
+     * Delegate to {@link #doTabSelectionChanged(int, int)}.
      * @param oldIndex
      * @param newIndex
-     * @return
+     * @return true if successfully switch to newIndex
      */
+    @Override
     public boolean updateSelectedIndex(int oldIndex, int newIndex)
     {
         IADTabpanel newTab = tabPanelList.get(newIndex);
@@ -131,6 +149,11 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         return canJump;
     }
     
+    /**
+     * Prepare environment context for newTab.
+     * @param newIndex
+     * @param newTab
+     */
     private void prepareContext(int newIndex, IADTabpanel newTab) {
 		//update context
 		if (newTab != null)
@@ -186,8 +209,19 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
 		}
 	}
 
+    /**
+     * Handle tab selection change event.
+     * Override to update UI for tab selection change.
+     * @param oldIndex
+     * @param newIndex
+     */
     protected abstract void doTabSelectionChanged(int oldIndex, int newIndex);
 
+    /**
+     * Evaluate display logic
+     * @param index
+     * @return true if visible, false otherwise
+     */
     public boolean isDisplay(int index) {
     	if (index >= tabPanelList.size())
     		return false;
@@ -203,10 +237,24 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     	return true;
     }
 
+    /**
+     * Delegate to {@link #canNavigateTo(int, int, boolean)}
+     * @param fromIndex
+     * @param toIndex
+     * @return true if can change selected tab from fromIndex to toIndex
+     */
+    @Override
 	public boolean canNavigateTo(int fromIndex, int toIndex) {
 		return canNavigateTo(fromIndex, toIndex, false);
 	}
 
+    /**
+     * 
+     * @param fromIndex
+     * @param toIndex
+     * @param checkRecordID true to validate fromIndex has a valid record id
+     * @return true if can change selected tab from fromIndex to toIndex
+     */
 	public boolean canNavigateTo(int fromIndex, int toIndex, boolean checkRecordID) {
     	IADTabpanel newTab = tabPanelList.get(toIndex);
     	if (newTab instanceof ADTabpanel) 
@@ -255,7 +303,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     * 
+     * Get break crumb path
      * @return full path
      */
     public String getPath() {
@@ -284,7 +332,8 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     *  Evaluate Tab Logic
+     *  Handle DataStatusEvent.
+     *  Delegate to {@link #updateTabState()}.
      *  @param e event
      */
     public void evaluate (DataStatusEvent e)
@@ -308,6 +357,9 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         
     } //  evaluate
 
+    /**
+     * Update UI state of tab (visibility, activation and if need invalidate)
+     */
     protected abstract void updateTabState();
 
 	/**
@@ -318,6 +370,10 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         return tabPanelList.size();
     }
     
+    /**
+     * @param index
+     * @return {@link IADTabpanel}
+     */
     public IADTabpanel getADTabpanel(int index)
     {
         try
@@ -331,11 +387,20 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         }
     }
     
+    /**
+     * Set newIndex as selected tab
+     * Delegate to {@link #updateSelectedIndex(int, int)}
+     * @param newIndex
+     */
+    @Override
     public void setSelectedIndex(int newIndex) {
     	int oldIndex = getSelectedIndex();
     	updateSelectedIndex(oldIndex, newIndex);
     }
 
+    /**
+     * @param abstractADWindowPanel
+     */
 	public void setADWindowPanel(AbstractADWindowContent abstractADWindowPanel) {
 		this.adWindowPanel = abstractADWindowPanel;
 	}

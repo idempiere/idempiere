@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_WS_WebServiceFieldInput 
@@ -46,8 +46,8 @@ public interface I_WS_WebServiceFieldInput
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -70,12 +70,12 @@ public interface I_WS_WebServiceFieldInput
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -177,12 +177,12 @@ public interface I_WS_WebServiceFieldInput
     public static final String COLUMNNAME_IsNullIdentifier = "IsNullIdentifier";
 
 	/** Set Allow Null Value.
-	  * Should allow null value for identifiere field
+	  * Should allow null value for identifier field
 	  */
 	public void setIsNullIdentifier (boolean IsNullIdentifier);
 
 	/** Get Allow Null Value.
-	  * Should allow null value for identifiere field
+	  * Should allow null value for identifier field
 	  */
 	public boolean isNullIdentifier();
 

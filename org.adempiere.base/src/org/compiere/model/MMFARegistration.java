@@ -37,10 +37,10 @@ import org.compiere.util.Env;
  * Multi-factor Authentication Registration
  */
 public class MMFARegistration extends X_MFA_Registration {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2032862057961778934L;
+	private static final long serialVersionUID = -1441495978065471474L;
 
 	/**
 	 * Read/Create empty MFA Registration
@@ -81,7 +81,7 @@ public class MMFARegistration extends X_MFA_Registration {
 				+ " WHERE AD_User_ID=?"
 				+ "  AND MFA_Method_ID=?"
 				+ "  AND IsValid='Y'"
-				+ "  AND AD_Client_ID=?"
+				+ "  AND AD_Client_ID IN (0,?)"
 				+ "  AND IsActive='Y'");
 		if (prm != null) {
 			sql.append(" AND ParameterValue=?");
@@ -102,7 +102,7 @@ public class MMFARegistration extends X_MFA_Registration {
 				+ " SET IsActive='N'"
 				+ " WHERE AD_User_ID=?"
 				+ "  AND MFA_Method_ID=?"
-				+ "  AND AD_Client_ID=?"
+				+ "  AND AD_Client_ID IN (0,?)"
 				+ "  AND IsValid='N'"
 				+ "  AND IsActive='Y'"
 				+ "  AND MFA_Registration_ID!=?");
@@ -189,20 +189,5 @@ public class MMFARegistration extends X_MFA_Registration {
 		String msg = mechanism.validateCode(reg, code, setPreferred);
 		return msg;
 	}
-
-	/**
-	 * 	Set User/Contact.
-     * @param AD_User_ID
-     * User within the system - Internal or Business Partner Contact
-     * Overridden to allow saving System record (zero ID)
-	 */
-	@Override
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
-		else 
-			super.setAD_User_ID(AD_User_ID);
-	} //setAD_User_ID
 
 } // MMFARegistration

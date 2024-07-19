@@ -31,7 +31,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220315L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -579,7 +579,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Jasper Process.
-		@param JasperProcess_ID The Jasper Process used by the printengine if any process defined
+		@param JasperProcess_ID The Jasper Process used by the print engine if any process defined
 	*/
 	public void setJasperProcess_ID (int JasperProcess_ID)
 	{
@@ -590,7 +590,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Get Jasper Process.
-		@return The Jasper Process used by the printengine if any process defined
+		@return The Jasper Process used by the print engine if any process defined
 	  */
 	public int getJasperProcess_ID()
 	{

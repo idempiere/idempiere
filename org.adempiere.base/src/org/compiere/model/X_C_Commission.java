@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Commission
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Commission")
 public class X_C_Commission extends PO implements I_C_Commission, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Commission (Properties ctx, int C_Commission_ID, String trxName)
@@ -235,7 +235,7 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -243,7 +243,7 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 		set_ValueNoCheck (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()

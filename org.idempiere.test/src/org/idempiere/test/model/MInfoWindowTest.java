@@ -151,6 +151,7 @@ public class MInfoWindowTest extends AbstractTestCase {
 			assertNotNull(infoColumns);
 			assertEquals(1, infoColumns.length);
 		} finally {
+			rollback();
 			ca.deleteEx(true);
 		}
 	}

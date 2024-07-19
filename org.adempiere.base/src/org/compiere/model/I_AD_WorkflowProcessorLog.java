@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WorkflowProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_WorkflowProcessorLog 
 {
@@ -44,8 +44,8 @@ public interface I_AD_WorkflowProcessorLog
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_WorkflowProcessorLog
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -80,12 +80,12 @@ public interface I_AD_WorkflowProcessorLog
     /** Column name AD_WorkflowProcessorLog_ID */
     public static final String COLUMNNAME_AD_WorkflowProcessorLog_ID = "AD_WorkflowProcessorLog_ID";
 
-	/** Set Workflow Processorl Log.
+	/** Set Workflow Processor Log.
 	  * Result of the execution of the Workflow Processor
 	  */
 	public void setAD_WorkflowProcessorLog_ID (int AD_WorkflowProcessorLog_ID);
 
-	/** Get Workflow Processorl Log.
+	/** Get Workflow Processor Log.
 	  * Result of the execution of the Workflow Processor
 	  */
 	public int getAD_WorkflowProcessorLog_ID();

@@ -746,35 +746,64 @@ public final class Fact
 					m_doc.get_ID(), dLine.getLine_ID(), m_trxName);
 				//  Set Info & Account
 				factLine.setDocumentInfo(m_doc, dLine.getDocLine());
+				factLine.setDescription(dLine.getDescription());
 				factLine.setAccount(m_acctSchema, dl.getAccount());
 				factLine.setPostingType(m_postingType);
 				if (dl.isOverwriteOrg())	//	set Org explicitly
 					factLine.setAD_Org_ID(dl.getOrg_ID());
+				else
+					factLine.setAD_Org_ID(dLine.getAD_Org_ID());
 				// Silvano - freepath - F3P - Bug#2904994 Fact distribtution only overwriting Org
 				if(dl.isOverwriteAcct())
 					factLine.setAccount_ID(dl.getAccount_ID());
+				else
+					factLine.setAccount_ID(dLine.getAccount_ID());
 				if(dl.isOverwriteActivity())
 					factLine.setC_Activity_ID(dl.getC_Activity_ID());
+				else
+					factLine.setC_Activity_ID(dLine.getC_Activity_ID());
 				if(dl.isOverwriteBPartner())
 					factLine.setC_BPartner_ID(dl.getC_BPartner_ID());
+				else
+					factLine.setC_BPartner_ID(dLine.getC_BPartner_ID());
 				if(dl.isOverwriteCampaign())
 					factLine.setC_Campaign_ID(dl.getC_Campaign_ID());
+				else
+					factLine.setC_Campaign_ID(dLine.getC_Campaign_ID());
 				if(dl.isOverwriteLocFrom())
 					factLine.setC_LocFrom_ID(dl.getC_LocFrom_ID());
+				else
+					factLine.setC_LocFrom_ID(dLine.getC_LocFrom_ID());
 				if(dl.isOverwriteLocTo())
 					factLine.setC_LocTo_ID(dl.getC_LocTo_ID());
+				else
+					factLine.setC_LocTo_ID(dLine.getC_LocTo_ID());
 				if(dl.isOverwriteOrgTrx())
 					factLine.setAD_OrgTrx_ID(dl.getAD_OrgTrx_ID());
+				else
+					factLine.setAD_OrgTrx_ID(dLine.getAD_OrgTrx_ID());
 				if(dl.isOverwriteProduct())
 					factLine.setM_Product_ID(dl.getM_Product_ID());
+				else
+					factLine.setM_Product_ID(dLine.getM_Product_ID());
 				if(dl.isOverwriteProject())
 					factLine.setC_Project_ID(dl.getC_Project_ID());
+				else
+					factLine.setC_Project_ID(dLine.getC_Project_ID());
 				if(dl.isOverwriteSalesRegion())
 					factLine.setC_SalesRegion_ID(dl.getC_SalesRegion_ID());
+				else
+					factLine.setC_SalesRegion_ID(dLine.getC_SalesRegion_ID());
 				if(dl.isOverwriteUser1())				
 					factLine.setUser1_ID(dl.getUser1_ID());
+				else
+					factLine.setUser1_ID(dLine.getUser1_ID());
 				if(dl.isOverwriteUser2())				
 					factLine.setUser2_ID(dl.getUser2_ID());					
+				else
+					factLine.setUser2_ID(dLine.getUser2_ID());
+				factLine.setUserElement1_ID(dLine.getUserElement1_ID());
+				factLine.setUserElement2_ID(dLine.getUserElement2_ID());
 				// F3P end
 				//
 				if (dLine.getAmtAcctCr().signum() != 0) // isCredit

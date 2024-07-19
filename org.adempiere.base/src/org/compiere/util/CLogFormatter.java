@@ -119,6 +119,7 @@ public class CLogFormatter extends Formatter
 				spaces = 9;
 			sb.append("                          ".substring(0, spaces));
 		}
+		sb.append(getPrefix());
 		
 		/**	Class.method	**/
 		if (!m_shortFormat)
@@ -318,5 +319,26 @@ public class CLogFormatter extends Formatter
         if (cause != null)
         	fillExceptionTrace(sb, "caused by: ", cause);
     }	//	fillExceptionTrace
-    
+
+	/**
+	 * get the Prefix to write in file log from VM variable org.idempiere.FileLogPrefix
+	 * @return
+	 */
+	private String getPrefix()
+	{
+		String prefix = null;
+		try
+		{
+			prefix = System.getProperty("org.idempiere.FileLogPrefix");
+			if (!Util.isEmpty(prefix))
+				return Env.parseContext(Env.getCtx(), 0, prefix, false);
+		}
+		catch (Exception ex)
+		{
+			System.out.println("Parsing error in org.idempiere.FileLogPrefix - setting back to empty from " + prefix);
+			System.setProperty("org.idempiere.FileLogPrefix", "");
+		}
+		return "";
+	}
+
 }	//	CLogFormatter

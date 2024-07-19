@@ -45,7 +45,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	/**	Logger			*/
 	protected transient CLogger log = CLogger.getCLogger(getClass());
 	
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
 		log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "C_BankStatement_ID") + " .. " + Msg.getElement(Env.getCtx(), "X_CreateFromBatch"));
@@ -53,8 +54,29 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return true;
 	}
 
+	@Deprecated
 	public String getSQLWhere(Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
+	{
+		return getSQLWhere((Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
+				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode);
+	}
+	
+	/**
+	 * 
+	 * @param BPartner
+	 * @param DocumentNo
+	 * @param DateFrom
+	 * @param DateTo
+	 * @param AmtFrom
+	 * @param AmtTo
+	 * @param DocType
+	 * @param TenderType
+	 * @param AuthCode
+	 * @return where clause
+	 */
+	public String getSQLWhere(Integer BPartner, String DocumentNo, Timestamp DateFrom, Timestamp DateTo, 
+			BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
 	{
 		StringBuilder sql = new StringBuilder();
 		sql.append("WHERE p.Processed='Y' AND p.IsReconciled='N'");
@@ -76,25 +98,21 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
-			BigDecimal from = (BigDecimal) AmtFrom;
-			BigDecimal to = (BigDecimal) AmtTo;
-			if(from == null && to != null)
+			if(AmtFrom == null && AmtTo != null)
 				sql.append(" AND p.PayAmt <= ?");
-			else if(from != null && to == null)
+			else if(AmtFrom != null && AmtTo == null)
 				sql.append(" AND p.PayAmt >= ?");
-			else if(from != null && to != null)
+			else if(AmtFrom != null && AmtTo != null)
 				sql.append(" AND p.PayAmt BETWEEN ? AND ?");
 		}
 		
 		if(DateFrom != null || DateTo != null)
 		{
-			Timestamp from = (Timestamp) DateFrom;
-			Timestamp to = (Timestamp) DateTo;
-			if(from == null && to != null)
+			if(DateFrom == null && DateTo != null)
 				sql.append(" AND TRUNC(p.DateTrx) <= ?");
-			else if(from != null && to == null)
+			else if(DateFrom != null && DateTo == null)
 				sql.append(" AND TRUNC(p.DateTrx) >= ?");
-			else if(from != null && to != null)
+			else if(DateFrom != null && DateTo != null)
 				sql.append(" AND TRUNC(p.DateTrx) BETWEEN ? AND ?");
 		}
 
@@ -102,22 +120,47 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return sql.toString();
 	}
 	
+	@Deprecated
 	void setParameters(PreparedStatement pstmt, Object BankAccount, Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, GridTab gridTab)
 	throws SQLException
 	{
+		setParameters(pstmt, (Integer)BankAccount, (Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
+				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode, gridTab);
+	}
+	
+	/**
+	 * 
+	 * @param pstmt
+	 * @param BankAccount
+	 * @param BPartner
+	 * @param DocumentNo
+	 * @param DateFrom
+	 * @param DateTo
+	 * @param AmtFrom
+	 * @param AmtTo
+	 * @param DocType
+	 * @param TenderType
+	 * @param AuthCode
+	 * @param gridTab
+	 * @throws SQLException
+	 */
+	protected void setParameters(PreparedStatement pstmt, Integer BankAccount, Integer BPartner, String DocumentNo, Timestamp DateFrom, Timestamp DateTo, 
+			BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode, GridTab gridTab)
+	throws SQLException
+	{
 		int index = 1;
 		
-		pstmt.setInt(index++, BankAccount != null ? (Integer) BankAccount : (Integer) gridTab.getValue("C_BankAccount_ID"));
+		pstmt.setInt(index++, BankAccount != null ? BankAccount : (Integer) gridTab.getValue("C_BankAccount_ID"));
 		
 		if(DocType != null)
-			pstmt.setInt(index++, (Integer) DocType);
+			pstmt.setInt(index++, DocType);
 		
 		if(TenderType != null && TenderType.toString().length() > 0)
-			pstmt.setString(index++, (String) TenderType);
+			pstmt.setString(index++, TenderType);
 		
 		if(BPartner != null)
-			pstmt.setInt(index++, (Integer) BPartner);
+			pstmt.setInt(index++, BPartner);
 		
 		if(DocumentNo.length() > 0)
 			pstmt.setString(index++, getSQLText(DocumentNo));
@@ -127,33 +170,29 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
-			BigDecimal from = (BigDecimal) AmtFrom;
-			BigDecimal to = (BigDecimal) AmtTo;
-			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to);
-			if(from == null && to != null)
-				pstmt.setBigDecimal(index++, to);
-			else if(from != null && to == null)
-				pstmt.setBigDecimal(index++, from);
-			else if(from != null && to != null)
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + AmtFrom + ", To=" + AmtTo);
+			if(AmtFrom == null && AmtTo != null)
+				pstmt.setBigDecimal(index++, AmtTo);
+			else if(AmtFrom != null && AmtTo == null)
+				pstmt.setBigDecimal(index++, AmtFrom);
+			else if(AmtFrom != null && AmtTo != null)
 			{
-				pstmt.setBigDecimal(index++, from);
-				pstmt.setBigDecimal(index++, to);
+				pstmt.setBigDecimal(index++, AmtFrom);
+				pstmt.setBigDecimal(index++, AmtTo);
 			}
 		}
 		
 		if(DateFrom != null || DateTo != null)
 		{
-			Timestamp from = (Timestamp) DateFrom;
-			Timestamp to = (Timestamp) DateTo;
-			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
-			if(from == null && to != null)
-				pstmt.setTimestamp(index++, to);
-			else if(from != null && to == null)
-				pstmt.setTimestamp(index++, from);
-			else if(from != null && to != null)
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + DateFrom + ", To=" + DateTo);
+			if(DateFrom == null && DateTo != null)
+				pstmt.setTimestamp(index++, DateTo);
+			else if(DateFrom != null && DateTo == null)
+				pstmt.setTimestamp(index++, DateFrom);
+			else if(DateFrom != null && DateTo != null)
 			{
-				pstmt.setTimestamp(index++, from);
-				pstmt.setTimestamp(index++, to);
+				pstmt.setTimestamp(index++, DateFrom);
+				pstmt.setTimestamp(index++, DateTo);
 			}
 		}
 	}
@@ -167,8 +206,32 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return s;
 	}
 	
+	@Deprecated
 	protected Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
 			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, 
+			GridTab gridTab)
+	{
+		return getBankAccountData((Integer)BankAccount, (Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
+				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode, gridTab);
+	}
+	
+	/**
+	 * 
+	 * @param BankAccount
+	 * @param BPartner
+	 * @param DocumentNo
+	 * @param DateFrom
+	 * @param DateTo
+	 * @param AmtFrom
+	 * @param AmtTo
+	 * @param DocType
+	 * @param TenderType
+	 * @param AuthCode
+	 * @param gridTab
+	 * @return list of bank account records
+	 */
+	protected Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
+			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode, 
 			GridTab gridTab)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config ("C_BankAccount_ID=" + BankAccount);
@@ -224,6 +287,10 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return data;
 	}
 	
+	/**
+	 * 
+	 * @param miniTable
+	 */
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
@@ -236,6 +303,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		miniTable.autoSize();
 	}
 	
+	@Override
 	public boolean save(IMiniTable miniTable, String trxName, GridTab gridTab)
 	{
 		//  fixed values
@@ -314,6 +382,10 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return true;
 	}
 
+	/**
+	 * 
+	 * @return column names
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		//  Header Info
@@ -328,6 +400,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	    return columnNames;
 	}
 	
+	@Override
 	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{		
 		DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);

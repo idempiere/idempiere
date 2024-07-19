@@ -16,13 +16,36 @@ package org.compiere.grid;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.PO;
 
+/**
+ * 
+ * Interface for payment form for different payment mode (cash, credit card, etc)
+ *
+ */
 public interface IPaymentForm {
 
+	/**
+	 * dynamic initialization
+	 * @return false if there are errors, true otherwise
+	 * @throws Exception
+	 */
 	public boolean dynInit() throws Exception;
 	
+	/**
+	 * Load payment and related transaction records. Usually call from dynInit() 
+	 */
 	public void loadData();
 	
+	/**
+	 * mandatory field validations
+	 * @return true if all mandatory field have been populated
+	 */
 	public boolean checkMandatory();
+	
+	/**
+	 * 
+	 * @return true if only show payment rule and doesn't save changes to DB
+	 */
+	public boolean isOnlyRule();
 	
 	/**************************************************************************
 	 *	Save Changes
@@ -30,25 +53,55 @@ public interface IPaymentForm {
 	 */
 	public boolean saveChanges();
 	
-	public boolean saveChangesInTrx(final String trxName);
-	
 	/**
-	 * 	Need Save record (payment with waiting order)
-	 *	@return true if payment with waiting order
+	 * Save changes to DB
+	 * @param trxName
+	 * @return true if save successfully
+	 */
+	public boolean saveChangesInTrx(final String trxName);
+		
+	/**
+	 * 	Need to save the calling window (order, invoice)
+	 *	@return true if changes have been to the calling window
 	 */
 	public boolean needSave();
 	
+	/**
+	 * online payment processing (for e.g credit card)
+	 */
 	public void processOnline();
 	
+	/**
+	 * 
+	 * @return true if payment transaction have been approved by payment gateway
+	 */
 	public boolean isApproved();
 	
+	/**
+	 * show form
+	 */
 	public void showWindow();
 	
+	/**
+	 * close form
+	 */
 	public void closeWindow();
 	
+	/**
+	 * 
+	 * @return instance of UI form
+	 */
 	public Object getWindow();
 	
+	/**
+	 * Make additional changes to PO before write to DB
+	 * @param po
+	 */
 	public void setCustomizeValues(PO po);
 	
+	/**
+	 * Set online payment processor configuration
+	 * @param bankAccountProcessor
+	 */
 	public void setBankAccountProcessor(MBankAccountProcessor bankAccountProcessor);
 }

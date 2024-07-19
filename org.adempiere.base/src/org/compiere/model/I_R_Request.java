@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_Request
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_R_Request 
 {
@@ -59,8 +59,8 @@ public interface I_R_Request
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -68,12 +68,12 @@ public interface I_R_Request
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -313,12 +313,12 @@ public interface I_R_Request
     /** Column name DateLastAction */
     public static final String COLUMNNAME_DateLastAction = "DateLastAction";
 
-	/** Set Date last action.
+	/** Set Date Last Action.
 	  * Date this request was last acted on
 	  */
 	public void setDateLastAction (Timestamp DateLastAction);
 
-	/** Get Date last action.
+	/** Get Date Last Action.
 	  * Date this request was last acted on
 	  */
 	public Timestamp getDateLastAction();
@@ -339,12 +339,12 @@ public interface I_R_Request
     /** Column name DateNextAction */
     public static final String COLUMNNAME_DateNextAction = "DateNextAction";
 
-	/** Set Date next action.
+	/** Set Date Next Action.
 	  * Date that this request should be acted on
 	  */
 	public void setDateNextAction (Timestamp DateNextAction);
 
-	/** Get Date next action.
+	/** Get Date Next Action.
 	  * Date that this request should be acted on
 	  */
 	public Timestamp getDateNextAction();

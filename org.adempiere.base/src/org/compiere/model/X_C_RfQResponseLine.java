@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_RfQResponseLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLine")
 public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)

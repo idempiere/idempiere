@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceTax;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTaxDeclaration;
 import org.compiere.model.MTaxDeclarationAcct;
 import org.compiere.model.MTaxDeclarationLine;
@@ -64,7 +65,7 @@ public class TaxDeclarationCreate extends SvrProcess
 			else if (name.equals("DeleteOld"))
 				p_DeleteOld = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_TaxDeclaration_ID = getRecord_ID();
 	}	//	prepare

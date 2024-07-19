@@ -19,6 +19,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectType;
 
@@ -50,7 +51,7 @@ public class ProjectSetType extends SvrProcess
 			else if (name.equals("C_ProjectType_ID"))
 				m_C_ProjectType_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		  }
 	}	//	prepare
 

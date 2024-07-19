@@ -63,7 +63,16 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 
     public WNumberEditor()
     {
-    	this("Number", false, false, true, DisplayType.Number, "");
+    	this(DisplayType.Number);
+    }
+
+    /**
+    *
+    * @param displayType
+    */
+    public WNumberEditor(int displayType)
+    {
+    	this("Number", false, false, true, displayType, "");
     }
 
     /**
@@ -136,6 +145,10 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     {
 		super(new NumberBox(displayType == DisplayType.Integer), columnName, title, null, mandatory,
 				readonly, updateable);
+
+		if (!DisplayType.isNumeric(displayType)) 
+			throw new IllegalArgumentException("DisplayType must be numeric");
+
 		this.displayType = displayType;
 		init();
 	}
@@ -268,7 +281,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     }
 
     @Override
-    public Object getValue()
+    public BigDecimal getValue()
     {
         return getComponent().getValue();
     }

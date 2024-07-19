@@ -676,7 +676,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		StringBuilder sb = new StringBuilder("MPaymentCheck[");
 		sb.append(get_ID()).append("-").append(getDocumentNo())
 			.append("-").append(getPayAmt())
-			.append(",PaymetRule=").append(getPaymentRule())
+			.append(",PaymentRule=").append(getPaymentRule())
 			.append(",Qty=").append(getQty())
 			.append("]");
 		return sb.toString();

@@ -18,24 +18,24 @@
 package org.adempiere.webui.component;
 
 /**
+ * Model for {@link WListbox} column
  * @author Andrew Kimball
- *
  */
 public class WTableColumn
 {
-    /** The width of the column. */
+	@Deprecated(forRemoval = true, since = "11")
     protected int width;
 
-    /** The minimum width of the column. */
+    @Deprecated(forRemoval = true, since = "11")
     protected int minWidth;
 
-    /** The preferred width of the column. */
+    @Deprecated(forRemoval = true, since = "11")
     private int preferredWidth;
 
-    /** The maximum width of the column. */
+    @Deprecated(forRemoval = true, since = "11")
     protected int maxWidth;
     
-    /** If true, the user is allowed to resize the column; the default is true. */
+    @Deprecated(forRemoval = true, since = "11")
     protected boolean	isResizable;
 
     /** The header value of the column. */
@@ -48,13 +48,16 @@ public class WTableColumn
 	private int AD_Reference_ID;
 
     /** 
-     *  Cover method, using a default width of 75 
-     *  @see #WTableColumn(int)
+     *  Default constructor
      */
     public WTableColumn() {
-    	this(75);
+    	headerValue = null;
     }
     
+    /**
+     * @param width
+     */
+    @Deprecated(forRemoval = true, since = "11")
     public WTableColumn(int width) 
     {
 		this.width = width;
@@ -80,11 +83,8 @@ public class WTableColumn
     public void setHeaderValue(Object headerValue) 
     {
 		this.headerValue = headerValue;
-		
-		return;
     }
     
-
     /**
      * Returns the <code>Object</code> used as the value for the header
      * renderer.
@@ -97,20 +97,7 @@ public class WTableColumn
     	return headerValue;
     }
     
-
-    /**
-     * This method should not be used to set the widths of columns in the 
-     * <code>WListbox</code>, use <code>setPreferredWidth</code> instead.
-     * This method sets this column's width to <code>width</code>.  
-     * If <code>width</code> exceeds the minimum or maximum width, 
-     * it is adjusted to the appropriate limiting value.
-     * <p>
-     * @param  width  the new width
-     * @see	#getWidth
-     * @see	#setMinWidth
-     * @see	#setMaxWidth
-     * @see	#setPreferredWidth
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public void setWidth(int width) 
     {
 		this.width = Math.min(Math.max(width, minWidth), maxWidth);
@@ -118,53 +105,25 @@ public class WTableColumn
 		return;
     }
 
-    /**
-     * Returns the width of the <code>TableColumn</code>. The default width is
-     * 75.
-     *
-     * @return	the <code>width</code> property
-     * @see	#setWidth
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public int getWidth() 
     {
     	return width;
     }
 
-    /**
-     * Sets this column's preferred width to <code>preferredWidth</code>.  
-     * If <code>preferredWidth</code> exceeds the minimum or maximum width, 
-     * it is adjusted to the appropriate limiting value. 
-     *
-     * @param  preferredWidth the new preferred width
-     * @see	#getPreferredWidth
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public void setPreferredWidth(int preferredWidth) 
     { 
 		this.preferredWidth = Math.min(Math.max(preferredWidth, minWidth), maxWidth);
     }
 
-    /**
-     * Returns the preferred width of the <code>WTableColumn</code>. 
-     * The default preferred width is 75.
-     *
-     * @return	the <code>preferredWidth</code> property
-     * @see	#setPreferredWidth
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public int getPreferredWidth() 
     {
     	return preferredWidth;
     }
 
-    /**
-     * Sets the <code>WTableColumn</code>'s minimum width to
-     * <code>minWidth</code>; also adjusts the current width
-     * and preferred width if they are less than this value.
-     *
-     * @param minWidth  the new minimum width
-     * @see	#getMinWidth
-     * @see	#setPreferredWidth
-     * @see	#setMaxWidth     
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public void setMinWidth(int minWidth) 
     { 	
 		this.minWidth = Math.max(minWidth, 0);
@@ -182,29 +141,13 @@ public class WTableColumn
 		return;
     }
 
-    /**
-     * Returns the minimum width for the <code>WTableColumn</code>. The
-     * <code>WTableColumn</code>'s width can't be made less than this either
-     * by the user or programmatically.  The default minWidth is 15.
-     *
-     * @return	the <code>minWidth</code> property
-     * @see	#setMinWidth
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public int getMinWidth() 
     {
     	return minWidth;
     }
 
-    /**
-     * Sets the <code>WTableColumn</code>'s maximum width to
-     * <code>maxWidth</code>; also adjusts the width and preferred
-     * width if they are greater than this value.
-     *
-     * @param maxWidth  the new maximum width
-     * @see	#getMaxWidth
-     * @see	#setPreferredWidth
-     * @see	#setMinWidth     
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public void setMaxWidth(int maxWidth) 
     {	
 		this.maxWidth = Math.max(minWidth, maxWidth);
@@ -220,47 +163,25 @@ public class WTableColumn
 		return;
     }
 
-    /**
-     * Returns the maximum width for the <code>WTableColumn</code>. The
-     * <code>WTableColumn</code>'s width can't be made larger than this
-     * either by the user or programmatically.  The default maxWidth
-     * is Integer.MAX_VALUE.
-     *
-     * @return	the <code>maxWidth</code> property
-     * @see	#setMaxWidth
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public int getMaxWidth() 
     {
     	return maxWidth;
     }
 
-    /**
-     * Sets whether this column can be resized.
-     *
-     * @param isResizable  if true, resizing is allowed; otherwise false
-     * @see	#getResizable
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public void setResizable(boolean isResizable) 
     {	
     	this.isResizable = isResizable;	
     }
 
-    /**
-     * Returns true if the user is allowed to resize the
-     * <code>WTableColumn</code>'s
-     * width, false otherwise. You can change the width programmatically
-     * regardless of this setting.  The default is true.
-     *
-     * @return	the <code>isResizable</code> property
-     * @see	#setResizable
-     */
+    @Deprecated(forRemoval = true, since = "11")
     public boolean getResizable() 
     {
     	return isResizable;
     }
 
     /**
-     * 
      * @return Class
      */
 	public Class<?> getColumnClass() 
@@ -269,7 +190,6 @@ public class WTableColumn
 	}
 
 	/**
-	 * 
 	 * @param columnClass
 	 */
 	public void setColumnClass(Class<?> columnClass) 
@@ -291,10 +211,16 @@ public class WTableColumn
 		this.tooltipText = tooltipText;
 	}
 	
+	/**
+	 * @return AD_Reference_ID
+	 */
 	public int getAD_Reference_ID() {
 		return AD_Reference_ID;
 	}
 	
+	/**
+	 * @param AD_Reference_ID
+	 */
 	public void setAD_Reference_ID(int AD_Reference_ID) {
 		this.AD_Reference_ID=AD_Reference_ID;
 	}

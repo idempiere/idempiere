@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Reval")
 public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
@@ -244,16 +244,16 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_Reval_UU);
 	}
 
-	/** Set Change Acumulated Depreciation.
-		@param A_Change_Acumulated_Depr Change Acumulated Depreciation
+	/** Set Change Accumulated Depreciation.
+		@param A_Change_Acumulated_Depr Change Accumulated Depreciation
 	*/
 	public void setA_Change_Acumulated_Depr (BigDecimal A_Change_Acumulated_Depr)
 	{
 		set_Value (COLUMNNAME_A_Change_Acumulated_Depr, A_Change_Acumulated_Depr);
 	}
 
-	/** Get Change Acumulated Depreciation.
-		@return Change Acumulated Depreciation	  */
+	/** Get Change Accumulated Depreciation.
+		@return Change Accumulated Depreciation	  */
 	public BigDecimal getA_Change_Acumulated_Depr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Change_Acumulated_Depr);
@@ -435,7 +435,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -444,7 +444,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()

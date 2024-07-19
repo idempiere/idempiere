@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_BankStatement;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -71,7 +72,7 @@ public class ImportBankStatement extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				p_deleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_ctx = Env.getCtx();
 	}	//	prepare

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.compiere.model.GridFieldVO;
+import org.compiere.model.InfoColumnVO;
 import org.compiere.model.Lookup;
 import org.compiere.util.CCache;
 import org.osgi.framework.Constants;
@@ -121,6 +122,46 @@ public final class LookupFactoryHelper {
 			if (service != null) {
 				s_lookupFactoryCache.put(serviceId, serviceReference);
 				if (service.isLookup(gridFieldVO))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Check lookup from osgi factory 
+	 * 
+	 * @param infoColumnVO
+	 * @return true if infoColumnVO is a lookup field
+	 */
+	public static boolean isLookup(InfoColumnVO infoColumnVO) {
+		List<Long> visitedIds = new ArrayList<Long>();
+		if (!s_lookupFactoryCache.isEmpty()) {
+			Long[] keys = s_lookupFactoryCache.keySet().toArray(new Long[0]);
+			for (Long key : keys) {
+				IServiceReferenceHolder<ILookupFactory> serviceReference = s_lookupFactoryCache.get(key);
+				if (serviceReference != null) {
+					ILookupFactory service = serviceReference.getService();
+					if (service != null) {
+						visitedIds.add(key);
+						if (service.isLookup(infoColumnVO))
+							return true;
+					} else {
+						s_lookupFactoryCache.remove(key);
+					}
+				}
+			}
+		}
+		List<IServiceReferenceHolder<ILookupFactory>> serviceReferences = Service.locator().list(ILookupFactory.class)
+				.getServiceReferences();
+		for (IServiceReferenceHolder<ILookupFactory> serviceReference : serviceReferences) {
+			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			if (visitedIds.contains(serviceId))
+				continue;
+			ILookupFactory service = serviceReference.getService();
+			if (service != null) {
+				s_lookupFactoryCache.put(serviceId, serviceReference);
+				if (service.isLookup(infoColumnVO))
 					return true;
 			}
 		}

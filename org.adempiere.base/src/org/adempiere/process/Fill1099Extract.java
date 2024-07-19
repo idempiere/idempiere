@@ -18,6 +18,8 @@ package org.adempiere.process;
 
 import java.sql.*;
 import java.util.logging.*;
+
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.*;
@@ -46,7 +48,7 @@ public class Fill1099Extract extends SvrProcess
 			else if (name.equals("Cut_Date"))
 				p_Cut_Date = (Timestamp)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (p_Cut_Date == null)
 			p_Cut_Date = new Timestamp (System.currentTimeMillis());

@@ -1,9 +1,8 @@
 package org.idempiere.fa.process;
 
-import java.util.logging.Level;
-
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MMatchInv;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.idempiere.fa.exceptions.AssetException;
@@ -32,7 +31,7 @@ public class A_Asset_CreateFromMatchInv extends SvrProcess {
 			else if (name.equals("M_MatchInv_ID"))
 				p_M_MatchInv_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "@UnknownParameter@ " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare 
 	

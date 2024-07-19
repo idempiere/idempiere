@@ -35,10 +35,12 @@ import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.I_R_MailText;
 import org.compiere.util.DisplayType;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 
 /**
  *
@@ -188,6 +190,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (gridField != null)
 	        	getComponent().setPlaceholder(gridField.getPlaceholder());
 		}
+		
+		getComponent().addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> ((AbstractComponent)t).setWidgetListener("onBind", null));
     }
 
 	public void onEvent(Event event)

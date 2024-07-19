@@ -528,7 +528,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	public void setLineNetAmt ()
 	{
 		//	Calculations & Rounding
-		BigDecimal bd = getPriceActual().multiply(getQtyInvoiced());
+		BigDecimal bd = getPriceEntered().multiply(getQtyEntered());
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, RoundingMode.HALF_UP);

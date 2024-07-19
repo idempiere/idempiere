@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_BOMLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_BOMLine")
 public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
@@ -811,16 +811,16 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return bd;
 	}
 
-	/** Set Qty Requiered.
-		@param QtyRequiered Qty Requiered
+	/** Set Qty Required.
+		@param QtyRequiered Qty Required
 	*/
 	public void setQtyRequiered (BigDecimal QtyRequiered)
 	{
 		set_Value (COLUMNNAME_QtyRequiered, QtyRequiered);
 	}
 
-	/** Get Qty Requiered.
-		@return Qty Requiered	  */
+	/** Get Qty Required.
+		@return Qty Required	  */
 	public BigDecimal getQtyRequiered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyRequiered);
@@ -849,7 +849,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Scrap %.
-		@param QtyScrap Scrap % Quantity for this componet
+		@param QtyScrap Scrap % Quantity for this component
 	*/
 	public void setQtyScrap (BigDecimal QtyScrap)
 	{
@@ -857,7 +857,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Get Scrap %.
-		@return Scrap % Quantity for this componet
+		@return Scrap % Quantity for this component
 	  */
 	public BigDecimal getQtyScrap()
 	{

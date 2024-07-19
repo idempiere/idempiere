@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
@@ -40,7 +41,7 @@ public class FactReconciliation extends SvrProcess
 			else if (name.equals("Account_ID"))
 				p_Account_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

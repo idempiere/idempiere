@@ -32,7 +32,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
@@ -132,7 +132,8 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_TAB, parent_TabNo);
 		initPOs();
-		log.info("R/O=" + isReadOnly());
+		if (log.isLoggable(Level.INFO))
+			log.info("R/O=" + isReadOnly());
 
 	}	//	WQuickEntry
 	
@@ -367,7 +368,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 		if (quickPOs.get(0).get_ID() == 0)
 		{
-			FDialog.error(m_WindowNo, this, "RecordNotFound");
+			Dialog.error(m_WindowNo, "RecordNotFound");
 			return false;
 		}
 		
@@ -416,7 +417,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 			for (GridField field : quickFields) {
 				String msg = field.getGridTab().processCallout(field);
 				if (! Util.isEmpty(msg)) {
-					FDialog.error(m_WindowNo, this, "", msg);
+					Dialog.error(m_WindowNo, "", msg);
 					return false;
 				}
 			}
@@ -466,7 +467,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 				}
 			}
 			if (savePO && fillMandatoryError) {
-				FDialog.error(m_WindowNo, this, "FillMandatory", mandatoryFields.toString());
+				Dialog.error(m_WindowNo, "FillMandatory", mandatoryFields.toString());
 				return false;
 			}
 			if (savePO) {
@@ -477,7 +478,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 					}
 				}
 				if(gridtab.getTabLevel()>0 && !isParentSave){
-					FDialog.error(m_WindowNo, this, "FillMinimumInfo",tabZeroName);
+					Dialog.error(m_WindowNo, "FillMinimumInfo",tabZeroName);
 					return false;
 				}
 				po.saveEx();

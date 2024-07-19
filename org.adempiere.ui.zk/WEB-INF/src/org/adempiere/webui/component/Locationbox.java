@@ -13,23 +13,28 @@
 package org.adempiere.webui.component;
 
 /**
- * 
+ * Component for Location Editor
  * @author Low Heng Sin
- *
  */
 public class Locationbox extends EditorBox
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -9199586798474147872L;
 
+	/**
+	 * Default constructor
+	 */
 	public Locationbox()
     {
          super();
          txt.setReadonly(true);
     }
 
+	/**
+	 * @param text
+	 */
      public Locationbox(String text)
      {
          this();

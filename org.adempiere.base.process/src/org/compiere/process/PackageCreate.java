@@ -20,6 +20,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MInOut;
 import org.compiere.model.MPackage;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MShipper;
  
 /**
@@ -57,7 +58,7 @@ public class PackageCreate extends SvrProcess
 			else if (name.equals("NoOfPackages"))
 				p_no_of_packages = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 
 	}	//	prepare

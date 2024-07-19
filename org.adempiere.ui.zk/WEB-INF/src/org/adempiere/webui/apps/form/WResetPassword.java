@@ -35,7 +35,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPasswordHistory;
@@ -66,9 +66,11 @@ import org.zkoss.zul.South;
 public class WResetPassword implements IFormController, EventListener<Event>, ValueChangeListener {
 
 	private static final CLogger log = CLogger.getCLogger(WResetPassword.class);
-
+	/** Custom form/window UI instance */
 	private CustomForm form;
+	/** Center of {@link #form}. Grid layout for form fields. */
 	private Grid gridPanel;
+	/** South of {@link #form} */
     private ConfirmPanel confirmPanel;
     
     private Label lblUser;
@@ -90,6 +92,9 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
     private Textbox txtNewEMailUserPW;
     private Textbox txtRetypeNewEMailPW;
     
+    /**
+     * Default constructor.
+     */
     public WResetPassword()
     {
     	form = new CustomForm();
@@ -121,6 +126,10 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		}
     }
 	
+    /**
+     * Dynamic initializatio of UI components.
+     * @throws Exception
+     */
 	private void dynInit() throws Exception
 	{
 		lblUser = new Label(Msg.translate(Env.getCtx(), "AD_User_ID"));
@@ -186,6 +195,10 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		confirmPanel = new ConfirmPanel(true);
 	}
     
+	/**
+	 * Layout {@link #gridPanel}
+	 * @throws Exception
+	 */
     private void zkInit() throws Exception
 	{
     	gridPanel = GridFactory.newGridLayout();
@@ -253,7 +266,8 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
     
 	@Override
 	public void valueChange(ValueChangeEvent e) {
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO))
+			log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("AD_User_ID"))
 			fUser.setValue(e.getNewValue());
 	}
@@ -295,6 +309,9 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
         }
 	}
 		
+	/**
+	 * Validate changes and save.
+	 */
 	private void validateChangePassword()
     {
 		int p_AD_User_ID = -1;
@@ -375,17 +392,21 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			user.setIsExpired(true);
 		
 		try {
-			user.saveEx();
-		}
-		catch(AdempiereException e)
-		{
+			if (user.getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) != 0)
+				user.saveCrossTenantSafeEx();
+			else
+				user.saveEx();
+		} catch(AdempiereException e) {
 			throw e;
 		}
 		clearForm();
-		FDialog.info(form.getWindowNo(), form, "RecordSaved");
+		Dialog.info(form.getWindowNo(), "RecordSaved");
 		return;
     }
 	
+	/**
+	 * Reset form.
+	 */
 	private void clearForm()
 	{
 		fUser.setValue(null);

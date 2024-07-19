@@ -98,7 +98,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 				.append(nRows);
 			if (lookup instanceof MLookup) {
 				MLookup mlookup = (MLookup) lookup;
-				List<String> displayColumns = mlookup.getLookupInfo().lookupDisplayColumns;
+				List<String> displayColumns = mlookup.getLookupInfo().lookupDisplayColumnNames;
 				if (displayColumns != null && displayColumns.size() > 0) {
 					queryBuilder.append(",")
 						.append("searchcolumn:")

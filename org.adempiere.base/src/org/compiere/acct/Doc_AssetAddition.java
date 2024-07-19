@@ -146,7 +146,7 @@ public class Doc_AssetAddition extends Doc
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		int acct_id = MAssetAcct
-				.forA_Asset_ID(getCtx(), as.get_ID(), assetAdd.getA_Asset_ID(), assetAdd.getPostingType(), assetAdd.getDateAcct(), null)
+				.forA_Asset_ID(getCtx(), as.get_ID(), assetAdd.getA_Asset_ID(), assetAdd.getPostingType(), assetAdd.getDateAcct(), assetAdd.get_TrxName())
 				.getA_Asset_Acct();
 		return MAccount.get(getCtx(), acct_id);
 	}

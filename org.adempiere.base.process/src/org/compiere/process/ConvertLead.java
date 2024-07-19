@@ -20,7 +20,6 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.I_C_ContactActivity;
@@ -28,6 +27,7 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOpportunity;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -196,7 +196,7 @@ public class ConvertLead extends SvrProcess {
 				p_C_Currency_ID  = para.getParameterAsInt();
 			else 
 			{
-				log.log(Level.WARNING, "Unknown parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 			
 			if ( MUser.Table_ID == getTable_ID() )

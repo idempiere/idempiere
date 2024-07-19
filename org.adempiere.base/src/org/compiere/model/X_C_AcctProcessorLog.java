@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_AcctProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctProcessorLog")
 public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_AcctProcessorLog (Properties ctx, int C_AcctProcessorLog_ID, String trxName)

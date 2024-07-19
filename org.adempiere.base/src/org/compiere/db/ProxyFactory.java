@@ -13,6 +13,7 @@
 package org.compiere.db;
 
 import java.lang.reflect.Proxy;
+import java.sql.Connection;
 
 import org.compiere.util.CCallableStatement;
 import org.compiere.util.CPreparedStatement;
@@ -56,6 +57,21 @@ public class ProxyFactory {
 				new PreparedStatementProxy(resultSetType, resultSetConcurrency, sql, trxName));
 	}
 
+	/**
+	 * 
+	 * @param resultSetType
+	 * @param resultSetConcurrency
+	 * @param sql
+	 * @param trxName
+	 * @return CPreparedStatement proxy
+	 */
+	public static CPreparedStatement newCPreparedStatement(int resultSetType,
+			int resultSetConcurrency, String sql, Connection connection) {
+		return (CPreparedStatement)Proxy.newProxyInstance(CPreparedStatement.class.getClassLoader(), 
+				new Class[]{CPreparedStatement.class}, 
+				new PreparedStatementProxy(resultSetType, resultSetConcurrency, sql, connection));
+	}
+	
 	/**
 	 * 
 	 * @param resultSetType

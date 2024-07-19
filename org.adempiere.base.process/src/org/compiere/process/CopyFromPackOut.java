@@ -27,6 +27,7 @@ package org.compiere.process;
 import java.util.logging.Level;
 
 import org.compiere.model.MPackageExp;
+import org.compiere.model.MProcessPara;
 
 /**
  * Copy Package Details from another Pack Out
@@ -49,8 +50,7 @@ public class CopyFromPackOut extends SvrProcess {
 				p_AD_Package_Exp_ID = para.getParameterAsInt();
 				break;
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}

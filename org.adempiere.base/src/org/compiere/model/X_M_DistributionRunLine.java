@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionRunLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionRunLine")
 public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName)

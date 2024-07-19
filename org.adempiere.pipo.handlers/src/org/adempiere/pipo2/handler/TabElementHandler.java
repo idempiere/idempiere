@@ -128,7 +128,7 @@ public class TabElementHandler extends AbstractElementHandler {
 
 		//Fields tags.
 		String sql = "SELECT AD_Field_ID FROM AD_FIELD WHERE AD_TAB_ID = " + AD_Tab_ID
-			+ "ORDER BY SEQNO asc";
+			+ " ORDER BY SEQNO asc";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {

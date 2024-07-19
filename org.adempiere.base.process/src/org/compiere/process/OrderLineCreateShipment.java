@@ -23,6 +23,7 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -54,7 +55,7 @@ public class OrderLineCreateShipment extends SvrProcess
 			if (name.equals("MovementDate"))
 				p_MovementDate = (Timestamp) para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		if (p_MovementDate == null)

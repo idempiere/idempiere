@@ -35,6 +35,7 @@ import org.compiere.model.MDiscountSchema;
 import org.compiere.model.MDiscountSchemaLine;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPO;
 import org.compiere.model.MProductPrice;
@@ -79,7 +80,7 @@ public class M_PriceList_Create extends SvrProcess {
 			else if (name.equals("DeleteOld"))
 				p_DeleteOld = para.getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 		p_PriceList_Version_ID = getRecord_ID();
 		m_AD_PInstance_ID = getAD_PInstance_ID();
@@ -342,7 +343,7 @@ public class M_PriceList_Create extends SvrProcess {
 
 			/** Calculations	**/
 			MProductPrice[] pp = m_plv.getProductPrice(
-					"AND EXISTS (SELECT * FROM T_Selection s "
+					" AND EXISTS (SELECT * FROM T_Selection s "
 							+ "WHERE s.AD_PInstance_ID = " + m_AD_PInstance_ID + " AND s.T_Selection_ID=M_ProductPrice.M_Product_ID)");
 			for (MProductPrice price : pp) {
 				BigDecimal priceList = price.getPriceList();

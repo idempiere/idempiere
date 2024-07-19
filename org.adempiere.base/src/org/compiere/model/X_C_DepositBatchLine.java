@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatchLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatchLine")
 public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)

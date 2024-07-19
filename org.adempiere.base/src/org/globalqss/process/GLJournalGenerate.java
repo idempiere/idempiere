@@ -49,6 +49,7 @@ import org.compiere.model.MJournalGeneratorLine;
 import org.compiere.model.MJournalGeneratorSource;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -112,7 +113,7 @@ public class GLJournalGenerate extends SvrProcess
 			else if (name.equals("M_Product_ID"))
 				p_M_Product_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_QSS_JournalGenerator_ID = getRecord_ID();
 	}	//	prepare

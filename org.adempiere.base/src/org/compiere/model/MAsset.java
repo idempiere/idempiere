@@ -390,8 +390,8 @@ public class MAsset extends X_A_Asset {
 			DB.executeUpdateEx("UPDATE A_Asset SET IsDepreciated='" + isDepreciated + "', isOwned ='" + isOwned + "' WHERE A_Asset_ID=" + getA_Asset_ID(), get_TrxName());
 			//end @win
 			
-			// for each asset group acounting create an asset accounting and a workfile too
-			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), getA_Asset_Group_ID()))
+			// for each asset group accounting create an asset accounting and a workfile too
+			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), getA_Asset_Group_ID(), null, get_TrxName()))
 			{			
 				if (assetgrpacct.getAD_Org_ID() == 0 || assetgrpacct.getAD_Org_ID() == getAD_Org_ID()) 
 				{

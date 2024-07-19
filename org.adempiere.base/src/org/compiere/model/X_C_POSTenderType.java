@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSTenderType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_POSTenderType")
 public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_POSTenderType (Properties ctx, int C_POSTenderType_ID, String trxName)

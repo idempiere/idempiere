@@ -13,7 +13,9 @@ expression
  | left=expression op=binary right=expression     #binaryExpression
  | bool                                           #boolExpression
  | VARIABLE				    	    			  #contextVariables
+ | QCSVTEXT										  #quotedCSVText
  | QTEXT										  #quotedText
+ | DQCSVTEXT									  #doubleQuotedCSVText
  | DQTEXT										  #doubleQuotedText
  | TEXT                                     	  #text
  | DECIMAL                                        #decimalExpression
@@ -47,7 +49,12 @@ LPAREN     : '(' ;
 RPAREN     : ')' ;
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
 VARIABLE   : '@'(.*?)'@' ;
+COMMA	   : ',' ;
+QCOMMA	   : '\',' ;
 QTEXT 	   : ['](.*?)['] ;
+QCSVTEXT   : [']~(['])*(QCOMMA)(QTEXT)(COMMA QTEXT)* ;
+DQCOMMA    : '",';
 DQTEXT 	   : ["](.*?)["] ;
+DQCSVTEXT  : ["]~(["])*(DQCOMMA)(DQTEXT)(COMMA DQTEXT)* ;
 TEXT 	   : [a-zA-Z_0-9,]+ ;
 WS         : [ \r\t\u000C\n]+ -> skip;

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageOnHand
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageOnHand")
 public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)
@@ -91,7 +91,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
       return sb.toString();
     }
 
-	/** Set Date last inventory count.
+	/** Set Date Last Inventory Count.
 		@param DateLastInventory Date of Last Inventory Count
 	*/
 	public void setDateLastInventory (Timestamp DateLastInventory)
@@ -99,7 +99,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 		set_Value (COLUMNNAME_DateLastInventory, DateLastInventory);
 	}
 
-	/** Get Date last inventory count.
+	/** Get Date Last Inventory Count.
 		@return Date of Last Inventory Count
 	  */
 	public Timestamp getDateLastInventory()

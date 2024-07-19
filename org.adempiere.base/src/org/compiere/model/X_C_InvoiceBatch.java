@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceBatch
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceBatch")
 public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_InvoiceBatch (Properties ctx, int C_InvoiceBatch_ID, String trxName)

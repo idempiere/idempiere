@@ -22,7 +22,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Datebox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -30,15 +30,22 @@ import org.compiere.util.Env;
 public class Datebox extends org.zkoss.zul.Datebox
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5890574778856946570L;
 
+	/**
+	 * Default constructor.
+	 * Set format to pattern from {@link DisplayType#getDateFormat(org.compiere.util.Language)}.
+	 */
 	public Datebox() {
 		super();
 		setFormat(DisplayType.getDateFormat(AEnv.getLanguage(Env.getCtx())).toPattern());
 	}
 
+	/**
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled)
     {
         this.setReadonly(!enabled);
@@ -46,6 +53,9 @@ public class Datebox extends org.zkoss.zul.Datebox
         this.setButtonVisible(enabled);
     }
     
+	/**
+	 * @return true if enable, false otherwise
+	 */
     public boolean isEnabled()
     {
     	return !isReadonly();

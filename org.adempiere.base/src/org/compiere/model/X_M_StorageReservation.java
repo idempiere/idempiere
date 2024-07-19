@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservation
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservation")
 public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
@@ -93,7 +93,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
       return sb.toString();
     }
 
-	/** Set Date last inventory count.
+	/** Set Date Last Inventory Count.
 		@param DateLastInventory Date of Last Inventory Count
 	*/
 	public void setDateLastInventory (Timestamp DateLastInventory)
@@ -101,7 +101,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 		set_Value (COLUMNNAME_DateLastInventory, DateLastInventory);
 	}
 
-	/** Get Date last inventory count.
+	/** Get Date Last Inventory Count.
 		@return Date of Last Inventory Count
 	  */
 	public Timestamp getDateLastInventory()

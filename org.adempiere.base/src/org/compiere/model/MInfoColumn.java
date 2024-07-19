@@ -188,6 +188,13 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 			setSeqNoSelection(next);
 		}
 
+		if (!isQueryCriteria()) {
+			if (isQueryAfterChange())
+				setIsQueryAfterChange(false);
+			if (isMandatory())
+				setIsMandatory(false);
+		}
+		
 		return true;
 	}
 	

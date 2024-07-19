@@ -20,10 +20,10 @@ package org.globalqss.process;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.logging.Level;
 
 import org.compiere.model.MCashPlan;
 import org.compiere.model.MCashPlanLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
@@ -78,7 +78,7 @@ public class GeneratePeriodicCashPlanLines  extends SvrProcess {
 			else if (name.equals("Probability"))
 				p_Probability = (BigDecimal) para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_CashPlan_ID = getRecord_ID();
 	}

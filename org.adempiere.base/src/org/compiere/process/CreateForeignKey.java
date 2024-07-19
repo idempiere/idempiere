@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.DatabaseKey;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
@@ -60,7 +61,7 @@ public class CreateForeignKey extends SvrProcess {
 			else if (name.equals("AD_Column_ID"))
 				p_AD_Column_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

@@ -29,10 +29,13 @@
 
 package org.adempiere.webui.dashboard;
 
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZkContextRunnable;
+import org.compiere.Adempiere;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -42,9 +45,12 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Toolbar;
 
+/**
+ * Dashboard gadget for {@link WDocumentStatusPanel} 
+ */
 public class DPDocumentStatus extends DashboardPanel implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7904122964566112177L;
 	private WDocumentStatusPanel statusPanel;
@@ -52,7 +58,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	@Override
 	public void refresh(ServerPushTemplate template) {
 		statusPanel.refresh();
-		template.execute(this);
+		template.executeAsync(this);
 	}
 
 	@Override
@@ -60,6 +66,9 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		statusPanel.updateUI();
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public DPDocumentStatus()
 	{
 		super();
@@ -91,17 +100,35 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		}
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		String eventName = event.getName();
 
 		if (eventName.equals(Events.ON_CLICK)) {
-			statusPanel.refresh();
-			statusPanel.updateUI();
+    		BusyDialog busyDialog = new BusyDialog();
+            busyDialog.setShadow(false);
+            getParent().insertBefore(busyDialog, getParent().getFirstChild());
+			ServerPushTemplate template = new ServerPushTemplate(getDesktop());
+    		ZkContextRunnable cr = new ZkContextRunnable() {
+    			@Override
+				protected void doRun() {
+    				refresh(template);
+    				template.executeAsync(() -> {
+    					busyDialog.detach();
+    				});
+    			}
+    		};
+    		Adempiere.getThreadPoolExecutor().submit(cr);
 		}
 	}	
 	
 	@Override
 	public boolean isPooling() {
+		return true;
+	}
+
+	@Override
+	public boolean isLazy() {
 		return true;
 	}
 }

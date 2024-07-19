@@ -26,6 +26,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.acct.Doc;
+import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MClient;
@@ -66,6 +67,9 @@ public class Match
 	//private static final int		MODE_MATCHED = 1;
 
 	/**	Indexes in Table			*/
+	public static final int		I_ID = 0;
+	public static final int		I_DocumentNo = 1;
+	public static final int		I_DocumentDate = 2;
 	public static final int		I_BPartner = 3;
 	public static final int		I_Line = 4;
 	public static final int		I_Product = 5;
@@ -146,7 +150,6 @@ public class Match
 	 */
 	public void cmd_process(IMiniTable xMatchedTable, IMiniTable xMatchedToTable, int matchMode, int matchFrom, String matchTo, BigDecimal m_xMatched)
 	{
-		log.config("");
 		//  Matched From
 		int matchedRow = xMatchedTable.getSelectedRow();
 		if (matchedRow < 0)
@@ -311,7 +314,7 @@ public class Match
 				m_sql.append(" AND mi.M_InOutLine_ID  = ").append(Line_ID);
 			
 			m_groupBy = " GROUP BY hdr.C_Invoice_ID,hdr.DocumentNo,hdr.DateInvoiced,bp.Name,hdr.C_BPartner_ID,"
-				+ " lin.Line,lin.C_InvoiceLine_ID,p.Name,lin.M_Product_ID,dt.DocBaseType,lin.QtyInvoiced, org.Name, hdr.AD_Org_ID " //JAVIER
+				+ " lin.Line,lin.C_InvoiceLine_ID,p.Name,lin.M_Product_ID,dt.DocBaseType,lin.QtyInvoiced, org.Name, hdr.AD_Org_ID, dt.DocBaseType " //JAVIER
 				+ "HAVING "
 				+ (matched ? "0" : "CASE WHEN dt.DocBaseType='APC' THEN lin.QtyInvoiced * -1 ELSE lin.QtyInvoiced END")
 				+ "<>SUM(NVL(mi.Qty,0))";
@@ -394,7 +397,7 @@ public class Match
 				m_sql.append(" AND m.C_OrderLine_ID  = ").append(Line_ID);
 
 			m_groupBy = " GROUP BY hdr.M_InOut_ID,hdr.DocumentNo,hdr.MovementDate,bp.Name,hdr.C_BPartner_ID,"
-				+ " lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID, dt.DocBaseType " //JAVIER
+				+ " lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID, dt.DocBaseType, hdr.IsSOTrx " //JAVIER
 				+ "HAVING "
 				+ (matched ? "0" : "CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END");
 			if (matchToType == MATCH_ORDER)
@@ -608,4 +611,22 @@ public class Match
 			return m_matchOptions[matchType];
 		return null;
 	}
+	
+	/**
+	 * 
+	 * @return {@link ColumnInfo} array
+	 */
+	public ColumnInfo[] getColumnLayout() {
+		ColumnInfo[] layout = new ColumnInfo[] {
+				new ColumnInfo(" ",                                         ".", IDColumn.class, false, false, ""),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"),   ".", String.class),             //  1
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Date"),         ".", Timestamp.class),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),".", KeyNamePair.class, "."),   //  3
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Line"),         ".", KeyNamePair.class, "."),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"), ".", KeyNamePair.class, "."),   //  5
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),          ".", Double.class),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Matched"),      ".", Double.class)
+			};
+		return layout;
+	}	
 }

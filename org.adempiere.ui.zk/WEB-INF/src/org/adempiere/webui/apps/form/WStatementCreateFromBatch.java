@@ -41,9 +41,10 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.StatementCreateFromBatch;
 import org.compiere.model.MBankStatement;
+import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -58,20 +59,25 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 
 /**
- * 
+ * Form to create bank statement line ({@link MBankStatementLine}) from transactions (payment, receipt, etc).
  * @author Elaine
  *
  */
 @org.idempiere.ui.zk.annotation.Form
 public class WStatementCreateFromBatch extends StatementCreateFromBatch implements IFormController, EventListener<Event>
 {
+	/** Create From Form instance */
 	private WCreateFromForm form;
 	
+	/**
+	 * default constructor
+	 */
 	public WStatementCreateFromBatch()
 	{
 		form = new WCreateFromForm(this);
 	}
 	
+	@Override
 	public void initForm()
 	{
 		try
@@ -98,45 +104,55 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	private final static CLogger log = CLogger.getCLogger(WStatementCreateFromBatch.class);
 	
 	protected Label bankAccountLabel = new Label();
+	/** Bank account parameter */
 	protected WTableDirEditor bankAccountField;
 	
 	protected Label documentNoLabel = new Label(Msg.translate(Env.getCtx(), "DocumentNo"));
+	/** Document number parameter */
 	protected WStringEditor documentNoField = new WStringEditor();
 
 	protected Label documentTypeLabel = new Label();
+	/** Document type parameter */
 	protected WTableDirEditor documentTypeField;
 
 	protected Label authorizationLabel = new Label();
+	/** Authorization code parameter */
 	protected WStringEditor authorizationField = new WStringEditor();
 
 	protected Label tenderTypeLabel = new Label();
+	/** Tender type parameter */
 	protected WTableDirEditor tenderTypeField;
 	
 	protected Label amtFromLabel = new Label(Msg.translate(Env.getCtx(), "PayAmt"));
+	/** Amount from parameter */
 	protected WNumberEditor amtFromField = new WNumberEditor("AmtFrom", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtFrom"));
 	protected Label amtToLabel = new Label("-");
+	/** Amount to parameter */
 	protected WNumberEditor amtToField = new WNumberEditor("AmtTo", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtTo"));
 	
 	protected Label BPartner_idLabel = new Label(Msg.translate(Env.getCtx(), "BPartner"));
+	/** Business partner parameter */
 	protected WEditor bPartnerLookup;
 
 	protected Label dateFromLabel = new Label(Msg.translate(Env.getCtx(), "DateTrx"));
+	/** Date from parameter */
 	protected WDateEditor dateFromField = new WDateEditor("DateFrom", false, false, true, Msg.translate(Env.getCtx(), "DateFrom"));
 	protected Label dateToLabel = new Label("-");
+	/** Date to parameter */
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 	
+	/** Layout of parameter panel */
 	protected Grid parameterBankLayout;
 
 	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
+	 * Dynamic initialization of UI components.
 	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
 		super.dynInit();
 		
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		//Refresh button
 		Button refreshButton = form.getConfirmPanel().createButton(ConfirmPanel.A_REFRESH);
@@ -145,7 +161,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		
 		if (form.getGridTab() != null && form.getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			FDialog.error(0, form, "SaveErrorRowNotFound");
+			Dialog.error(0, "SaveErrorRowNotFound");
 			return false;
 		}
 		
@@ -180,6 +196,9 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * handle onClientInfo event from browser
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && parameterBankLayout != null && parameterBankLayout.getColumns() != null)
@@ -205,6 +224,10 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 
+	/**
+	 * Layout {@link #form}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
@@ -269,6 +292,10 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 
+	/**
+	 * Setup columns of {@link #parameterBankLayout}
+	 * @param parameterBankLayout
+	 */
 	protected void setupColumns(Grid parameterBankLayout) {
 		Columns columns = new Columns();
 		parameterBankLayout.appendChild(columns);
@@ -298,11 +325,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 	
-	/**
-	 *  Action Listener
-	 *  @param e event
-	 * @throws Exception 
-	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
@@ -313,15 +336,20 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 	
+	@Override
 	public void executeQuery()
 	{
-		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString(),
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString(),
 				form.getGridTab()));
 	}
 	
+	/**
+	 * load data into list box ({@link WCreateFromForm#getWListbox()})
+	 * @param data
+	 */
 	protected void loadTableOIS (Vector<?> data)
 	{
 		form.getWListbox().clear();
@@ -337,6 +365,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		configureMiniTable(form.getWListbox());
 	}
 	
+	@Override
 	public ADForm getForm() 
 	{
 		return form;

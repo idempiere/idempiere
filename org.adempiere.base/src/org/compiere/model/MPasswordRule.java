@@ -64,7 +64,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5454698615095632059L;
+	private static final long serialVersionUID = 6778305268023192107L;
 
 	private static final String passay_prefix = "PASSAY_";
 
@@ -219,11 +219,9 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
 				StringBuilder error = new StringBuilder(Msg.getMsg(getCtx(), "PasswordErrors"));
-				error.append(": [");
 				for(RuleResultDetail detail : result.getDetails()){
-					error.append(" ").append(resolveMessage(detail));
+					error.append("\n- ").append(resolveMessage(detail));
 				}
-				error.append(" ]");
 				throw new AdempiereException(error.toString());
 			}
 		}

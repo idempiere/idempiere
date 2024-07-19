@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.AEnv;
@@ -37,7 +38,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogMgt;
@@ -68,12 +69,12 @@ import org.zkoss.zul.Vlayout;
 public class ValuePreference extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7594680475358417813L;
 
 	/**
-	 *  Factory
+	 *  Show value preference dialog
 	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
@@ -89,7 +90,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  start
 
 	/**
-	 *  Factory
+	 *  Show value preference dialog
 	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
@@ -127,50 +128,16 @@ public class ValuePreference extends Window implements EventListener<Event>
 		int AD_Org_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "AD_Org_ID");
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		
-		//  Create Editor
+		//  Create and show value preference dialog 
 		@SuppressWarnings("unused")
 		ValuePreference vp = new ValuePreference (WindowNo,
-			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_Infowindow_ID(),
+			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_InfoWindow_ID_of_Panel(),
 			Attribute, DisplayAttribute, Value, DisplayValue,
 			displayType, AD_Reference_ID, ref);
-	}   //  create
+	}   //  start
 
-	/**
-	 *  Create the popup menu item to start the ValuePreference editor.
-	 *  <code>
-	 *  .. add method
-	 *  public void setField (MField mField)
-	 *  {
-	 *      m_mField = mField;
-	 *      if (m_mField != null)
-	 *          ValuePreference.addMenu (this, m_popupMenu);
-	 *	}   //  setField
-	 *
-	 *  .. in actionPerformed add ..
-	 *  if (e.getActionCommand().equals(ValuePreference.NAME))
-	 *  {
-	 *      ValuePreference.start (m_mField, getValue(), DisplayValue);
-	 *      return;
-	 *  }
-	 *  </code>
-	 *  @param l listener
-	 *  @param popupMenu menu
-	 *  @return JMenuItem
-	 */
-	/*
-	public static CMenuItem addMenu (ActionListener l, JPopupMenu popupMenu)
-	{
-		CMenuItem mi = new CMenuItem (Msg.getMsg(Env.getCtx(), NAME), s_icon);
-		mi.setActionCommand(NAME);
-		mi.addActionListener(l);
-		popupMenu.add(mi);
-		return mi;
-	}*/   //  addMenu
-
-	/** The Name of the Editor      */
+	/** The Name of the Dialog      */
 	public static final String      NAME = "ValuePreference";
-	/** The Menu Icon               */
-	//private static String ICON_URL = "images/VPreference16.png";
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(ValuePreference.class);
 	private AbstractADWindowContent adwindowContent;
@@ -189,7 +156,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 *  @param DisplayValue value display
 	 *  @param displayType display type
 	 *  @param AD_Reference_ID reference
-	 * @param ref 
+	 *  @param ref 
 	 */
 	public ValuePreference (int WindowNo,
 		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID, int AD_Process_ID_Of_Panel, int AD_Infowindow_ID,
@@ -439,7 +406,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//  ActionListener
 		cbClient.setEnabled(false);
 		cbClient.setChecked(true);
-	//	cbClient.addActionListener(this);
 		
 		//	Can Change Org
 		if (MRole.PREFERENCETYPE_Client.equals(m_role.getPreferenceType()))
@@ -473,7 +439,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  dynInit
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e event
 	 */
 	public void onEvent(Event e) throws Exception
@@ -491,14 +457,14 @@ public class ValuePreference extends Window implements EventListener<Event>
 		{
 			int no = delete();
 			if (no == 0)
-				FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotFound");
+				Dialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotFound");
 			else
-				FDialog.info(m_WindowNo, this, "ValuePreferenceDeleted", String.valueOf(no));
+				Dialog.info(m_WindowNo, "ValuePreferenceDeleted", String.valueOf(no));
 			detach();
 		}
 		else
 			setExplanation();
-	}   //  actionPerformed
+	}
 
 	private void onCancel() {
 		this.detach();
@@ -557,8 +523,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 */
 	public int delete()
 	{
-		log.info("");
-
 		StringBuilder sql = new StringBuilder ("DELETE FROM AD_Preference WHERE ");
 		sql.append("AD_Client_ID=").append(cbClient.isChecked() ? m_AD_Client_ID : 0);
 		sql.append(" AND AD_Org_ID=").append(cbOrg.isChecked() ? m_AD_Org_ID : 0);
@@ -610,9 +574,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  delete
 
 	/**
-	 *  Get Context Key
-	 *  preferences in context update follow key.
-	 *  they load when login, and update when change.
+	 *  Get Context Key.
+	 *  Preferences in context update follow key.
+	 *  They load when login, and update when change.
 	 *  @see Login#loadPreferences(org.compiere.util.KeyNamePair, org.compiere.util.KeyNamePair, java.sql.Timestamp, String)
 	 *  and set to field when display field, {@link GridField#getDefault()}
 	 *  @return Context Key
@@ -654,12 +618,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  getContextKey
 
 	/**
-	 *  Save to Disk
+	 *  Save to DB
 	 */
 	public void insert()
 	{
-		log.info("");
-
 		//  --- Delete first
 		int no = delete();
 		
@@ -672,7 +634,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 				m_Value = " ";
 			else
 			{
-				FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
+				Dialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
 				return;
 			}
 		}
@@ -681,6 +643,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 		int Client_ID = cbClient.isChecked() ? m_AD_Client_ID : 0;
 		int Org_ID = cbOrg.isChecked() ? m_AD_Org_ID : 0;
 		int AD_Preference_ID = DB.getNextID(m_ctx, "AD_Preference", null);
+		if (AD_Preference_ID < 0)
+			throw new AdempiereException("Cannot obtain sequence for AD_Preference");
 		//
 		StringBuilder sql = new StringBuilder ("INSERT INTO AD_Preference ("
 			+ "AD_Preference_ID, AD_Preference_UU, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"
@@ -733,10 +697,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		if (no == 1)
 		{
 			Env.setContext(m_ctx, getContextKey(), m_Value);
-			FDialog.info(m_WindowNo, this, "ValuePreferenceInserted");
+			Dialog.info(m_WindowNo, "ValuePreferenceInserted");
 		}
 		else
-			FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
+			Dialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
 
 	}   //  insert
 

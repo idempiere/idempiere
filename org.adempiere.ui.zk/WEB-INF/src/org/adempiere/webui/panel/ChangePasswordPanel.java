@@ -41,6 +41,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
@@ -284,7 +285,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         	MPasswordRule pwdrule = MPasswordRule.getRules(Env.getCtx(), null);
 			if (pwdrule != null) {
 				try {
-					pwdrule.validate(m_userName, txtNewPassword.getValue(), new ArrayList<MPasswordHistory>());
+					pwdrule.validate(Login.getAppUser(m_userName), txtNewPassword.getValue(), new ArrayList<MPasswordHistory>());
 				}
 				catch (Exception e) {
 					throw new WrongValueException(txtNewPassword, e.getMessage());
@@ -346,7 +347,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    	{	    		
 	    		int clientId = clientKNPair.getKey();
 	    		Env.setContext(m_ctx, Env.AD_CLIENT_ID, clientId);
-	    		MUser user = MUser.get(m_ctx, m_userName);
+	    		MUser user = MUser.get(m_ctx, Login.getAppUser(m_userName));
 	    		if (user == null)
 	    		{
 	    			trx.rollback();

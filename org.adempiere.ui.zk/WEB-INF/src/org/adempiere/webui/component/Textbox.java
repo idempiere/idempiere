@@ -24,7 +24,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Textbox}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -36,23 +36,35 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 	 */
 	private static final long serialVersionUID = -3919623360765045602L;
 
+	/** Optional obscure support */
 	private Obscure	m_obscure = null;
 
+	/** true if text box is in focus */
 	private boolean m_infocus;
 
-
+	/**
+	 * Default constructor
+	 */
     public Textbox()
     {
         super();
         addFocusListener(this);
     }
 
+    /**
+     * @param value
+     * @throws WrongValueException
+     */
     public Textbox(String value) throws WrongValueException
     {
         super(value);
         addFocusListener(this);
     }
 
+    /**
+     * Enable/disable text box
+     * @param enabled
+     */
     public void setEnabled(boolean enabled)
     {
         this.setDisabled(!enabled);
@@ -64,6 +76,10 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
     	this.setDisabled(readonly);
     }
 
+    /**
+     * Set obscure type
+     * @param obscureType One of OBSCURETYPE_* at {@link Obscure}.
+     */
     public void setObscureType(String obscureType)
     {
     	if (obscureType != null && obscureType.length() > 0)
@@ -78,7 +94,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
     }
 
     /**
-     * method to ease porting of swing form
+     * Add ON_FOCUS and ON_BLUR listener
      * @param listener
      */
 	public void addFocusListener(EventListener<Event> listener) {
@@ -110,6 +126,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 		}
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_FOCUS.equals(event.getName()))
 		{

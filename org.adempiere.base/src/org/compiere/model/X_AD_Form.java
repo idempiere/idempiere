@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Form
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Form")
-public class X_AD_Form extends PO implements I_AD_Form, I_Persistent 
+public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230324L;
 
     /** Standard Constructor */
     public X_AD_Form (Properties ctx, int AD_Form_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -253,6 +253,22 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** Set Image URL.
+		@param ImageURL URL of  image
+	*/
+	public void setImageURL (String ImageURL)
+	{
+		set_ValueNoCheck (COLUMNNAME_ImageURL, ImageURL);
+	}
+
+	/** Get Image URL.
+		@return URL of  image
+	  */
+	public String getImageURL()
+	{
+		return (String)get_Value(COLUMNNAME_ImageURL);
+	}
+
 	/** Set Beta Functionality.
 		@param IsBetaFunctionality This functionality is considered Beta
 	*/
@@ -267,10 +283,10 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
 	public boolean isBetaFunctionality()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBetaFunctionality);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -311,7 +327,7 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

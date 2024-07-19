@@ -19,7 +19,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Script;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
@@ -143,9 +142,8 @@ public class TimeoutPanel extends Window implements
 		if (event.getName().equals("onTimer")) 
 		{
 				timer.stop();
-				SessionManager.logoutSession();
-				Executions.sendRedirect("/index.zul");
 				Clients.confirmClose(null);
+				SessionManager.logoutSession();
 		}
 	}
 }

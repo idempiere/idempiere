@@ -45,7 +45,7 @@ public class AutoCommitConnectionBroker {
 			} 
 		} catch (SQLException e) {}
     	
-    	Connection connection = DB.createConnection(true, false, Connection.TRANSACTION_READ_COMMITTED);
+    	Connection connection = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
 		connReference = new ConnectionReference(connection);
 		threadLocalConnection.set(connReference);
 		return connection;

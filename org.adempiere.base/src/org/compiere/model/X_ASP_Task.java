@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Task
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Task")
 public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_ASP_Task (Properties ctx, int ASP_Task_ID, String trxName)

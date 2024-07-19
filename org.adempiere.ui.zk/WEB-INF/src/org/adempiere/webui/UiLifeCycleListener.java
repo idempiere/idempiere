@@ -20,8 +20,8 @@ import org.zkoss.zk.ui.ShadowElement;
 import org.zkoss.zk.ui.util.UiLifeCycle;
 
 /**
+ * Utility class for selenium support
  * @author hengsin
- *
  */
 public class UiLifeCycleListener implements UiLifeCycle {
 

@@ -18,6 +18,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRfQResponse;
 
 /**
@@ -40,11 +41,10 @@ public class RfQResponseCComplete extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_RfQResponse_ID = getRecord_ID();
 	}	//	prepare

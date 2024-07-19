@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_ProductPlanning
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="I_ProductPlanning")
 public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName)
@@ -949,16 +949,16 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 		return bd;
 	}
 
-	/** Set Transfert Time.
-		@param TransfertTime Transfert Time
+	/** Set Transfer Time.
+		@param TransfertTime Transfer Time
 	*/
 	public void setTransfertTime (BigDecimal TransfertTime)
 	{
 		set_Value (COLUMNNAME_TransfertTime, TransfertTime);
 	}
 
-	/** Get Transfert Time.
-		@return Transfert Time	  */
+	/** Get Transfer Time.
+		@return Transfer Time	  */
 	public BigDecimal getTransfertTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TransfertTime);

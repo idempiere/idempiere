@@ -81,6 +81,9 @@ import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 
+/**
+ * Form to create order, invoice or project lines from BOM. 
+ */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VBOMDrop")
 public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChangeListener
 {
@@ -89,73 +92,86 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	 */
 	private static final long serialVersionUID = -525234460800183807L;
 
-	private static final String FEATURE_GROUP_KEY = "FeatureGroupKey";
+	/** Groupbox attribute to store BOMLevel|Feature string */
+	private static final String FEATURE_GROUP_KEY_ATTR = "FeatureGroupKey";
 
-	private static final String OPTION_PRODUCT_KEY = "OptionProductKey";
+	/** Checkbox/Radio attribute to store ParentProductID_ChildProductID string */
+	private static final String OPTION_PRODUCT_KEY_ATTR = "OptionProductKey";
 
-	/**	Product to create BOMs from	*/
+	/**	BOM parent product	*/
 	private MProduct m_product;
 	
-	/** BOM Qty						*/
+	/** BOM Qty */
 	private BigDecimal m_qty = Env.ONE;
 	
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WBOMDrop.class);
 	
-	/**	List of all selectors		*/
+	/**	List of selector/checkbox for each BOM line */
 	private ArrayList<org.zkoss.zul.Checkbox> m_selectorList = new ArrayList<org.zkoss.zul.Checkbox>();
 	
-	/**	List of all quantities		*/
+	/**	List of quantity for each BOM line */
 	private ArrayList<Decimalbox> m_qtyList = new ArrayList<Decimalbox>();
 	
-	/**	List of all products		*/
+	/**	List of product for each BOM line */
 	private ArrayList<Integer> m_productList = new ArrayList<Integer>();
 	
-	/** list child panel of each checkbox+product */
+	/** list of child panel for each BOM line */
 	private ArrayList<Layout> m_childPanelList = new ArrayList<Layout>();
 
-	/** list of panel for checkbox and child panel of a product */
+	/** list of panel for each BOM line */
 	private ArrayList<Layout> m_productPanelList = new ArrayList<Layout>();
 	
-	/** Alternative Group Map		*/
+	/** GroupKey:RadioGroup. Alternative Group Map */
 	private HashMap<String, Radiogroup> m_alternativeGroups = new HashMap<String,Radiogroup>();
 
-	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-	//content panel of selectionGroupbox
-	private Grid selectionPanel = GridFactory.newGridLayout();
+	/** Main layout */
+	private Borderlayout borderLayout;
 	
+	/** Selection/parameters group box, north of {@link #borderLayout} */
+	private Groupbox selectionGroupbox = new Groupbox();
+	/** Grid layout of {@link #selectionGroupbox} */
+	private Grid selectionPanel = GridFactory.newGridLayout();
+	/** BOM parent product field of {@link #selectionPanel} */
+	private WSearchEditor fieldProduct;
+	/** Quantity field of {@link #selectionPanel} */
 	private Decimalbox productQty = new Decimalbox();
+	/** Order field of {@link #selectionPanel} */
 	private Listbox orderField = new Listbox();
+	/** Invoice field of {@link #selectionPanel} */
 	private Listbox invoiceField = new Listbox();
+	/** Project field of {@link #selectionPanel} */
 	private Listbox projectField = new Listbox();
 	
-	//north selection group box
-	private Groupbox selectionGroupbox = new Groupbox();
-	
-	//center bom group box
+	/** BOM group box, center of {@link #borderLayout} */
 	private Groupbox centerGroupbox = new Groupbox();
 	private int indend = 20;
 
-	private WSearchEditor fieldProduct;
+	/** Panel of action buttons. South of {@link #borderLayout} */
+	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	
+	/** Form controller */
 	private BOMDrop bomDrop = new BOMDrop();
 
+	/** ParentProductID_ParentBOMLineLevel:Child Panel (in {@link #m_childPanelList}) */
 	private HashMap<String, Component> m_parentContainerMap = new HashMap<>();
 	
+	/** BOMLevel|Feature:Groupbox */
 	private Map<String, Groupbox> m_featureGroup = new HashMap<>();
 
-	private Borderlayout borderLayout;
-	
-	//selected variant or option with key of ParentProductId_ProductId 
+	/** selected variant or option with key of ParentProductId_ProductId */ 
 	private List<String> m_selectedOtions = new ArrayList<>();
-	//unselected variant or option with key of ParentProductId_ProductId
+	/** unselected variant or option with key of ParentProductId_ProductId */
 	private List<String> m_unselectedOtions = new ArrayList<>();
 
+	/**
+	 * Default constructor
+	 */
 	public WBOMDrop()
 	{}
 	
 	/**
-	 *	Initialize Panel
+	 *	Layout form
 	 */
 	protected void initForm()
 	{
@@ -194,7 +210,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		{
 			log.log(Level.SEVERE, e.getMessage(), e);
 		}
-	}	//	init
+	}
 
 	/**
 	 * 	Dispose
@@ -238,14 +254,13 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		m_alternativeGroups = null;
 	}	//	dispose
 	
-	/**************************************************************************
-	 * 	Create Selection Panel
-	 *	@param order
-	 *	@param invoice
-	 *	@param project
-	 *  @throws Exception 
-	 */
-	
+	/**
+	 * Create Selection/Parameters Panel.
+	 * @param order
+	 * @param invoice
+	 * @param project
+	 * @throws Exception 
+	 */	
 	private void createSelectionPanel (boolean order, boolean invoice, boolean project) throws Exception
 	{
 		Caption caption = new Caption(Msg.translate(Env.getCtx(), "Selection"));
@@ -383,9 +398,9 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		return bomDrop.getDraftInvoices(null);
 	}	//	getInvoices
 
-	/**************************************************************************
-	 * 	Create Main Panel.
-	 * 	Called when changing Product
+	/**
+	 * Create Main Panel.
+	 * Called after change of selected product.
 	 */	
 	private void createMainPanel ()
 	{
@@ -425,8 +440,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	private int maxBomDeep = 0;
 	
 	/**
-	 * 	Add BOM Line to this.
-	 * 	Calls addBOMLines if added product is a BOM
+	 * 	Add BOM line to {@link #m_productPanelList}.
 	 * 	@param bomLine BOM Line
 	 */	
 	private void addBOMLine (BOMLine bomLine)
@@ -460,15 +474,16 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}	//	addBOMLine
 
 	/**
-	 * 	Add Line to Display
+	 * 	Render single BOM line.
 	 *	@param parentM_Product_ID parent product
 	 *	@param M_Product_ID product
 	 *	@param bomType bom type
 	 *	@param name name
 	 *	@param lineQty qty
-	 *  @param parentPanel
+	 *  @param parentPanel child panel of parent product
 	 *  @param bomLevel
 	 *  @param feature
+	 *  @return {@link Layout}
 	 */	
 	private Layout addDisplay (int parentM_Product_ID,
 		int M_Product_ID, String bomType, String name, BigDecimal lineQty, Component parentPanel, int bomLevel, String feature)
@@ -508,7 +523,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		} else {	//	Variant
 			checkbox = new Radio();
 		}	
-		checkbox.setAttribute(OPTION_PRODUCT_KEY, optionKey);
+		checkbox.setAttribute(OPTION_PRODUCT_KEY_ATTR, optionKey);
 		
 		selectPanel.appendChild(checkbox);
 		m_selectorList.add(checkbox);
@@ -556,7 +571,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 			featureGroup = m_featureGroup.get(key);
 			if (featureGroup == null) {
 				featureGroup = new Groupbox();
-				featureGroup.setAttribute(FEATURE_GROUP_KEY, key);
+				featureGroup.setAttribute(FEATURE_GROUP_KEY_ATTR, key);
 				featureGroup.appendChild(new Caption(feature));
 				m_featureGroup.put(key, featureGroup);
 			}
@@ -574,7 +589,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		} else {
 			String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType + "_" +  parentPanel.toString();	
 			if (featureGroup != null) {
-				groupName = groupName + "_" + featureGroup.getAttribute(FEATURE_GROUP_KEY);
+				groupName = groupName + "_" + featureGroup.getAttribute(FEATURE_GROUP_KEY_ATTR);
 			}			
 			Radiogroup radioGroup = m_alternativeGroups.get(groupName);
 			
@@ -623,13 +638,21 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		return outerProductPanel;
 	}	//	addDisplay
 
-	private Div createDivPanel (int with) {
+	/**
+	 * @param width
+	 * @return {@link Div}
+	 */
+	private Div createDivPanel (int width) {
 		Div divPanel = new Div ();
-		ZKUpdateUtil.setWidth(divPanel, String.format("%1$spx", with));
+		ZKUpdateUtil.setWidth(divPanel, String.format("%1$spx", width));
 		divPanel.setStyle("padding-right:0;padding-left:0");
 		return divPanel; 
 	}
 
+	/**
+	 * @param width
+	 * @return {@link Hlayout}
+	 */
 	private Hlayout createHlayoutPanel (String width) {
 		Hlayout layout = new Hlayout();
 		layout.setSpacing("0");
@@ -637,6 +660,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		return layout;
 	}
 
+	/**
+	 * @param width
+	 * @return {@link Vlayout}
+	 */
 	private Vlayout createVlayoutPanel (String width) {
 		Vlayout layout = new Vlayout();
 		layout.setSpacing("0");
@@ -644,10 +671,11 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		return layout;
 	}
 
-	/**************************************************************************
-	 *	Action Listener
-	 *  @param e event
+	/**
+	 * Event Listener
+	 * @param e event
 	 */
+	@Override
 	public void onEvent (Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(e.getName());
@@ -675,19 +703,19 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 						// set qty input of uncheck radio button
 						index = m_selectorList.indexOf(radio);
 						m_qtyList.get(index).setReadonly(true);
-						m_selectedOtions.remove(radio.getAttribute(OPTION_PRODUCT_KEY));
-						m_unselectedOtions.add((String) radio.getAttribute(OPTION_PRODUCT_KEY));
+						m_selectedOtions.remove(radio.getAttribute(OPTION_PRODUCT_KEY_ATTR));
+						m_unselectedOtions.add((String) radio.getAttribute(OPTION_PRODUCT_KEY_ATTR));
 					}
 				}
 			}
 			
 			updateBOMChildVisibility();
 			if (checkbox.isChecked()) {
-				m_selectedOtions.add((String) checkbox.getAttribute(OPTION_PRODUCT_KEY));
-				m_unselectedOtions.remove(checkbox.getAttribute(OPTION_PRODUCT_KEY));
+				m_selectedOtions.add((String) checkbox.getAttribute(OPTION_PRODUCT_KEY_ATTR));
+				m_unselectedOtions.remove(checkbox.getAttribute(OPTION_PRODUCT_KEY_ATTR));
 			} else {
-				m_unselectedOtions.add((String) checkbox.getAttribute(OPTION_PRODUCT_KEY));
-				m_selectedOtions.remove(checkbox.getAttribute(OPTION_PRODUCT_KEY));
+				m_unselectedOtions.add((String) checkbox.getAttribute(OPTION_PRODUCT_KEY_ATTR));
+				m_selectedOtions.remove(checkbox.getAttribute(OPTION_PRODUCT_KEY_ATTR));
 			}
 		}
 		//	Product / Qty
@@ -766,6 +794,9 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		enableSave();
 	}
 
+	/**
+	 * Update state of Ok button in {@link #confirmPanel}.
+	 */
 	private void enableSave() {
 		//	Enable OK
 		boolean OK = m_product != null;
@@ -803,6 +834,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		confirmPanel.setEnabled("Ok", OK);
 	}
 
+	/**
+	 * Handle changes to {@link #fieldProduct}
+	 * @param productFieldValue
+	 */
 	private void onProductChanged(Object productFieldValue) {		
 		int id = (productFieldValue != null && productFieldValue instanceof Integer) ? (Integer)productFieldValue : 0;
 		if (m_product == null || m_product.get_ID() != id)
@@ -812,8 +847,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}
 
 	/**
-	 * update display of bom tree
-	 * for item is not selected, hide child of it.
+	 * Update display of bom tree.
+	 * For item not selected, hide corresponding panel (in {@link #m_childPanelList}).
 	 */
 	protected void updateBOMChildVisibility() {
 		int index = 0;
@@ -831,8 +866,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}
 	
 	/**
-	 * 	Enable/disable qty based on selection
-	 *	@param source JCheckBox or JRadioButton
+	 * Save changes. Delegate to {@link #cmd_save(Trx)}.
+	 * @return true if save successfully, false otherwise.
 	 */
 	private boolean onSave()
 	{
@@ -859,10 +894,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		}
 	}
 	
-	/**************************************************************************
-	 * 	Save Selection
+	/**
+	 * 	Save changes to DB.
 	 *  @param trx
-	 * 	@return true if saved
+	 * 	@return true if saved, false otherwise.
 	 */	
 	private boolean cmd_save(Trx trx)
 	{
@@ -901,10 +936,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}	//	cmd_save
 
 	/**
-	 * 	Save to Order
+	 * 	Create and save order lines from BOM.
 	 *	@param C_Order_ID id
 	 *  @param trx 
-	 *	@return true if saved
+	 *	@return true if saved, false otherwise.
 	 */	
 	private boolean cmd_saveOrder (int C_Order_ID, Trx trx)
 	{
@@ -947,10 +982,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}	//	cmd_saveOrder
 
 	/**
-	 * 	Save to Invoice
+	 * 	Create and save invoice lines from BOM.
 	 *	@param C_Invoice_ID id
 	 *  @param trx 
-	 *	@return true if saved
+	 *	@return true if saved, false otherwise.
 	 */	
 	private boolean cmd_saveInvoice (int C_Invoice_ID, Trx trx)
 	{
@@ -992,10 +1027,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	}	//	cmd_saveInvoice
 
 	/**
-	 * 	Save to Project
+	 * 	Create and save project lines from BOM.
 	 *	@param C_Project_ID id
 	 *  @param trx
-	 *	@return true if saved
+	 *	@return true if saved, false otherwise
 	 */
 	private boolean cmd_saveProject (int C_Project_ID, Trx trx)
 	{

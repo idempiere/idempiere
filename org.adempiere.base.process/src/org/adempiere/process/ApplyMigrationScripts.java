@@ -149,7 +149,7 @@ public class ApplyMigrationScripts extends SvrProcess {
 				if (statementReady) {
 					if (sqlBuf.length() == 0)
 						continue;
-					Connection conn = DB.getConnectionRW();
+					Connection conn = DB.getConnection();
 					conn.setAutoCommit(false);
 					Statement stmt = null;
 					try {

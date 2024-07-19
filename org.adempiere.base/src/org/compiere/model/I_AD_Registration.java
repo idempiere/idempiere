@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Registration
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Registration 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Registration
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_Registration
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -253,12 +253,12 @@ public interface I_AD_Registration
     public static final String COLUMNNAME_PlatformInfo = "PlatformInfo";
 
 	/** Set Platform Info.
-	  * Information about Server and Client Platform
+	  * Information about Server and Tenant Platform
 	  */
 	public void setPlatformInfo (String PlatformInfo);
 
 	/** Get Platform Info.
-	  * Information about Server and Client Platform
+	  * Information about Server and Tenant Platform
 	  */
 	public String getPlatformInfo();
 

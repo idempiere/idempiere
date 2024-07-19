@@ -1,17 +1,39 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.form.WArchiveViewer;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MArchive;
 import org.compiere.model.MBPartner;
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
@@ -55,23 +77,19 @@ public class WArchive implements EventListener<Event>
 	private Menuitem 	m_reports = null;
 	private Menuitem 	m_reportsAll = null;
 	private Menuitem 	m_documents = null;	
-//	private JPopupMenu 	m_popup = new JPopupMenu("ArchiveMenu");
 	
 	/** Where Clause					*/
-	StringBuffer 		m_where = null;
+	protected StringBuffer 		m_where = null;
 	
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (WArchive.class);
 	
 	/**
-	 * 	Display Request Options - New/Existing.
+	 * 	Display archive menu
 	 * 	@param invoker button
 	 */
 	private void getArchives(Component invoker)
 	{
-		int reportCount = 0;
-		int documentCount = 0;
-		
 		m_where = new StringBuffer();
 		m_where.append("(AD_Table_ID=").append(m_AD_Table_ID)
 			.append(" AND Record_ID=").append(m_Record_ID)
@@ -80,39 +98,9 @@ public class WArchive implements EventListener<Event>
 		if (m_AD_Table_ID == MBPartner.Table_ID)
 			m_where.append(" OR C_BPartner_ID=").append(m_Record_ID);
 		//
-		StringBuffer sql = new StringBuffer("SELECT IsReport, COUNT(*) FROM AD_Archive ")
-			.append("WHERE (AD_Table_ID=? AND Record_ID=?) ");
-		if (m_AD_Table_ID == MBPartner.Table_ID)
-			sql.append(" OR C_BPartner_ID=?");
-		sql.append(" GROUP BY IsReport"); 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), null);
-			pstmt.setInt(1, m_AD_Table_ID);
-			pstmt.setInt(2, m_Record_ID);
-			if (m_AD_Table_ID == MBPartner.Table_ID)
-				pstmt.setInt(3, m_Record_ID);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				if ("Y".equals(rs.getString(1)))
-					reportCount += rs.getInt(2);
-				else
-					documentCount += rs.getInt(2);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
+		int[] counts = MArchive.getReportAndDocumentCountByRecordId(m_AD_Table_ID, m_Record_ID, null);
+		int reportCount = counts[0];
+		int documentCount = counts[1];
 		//
 		if (documentCount > 0)
 		{
@@ -129,8 +117,7 @@ public class WArchive implements EventListener<Event>
 			m_popup.appendChild(m_reports);
 		}
 		//	All Reports
-		String sql1 = "SELECT COUNT(*) FROM AD_Archive WHERE AD_Table_ID=? AND IsReport='Y'";
-		int allReports = DB.getSQLValue(null, sql1, m_AD_Table_ID); 
+		int allReports = MArchive.getReportCountByTableId(m_AD_Table_ID, null);
 		if (allReports > 0)
 		{
 			m_reportsAll = new Menuitem(Msg.getMsg(Env.getCtx(), "ArchivedReportsAll") 
@@ -141,7 +128,6 @@ public class WArchive implements EventListener<Event>
 		
 		if (documentCount == 0 && reportCount == 0 && allReports == 0)
 			m_popup.appendChild(new Menuitem(Msg.getMsg(Env.getCtx(), "ArchivedNone")));
-		//
 			
 		Popup popup = LayoutUtils.findPopup(invoker);
 		if (popup != null)
@@ -154,16 +140,18 @@ public class WArchive implements EventListener<Event>
 			LayoutUtils.autoDetachOnClose(m_popup);
 		}
 		m_popup.open(invoker, "after_start");
-	}	//	getZoomTargets
+	}	//	getArchives
 	
 	/**
-	 * 	Listner
+	 * 	Listener
 	 *	@param e event
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		if (e.getTarget() instanceof Menuitem) 
 		{
+			//open archive viewer
 			int AD_Form_ID = FORM_ARCHIVEVIEWER;	//	ArchiveViewer
 			ADForm form = ADForm.openForm(AD_Form_ID);
 			

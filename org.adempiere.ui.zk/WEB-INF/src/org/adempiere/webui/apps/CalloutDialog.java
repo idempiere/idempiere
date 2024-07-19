@@ -16,12 +16,12 @@ package org.adempiere.webui.apps;
 
 import org.adempiere.util.Callback;
 import org.adempiere.util.ICalloutUI;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MLookup;
 import org.zkoss.zk.ui.Desktop;
 
 /**
- * Callout Dialog used for Ask For Input
+ * Callout Dialog used to ask for input from user.
  *
  * @author Murilo H. Torquato (devCoffee, http://devcoffee.com.br)
  *
@@ -31,6 +31,10 @@ public class CalloutDialog implements ICalloutUI {
 	private Desktop desktop;
 	private int m_windowNo;
 
+	/**
+	 * @param desktop
+	 * @param windowNo
+	 */
 	public CalloutDialog(Desktop desktop, int windowNo) {
 		this.desktop = desktop;
 		this.m_windowNo = windowNo;
@@ -38,7 +42,7 @@ public class CalloutDialog implements ICalloutUI {
 
 	@Override
 	public void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback) {
-			FDialog.askForInput(message, lookup, editorType, callback, desktop, m_windowNo);
+			Dialog.askForInput(message, lookup, editorType, callback, desktop, m_windowNo);
 	}
 
 	@Override

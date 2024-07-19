@@ -1,4 +1,30 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui.apps.wf;
+
+import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -26,10 +52,12 @@ import org.zkoss.zul.Vbox;
 
 public class WFPopupItem extends Menuitem {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8409752634782368108L;
 
+	/** Node actions */
+	
 	public static final int WFPOPUPITEM_DELETENODE = -1;
 	public static final int WFPOPUPITEM_PROPERTIES = -2;
 	public static final int WFPOPUPITEM_ZOOM = -3;
@@ -41,8 +69,8 @@ public class WFPopupItem extends Menuitem {
 	/**
 	 * 	Add Line Item
 	 *	@param title title
-	 *	@param node node
-	 *	@param AD_WF_NodeTo_ID line to
+	 *	@param node workflow node
+	 *	@param AD_WF_NodeTo_ID if > 0, next workflow node id. if < 0, actions to apply to node
 	 */
 	public WFPopupItem (String title, MWFNode node, int AD_WF_NodeTo_ID)
 	{
@@ -64,15 +92,20 @@ public class WFPopupItem extends Menuitem {
 		m_AD_Workflow_ID = line.getAD_WF_Node().getAD_Workflow_ID();
 	}	//	WFPopupItem
 
-	/** The Node			*/
-	private MWFNode		m_node;
-	/** The Line			*/
+	/** Source Workfklow Node */
+	private MWFNode	m_node;
+	/** The Line to delete (if {@link #m_AD_WF_NodeTo_ID} = 0) */
 	private MWFNodeNext m_line;
-	/** The Next Node ID	*/
+	/** 
+	 * <li>&gt; 0 - next workflow node id</li>
+	 * <li>&lt; 0 - actions to apply to {@link #m_node} </li>
+	 * <li>0 - to delete {@link #m_node} </li>
+	 */
 	private int			m_AD_WF_NodeTo_ID;
 
 	/**
-	 * 	Execute
+	 * Execute action for menu item
+	 * @param wfp WFEditor
 	 */
 	public void execute(final WFEditor wfp)
 	{
@@ -86,7 +119,8 @@ public class WFPopupItem extends Menuitem {
 			if (AD_Client_ID > 11)
 				newLine.setEntityType(MSysConfig.getValue(MSysConfig.DEFAULT_ENTITYTYPE, MEntityType.ENTITYTYPE_UserMaintained));
 			newLine.saveEx();
-			log.info("Add Line to " + m_node + " -> " + newLine);
+			if (log.isLoggable(Level.INFO))
+				log.info("Add Line to " + m_node + " -> " + newLine);
 			wfp.reload(m_AD_Workflow_ID, true);
 		}
 		//	Edit Properties
@@ -112,14 +146,16 @@ public class WFPopupItem extends Menuitem {
 		//	Delete Node
 		else if (m_node != null && m_AD_WF_NodeTo_ID == WFPOPUPITEM_DELETENODE)
 		{
-			log.info("Delete Node: " + m_node);
+			if (log.isLoggable(Level.INFO))
+				log.info("Delete Node: " + m_node);
 			m_node.delete(false);
 			wfp.reload(m_AD_Workflow_ID, true);
 		}
 		//	Delete Line
 		else if (m_line != null)
 		{
-			log.info("Delete Line: " + m_line);
+			if (log.isLoggable(Level.INFO))
+				log.info("Delete Line: " + m_line);
 			m_line.delete(false);
 			wfp.reload(m_AD_Workflow_ID, true);
 		}
@@ -127,6 +163,10 @@ public class WFPopupItem extends Menuitem {
 			log.warning("No Action??");
 	}	//	execute
 	
+	/**
+	 * Edit node properties
+	 * @param wfp WFEditor
+	 */
 	private void editNode(final WFEditor wfp) {
 		String title = Msg.getMsg(Env.getCtx(), "Properties");
 		final Window w = new Window();

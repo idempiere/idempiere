@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Related
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Related")
 public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_Related, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -92,8 +92,8 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 			.getPO(getAD_InfoRelated_ID(), get_TrxName());
 	}
 
-	/** Set InfoRelated.
-		@param AD_InfoRelated_ID InfoRelated
+	/** Set Info Related.
+		@param AD_InfoRelated_ID Info Related
 	*/
 	public void setAD_InfoRelated_ID (int AD_InfoRelated_ID)
 	{
@@ -103,8 +103,8 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 			set_ValueNoCheck (COLUMNNAME_AD_InfoRelated_ID, Integer.valueOf(AD_InfoRelated_ID));
 	}
 
-	/** Get InfoRelated.
-		@return InfoRelated	  */
+	/** Get Info Related.
+		@return Info Related	  */
 	public int getAD_InfoRelated_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoRelated_ID);

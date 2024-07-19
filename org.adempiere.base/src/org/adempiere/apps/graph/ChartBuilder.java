@@ -153,7 +153,6 @@ public class ChartBuilder {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void addData(MChartDatasource ds) {
 		
 		String value = ds.getValueColumn();
@@ -370,7 +369,6 @@ public class ChartBuilder {
 		return (IntervalXYDataset) dataset;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public PieDataset getPieDataset() {
 		dataset = new DefaultPieDataset();
 		loadData();

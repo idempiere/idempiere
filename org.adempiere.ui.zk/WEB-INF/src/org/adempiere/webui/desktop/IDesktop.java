@@ -25,6 +25,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.EventQueue;
 
 /**
  * Desktop interface
@@ -34,6 +35,7 @@ import org.zkoss.zk.ui.Page;
 public interface IDesktop extends UIPart {
 
 	public static final String WINDOWNO_ATTRIBUTE = "desktop.windowno";
+	/** {@link EventQueue} name for activities (workflow activities, request, notice and unprocessed documents) */
 	public static final String ACTIVITIES_EVENT_QUEUE = "ActivitiesEventQueue";
 	public static final String ON_ACTIVITIES_CHANGED_EVENT = "onActivitiesChanged";
 
@@ -62,6 +64,12 @@ public interface IDesktop extends UIPart {
 	 * @return Object
 	 */
 	public Object findWindow(int WindowNo);
+
+	/**
+	 * @param component
+	 * @return register window no or -1 if not found
+	 */
+	public int findWindowNo(Component component);
 
 	/**
 	 * close active window
@@ -201,17 +209,60 @@ public interface IDesktop extends UIPart {
 	 */
 	public void logout();
 	
+	/**
+	 * 
+	 * @param callback callback after logout
+	 */
+	public default void logout(Callback<Boolean> callback) {
+		logout();
+		if (callback != null) {
+			callback.onCallback(Boolean.TRUE);
+		}
+	}
+	
+	/**
+	 * update help content in help/info panel
+	 * @param ctxTypes
+	 * @param recordId
+	 */
 	public void updateHelpContext(String ctxType, int recordId);
 	
+	/**
+	 * update tooltip content in help/info panel
+	 * @param gridField
+	 */
 	public void updateHelpTooltip(GridField gridField);
 
+	/**
+	 * update tooltip content in help/info panel
+	 * @param hdr
+	 * @param desc
+	 * @param help
+	 * @param otherContent
+	 */
 	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent);
 
+	/**
+	 * update quick info (status line) in help/info panel
+	 * @param gridTab
+	 */
 	public void updateHelpQuickInfo(GridTab gridTab);
 
+	/**
+	 * 
+	 * @return true if there are changes not save yet
+	 */
 	public boolean isPendingWindow();
 
+	/**
+	 * update tab title by windowNo
+	 * @param title
+	 * @param windowNo
+	 */
 	public void setTabTitle(String title, int windowNo);
 	
+	/**
+	 * render home tab
+	 */
 	public void renderHomeTab();
 }

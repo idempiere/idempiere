@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InvoiceGL
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="T_InvoiceGL")
 public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_T_InvoiceGL (Properties ctx, int T_InvoiceGL_ID, String trxName)

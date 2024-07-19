@@ -85,7 +85,7 @@ public class GenericPaymentExportTest extends AbstractTestCase {
 		il.saveEx();
 		
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-		assertFalse(pi.isError());
+		assertFalse(pi.isError(), pi.getSummary());
 		
 		String paymentRule = MPaySelectionLine.PAYMENTRULE_Check;
 		MPaySelection ps = new MPaySelection(Env.getCtx(), 0, getTrxName());

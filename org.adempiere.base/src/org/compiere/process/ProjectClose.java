@@ -19,6 +19,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
  
@@ -46,11 +47,10 @@ public class ProjectClose extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_C_Project_ID = getRecord_ID();
 	}	//	prepare

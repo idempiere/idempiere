@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for PP_Order_NodeNext
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_NodeNext")
 public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Order_NodeNext (Properties ctx, int PP_Order_NodeNext_ID, String trxName)

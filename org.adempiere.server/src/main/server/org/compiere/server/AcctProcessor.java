@@ -36,6 +36,7 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -122,7 +123,7 @@ public class AcctProcessor extends AdempiereServer
 		else if (m_model.getUpdatedBy() > 0)
 			AD_User_ID = m_model.getUpdatedBy();
 		else
-			AD_User_ID = 100; //fall back to SuperUser
+			AD_User_ID = SystemIDs.USER_SUPERUSER; //fall back to SuperUser
 		return AD_User_ID;
 	}
 	

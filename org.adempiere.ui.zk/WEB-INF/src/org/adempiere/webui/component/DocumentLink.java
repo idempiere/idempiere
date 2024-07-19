@@ -36,7 +36,7 @@ import org.zkoss.zul.A;
  */
 public class DocumentLink extends A implements EventListener<Event> {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1498406053715803814L;
 
@@ -45,28 +45,54 @@ public class DocumentLink extends A implements EventListener<Event> {
 	
 	protected int recordId;
 	
+	/**
+	 * @return Record_ID
+	 */
 	public int getRecordId() {
 		return recordId;
 	}
 
+	/**
+	 * set Record_ID 
+	 * @param recordId
+	 */
 	public void setRecordId(int recordId) {
 		this.recordId = recordId;
 	}
 
 	protected int adTableId;
 	
+	/**
+	 * @return AD_Table_ID
+	 */
 	public int getAdTableId() {
 		return adTableId;
 	}
 
+	/**
+	 * set AD_Table_ID 
+	 * @param adTableId
+	 */
 	public void setAdTableId(int adTableId) {
 		this.adTableId = adTableId;
 	}
 	
+	/**
+	 * @param label
+	 * @param adTableId AD_Table_ID
+	 * @param recordId Record_ID
+	 */
 	public DocumentLink(String label, int adTableId, int recordId){
 		this(label, adTableId, recordId, null);
 	}
 	
+	/**
+	 * @param label
+	 * @param adTableId AD_Table_ID
+	 * @param recordId Record_ID
+	 * @param clickHandle Optional listener for ON_CLICK event. If null, the component 
+	 * will handle ON_CLICK event and zoom to AD Window by table and record id.
+	 */
 	public DocumentLink(String label, int adTableId, int recordId, EventListener<Event> clickHandle){
 		super();
 		if (label == null || label.trim().length() == 0)

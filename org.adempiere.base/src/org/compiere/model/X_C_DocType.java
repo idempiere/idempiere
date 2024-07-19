@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -411,7 +411,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
 	/** Sales Order = SOO */
 	public static final String DOCBASETYPE_SalesOrder = "SOO";
-	/** Set Document BaseType.
+	/** Set Document Base Type.
 		@param DocBaseType Logical type of document
 	*/
 	public void setDocBaseType (String DocBaseType)
@@ -420,7 +420,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		set_Value (COLUMNNAME_DocBaseType, DocBaseType);
 	}
 
-	/** Get Document BaseType.
+	/** Get Document Base Type.
 		@return Logical type of document
 	  */
 	public String getDocBaseType()
@@ -785,16 +785,16 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
-	/** Set Allow Product Without Pricelist.
-		@param IsNoPriceListCheck Allow Product Without Pricelist
+	/** Set Allow Product Without Price List.
+		@param IsNoPriceListCheck Allow Product Without Price List
 	*/
 	public void setIsNoPriceListCheck (boolean IsNoPriceListCheck)
 	{
 		set_Value (COLUMNNAME_IsNoPriceListCheck, Boolean.valueOf(IsNoPriceListCheck));
 	}
 
-	/** Get Allow Product Without Pricelist.
-		@return Allow Product Without Pricelist	  */
+	/** Get Allow Product Without Price List.
+		@return Allow Product Without Price List	  */
 	public boolean isNoPriceListCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoPriceListCheck);

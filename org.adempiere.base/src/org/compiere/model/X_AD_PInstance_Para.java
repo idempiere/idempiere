@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance_Para
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_PInstance_Para")
 public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Para (Properties ctx, int AD_PInstance_Para_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
       /** if (AD_PInstance_Para_ID == 0)
         {
 			setAD_PInstance_ID (0);
+			setIsNotClause (false);
+// N
 			setSeqNo (0);
         } */
     }
@@ -54,6 +56,8 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
       /** if (AD_PInstance_Para_ID == 0)
         {
 			setAD_PInstance_ID (0);
+			setIsNotClause (false);
+// N
 			setSeqNo (0);
         } */
     }
@@ -158,6 +162,29 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 	public String getInfo_To()
 	{
 		return (String)get_Value(COLUMNNAME_Info_To);
+	}
+
+	/** Set Not Clause.
+		@param IsNotClause Indicates if a chosen multiple component value must be negate
+	*/
+	public void setIsNotClause (boolean IsNotClause)
+	{
+		set_Value (COLUMNNAME_IsNotClause, Boolean.valueOf(IsNotClause));
+	}
+
+	/** Get Not Clause.
+		@return Indicates if a chosen multiple component value must be negate
+	  */
+	public boolean isNotClause()
+	{
+		Object oo = get_Value(COLUMNNAME_IsNotClause);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Parameter Name.

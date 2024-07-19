@@ -34,6 +34,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalBatch;
 import org.compiere.model.MOrder;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRecurring;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -82,7 +83,7 @@ public class RecurringRun extends SvrProcess
 					prms.add(new ValueNamePair(name, prm));
 				}
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}	//	prepare

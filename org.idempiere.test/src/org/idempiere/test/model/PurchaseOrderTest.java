@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Properties;
 
 import org.compiere.model.MAttributeSetInstance;
@@ -104,7 +105,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
@@ -122,7 +123,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 
@@ -165,7 +166,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line2.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
@@ -185,7 +186,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine2.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 
@@ -205,7 +206,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		invoiceLine2.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		invoice.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 
@@ -219,7 +220,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 
-		BigDecimal qtyOrderedOriginal = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		BigDecimal qtyOrderedOriginal = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 
 		MOrder order = new MOrder(ctx, 0, trxName);
 		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
@@ -235,19 +236,19 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		line1.setQty(THREE);
 		line1.setDatePromised(today);
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().compareTo(THREE));
 
-		BigDecimal newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		BigDecimal newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.add(THREE).compareTo(newQtyOrdered));
 
 		MInOut receipt1 = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
@@ -261,19 +262,19 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt1.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
 
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
-		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 
 		// reactivate the purchase order
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_ReActivate);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_InProgress, order.getDocStatus());
 
@@ -284,14 +285,14 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		// complete the order again
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
 		// IDEMPIERE-5039 - when reservations go negative they are changed to zero
 		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
-		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 
 		// create a new material receipt for the -3 reversed
@@ -306,14 +307,14 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine2.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt2, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt2.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt2.getDocStatus());
 
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
-		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 	}
 
@@ -447,7 +448,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
@@ -470,7 +471,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
@@ -490,7 +491,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
 		CacheMgt.get().reset();
 
-		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 		try {			
 			MOrder order = new MOrder(ctx, 0, trxName);
 			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
@@ -506,7 +507,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	
 			MOrderLine line1 = new MOrderLine(order);
 			line1.setLine(10);
-			line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.MULCH.id));
+			line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.ROSE_BUSH.id));
 			line1.setQty(new BigDecimal("1"));
 			line1.setDatePromised(today);
 			line1.saveEx();
@@ -517,7 +518,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
 			line1.load(trxName);
 			assertEquals(1, line1.getQtyReserved().intValue(), "Wrong Order line qty reserved value");
-			BigDecimal newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			BigDecimal newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue()+1, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			MInOut receipt1 = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
@@ -537,7 +538,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	
 			line1.load(trxName);
 			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
-			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			// reactivate the purchase order
@@ -559,7 +560,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			line1.load(trxName);
 			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
 			assertEquals(2, line1.getQtyOrdered().intValue(), "Wrong order line qty ordered value");
-			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			//reverse MR
@@ -574,7 +575,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			line1.load(trxName);
 			assertEquals(2, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
 			assertEquals(0, line1.getQtyDelivered().intValue(), "Wrong order line qty delivered value");
-			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue()+2, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 		} finally {
 			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?", 
@@ -599,13 +600,13 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
@@ -620,7 +621,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
@@ -643,7 +644,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		assertEquals(0, rmaLine.getQtyDelivered().intValue(), "Unexpected RMA Line QtyDelivered value");
 		
 		info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		rma.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 		
@@ -679,5 +680,132 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		
 		rmaLine.load(getTrxName());
 		assertEquals(rmaLine.getQty().intValue(), rmaLine.getQtyDelivered().intValue(), "RMA Line QtyDelivered not updated by shipment for Vendor RMA");
+	}
+	
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5915
+	 */
+	@Test
+	public void testInOutGenerateRMAManualMovementDate() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp date2 = new Timestamp(cal.getTimeInMillis());
+		
+		order.setDateOrdered(date1);
+		order.setDatePromised(date1);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(date1);
+		line1.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
+		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
+		rma.setM_InOut_ID(receipt.getM_InOut_ID());
+		rma.setC_BPartner_ID(receipt.getC_BPartner_ID());
+		rma.setC_Currency_ID(order.getC_Currency_ID());
+		rma.setIsSOTrx(false);
+		rma.setName("testInOutGenerateRMAManualMovementDate");
+		rma.setC_DocType_ID(DictionaryIDs.C_DocType.VENDOR_RETURN_MATERIAL.id);
+		rma.setSalesRep_ID(order.getSalesRep_ID());
+		rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id);
+		rma.saveEx();
+		
+		MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
+		rmaLine.setM_RMA_ID(rma.get_ID());
+		rmaLine.setM_InOutLine_ID(receiptLine1.get_ID());
+		rmaLine.setQty(receiptLine1.getMovementQty());
+		rmaLine.saveEx();
+		assertEquals(0, rmaLine.getQtyDelivered().intValue(), "Unexpected RMA Line QtyDelivered value");
+		
+		info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		rma.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
+		
+		int AD_Process_ID = PROCESS_M_INOUT_GENERATERMA_MANUAL;
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance.saveEx();
+		
+		String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
+		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), rma.get_ID()}, null);
+		
+		//	Call InOutGenerateRMAManual process
+		ProcessInfo pi = new ProcessInfo ("InOutGenRMA", AD_Process_ID);
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+
+		//	Add Selection parameter Selection=Y
+		MPInstancePara ip = new MPInstancePara(instance, 10);
+		ip.setParameter("Selection","Y");
+		ip.saveEx();
+		//	Add Document Action parameter
+		ip = new MPInstancePara(instance, 20);
+		ip.setParameter("DocAction", "CO");
+		ip.saveEx();
+		//	Add Warehouse parameter
+		ip = new MPInstancePara(instance, 30);
+		ip.setParameter("M_Warehouse_ID", getM_Warehouse_ID());
+		ip.saveEx();
+		//	Add Movement Date parameter
+		ip = new MPInstancePara(instance, 40);
+		ip.setParameter("MovementDate", date2);
+		ip.saveEx();
+		
+		ServerProcessCtl processCtl = new ServerProcessCtl(pi, getTrx());
+		processCtl.setManagedTrxForJavaProcess(false);
+		processCtl.run();
+		
+		assertFalse(pi.isError(), pi.getSummary());
+		
+		rmaLine.load(getTrxName());
+		assertEquals(rmaLine.getQty().intValue(), rmaLine.getQtyDelivered().intValue(), "RMA Line QtyDelivered not updated by shipment for Vendor RMA");
+		
+		int M_InOut_ID = DB.getSQLValueEx(getTrxName(), "SELECT M_InOut_ID FROM M_InOut WHERE M_RMA_ID=?", rma.getM_RMA_ID());
+		MInOut vendorReturn = new MInOut(Env.getCtx(), M_InOut_ID, getTrxName());
+		assertEquals(date2, vendorReturn.getMovementDate());
+		assertEquals(date2, vendorReturn.getDateAcct());
 	}
 }

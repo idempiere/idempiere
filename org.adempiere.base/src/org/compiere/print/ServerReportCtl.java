@@ -182,7 +182,7 @@ public class ServerReportCtl {
 		
 		jasperProcessInfo.setParameter(jasperPrintParams.toArray(new ProcessInfoParameter[]{}));
 		
-		ServerProcessCtl.process(jasperProcessInfo, pi != null ? Trx.get(pi.getTransactionName(),false) : null); 		
+		ServerProcessCtl.process(jasperProcessInfo, pi != null && pi.getTransactionName() != null ? Trx.get(pi.getTransactionName(),false) : null); 		
 		
 		boolean result = !jasperProcessInfo.isError();
 		if (result && pi != null && pi.isBatch())

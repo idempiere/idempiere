@@ -38,7 +38,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeValue;
 import org.compiere.model.MProduct;
@@ -376,7 +376,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		
 		if (attr1.equals(attr2))
 		{
-			FDialog.warn(m_WindowNo, "Same Attribute Selected", getTitle());
+			Dialog.warn(m_WindowNo, "Same Attribute Selected", getTitle());
 			log.warning("Same Attribute Selected");
 			tabbox.setSelectedIndex(0);
 			return;

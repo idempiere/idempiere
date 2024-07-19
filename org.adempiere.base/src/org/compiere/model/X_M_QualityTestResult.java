@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_QualityTestResult
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_QualityTestResult")
 public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_QualityTestResult (Properties ctx, int M_QualityTestResult_ID, String trxName)

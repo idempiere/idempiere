@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
@@ -53,8 +52,6 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
-import org.compiere.util.Msg;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
@@ -572,31 +569,22 @@ public class MatchPOTest extends AbstractTestCase {
 		newOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
 		assertEquals(initialOnHand+1, newOnHand, "Unexpected qty on hand value");
 		
-		MiniTableImpl fromTable = new MiniTableImpl();
-		MiniTableImpl toTable = new MiniTableImpl();
-		ColumnInfo[] layout = new ColumnInfo[] {
-				new ColumnInfo(" ",                                         ".", IDColumn.class, false, false, ""),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"),   ".", String.class),             //  1
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Date"),         ".", Timestamp.class),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),".", KeyNamePair.class, "."),   //  3
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Line"),         ".", KeyNamePair.class, "."),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"), ".", KeyNamePair.class, "."),   //  5
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),          ".", Double.class),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Matched"),      ".", Double.class)
-			};
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);
 		Match match = new Match();
 		match.setTrxName(getTrxName());
+		MiniTableImpl fromTable = new MiniTableImpl();
+		MiniTableImpl toTable = new MiniTableImpl();
+		ColumnInfo[] layout = match.getColumnLayout();
+		fromTable.prepareTable(layout, null, null, false, null);
+		toTable.prepareTable(layout, null, null, false, null);		
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
 		for(int i = 0; i < fromTable.getRowCount(); i++) {
-			String docNo = (String)fromTable.getValueAt(i, 1);
+			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
 			if (receipt.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)fromTable.getValueAt(i, 7)).intValue();
+				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
 				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
-				int qty = ((Number)fromTable.getValueAt(i, 6)).intValue();
+				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue();
 				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
 				selectedRow = i;
 				break;
@@ -608,11 +596,11 @@ public class MatchPOTest extends AbstractTestCase {
 		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched Order Line: " + fromTable.getRowCount());
 		int selectedOrderRow = -1;
 		for(int i = 0; i < toTable.getRowCount(); i++) {
-			String docNo = (String)toTable.getValueAt(i, 1);
+			String docNo = (String)toTable.getValueAt(i, Match.I_DocumentNo);
 			if (order.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)toTable.getValueAt(i, 7)).intValue();
+				int matched = ((Number)toTable.getValueAt(i, Match.I_MATCHED)).intValue();
 				assertEquals(0, matched, "Unexpected matched qty for PO line");
-				int qty = ((Number)toTable.getValueAt(i, 6)).intValue();
+				int qty = ((Number)toTable.getValueAt(i, Match.I_QTY)).intValue();
 				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for PO line");
 				selectedOrderRow = i;
 				break;
@@ -648,11 +636,11 @@ public class MatchPOTest extends AbstractTestCase {
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		selectedRow = -1;
 		for(int i = 0; i < fromTable.getRowCount(); i++) {
-			String docNo = (String)fromTable.getValueAt(i, 1);
+			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
 			if (receipt.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)fromTable.getValueAt(i, 7)).intValue();
+				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
 				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
-				int qty = ((Number)fromTable.getValueAt(i, 6)).intValue();
+				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue();
 				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
 				selectedRow = i;
 				break;
@@ -664,11 +652,11 @@ public class MatchPOTest extends AbstractTestCase {
 		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched Order Line: " + fromTable.getRowCount());
 		selectedOrderRow = -1;
 		for(int i = 0; i < toTable.getRowCount(); i++) {
-			String docNo = (String)toTable.getValueAt(i, 1);
+			String docNo = (String)toTable.getValueAt(i, Match.I_DocumentNo);
 			if (order.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)toTable.getValueAt(i, 7)).intValue();
+				int matched = ((Number)toTable.getValueAt(i, Match.I_MATCHED)).intValue();
 				assertEquals(0, matched, "Unexpected matched qty for PO line");
-				int qty = ((Number)toTable.getValueAt(i, 6)).intValue();
+				int qty = ((Number)toTable.getValueAt(i, Match.I_QTY)).intValue();
 				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for PO line");
 				selectedOrderRow = i;
 				break;
@@ -676,7 +664,7 @@ public class MatchPOTest extends AbstractTestCase {
 		}
 		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
 				
-		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, 0);
+		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, Match.I_ID);
 		idColumn.setSelected(true);
 		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), new BigDecimal(1));
 		
@@ -769,22 +757,13 @@ public class MatchPOTest extends AbstractTestCase {
 		newOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
 		assertEquals(initialOnHand+1, newOnHand, "Unexpected qty on hand value");
 		
+		Match match = new Match();
+		match.setTrxName(getTrxName());		
 		MiniTableImpl fromTable = new MiniTableImpl();
 		MiniTableImpl toTable = new MiniTableImpl();
-		ColumnInfo[] layout = new ColumnInfo[] {
-				new ColumnInfo(" ",                                         ".", IDColumn.class, false, false, ""),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"),   ".", String.class),             //  1
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Date"),         ".", Timestamp.class),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),".", KeyNamePair.class, "."),   //  3
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Line"),         ".", KeyNamePair.class, "."),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"), ".", KeyNamePair.class, "."),   //  5
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),          ".", Double.class),
-				new ColumnInfo(Msg.translate(Env.getCtx(), "Matched"),      ".", Double.class)
-			};
+		ColumnInfo[] layout = match.getColumnLayout();
 		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);
-		Match match = new Match();
-		match.setTrxName(getTrxName());
+		toTable.prepareTable(layout, null, null, false, null);		
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		int selectedRow = -1;
@@ -843,11 +822,11 @@ public class MatchPOTest extends AbstractTestCase {
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		selectedRow = -1;
 		for(int i = 0; i < fromTable.getRowCount(); i++) {
-			String docNo = (String)fromTable.getValueAt(i, 1);
+			String docNo = (String)fromTable.getValueAt(i, Match.I_DocumentNo);
 			if (receipt.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)fromTable.getValueAt(i, 7)).intValue();
+				int matched = ((Number)fromTable.getValueAt(i, Match.I_MATCHED)).intValue();
 				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
-				int qty = ((Number)fromTable.getValueAt(i, 6)).intValue();
+				int qty = ((Number)fromTable.getValueAt(i, Match.I_QTY)).intValue();
 				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
 				selectedRow = i;
 				break;
@@ -859,11 +838,11 @@ public class MatchPOTest extends AbstractTestCase {
 		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched Order Line: " + fromTable.getRowCount());
 		selectedOrderRow = -1;
 		for(int i = 0; i < toTable.getRowCount(); i++) {
-			String docNo = (String)toTable.getValueAt(i, 1);
+			String docNo = (String)toTable.getValueAt(i, Match.I_DocumentNo);
 			if (order.getDocumentNo().equals(docNo)) {
-				int matched = ((Number)toTable.getValueAt(i, 7)).intValue();
+				int matched = ((Number)toTable.getValueAt(i, Match.I_MATCHED)).intValue();
 				assertEquals(0, matched, "Unexpected matched qty for PO line");
-				int qty = ((Number)toTable.getValueAt(i, 6)).intValue();
+				int qty = ((Number)toTable.getValueAt(i, Match.I_QTY)).intValue();
 				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for PO line");
 				selectedOrderRow = i;
 				break;
@@ -871,7 +850,7 @@ public class MatchPOTest extends AbstractTestCase {
 		}
 		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
 		
-		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, 0);
+		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, Match.I_ID);
 		idColumn.setSelected(true);
 		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), new BigDecimal(1));
 		

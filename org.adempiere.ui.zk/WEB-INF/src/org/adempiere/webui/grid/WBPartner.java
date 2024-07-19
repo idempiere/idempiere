@@ -29,7 +29,7 @@ import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
@@ -311,7 +311,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 		
 		if (m_partner.get_ID() == 0)
 		{
-			FDialog.error(m_WindowNo, this, "BPartnerNotFound");
+			Dialog.error(m_WindowNo, "BPartnerNotFound");
 			return false;
 		}
 
@@ -439,7 +439,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 		if (m_partner.save()) {
 			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
 		} else {
-			FDialog.error(m_WindowNo, this, "BPartnerNotSaved");
+			Dialog.error(m_WindowNo, "BPartnerNotSaved");
 			m_partner = null;
 			return false;
 		}
@@ -458,7 +458,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 		if (m_pLocation.save()) {
 			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_Location_ID=" + m_pLocation.getC_BPartner_Location_ID());
 		} else {
-			FDialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "C_BPartner_Location_ID"));
+			Dialog.error(m_WindowNo, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "C_BPartner_Location_ID"));
 		}
 			
 		//	***** Business Partner - User *****
@@ -493,7 +493,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 			if (m_user.save()) {
 				if (log.isLoggable(Level.FINE)) log.fine("AD_User_ID=" + m_user.getAD_User_ID());
 			} else {
-				FDialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "AD_User_ID"));
+				Dialog.error(m_WindowNo, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "AD_User_ID"));
 			}
 		}
 		return true;

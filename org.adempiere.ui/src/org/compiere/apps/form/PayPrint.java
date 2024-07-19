@@ -20,11 +20,14 @@ package org.compiere.apps.form;
 
 import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
@@ -32,38 +35,47 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
+import org.compiere.print.MPrintFormat;
+import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.PaymentExport;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+
+import com.lowagie.text.pdf.PdfReader;
 
 public class PayPrint {
 
 	/**	Window No			*/
-	public int         	m_WindowNo = 0;
+	protected int         	m_WindowNo = 0;
 	/**	Used Bank Account	*/
-	public int				m_C_BankAccount_ID = -1;
+	protected int				m_C_BankAccount_ID = -1;
 	/**	Export Class for Bank Account	*/
-	public String			m_PaymentExportClass = null;
+	protected String			m_PaymentExportClass = null;
 	/**	Payment Selection	*/
-	public int         		m_C_PaySelection_ID = 0;
+	protected int         		m_C_PaySelection_ID = 0;
 
 	/** Payment Information */
-	public MPaySelectionCheck[]     m_checks = null;
+	protected MPaySelectionCheck[]     m_checks = null;
 	/** Payment Batch		*/
-	public MPaymentBatch	m_batch = null; 
+	protected MPaymentBatch	m_batch = null; 
 	/**	Logger			*/
-	public static final CLogger log = CLogger.getCLogger(PayPrint.class);
+	protected static final CLogger log = CLogger.getCLogger(PayPrint.class);
 	
-	public String bank;
-	public String currency;
-	public BigDecimal balance;
+	protected String bank;
+	protected String currency;
+	protected BigDecimal balance;
 	protected PaymentExport m_PaymentExport;
 	
 	/**
-	 *  PaySelect changed - load Bank
+	 *  load pay selection details (bank info, balance and payment export class)
+	 *  @param C_PaySelection_ID
 	 */
 	public void loadPaySelectInfo(int C_PaySelection_ID)
 	{
@@ -114,7 +126,9 @@ public class PayPrint {
 	}   //  loadPaySelectInfo
 
 	/**
-	 *  Bank changed - load PaymentRule
+	 *  load payment rules that's applicable to pay selection
+	 *  @param C_PaySelection_ID
+	 *  @return list of applicable payment rules
 	 */
 	public ArrayList<ValueNamePair> loadPaymentRule(int C_PaySelection_ID)
 	{
@@ -159,14 +173,17 @@ public class PayPrint {
 		return data;
 	}   //  loadPaymentRule
 	
-	public String noPayments;
-	public Integer documentNo;
-	public Double sumPayments;
-	public Integer printFormatId;
+	protected String noPayments;
+	protected Integer documentNo;
+	protected Double sumPayments;
+	protected Integer printFormatId;
 
 	/**
 	 *  PaymentRule changed - load DocumentNo, NoPayments,
 	 *  enable/disable EFT, Print
+	 *  @param C_PaySelection_ID
+	 *  @param PaymentRule
+	 *  @return error message (if any)
 	 */
 	public String loadPaymentRuleInfo(int C_PaySelection_ID, String PaymentRule)
 	{
@@ -241,6 +258,11 @@ public class PayPrint {
 		return msg;
 	}   //  loadPaymentRuleInfo
 	
+	/**
+	 * 
+	 * @param err error message buffer
+	 * @return 0 if loaded fine, -1 if failed to load 
+	 */
 	protected int loadPaymentExportClass (StringBuffer err)
 	{
 		m_PaymentExport = null ;
@@ -278,4 +300,136 @@ public class PayPrint {
 		}
 		return 0 ;
 	} // loadPaymentExportClass
+	
+	/**
+	 * Create PDF documents from pay selection check records
+	 * @param startDocumentNo
+	 * @param paymentRule
+	 * @return list of PDF documents
+	 * @throws Exception
+	 */
+	protected List<File> createCheckDocuments(int startDocumentNo, String paymentRule) throws Exception 
+	{
+		//	for all checks
+		List<File> pdfList = new ArrayList<File>();
+		int lastDocumentNo = startDocumentNo;
+		for (int i = 0; i < m_checks.length; i++)
+		{
+			MPaySelectionCheck check = m_checks[i];
+			
+			//	Set new Check Document No
+			check.setDocumentNo(String.valueOf(lastDocumentNo));
+			check.saveEx(); 
+			
+			//	Update BankAccountDoc
+			MPaySelectionCheck.confirmPrint(m_checks[i], m_batch);
+
+			//	ReportCtrl will check BankAccountDoc for PrintFormat
+			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID(), m_WindowNo);
+			MPrintFormat format = re.getPrintFormat();
+			File pdfFile = null;
+			if (format.getJasperProcess_ID() > 0)	
+			{
+				ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
+				pi.setRecord_ID(check.get_ID());
+				pi.setIsBatch(true);
+									
+				ServerProcessCtl.process(pi, null);
+				pdfFile = pi.getPDFReport();
+			}
+			else
+			{
+				pdfFile = File.createTempFile("WPayPrint", null);
+				re.getPDF(pdfFile);
+			}
+			
+			if (pdfFile != null)
+			{
+				// increase the check document no by the number of pages of the generated pdf file
+				PdfReader document = new PdfReader(pdfFile.getAbsolutePath());
+				lastDocumentNo += document.getNumberOfPages(); 
+				pdfList.add(pdfFile);
+			}
+		}
+
+		//	Update Check Next Document No		
+		if (startDocumentNo != lastDocumentNo)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append("UPDATE C_BankAccountDoc SET CurrentNext=").append(lastDocumentNo)
+				.append(" WHERE C_BankAccount_ID=").append(m_C_BankAccount_ID)
+				.append(" AND PaymentRule='").append(paymentRule).append("'");
+			DB.executeUpdate(sb.toString(), null);
+		}
+		
+		return pdfList;
+	}
+	
+	/**
+	 * Create Remittance Documents (PDF) from pay selection check records
+	 * @return list of Remittance documents
+	 */
+	protected List<File> createRemittanceDocuments()
+	{
+		
+		List<File> pdfList = new ArrayList<File>();
+		for (int i = 0; i < m_checks.length; i++)
+		{
+			MPaySelectionCheck check = m_checks[i];
+			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID(), m_WindowNo);
+			try
+			{
+				MPrintFormat format = re.getPrintFormat();
+				if (format.getJasperProcess_ID() > 0)	
+				{
+					ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
+					pi.setRecord_ID(check.get_ID());
+					pi.setIsBatch(true);
+					
+					ServerProcessCtl.process(pi, null);
+					pdfList.add(pi.getPDFReport());
+				}
+				else
+				{
+					File file = File.createTempFile("WPayPrint", null);
+					re.getPDF(file);
+					pdfList.add(file);
+				}
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			}
+		}
+		return pdfList;
+	}
+	/**************************************************************************
+	 *  Get Checks
+	 *  @param PaymentRule Payment Rule
+	 *  @return true if payments were created
+	 */
+	protected boolean getChecks(String PaymentRule, BigDecimal startDocumentNo, AtomicReference<ValueNamePair> error, String trxName)
+	{
+		//  do we have values
+		if (m_C_PaySelection_ID <= 0 || m_C_BankAccount_ID == -1
+			|| Util.isEmpty(PaymentRule, true) || startDocumentNo == null)
+		{
+			error.set(new ValueNamePair("VPayPrintNoRecords", "(" + Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID") + " #0"));
+			return false;
+		}
+
+		if (log.isLoggable(Level.CONFIG)) log.config("C_PaySelection_ID=" + m_C_PaySelection_ID + ", PaymentRule=" +  PaymentRule);
+		
+		//	get payment selection checks without check no assignment
+		m_checks = MPaySelectionCheck.get(m_C_PaySelection_ID, PaymentRule, trxName);
+
+		//
+		if (m_checks == null || m_checks.length == 0)
+		{
+			error.set(new ValueNamePair("VPayPrintNoRecords", "(" + Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID") + " #0"));
+			return false;
+		}
+		m_batch = MPaymentBatch.getForPaySelection (Env.getCtx(), m_C_PaySelection_ID, null);
+		return true;
+	}   //  getChecks
 }

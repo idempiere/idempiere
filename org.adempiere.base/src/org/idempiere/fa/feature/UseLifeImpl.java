@@ -3,18 +3,20 @@
  */
 package org.idempiere.fa.feature;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
-//import org.compiere.model.MAssetClass; //commented by @win
 import org.compiere.model.MAssetGroup;
 import org.compiere.model.PO;
 import org.compiere.model.SetGetModel;
 import org.compiere.model.SetGetUtil;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 
@@ -31,6 +33,7 @@ public class UseLifeImpl
 	private final static String FIELD_UseLifeYears = "UseLifeYears";
 	private final static String FIELD_UseLifeMonths = "UseLifeMonths";
 	private final static String FIELD_FiscalPostfix = "_F";
+	private static final BigDecimal TWELVE = BigDecimal.valueOf(12.0);
 	
 	private SetGetModel m_obj = null;
 	private CLogger log = CLogger.getCLogger(getClass());
@@ -116,7 +119,7 @@ public class UseLifeImpl
 	public void setUseLifeMonths(int value) {
 		if (log.isLoggable(Level.FINE)) log.fine("Entering: value=" + value + ", " + this);
 		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeMonths, fiscal), Integer.valueOf(value));
-		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal), Integer.valueOf(value/12));
+		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal), BigDecimal.valueOf(value).setScale(12).divide(TWELVE, RoundingMode.HALF_UP));
 		if (log.isLoggable(Level.FINE)) log.fine("Leaving: value=" + value + ", " + this);
 	}
 	
@@ -134,22 +137,22 @@ public class UseLifeImpl
 	/**	Set UseLifeYears and UseLifeMonths
 	 *	@param value		use life years
 	 */
-	public void setUseLifeYears(int value) {
+	public void setUseLifeYears(BigDecimal value) {
 		if (log.isLoggable(Level.FINE)) log.fine("Entering: value=" + value + ", " + this);
-		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal), Integer.valueOf(value));
-		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeMonths, fiscal), Integer.valueOf(value*12));
+		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal), value);
+		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeMonths, fiscal), value.multiply(TWELVE).setScale(0, RoundingMode.HALF_UP));
 		if (log.isLoggable(Level.FINE)) log.fine("Leaving: value=" + value + ", " + this);
 	}
 	
 	/**
 	 *	@return use life years
 	 */
-	public int getUseLifeYears() {
+	public BigDecimal getUseLifeYears() {
 		Object obj = m_obj.get_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal));
-		if (obj != null && obj instanceof Number) {
-			return ((Number)obj).intValue();
+		if (obj != null && obj instanceof BigDecimal) {
+			return (BigDecimal) obj;
 		}
-		return 0;
+		return Env.ZERO;
 	}
 	
 	/**
@@ -159,8 +162,8 @@ public class UseLifeImpl
 	 */
 	public void adjustUseLifeYears(int deltaUseLifeYears, boolean reset)
 	{
-		int uselife = (reset ? 0 : getUseLifeYears());
-		int new_uselife = uselife + deltaUseLifeYears;
+		BigDecimal uselife = (reset ? Env.ZERO : getUseLifeYears());
+		BigDecimal new_uselife = uselife.add(BigDecimal.valueOf(deltaUseLifeYears));
 		setUseLifeYears(new_uselife);
 		if (log.isLoggable(Level.FINE)) log.fine("UseLifeYears=" + uselife + ", delta=" + deltaUseLifeYears + " => new UseLifeYears=" + new_uselife + " (isFiscal=" + isFiscal() + ")");
 	}
@@ -220,21 +223,15 @@ public class UseLifeImpl
 	public boolean validate(boolean saveError) {
 		if (log.isLoggable(Level.FINE)) log.fine("Entering: " + this);
 		
-		int useLifeYears = 0;
+		BigDecimal useLifeYears = Env.ZERO;
 		int useLifeMonths = 0;
 		useLifeYears = getUseLifeYears();
 		useLifeMonths = getUseLifeMonths();
 		
 		if (useLifeMonths == 0) {
-			useLifeMonths = useLifeYears * 12;
+			useLifeMonths = useLifeYears.multiply(TWELVE).intValue();
 		}
-		if (useLifeMonths % 12 != 0) {
-			if(saveError) log.saveError("Error", "@Invalid@ @UseLifeMonths@=" + useLifeMonths + "(@Diff@=" + (useLifeMonths % 12) + ")" );
-			return false;
-		}
-		if (useLifeYears == 0) {
-			useLifeYears = (int)(useLifeMonths / 12);
-		}
+		useLifeYears = BigDecimal.valueOf(useLifeMonths).setScale(12).divide(TWELVE, RoundingMode.HALF_UP);
 		/* commented out by @win
 		int A_Asset_Class_ID = getA_Asset_Class_ID();
 		if (A_Asset_Class_ID > 0 && (useLifeMonths == 0 || useLifeYears == 0)) {

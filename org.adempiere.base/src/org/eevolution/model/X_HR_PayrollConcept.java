@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_PayrollConcept
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="HR_PayrollConcept")
 public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_HR_PayrollConcept (Properties ctx, int HR_PayrollConcept_ID, String trxName)

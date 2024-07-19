@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserBPAccess
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserBPAccess")
 public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_UserBPAccess (Properties ctx, int AD_UserBPAccess_ID, String trxName)
@@ -240,7 +240,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
 	/** Sales Order = SOO */
 	public static final String DOCBASETYPE_SalesOrder = "SOO";
-	/** Set Document BaseType.
+	/** Set Document Base Type.
 		@param DocBaseType Logical type of document
 	*/
 	public void setDocBaseType (String DocBaseType)
@@ -249,7 +249,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 		set_Value (COLUMNNAME_DocBaseType, DocBaseType);
 	}
 
-	/** Get Document BaseType.
+	/** Get Document Base Type.
 		@return Logical type of document
 	  */
 	public String getDocBaseType()

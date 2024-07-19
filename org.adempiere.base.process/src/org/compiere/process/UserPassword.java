@@ -18,6 +18,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.SystemIDs;
@@ -68,7 +69,7 @@ public class UserPassword extends SvrProcess
 			else if (name.equals("NewEMailConfirm"))
 				p_NewEMailConfirm = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

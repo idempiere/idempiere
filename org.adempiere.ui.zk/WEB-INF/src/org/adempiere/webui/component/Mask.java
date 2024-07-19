@@ -16,12 +16,12 @@ package org.adempiere.webui.component;
 import org.zkoss.zul.Div;
 
 /**
+ * Background mask
  * @author hengsin
- *
  */
 public class Mask extends Div {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7462166722064971644L;
 
@@ -33,11 +33,13 @@ public class Mask extends Div {
 			"padding: 0; z-index:999; opacity:0.6; top: 0px; left: 0px;");
 	}
 		
+	/**
+	 * Close mask
+	 */
 	public void hideMask() {
 		if (this.getParent() != null){
 			this.detach();
-		}
-		
+		}		
 	}
 
 }

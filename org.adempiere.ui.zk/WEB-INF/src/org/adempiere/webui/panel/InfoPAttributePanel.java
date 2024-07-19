@@ -433,7 +433,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		
 		String whereAttributeSet;
 		if (p_M_AttributeSet_ID > 0)
-			whereAttributeSet = "AND M_Product_ID IN (SELECT M_Product_ID FROM M_Product WHERE M_AttributeSet_ID="+p_M_AttributeSet_ID+")";
+			whereAttributeSet = " AND M_Product_ID IN (SELECT M_Product_ID FROM M_Product WHERE M_AttributeSet_ID="+p_M_AttributeSet_ID+")";
 		else
 			whereAttributeSet = "";
 		String sql = MRole.getDefault().addAccessSQL(

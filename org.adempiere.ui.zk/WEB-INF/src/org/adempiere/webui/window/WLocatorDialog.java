@@ -616,7 +616,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			
 			if (mandatoryFields.length() != 0)
 			{
-				FDialog.error(m_WindowNo, this, "FillMandatory", mandatoryFields.substring(0, mandatoryFields.length()-3));
+				Dialog.error(m_WindowNo, "FillMandatory", mandatoryFields.substring(0, mandatoryFields.length()-3));
 				return;
 			}
 
@@ -629,7 +629,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			MLocator loc = MLocator.get(Env.getCtx(), m_M_Warehouse_ID, txtKey.getText(),
 				txtAisleX.getText(), txtBinY.getText(), txtLevelZ.getText(), lt);
 			if (loc == null) {
-				FDialog.error(m_WindowNo, this, "AccessCannotInsert", Msg.getElement(Env.getCtx(), "M_Locator_ID"));
+				Dialog.error(m_WindowNo, "AccessCannotInsert", Msg.getElement(Env.getCtx(), "M_Locator_ID"));
 				return;
 			}
 			m_M_Locator_ID = loc.getM_Locator_ID();

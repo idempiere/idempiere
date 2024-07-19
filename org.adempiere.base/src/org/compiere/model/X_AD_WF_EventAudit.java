@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_EventAudit
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_EventAudit")
 public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_WF_EventAudit (Properties ctx, int AD_WF_EventAudit_ID, String trxName)

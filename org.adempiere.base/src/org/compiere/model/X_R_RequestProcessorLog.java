@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessorLog")
 public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorLog, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)

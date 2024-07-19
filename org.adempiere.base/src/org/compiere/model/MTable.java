@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -67,7 +66,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7981455044208282721L;
+	private static final long serialVersionUID = 2509844209115894798L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -151,10 +150,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		if (tableName == null)
 			return null;
-		Iterator<MTable> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MTable[] tables = s_cache.values().toArray(new MTable[0]);
+		for (MTable retValue : tables)
 		{
-			MTable retValue = it.next();
 			if (tableName.equalsIgnoreCase(retValue.getTableName()))
 			{
 				return s_cache.get (ctx, retValue.get_ID(), e -> new MTable(ctx, e));
@@ -528,8 +526,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				{
 					if (po.get_ID() != Record_ID && Record_ID > 0)
 						po = null;
-					else
-						return po;
+					return po;
 				}
 			}
 			s_modelFactoryCache.remove(tableName);
@@ -548,21 +545,19 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 					{
 						if (po.get_ID() != Record_ID && Record_ID > 0)
 							po = null;
-						else
-						{
-							s_modelFactoryCache.put(tableName, factory);
-							break;
-						}
+						s_modelFactoryCache.put(tableName, factory);
+						break;
 					}
 				}
 			}
 		}
 
-		if (po == null)
+		if (po == null && s_modelFactoryCache.get(tableName) == null)
 		{
 			po = new GenericPO(tableName, getCtx(), Record_ID, trxName);
 			if (po.get_ID() != Record_ID && Record_ID > 0)
 				po = null;
+			// TODO: how to add GenericPO to the s_modelFactoryCache ??
 		}
 
 		return po;
@@ -846,6 +841,17 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		if (m_viewComponents != null && m_viewComponents.length > 0)
 			Arrays.stream(m_viewComponents).forEach(e -> e.markImmutable());
 		return this;
+	}
+
+	/**
+	 * Get first AD_Window that's using this table from AD_Menu.
+	 * @return AD_Window_ID or -1 if not found
+	 */
+	public int getWindowIDFromMenu() {
+		return DB.getSQLValueEx(null, "SELECT a.AD_Window_ID FROM AD_Window a "
+				+ "INNER JOIN AD_Tab b ON (a.AD_Window_ID=b.AD_Window_ID) "
+				+ "INNER JOIN AD_Menu m ON (a.AD_Window_ID=m.AD_Window_ID AND m.IsActive='Y' AND m.Action='W') "
+				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
 	}
 
 	

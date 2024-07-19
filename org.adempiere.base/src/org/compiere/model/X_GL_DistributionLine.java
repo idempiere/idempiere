@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_DistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="GL_DistributionLine")
 public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName)
@@ -494,7 +494,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -505,7 +505,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{
@@ -676,7 +676,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 		return false;
 	}
 
-	/** Set Overwrite Trx Organuzation.
+	/** Set Overwrite Trx Organization.
 		@param OverwriteOrgTrx Overwrite the account segment Transaction Organization with the value specified
 	*/
 	public void setOverwriteOrgTrx (boolean OverwriteOrgTrx)
@@ -684,7 +684,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 		set_Value (COLUMNNAME_OverwriteOrgTrx, Boolean.valueOf(OverwriteOrgTrx));
 	}
 
-	/** Get Overwrite Trx Organuzation.
+	/** Get Overwrite Trx Organization.
 		@return Overwrite the account segment Transaction Organization with the value specified
 	  */
 	public boolean isOverwriteOrgTrx()

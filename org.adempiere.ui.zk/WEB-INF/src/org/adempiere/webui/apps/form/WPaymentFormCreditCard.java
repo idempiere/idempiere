@@ -14,6 +14,7 @@
 package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
 
 import org.adempiere.util.PaymentUtil;
 import org.adempiere.webui.component.Button;
@@ -31,11 +32,12 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -47,19 +49,21 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
 /**
- * 
+ * Form for credit card payment rule ({@link X_C_Order#PAYMENTRULE_CreditCard}).
  * @author Elaine
- *
  */
 public class WPaymentFormCreditCard extends PaymentFormCreditCard implements EventListener<Event> {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
 	private Label kTypeLabel = new Label();
+	/** Credit Card Type list */
 	private Listbox kTypeCombo = ListboxFactory.newDropdownListbox();
 	private Label kNumberLabel = new Label();
+	/** Credit card number field */
 	private Textbox kNumberField = new Textbox();
 	private Label kExpLabel = new Label();
+	/** Expire date field */
 	private Textbox kExpField = new Textbox();
 	private Label kAmountLabel = new Label();
 	private WNumberEditor kAmountField = new WNumberEditor();
@@ -68,13 +72,20 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	private Button kOnline = ButtonFactory.createNamedButton("Online");
 	private Label kStatus = new Label();
 	
+	/**
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormCreditCard(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
 	
-	public void init() {
+	/**
+	 * Layout {@link #window}
+	 */
+	protected void init() {
 		Grid kLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(kLayout);		
 		kNumberField.setMaxlength(16);
@@ -226,6 +237,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		}
 	}
 	
+	@Override
 	public void onEvent(Event e)
 	{
 		if (e.getTarget() == kOnline) {
@@ -236,6 +248,9 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 			updateOnlineButton();
 	}
 	
+	/**
+	 * Set state of {@link #kOnline} depending on availability of {@link MBankAccountProcessor} for selected Credit Card type.
+	 */
 	private void updateOnlineButton()
 	{
 		String CCType = null;
@@ -279,9 +294,9 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		boolean ok = save(newCCType, kNumberField.getText(), kExpField.getText(), (BigDecimal) kAmountField.getValue(), trxName);		
 		if(!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
 		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", processMsg);
+			Dialog.info(getWindowNo(), "PaymentCreated", processMsg);
 		
 		return ok;
 	}
@@ -289,23 +304,23 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	@Override
 	public void processOnline()
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		if (!checkMandatory())
 			return;
 
 		ValueNamePair vp = kTypeCombo.getSelectedItem().toValueNamePair();
 		String CCType = vp.getValue();
 		
-		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getText(), kExpField.getText());
+		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getValue(), kExpField.getText());
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentNotProcessed", processMsg);
+			Dialog.error(getWindowNo(), "PaymentNotProcessed", processMsg);
 		else 
 		{
 			loadData();
 			if (processMsg != null)
-				FDialog.info(getWindowNo(), window, "PaymentProcessed", processMsg);
+				Dialog.info(getWindowNo(), "PaymentProcessed", processMsg);
 		}
-	}   //  online
+	}
 	
 	@Override
 	public void showWindow() {

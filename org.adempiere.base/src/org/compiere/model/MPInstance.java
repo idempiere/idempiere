@@ -54,7 +54,7 @@ public class MPInstance extends X_AD_PInstance
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3756494717528301224L;
+	private static final long serialVersionUID = -6414730734415159480L;
 
 	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
@@ -451,7 +451,7 @@ public class MPInstance extends X_AD_PInstance
 	public static void postOnChangedEvent(int AD_User_ID) {
 		Map<String, Integer> properties = new HashMap<String, Integer>();
 		properties.put("AD_User_ID", AD_User_ID);
-		Event event = new Event(ON_RUNNING_JOB_CHANGED_TOPIC, properties);
+		Event event = EventManager.newEvent(ON_RUNNING_JOB_CHANGED_TOPIC, properties, true);
 		EventManager.getInstance().postEvent(event);
 	}
 	
@@ -630,4 +630,20 @@ public class MPInstance extends X_AD_PInstance
 		public boolean isDirectPrint = false;
 		public int estimate;
 	}
+	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (newRecord) {
+			int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
+			if (sessionId > 0)
+				setAD_Session_ID(sessionId);
+		}
+		
+		return true;
+	}	//	beforeSave
 }	//	MPInstance

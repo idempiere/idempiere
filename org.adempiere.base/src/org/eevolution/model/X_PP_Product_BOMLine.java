@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOMLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_BOMLine")
 public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName)

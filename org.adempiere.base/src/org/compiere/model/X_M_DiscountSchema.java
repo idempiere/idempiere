@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchema
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_DiscountSchema")
 public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_DiscountSchema (Properties ctx, int M_DiscountSchema_ID, String trxName)

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Activity
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Activity")
 public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_WF_Activity (Properties ctx, int AD_WF_Activity_ID, String trxName)

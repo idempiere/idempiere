@@ -266,6 +266,12 @@
 	padding: 8px;
 }
 
+.dashboard-content-help .z-popup-content {
+	background: black;
+	color: white;
+	border-radius: 5px;
+}
+
 .z-menuitem.selected .z-menuitem-text {
 	font-weight: bold;
 }

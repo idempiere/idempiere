@@ -44,6 +44,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MEXPFormat;
 import org.compiere.model.MEXPFormatLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_EXP_FormatLine;
@@ -115,7 +116,7 @@ public class Export extends SvrProcess
 			else if (name.equals("AD_Table_ID"))
 				p_AD_Table_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		// TODO - we can get Language from Business Partner

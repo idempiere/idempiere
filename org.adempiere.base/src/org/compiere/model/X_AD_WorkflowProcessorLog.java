@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_WorkflowProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_WorkflowProcessorLog")
 public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProcessorLog, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessorLog (Properties ctx, int AD_WorkflowProcessorLog_ID, String trxName)
@@ -112,7 +112,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 		return ii.intValue();
 	}
 
-	/** Set Workflow Processorl Log.
+	/** Set Workflow Processor Log.
 		@param AD_WorkflowProcessorLog_ID Result of the execution of the Workflow Processor
 	*/
 	public void setAD_WorkflowProcessorLog_ID (int AD_WorkflowProcessorLog_ID)
@@ -123,7 +123,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessorLog_ID, Integer.valueOf(AD_WorkflowProcessorLog_ID));
 	}
 
-	/** Get Workflow Processorl Log.
+	/** Get Workflow Processor Log.
 		@return Result of the execution of the Workflow Processor
 	  */
 	public int getAD_WorkflowProcessorLog_ID()

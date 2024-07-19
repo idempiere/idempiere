@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ClientShare
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_ClientShare 
 {
@@ -44,21 +44,21 @@ public interface I_AD_ClientShare
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
     /** Column name AD_ClientShare_ID */
     public static final String COLUMNNAME_AD_ClientShare_ID = "AD_ClientShare_ID";
 
-	/** Set Client Share.
-	  * Force (not) sharing of client/org entities
+	/** Set Tenant Share.
+	  * Force (not) sharing of tenant/org entities
 	  */
 	public void setAD_ClientShare_ID (int AD_ClientShare_ID);
 
-	/** Get Client Share.
-	  * Force (not) sharing of client/org entities
+	/** Get Tenant Share.
+	  * Force (not) sharing of tenant/org entities
 	  */
 	public int getAD_ClientShare_ID();
 
@@ -75,12 +75,12 @@ public interface I_AD_ClientShare
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 

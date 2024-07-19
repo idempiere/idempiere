@@ -26,9 +26,9 @@ package org.compiere.process;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -54,7 +54,7 @@ public class UniversalSubstitution extends SvrProcess {
 			else if (name.equals("Substitute_ID"))
 				replacementId =para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);		
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

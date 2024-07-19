@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.model.MClient;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMailText;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MQuery;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
@@ -91,7 +92,7 @@ public class InvoicePrint extends SvrProcess
 				m_DocumentNo_To = (String)para[i].getParameter_To();
 			}
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DocumentNo_From != null && m_DocumentNo_From.length() == 0)
 			m_DocumentNo_From = null;

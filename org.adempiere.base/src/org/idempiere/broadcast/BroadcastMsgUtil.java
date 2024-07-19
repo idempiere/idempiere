@@ -128,7 +128,7 @@ public class BroadcastMsgUtil
 				public void run() {
 
 					org.osgi.service.event.Event event = EventManager.newEvent(
-							IEventTopics.BROADCAST_MESSAGE, msg);
+							IEventTopics.BROADCAST_MESSAGE, msg, true);
 					EventManager.getInstance().postEvent(event);
 				}
 			};

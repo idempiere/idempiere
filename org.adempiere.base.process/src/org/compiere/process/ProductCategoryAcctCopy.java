@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 
@@ -54,7 +55,7 @@ public class ProductCategoryAcctCopy extends SvrProcess
 			else if (name.equals("C_AcctSchema_ID"))
 				p_C_AcctSchema_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

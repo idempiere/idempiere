@@ -32,30 +32,33 @@ import org.zkoss.zul.Comboitem;
  * 	@author Niraj Sohun
  * 			Aug 20, 2007
  */
-
 public class AutoComplete extends Combobox 
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 7437206681528058083L;
 
-	/** comboItems	All menu labels	 */
+	/** comboItems	All items	 */
 	private String[] comboItems;
 	
-	/** strDescription	Description of menu items	 */
+	/** strDescription	Description of items	 */
 	private String[] strDescription;
 	
+	/** Image url or font icon sclass */
 	private String[] images;
 
+	/** Content for comboitem */
 	private String[] contents;
 	
+	/** Value object for comboitem */
 	private Object[] values;
 
+	/** Comboitem:Content. Content is from {@link #contents} */
 	private HashMap<Comboitem, String> mapItems = new HashMap<Comboitem, String>();
 
 	/**
-	 * Set menu labels
+	 * Set items
 	 * 
 	 * @param vals	Menu labels
 	 */
@@ -65,6 +68,10 @@ public class AutoComplete extends Combobox
 		setDict(vals, true);
 	}
 	
+	/**
+	 * @param vals values
+	 * @param sort true to sort in natural order
+	 */
 	public void setDict(String[] vals, boolean sort)
 	{
 		comboItems = vals;
@@ -76,9 +83,9 @@ public class AutoComplete extends Combobox
 	}
 	
 	/**
-	 * Set description of menu items
+	 * Set description of items
 	 * 
-	 * @param vals	Description of menu items
+	 * @param vals	Description of items
 	 */
 	
 	public void setDescription(String[] vals)
@@ -87,9 +94,9 @@ public class AutoComplete extends Combobox
 	}
 	
 	/**
-	 * Set content of menu items
+	 * Set content of items
 	 * 
-	 * @param vals	Content of menu items
+	 * @param vals	Content of items
 	 */
 	
 	public void setContents(String[] vals)
@@ -97,11 +104,19 @@ public class AutoComplete extends Combobox
 		contents = vals;
 	}
 
+	/**
+	 * set image urls or font icon sclasses 
+	 * @param images
+	 */
 	public void setImages(String[] images)
 	{
 		this.images = images;
 	}
 	
+	/**
+	 * set comboitem object values
+	 * @param values
+	 */
 	public void setValues(Object[] values)
 	{
 		this.values = values;
@@ -109,19 +124,25 @@ public class AutoComplete extends Combobox
 	
 	/**
 	 * 	Constructor
-	 */
-	
+	 */	
 	public AutoComplete() 
 	{
 		if (comboItems != null)
 			refresh("");
 	}
 	
+	/**
+	 * @param value
+	 */
 	public AutoComplete(String value) 
 	{
 		super.setValue(value);
 	}
 
+	/**
+	 * @param value
+	 */
+	@Override
 	public void setValue(String value) 
 	{
 		super.setValue(value);
@@ -129,12 +150,11 @@ public class AutoComplete extends Combobox
 	}
 	
 	/**
-	 * Event handler responsible to reducing number of items
-	 * Method is invoked each time something is typed in the combobox
+	 * Event handler responsible to reducing number of items.
+	 * Method is invoked each time something is typed in the combobox.
 	 * 
-	 * @param evt	The event
-	 */
-	
+	 * @param evt Input event
+	 */	
 	public void onChanging(InputEvent evt) 
 	{
 		if (!evt.isChangingBySelectBack())
@@ -143,9 +163,10 @@ public class AutoComplete extends Combobox
 		}
 	}
 	
-	/** 
-	 * Refresh comboitem based on the specified value.
-	*/	
+	/**
+	 * Filter {@link #comboItems} by val	
+	 * @param val input text
+	 */
 	public void refresh(String val) 
 	{
 		if (comboItems == null || val == null) {
@@ -203,6 +224,10 @@ public class AutoComplete extends Combobox
 	    }		
 	}
 
+	/**
+	 * @param item
+	 * @return content text
+	 */
 	public String getContent(Comboitem item)
 	{		
 		return mapItems.get(item);

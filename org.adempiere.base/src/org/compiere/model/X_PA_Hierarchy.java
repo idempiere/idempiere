@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Hierarchy
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_Hierarchy")
 public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_Hierarchy (Properties ctx, int PA_Hierarchy_ID, String trxName)

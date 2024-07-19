@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_MRP
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_MRP")
 public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_MRP (Properties ctx, int PP_MRP_ID, String trxName)

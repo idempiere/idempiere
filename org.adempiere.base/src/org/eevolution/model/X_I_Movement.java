@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="I_Movement")
 public class X_I_Movement extends PO implements I_I_Movement, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
@@ -802,16 +802,16 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_ProjectValue);
 	}
 
-	/** Set ShipperName.
-		@param ShipperName ShipperName
+	/** Set Shipper Name.
+		@param ShipperName Shipper Name
 	*/
 	public void setShipperName (String ShipperName)
 	{
 		set_Value (COLUMNNAME_ShipperName, ShipperName);
 	}
 
-	/** Get ShipperName.
-		@return ShipperName	  */
+	/** Get Shipper Name.
+		@return Shipper Name	  */
 	public String getShipperName()
 	{
 		return (String)get_Value(COLUMNNAME_ShipperName);

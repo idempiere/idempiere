@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_FundingMode
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_FundingMode")
 public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName)

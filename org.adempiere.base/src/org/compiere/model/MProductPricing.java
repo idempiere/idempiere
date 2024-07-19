@@ -80,7 +80,7 @@ public class MProductPricing extends AbstractProductPricing
 	
 	private void checkVendorBreak() {
 		int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
-				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
+				"SELECT COUNT(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE IsActive='Y' AND M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID IS NULL)",
 				m_M_Product_ID, m_C_BPartner_ID);
 		m_useVendorBreak = thereAreVendorBreakRecords > 0;
 	}

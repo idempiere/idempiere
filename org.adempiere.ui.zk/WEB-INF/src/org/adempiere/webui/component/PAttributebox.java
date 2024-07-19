@@ -17,16 +17,19 @@
 package org.adempiere.webui.component;
 
 /**
- * Product Attribute Box
+ * Component for Product Attribute editor 
  * @author Low Heng Sin
  */
 public class PAttributebox extends EditorBox
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6822449202155516221L;
 
+	/**
+	 * Default constructor
+	 */
 	public PAttributebox()
     {
     	super();

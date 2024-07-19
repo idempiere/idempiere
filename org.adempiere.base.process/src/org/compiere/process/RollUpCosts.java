@@ -31,7 +31,6 @@ import java.sql.Savepoint;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
@@ -41,6 +40,7 @@ import org.compiere.model.MCostElement;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -87,7 +87,7 @@ public class RollUpCosts extends SvrProcess {
 			else if (name.equals("C_Charge_ID"))
 				charge_id = para[i].getParameterAsInt();
 			else
-				log.log(Level.WARNING, "Unknown Parameter: " + name);		
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		if (getTable_ID() == MProduct.Table_ID)
@@ -175,23 +175,28 @@ public class RollUpCosts extends SvrProcess {
 			    " JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID" +
 			    " WHERE b.AD_Client_ID=" + getAD_Client_ID() +" AND b.IsActive='Y' AND bl.IsActive='Y' AND b.BOMType='A' AND b.BOMUse='A')";
 			Trx trx = Trx.get(get_TrxName(), false);
-		    RowSet results = DB.getRowSet(sql);
-			while (results.next())
-			{
-				Savepoint savepoint = trx.setSavepoint(null);
-				int id= results.getInt(1);
-				String error = rollUpCosts(id);
-				if (!Util.isEmpty(error))
+			RowSet results = null;
+			try {
+				results = DB.getRowSet(sql);
+				while (results.next())
 				{
-					addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
-							+ ". Details: " + error, MProduct.Table_ID, product_id);
-					trx.rollback(savepoint);
+					Savepoint savepoint = trx.setSavepoint(null);
+					int id= results.getInt(1);
+					String error = rollUpCosts(id);
+					if (!Util.isEmpty(error))
+					{
+						addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
+								+ ". Details: " + error, MProduct.Table_ID, product_id);
+						trx.rollback(savepoint);
+					}
+					else
+					{
+						trx.releaseSavepoint(savepoint);
+						count++;
+					}
 				}
-				else
-				{
-					trx.releaseSavepoint(savepoint);
-					count++;
-				}
+			} finally {
+				DB.close(results);
 			}
 		}
 		else //do it for all products 
@@ -201,25 +206,30 @@ public class RollUpCosts extends SvrProcess {
 			   " JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID" +
 			   " WHERE b.AD_Client_ID=" + getAD_Client_ID() +" AND b.IsActive='Y' AND bl.IsActive='Y' AND b.BOMType='A' AND b.BOMUse='A')";
 			Trx trx = Trx.get(get_TrxName(), false);
-	        RowSet results = DB.getRowSet(sql);
-		    while (results.next())
-		    {
-		    	Savepoint savepoint = trx.setSavepoint(null);
-		    	int id= results.getInt(1);		    	
-				String error = rollUpCosts(id);
-				if (!Util.isEmpty(error))
+			RowSet results = null;
+			try {
+				results = DB.getRowSet(sql);
+				while (results.next())
 				{
-					addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
-							+ ". Details: " + error, MProduct.Table_ID, product_id);
-					trx.rollback(savepoint);
+					Savepoint savepoint = trx.setSavepoint(null);
+					int id= results.getInt(1);
+					String error = rollUpCosts(id);
+					if (!Util.isEmpty(error))
+					{
+						addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
+								+ ". Details: " + error, MProduct.Table_ID, product_id);
+						trx.rollback(savepoint);
+					}
+					else
+					{
+						trx.releaseSavepoint(savepoint);
+						count++;
+					}
 				}
-				else
-				{
-					trx.releaseSavepoint(savepoint);
-					count++;
-				}
-		    }
-	    }
+			} finally {
+				DB.close(results);
+			}
+		}
 		
 		return count + " Product Cost Updated.";
 	}

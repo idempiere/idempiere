@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_Warehouse")
 public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)

@@ -28,6 +28,7 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MInvoicePaySchedule;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderPaySchedule;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
  
@@ -63,7 +64,7 @@ public class InOutCreateInvoice extends SvrProcess
 			else if (name.equals("InvoiceDocumentNo"))
 				p_InvoiceDocumentNo = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_M_InOut_ID = getRecord_ID();
 	}	//	prepare

@@ -98,7 +98,7 @@ public class ASPGenerateLevel extends SvrProcess
 			else if (name.equals("IsGenerateFields"))
 				p_IsGenerateFields = para.getParameter().equals("Y");
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 		p_ASP_Level_ID = getRecord_ID();
 	}	//	prepare

@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.X_I_PriceList;
 import org.compiere.model.X_M_ProductPriceVendorBreak;
@@ -77,7 +78,7 @@ public class ImportPriceList extends SvrProcess
 			else if (name.equals("IsImportPriceLimit"))
 				p_importPriceLimit = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

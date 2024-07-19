@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User_Substitute
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_User_Substitute")
 public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_User_Substitute (Properties ctx, int AD_User_Substitute_ID, String trxName)

@@ -77,6 +77,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
     private MLookup         m_lookup;
   
     private int AD_Process_ID;
+    private int AD_InfoWindow_ID;
     private GridField gridfield = null;
     
     private ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
@@ -122,6 +123,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         super(new Button(), gridField, rowIndex, tableEditor, editorConfiguration);
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
+        AD_InfoWindow_ID = gridField.getAD_InfoWindow_ID();
         gridfield = gridField;
         getComponent().setAttribute(EDITOR_ATTRIBUTE, this);
         init();
@@ -135,6 +137,15 @@ public class WButtonEditor extends WEditor implements IProcessButton
 	{
 		return AD_Process_ID;
 	}	//	getProcess_ID
+	
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.IProcessButton#getInfoWindow_ID()
+	 */
+	@Override
+	public int getInfoWindow_ID()
+	{
+		return AD_InfoWindow_ID;
+	}	//	getInfoWindow_ID
 	
 	public GridField getGridField()
 	{

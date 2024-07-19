@@ -40,7 +40,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.CreateFromStatement;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
@@ -48,6 +48,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -58,18 +59,23 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 
 /**
- * 
+ * Form to create bank statement line (C_BankStatementLine) from payment transactions.
  * @author Elaine
  *
  */
 public class WCreateFromStatementUI extends CreateFromStatement implements EventListener<Event>
 {
+	/** Create from window instance */
 	private WCreateFromWindow window;
 	
+	/**
+	 * 
+	 * @param tab
+	 */
 	public WCreateFromStatementUI(GridTab tab) 
 	{
 		super(tab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO)) log.info(getGridTab().toString());
 		
 		window = new WCreateFromWindow(this, getGridTab().getWindowNo());
 		
@@ -96,6 +102,8 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	/**	Logger			*/
 	private final static CLogger log = CLogger.getCLogger(WCreateFromStatementUI.class);
 
+	/** Parameter fields for {@link #parameterBankLayout} */
+	
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;
 	
@@ -113,6 +121,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	
 	protected Label amtFromLabel = new Label(Msg.translate(Env.getCtx(), "PayAmt"));
 	protected WNumberEditor amtFromField = new WNumberEditor("AmtFrom", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtFrom"));
+	
 	protected Label amtToLabel = new Label("-");
 	protected WNumberEditor amtToField = new WNumberEditor("AmtTo", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtTo"));
 	
@@ -121,19 +130,17 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 
 	protected Label dateFromLabel = new Label(Msg.translate(Env.getCtx(), "DateTrx"));
 	protected WDateEditor dateFromField = new WDateEditor("DateFrom", false, false, true, Msg.translate(Env.getCtx(), "DateFrom"));
+	
 	protected Label dateToLabel = new Label("-");
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 
+	/** Grid layout for parameter panel */
 	protected Grid parameterBankLayout;
 
-	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		super.dynInit();
 		
@@ -144,7 +151,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 				
 		if (getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			FDialog.error(0, window, "SaveErrorRowNotFound");
+			Dialog.error(0, "SaveErrorRowNotFound");
 			return false;
 		}
 		
@@ -168,7 +175,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		tenderTypeField = new WTableDirEditor (MPayment.COLUMNNAME_TenderType,false,false,true,lookup);
 		tenderTypeField.getComponent().addEventListener(Events.ON_CHANGE, this);
 		
-		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search);
+		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID, DisplayType.Search);
 		bPartnerLookup = new WSearchEditor ("C_BPartner_ID", false, false, true, lookup);
 		
 		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
@@ -179,6 +186,10 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * Layout {@link #window}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		LayoutUtils.addSclass("create-from-bank-statement", window);
@@ -245,6 +256,10 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		}
 	}
 
+	/**
+	 * Setup columns of {@link #parameterBankLayout}
+	 * @param parameterBankLayout
+	 */
 	protected void setupColumns(Grid parameterBankLayout) {
 		Columns columns = new Columns();
 		parameterBankLayout.appendChild(columns);
@@ -275,10 +290,11 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	}
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e event
-	 * @throws Exception 
+	 *  @throws Exception 
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
@@ -289,14 +305,21 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		}
 	}
 	
+	/**
+	 * load payment transactions
+	 */
 	protected void loadBankAccount()
 	{
-		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString()));
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString()));
 	}
 	
+	/**
+	 * load data into listbox
+	 * @param data
+	 */
 	protected void loadTableOIS (Vector<?> data)
 	{
 		window.getWListbox().clear();
@@ -307,16 +330,17 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		ListModelTable model = new ListModelTable(data);
 		model.addTableModelListener(window);
 		window.getWListbox().setData(model, getOISColumnNames());
-		//
-		
+		//		
 		configureMiniTable(window.getWListbox());
 	}
 	
+	@Override
 	public void showWindow()
 	{
 		window.setVisible(true);
 	}
 	
+	@Override
 	public void closeWindow()
 	{
 		window.dispose();
@@ -328,6 +352,9 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		return window;
 	}
 	
+	/**
+	 * Handle onClientInfo event from browser.
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && parameterBankLayout != null && parameterBankLayout.getColumns() != null)

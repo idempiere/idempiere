@@ -8,9 +8,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.install;bundle-version="0.0.0";resolution:=optional
 Bundle-ClassPath: .,
- lib/c3p0-oracle-thin-extras.jar,
- lib/c3p0.jar,
- lib/mchange-commons-java.jar,
+ lib/HikariCP.jar,
  lib/ojdbc10.jar
 Import-Package: org.osgi.framework,
  org.slf4j;version="1.7.2"

@@ -17,17 +17,20 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * 
+ * Composite component of textbox and file upload button.
  * @author Low Heng Sin
  *
  */
 public class FilenameBox extends EditorBox
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3438731624652907300L;
 
+	/**
+	 * Default constructor
+	 */
 	public FilenameBox()
     {
         super();
@@ -44,8 +47,9 @@ public class FilenameBox extends EditorBox
         btn.setUpload(AdempiereWebUI.getUploadSetting());
     }
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.component.EditorBox#addEventListener(java.lang.String, org.zkoss.zk.ui.event.EventListener)
+	/**
+	 * If evtnm is ON_UPLOAD, add listener to button.<br/>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {

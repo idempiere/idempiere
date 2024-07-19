@@ -192,7 +192,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		//	Data
 		String sql = "SELECT AD_Column_ID, Updated, UpdatedBy, OldValue, NewValue "
 			+ "FROM AD_ChangeLog "
-			+ "WHERE AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=?"
+			+ "WHERE AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=? "
 			+ "ORDER BY Updated DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

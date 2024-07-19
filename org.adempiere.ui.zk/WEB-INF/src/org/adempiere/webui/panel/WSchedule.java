@@ -266,24 +266,8 @@ public class WSchedule extends Window implements EventListener<Event>
 			
 			for(MAssignmentSlot mas : list) {
 				SimpleCalendarEvent event = new SimpleCalendarEvent();
-				Timestamp startTime = mas.getStartTime();
-				Timestamp endTime = mas.getEndTime();
-				Calendar calStart = Calendar.getInstance();
-				calStart.setTime(startTime);
-				Calendar calEnd = Calendar.getInstance();
-				calEnd.setTime(endTime);
-				
-				calStart.add(Calendar.DAY_OF_MONTH, 1);
-				if (calStart.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR) && calStart.get(Calendar.MONTH) == calEnd.get(Calendar.MONTH)
-					&& calStart.get(Calendar.DAY_OF_MONTH) == calEnd.get(Calendar.DAY_OF_MONTH)) {
-					if (calEnd.get(Calendar.HOUR_OF_DAY) == 0 && calEnd.get(Calendar.MINUTE) == 0) {
-						calEnd.add(Calendar.DAY_OF_MONTH, -1);
-						calEnd.set(Calendar.HOUR_OF_DAY, 23);
-					}
-				}
-				
-				event.setBeginDate(startTime);
-				event.setEndDate(calEnd.getTime());
+				event.setBeginDate(mas.getStartTime());
+				event.setEndDate(mas.getEndTime());
 				event.setTitle(mas.getName());
 				event.setContent(mas.getDescription() != null ? mas.getDescription() : mas.getName());
 				event.setHeaderColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));

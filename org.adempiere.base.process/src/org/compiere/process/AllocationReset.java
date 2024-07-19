@@ -16,16 +16,17 @@
  *****************************************************************************/
 package org.compiere.process;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MProcessPara;
+import org.compiere.model.POResultSet;
+import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
-import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
@@ -79,7 +80,7 @@ public class AllocationReset extends SvrProcess
 			else if (name.equals("AllAllocations"))
 				p_AllAllocations = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		if ( !p_AllAllocations && getTable_ID() == MAllocationHdr.Table_ID && getRecord_ID() > 0 )
@@ -110,73 +111,57 @@ public class AllocationReset extends SvrProcess
 
 		if (p_C_AllocationHdr_ID != 0)
 		{
-			MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
-			if (delete(hdr))
-				count++;
-			else
-				throw new AdempiereException("Cannot delete");
-			m_trx.close();
+			try {
+				MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
+				if (delete(hdr))
+					count++;
+				else
+					throw new AdempiereException("Cannot delete");
+			} finally {
+				m_trx.close();
+			}
 			StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 			return msgreturn.toString();
 		}
-		
-		//	Selection
-		StringBuilder sql = new StringBuilder("SELECT * FROM C_AllocationHdr ah ")
-			.append("WHERE EXISTS (SELECT * FROM C_AllocationLine al ")
-				.append("WHERE ah.C_AllocationHdr_ID=al.C_AllocationHdr_ID");
-		if (p_C_BPartner_ID != 0)
-			sql.append(" AND al.C_BPartner_ID=?");
-		else if (p_C_BP_Group_ID != 0)
-			sql.append(" AND EXISTS (SELECT * FROM C_BPartner bp ")
-					.append("WHERE bp.C_BPartner_ID=al.C_BPartner_ID AND bp.C_BP_Group_ID=?)");
-		else
-			sql.append(" AND AD_Client_ID=?");
-		if (p_DateAcct_From != null)
-			sql.append(" AND TRIM(ah.DateAcct) >= ?");
-		if (p_DateAcct_To != null)
-			sql.append(" AND TRIM(ah.DateAcct) <= ?");
+
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder where = new StringBuilder("EXISTS (SELECT * FROM C_AllocationLine al WHERE C_AllocationHdr.C_AllocationHdr_ID=al.C_AllocationHdr_ID");
+		if (p_C_BPartner_ID != 0) {
+			where.append(" AND al.C_BPartner_ID=?");
+			params.add(p_C_BPartner_ID);
+		} else if (p_C_BP_Group_ID != 0) {
+			where.append(" AND EXISTS (SELECT * FROM C_BPartner bp WHERE bp.C_BPartner_ID=al.C_BPartner_ID AND bp.C_BP_Group_ID=?)");
+			params.add(p_C_BP_Group_ID);
+		} else {
+			where.append(" AND AD_Client_ID=?");
+			params.add(getAD_Client_ID());
+		}
+		if (p_DateAcct_From != null) {
+			where.append(" AND TRUNC(C_AllocationHdr.DateAcct) >= ?");
+			params.add(p_DateAcct_From);
+		}
+		if (p_DateAcct_To != null) {
+			where.append(" AND TRUNC(C_AllocationHdr.DateAcct) <= ?");
+			params.add(p_DateAcct_To);
+		}
 		//	Do not delete Cash Trx
-		sql.append(" AND al.C_CashLine_ID IS NULL)");
+		where.append(" AND al.C_CashLine_ID IS NULL)");
 		//	Open Period
-		sql.append(" AND EXISTS (SELECT * FROM C_Period p")
+		where.append(" AND EXISTS (SELECT * FROM C_Period p")
 			.append(" INNER JOIN C_PeriodControl pc ON (p.C_Period_ID=pc.C_Period_ID AND pc.DocBaseType='CMA') ")
-			.append("WHERE ah.DateAcct BETWEEN p.StartDate AND p.EndDate)");
-		//
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), m_trx.getTrxName());
-			int index = 1;
-			if (p_C_BPartner_ID != 0)
-				pstmt.setInt(index++, p_C_BPartner_ID);
-			else if (p_C_BP_Group_ID != 0)
-				pstmt.setInt(index++, p_C_BP_Group_ID);
-			else
-				pstmt.setInt(index++, Env.getAD_Client_ID(getCtx()));
-			if (p_DateAcct_From != null)
-				pstmt.setTimestamp(index++, p_DateAcct_From);
-			if (p_DateAcct_To != null)
-				pstmt.setTimestamp(index++, p_DateAcct_To);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MAllocationHdr hdr = new MAllocationHdr(getCtx(), rs, m_trx.getTrxName());
+			.append("WHERE C_AllocationHdr.DateAcct BETWEEN p.StartDate AND p.EndDate)");
+
+		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), get_TrxName())
+				.setClient_ID()
+				.setParameters(params)
+				.scroll()) {
+			while (pors.hasNext()) {
+				MAllocationHdr hdr = pors.next();
 				if (delete(hdr))
 					count++;
 			}
- 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-			m_trx.rollback();
 		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		m_trx.close();
+
 		StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 		return msgreturn.toString();
 	}	//	doIt

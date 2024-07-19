@@ -121,7 +121,14 @@ public class ProductCost
 			m_C_UOM_ID = C_UOM_ID;
 	}   //  setQty
 
-	
+	/**
+	 * 	
+	 * @return qty
+	 */
+	public BigDecimal getQty() 
+	{
+		return m_qty;
+	}
 	
 	
 	/** Product Revenue Acct    */

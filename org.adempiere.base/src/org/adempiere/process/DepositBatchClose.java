@@ -55,11 +55,10 @@ public class DepositBatchClose extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_C_DepositBatch_ID = getRecord_ID();
 	}	//	prepare

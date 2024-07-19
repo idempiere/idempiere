@@ -16,25 +16,36 @@ package org.adempiere.webui.apps.form;
 import org.adempiere.webui.panel.CustomForm;
 
 /**
- * 
+ * Custom form for {@link WMerge}.
  * @author hengsin
- *
  */
 public class WMergeUI extends CustomForm {
-	
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = -8576926702378868806L;
 	
+	/** Controller */
 	private WMerge m_merge;
 	
+	/**
+	 * @param merge
+	 */
 	public WMergeUI(WMerge merge) {
 		super();
 		m_merge = merge;
 	}
 
+	/**
+	 * Run merge process
+	 */
 	public void runProcess() {
 		m_merge.runProcess();
 	}
 	
+	/**
+	 * After execution of merge process
+	 */
 	public void onAfterProcess() {
 		m_merge.onAfterProcess();
 	}

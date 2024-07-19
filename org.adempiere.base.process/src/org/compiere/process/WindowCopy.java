@@ -19,6 +19,7 @@ package org.compiere.process;
 import java.util.logging.Level;
 
 import org.compiere.model.MField;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MWindow;
 import org.compiere.util.AdempiereUserError;
@@ -53,7 +54,7 @@ public class WindowCopy extends SvrProcess
 			else if (name.equals("AD_Window_ID"))
 				p_AD_WindowFrom_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_WindowTo_ID = getRecord_ID();
 	}	//	prepare

@@ -24,9 +24,8 @@ import org.compiere.model.I_M_RMA;
 import org.compiere.model.I_C_DepositBatch;
 
 /**
- * 
+ * Default implementation of {@link ICreateFromFactory}
  * @author Elaine
- *
  */
 public class DefaultCreateFromFactory implements ICreateFromFactory 
 {

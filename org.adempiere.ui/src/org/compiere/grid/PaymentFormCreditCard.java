@@ -41,13 +41,18 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
 	
 	/** Start Payment */
-	public int 					m_C_Payment_ID = 0;
-	public MPayment 			m_mPayment = null;
-	public MPayment 			m_mPaymentOriginal = null;
-	public MPaymentTransaction	m_mPaymentTransaction = null;
+	protected int 					m_C_Payment_ID = 0;
+	protected MPayment 			m_mPayment = null;
+	protected MPayment 			m_mPaymentOriginal = null;
+	protected MPaymentTransaction	m_mPaymentTransaction = null;
 	/** Start CreditCard */
-	public String 				m_CCType = "";
+	protected String 				m_CCType = "";
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public PaymentFormCreditCard(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 	}
@@ -187,7 +192,12 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 			m_CCType = m_mPaymentTransaction.getCreditCardType();
 	}
 	
-	public ValueNamePair selectedCreditCard;
+	protected ValueNamePair selectedCreditCard;
+	
+	/**
+	 * 
+	 * @return list of accepted credit card types
+	 */
 	public ValueNamePair[] getCreditCardList()
 	{
 		selectedCreditCard = null;
@@ -212,8 +222,18 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		return ok;
 	}
 	
-	public String processMsg = null;
-	public boolean save(String newCCType, String newCCNumber, String newCCExp, BigDecimal newAmount, String trxName)
+	protected String processMsg = null;
+	
+	/**
+	 * 
+	 * @param CCType credit card type
+	 * @param CCNumber credit card number
+	 * @param CCExp credit card expire date
+	 * @param amount ignore
+	 * @param trxName
+	 * @return true if save successfully
+	 */
+	public boolean save(String CCType, String CCNumber, String CCExp, BigDecimal amount, String trxName)
 	{
 		// set trxname for class objects
 		if (m_mPayment != null)
@@ -307,7 +327,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		if (log.isLoggable(Level.FINE)) log.fine("Payment - " + PAYMENTRULE);
 		//  Set Amount
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
-		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, newCCType, newCCNumber, "", newCCExp);
+		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, "", CCExp);
 		m_mPayment.setPaymentProcessor();
 		
 		if (isPOSOrder || isInvoice)
@@ -315,7 +335,6 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		else if (isCreditMemo)
 		{
 			m_mPayment.setTrxType(MPayment.TRXTYPE_CreditPayment);
-//			m_mPayment.setOrig_TrxID(kPGOrderIDField.getValue());
 		}
 		else if (C_Invoice_ID != 0)
 		{
@@ -341,8 +360,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 			order = new MOrder (Env.getCtx(), C_Order_ID, null);
 		if (order != null)
 		{
-			m_mPayment.setC_Order_ID(C_Order_ID);
-			m_needSave = true;
+			m_mPayment.setC_Order_ID(C_Order_ID);			
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
@@ -377,10 +395,25 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 			m_mPayment.saveEx();
 		}
 		
+		return true;
+	}
+	
+	@Override
+	protected void afterSave(boolean success)
+	{
+		if (!success)
+			return;
+		
 		/**********************
 		 *	Save Values to mTab
 		 */
-		log.config("Saving changes");
+		//refresh
+		getGridTab().dataRefresh(false);
+		Object paymentIdValue = getGridTab().getValue("C_Payment_ID");
+		if (paymentIdValue != null && paymentIdValue instanceof Number)
+			m_C_Payment_ID = ((Number)paymentIdValue).intValue();
+		else
+			m_C_Payment_ID = 0;
 		//	Set Payment
 		if (m_mPayment.getC_Payment_ID() != m_C_Payment_ID)
 		{
@@ -388,17 +421,34 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				getGridTab().setValue("C_Payment_ID", null);
 			else
 				getGridTab().setValue("C_Payment_ID", Integer.valueOf(m_mPayment.getC_Payment_ID()));
+			m_needSave = true;
 		}
-		
-		return true;
 	}
 	
+	/**
+	 * 
+	 * @param CCType credit card type
+	 * @param CCNumber credit card number
+	 * @param CCVV credit card ccv
+	 * @param CCExp credit card expire date
+	 * @return true if process successfully
+	 */
 	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp)
 	{
-		return processOnline(CCType, CCNumber, CCVV, CCExp, 0);
+		return processOnline(CCType, CCNumber, CCVV, CCExp, 0, (String)null);
 	}
 	
-	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp, int C_PaymentProcessor_ID)
+	/**
+	 * 
+	 * @param CCType credit card type
+	 * @param CCNumber credit card number
+	 * @param CCVV credit card ccv
+	 * @param CCExp credit card expire date
+	 * @param C_PaymentProcessor_ID optional payment processor id. use the first configure if this is 0
+	 * @param trxName optional trx name
+	 * @return true if process successfully
+	 */
+	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp, int C_PaymentProcessor_ID, String trxName)
 	{
 		processMsg = null;
 		boolean error = false;
@@ -429,7 +479,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		if (isCreditMemo)
 			payAmount = m_Amount.negate();
 		
-		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, null);
+		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, trxName);
 		mpt.setAD_Org_ID(m_AD_Org_ID);
 		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, CCVV != null ? CCVV : "", CCExp);
 		mpt.setAmount(m_C_Currency_ID, payAmount);
@@ -441,7 +491,6 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		else if (isCreditMemo)
 		{
 			mpt.setTrxType(MPayment.TRXTYPE_CreditPayment);
-//			mpt.setOrig_TrxID(kPGOrderIDField.getValue());
 		}
 		else if (C_Invoice_ID != 0)
 		{
@@ -451,7 +500,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		else
 		{
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), null);
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), trxName);
 			if (paymentProcessor.getTrxType() != null)
 				mpt.setTrxType(paymentProcessor.getTrxType());
 		}
@@ -484,7 +533,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				m_needSave = true;
 				if (mpt.getC_Payment_ID() > 0)
 				{
-					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), null);
+					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), trxName);
 					String info = m_mPayment.getR_RespMsg() + " (" + m_mPayment.getR_AuthCode() + ") ID=" + m_mPayment.getR_PnRef();
 					processMsg = info + "\n" + m_mPayment.getDocumentNo();
 					saveChanges();
@@ -504,11 +553,23 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		return !error;
 	}
 	
+	/**
+	 * 
+	 * @param CCType
+	 * @param PayAmt
+	 * @return true if online payment processor have been configured for tender type credit card
+	 */
 	public boolean isBankAccountProcessorExist(String CCType, BigDecimal PayAmt)
 	{
 		return isBankAccountProcessorExist(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
 	}
 	
+	/**
+	 * Get online payment processor configuration for tender type credit card
+	 * @param CCType
+	 * @param PayAmt
+	 * @return {@link MBankAccountProcessor}
+	 */
 	public MBankAccountProcessor getBankAccountProcessor(String CCType, BigDecimal PayAmt)
 	{
 		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
@@ -519,6 +580,17 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		return m_mPayment.isApproved();
 	}
 	
+	/**
+	 * 
+	 * @param CCType credit card type
+	 * @param CCNumber credit card number
+	 * @param CCVV credit card ccv
+	 * @param CCExp credit card expire
+	 * @param C_BP_BankAccount_ID
+	 * @param CustomerPaymentProfileID
+	 * @return error message if credit card doesn't pass validation
+	 * @throws IllegalArgumentException
+	 */
 	public String validateCreditCard(String CCType, String CCNumber, String CCVV, String CCExp, int C_BP_BankAccount_ID, String CustomerPaymentProfileID) throws IllegalArgumentException {
 		String msg = null;
 		if (C_BP_BankAccount_ID != 0 || (CustomerPaymentProfileID != null && CustomerPaymentProfileID.length() > 0))

@@ -9,20 +9,111 @@
 	</parent>
 	<artifactId>org.idempiere.p2</artifactId>
 	<packaging>eclipse-repository</packaging>
-
+	<properties>
+		<materializeProduct>package</materializeProduct>
+	</properties>
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>auto-clean</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
 
+						<configuration>
+							<skip>${skipClean}</skip>
+							<excludeDefaultDirectories>false</excludeDefaultDirectories>
+							<filesets>
+								<fileset>
+									<directory>${project.basedir}/lib</directory>
+									<includes>
+										<include>*.jar</include>
+									</includes>
+									<followSymlinks>false</followSymlinks>
+		        				</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+					<execution>
+						<id>always-clean</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+
+						<configuration>
+							<skip>false</skip>
+							<excludeDefaultDirectories>true</excludeDefaultDirectories>
+							<filesets>
+								<fileset>
+									<directory>${project.basedir}/target</directory>
+									<includes>
+								      <include>local-artifacts.properties</include>
+								      <include>repository</include>
+								      <include>repository/**</include>
+								    </includes>
+									<followSymlinks>false</followSymlinks>
+		        				</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-publisher-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-publish-osgi-ee</id>
+						<goals>
+							<goal>publish-osgi-ee</goal>
+						</goals>
+						<phase>${materializeProduct}</phase>
+					</execution>
+					<execution>
+						<id>default-publish-categories</id>
+						<goals>
+							<goal>publish-categories</goal>
+						</goals>
+						<phase>${materializeProduct}</phase>
+					</execution>
+					<execution>
+						<id>default-publish-products</id>
+						<goals>
+							<goal>publish-products</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+					<execution>
+						<id>default-attach-artifacts</id>
+						<goals>
+							<goal>attach-artifacts</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-repository-plugin</artifactId>
 				<executions>
 					<execution>
-						<!-- install the product using the p2 director -->
-						<id>build-site-p2</id>
+						<id>default-assemble-repository</id>
 						<goals>
 							<goal>assemble-repository</goal>
 						</goals>
+						<phase>package</phase>
+					</execution>
+					<execution>
+						<id>default-archive-repository</id>
+						<goals>
+							<goal>archive-repository</goal>
+						</goals>
+						<phase>package</phase>
 					</execution>
 				</executions>
 				<configuration>
@@ -34,17 +125,17 @@
 					<xzCompress>false</xzCompress>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-director-plugin</artifactId>
 				<executions>
 					<execution>
 						<!-- install the product using the p2 director -->
-						<id>materialize-products</id>
+						<id>default-materialize-products</id>
 						<goals>
 							<goal>materialize-products</goal>
 						</goals>
+						<phase>${materializeProduct}</phase>
 					</execution>
 				</executions>
 				<configuration>
@@ -58,7 +149,6 @@
 					</products>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-eclipserun-plugin</artifactId>
@@ -67,13 +157,14 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>default-eclipse-run</id>
 						<goals>
 							<goal>eclipse-run</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${materializeProduct}</phase>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
-	</build>
+	</build>	
 </project>

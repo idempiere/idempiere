@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MField;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -71,7 +72,7 @@ public class TabCreateFields extends SvrProcess
 			else if (name.equals("CreatedSince"))
 				p_CreatedSince = para[i].getParameterAsTimestamp();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_Tab_ID = getRecord_ID();
 	}	//	prepare

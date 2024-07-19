@@ -27,7 +27,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Window}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -35,33 +35,39 @@ import org.zkoss.zk.ui.event.Events;
 public class Window extends org.zkoss.zul.Window implements ISupportMask
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8249071775776387012L;
 
 	protected ShowMaskWrapper showMaskWrapper = new ShowMaskWrapper(this);
-	/*** Show as modal window ***/
+	/** Show as modal window */
     public static final String MODE_MODAL = "modal";
-    /*** Show as popup window ***/
+    /** Show as popup window */
     public static final String MODE_POPUP =  "popup";
-    /*** Show as floating window ***/
+    /** Show as floating/overlapped window */
     public static final String MODE_OVERLAPPED =  "overlapped";
-    /*** Add to the tabbed window container ***/
+    /** Show as desktop tab */
     public static final String MODE_EMBEDDED =  "embedded";
-    /*** Show as fake modal window ***/
+    /** Show as overlapped window with background mask */
     public static final String MODE_HIGHLIGHTED = "highlighted";
-    /*** attribute key to store window display mode ***/
+    /** Window attribute to store display mode (modal, popup, etc) */
     public static final String MODE_KEY = "mode";
     
-    /*** attribute key to store insert position for embedded mode window ***/
+    /** Window attribute to store desktop tab insert position for embedded mode */
     public static final String INSERT_POSITION_KEY = "insertPosition";
-    /*** Append to the end of tabs of the tabbed window container ***/
+    /** Append to the end of tabs of desktop */
     public static final String INSERT_END = "insertEnd";
-    /*** Insert next to the active tab of the tabbed window container ***/
+    /** Insert next to the active tab of desktop */
     public static final String INSERT_NEXT = "insertNext";
-    /*** Replace current tab content ***/
+    /** Replace current desktop tab content */
     public static final String REPLACE = "replace";
     
+    /** if true, fire ON_WINDOW_CLOSE event when detached from page */
+    private boolean fireWindowCloseEventOnDetach = true;
+    
+    /**
+     * Default constructor
+     */
     public Window()
     {
         super();
@@ -83,7 +89,8 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
 		super.onPageDetached(page);
 		if (Executions.getCurrent() != null && Executions.getCurrent().getDesktop() != null &&
 				Executions.getCurrent().getDesktop().getExecution() != null) {
-			Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
+			if (fireWindowCloseEventOnDetach)
+				Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
 		}
 	}
 	
@@ -145,5 +152,19 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
 	@Override
 	public Component getMaskComponent() {		
 		return showMaskWrapper.getMaskComponent();
+	}
+
+	/**
+	 * @return true if {@link DialogEvents#ON_WINDOW_CLOSE} event is fire when window is detach from page
+	 */
+	public boolean isFireWindowCloseEventOnDetach() {
+		return fireWindowCloseEventOnDetach;
+	}
+
+	/**
+	 * @param fireWindowCloseEventOnDetach true to fire {@link DialogEvents#ON_WINDOW_CLOSE} event when window is detach from page (default is true)
+	 */
+	public void setFireWindowCloseEventOnDetach(boolean fireWindowCloseEventOnDetach) {
+		this.fireWindowCloseEventOnDetach = fireWindowCloseEventOnDetach;
 	}
 }

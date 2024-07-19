@@ -48,6 +48,9 @@ public class POFinder {
 		if (AD_Client_ID==0)
 			return uuid;
 		MTable table = MTable.get(ctx, tableName);
+		if (table == null) {
+			throw new IllegalStateException("getTargetUUID couldn't find table named " + tableName);
+		}
 		String sql = "SELECT Target_UUID FROM AD_Package_UUID_Map WHERE AD_Client_ID=? AND AD_Table_ID=? AND Source_UUID=?";
 		String uid = DB.getSQLValueString(trxName, sql, AD_Client_ID, table.getAD_Table_ID(), uuid);
 		return Util.isEmpty(uid) ? uuid : uid;

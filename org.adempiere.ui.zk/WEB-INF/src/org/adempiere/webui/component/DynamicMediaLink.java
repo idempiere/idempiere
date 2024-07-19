@@ -22,8 +22,8 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Filedownload;
 
 /**
+ * Link to download media
  * @author hengsin
- *
  */
 public class DynamicMediaLink extends A {
 
@@ -33,7 +33,10 @@ public class DynamicMediaLink extends A {
 	private static final long serialVersionUID = 5017833977652241179L;
 	
 	private AMedia media;
-	
+
+	/**
+	 * Default constructor
+	 */
 	public DynamicMediaLink() {
 		super();
 		this.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -45,14 +48,25 @@ public class DynamicMediaLink extends A {
 		});
 	}
 
+	/**
+	 * @param label
+	 * @param image
+	 */
 	public DynamicMediaLink(String label, String image) {
 		super(label, image);
 	}
 
+	/**
+	 * @param label
+	 */
 	public DynamicMediaLink(String label) {
 		super(label);
 	}
 	
+	/**
+	 * Set media for download
+	 * @param media
+	 */
 	public void setMedia(AMedia media) {
 		this.media = media;
 	}	

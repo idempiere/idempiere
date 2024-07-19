@@ -24,9 +24,7 @@
  **********************************************************************/
 package org.adempiere.webui.util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +35,6 @@ import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.sys.DesktopCache;
 import org.zkoss.zk.ui.sys.DesktopCtrl;
 import org.zkoss.zk.ui.sys.ServerPush;
-import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.sys.WebAppCtrl;
 
 import fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush;
@@ -49,22 +46,29 @@ import fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush;
  */
 public class DesktopWatchDog {
 
+	/** singleton instance **/
 	private final static DesktopWatchDog INSTANCE = new DesktopWatchDog();
 	
+	/** Desktops being watched **/
 	private final ConcurrentLinkedDeque<DesktopEntry> desktops = new ConcurrentLinkedDeque<DesktopWatchDog.DesktopEntry>();
 	
+	/**
+	 * default constructor
+	 */
 	private DesktopWatchDog() {
 		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(() -> {
 			doMonitoring();
 		}, 60, 40, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * Check each entries in {@link #desktops}.
+	 */
 	private void doMonitoring() {
-		List<Session> toDestroy = new ArrayList<Session>();
-		List<Session> actives = new ArrayList<Session>();
 		Iterator<DesktopEntry> iterator = desktops.iterator();
 		while (iterator.hasNext()) {
 			DesktopEntry entry = iterator.next();
+			//not active, remove from watch list
 			if (!entry.desktop.isAlive()) {
 				iterator.remove();
 				continue;
@@ -81,33 +85,19 @@ public class DesktopWatchDog {
 					entry.noAtmosphereResourceCount++;
 				else
 					entry.noAtmosphereResourceCount=0;
-			}
-			if (entry.noAtmosphereResourceCount >= 3) {
+			}			 
+			if (entry.noAtmosphereResourceCount >= 5) {
+				//no message from desktop for 5 consecutive run of doMonitoring.
+				//remove desktop from DesktopCache.
 				iterator.remove();
 		        try {
 		        	final WebApp wapp = entry.desktop.getWebApp();
 		        	final Session session = entry.desktop.getSession();
 		    	    final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(session);
 		    		desktopCache.removeDesktop(entry.desktop);
-		    		if (!actives.contains(session) && !toDestroy.contains(session))
-		    			toDestroy.add(session);
 		    	} catch (Throwable t) {
 		    		t.printStackTrace();
 		    	}
-			} else {
-				final Session session = entry.desktop.getSession();
-				if (!actives.contains(session))
-					actives.add(session);
-				int index = toDestroy.indexOf(session);
-				if (index >= 0)
-					toDestroy.remove(index);
-			}
-		}
-		if (!toDestroy.isEmpty()) {
-			for(Session session : toDestroy) {
-				if (!((SessionCtrl)session).isInvalidated()) {
-					((SessionCtrl)session).invalidateNow();
-				}
 			}
 		}
 	}

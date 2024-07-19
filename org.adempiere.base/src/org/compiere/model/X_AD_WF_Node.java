@@ -34,7 +34,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220420L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName)

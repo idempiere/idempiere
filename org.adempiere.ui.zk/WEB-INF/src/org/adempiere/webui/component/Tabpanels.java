@@ -18,7 +18,7 @@
 package org.adempiere.webui.component;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Tabpanels}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -26,10 +26,13 @@ package org.adempiere.webui.component;
 public class Tabpanels extends org.zkoss.zul.Tabpanels
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2520923256815587165L;
 
+	/**
+	 * Default constructor
+	 */
 	public Tabpanels()
     {
         super();

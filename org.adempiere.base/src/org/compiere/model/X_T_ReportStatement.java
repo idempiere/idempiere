@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for T_ReportStatement
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="T_ReportStatement")
 public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_T_ReportStatement (Properties ctx, int T_ReportStatement_ID, String trxName)

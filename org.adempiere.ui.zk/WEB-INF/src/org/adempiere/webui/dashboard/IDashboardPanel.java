@@ -17,7 +17,7 @@ import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 
 /**
- * Interface for dashboard panel
+ * Interface for dashboard gadget/widget
  * @author Elaine
  * @author hengsin
  *
@@ -25,8 +25,9 @@ import org.adempiere.webui.util.ServerPushTemplate;
 public interface IDashboardPanel extends IServerPushCallback {
 
 	/**
-	 * Refresh content of panel. For performance reason, keep the activate of desktop as short 
-	 * as possible.
+	 * Refresh content/model of panel. <br/> 
+	 * To keep UI responsive, long running operation should be perform here outside of Event Listener Thread.<br/>
+	 * Update of UI components should happens in the updateUI method (on Event Listener Thread) and should be completed in a short period of time.
 	 * @param template 
 	 */
 	public void refresh(ServerPushTemplate template);

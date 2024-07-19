@@ -20,9 +20,8 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * 
+ * Extend {@link org.zkoss.zul.Menupopup} 
  * @author hengsin
- *
  */
 public class Menupopup extends org.zkoss.zul.Menupopup {
 
@@ -32,13 +31,13 @@ public class Menupopup extends org.zkoss.zul.Menupopup {
 	private static final long serialVersionUID = -4929397362586559388L;
 
 	/**
-	 * listo of xulelement that use this as the context menu
+	 * List of XulElement that uses this as the context menu
 	 */
 	private List<XulElement> elementList = new ArrayList<XulElement>();
 
 	/**
 	 * add xul element that want to use this as the context menu
-	 * @param element
+	 * @param element XulElement
 	 */
 	public void addContextElement(XulElement element) {
 		elementList.add(element);

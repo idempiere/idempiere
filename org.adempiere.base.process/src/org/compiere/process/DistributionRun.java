@@ -36,6 +36,7 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MOrgInfo;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
@@ -122,7 +123,7 @@ public class DistributionRun extends SvrProcess
 			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) && name.equals("IsRequiredDRP"))
 				p_BasedInDamnd = "Y".equals((String)para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);		
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_M_DistributionRun_ID = getRecord_ID();
 	}	//	prepare

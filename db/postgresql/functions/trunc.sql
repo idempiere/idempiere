@@ -33,7 +33,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION trunc(datetime TIMESTAMP WITH TIME ZONE, format varchar)
+CREATE OR REPLACE FUNCTION trunc(datetime TIMESTAMP WITHOUT TIME ZONE, format varchar)
 RETURNS DATE AS $$
 BEGIN
 	IF format = 'Q' THEN
@@ -49,6 +49,13 @@ BEGIN
 	ELSE
 		RETURN CAST(datetime AS DATE);
 	END IF;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION trunc(datetime TIMESTAMP WITH TIME ZONE, format varchar)
+RETURNS DATE AS $$
+BEGIN
+		RETURN trunc(cast(datetime as timestamp without time zone), format);
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 

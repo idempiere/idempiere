@@ -638,6 +638,7 @@ public class MAttachment extends X_AD_Attachment
 		MAttachmentEntry entry = getEntry(i);
 		if (entry == null) return false;
 		entry.setData(data);
+		entry.setUpdated(true);
 		return true;
 	}
 

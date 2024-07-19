@@ -23,6 +23,11 @@ import org.compiere.model.GridTab;
  */
 public abstract class PaymentFormMixedPOS extends PaymentForm {
 
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public PaymentFormMixedPOS(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 	}

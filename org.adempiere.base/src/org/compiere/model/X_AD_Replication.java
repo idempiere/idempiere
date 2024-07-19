@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Replication")
 public class X_AD_Replication extends PO implements I_AD_Replication, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Replication (Properties ctx, int AD_Replication_ID, String trxName)
@@ -167,7 +167,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_Replication_UU);
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -175,7 +175,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 		set_ValueNoCheck (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -373,8 +373,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 		return false;
 	}
 
-	/** Set Remote Client.
-		@param Remote_Client_ID Remote Client to be used to replicate / synchronize data with.
+	/** Set Remote Tenant.
+		@param Remote_Client_ID Remote Tenant to be used to replicate / synchronize data with.
 	*/
 	public void setRemote_Client_ID (int Remote_Client_ID)
 	{
@@ -384,8 +384,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_Remote_Client_ID, Integer.valueOf(Remote_Client_ID));
 	}
 
-	/** Get Remote Client.
-		@return Remote Client to be used to replicate / synchronize data with.
+	/** Get Remote Tenant.
+		@return Remote Tenant to be used to replicate / synchronize data with.
 	  */
 	public int getRemote_Client_ID()
 	{

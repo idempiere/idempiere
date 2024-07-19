@@ -19,7 +19,6 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAcctSchema;
@@ -31,6 +30,7 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MOrg;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRevenueRecognitionRun;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -68,7 +68,7 @@ public class RevenueRecognition extends SvrProcess
 			else if (name.equals("C_DocType_ID"))
 				p_C_DocType_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		

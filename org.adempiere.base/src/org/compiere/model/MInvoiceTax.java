@@ -165,7 +165,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 				invoiceTax.set_TrxName(trxName);
 				invoiceTax.setClientOrg(line);
 				invoiceTax.setC_Invoice_ID(line.getC_Invoice_ID());
-				invoiceTax.setC_Tax_ID(line.getC_Tax_ID());
+				invoiceTax.setC_Tax_ID(cTax.getC_Tax_ID());
 				invoiceTax.setPrecision(precision);
 				invoiceTax.setIsTaxIncluded(line.isTaxIncluded());
 				invoiceTaxes.add(invoiceTax);
@@ -288,11 +288,16 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		//
 		boolean documentLevel = getTax().isDocumentLevel();
 		MTax tax = getTax();
+		int parentTaxId = tax.getParent_Tax_ID();
 		//
 		String sql = "SELECT il.LineNetAmt, COALESCE(il.TaxAmt,0), i.IsSOTrx "
 			+ "FROM C_InvoiceLine il"
 			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) "
-			+ "WHERE il.C_Invoice_ID=? AND il.C_Tax_ID=?";
+			+ "WHERE il.C_Invoice_ID=? ";
+		if (parentTaxId > 0) 
+			sql += "AND il.C_Tax_ID IN (?, ?) ";
+		else
+			sql += "AND il.C_Tax_ID=? ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -300,6 +305,8 @@ public class MInvoiceTax extends X_C_InvoiceTax
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_Invoice_ID());
 			pstmt.setInt (2, getC_Tax_ID());
+			if (parentTaxId > 0)
+				pstmt.setInt(3, parentTaxId);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{

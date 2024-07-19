@@ -1,3 +1,32 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - adaxa                                                             *
+ * - anozimada                                                         *
+ * - hengsin                                                           *
+ * - carlosruiz                                                        *
+ * - druiz                                                             *
+ * - nmicoud                                                           *
+ **********************************************************************/
 package org.compiere.apps.form;
 
 import java.math.BigDecimal;
@@ -5,6 +34,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -22,17 +54,17 @@ import org.compiere.util.Msg;
 public class FactReconcile {
 	
 	/**	Logger			*/
-	public static final CLogger log = CLogger.getCLogger(FactReconcile.class);
+	protected static final CLogger log = CLogger.getCLogger(FactReconcile.class);
 	
-	public int			m_AD_Client_ID = 0;
-	public int			m_AD_Org_ID = 0;
-	public int			m_Account_ID = 0;
-	public int			m_C_AcctSchema_ID = 0;
-	public boolean		m_isReconciled = false;
-	public int			m_C_BPartner_ID = 0;
-	public int			m_M_Product_ID = 0;
-	public Timestamp	m_DateAcct = null;
-	public Timestamp	m_DateAcct2 = null;
+	protected int			m_AD_Client_ID = 0;
+	protected int			m_AD_Org_ID = 0;
+	protected int			m_Account_ID = 0;
+	protected int			m_C_AcctSchema_ID = 0;
+	protected boolean		m_isReconciled = false;
+	protected int			m_C_BPartner_ID = 0;
+	protected int			m_M_Product_ID = 0;
+	protected Timestamp	m_DateAcct = null;
+	protected Timestamp	m_DateAcct2 = null;
 
 	public int 			selectedColIndex = 2;
 	public int 			idColIndex = 8;
@@ -43,18 +75,31 @@ public class FactReconcile {
 	static protected int 			col_C_BPartner_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;       //  C_Invoice.C_BPartner_ID
 	static protected int 			col_M_Product_ID = COLUMN_FACT_ACCT_M_PRODUCT_ID;        //  Fact_Acct.M_Product_ID
 	
+	//Optional trx name
+	protected String m_trxName;
+	/** Number of selected rows */
+	protected int m_noSelected;
+	/** Total selected amount */
+	protected BigDecimal m_selectedAmt;
 	
+	/**
+	 * dynamic initialization
+	 * @throws Exception
+	 */
 	public void dynInit() throws Exception
 	{
 		m_AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 	}
 	
+	/**
+	 * 
+	 * @return column header labels
+	 */
 	public Vector<String> getColumnNames()
 	{
 		//  Header Info
 		Vector<String> columnNames = new Vector<String>();
 		columnNames.add(Msg.translate(Env.getCtx(), "Amt"));
-		//columnNames.add(Msg.translate(Env.getCtx(), "AmtAcct"));
 		columnNames.add(Msg.translate(Env.getCtx(), "DR/CR"));
 		columnNames.add(Msg.translate(Env.getCtx(), "Selected"));
 		columnNames.add(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
@@ -70,6 +115,10 @@ public class FactReconcile {
 		return columnNames;
 	}
 	
+	/**
+	 * 
+	 * @return list of Fact_Acct records
+	 */
 	public Vector<Vector<Object>> getData() {
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
@@ -130,7 +179,7 @@ public class FactReconcile {
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), m_trxName);
 			int i = 1;
 			pstmt.setInt(i++, m_AD_Client_ID);
 			
@@ -159,20 +208,19 @@ public class FactReconcile {
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>();
-				//line.add(rs.getBigDecimal(1));	// 1-Amt
-				line.add(rs.getBigDecimal(2));	// 2-AmtAcct
-				line.add(rs.getString(3));		// 3-DR/CR
-				line.add(Boolean.FALSE);	// 4-Fact_Acct_ID
-				line.add(rs.getString(5));		// 5-BP
-				line.add(rs.getTimestamp(6));	// 6-DateAcct
-				line.add(rs.getString(7));		// 7-GL Category
-				line.add(rs.getString(8));		// 8-Product
-				line.add(rs.getBigDecimal(9));	// 9-Qty
-				KeyNamePair pp = new KeyNamePair(rs.getInt(4), rs.getString(10)); // 10 Fact_Acct_ID - description
+				line.add(rs.getBigDecimal(2));	// 1-AmtAcct
+				line.add(rs.getString(3));		// 2-DR/CR
+				line.add(Boolean.FALSE);	    // 3-Fact_Acct_ID
+				line.add(rs.getString(5));		// 4-BP
+				line.add(rs.getTimestamp(6));	// 5-DateAcct
+				line.add(rs.getString(7));		// 6-GL Category
+				line.add(rs.getString(8));		// 7-Product
+				line.add(rs.getBigDecimal(9));	// 8-Qty
+				KeyNamePair pp = new KeyNamePair(rs.getInt(4), rs.getString(10)); // 9 Fact_Acct_ID - description
 				line.add(pp);
-				line.add(rs.getString(11));		// 11-MatchCode
-				line.add(rs.getTimestamp(12));	// 12-DateTrx
-				line.add(rs.getString(13));		// 13-Org
+				line.add(rs.getString(11));		// 10-MatchCode
+				line.add(rs.getTimestamp(12));	// 11-DateTrx
+				line.add(rs.getString(13));		// 12-Org
 				//
 				data.add(line);
 			}
@@ -191,42 +239,97 @@ public class FactReconcile {
 		return data;
 	}
 	
+	/**
+	 * set class type of column
+	 * @param miniTable
+	 */
 	public void setColumnClass(IMiniTable miniTable)
 	{
 		int i = 0;
-		//miniTable.setColumnClass(i++, BigDecimal.class, true);	//  1-Amt
-		miniTable.setColumnClass(i++, BigDecimal.class, true);	//  2-AmtAcct
-		miniTable.setColumnClass(i++, String.class, true);		//  3-DR/CR
-		miniTable.setColumnClass(i++, Boolean.class, false);	//  4-Selected
-		miniTable.setColumnClass(i++, String.class, true);		//  5-BP
-		miniTable.setColumnClass(i++, Timestamp.class, true);	//  6-DateAcct
-		miniTable.setColumnClass(i++, String.class, true);		//  7-GL Category
-		miniTable.setColumnClass(i++, String.class, true);		//  8-Product
-		miniTable.setColumnClass(i++, BigDecimal.class, true);	//	9-Qty
-		miniTable.setColumnClass(i++, String.class, true);		//	10-Description
-		miniTable.setColumnClass(i++, String.class, true);		//	11-MatchCode
-		miniTable.setColumnClass(i++, Timestamp.class, true);	//	12-DateTrx
-		miniTable.setColumnClass(i++, String.class, true);		//	13-Org
+		miniTable.setColumnClass(i++, BigDecimal.class, true);	//  1-AmtAcct
+		miniTable.setColumnClass(i++, String.class, true);		//  2-DR/CR
+		miniTable.setColumnClass(i++, Boolean.class, false);	//  3-Selected
+		miniTable.setColumnClass(i++, String.class, true);		//  4-BP
+		miniTable.setColumnClass(i++, Timestamp.class, true);	//  5-DateAcct
+		miniTable.setColumnClass(i++, String.class, true);		//  6-GL Category
+		miniTable.setColumnClass(i++, String.class, true);		//  7-Product
+		miniTable.setColumnClass(i++, BigDecimal.class, true);	//	8-Qty
+		miniTable.setColumnClass(i++, String.class, true);		//	9-Description
+		miniTable.setColumnClass(i++, String.class, true);		//	10-MatchCode
+		miniTable.setColumnClass(i++, Timestamp.class, true);	//	11-DateTrx
+		miniTable.setColumnClass(i++, String.class, true);		//	12-Org
 		//  Table UI
 		miniTable.autoSize();
 	}
 	
 	/**
-	 *  Generate Reconciliation record
-	 * @return 
+	 *  Calculate selected rows.
+	 *  - add up selected rows
+	 */
+	public void calculateSelection(IMiniTable miniTable)
+	{
+		m_noSelected = 0;
+		m_selectedAmt = Env.ZERO;
+
+		int rows = miniTable.getRowCount();
+		for (int i = 0; i < rows; i++)
+		{
+			boolean isSelected = (Boolean)miniTable.getValueAt(i, selectedColIndex);
+			if (isSelected)
+			{
+				BigDecimal amt = (BigDecimal)miniTable.getValueAt(i, amtColIndex);
+				if (amt != null)
+					m_selectedAmt = m_selectedAmt.add(amt);
+				m_noSelected++;
+			}
+		}
+	}
+	
+	/**
+	 * Generate {@link MFactReconciliation} record from selected row in miniTable
+	 * @param miniTable
+	 * @param generatedIndexes list of rows that {@link MFactReconciliation} have been successfully created from
+	 */
+	public void generate(IMiniTable miniTable, List<Integer> generatedIndexes) {
+		String format = "yyyy-MM-dd HH:mm:ss.SSS";
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String time = sdf.format(cal.getTime());
+
+		for ( int r = 0; r < miniTable.getRowCount(); r++ )
+		{
+			boolean isSelected = (Boolean)miniTable.getValueAt(r, selectedColIndex);
+			
+			if (isSelected)
+			{
+				KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(r, idColIndex);
+				
+				int factId = pp.getKey();
+
+				boolean result = generate(factId, time);
+				if(!result)
+					continue;
+
+				if (generatedIndexes != null)
+					generatedIndexes.add(r);
+			}
+		}
+	}
+	
+	/**
+	 * Generate Reconciliation record
+	 * @return true if save successfully 
 	 */
 	public boolean generate(int factId, String time)
 	{
-		log.info("");
-
 		String matchcode = "Manual: " + Env.getContext(Env.getCtx(), Env.AD_USER_NAME) + " " + time;
 		
-		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", null)
+		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", m_trxName)
 		.setParameters(new Object[] {factId}).first();
 
 		if ( rec == null )
 		{
-			rec = new MFactReconciliation(Env.getCtx(), 0, null);
+			rec = new MFactReconciliation(Env.getCtx(), 0, m_trxName);
 			rec.setFact_Acct_ID(factId);
 		}
 
@@ -235,14 +338,38 @@ public class FactReconcile {
 	}
 	
 	/**
-	 *  Generate Reconciliation record
-	 * @return 
+	 * Reset/Delete {@link MFactReconciliation} record from selected row in miniTable
+	 * @param miniTable
+	 * @param resetedIndexes list of rows that {@link MFactReconciliation} have been successfully deleted
+	 */
+	public void reset(IMiniTable miniTable, List<Integer> resetedIndexes) {
+		for ( int r = 0; r < miniTable.getRowCount(); r++ )
+		{
+			boolean isSelected = (Boolean)miniTable.getValueAt(r, selectedColIndex);
+			
+			if (isSelected)
+			{
+				KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(r, idColIndex);
+				
+				int factId = pp.getKey();
+
+				boolean result = reset(factId);
+				if(!result)
+					continue;
+
+				if (resetedIndexes != null)
+					resetedIndexes.add(r);
+			}
+		}
+	}
+	
+	/**
+	 * Reset/delete Reconciliation record
+	 * @return true if reset/delete successfully
 	 */
 	public boolean reset(int factId)
 	{
-		log.info("");
-
-		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", null)
+		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", m_trxName)
 		.setParameters(new Object[] {factId}).first();
 
 		if ( rec == null )
@@ -253,12 +380,16 @@ public class FactReconcile {
 		return rec.delete(false);
 	}
 	
+	/**
+	 * 
+	 * @return list of account element records
+	 */
 	protected Vector<KeyNamePair> getAccount(){
 		Vector<KeyNamePair> vector = new Vector<KeyNamePair>();
 		String sql = MRole.getDefault().addAccessSQL(
 			"SELECT ev.C_ElementValue_ID, ev.Value || ' ' || ev.Name FROM C_ElementValue ev", "ev",
 			MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
-			+ "AND ev.IsActive='Y' AND ev.IsSummary='N' " 
+			+ " AND ev.IsActive='Y' AND ev.IsSummary='N' " 
 			+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
 			+ "WHERE ase.C_Element_ID=ev.C_Element_ID AND ase.ElementType='AC' "
 			+ "AND ase.C_AcctSchema_ID=" + m_C_AcctSchema_ID + " AND ase.AD_Client_ID=" + m_AD_Client_ID + ") "
@@ -268,7 +399,7 @@ public class FactReconcile {
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, m_trxName);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{

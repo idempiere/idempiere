@@ -59,9 +59,8 @@ import org.zkoss.zul.event.TreeDataEvent;
  */
 public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventListener<Event>, TreeitemRenderer<Object>
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long			serialVersionUID		= 6950349031548896628L;
 	private static final CLogger		LOG						= CLogger.getCLogger(FavoriteSimpleTreeModel.class);
@@ -72,7 +71,9 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 
 	private boolean						itemDraggable;
 
-	//
+	/**
+	 * @param root
+	 */
 	public FavoriteSimpleTreeModel(DefaultTreeNode<Object> root)
 	{
 		super(root);
@@ -122,7 +123,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 	/**
 	 * Creating Tree hierarchy
 	 * 
-	 * @param  root
+	 * @param  root MTreeNode
 	 * @return      {@link FavoriteSimpleTreeModel}
 	 */
 	public static FavoriteSimpleTreeModel createFrom(MTreeNode root)
@@ -136,8 +137,8 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 	/**
 	 * Populate Node
 	 * 
-	 * @param stNode
-	 * @param root
+	 * @param stNode Root DefaultTreeNode
+	 * @param root Root MTreeNode
 	 */
 	private static void populate(DefaultTreeNode<Object> stNode, MTreeNode root)
 	{
@@ -299,6 +300,10 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 		}
 	} // onEvent
 
+	/**
+	 * Add new node to tree
+	 * @param newNode
+	 */
 	public void addNode(DefaultTreeNode<Object> newNode)
 	{
 		DefaultTreeNode<Object> root = (DefaultTreeNode<Object>) getRoot();
@@ -307,11 +312,21 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 		fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(root), root.getChildCount() - 1, root.getChildCount() - 1);
 	} // addNode
 
+	/**
+	 * Get child node
+	 * @param parent Parent node
+	 * @param index Index of child node
+	 * @return DefaultTreeNode
+	 */
 	public DefaultTreeNode<Object> getChild(DefaultTreeNode<Object> parent, int index)
 	{
 		return (DefaultTreeNode<Object>) (parent).getChildAt(index);
 	} // getChild
 
+	/**
+	 * Open window to create new record
+	 * @param menuID
+	 */
 	private void onNewRecord(int menuID)
 	{
 		try
@@ -344,21 +359,35 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 		}
 	} // onNewRecord
 
+	/**
+	 * @param listener
+	 */
 	public void addOnDropEventListener(EventListener<Event> listener)
 	{
 		onDropListners.add(listener);
 	}
 
+	/**
+	 * @param isDraggable
+	 */
 	public void setItemDraggable(boolean isDraggable)
 	{
 		itemDraggable = isDraggable;
 	}
 
+	/**
+	 * @return true if item is draggable, false otherwise
+	 */
 	public boolean isItemDraggable()
 	{
 		return itemDraggable;
 	}
 
+	/**
+	 * Get icon image url for tree node (folder, window, report, etc)
+	 * @param mt MTreeNode
+	 * @return icon image url
+	 */
 	private static String getIconFile(MTreeNode mt)
 	{
 		if (mt.isSummary())
@@ -378,6 +407,11 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 		return "images/mWindow.png";
 	}
 
+	/**
+	 * Get font icon sclass for tree node (summary, window, report, etc)
+	 * @param mt
+	 * @return font icon sclass
+	 */
 	private static String getIconSclass(MTreeNode mt)
 	{
 		if (mt.isSummary())

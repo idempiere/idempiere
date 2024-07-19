@@ -35,14 +35,12 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MAllocationHdr;
-import org.compiere.model.MBankStatement;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MDocType;
 import org.compiere.model.MPeriod;
-import org.compiere.model.MProduction;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocAction;
@@ -156,14 +154,14 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		if (wfStatus != null)
 		{
 			if (! fromMenu)
-				FDialog.error(gridTab.getWindowNo(), this, "WFActiveForRecord", wfStatus);
+				Dialog.error(gridTab.getWindowNo(), "WFActiveForRecord", wfStatus);
 			return;
 		}
 
 		//	Status Change
 		if (!checkStatus(gridTab.getTableName(), gridTab.getRecord_ID(), DocStatus))
 		{
-			FDialog.error(gridTab.getWindowNo(), this, "DocumentStatusChanged");
+			Dialog.error(gridTab.getWindowNo(), "DocumentStatusChanged");
 			return;
 		}
 		/*******************
@@ -186,12 +184,6 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		}
 		if (doctypeId == null && MAllocationHdr.Table_ID == m_AD_Table_ID) {
 			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_PaymentAllocation);
-		}
-		if (doctypeId == null && MBankStatement.Table_ID == m_AD_Table_ID) {
-			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_BankStatement);
-		}
-		if (doctypeId == null && MProduction.Table_ID == m_AD_Table_ID) {
-			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_MaterialProduction);
 		}
 		if (logger.isLoggable(Level.FINE)) logger.fine("get doctype: " + doctypeId);
 		if (doctypeId != null) {
@@ -379,7 +371,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				String docAction = lstDocAction.getSelectedItem().getLabel();
 				MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
 				Object[] arguments = new Object[]{docAction};
-				FDialog.ask(gridTab.getWindowNo(), this, "", mf.format(arguments), new Callback<Boolean>() {
+				Dialog.ask(gridTab.getWindowNo(), "", mf.format(arguments), new Callback<Boolean>() {
 					@Override
 					public void onCallback(Boolean result) {
 						if(result)

@@ -24,7 +24,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.I_AD_ImpFormat;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.I_I_BPartner;
+import org.compiere.model.I_I_ElementValue;
+import org.compiere.model.I_I_Product;
+import org.compiere.model.I_I_ReportLine;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.model.X_I_GLJournal;
 import org.compiere.util.CLogger;
@@ -152,24 +155,24 @@ public final class ImpFormat
 		m_tableUniqueParent = "";
 		m_tableUniqueChild = "";
 
-		if (m_AD_Table_ID == TABLE_I_PRODUCT)		//	I_Product
+		if (m_AD_Table_ID == I_I_Product.Table_ID)		//	I_Product
 		{
 			m_tableUnique1 = "UPC";						//	UPC = unique
 			m_tableUnique2 = "Value";
 			m_tableUniqueChild = "VendorProductNo";		//	Vendor No may not be unique !
 			m_tableUniqueParent = "BPartner_Value";		//			Makes it unique
 		}
-		else if (m_AD_Table_ID == TABLE_I_BPARTNER)		//	I_BPartner
+		else if (m_AD_Table_ID == I_I_BPartner.Table_ID)		//	I_BPartner
 		{
 			// gody: 20070113 to allow multiple contacts per BP			
 			// m_tableUnique1 = "Value";				//	the key
 		}
-		else if (m_AD_Table_ID == TABLE_I_ELEMENTVALUE)		//	I_ElementValue
+		else if (m_AD_Table_ID == I_I_ElementValue.Table_ID)		//	I_ElementValue
 		{
 			m_tableUniqueParent = "ElementName";			//	the parent key
 			m_tableUniqueChild = "Value";					//	the key
 		}
-		else if (m_AD_Table_ID == TABLE_I_REPORTLINE)		//	I_ReportLine
+		else if (m_AD_Table_ID == I_I_ReportLine.Table_ID)		//	I_ReportLine
 		{
 			m_tableUniqueParent = "ReportLineSetName";		//	the parent key
 			m_tableUniqueChild = "Name";					//	the key
@@ -310,7 +313,7 @@ public final class ImpFormat
 					+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout,"		//	7..11
 					+ "f.Name, f.importprefix "														//  12..13
 					+ "FROM AD_ImpFormat_Row f,AD_Column c "
-					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
+					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y' "
 					+ "ORDER BY f.SeqNo";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

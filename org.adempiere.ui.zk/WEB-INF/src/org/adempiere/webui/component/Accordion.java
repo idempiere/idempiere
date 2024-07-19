@@ -29,22 +29,29 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Vbox;
 
 /**
- * A custom accoridon implementation using borderlayout
+ * A custom accordion implementation using borderlayout
  * @author hengsin
  *
  */
 public class Accordion extends Borderlayout implements EventListener<Event> {
-	
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = 5898232602746332810L;
 	
 	private Vbox southBox;
 	private Vbox northBox;
 	
+	/** List of label for component in {@link #componentList} */
 	private List<String> labelList = new ArrayList<String>();
+	/** List of header Div for component in {@link #componentList}. Header div is shown in {@link #northBox} */
 	private List<Div> headerList = new ArrayList<Div>();
 	private List<Component> componentList = new ArrayList<Component>();
 	private int selectedIndex = -1;
 	
+	/**
+	 * default constructor
+	 */
 	public Accordion() {
 		North north = new North();		
 		appendChild(north);

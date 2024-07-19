@@ -32,6 +32,7 @@ import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MCost;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.ModelValidationEngine;
@@ -122,7 +123,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 			else if (name.equals("C_DocType_ID"))
 				p_C_DocType_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.WARNING, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

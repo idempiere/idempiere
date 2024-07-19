@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.MBankStatementLoader;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -75,7 +76,7 @@ public class LoadBankStatement extends SvrProcess
 			else if (name.equals("FileName"))
 				fileName = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_AD_Client_ID = Env.getAD_Client_ID(m_ctx);
 		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID=" + m_AD_Client_ID);

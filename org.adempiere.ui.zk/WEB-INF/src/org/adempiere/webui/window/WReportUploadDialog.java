@@ -284,7 +284,7 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 			}
 			else
 			{
-				FDialog.error(-1, this, "FileInvalidExtension", ext, this.getTitle());
+				Dialog.error(-1, "FileInvalidExtension", ext, this.getTitle());
 				return;
 			}
 
@@ -303,7 +303,7 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Failed to upload content.", e);
-			FDialog.error(-1, this, "Error", e.getMessage(), this.getTitle());
+			Dialog.error(-1, "Error", e.getMessage(), this.getTitle());
 		}
 	}
 

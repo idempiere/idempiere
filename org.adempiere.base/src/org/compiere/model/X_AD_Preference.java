@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Preference
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Preference")
 public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230913L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
@@ -263,6 +263,8 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 
 	/** PreferenceFor AD_Reference_ID=200084 */
 	public static final int PREFERENCEFOR_AD_Reference_ID=200084;
+	/** Info Window = I */
+	public static final String PREFERENCEFOR_InfoWindow = "I";
 	/** Process = P */
 	public static final String PREFERENCEFOR_Process = "P";
 	/** Window = W */

@@ -13,8 +13,10 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import java.util.Properties;
 import java.util.UUID;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfo;
 import org.osgi.service.event.Event;
@@ -33,7 +35,13 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 */
 	@Override
 	public void handleEvent(Event event) {
+		Properties context = null;
 		try {
+			if (event.containsProperty(IEventManager.EVENT_CONTEXT)) {
+				Properties eventContext = (Properties) event.getProperty(IEventManager.EVENT_CONTEXT);
+				context = ServerContext.getCurrentInstance();
+				ServerContext.setCurrentInstance(eventContext);
+			}
 			doHandleEvent(event);
 		} catch (RuntimeException e) {
 			addError(event, e);
@@ -47,6 +55,10 @@ public abstract class AbstractEventHandler implements EventHandler {
 		} catch (Throwable e) {
 			addError(event, e);
 			throw new Error(e);
+		} finally {
+			if (context != null) {
+				ServerContext.setCurrentInstance(context);
+			}
 		}
 	}
 

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="S_Training")
 public class X_S_Training extends PO implements I_S_Training, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_S_Training (Properties ctx, int S_Training_ID, String trxName)

@@ -41,6 +41,7 @@ import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPeriodControl;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MRequisition;
@@ -100,7 +101,7 @@ public class FactAcctReset extends SvrProcess
 			else if (name.equals("AlsoWithoutPostings"))
 				p_AlsoWithoutPostings = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

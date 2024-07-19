@@ -24,9 +24,8 @@
  **********************************************************************/
 package org.adempiere.pipo2;
 
-import java.util.logging.Level;
-
 import org.adempiere.plugin.utils.PackInApplicationActivator;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
@@ -64,7 +63,7 @@ public class PackInFolder extends SvrProcess {
 			else if (name.equals("Folder"))
 				p_Folder = para.getParameterAsString();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 	}	//	prepare
 

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_ChargeType_DocType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_ChargeType_DocType")
 public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)

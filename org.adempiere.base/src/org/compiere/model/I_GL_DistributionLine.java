@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_DistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_GL_DistributionLine 
 {
@@ -57,8 +57,8 @@ public interface I_GL_DistributionLine
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -66,12 +66,12 @@ public interface I_GL_DistributionLine
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -304,12 +304,12 @@ public interface I_GL_DistributionLine
     public static final String COLUMNNAME_Org_ID = "Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setOrg_ID (int Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getOrg_ID();
 
@@ -407,12 +407,12 @@ public interface I_GL_DistributionLine
     /** Column name OverwriteOrgTrx */
     public static final String COLUMNNAME_OverwriteOrgTrx = "OverwriteOrgTrx";
 
-	/** Set Overwrite Trx Organuzation.
+	/** Set Overwrite Trx Organization.
 	  * Overwrite the account segment Transaction Organization with the value specified
 	  */
 	public void setOverwriteOrgTrx (boolean OverwriteOrgTrx);
 
-	/** Get Overwrite Trx Organuzation.
+	/** Get Overwrite Trx Organization.
 	  * Overwrite the account segment Transaction Organization with the value specified
 	  */
 	public boolean isOverwriteOrgTrx();

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_EntityType
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_EntityType 
 {
@@ -44,8 +44,8 @@ public interface I_AD_EntityType
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -75,12 +75,12 @@ public interface I_AD_EntityType
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -170,12 +170,12 @@ public interface I_AD_EntityType
     /** Column name ModelPackage */
     public static final String COLUMNNAME_ModelPackage = "ModelPackage";
 
-	/** Set ModelPackage.
+	/** Set Model Package.
 	  * Java Package of the model classes
 	  */
 	public void setModelPackage (String ModelPackage);
 
-	/** Get ModelPackage.
+	/** Get Model Package.
 	  * Java Package of the model classes
 	  */
 	public String getModelPackage();

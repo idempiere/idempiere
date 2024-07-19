@@ -7,7 +7,7 @@
 	border-style: solid;
 	border-collapse: separate;
   	border-spacing: 0;
-	width: 90%;
+	width: 100%;
 	background-color: #EBF1EF;	
 	border-width: 0px;
 }
@@ -99,4 +99,28 @@ div.rp-table-wrap > table > thead > tr > th {
 	div.rp-table-wrap > table > thead > tr > th {
 		position: relative;
 	}
+}
+
+.z-icon-Report::before {
+	content: "\f1ea";
+}
+.z-icon-Window::before {
+	content: "\f022";
+}
+.z-icon-Zoom::before {
+	content: "\f14c";
+}
+[class^="z-icon-"], [class*=" z-icon-"] {
+  box-sizing: border-box;
+  padding-right: 4px;
+  line-height: 14px;
+}
+span.font-icon::before {
+	box-sizing: border-box;
+	display: inline-block;
+	font-size: 14px;
+	width: 16px;
+	text-align: center;
+	vertical-align: middle;
+	color: inherit;
 }

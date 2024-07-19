@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementLineMA
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementLineMA")
 public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_MovementLineMA (Properties ctx, int M_MovementLineMA_ID, String trxName)

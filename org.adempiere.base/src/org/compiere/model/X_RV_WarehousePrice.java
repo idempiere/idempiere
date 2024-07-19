@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for RV_WarehousePrice
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="RV_WarehousePrice")
 public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_RV_WarehousePrice (Properties ctx, int RV_WarehousePrice_ID, String trxName)

@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -34,7 +35,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -53,14 +54,12 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Window for request
  * @author Elaine
- *
  */
-public class RequestWindow extends Window implements EventListener<Event> {
-	
+public class RequestWindow extends Window implements EventListener<Event> {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7757368164776005797L;
 
@@ -79,6 +78,10 @@ public class RequestWindow extends Window implements EventListener<Event> {
 	private Window parent;
 	private Calendar calBegin,calEnd;
 	
+	/**
+	 * @param ce CalendarsEvent
+	 * @param parent
+	 */
 	public RequestWindow(CalendarsEvent ce, Window parent) {
 		
 		super();
@@ -150,8 +153,14 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			if(confidentialField.getComponent().getItemCount() > 1)
 				confidentialField.setValue(confidentialField.getComponent().getItemAtIndex(1).getValue());
 		
-		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_SalesRep_ID);
-		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.TableDir);
+		MColumn columnSR = MColumn.get(Env.getCtx(), MRequest.Table_Name, MRequest.COLUMNNAME_SalesRep_ID);
+		try {
+			lookup = MLookupFactory.get(Env.getCtx(), 0, columnSR.getAD_Column_ID(), DisplayType.TableDir,
+					Env.getLanguage(Env.getCtx()), columnSR.getColumnName(), columnSR.getAD_Reference_Value_ID(), false,
+					"(EXISTS (SELECT * FROM C_BPartner bp WHERE AD_User.C_BPartner_ID=bp.C_BPartner_ID AND (bp.IsEmployee='Y' OR bp.IsSalesRep='Y')) OR AD_User_ID=@#AD_User_ID@)");
+		} catch (Exception e) {
+			throw new AdempiereException(e);
+		}
 		salesRepField = new WTableDirEditor("SalesRep_ID", true, false, true, lookup);
 		salesRepField.setValue(Env.getContextAsInt(ctx, "SalesRep_ID"));
 		if(salesRepField.getValue() == null || salesRepField.getValue().equals(0))
@@ -279,6 +288,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		tbxEndTime.setValue(ce.getEndDate());
 	}
 	
+	@Override
 	public void onEvent(Event e) throws Exception {
 		if (m_readOnly)
 			this.detach();
@@ -322,11 +332,10 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("R_Request_ID=" + request.getR_Request_ID());
 				Events.postEvent("onRefresh", parent, null);
-//				Events.echoEvent("onRefresh", parent, null);
 			}
 			else
 			{
-				FDialog.error(0, this, "Request record not saved");
+				Dialog.error(0, "Request record not saved");
 				return;
 			}
 			
@@ -336,7 +345,10 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			this.detach();
 	}
 	
-	//Check, Start time is not  >=  End time, when Start Plan == Complete Plan
+	/**
+	 * Check, Start time is not  >=  End time, when Start Plan == Complete Plan
+	 * @return true if {@link #calBegin} >= {@link #calEnd}, false otherwise (true indicate error)
+	 */
 	private boolean checkTime()
 	{
 		calBegin = Calendar.getInstance();

@@ -19,12 +19,12 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MInvoice;
 
 /**
- * 
+ * Default implementation of {@link IPaymentFormFactory}
  * @author Elaine
- *
  */
 public class DefaultPaymentFormFactory implements IPaymentFormFactory {
 
+	@Override
 	public IPaymentForm create(int windowNo, GridTab mTab, String paymentRule)
 	{
 		if (paymentRule.equals(MInvoice.PAYMENTRULE_Cash))

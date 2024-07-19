@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_SellerFunds
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="B_SellerFunds")
 public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_B_SellerFunds (Properties ctx, int B_SellerFunds_ID, String trxName)
@@ -237,7 +237,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Not Committed Aount.
+	/** Set Not Committed Amount.
 		@param NonCommittedAmt Amount not committed yet
 	*/
 	public void setNonCommittedAmt (BigDecimal NonCommittedAmt)
@@ -245,7 +245,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 		set_Value (COLUMNNAME_NonCommittedAmt, NonCommittedAmt);
 	}
 
-	/** Get Not Committed Aount.
+	/** Get Not Committed Amount.
 		@return Amount not committed yet
 	  */
 	public BigDecimal getNonCommittedAmt()

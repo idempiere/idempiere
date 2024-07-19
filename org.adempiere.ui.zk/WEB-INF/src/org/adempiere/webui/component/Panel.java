@@ -20,7 +20,7 @@ package org.adempiere.webui.component;
 import org.zkoss.zul.Div;
 
 /**
- *
+ * Extend {@link Div}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -28,14 +28,19 @@ import org.zkoss.zul.Div;
 public class Panel extends Div 
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5549821938132356378L;
 
+	@Deprecated
 	public static final String HORIZONTAL       = "horizontal";
 
+	@Deprecated
     public static final String VERTICAL         = "vertical";
     
+    /**
+     * Default constructor
+     */
     public Panel()
     {
         super();

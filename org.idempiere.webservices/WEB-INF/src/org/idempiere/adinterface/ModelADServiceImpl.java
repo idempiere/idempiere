@@ -1022,7 +1022,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				}
 			}
 	
-			retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
+			retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, po, fields, trx, requestCtx, resp, ret);
 			if (retResp != null)
 				return retResp;
 	
@@ -1033,7 +1033,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				return rollbackAndSetError(trx, resp, ret, true,
 						"Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
-			retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
+			retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_SAVE, po, fields, trx, requestCtx, resp, ret);
 			if (retResp != null)
 				return retResp;
 	

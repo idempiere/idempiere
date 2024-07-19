@@ -381,7 +381,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			if (local_only_product_id != 0)
 				sql.append(" AND (M_Locator.IsDefault='Y' ")	//	Default Locator
 					.append("OR EXISTS (SELECT * FROM M_Product p ")	//	Product Locator
-					.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
+					.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?) ")
 					.append("OR EXISTS (SELECT * FROM M_Storage s ")	//	Storage Locator
 					.append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
 			m_parsedValidation = null;

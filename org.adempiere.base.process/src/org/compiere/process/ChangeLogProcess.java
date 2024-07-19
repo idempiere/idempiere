@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -98,7 +99,7 @@ public class ChangeLogProcess extends SvrProcess
 			else if (name.equals("SetCustomization"))
 				p_SetCustomization = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_ChangeLog_ID = getRecord_ID();
 	}	//	prepare

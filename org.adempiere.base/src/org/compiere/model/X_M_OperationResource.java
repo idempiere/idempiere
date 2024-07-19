@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_OperationResource
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_OperationResource")
 public class X_M_OperationResource extends PO implements I_M_OperationResource, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName)

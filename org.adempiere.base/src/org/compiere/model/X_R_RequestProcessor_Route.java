@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestProcessor_Route
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessor_Route")
 public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcessor_Route, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName)

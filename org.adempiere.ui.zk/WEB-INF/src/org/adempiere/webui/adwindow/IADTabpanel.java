@@ -21,13 +21,16 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Toolbar;
 
 /**
- * Interface for UI component that edit/display record using ad_tab definitions
+ * Interface for AD_Tab UI (with all the AD_Fields definition)
  * @author Low Heng Sin
  *
  */
 public interface IADTabpanel extends Component, Evaluatee {
 
+	/** Activate/Deactivate event for IADTabpanel. Fire for init or after tab selection changed. **/
 	public static final String ON_ACTIVATE_EVENT = "onActivate";
+	
+	/** Component boolean attribute to indicate ON_ACTIVATE_EVENT have been posted for the current execution cycle **/
 	public static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.IADTabpanel.onActivatePosted";
 
 	/**
@@ -47,12 +50,12 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public int getTabLevel();
 
 	/**
-	 * @return tablename
+	 * @return table name from GridTab
 	 */
 	public String getTableName();
 
 	/**
-	 * @return record ID
+	 * @return record ID of current row
 	 */
 	public int getRecord_ID();
 
@@ -62,40 +65,39 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public boolean isCurrent();
 
 	/**
-	 *
-	 * @return title
+	 * @return title of tab
 	 */
 	public String getTitle();
 
 	/**
-	 * Render the panel
+	 * Layout fields of the tab panel
 	 */
 	public void createUI();
 
 	/**
-	 *
-	 * @return GridTab
+	 * @return {@link GridTab} instance that back this IADTabpanel instance
 	 */
 	public GridTab getGridTab();
 
 	/**
-	 * activate/deactivate the panel
+	 * Activate/deactivate this IADTabpanel instance.
+	 * Call by init or after tab selection changed. 
 	 * @param b
 	 */
 	public void activate(boolean b);
 
 	/**
-	 * retrieve data from db
+	 * Execute query through the backed {@link GridTab} instance.
 	 */
 	public void query();
 
 	/**
-	 * Refresh from db
+	 * Refresh data through the backed {@link GridTab} instance.
 	 */
 	public void refresh();
 
 	/**
-	 * retrieve data from db
+	 * Call {@link GridTab#query(boolean, int, int)}
 	 * @param currentRows
 	 * @param currentDays
 	 * @param maxRows
@@ -103,58 +105,56 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void query(boolean currentRows, int currentDays, int maxRows);
 
 	/**
-	 * Toggle between grid and form view
+	 * Switch between grid/list and form view
 	 */
 	public void switchRowPresentation();
 
 	/**
-	 * Dynamic update of field properties ( visibility, filter and mandatory )
-	 * @param i
+	 * Dynamic update of every field's UI properties ( visibility, filter and mandatory ).
+	 * @param col optional column name
 	 */
-	public void dynamicDisplay(int i);
+	public void dynamicDisplay(int col);
 
 	/**
-	 * After save event
+	 * Handle after save event
 	 * @param onSaveEvent
 	 */
 	public void afterSave(boolean onSaveEvent);
 
 	/**
-	 * Enter key event
+	 * Handle enter key event
 	 * @return true if the event is process
 	 */
 	public boolean onEnterKey();
 	
 	/**
-	 * @return boolean
+	 * @return true if current presentation of the tab panel is grid/list view
 	 */
 	public boolean isGridView();
 	
 	/**
-	 * @return true if the panel have been activated
+	 * @return true if the tab panel have been activated
 	 */
 	public boolean isActivated();
 
 	/**
-	 * 
+	 * Turn on/off detail mode, i.e either tab panel is currently a header or detail tab of the UI.
 	 * @param detailMode
 	 */
 	public void setDetailPaneMode(boolean detailMode);
 	
 	/**
-	 * 
-	 * @return true if the panel is in detailpane node
+	 * @return true if the panel is in detail mode (i.e a detail tab in DetailPane)
 	 */
 	public boolean isDetailPaneMode();
 
 	/**
-	 * 
-	 * @return gridview instance
+	 * @return {@link GridView} instance
 	 */
 	public GridView getGridView();	
 	
 	/**
-	 * 
+	 * Call {@link GridTab#needSave(boolean, boolean)}
 	 * @param rowChange
 	 * @param onlyRealChange
 	 * @return true if there are pending changes 
@@ -162,70 +162,71 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public boolean needSave(boolean rowChange, boolean onlyRealChange);
 
 	/**
+	 * Save changes.
+	 * Call {@link GridTab#dataSave(boolean)}
 	 * @param onSaveEvent
 	 * @return true if the save operation completed successfully
 	 */
 	public boolean dataSave(boolean onSaveEvent);
 	
 	/**
-	 * 
+	 * Set tab number/sequence within an AD_Window
 	 * @param tabNo
 	 */
 	public void setTabNo(int tabNo);
 	
 	/**
-	 * 
 	 * @return tab no ( ad_tab.tabno )
 	 */
 	public int getTabNo();
 	
 	/**
-	 * 
+	 * Set the {@link DetailPane} part that own this IADTabpanel instance
 	 * @param detailPane
 	 */
 	public void setDetailPane(DetailPane detailPane);
 	
 	/**
-	 * 
-	 * @return detailpane
+	 * @return the {@link DetailPane} part that own this IADTabpanel instance
 	 */
 	public DetailPane getDetailPane();
 
 	/**
-	 * reset detail data grid when parent tab current record is new and not saved yet
+	 * Reset detail data grid when parent tab current record is new and not saved yet.
+	 * Call {@link GridTab#resetDetailForNewParentRecord()}
 	 */
 	public void resetDetailForNewParentRecord();
 	
 	/**
-	 * @return treepanel instance
+	 * @return {@link ADTreePanel} instance
 	 */
 	public ADTreePanel getTreePanel();	
 
 	/**
-	 * @return Quick Form Button Enabled/Disabled
+	 * @return true if Quick Form Button is Enabled
 	 */
 	public boolean isEnableQuickFormButton();
 
 	/**
 	 * Get is detail pane visible
-	 * @return boolean
+	 * @return true if the containing {@link DetailPane} instance is visible
 	 */
 	public default boolean isDetailVisible() {
 		return false;
 	}
 	
 	/**
-	  *  @return List of toolbar buttons
+	 * @return List of toolbar buttons
 	 */
 	public List<Button> getToolbarButtons();
 
 	/**
-	 * @return customization enabled/disabled for tab
+	 * @return true if customize grid button is enabled
 	 */
 	public boolean isEnableCustomizeButton();
 
 	/**
-	 * @return process Button Enabled/Disabled
+	 * @return true if process Button is Enabled
 	 */
 	default public boolean isEnableProcessButton() {
 		boolean isNewRow = getGridTab().getRowCount() == 0 || getGridTab().isNew();
@@ -233,14 +234,14 @@ public interface IADTabpanel extends Component, Evaluatee {
 	}
 
 	/**
-	 * Enabled/Disabled tab toolbar button
+	 * Enabled/Disabled ADWindowToolbar buttons
 	 * 
 	 * @param toolbar - {@link ADWindowToolbar}
 	 */
 	public void updateToolbar(ADWindowToolbar toolbar);
 
 	/**
-	 * Enabled/Disabled detail panel toolbar button
+	 * Enabled/Disabled {@link DetailPane} toolbar buttons
 	 * 
 	 * @param toolbar - {@link Toolbar}
 	 */

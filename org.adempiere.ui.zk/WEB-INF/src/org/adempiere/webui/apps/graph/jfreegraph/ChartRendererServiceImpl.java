@@ -46,8 +46,9 @@ import org.zkoss.zul.Imagemap;
 /**
  * 
  * @author hengsin
- *
+ * @deprecated replace by billboard based implementation
  */
+@Deprecated
 public class ChartRendererServiceImpl implements IChartRendererService {
 
 	private final static CLogger log = CLogger.getCLogger(ChartRendererServiceImpl.class);

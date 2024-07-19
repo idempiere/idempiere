@@ -22,8 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ManageImageCache;
+import org.compiere.model.MForm;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MUserDefInfo;
@@ -31,36 +33,47 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.zkoss.image.Image;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Tab}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
 public class Tab extends org.zkoss.zul.Tab
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7504310693884092219L;
 	private boolean isDisableDraggDrop = false;
 	
-	public Tab(String str)
+	/**
+	 * @param label
+	 */
+	public Tab(String label)
     {
-    	this.setLabel(str);
+    	this.setLabel(label);
     }
 
+	/**
+	 * Default constructor
+	 */
     public Tab()
     {
 
     }
 
+    /**
+     * Set decorator for tab label
+     * @param decorateInfo
+     */
     public void setDecorateInfo (DecorateInfo decorateInfo){
     	if (decorateInfo != null)
     		decorateInfo.decorate(this);
@@ -74,13 +87,16 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 	}
 
+	/**
+	 * @return true if dragged and drop is disable
+	 */
 	public boolean isDisableDraggDrop() {
 		return isDisableDraggDrop;
 	}
 
 	/**
 	 * home tab don't want to drag and drop. 
-	 * {@link Tab} like that can be set true for this properties
+	 * {@link Tab} like that can be set true for this properties.
 	 * @param isDisableDraggDrop
 	 */
 	public void setDisableDraggDrop(boolean isDisableDraggDrop) {
@@ -88,7 +104,7 @@ public class Tab extends org.zkoss.zul.Tab
 	}
 
 	/**
-	 * class contain decorate info
+	 * class contain decorate info.<br/>
 	 * at the moment, has only image info
 	 * at the moment, it's use to transfer decorate info from info window, standard window, report, process,... to tab
 	 * @author hieplq
@@ -98,6 +114,9 @@ public class Tab extends org.zkoss.zul.Tab
 		private String imageKey;
 		private URL imageIntenalUrl;
 		
+		/**
+		 * @param comp
+		 */
 		public void decorate (LabelImageElement comp){
 			if (imageIntenalUrl != null) {
 				if (ThemeManager.isUseFontIconForImage()) {
@@ -115,6 +134,9 @@ public class Tab extends org.zkoss.zul.Tab
 			}
 		}
 		
+		/**
+		 * @param imageData MImage
+		 */
 		public DecorateInfo (MImage imageData){
 			if (imageData != null) {
 				imageIntenalUrl = ManageImageCache.getImageInternalUrl(imageData);
@@ -123,6 +145,9 @@ public class Tab extends org.zkoss.zul.Tab
 			}
 		}
 		
+		/**
+		 * @param imagePath Image URL
+		 */
 		public DecorateInfo (String imagePath){
 			if (imagePath != null) {
 				imageIntenalUrl = ManageImageCache.getImageInternalUrl(imagePath);
@@ -132,14 +157,19 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 		
 		/**
-		 * Helper method for create decorate info from adWindow info
+		 * Helper method to create decorate info from adWindow info
 		 * @param adWindow
-		 * @return
+		 * @return DecorateInfo
 		 */
 		public static DecorateInfo get (ADWindow adWindow){
 			return adWindow == null?null:new DecorateInfo(adWindow.getMImage());
 		}
 		
+		/**
+		 * Create DecorateInfo from Info Window.
+		 * @param mInfo
+		 * @return DecorateInfo
+		 */
 		public static DecorateInfo get (MInfoWindow mInfo){
 
 			if (mInfo != null) {
@@ -150,6 +180,12 @@ public class Tab extends org.zkoss.zul.Tab
 
 				return new DecorateInfo(image);
 			}
+			return null;
+		}
+
+		public static DecorateInfo get(MForm form){
+			if (form != null && !Util.isEmpty(form.getImageURL(), true))
+				return new DecorateInfo(form.getImageURL());
 			return null;
 		}
 	}
@@ -180,23 +216,40 @@ public class Tab extends org.zkoss.zul.Tab
 			((Tabbox)getTabbox()).removeTabFromActiveSeq(this);
 		}
 
+		//Workaround for detached HTML input element leak
+		boolean attached = getDesktop() != null;
+		if (panel != null) {
+			if (attached)
+				Executions.schedule(getDesktop(), e -> panel.detach(), new Event("onCloseLinkedPanel"));
+		}
+		
 		detach();
 		
 		if (panel != null) {
+			//Workaround for detached HTML input element leak
+			if (attached && panel.getChildren().size() > 0) {
+				Component[] childs = panel.getChildren().toArray(new Component[0]);
+				for(Component c : childs) {
+					AEnv.detachInputElement(c);
+				}
+			}
 			// B60-ZK-1160: Exception when closing tab with included content
 			// Must clean up included content before detaching tab panel
 			Component include = panel.getFirstChild();
 			if (include instanceof Include) {
 				include.detach();
 			}
-			panel.detach();
+			
+			if (!attached)
+				panel.detach();
 		}
 	}
 	
 	/**
-	 * http://tracker.zkoss.org/browse/ZK-3705
-	 * change default behavior to get prev tab is new active tab
-	 * @return
+	 * http://tracker.zkoss.org/browse/ZK-3705.<br/>
+	 * Select next active tab.<br/> 
+	 * Replace the default algorithm uses by Zk (org.zkoss.zul.Tab.selectNextTab()). 
+	 * @return org.zkoss.zul.Tab
 	 */
 	protected org.zkoss.zul.Tab selectNextTabWR() {
 		Tabbox idTabbox = null;

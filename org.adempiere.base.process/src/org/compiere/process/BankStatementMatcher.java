@@ -23,6 +23,7 @@ import org.compiere.impexp.BankStatementMatchInfo;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MBankStatementMatcher;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_BankStatement;
 
 /**
@@ -45,11 +46,10 @@ public class BankStatementMatcher extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_matchers = MBankStatementMatcher.getMatchers(getCtx(), get_TrxName());
 	}	//	prepare

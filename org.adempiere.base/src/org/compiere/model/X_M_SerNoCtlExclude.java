@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_SerNoCtlExclude
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_SerNoCtlExclude")
 public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_SerNoCtlExclude (Properties ctx, int M_SerNoCtlExclude_ID, String trxName)
@@ -137,7 +137,7 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
 		return false;
 	}
 
-	/** Set Exclude SerNo.
+	/** Set Exclude Ser No.
 		@param M_SerNoCtlExclude_ID Exclude the ability to create Serial Numbers in Attribute Sets
 	*/
 	public void setM_SerNoCtlExclude_ID (int M_SerNoCtlExclude_ID)
@@ -148,7 +148,7 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
 			set_ValueNoCheck (COLUMNNAME_M_SerNoCtlExclude_ID, Integer.valueOf(M_SerNoCtlExclude_ID));
 	}
 
-	/** Get Exclude SerNo.
+	/** Get Exclude Ser No.
 		@return Exclude the ability to create Serial Numbers in Attribute Sets
 	  */
 	public int getM_SerNoCtlExclude_ID()

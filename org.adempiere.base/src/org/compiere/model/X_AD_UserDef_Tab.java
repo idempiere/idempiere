@@ -31,7 +31,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220617L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)

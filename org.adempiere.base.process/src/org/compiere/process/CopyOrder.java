@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MDocType;
 import org.compiere.model.MOrder;
+import org.compiere.model.MProcessPara;
 
 /**
  *	Copy Order and optionally close
@@ -61,7 +62,7 @@ public class CopyOrder extends SvrProcess
 			else if (name.equals("IsCloseDocument"))
 				p_IsCloseDocument = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

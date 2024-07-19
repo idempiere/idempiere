@@ -893,7 +893,7 @@ public class ModelClassGenerator
 		//	complete sql
 		String filterViews = null;
 		if (tableLike.toString().contains("%")) {
-			filterViews = "AND (TableName IN ('RV_WarehousePrice','RV_BPartner') OR IsView='N')"; 	//	special views
+			filterViews = " AND (TableName IN ('RV_WarehousePrice','RV_BPartner') OR IsView='N')"; 	//	special views
 		}
 		if (tableLike.toString().equals("'%'")) {
 			filterViews += " AND TableName NOT LIKE 'W|_%' ESCAPE '|'"; 	//	exclude webstore from general model generator

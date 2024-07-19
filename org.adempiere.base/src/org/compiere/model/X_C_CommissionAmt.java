@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionAmt
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionAmt")
 public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_CommissionAmt (Properties ctx, int C_CommissionAmt_ID, String trxName)

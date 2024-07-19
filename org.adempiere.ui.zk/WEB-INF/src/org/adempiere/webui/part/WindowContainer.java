@@ -51,9 +51,9 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Style;
 
 /**
- * 
+ * Controller for open desktop windows. <br/>
+ * Implemented using {@link Tabbox}. 
  * @author Low Heng Sin
- *
  */
 public class WindowContainer extends AbstractUIPart implements EventListener<Event>
 {
@@ -74,6 +74,8 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	public static final String DEFER_SET_SELECTED_TAB = "deferSetSelectedTab";
 	
 	private static final int DEFAULT_MAX_TITLE_LENGTH = 30;
+
+	public static final String REPLACE_WINDOW_NO = "replaceWindowNo";
     
     private Tabbox  tabbox;
     private ToolBar toolbar;
@@ -424,7 +426,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 				Tab tab = (Tab)event.getTarget();
 				org.zkoss.zul.Tabpanel panel = tab.getLinkedPanel();
 				if (panel == null) {
-					System.console().printf("error");
+					return;
 				}
 				Component component = panel.getFirstChild();
 				if (component != null && component.getAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY) instanceof ITabOnSelectHandler)
@@ -584,7 +586,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	 * @param windowNo
 	 * @return org.zkoss.zul.Tab
 	 */
-	private org.zkoss.zul.Tab getTab(int windowNo) {
+	public org.zkoss.zul.Tab getTab(int windowNo) {
 		org.zkoss.zul.Tabpanels panels = tabbox.getTabpanels();
 		List<?> childrens = panels.getChildren();
 		for (Object child : childrens)
@@ -647,7 +649,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @param title
      * @return
      */
-    public Tab replace(Tab refTab, Window comp, String title) {
+    public org.zkoss.zul.Tab replace(org.zkoss.zul.Tab refTab, Window comp, String title) {
     	 
          if (refTab == null)  
          {
@@ -740,6 +742,9 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      */
     public void setTabTitle(int tabNo, String title, String tooltip)
     {
+    	if (tabNo < 0 || tabNo >= tabbox.getTabs().getChildren().size())
+    		return;
+    	
     	org.zkoss.zul.Tabs tabs = tabbox.getTabs();
     	Tab tab = (Tab) tabs.getChildren().get(tabNo);
     	setTabTitle(title, tab);

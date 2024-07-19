@@ -74,6 +74,7 @@ import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.server.IServerManager;
@@ -1344,7 +1345,7 @@ public class AdempiereMonitor extends HttpServlet
 			try {
 				Properties ctx = new Properties();
 				Env.setContext(ctx, Env.AD_CLIENT_ID, 0);
-				Env.setContext(ctx, Env.AD_USER_ID, 0);
+				Env.setContext(ctx, Env.AD_USER_ID, SystemIDs.USER_SYSTEM);
 				ServerContext.setCurrentInstance(ctx);
 				
 				int maxSecondsToWait = MSysConfig.getIntValue(MSysConfig.MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS, 180);			

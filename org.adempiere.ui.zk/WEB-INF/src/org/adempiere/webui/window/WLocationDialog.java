@@ -727,7 +727,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			String msg = validate_OK();
 			if (msg != null) {
 				onSaveError = true;
-				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
+				Dialog.error(0, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -746,7 +746,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			else
 			{
 				onSaveError = true;
-				FDialog.error(0, this, "CityNotFound", (String)null, new Callback<Integer>() {					
+				Dialog.error(0, "CityNotFound", (String)null, new Callback<Integer>() {					
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -768,7 +768,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 			catch (Exception e) {
 				message = e.getMessage();
-				FDialog.warn(0, this, "URLnotValid", message);
+				Dialog.warn(0, "URLnotValid", message, null);
 			}
 		}
 		else if (toRoute.equals(event.getTarget()))
@@ -787,7 +787,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				}
 				catch (Exception e) {
 					message = e.getMessage();
-					FDialog.warn(0, this, "URLnotValid", message);
+					Dialog.warn(0, "URLnotValid", message, null);
 				}
 			}
 		}
@@ -809,7 +809,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			String msg = validate_OK();
 			if (msg != null) {
 				onSaveError = true;
-				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
+				Dialog.error(0, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -866,7 +866,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				if (!ok)
 				{
 					onSaveError = true;
-					FDialog.error(0, this, "Error", m_location.getErrorMessage(), new Callback<Integer>() {					
+					Dialog.error(0, "Error", m_location.getErrorMessage(), new Callback<Integer>() {					
 						@Override
 						public void onCallback(Integer result) {
 							Events.echoEvent("onSaveError", WLocationDialog.this, null);

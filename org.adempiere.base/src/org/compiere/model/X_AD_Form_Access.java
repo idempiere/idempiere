@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Form_Access
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Form_Access")
 public class X_AD_Form_Access extends PO implements I_AD_Form_Access, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Form_Access extends PO implements I_AD_Form_Access, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Form_Access (Properties ctx, int AD_Form_Access_ID, String trxName)

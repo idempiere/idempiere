@@ -21,8 +21,11 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZkContextRunnable;
+import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Desktop;
@@ -30,28 +33,30 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 
 /**
- *
+ * Runnable with weak reference to {@link Desktop} and a list of {@link DashboardPanel}.
  * @author hengsin
  * @author Cristina Ghita, www.arhipac.ro BF [2871741] Error at start
  * @see https://sourceforge.net/p/adempiere/zk-web-client/327/
  */
 public class DashboardRunnable implements Runnable, Serializable
 {
-
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = 5995227773511788894L;
 
 	private WeakReference<Desktop> desktop;
 	private List<DashboardPanel> dashboardPanels;
 	private Locale locale;
 
+	/** Desktop cleanup listener to call {@link #cleanup()} */
 	private DesktopCleanup listener;
 
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DashboardRunnable.class);
 
 	/**
-	 *
-	 * @param desktop zk desktop interface
+	 * @param desktop zk Desktop instance
 	 */
 	public DashboardRunnable(Desktop desktop) {
 		this.desktop = new WeakReference<Desktop>(desktop);
@@ -68,6 +73,9 @@ public class DashboardRunnable implements Runnable, Serializable
 		this.desktop.get().addListener(listener);
 	}
 
+	/**
+	 * Perform clean up
+	 */
 	protected void cleanup() {
 		dashboardPanels = null;
 		if (desktop != null && desktop.get() != null)
@@ -75,12 +83,22 @@ public class DashboardRunnable implements Runnable, Serializable
 		desktop = null;
 	}
 
+	/**
+	 * Copy {@link #dashboardPanels} from tmp.
+	 * @param tmp DashboardRunnable
+	 * @param desktop
+	 */
 	public DashboardRunnable(DashboardRunnable tmp, Desktop desktop) {
 		this(desktop);
 		this.dashboardPanels = tmp.dashboardPanels;
 		tmp.cleanup();
 	}
 
+	/**
+	 * Refresh {@link #dashboardPanels} (usually call by background pooling thread).
+	 * Delegate to {@link #refreshDashboard(boolean)}.
+	 */
+	@Override
 	public void run()
 	{
 		if (dashboardPanels != null && desktop != null && desktop.get() != null
@@ -96,11 +114,11 @@ public class DashboardRunnable implements Runnable, Serializable
 	}
 
 	/**
-	 * Refresh dashboard content
+	 * Refresh {@link #dashboardPanels}
+	 * @param pooling true if calling from pooling thread
 	 */
 	public void refreshDashboard(boolean pooling)
 	{
-
 		ServerPushTemplate template = new ServerPushTemplate(desktop.get());
 		//set thread local context if not in event thread
 		Properties ctx = null;
@@ -127,7 +145,20 @@ public class DashboardRunnable implements Runnable, Serializable
 	    		if (pooling && !dashboardPanels.get(i).isPooling())
 	    			continue;
 	    		
-	    		dashboardPanels.get(i).refresh(template);
+	    		final DashboardPanel dpanel = dashboardPanels.get(i); 
+	    		BusyDialog busyDialog = new BusyDialog();
+                busyDialog.setShadow(false);                
+                dpanel.getParent().insertBefore(busyDialog, dpanel.getParent().getFirstChild());
+	    		ZkContextRunnable cr = new ZkContextRunnable() {
+	    			@Override
+					protected void doRun() {
+	    				dpanel.refresh(template);
+	    				template.executeAsync(() -> {
+	    					busyDialog.detach();
+	    				});
+	    			}
+	    		};
+	    		Adempiere.getThreadPoolExecutor().submit(cr);
 	    	}
 		}
 		finally

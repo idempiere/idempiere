@@ -18,16 +18,20 @@ UPDATE AD_Column SET AD_Reference_ID=200133,Updated=TO_DATE('2022-03-24 15:27:34
 ;
 
 -- Mar 24, 2022 3:27:42 PM MYT
-ALTER TABLE AD_Scheduler MODIFY DateLastRun TIMESTAMP WITH TIME ZONE DEFAULT NULL 
-;
+ALTER TABLE AD_Scheduler ADD Tmp_DateLastRun TIMESTAMP WITH TIME ZONE DEFAULT NULL;
+UPDATE AD_Scheduler SET Tmp_DateLastRun = DateLastRun;
+ALTER TABLE AD_Scheduler DROP COLUMN DateLastRun;
+ALTER TABLE AD_Scheduler RENAME COLUMN Tmp_DateLastRun TO DateLastRun;
 
 -- Mar 24, 2022 3:27:59 PM MYT
 UPDATE AD_Column SET AD_Reference_ID=200133,Updated=TO_DATE('2022-03-24 15:27:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11257
 ;
 
 -- Mar 24, 2022 3:28:04 PM MYT
-ALTER TABLE AD_Scheduler MODIFY DateNextRun TIMESTAMP WITH TIME ZONE DEFAULT NULL 
-;
+ALTER TABLE AD_Scheduler ADD Tmp_DateNextRun TIMESTAMP WITH TIME ZONE DEFAULT NULL;
+UPDATE AD_Scheduler SET Tmp_DateNextRun = DateNextRun;
+ALTER TABLE AD_Scheduler DROP COLUMN DateNextRun;
+ALTER TABLE AD_Scheduler RENAME COLUMN Tmp_DateNextRun TO DateNextRun;
 
 -- Mar 24, 2022 3:39:53 PM MYT
 INSERT INTO AD_Element (AD_Element_ID,ColumnName,Updated,Name,Description,PrintName,AD_Element_UU,IsActive,Created,AD_Org_ID,CreatedBy,UpdatedBy,AD_Client_ID,EntityType) VALUES (203049,'TimeZone',TO_DATE('2022-03-24 15:39:47','YYYY-MM-DD HH24:MI:SS'),'Time Zone','Time zone name','Time Zone','90009634-4025-4850-a73e-0cdb0b06994b','Y',TO_DATE('2022-03-24 15:39:47','YYYY-MM-DD HH24:MI:SS'),0,100,100,0,'D')

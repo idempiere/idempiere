@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 
 import org.compiere.model.MJournalBatch;
+import org.compiere.model.MProcessPara;
 
 /**
  *  Copy GL Batch Journal/Lines
@@ -47,7 +48,7 @@ public class CopyFromJournal extends SvrProcess
 			else if (name.equals("GL_JournalBatch_ID"))
 				m_GL_JournalBatch_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

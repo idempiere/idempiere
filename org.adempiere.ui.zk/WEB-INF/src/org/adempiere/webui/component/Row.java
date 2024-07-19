@@ -21,7 +21,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Cell;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Row}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -29,16 +29,28 @@ import org.zkoss.zul.Cell;
 public class Row extends org.zkoss.zul.Row
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5813452501151101553L;
 
+	/** Last Cell added to Row */
 	private Cell m_lastCell;
 
+	/**
+	 * Add component to row
+	 * @param child Component 
+	 * @return true if added
+	 */
 	public boolean appendCellChild(Component child) {
 		return this.appendCellChild(child, 1);
 	}
 	
+	/**
+	 * Add component to row. A new {@link Cell} with colspan will be created as parent of the component.
+	 * @param child Component 
+	 * @param colspan Column span
+	 * @return true if added
+	 */
 	public boolean appendCellChild(Component child, int colspan) {
 		Cell cell = new Cell();
 		cell.setColspan(colspan);
@@ -48,18 +60,29 @@ public class Row extends org.zkoss.zul.Row
 		return super.appendChild(cell);
 	}
 
+	/** Optional Group that own this Row instance */
 	private Group m_group;
 
+	/**
+	 * @return Group
+	 */
 	public Group getGroup() {
 		return m_group;
 	}
 
+	/**
+	 * Add row to Group
+	 * @param group Group
+	 */
 	public void setGroup(Group group) {
 		this.m_group = group;
 		if (m_group != null)
 			m_group.add(this);
 	}
 	
+	/**
+	 * @return last Cell added to Row
+	 */
 	public Cell getLastCell() {
 		return m_lastCell;
 	}

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListVersion
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="HR_ListVersion")
 public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)

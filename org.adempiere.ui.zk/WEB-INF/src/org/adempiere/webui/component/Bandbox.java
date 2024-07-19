@@ -18,7 +18,7 @@
 package org.adempiere.webui.component;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Bandbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
@@ -26,15 +26,21 @@ package org.adempiere.webui.component;
 public class Bandbox extends org.zkoss.zul.Bandbox
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5834568392276375501L;
 
+	/**
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled)
     {
         this.setDisabled(!enabled);
     }
     
+	/**
+	 * @return true if component is enabled, false otherwise
+	 */
     public boolean isEnabled()
     {
     	return !isDisabled();

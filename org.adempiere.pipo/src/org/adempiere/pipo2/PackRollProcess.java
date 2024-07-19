@@ -20,6 +20,7 @@ package org.adempiere.pipo2;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.PreparedStatement;
@@ -405,8 +406,6 @@ public class PackRollProcess extends SvrProcess {
 				target.write(data);
 				byteCount++;
 			}
-			source.close();
-			target.close();
 
 			System.out.println("Successfully copied " + byteCount + " bytes.");
 		} catch (Exception e) {
@@ -415,6 +414,21 @@ public class PackRollProcess extends SvrProcess {
 			System.out.println(e.toString());
 
 			success = -1;
+		} finally {
+			if (source != null) {
+				try {
+					source.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (target != null) {
+				try {
+					target.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return success;
 	}

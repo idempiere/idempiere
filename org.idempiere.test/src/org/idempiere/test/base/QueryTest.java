@@ -405,7 +405,7 @@ public class QueryTest extends AbstractTestCase {
 		testPo = query.setParameters(testPo.get_ID()).first();
 		I_Test testRecord = POWrapper.create(testPo, I_Test.class);
 		assertTrue(null == testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
-		assertEquals(expected, testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
+		assertEquals(expected.setScale(2, RoundingMode.HALF_UP), testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
 
 		// without virtual column lazy loading
 		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();

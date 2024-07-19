@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.db.CConnection;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
@@ -112,7 +113,7 @@ public class MoveClient extends SvrProcess {
 			} else if ("IsSkipSomeValidations".equals(name)) {
 				p_IsSkipSomeValidations = para.getParameterAsBoolean();
 			} else {
-				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}
@@ -214,7 +215,7 @@ public class MoveClient extends SvrProcess {
 		try {
 			try {
 				if (p_IsCopyClient) {
-					externalConn = DB.getConnectionRO();
+					externalConn = DB.getConnection();
 				} else {
 					externalConn = DB.getDatabase(p_JDBC_URL).getDriverConnection(p_JDBC_URL, p_UserName, p_Password);
 				}
@@ -391,6 +392,10 @@ public class MoveClient extends SvrProcess {
 				sqlCountData.append(" JOIN AD_PInstance ON (AD_PInstance_Log.AD_PInstance_ID=AD_PInstance.AD_PInstance_ID)");
 				sqlCountData.append(" JOIN AD_Client ON (AD_PInstance.AD_Client_ID=AD_Client.AD_Client_ID)");
 			} else {
+				if (MColumn.get(getCtx(), tableName, "AD_Client_ID") == null) {
+					if (log.isLoggable(Level.WARNING)) log.warning("Ignoring " + tableName + ", doesn't have column AD_Client_ID");
+					return;
+				}
 				sqlCountData.append(" JOIN AD_Client ON (").append(tableName).append(".AD_Client_ID=AD_Client.AD_Client_ID)");
 			}
 			sqlCountData.append(" WHERE ").append(p_whereClient);

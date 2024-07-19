@@ -17,16 +17,29 @@
 
 package org.adempiere.webui.component;
 
+import org.zkoss.zul.Listheader;
+
+/**
+ * Extend {@link Listheader} 
+ */
 public class ListHeader extends org.zkoss.zul.Listheader 
 {
     /**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -2709047642743510762L;
-	public ListHeader(String str)
+	
+	/**
+	 * @param label
+	 */
+	public ListHeader(String label)
     {
-    	super(str);
+    	super(label);
     }
+	
+	/**
+	 * Default constructor
+	 */
     public ListHeader()
     {
     	

@@ -31,7 +31,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MScheduler;
 import org.compiere.model.StateChangeEvent;
@@ -107,9 +107,9 @@ public class SchedulerStateEditor extends WEditor {
 				if (serverMgr != null) {
 					String error = serverMgr.start(model.getServerID());
 					if (error == null) {
-						FDialog.info(0, null, "SchedulerStartSuccess");
+						Dialog.info(0, "SchedulerStartSuccess");
 					} else {
-						FDialog.error(0, "SchedulerStartFail", error);
+						Dialog.error(0, "SchedulerStartFail", error);
 					}
 					getComponent().setLabel(getDisplay());
 				}
@@ -125,9 +125,9 @@ public class SchedulerStateEditor extends WEditor {
 				if (serverMgr != null) {
 					String error = serverMgr.stop(model.getServerID());
 					if (error == null) {
-						FDialog.info(0, null, "SchedulerStopSuccess");
+						Dialog.info(0, "SchedulerStopSuccess");
 					} else {
-						FDialog.error(0, "SchedulerStopFail", error);
+						Dialog.error(0, "SchedulerStopFail", error);
 					}
 					getComponent().setLabel(getDisplay());
 				}
@@ -144,12 +144,12 @@ public class SchedulerStateEditor extends WEditor {
 					String error = serverMgr.addScheduler(model);
 					if (error == null) {
 						if (serverMgr.getServerInstance(model.getServerID()) != null) {
-							FDialog.info(0, null, "SchedulerAddAndStartSuccess");
+							Dialog.info(0, "SchedulerAddAndStartSuccess");
 						} else {
-							FDialog.error(0, "SchedulerAddAndStartFail", "Not accepted by any server node, please check the scheduler's schedule setting");
+							Dialog.error(0, "SchedulerAddAndStartFail", "Not accepted by any server node, please check the scheduler's schedule setting");
 						}						
 					} else {						
-						FDialog.error(0, "SchedulerAddAndStartFail", error);
+						Dialog.error(0, "SchedulerAddAndStartFail", error);
 					}
 					getComponent().setLabel(getDisplay());
 				}
@@ -231,7 +231,7 @@ public class SchedulerStateEditor extends WEditor {
 					}
 				}
 			} else {
-				FDialog.error(0, "CantReadCurrentSchedulerState");
+				Dialog.error(0, "CantReadCurrentSchedulerState");
 			}
 		}
 
@@ -242,7 +242,7 @@ public class SchedulerStateEditor extends WEditor {
     	if (id <= 0)
     		return;
     	
-    	FDialog.ask(0, null, "SchedulerAddAndStartPrompt", new Callback<Boolean>() {					
+    	Dialog.ask(0, "SchedulerAddAndStartPrompt", new Callback<Boolean>() {					
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
@@ -260,7 +260,7 @@ public class SchedulerStateEditor extends WEditor {
     	if (id <= 0)
     		return;
     	
-    	FDialog.ask(0, null, "SchedulerStopPrompt", new Callback<Boolean>() {					
+    	Dialog.ask(0, "SchedulerStopPrompt", new Callback<Boolean>() {					
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
@@ -277,7 +277,7 @@ public class SchedulerStateEditor extends WEditor {
     	if (id <= 0)
     		return;
     	
-    	FDialog.ask(0, null, "SchedulerStartPrompt", new Callback<Boolean>() {					
+    	Dialog.ask(0, "SchedulerStartPrompt", new Callback<Boolean>() {					
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {

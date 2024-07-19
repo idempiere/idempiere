@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_M_AttributeSet 
 {
@@ -44,8 +44,8 @@ public interface I_M_AttributeSet
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_M_AttributeSet
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -120,10 +120,10 @@ public interface I_M_AttributeSet
     /** Column name IsAutoGenerateLot */
     public static final String COLUMNNAME_IsAutoGenerateLot = "IsAutoGenerateLot";
 
-	/** Set IsAutoGenerateLot	  */
+	/** Set Is Auto Generate Lot	  */
 	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot);
 
-	/** Get IsAutoGenerateLot	  */
+	/** Get Is Auto Generate Lot	  */
 	public boolean isAutoGenerateLot();
 
     /** Column name IsGuaranteeDate */
@@ -272,10 +272,10 @@ public interface I_M_AttributeSet
     /** Column name M_AttributeSet_Type */
     public static final String COLUMNNAME_M_AttributeSet_Type = "M_AttributeSet_Type";
 
-	/** Set AttributeSet Type	  */
+	/** Set Attribute Set Type	  */
 	public void setM_AttributeSet_Type (String M_AttributeSet_Type);
 
-	/** Get AttributeSet Type	  */
+	/** Get Attribute Set Type	  */
 	public String getM_AttributeSet_Type();
 
     /** Column name M_AttributeSet_UU */
@@ -333,12 +333,12 @@ public interface I_M_AttributeSet
     /** Column name SerNoCharEOverwrite */
     public static final String COLUMNNAME_SerNoCharEOverwrite = "SerNoCharEOverwrite";
 
-	/** Set SerNo Char End Overwrite.
+	/** Set Ser No Char End Overwrite.
 	  * Serial Number End Indicator overwrite - default empty
 	  */
 	public void setSerNoCharEOverwrite (String SerNoCharEOverwrite);
 
-	/** Get SerNo Char End Overwrite.
+	/** Get Ser No Char End Overwrite.
 	  * Serial Number End Indicator overwrite - default empty
 	  */
 	public String getSerNoCharEOverwrite();
@@ -346,12 +346,12 @@ public interface I_M_AttributeSet
     /** Column name SerNoCharSOverwrite */
     public static final String COLUMNNAME_SerNoCharSOverwrite = "SerNoCharSOverwrite";
 
-	/** Set SerNo Char Start Overwrite.
+	/** Set Ser No Char Start Overwrite.
 	  * Serial Number Start Indicator overwrite - default #
 	  */
 	public void setSerNoCharSOverwrite (String SerNoCharSOverwrite);
 
-	/** Get SerNo Char Start Overwrite.
+	/** Get Ser No Char Start Overwrite.
 	  * Serial Number Start Indicator overwrite - default #
 	  */
 	public String getSerNoCharSOverwrite();

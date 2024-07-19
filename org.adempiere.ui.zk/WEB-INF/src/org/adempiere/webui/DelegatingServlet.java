@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
+@Deprecated(forRemoval = true, since = "11")
 public class DelegatingServlet extends HttpServlet {
 
 	/**

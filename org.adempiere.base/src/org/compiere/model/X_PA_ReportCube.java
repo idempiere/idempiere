@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportCube
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportCube")
 public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_ReportCube (Properties ctx, int PA_ReportCube_ID, String trxName)

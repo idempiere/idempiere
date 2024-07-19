@@ -45,6 +45,9 @@ public class ServerPushTemplate {
 	 * @param callback
 	 */
 	public void executeAsync(final IServerPushCallback callback) {
+		if (!desktop.isAlive())
+			return;
+		
 		try {
     		EventListener<Event> task = new EventListener<Event>() {
 				@Override

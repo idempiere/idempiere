@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCost
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderLandedCost")
 public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCost (Properties ctx, int C_OrderLandedCost_ID, String trxName)

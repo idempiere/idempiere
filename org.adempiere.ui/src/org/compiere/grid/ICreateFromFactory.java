@@ -22,6 +22,11 @@ import org.compiere.model.GridTab;
  */
 public interface ICreateFromFactory {
 
+	/**
+	 * Create new ICreateFrom instance
+	 * @param mTab
+	 * @return {@link ICreateFrom}
+	 */
 	public ICreateFrom create(GridTab mTab);
 	
 }

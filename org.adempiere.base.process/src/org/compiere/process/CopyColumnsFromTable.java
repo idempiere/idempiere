@@ -18,6 +18,7 @@ package org.compiere.process;
 import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.PO;
@@ -57,7 +58,7 @@ public class CopyColumnsFromTable extends SvrProcess
 			else if (name.equals("AD_Table_ID"))
 				p_source_AD_Table_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_target_AD_Table_ID = getRecord_ID();
 	}	//	prepare

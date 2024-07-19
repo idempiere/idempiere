@@ -22,7 +22,7 @@ import org.zkoss.zul.Toolbarbutton;
  */
 public interface IAction {
 	/**
-	 * 
+	 * execute action
 	 * @param target
 	 */
 	public void execute(Object target);

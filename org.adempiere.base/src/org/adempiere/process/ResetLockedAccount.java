@@ -1,8 +1,7 @@
 package org.adempiere.process;
 
-import java.util.logging.Level;
-
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.process.ProcessInfoParameter;
@@ -32,7 +31,7 @@ public class ResetLockedAccount extends SvrProcess {
 			else if (name.equals("AD_User_ID"))
 				p_AD_User_ID = element.getParameterAsInt();
 			else
-				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), element);
 		}
 	}
 

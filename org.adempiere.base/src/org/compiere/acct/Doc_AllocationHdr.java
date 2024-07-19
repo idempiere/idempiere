@@ -31,6 +31,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
@@ -115,6 +116,14 @@ public class Doc_AllocationHdr extends Doc
 				docLine.setC_ConversionType_ID(C_ConversionType_ID);
 				if (payment.isOverrideCurrencyRate())
 					docLine.setCurrencyRate(payment.getCurrencyRate());
+			}
+			else if (line.getC_Invoice_ID() != 0)
+			{
+				MInvoice invoice = new MInvoice (getCtx(), line.getC_Invoice_ID(), getTrxName());
+				int C_ConversionType_ID = invoice.getC_ConversionType_ID();
+				docLine.setC_ConversionType_ID(C_ConversionType_ID);
+				if (invoice.isOverrideCurrencyRate())
+					docLine.setCurrencyRate(invoice.getCurrencyRate());
 			}
 			//
 			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
@@ -672,7 +681,9 @@ public class Doc_AllocationHdr extends Doc
 		//	or Doc.ACCTTYPE_PaymentSelect (AP) or V_Prepayment
 		int accountType = Doc.ACCTTYPE_UnallocatedCash;
 		//
-		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment "
+		int C_Charge_ID = 0;
+		
+		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment, p.C_Charge_ID "
 				+ "FROM C_Payment p INNER JOIN C_DocType d ON (p.C_DocType_ID=d.C_DocType_ID) "
 				+ "WHERE C_Payment_ID=?";
 		PreparedStatement pstmt = null;
@@ -685,6 +696,7 @@ public class Doc_AllocationHdr extends Doc
 			if (rs.next ())
 			{
 				setC_BankAccount_ID(rs.getInt(1));
+				C_Charge_ID = rs.getInt(5);				// Charge
 				if (DOCTYPE_APPayment.equals(rs.getString(2)))
 					accountType = Doc.ACCTTYPE_PaymentSelect;
 				//	Prepayment
@@ -713,6 +725,9 @@ public class Doc_AllocationHdr extends Doc
 			log.log(Level.SEVERE, "NONE for C_Payment_ID=" + C_Payment_ID);
 			return null;
 		}
+		
+		if (C_Charge_ID != 0)
+			return MCharge.getAccount(C_Charge_ID, as);
 		return getAccount (accountType, as);
 	}	//	getPaymentAcct
 
@@ -842,10 +857,7 @@ public class Doc_AllocationHdr extends Doc
 		if (valuesInv != null && valuesInv.size() >= 4) {
 			if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 			{
-				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+				if (hasDebitTradeAmt(invoice)) {
 					invoiceSource = (BigDecimal) valuesInv.get(0); // AmtSourceDr
 					invoiceAccounted = (BigDecimal) valuesInv.get(1); // AmtAcctDr
 				} else {
@@ -855,10 +867,7 @@ public class Doc_AllocationHdr extends Doc
 			}
 			else
 			{
-				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+				if (hasDebitTradeAmt(invoice)) {
 					invoiceSource = (BigDecimal) valuesInv.get(2); // AmtSourceCr
 					invoiceAccounted = (BigDecimal) valuesInv.get(3); // AmtAcctCr
 				} else {
@@ -915,24 +924,44 @@ public class Doc_AllocationHdr extends Doc
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 
-		if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-				|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
+		MAllocationHdr alloc = (MAllocationHdr) getPO();
+		if (alloc.getReversal_ID() == 0 || alloc.get_ID() < alloc.getReversal_ID())
 		{
-			FactLine fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference);
-			fl.setDescription(description.toString());
-			invGainLossFactLines.add(fl);
-			fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference.negate());
-			fl.setDescription(description.toString());
+			if (hasDebitTradeAmt(invoice))
+			{
+				FactLine fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference);
+				fl.setDescription(description.toString());
+				invGainLossFactLines.add(fl);
+				fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference.negate());
+				fl.setDescription(description.toString());
+			}
+			else
+			{
+				FactLine fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference);
+				fl.setDescription(description.toString());
+				fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
+				fl.setDescription(description.toString());
+				invGainLossFactLines.add(fl);
+			}
 		}
 		else
 		{
-			FactLine fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference);
-			fl.setDescription(description.toString());
-			fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
-			fl.setDescription(description.toString());
-			invGainLossFactLines.add(fl);
+			if (hasDebitTradeAmt(invoice))
+			{
+				FactLine fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference);
+				fl.setDescription(description.toString());
+				fl = fact.createLine (line, gain, loss, as.getC_Currency_ID(), acctDifference.negate());
+				fl.setDescription(description.toString());
+				invGainLossFactLines.add(fl);
+			}
+			else
+			{
+				FactLine fl = fact.createLine (line, gain, loss, as.getC_Currency_ID(), acctDifference);
+				fl.setDescription(description.toString());
+				invGainLossFactLines.add(fl);
+				fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference.negate());
+				fl.setDescription(description.toString());
+			}
 		}
 		return null;
 	}
@@ -1088,10 +1117,7 @@ public class Doc_AllocationHdr extends Doc
 				BigDecimal invoiceAccounted = null;
 				if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 				{
-					if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-							|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+					if (hasDebitTradeAmt(invoice)) {
 						invoiceSource = (BigDecimal) valuesInv.get(0); // AmtSourceDr
 						invoiceAccounted = (BigDecimal) valuesInv.get(1); // AmtAcctDr
 					} else {
@@ -1101,10 +1127,7 @@ public class Doc_AllocationHdr extends Doc
 				}
 				else
 				{
-					if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-							|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+					if (hasDebitTradeAmt(invoice)) {
 						invoiceSource = (BigDecimal) valuesInv.get(2); // AmtSourceCr
 						invoiceAccounted = (BigDecimal) valuesInv.get(3); // AmtAcctCr
 					} else {
@@ -1355,37 +1378,71 @@ public class Doc_AllocationHdr extends Doc
 			
 			//
 			Integer C_AllocationLine_ID = htInvAllocLine.get(invoice.getC_Invoice_ID());
-			if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-					|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
+			MAllocationHdr alloc = (MAllocationHdr) getPO();
+			if (alloc.getReversal_ID() == 0 || alloc.get_ID() < alloc.getReversal_ID())
 			{
-				FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
-				fl.setDescription(description.toString());
-				fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
-				if (!fact.isAcctBalanced())
+				if (hasDebitTradeAmt(invoice))
 				{
-					if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
-						fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference.negate());
-					else 
-						fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());	
+					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
 					fl.setDescription(description.toString());
 					fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
-				}				
+					if (!fact.isAcctBalanced())
+					{
+						if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference.negate());
+						else 
+							fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());	
+						fl.setDescription(description.toString());
+						fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					}				
+				}
+				else
+				{
+					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
+					fl.setDescription(description.toString());
+					fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					if (!fact.isAcctBalanced())
+					{
+						if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
+						else
+							fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
+						fl.setDescription(description.toString());
+						fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					}
+				}
 			}
 			else
 			{
-				FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
-				fl.setDescription(description.toString());
-				fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
-				if (!fact.isAcctBalanced())
+				if (hasDebitTradeAmt(invoice))
 				{
-					if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
-						fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
-					else
-						fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
+					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
 					fl.setDescription(description.toString());
 					fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					if (!fact.isAcctBalanced())
+					{
+						if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
+						else
+							fl = fact.createLine (null, gain, loss, as.getC_Currency_ID(), acctDifference);
+						fl.setDescription(description.toString());
+						fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					}
+				}
+				else
+				{
+					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
+					fl.setDescription(description.toString());
+					fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					if (!fact.isAcctBalanced())
+					{
+						if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference.negate());
+						else 
+							fl = fact.createLine (null, gain, loss, as.getC_Currency_ID(), acctDifference.negate());	
+						fl.setDescription(description.toString());
+						fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					}
 				}
 			}
 		}
@@ -1754,6 +1811,19 @@ public class Doc_AllocationHdr extends Doc
 				line = fact.createLine(null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
 		}
 		return line;
+	}
+	
+	/**
+	 * Has Debit Receivables/Payables Trade Amount
+	 * @param invoice
+	 * @return
+	 */
+	private boolean hasDebitTradeAmt(MInvoice invoice)
+	{
+		return (invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+				|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo());
 	}
 }   //  Doc_Allocation
 

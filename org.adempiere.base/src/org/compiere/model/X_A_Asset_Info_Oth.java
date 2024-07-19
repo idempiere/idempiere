@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Oth
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Info_Oth")
 public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Oth (Properties ctx, int A_Asset_Info_Oth_ID, String trxName)

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="Test")
 public class X_Test extends PO implements I_Test, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230216L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -105,6 +105,34 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	public int getAccount_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Account_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
+
+	/** Set Table.
+		@param AD_Table_ID Database Table information
+	*/
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1)
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -457,6 +485,28 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		return false;
 	}
 
+	/** Set Record ID.
+		@param Record_ID Direct internal record ID
+	*/
+	public void setRecord_ID (int Record_ID)
+	{
+		if (Record_ID < 0)
+			set_Value (COLUMNNAME_Record_ID, null);
+		else
+			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
+	}
+
+	/** Get Record ID.
+		@return Direct internal record ID
+	  */
+	public int getRecord_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Amount.
 		@param T_Amount Amount
 	*/
@@ -611,5 +661,21 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Timestamp.
+		@param T_Timestamp Timestamp with time zone
+	*/
+	public void setT_Timestamp (Timestamp T_Timestamp)
+	{
+		set_Value (COLUMNNAME_T_Timestamp, T_Timestamp);
+	}
+
+	/** Get Timestamp.
+		@return Timestamp with time zone
+	  */
+	public Timestamp getT_Timestamp()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_T_Timestamp);
 	}
 }

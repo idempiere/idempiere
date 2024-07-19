@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceAssignment
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceAssignment")
 public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Locationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -50,7 +51,7 @@ import org.zkoss.zk.ui.event.OpenEvent;
  * 
  * This class is based on VLocation written by Jorg Janke
  **/
-public class WLocationEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener
+public class WLocationEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener, IZoomableEditor
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
@@ -103,7 +104,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     	else
     		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location16.png"));
     	
-    	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+    	popupMenu = new WEditorPopupMenu(true, false, isShowPreference(), false, false, false, gridField != null ? gridField.getLookup() : null);
     	popupMenu.addMenuListener(this);
     	addChangeLogMenu(popupMenu);
 		if (gridField != null)
@@ -265,6 +266,10 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 			if (isShowPreference())
 				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 		}
+		else if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent())) 
+		{
+			actionZoom();
+		}
 	}
 
 	@Override
@@ -272,6 +277,10 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		super.setTableEditor(b);
 		getComponent().setTableEditorMode(b);
 	}
-    
-    
+
+	@Override
+	public void actionZoom() {
+		AEnv.actionZoom(m_Location, getValue());
+	}
+
 }

@@ -190,6 +190,12 @@ public class TableElementHandler extends AbstractElementHandler {
 					handler = packOut.getHandler("AD_Process");
 					handler.packOut(packOut,document,null,col.getAD_Process_ID());
 				}
+				
+				if (col.getAD_InfoWindow_ID()>0)
+				{
+					handler = packOut.getHandler("AD_InfoWindow");
+					handler.packOut(packOut,document,null,col.getAD_InfoWindow_ID());
+				}
 
 				if (col.getAD_Val_Rule_ID()>0)
 				{

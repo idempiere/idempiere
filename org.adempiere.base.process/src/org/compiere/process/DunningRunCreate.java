@@ -29,6 +29,7 @@ import org.compiere.model.MDunningRunEntry;
 import org.compiere.model.MDunningRunLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -84,7 +85,7 @@ public class DunningRunCreate extends SvrProcess
 			else if (name.equals("AD_Org_ID"))
 				p_AD_Org_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_DunningRun_ID = getRecord_ID();
 	}	//	prepare
@@ -232,20 +233,20 @@ public class DunningRunCreate extends SvrProcess
 				int C_BPartner_ID = rs.getInt(7);
 				int C_InvoicePaySchedule_ID = rs.getInt(8);
 				
-				StringBuilder msglog = new StringBuilder()
-					.append("DaysAfterDue: ").append(DaysAfterDue.intValue()).append(" isShowAllDue: ").append(level.isShowAllDue());
-				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
-				msglog = new StringBuilder()
-					.append("C_Invoice_ID - DaysDue - GrandTotal: ").append(C_Invoice_ID).append(" - ").append(DaysDue).append(" - ").append(GrandTotal);
-				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
-				msglog = new StringBuilder("C_InvoicePaySchedule_ID: ").append(C_InvoicePaySchedule_ID);
-				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) {
+					StringBuilder msglog = new StringBuilder().append("DaysAfterDue: ").append(DaysAfterDue.intValue()).append(" isShowAllDue: ").append(level.isShowAllDue());
+					log.fine(msglog.toString());
+					msglog = new StringBuilder().append("C_Invoice_ID - DaysDue - GrandTotal: ").append(C_Invoice_ID).append(" - ").append(DaysDue).append(" - ").append(GrandTotal);
+					log.fine(msglog.toString());
+					msglog = new StringBuilder("C_InvoicePaySchedule_ID: ").append(C_InvoicePaySchedule_ID);
+					log.fine(msglog.toString());
+				}
 				//
 				// Check for Dispute
 				if (!p_IncludeInDispute && IsInDispute)
 					continue;
 				// Check the day again based on rulesets
-				if (DaysDue > 0 && DaysDue < DaysAfterDue.intValue() && !level.isShowAllDue ())
+				if (DaysDue < DaysAfterDue.intValue() && !level.isShowAllDue ())
 					continue;
 				// Check for an open amount
 				if (Env.ZERO.compareTo(Open) == 0)
@@ -274,7 +275,7 @@ public class DunningRunCreate extends SvrProcess
 					continue;
 				
 				// We don't want to show non due documents
-				if (DaysDue<0 && !level.isShowNotDue ())
+				if (DaysDue<=0 && !level.isShowNotDue ())
 					continue;
 							
 				// We will minus the timesDunned if this is the DaysBetweenDunning is not fullfilled.

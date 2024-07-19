@@ -141,6 +141,7 @@ public class MSchedulerTest extends AbstractTestCase {
 			assertEquals(formatter2.format(cal2.getTime().toInstant()), formatter2.format(ts2.toInstant()), "Un-expected date next run");
 			assertFalse(cal1.getTimeInMillis() == ts2.getTime(), "Un-expected date next run");
 		} finally {
+			rollback();
 			if (schedule != null && schedule.get_ID() > 0)
 				schedule.deleteEx(true);
 			clientInfo.setTimeZone(currentTimeZone);

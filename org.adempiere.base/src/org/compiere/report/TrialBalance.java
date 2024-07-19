@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -101,7 +102,7 @@ public class TrialBalance extends SvrProcess
 		+ " AmtAcctDr, AmtAcctCr, AmtAcctBalance, C_UOM_ID, Qty,"
 		+ " M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID,C_LocTo_ID,"
 		+ " C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,"
-		+ " User1_ID, User2_ID, A_Asset_ID, Description, LevelNo)";
+		+ " User1_ID, User2_ID, A_Asset_ID, Description, LevelNo, T_TrialBalance_UU)";
 
 	
 	/**
@@ -155,7 +156,7 @@ public class TrialBalance extends SvrProcess
 			else if (name.equals("IsGroupByOrg"))
 				p_IsGroupByOrg = para[i].getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		//	Mandatory C_AcctSchema_ID
 		m_parameterWhere.append("C_AcctSchema_ID=").append(p_C_AcctSchema_ID);
@@ -392,7 +393,7 @@ public class TrialBalance extends SvrProcess
 		else
 			sql.append (p_User2_ID);
 		sql.append(", null, '");
-		sql.append(Msg.getMsg(getCtx(), "opening.balance") + "', 0 ");
+		sql.append(Msg.getMsg(getCtx(), "opening.balance") + "', 0, generate_uuid() ");
 		//
 		sql.append(" FROM Fact_Acct WHERE AD_Client_ID=").append(getAD_Client_ID())
 			.append (" AND ").append(m_parameterWhere)
@@ -446,7 +447,7 @@ public class TrialBalance extends SvrProcess
 		//	C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,
 		sql.append ("C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,");
 		//	User1_ID, User2_ID, A_Asset_ID, Description)
-		sql.append ("User1_ID, User2_ID, A_Asset_ID, Description, 10 ");
+		sql.append ("User1_ID, User2_ID, A_Asset_ID, Description, 10, generate_uuid() ");
 		//
 		sql.append(" FROM Fact_Acct WHERE AD_Client_ID=").append(getAD_Client_ID())
 			.append (" AND ").append(m_parameterWhere)

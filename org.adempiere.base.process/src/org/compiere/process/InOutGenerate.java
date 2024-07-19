@@ -34,6 +34,7 @@ import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorType;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.Query;
@@ -103,8 +104,8 @@ public class InOutGenerate extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
+			if (name == null || para[i].getParameter() == null)
+				continue;
 			else if (name.equals("M_Warehouse_ID"))
 				p_M_Warehouse_ID = para[i].getParameterAsInt();
 			else if (name.equals("C_BPartner_ID"))
@@ -124,7 +125,7 @@ public class InOutGenerate extends SvrProcess
 			else if (name.equals("MovementDate"))
                 p_DateShipped = (Timestamp)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		//  juddm - added ability to specify a shipment date from Generate Shipments
 		if (p_DateShipped == null) {
@@ -205,6 +206,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
+			DB.close(pstmt);
 			throw new AdempiereException(e);
 		}
 		return generate(pstmt);
@@ -360,6 +362,10 @@ public class InOutGenerate extends SvrProcess
 					{
 						MStorageOnHand storage = storages[j];
 						onHand = onHand.add(storage.getQtyOnHand());
+						if (completeOrder && j == 0) {
+							// CompleteOrder is created at the end, so we need to subtract here to keep track of what is "consumed"
+							storage.setQtyOnHand(storage.getQtyOnHand().subtract(toDeliver));
+						}
 					}
 					boolean autoProduce = product.isBOM() && product.isVerified() && product.isAutoProduce();
 					boolean fullLine = onHand.compareTo(toDeliver) >= 0
@@ -424,6 +430,9 @@ public class InOutGenerate extends SvrProcess
 				//	Complete Order successful
 				if (completeOrder && MOrder.DELIVERYRULE_CompleteOrder.equals(order.getDeliveryRule()))
 				{
+					// reset storage cache - it was updated in memory above
+					resetStorageCache();
+
 					for (int i = 0; i < lines.length; i++)
 					{
 						MOrderLine line = lines[i];
@@ -635,8 +644,17 @@ public class InOutGenerate extends SvrProcess
 		}
 		return m_lastStorages;
 	}	//	getStorages
-	
-	
+
+	/**
+	 * Reset in memory map, array and parameters 
+	 */
+	public void resetStorageCache()
+	{
+		m_map = new HashMap<SParameter,MStorageOnHand[]>();
+		m_lastPP = null;
+		m_lastStorages = null;
+	}
+
 	/**
 	 * 	Complete Shipment
 	 */
@@ -656,11 +674,9 @@ public class InOutGenerate extends SvrProcess
 			String message = Msg.parseTranslation(getCtx(), "@ShipmentProcessed@ " + m_shipment.getDocumentNo());
 			addBufferLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, message, m_shipment.get_Table_ID(),m_shipment.getM_InOut_ID());
 			m_created++;
-			
+
 			//reset storage cache as MInOut.completeIt will update m_storage
-			m_map = new HashMap<SParameter,MStorageOnHand[]>();
-			m_lastPP = null;
-			m_lastStorages = null;
+			resetStorageCache();
 		}
 		m_shipment = null;
 		m_line = 0;

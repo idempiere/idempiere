@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Request
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_Request")
 public class X_R_Request extends PO implements I_R_Request, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_Request (Properties ctx, int R_Request_ID, String trxName)
@@ -540,7 +540,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateCompletePlan);
 	}
 
-	/** Set Date last action.
+	/** Set Date Last Action.
 		@param DateLastAction Date this request was last acted on
 	*/
 	public void setDateLastAction (Timestamp DateLastAction)
@@ -548,7 +548,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		set_ValueNoCheck (COLUMNNAME_DateLastAction, DateLastAction);
 	}
 
-	/** Get Date last action.
+	/** Get Date Last Action.
 		@return Date this request was last acted on
 	  */
 	public Timestamp getDateLastAction()
@@ -572,7 +572,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateLastAlert);
 	}
 
-	/** Set Date next action.
+	/** Set Date Next Action.
 		@param DateNextAction Date that this request should be acted on
 	*/
 	public void setDateNextAction (Timestamp DateNextAction)
@@ -580,7 +580,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		set_Value (COLUMNNAME_DateNextAction, DateNextAction);
 	}
 
-	/** Get Date next action.
+	/** Get Date Next Action.
 		@return Date that this request should be acted on
 	  */
 	public Timestamp getDateNextAction()

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc_Parameter
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Proc_Parameter")
 public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc_Parameter, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc_Parameter (Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName)

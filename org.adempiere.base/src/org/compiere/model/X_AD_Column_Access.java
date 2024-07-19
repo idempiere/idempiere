@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Column_Access
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Column_Access")
 public class X_AD_Column_Access extends PO implements I_AD_Column_Access, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Column_Access extends PO implements I_AD_Column_Access, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Column_Access (Properties ctx, int AD_Column_Access_ID, String trxName)

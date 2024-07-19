@@ -177,7 +177,7 @@ public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 			int default_id = getDefault_ID(SetGetUtil.wrap(this));
 			if (default_id > 0 && default_id != get_ID())
 			{
-				for (MAssetGroupAcct acct : MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), default_id))
+				for (MAssetGroupAcct acct : MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), default_id, null, get_TrxName()))
 				{
 					MAssetGroupAcct newAcct = acct.copy(this);
 					newAcct.saveEx(get_TrxName());

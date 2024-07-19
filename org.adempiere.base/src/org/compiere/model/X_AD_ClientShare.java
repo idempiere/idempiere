@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ClientShare
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_ClientShare")
 public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_ClientShare (Properties ctx, int AD_ClientShare_ID, String trxName)
@@ -87,8 +87,8 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
       return sb.toString();
     }
 
-	/** Set Client Share.
-		@param AD_ClientShare_ID Force (not) sharing of client/org entities
+	/** Set Tenant Share.
+		@param AD_ClientShare_ID Force (not) sharing of tenant/org entities
 	*/
 	public void setAD_ClientShare_ID (int AD_ClientShare_ID)
 	{
@@ -98,8 +98,8 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_AD_ClientShare_ID, Integer.valueOf(AD_ClientShare_ID));
 	}
 
-	/** Get Client Share.
-		@return Force (not) sharing of client/org entities
+	/** Get Tenant Share.
+		@return Force (not) sharing of tenant/org entities
 	  */
 	public int getAD_ClientShare_ID()
 	{

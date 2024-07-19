@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceType")
 public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_S_ResourceType (Properties ctx, int S_ResourceType_ID, String trxName)

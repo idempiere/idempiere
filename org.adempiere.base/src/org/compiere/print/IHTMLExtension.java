@@ -18,23 +18,55 @@ import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.body;
 
 /**
- * 
+ * Extension interface for HTML report
  * @author hengsin
- *
  */
 public interface IHTMLExtension {
 
+	/**
+	 * @return css class prefix for report element
+	 */
 	public String getClassPrefix();
 	
+	/**
+	 * @return url to report css
+	 */
 	public String getStyleURL();
 	
+	/**
+	 * @return url to report js
+	 */
 	public String getScriptURL();
 	
+	/**
+	 * Apply customization to row
+	 * @param row
+	 * @param printData
+	 */
 	public void extendRowElement(ConcreteElement row, PrintData printData);
 	
+	/**
+	 * Apply customization to ID element
+	 * @param row
+	 * @param columnElement
+	 * @param href link for ID column
+	 * @param dataElement
+	 */
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href, PrintDataElement dataElement);
 	
+	/**
+	 * Add attributes to reportBody
+	 * @param reportBody
+	 */
 	public void setWebAttribute (body reportBody);
 	
+	/**
+	 * @return absolute path to css style file
+	 */
 	public String getFullPathStyle ();
+
+	/**
+	 * @return one or more links for web font
+	 */
+	String getWebFontLinks();
 }

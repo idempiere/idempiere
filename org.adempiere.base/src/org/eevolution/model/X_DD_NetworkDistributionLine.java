@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for DD_NetworkDistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="DD_NetworkDistributionLine")
 public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDistributionLine, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName)
@@ -279,16 +279,16 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 		return ii.intValue();
 	}
 
-	/** Set Transfert Time.
-		@param TransfertTime Transfert Time
+	/** Set Transfer Time.
+		@param TransfertTime Transfer Time
 	*/
 	public void setTransfertTime (BigDecimal TransfertTime)
 	{
 		set_Value (COLUMNNAME_TransfertTime, TransfertTime);
 	}
 
-	/** Get Transfert Time.
-		@return Transfert Time	  */
+	/** Get Transfer Time.
+		@return Transfer Time	  */
 	public BigDecimal getTransfertTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TransfertTime);

@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.I_C_ValidCombination;
@@ -42,6 +41,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.Query;
@@ -103,7 +103,7 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
             } else if (name.equals("EndElement")) {
                 m_endElement = para[i].getParameter().toString();
             } else {
-                log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
             }
         }
 

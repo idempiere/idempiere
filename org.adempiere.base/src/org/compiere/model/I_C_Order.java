@@ -93,19 +93,19 @@ public interface I_C_Order
     /** Column name AmountRefunded */
     public static final String COLUMNNAME_AmountRefunded = "AmountRefunded";
 
-	/** Set AmountRefunded	  */
+	/** Set Amount Refunded	  */
 	public void setAmountRefunded (BigDecimal AmountRefunded);
 
-	/** Get AmountRefunded	  */
+	/** Get Amount Refunded	  */
 	public BigDecimal getAmountRefunded();
 
     /** Column name AmountTendered */
     public static final String COLUMNNAME_AmountTendered = "AmountTendered";
 
-	/** Set AmountTendered	  */
+	/** Set Amount Tendered	  */
 	public void setAmountTendered (BigDecimal AmountTendered);
 
-	/** Get AmountTendered	  */
+	/** Get Amount Tendered	  */
 	public BigDecimal getAmountTendered();
 
     /** Column name Bill_BPartner_ID */
@@ -489,12 +489,12 @@ public interface I_C_Order
     /** Column name DatePrinted */
     public static final String COLUMNNAME_DatePrinted = "DatePrinted";
 
-	/** Set Date printed.
+	/** Set Date Printed.
 	  * Date the document was printed.
 	  */
 	public void setDatePrinted (Timestamp DatePrinted);
 
-	/** Get Date printed.
+	/** Get Date Printed.
 	  * Date the document was printed.
 	  */
 	public Timestamp getDatePrinted();
@@ -803,10 +803,10 @@ public interface I_C_Order
     /** Column name IsPriviledgedRate */
     public static final String COLUMNNAME_IsPriviledgedRate = "IsPriviledgedRate";
 
-	/** Set Priviledged Rate	  */
+	/** Set Privileged Rate	  */
 	public void setIsPriviledgedRate (boolean IsPriviledgedRate);
 
-	/** Get Priviledged Rate	  */
+	/** Get Privileged Rate	  */
 	public boolean isPriviledgedRate();
 
     /** Column name IsSelected */

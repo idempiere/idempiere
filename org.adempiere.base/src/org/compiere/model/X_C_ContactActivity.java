@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ContactActivity
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_ContactActivity")
 public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_ContactActivity (Properties ctx, int C_ContactActivity_ID, String trxName)

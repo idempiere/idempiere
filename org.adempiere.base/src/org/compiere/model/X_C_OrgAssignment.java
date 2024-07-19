@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_OrgAssignment
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_OrgAssignment")
 public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_OrgAssignment (Properties ctx, int C_OrgAssignment_ID, String trxName)

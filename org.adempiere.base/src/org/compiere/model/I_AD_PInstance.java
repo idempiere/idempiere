@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_PInstance 
 {
@@ -44,8 +44,8 @@ public interface I_AD_PInstance
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -64,12 +64,12 @@ public interface I_AD_PInstance
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -124,6 +124,21 @@ public interface I_AD_PInstance
 	public int getAD_Process_ID();
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
+    /** Column name AD_Session_ID */
+    public static final String COLUMNNAME_AD_Session_ID = "AD_Session_ID";
+
+	/** Set Session.
+	  * User Session Online or Web
+	  */
+	public void setAD_Session_ID (int AD_Session_ID);
+
+	/** Get Session.
+	  * User Session Online or Web
+	  */
+	public int getAD_Session_ID();
+
+	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";

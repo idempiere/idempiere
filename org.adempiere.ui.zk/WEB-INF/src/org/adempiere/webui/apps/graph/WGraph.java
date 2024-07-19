@@ -66,7 +66,7 @@ import org.zkoss.zul.Toolbar;
  */
 public class WGraph extends Div implements IdSpace {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -975989183542113080L;
 
@@ -92,7 +92,7 @@ public class WGraph extends Div implements IdSpace {
 	/**
 	 * Load Performance Data
 	 */
-	ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();
+	protected ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();
 
 	private boolean m_chartSelection;
 
@@ -104,7 +104,7 @@ public class WGraph extends Div implements IdSpace {
 
 	private String m_yAxisLabel;
 	
-	public DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
+	protected DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
 
 	/**
 	 * Constructor
@@ -219,6 +219,9 @@ public class WGraph extends Div implements IdSpace {
 		}
 	}
 	
+	/**
+	 * Load MMeasure data for {@link #m_goal}.
+	 */
 	private void loadData() {
 		//	Calculated
 		MMeasure measure = m_goal.getMeasure();
@@ -256,6 +259,10 @@ public class WGraph extends Div implements IdSpace {
 		}
 	} // loadData
 
+	/**
+	 * Render chart to {@link #panel}.
+	 * @param type optional chart type. if null, fallback to m_goal.getChartType
+	 */
 	private void renderChart(String type) {
 		int width = 560;
 		int height = 400;
@@ -398,6 +405,10 @@ public class WGraph extends Div implements IdSpace {
 		return array;
 	}
 
+	/**
+	 * Render {@link #m_goal} data in html table.
+	 * @param parent
+	 */
 	private void renderTable(Component parent) {
 		Div div = new Div();
 		appendChild(div);

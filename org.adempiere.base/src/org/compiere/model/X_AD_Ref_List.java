@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Ref_List
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Ref_List")
 public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Ref_List (Properties ctx, int AD_Ref_List_ID, String trxName)

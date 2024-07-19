@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAuthorizationCredential;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MProcessPara;
 
 /**
  *	IDEMPIERE-3101
@@ -62,8 +63,7 @@ public class AddAuthorizationProcess extends SvrProcess {
 			case "AD_Language": break;  // ignored, is just to save it in AD_Process_Para
 			case "Auth_CallbackAnswer": break;  // ignored, is just to save it in AD_Process_Para
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}

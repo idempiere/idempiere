@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestTypeUpdates
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestTypeUpdates")
 public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)

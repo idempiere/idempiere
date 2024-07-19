@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Cost_CollectorMA
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Cost_CollectorMA")
 public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Cost_CollectorMA (Properties ctx, int PP_Cost_CollectorMA_ID, String trxName)

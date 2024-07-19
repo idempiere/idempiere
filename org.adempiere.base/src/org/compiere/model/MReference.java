@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -144,4 +145,12 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 		return this;
 	}
 
+	/**
+	 * Show inactive records
+	 * @return
+	 */
+	public boolean isShowInactiveRecords() {
+		return !Util.isEmpty(getShowInactive()) && MReference.SHOWINACTIVE_Yes.equalsIgnoreCase(getShowInactive());
+	}
+	
 }	//	MReference

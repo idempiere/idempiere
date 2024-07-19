@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoicePaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoicePaySchedule")
 public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_InvoicePaySchedule (Properties ctx, int C_InvoicePaySchedule_ID, String trxName)

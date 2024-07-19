@@ -27,7 +27,7 @@ import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
@@ -186,7 +186,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		if (logout == event.getTarget())
         {
 			if (SessionManager.getAppDesktop().isPendingWindow()) {
-				FDialog.ask(0, component, "ProceedWithTask?", new Callback<Boolean>() {
+				Dialog.ask(0, "ProceedWithTask?", new Callback<Boolean>() {
 
 					@Override
 					public void onCallback(Boolean result)
@@ -217,7 +217,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		else if (changeRole == event.getTarget())
 		{
 			if (SessionManager.getAppDesktop().isPendingWindow()) {
-				FDialog.ask(0, component, "ProceedWithTask?", new Callback<Boolean>() {
+				Dialog.ask(0, "ProceedWithTask?", new Callback<Boolean>() {
 
 					@Override
 					public void onCallback(Boolean result)

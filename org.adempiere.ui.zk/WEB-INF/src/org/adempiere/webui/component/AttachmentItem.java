@@ -26,16 +26,17 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Span;
 
 /**
- * 
+ * Attachment item UI with Label and Link to remove attachment from container.
  * @author hengsin
- *
  */
 public class AttachmentItem extends Span implements EventListener<Event>{
 	/**
 	 * generate serial id
 	 */
 	private static final long serialVersionUID = -7599391160210459080L;
+	/** Attachment content */
 	private DataSource ds;
+	/** List that contains {@link #ds} */
 	private List<DataSource> list;
 
 	public AttachmentItem(DataSource ds, List<DataSource> list, boolean removable) {

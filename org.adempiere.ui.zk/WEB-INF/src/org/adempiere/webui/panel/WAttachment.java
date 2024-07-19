@@ -47,7 +47,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MAttachment;
@@ -60,6 +60,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.ui.zk.media.IMediaView;
+import org.idempiere.ui.zk.media.Medias;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
@@ -68,6 +69,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -76,8 +78,11 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.impl.Utils;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  *
@@ -89,7 +94,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8266807399792500541L;
+	private static final long serialVersionUID = -710884973406502168L;
 
 	private static final CLogger log = CLogger.getCLogger(WAttachment.class);
 
@@ -103,6 +108,9 @@ public class WAttachment extends Window implements EventListener<Event>
 	private boolean m_change = false;
 
 	private Iframe preview = new Iframe();
+
+	protected AMedia media;
+	private int mediaVersion = 0;
 
 	private Textbox text = new Textbox();
 
@@ -136,6 +144,8 @@ public class WAttachment extends Window implements EventListener<Event>
 	private int maxPreviewSize;
 
 	private Component customPreviewComponent;
+	
+	private Progressmeter progress = new Progressmeter(0);
 
 	private static List<String> autoPreviewList;
 
@@ -225,6 +235,15 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 		}
 
+		String maxUploadSize = "";
+		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+		if (size > 0)
+			maxUploadSize = "" + size;
+
+		Clients.evalJavaScript("idempiere.dropToAttachFiles('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
+				+ this.getDesktop().getId() + "','" + progress.getUuid() + "','" + sizeLabel.getUuid() + "','"
+				+ maxUploadSize + "');");
+
 	} // WAttachment
 
 	/**
@@ -266,9 +285,11 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.appendChild(mainPanel);
 		ZKUpdateUtil.setHeight(mainPanel, "100%");
 		ZKUpdateUtil.setWidth(mainPanel, "100%");
+		mainPanel.addEventListener(Events.ON_UPLOAD, this);
+
 
 		North northPanel = new North();
-		northPanel.setStyle("padding: 4px");
+		northPanel.setStyle("padding: 4px; background: #e8e8e8;");
 		northPanel.setCollapsible(false);
 		northPanel.setSplittable(false);
 
@@ -286,14 +307,18 @@ public class WAttachment extends Window implements EventListener<Event>
 		toolBar.appendChild(cbContent);
 		toolBar.appendChild(sizeLabel);
 
-		mainPanel.appendChild(northPanel);
+		progress.setClass("drop-progress-meter");
+		progress.setVisible(false);
+		
 		Vlayout div = new Vlayout();
 		div.appendChild(toolBar);
+		div.appendChild(progress);
 		text.setRows(3);
 		ZKUpdateUtil.setHflex(text, "1");
 		
 		div.appendChild(text);
 		northPanel.appendChild(div);
+		mainPanel.appendChild(northPanel);
 
 		bSave.setEnabled(false);
 		bSave.setSclass("img-btn");
@@ -336,8 +361,9 @@ public class WAttachment extends Window implements EventListener<Event>
 		bEmail.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		ZKUpdateUtil.setVflex(preview, "1");
-		ZKUpdateUtil.setHflex(preview, "1");
+		previewPanel.setSclass("popup-content-background");
+		ZKUpdateUtil.setHeight(preview, "99%");
+		ZKUpdateUtil.setWidth(preview, "99%");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
@@ -494,7 +520,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				if (view != null) 
 				{
 					if (data.length <= maxPreviewSize) {
-						AMedia media = new AMedia(entry.getName(), null, mimeType, entry.getData());
+						media = new AMedia(entry.getName(), null, mimeType, entry.getData());
 						try {
 							customPreviewComponent = view.renderMediaView(previewPanel, media, true);
 						} catch (Exception e) {
@@ -579,9 +605,16 @@ public class WAttachment extends Window implements EventListener<Event>
 			try
 			{
 				String contentType = entry.getContentType();
-				AMedia media = new AMedia(entry.getName(), null, contentType, entry.getData());
-
-				preview.setContent(media);
+				media = new AMedia(entry.getName(), null, contentType, entry.getData());
+				if (   MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
+					&& Medias.PDF_MIME_TYPE.equals(contentType)) {
+					mediaVersion++;
+					String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
+					String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+					preview.setSrc(pdfJsUrl);
+				} else {
+					preview.setContent(media);
+				}
 				preview.setVisible(true);
 				preview.invalidate();
 			}
@@ -685,7 +718,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	}
 
 	private void processUploadMedia(Media media) {
-		if (media != null && media.getByteData().length>0)
+		if (media != null && ((media.isBinary() && media.getByteData().length>0) || (!media.isBinary() && media.getStringData().length() > 0)))
 		{
 //				pdfViewer.setContent(media);
 			;
@@ -725,21 +758,26 @@ public class WAttachment extends Window implements EventListener<Event>
 	private byte[] getMediaData(Media media)  {
 		byte[] bytes = null;
 		
-		try{
-			
-	      if (media.inMemory())
-		     	bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
-		  else {
-			 InputStream is = media.getStreamData();
-			 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 byte[] buf = new byte[ 1000 ];
-			 int byteread = 0;
-			 
-				  while (( byteread=is.read(buf) )!=-1)
-					baos.write(buf,0,byteread);
-			
-			bytes = baos.toByteArray();
-		 }
+		try {
+
+			if (media.inMemory())
+				bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
+			else {
+				InputStream is = null;
+				try {
+					is = media.getStreamData();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					byte[] buf = new byte[1000];
+					int byteread = 0;
+
+					while ((byteread = is.read(buf)) != -1)
+						baos.write(buf, 0, byteread);
+					bytes = baos.toByteArray();
+				} finally {
+					if (is != null)
+						is.close();
+				}
+			}
 		} catch (IOException e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			throw new IllegalStateException(e.getLocalizedMessage());
@@ -755,7 +793,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		log.info("");
 
-		FDialog.ask(m_WindowNo, this, "AttachmentDelete?", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "AttachmentDelete?", new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 
@@ -786,7 +824,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (fileName == null)
 			return;
 
-		FDialog.ask(m_WindowNo, this, "AttachmentDeleteEntry?", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "AttachmentDeleteEntry?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -822,7 +860,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 			try
 			{
-				AMedia media = new AMedia(entry.getName(), null, entry.getContentType(), entry.getData());
+				media = new AMedia(entry.getName(), null, entry.getContentType(), entry.getData());
 				Filedownload.save(media);
 			}
 			catch (Exception e)
@@ -849,7 +887,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		
 		if (zipFile != null) {
 			String name = MTable.get(Env.getCtx(), m_attachment.getAD_Table_ID()).getTableName() + "_" + m_attachment.getRecord_ID();
-			AMedia media = null;	
+			media = null;
 			try {
 				media = new AMedia(name, null, "application/zip", zipFile, true);
 			} catch (Exception e) {
@@ -875,4 +913,20 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		AEnv.showWindow(dialog);
 	}
+
+	//-- ComponentCtrl --//
+	public Object getExtraCtrl() {
+		return new ExtraCtrl();
+	}
+	/** A utility class to implement {@link #getExtraCtrl}.
+	 * It is used only by component developers.
+	 */
+	protected class ExtraCtrl extends XulElement.ExtraCtrl
+	implements DynamicMedia {
+		//-- DynamicMedia --//
+		public Media getMedia(String pathInfo) {
+			return media;
+		}
+	}
+
 }

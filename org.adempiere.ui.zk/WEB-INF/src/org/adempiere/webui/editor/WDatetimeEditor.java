@@ -35,6 +35,8 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
+import com.google.common.base.Objects;
+
 /**
  *
  * @author Low Heng Sin
@@ -203,26 +205,46 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     {
     	if (value == null || value.toString().trim().length() == 0)
     	{
+    		Timestamp currentValue = oldValue;
     		oldValue = null;
     		getComponent().setValue(null);
+    		if (currentValue != null)
+    		{
+    			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, null);
+    			super.fireValueChange(changeEvent);
+    		}
     	}
     	else if (value instanceof Timestamp)
         {
     		Timestamp ts = (Timestamp) value;
     		if (isTimestampWithTimeZone())
     		{
+    			Timestamp currentValue = oldValue;
     			ZonedDateTime zdt = ts.toInstant().atZone(getComponent().getDatebox().getTimeZone().toZoneId());
     			getComponent().setValueInZonedDateTime(zdt);
+    			oldValue = Timestamp.from(zdt.toInstant());
+    			if (!Objects.equal(currentValue, oldValue))
+    			{
+    				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
+    				super.fireValueChange(changeEvent);
+    			}
     		}
     		else
     		{
+    			Timestamp currentValue = oldValue;
 	    		LocalDateTime localTime = ts.toLocalDateTime();
 	    		getComponent().setValueInLocalDateTime(localTime);
+	    		oldValue = Timestamp.valueOf(localTime);
+    			if (!Objects.equal(currentValue, oldValue))
+    			{
+    				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
+    				super.fireValueChange(changeEvent);
+    			}
     		}
-            oldValue = ts;
         }
     	else
     	{
+    		Timestamp currentValue = oldValue;
     		try
     		{
     			getComponent().setText(value.toString());
@@ -233,10 +255,20 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     				oldValue = Timestamp.from(getComponent().getDatebox().getValue().toInstant());
     			else
     				oldValue = Timestamp.valueOf(getComponent().getDatebox().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+    			if (!Objects.equal(currentValue, oldValue))
+    			{
+    				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
+    				super.fireValueChange(changeEvent);
+    			}
     		}
     		else
     		{
     			oldValue = null;
+    			if (currentValue != null)
+        		{
+        			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, null);
+        			super.fireValueChange(changeEvent);
+        		}
     		}
     	}
     }

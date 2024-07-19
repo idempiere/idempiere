@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.compiere.model.MInOutLineConfirm;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_InOutLineConfirm;
 import org.compiere.util.DB;
 
@@ -58,7 +59,7 @@ public class ImportInOutConfirm extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				p_DeleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_I_InOutLineConfirm_ID = getRecord_ID();
 	}	//	prepare

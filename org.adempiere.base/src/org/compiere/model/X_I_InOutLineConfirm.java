@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_InOutLineConfirm
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="I_InOutLineConfirm")
 public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)

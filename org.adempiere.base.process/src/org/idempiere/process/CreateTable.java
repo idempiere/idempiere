@@ -40,13 +40,12 @@ import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTSTATUS;
 import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
 
-import java.util.logging.Level;
-
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.acct.Doc;
 import org.compiere.model.MColumn;
 import org.compiere.model.MIndexColumn;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.M_Element;
@@ -208,7 +207,7 @@ public class CreateTable extends SvrProcess {
 				break;
 
 			default:
-				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 		p_record_ID = getRecord_ID();

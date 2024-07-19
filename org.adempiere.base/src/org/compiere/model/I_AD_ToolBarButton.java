@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ToolBarButton
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_ToolBarButton 
 {
@@ -83,8 +83,8 @@ public interface I_AD_ToolBarButton
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -92,12 +92,12 @@ public interface I_AD_ToolBarButton
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -262,13 +262,13 @@ public interface I_AD_ToolBarButton
     /** Column name KeyStroke_KeyCode */
     public static final String COLUMNNAME_KeyStroke_KeyCode = "KeyStroke_KeyCode";
 
-	/** Set KeyCode.
-	  * KeyCode for shortcuts
+	/** Set Key Code.
+	  * Key Code for shortcuts
 	  */
 	public void setKeyStroke_KeyCode (int KeyStroke_KeyCode);
 
-	/** Get KeyCode.
-	  * KeyCode for shortcuts
+	/** Get Key Code.
+	  * Key Code for shortcuts
 	  */
 	public int getKeyStroke_KeyCode();
 
@@ -297,6 +297,28 @@ public interface I_AD_ToolBarButton
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name PressedLogic */
+    public static final String COLUMNNAME_PressedLogic = "PressedLogic";
+
+	/** Set Pressed Logic	  */
+	public void setPressedLogic (String PressedLogic);
+
+	/** Get Pressed Logic	  */
+	public String getPressedLogic();
+
+    /** Column name ReadOnlyLogic */
+    public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
+
+	/** Set Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic);
+
+	/** Get Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

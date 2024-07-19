@@ -37,6 +37,7 @@ import javax.mail.Store;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRequest;
 import org.compiere.model.MRequestType;
 import org.compiere.model.MUser;
@@ -134,7 +135,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 			else if (name.equals("HTMLAttachmentType"))
 				p_HTMLAttachmentType = para[i].getParameterAsString();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		if(p_HTMLAttachmentType == null)

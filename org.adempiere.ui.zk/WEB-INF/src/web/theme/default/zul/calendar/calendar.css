@@ -216,3 +216,8 @@
 .z-calendars-month-header .z-calendars-day-of-week {
 	color: #000000 !important;
 }
+
+/*notes: without this fix calendar increases repeatedly height when switching between home and window tab in dashboard row orientation*/
+.z-calendars-month-cnt {
+	height: 300px !important;
+}

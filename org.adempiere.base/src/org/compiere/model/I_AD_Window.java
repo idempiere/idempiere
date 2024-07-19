@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Window
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Window 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Window
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -83,12 +83,12 @@ public interface I_AD_Window
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -290,12 +290,12 @@ public interface I_AD_Window
     /** Column name WindowType */
     public static final String COLUMNNAME_WindowType = "WindowType";
 
-	/** Set WindowType.
+	/** Set Window Type.
 	  * Type or classification of a Window
 	  */
 	public void setWindowType (String WindowType);
 
-	/** Get WindowType.
+	/** Get Window Type.
 	  * Type or classification of a Window
 	  */
 	public String getWindowType();

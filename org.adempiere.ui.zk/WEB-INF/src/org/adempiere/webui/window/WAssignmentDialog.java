@@ -411,7 +411,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 				detach();
 			}
 			else
-				FDialog.error(0, this, "ResourceAssignmentNotDeleted");
+				Dialog.error(0, "ResourceAssignmentNotDeleted");
 		}
 
 		//	OK - Save

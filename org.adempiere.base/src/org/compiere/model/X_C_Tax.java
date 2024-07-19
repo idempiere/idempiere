@@ -34,7 +34,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220329L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Tax (Properties ctx, int C_Tax_ID, String trxName)
@@ -606,7 +606,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	/** Distribute Tax with Relevant Expense = 1 */
 	public static final String TAXPOSTINGINDICATOR_DistributeTaxWithRelevantExpense = "1";
 	/** Set Posting Indicator.
-		@param TaxPostingIndicator Posting Indicator
+		@param TaxPostingIndicator Type of input tax (deductible and non deductible)
 	*/
 	public void setTaxPostingIndicator (String TaxPostingIndicator)
 	{
@@ -615,7 +615,8 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	/** Get Posting Indicator.
-		@return Posting Indicator	  */
+		@return Type of input tax (deductible and non deductible)
+	  */
 	public String getTaxPostingIndicator()
 	{
 		return (String)get_Value(COLUMNNAME_TaxPostingIndicator);

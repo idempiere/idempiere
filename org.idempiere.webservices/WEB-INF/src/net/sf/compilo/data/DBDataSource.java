@@ -68,7 +68,7 @@ public class DBDataSource extends compiereDataSource
                     jr.getQuery(), 
     				parametersMap, 
     				params, 
-    				DB.getConnectionRO()
+    				DB.getConnection()
     				);
             if(m_pstmt != null)
                 m_resultSet = m_pstmt.executeQuery();

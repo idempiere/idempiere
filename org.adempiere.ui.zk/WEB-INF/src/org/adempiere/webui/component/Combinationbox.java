@@ -14,17 +14,19 @@
 package org.adempiere.webui.component;
 
 /**
- * 
+ * Component for account editor
  * @author Low Heng Sin
- *
  */
 public class Combinationbox extends EditorBox
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3743140893368022592L;
 
+	/**
+	 * Default constructor
+	 */
 	public Combinationbox()
     {
         super();

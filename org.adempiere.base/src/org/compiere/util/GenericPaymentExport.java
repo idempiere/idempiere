@@ -198,7 +198,7 @@ public class GenericPaymentExport implements PaymentExport
 			+ "INNER JOIN C_Location a ON (l.C_Location_ID=a.C_Location_ID) "
 			+ "LEFT OUTER JOIN C_Region r ON (a.C_Region_ID=r.C_Region_ID) "
 			+ "INNER JOIN C_Country cc ON (a.C_Country_ID=cc.C_Country_ID) "
-			+ "WHERE bp.C_BPartner_ID=?"        // #1
+			+ "WHERE bp.C_BPartner_ID=? "        // #1
 			+ "ORDER BY l.IsBillTo DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

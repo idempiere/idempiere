@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ProductPlanning
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_I_ProductPlanning 
@@ -46,8 +46,8 @@ public interface I_I_ProductPlanning
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -55,12 +55,12 @@ public interface I_I_ProductPlanning
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -600,10 +600,10 @@ public interface I_I_ProductPlanning
     /** Column name TransfertTime */
     public static final String COLUMNNAME_TransfertTime = "TransfertTime";
 
-	/** Set Transfert Time	  */
+	/** Set Transfer Time	  */
 	public void setTransfertTime (BigDecimal TransfertTime);
 
-	/** Get Transfert Time	  */
+	/** Get Transfer Time	  */
 	public BigDecimal getTransfertTime();
 
     /** Column name Updated */

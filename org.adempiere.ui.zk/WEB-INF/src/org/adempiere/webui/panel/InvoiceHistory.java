@@ -258,9 +258,6 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		m_tablePrice.setColumnClass(5, String.class, true);      //  DocNo
 		m_tablePrice.setColumnClass(6, Timestamp.class, true);   //  Date
 		m_tablePrice.setColumnClass(7, String.class, true);   	 //  Org
-		//
-		m_tablePrice.autoSize();
-		//
 		
 		return data.size() != 0;
 	}	//	dynInit
@@ -478,8 +475,6 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 			m_tableReserved.setColumnClass(5, String.class, true);      //  DocNo
 			m_tableReserved.setColumnClass(6, Timestamp.class, true);   //  Date
 			m_tableReserved.setColumnClass(7, String.class, true);   	  //  Warehouse
-			//
-			m_tableReserved.autoSize();
 		}
 		else
 		{
@@ -494,8 +489,6 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 			m_tableOrdered.setColumnClass(5, String.class, true);      //  DocNo
 			m_tableOrdered.setColumnClass(6, Timestamp.class, true);   //  Date
 			m_tableOrdered.setColumnClass(7, String.class, true);   	  //  Warehouse
-			//
-			m_tableOrdered.autoSize();
 		}
 
 	}	//	initReservedOrderedTab
@@ -598,8 +591,6 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		m_tableUnconfirmed.setColumnClass(2, Timestamp.class, true);   //  MovementDate
 		m_tableUnconfirmed.setColumnClass(3, Boolean.class, true);  	  //  IsSOTrx
 		m_tableUnconfirmed.setColumnClass(4, String.class, true);      //  DocNo
-		//
-		m_tableUnconfirmed.autoSize();
 	}	//	initUnconfirmedTab
 
 	/**
@@ -767,7 +758,5 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		m_tableAtp.setColumnClass(6, String.class, true);   	  //  ASI
 		m_tableAtp.setColumnClass(7, String.class, true);      //  DocNo
 		m_tableAtp.setColumnClass(8, String.class, true);   	  //  Warehouse
-		//
-		m_tableAtp.autoSize();
 	}	//	initAtpTab	
 }	//	InvoiceHistory

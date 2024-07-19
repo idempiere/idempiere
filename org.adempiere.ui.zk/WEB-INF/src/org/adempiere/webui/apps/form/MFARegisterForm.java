@@ -60,7 +60,7 @@ import org.zkoss.zul.Space;
 @org.idempiere.ui.zk.annotation.Form
 public class MFARegisterForm extends ADForm {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6186035815377577281L;
 
@@ -91,7 +91,7 @@ public class MFARegisterForm extends ADForm {
 	private MMFARegistration registration = null;
 
 	/**
-	 *
+	 * Default constructor
 	 */
 	public MFARegisterForm() {
 	}

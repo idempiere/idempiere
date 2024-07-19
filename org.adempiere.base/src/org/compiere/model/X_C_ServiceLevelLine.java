@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevelLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_ServiceLevelLine")
 public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_ServiceLevelLine (Properties ctx, int C_ServiceLevelLine_ID, String trxName)

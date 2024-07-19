@@ -21,7 +21,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.zkoss.zk.ui.Component;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Label}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -29,7 +29,7 @@ import org.zkoss.zk.ui.Component;
 public class Label extends org.zkoss.zul.Label
 {
     /**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6818124304324329510L;
 
@@ -37,25 +37,41 @@ public class Label extends org.zkoss.zul.Label
 
     private boolean mandatory;
 
+    /**
+     * Default constructor
+     */
     public Label()
     {
         super();
     }
 
+    /**
+     * @param value
+     */
     public Label(String value)
     {
         super(value != null ? value.replaceAll("[&]", "") : null);
     }
 
+    /**
+     * @return true if using mandatory style, false otherwise
+     */
 	public boolean isMandatory() {
 		return mandatory;
 	}
 
+	/**
+	 * set mandatory/optional style
+	 * @param mandatory true for mandatory style, false for optional
+	 */
 	public void setMandatory(boolean mandatory) {
 		this.mandatory = mandatory;
 		setupMandatoryDecorator();
 	}
 
+	/**
+	 * @return Decorator Component
+	 */
 	public Component getDecorator() {
 		return decorator;
 	}
@@ -78,6 +94,9 @@ public class Label extends org.zkoss.zul.Label
 		return super.setVisible(visible);
 	}
 
+	/**
+	 * Setup mandatory style decorator
+	 */
 	private void setupMandatoryDecorator() {
 		if (decorator == null)
 			createMandatoryDecorator();
@@ -88,6 +107,9 @@ public class Label extends org.zkoss.zul.Label
 			decorator.setVisible(false);
 	}
 
+	/**
+	 * Create mandatory style decorator
+	 */
 	private void createMandatoryDecorator() {
 		decorator = new Label("*");
 		((Label)decorator).setSclass("mandatory-decorator-text");
@@ -103,6 +125,9 @@ public class Label extends org.zkoss.zul.Label
 		this.setValue(translate);
 	}
 
+	/**
+	 * @return right align Label wrapped in Div
+	 */
 	public Component rightAlign() {
 		return LayoutUtils.makeRightAlign(this);
 	}	

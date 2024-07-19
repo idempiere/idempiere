@@ -29,6 +29,7 @@ package org.idempiere.process;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.model.MUserRoles;
 import org.compiere.model.Query;
@@ -56,7 +57,7 @@ public class MaintainSupportRoles extends SvrProcess {
 			if ("IsActive".equals(name)) {
 				p_IsActive = para.getParameterAsString();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	} // prepare

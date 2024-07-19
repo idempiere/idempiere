@@ -20,21 +20,20 @@ import java.beans.PropertyChangeSupport;
 import org.adempiere.webui.LayoutUtils;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.addon.chosenbox.Chosenbox;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 
 /**
+ * Composite component of {@link Chosenbox} and {@link Button}
  * @author Low Heng Sin
  */
 public class ChosenSearchBox extends Div {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3152111756471436612L;
-	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(
-			this);
+	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Chosenbox<ValueNamePair> chosenbox;
 	protected Button btn;
 
@@ -55,12 +54,16 @@ public class ChosenSearchBox extends Div {
 	}
 
 	/**
+	 * Set image url for button
 	 * @param imageSrc
 	 */
 	public void setButtonImage(String imageSrc) {
 		btn.setImage(imageSrc);
 	}
 
+	/**
+	 * Layout component
+	 */
 	private void initComponents() {
 		if (chosenbox == null) 
 			chosenbox = new Chosenbox<>();
@@ -106,16 +109,18 @@ public class ChosenSearchBox extends Div {
 	}
 
 	/**
-	 * @return boolean
+	 * @return true if enable, false otherwise
 	 */
 	public boolean isEnabled() {
 		return btn.isEnabled();
 	}
 
 	/**
+	 * If evtnm is ON_CLICK, add listener to {@link #btn}, otherwise add to {@link #chosenbox}.
 	 * @param evtnm
 	 * @param listener
 	 */
+	@Override
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_CLICK.equals(evtnm)) {
 			return btn.addEventListener(evtnm, listener);
@@ -125,13 +130,14 @@ public class ChosenSearchBox extends Div {
 	}
 
 	/**
-	 * @param l
+	 * @param l PropertyChangeListener
 	 */
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}
 
 	/**
+	 * Set tooltip text for {@link #chosenbox}
 	 * @param tooltiptext
 	 */
 	public void setToolTipText(String tooltiptext) {
@@ -145,6 +151,9 @@ public class ChosenSearchBox extends Div {
 		return btn;
 	}
 	
+	/**
+	 * @param flag true for grid view, false otherwise
+	 */
 	public void setTableEditorMode(boolean flag) {
 		if (flag) {
 			setHflex("0");
@@ -156,10 +165,5 @@ public class ChosenSearchBox extends Div {
 			LayoutUtils.removeSclass("grid-editor-button", btn);
 		}
 			
-	}
-
-	@Override
-	public void onPageAttached(Page newpage, Page oldpage) {
-		super.onPageAttached(newpage, oldpage);
 	}
 }

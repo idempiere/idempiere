@@ -321,9 +321,9 @@ public abstract class AbstractXLSXExporter
 		return cs_header;
 	}
 
-	private void fixColumnWidth(XSSFSheet sheet, int lastColumnIndex)
+	private void fixColumnWidth(XSSFSheet sheet, int colCount)
 	{
-		for (short colnum = 0; colnum < lastColumnIndex; colnum++)
+		for (short colnum = 0; colnum < colCount; colnum++)
 		{
 			sheet.autoSizeColumn(colnum);
 		}
@@ -488,9 +488,7 @@ public abstract class AbstractXLSXExporter
 			// for all columns
 			int colnum = 0;
 			for (int col = 0; col < getColumnCount(); col++)
-			{
-				if (colnum > colnumMax)
-					colnumMax = colnum;
+			{				
 				//
 				if (isColumnPrinted(col))
 				{
@@ -589,6 +587,8 @@ public abstract class AbstractXLSXExporter
 					}
 					//
 					colnum++;
+					if (colnum > colnumMax)
+						colnumMax = colnum;
 					if (colSuppressRepeats != null)
 						preValues[printColIndex] = obj;
 				} // printed

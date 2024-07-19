@@ -22,7 +22,6 @@ Import-Package: javax.crypto,
  org.w3c.dom
 DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
- lib/hazelcast-aws.jar,
  lib/hazelcast.jar
 Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -1,9 +1,9 @@
 package org.adempiere.process;
 
 import java.sql.Timestamp;
-import java.util.logging.Level;
 
 import org.compiere.model.MPackage;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MShippingTransaction;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
@@ -26,7 +26,7 @@ public class RateInquiryProcess extends SvrProcess
 			else if (name.equals(MShippingTransaction.COLUMNNAME_IsPriviledgedRate))
 				p_IsPriviledgedRate = ((String)para[i].getParameter()).equals("Y");
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
     }
 	

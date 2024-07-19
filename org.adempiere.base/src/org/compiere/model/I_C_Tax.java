@@ -361,10 +361,14 @@ public interface I_C_Tax
     /** Column name TaxPostingIndicator */
     public static final String COLUMNNAME_TaxPostingIndicator = "TaxPostingIndicator";
 
-	/** Set Posting Indicator	  */
+	/** Set Posting Indicator.
+	  * Type of input tax (deductible and non deductible)
+	  */
 	public void setTaxPostingIndicator (String TaxPostingIndicator);
 
-	/** Get Posting Indicator	  */
+	/** Get Posting Indicator.
+	  * Type of input tax (deductible and non deductible)
+	  */
 	public String getTaxPostingIndicator();
 
     /** Column name To_Country_ID */

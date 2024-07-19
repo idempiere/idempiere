@@ -14,8 +14,6 @@
 
 package org.adempiere.webui;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
@@ -23,23 +21,10 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridTab;
-import org.compiere.model.MAsset;
-import org.compiere.model.MBPartner;
-import org.compiere.model.MCampaign;
-import org.compiere.model.MInOut;
-import org.compiere.model.MInvoice;
-import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.MPayment;
-import org.compiere.model.MProduct;
-import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
-import org.compiere.model.MRMA;
 import org.compiere.model.MRequest;
-import org.compiere.model.MUser;
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
@@ -51,8 +36,8 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Popup;
 
 /**
- *	Request Button Action.
- *	Popup Menu
+ *	Handle Request Button Action.
+ *	Show Popup Menu.
  *	
  *  @author Jorg Janke
  *  @version $Id: ARequest.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -77,7 +62,7 @@ public class WRequest implements EventListener<Event>
 		m_C_BPartner_ID = C_BPartner_ID;
 		getRequests(invoker);
 		
-	}	//	AReport
+	}	//	WRequest
 
 	/**	The Table						*/
 	private int			m_AD_Table_ID;
@@ -92,7 +77,7 @@ public class WRequest implements EventListener<Event>
 	private Menuitem 	m_active = null;
 	private Menuitem 	m_all = null;
 	/** Where Clause					*/
-	StringBuffer 		m_where = null;
+	protected StringBuilder 		m_where = null;
 	
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (WRequest.class);
@@ -111,62 +96,10 @@ public class WRequest implements EventListener<Event>
 		m_new.addEventListener(Events.ON_CLICK, this);
 		m_popup.appendChild(m_new);
 		//
-		int activeCount = 0;
-		int inactiveCount = 0;
-		m_where = new StringBuffer();
-		m_where.append("(AD_Table_ID=").append(m_AD_Table_ID)
-			.append(" AND Record_ID=").append(m_Record_ID)
-			.append(")");
-		//
-		if (m_AD_Table_ID == MUser.Table_ID)
-			m_where.append(" OR AD_User_ID=").append(m_Record_ID)
-				.append(" OR SalesRep_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MBPartner.Table_ID)
-			m_where.append(" OR C_BPartner_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MOrder.Table_ID)
-			m_where.append(" OR C_Order_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MInvoice.Table_ID)
-			m_where.append(" OR C_Invoice_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MPayment.Table_ID)
-			m_where.append(" OR C_Payment_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MProduct.Table_ID)
-			m_where.append(" OR M_Product_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MProject.Table_ID)
-			m_where.append(" OR C_Project_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MCampaign.Table_ID)
-			m_where.append(" OR C_Campaign_ID=").append(m_Record_ID);
-		else if (m_AD_Table_ID == MAsset.Table_ID)
-			m_where.append(" OR A_Asset_ID=").append(m_Record_ID);
-		//
-		String sql = "SELECT Processed, COUNT(*) "
-			+ "FROM R_Request WHERE " + m_where 
-			+ " GROUP BY Processed "
-			+ "ORDER BY Processed DESC";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				if ("Y".equals(rs.getString(1)))
-					inactiveCount = rs.getInt(2);
-				else
-					activeCount += rs.getInt(2);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; 
-			pstmt = null;
-		}
-		//
+		m_where = new StringBuilder();
+		int[] counts = MRequest.getRequestCount(m_AD_Table_ID, m_Record_ID, m_where, null);
+		int activeCount = counts[1];
+		int inactiveCount = counts[0];
 		if (activeCount > 0)
 		{
 			m_active = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestActive") 
@@ -193,12 +126,14 @@ public class WRequest implements EventListener<Event>
 			LayoutUtils.autoDetachOnClose(m_popup);
 		}
 		m_popup.open(invoker, "after_start");
-	}	//	getZoomTargets
+	}
 	
+	@Override
 	public void onEvent(final Event e) throws Exception 
 	{
 		if (e.getTarget() instanceof Menuitem) 
 		{
+			//open request window
 			MQuery query = null;
 			if (e.getTarget() == m_active)
 			{
@@ -237,55 +172,17 @@ public class WRequest implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Set initial values for new request record
+	 * @param e
+	 * @param frame
+	 */
 	private void onNew(Event e, ADWindow frame) {
 		//	New - set Table/Record
 		if (e.getTarget() == m_new)
 		{
 			GridTab tab = frame.getADWindowContent().getActiveGridTab();
-			tab.dataNew (false);
-			tab.setValue("AD_Table_ID", Integer.valueOf(m_AD_Table_ID));
-			tab.setValue("Record_ID", Integer.valueOf(m_Record_ID));
-			//
-			if (m_C_BPartner_ID != 0)
-				tab.setValue("C_BPartner_ID", Integer.valueOf(m_C_BPartner_ID));
-			//
-			if (m_AD_Table_ID == MBPartner.Table_ID)
-				tab.setValue("C_BPartner_ID", Integer.valueOf(m_Record_ID));
-			else if (m_AD_Table_ID == MUser.Table_ID)
-				tab.setValue("AD_User_ID", Integer.valueOf(m_Record_ID));
-			//
-			else if (m_AD_Table_ID == MProject.Table_ID)
-				tab.setValue("C_Project_ID", Integer.valueOf(m_Record_ID));
-			else if (m_AD_Table_ID == MAsset.Table_ID)
-				tab.setValue("A_Asset_ID", Integer.valueOf(m_Record_ID));
-			//
-			else if (m_AD_Table_ID == MOrder.Table_ID)
-				tab.setValue("C_Order_ID", Integer.valueOf(m_Record_ID));
-			else if (m_AD_Table_ID == MInvoice.Table_ID)
-				tab.setValue("C_Invoice_ID", Integer.valueOf(m_Record_ID));
-			//
-			else if (m_AD_Table_ID == MProduct.Table_ID)
-				tab.setValue("M_Product_ID", Integer.valueOf(m_Record_ID));
-			else if (m_AD_Table_ID == MPayment.Table_ID)
-				tab.setValue("C_Payment_ID", Integer.valueOf(m_Record_ID));
-			//
-			else if (m_AD_Table_ID == MInOut.Table_ID)
-				tab.setValue("M_InOut_ID", Integer.valueOf(m_Record_ID));
-			else if (m_AD_Table_ID == MRMA.Table_ID)
-				tab.setValue("M_RMA_ID", Integer.valueOf(m_Record_ID));
-			//
-			else if (m_AD_Table_ID == MCampaign.Table_ID)
-				tab.setValue("C_Campaign_ID", Integer.valueOf(m_Record_ID));
-			//
-			else if (m_AD_Table_ID == MRequest.Table_ID)
-				tab.setValue(MRequest.COLUMNNAME_R_RequestRelated_ID, Integer.valueOf(m_Record_ID));
-			// FR [2842165] - Order Ref link from SO line creating new request
-			else if (m_AD_Table_ID == MOrderLine.Table_ID) {
-				MOrderLine oLine = new MOrderLine(Env.getCtx(), m_Record_ID, null);
-				if (oLine != null) {
-					tab.setValue(MOrderLine.COLUMNNAME_C_Order_ID, Integer.valueOf(oLine.getC_Order_ID()));
-				}
-			}
+			MRequest.newRequest(tab, m_AD_Table_ID, m_Record_ID, m_C_BPartner_ID);
 		}
 	}
 }

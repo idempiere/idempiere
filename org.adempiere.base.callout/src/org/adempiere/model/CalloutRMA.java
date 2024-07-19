@@ -28,6 +28,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.I_C_InvoiceLine;
 import org.compiere.model.MCharge;
+import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
@@ -255,4 +256,33 @@ public class CalloutRMA extends CalloutEngine {
 
 		return "";
 	}
+
+	/**
+	 * inOut - set sales rep based on shipment/receipt
+	 * 
+	 * @param ctx
+	 * @param WindowNo
+	 * @param mTab
+	 * @param mField
+	 * @param value
+	 * @return error message or ""
+	 */
+	public String inout(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) 
+	{
+		Integer M_InOut_ID = (Integer) value;
+		if (M_InOut_ID == null || M_InOut_ID.intValue() == 0)
+			return "";
+
+		MInOut inout = new MInOut(ctx, M_InOut_ID, null);
+		if (inout.get_ID() != 0)
+		{
+			if (inout.getSalesRep_ID() > 0)
+				mTab.setValue("SalesRep_ID", Integer.valueOf(inout.getSalesRep_ID()));
+			else
+				mTab.setValue("SalesRep_ID", null);
+		}
+
+		return "";
+	}
+
 }

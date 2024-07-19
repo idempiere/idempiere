@@ -273,7 +273,8 @@ public class ProcessTest extends AbstractTestCase {
 			
 			inout.load(getTrxName());
 			assertEquals(DocAction.STATUS_Completed, inout.getDocStatus(), "Expected Completed Status for Shipment");
-		} finally {			
+		} finally {		
+			rollback();
 			docCompleteNodeNext.deleteEx(true);
 			processNodePara.deleteEx(true);
 			processNode.deleteEx(true);

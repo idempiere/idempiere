@@ -1491,12 +1491,12 @@ public interface I_RV_BPartner
     /** Column name PO_PriceList_ID */
     public static final String COLUMNNAME_PO_PriceList_ID = "PO_PriceList_ID";
 
-	/** Set Purchase Pricelist.
+	/** Set Purchase Price List.
 	  * Price List used by this Business Partner
 	  */
 	public void setPO_PriceList_ID (int PO_PriceList_ID);
 
-	/** Get Purchase Pricelist.
+	/** Get Purchase Price List.
 	  * Price List used by this Business Partner
 	  */
 	public int getPO_PriceList_ID();

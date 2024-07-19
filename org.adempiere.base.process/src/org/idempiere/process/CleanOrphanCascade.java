@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.Query;
@@ -61,7 +62,7 @@ public class CleanOrphanCascade extends SvrProcess
 			if ("IsCleanChangeLog".equals(name)) {
 				p_IsCleanChangeLog  = para.getParameterAsBoolean();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}	//	prepare

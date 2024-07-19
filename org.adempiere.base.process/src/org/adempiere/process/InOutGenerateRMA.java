@@ -28,6 +28,7 @@ import org.compiere.model.I_C_InvoiceLine;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.Query;
@@ -78,7 +79,7 @@ public class InOutGenerateRMA extends SvrProcess
             else if (name.equals("MovementDate"))
             	p_movementDate = para[i].getParameterAsTimestamp();
             else
-                log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
         }
         if (p_movementDate == null) {
 	        p_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
@@ -168,6 +169,8 @@ public class InOutGenerateRMA extends SvrProcess
         shipment.setC_Activity_ID(originalReceipt.getC_Activity_ID());
         shipment.setUser1_ID(originalReceipt.getUser1_ID());
         shipment.setUser2_ID(originalReceipt.getUser2_ID());
+        shipment.setMovementDate(p_movementDate);
+        shipment.setDateAcct(p_movementDate);
         
         if (!shipment.save())
         {

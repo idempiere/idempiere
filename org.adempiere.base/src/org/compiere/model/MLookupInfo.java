@@ -209,8 +209,10 @@ public class MLookupInfo implements Serializable, Cloneable
 	public String DisplayColumn;
 	
 	public int InfoWindowId;
-	
+
 	public List<String> lookupDisplayColumns = null;
+
+	public List<String> lookupDisplayColumnNames = null;
 
 	/**
 	 * String representation

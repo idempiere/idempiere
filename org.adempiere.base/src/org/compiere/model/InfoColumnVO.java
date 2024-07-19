@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Properties;
 
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -51,6 +52,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	
 	private boolean isQueryCriteria;
 	
+	private boolean isQueryAfterChange;
+	
 	private boolean isReadOnly;
 	
 	private boolean isDisplayed;
@@ -60,6 +63,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	private boolean isKey;
 	
 	private boolean isAutocomplete;
+	
+	private boolean isRange;
 	
 	private int AD_Reference_ID;
 	
@@ -87,6 +92,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	
 	private String Placeholder;
 	
+	private String Placeholder2;
+	
 	private String PlaceHolderTrl;
 	
 	private String SelectClause;
@@ -102,6 +109,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	private String DescriptionTrl;
 	
 	private String DefaultValue;
+	
+	private String DefaultValue2;
 	
 	private String HelpTrl;
 	
@@ -125,12 +134,14 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		ColumnName = infoColumn.getColumnName();
 		isMandatory = infoColumn.isMandatory();
 		isQueryCriteria = infoColumn.isQueryCriteria();
+		isQueryAfterChange = infoColumn.isQueryAfterChange();
 		NameTrl = infoColumn.get_Translation("Name");
 		Name = infoColumn.getName();
 		AD_Reference_ID = infoColumn.getAD_Reference_ID();
 		AD_Reference_Value_ID = infoColumn.getAD_Reference_Value_ID();
 		PlaceHolderTrl = infoColumn.get_Translation("Placeholder");
 		Placeholder = infoColumn.getPlaceholder();
+		Placeholder2 = infoColumn.getPlaceholder2();
 		isReadOnly = infoColumn.isReadOnly();
 		SelectClause = infoColumn.getSelectClause();
 		DisplayLogic = infoColumn.getDisplayLogic();
@@ -144,14 +155,21 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		DescriptionTrl = infoColumn.get_Translation("Description");
 		isKey = infoColumn.isKey();
 		DefaultValue = infoColumn.getDefaultValue();
+		DefaultValue2 = infoColumn.getDefaultValue2();
 		HelpTrl = infoColumn.get_Translation("Help");
 		Help = infoColumn.getHelp();
 		AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
 		isAutocomplete = infoColumn.isAutocomplete();
 		SeqNo = infoColumn.getSeqNo();
-		AD_Val_Rule_ID = infoColumn.getAD_Val_Rule_ID();		
+		AD_Val_Rule_ID = infoColumn.getAD_Val_Rule_ID();
 		if (infoColumn.getAD_Val_Rule_ID() > 0)
 			ValidationCode  = MValRule.get(ctx, infoColumn.getAD_Val_Rule_ID()).getCode();
+		// Range is supported only for Date and Numeric Reference Types + operator "=" must be selected
+		if(QueryOperator != null && QueryOperator.equals(MInfoColumn.QUERYOPERATOR_Eq) 
+				&& (DisplayType.isDate(AD_Reference_ID) || DisplayType.isNumeric(AD_Reference_ID)))
+			isRange = infoColumn.isRange();
+		else
+			isRange = false;
 		
 		
 		this.afterCreate();
@@ -213,6 +231,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 				vo.InputFieldValidation = userDef.getInputFieldValidation();
 			if (userDef.getIsQueryCriteria() != null)
 				vo.isQueryCriteria = "Y".equals(userDef.getIsQueryCriteria());
+			if (userDef.getIsQueryAfterChange() != null)
+				vo.isQueryAfterChange = "Y".equals(userDef.getIsQueryAfterChange());
 			if (userDef.getQueryFunction()!= null)
 				vo.QueryFunction= userDef.getQueryFunction();
 			if (userDef.getQueryOperator()!= null)
@@ -286,6 +306,10 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		return isQueryCriteria;
 	}
 
+	public boolean isQueryAfterChange() {
+		return isQueryAfterChange;
+	}
+	
 	public String getNameTrl() {
 		return NameTrl;
 	}
@@ -308,6 +332,10 @@ public class InfoColumnVO implements Serializable, Cloneable {
 
 	public String getPlaceholder() {
 		return Placeholder;
+	}
+	
+	public String getPlaceholder2() {
+		return Placeholder2;
 	}
 
 	public boolean isReadOnly() {
@@ -369,6 +397,10 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	public String getDefaultValue() {
 		return DefaultValue;
 	}
+	
+	public String getDefaultValue2() {
+		return DefaultValue2;
+	}
 
 	public String getHelpTrl() {
 		return HelpTrl;
@@ -396,5 +428,9 @@ public class InfoColumnVO implements Serializable, Cloneable {
 
 	public int getSeqNo() {
 		return SeqNo;
+	}
+	
+	public boolean isRange() {
+		return isRange;
 	}
 }

@@ -36,7 +36,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -815975460880303779L;
+	private static final long serialVersionUID = 3580618153284679385L;
 
 	/**
 	 * 	Standard Constructor
@@ -192,6 +192,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "S_TimeExpense_ID"));
 			return false;
 		}
+		
 		//	Calculate Converted Amount
 		if (newRecord || is_ValueChanged("ExpenseAmt") || is_ValueChanged("C_Currency_ID"))
 		{
@@ -204,10 +205,19 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 					getDateExpense(), 0, getAD_Client_ID(), getAD_Org_ID()) );
 			}
 		}
+		
+		// calculate Line Net Amount
+		if (newRecord || is_ValueChanged(COLUMNNAME_Qty) || is_ValueChanged(COLUMNNAME_ExpenseAmt))
+		{
+			BigDecimal lineNetAmt = getExpenseAmt().multiply(getQty());
+			setLineNetAmt(lineNetAmt);
+		}
+		
 		if (isTimeReport())
 		{
 			setExpenseAmt(Env.ZERO);
 			setConvertedAmt(Env.ZERO);
+			setLineNetAmt(Env.ZERO);
 		}
 		return true;
 	}	//	beforeSave

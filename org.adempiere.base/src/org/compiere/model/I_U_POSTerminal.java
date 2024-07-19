@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for U_POSTerminal
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_U_POSTerminal 
 {
@@ -44,8 +44,8 @@ public interface I_U_POSTerminal
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_U_POSTerminal
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -220,12 +220,12 @@ public interface I_U_POSTerminal
     /** Column name CheckTransferBankAccount_ID */
     public static final String COLUMNNAME_CheckTransferBankAccount_ID = "CheckTransferBankAccount_ID";
 
-	/** Set Tranfer Check trx to.
+	/** Set Transfer Check trx to.
 	  * Bank account on which to transfer Check transactions
 	  */
 	public void setCheckTransferBankAccount_ID (int CheckTransferBankAccount_ID);
 
-	/** Get Tranfer Check trx to.
+	/** Get Transfer Check trx to.
 	  * Bank account on which to transfer Check transactions
 	  */
 	public int getCheckTransferBankAccount_ID();
@@ -396,12 +396,12 @@ public interface I_U_POSTerminal
     /** Column name PO_PriceList_ID */
     public static final String COLUMNNAME_PO_PriceList_ID = "PO_PriceList_ID";
 
-	/** Set Purchase Pricelist.
+	/** Set Purchase Price List.
 	  * Price List used by this Business Partner
 	  */
 	public void setPO_PriceList_ID (int PO_PriceList_ID);
 
-	/** Get Purchase Pricelist.
+	/** Get Purchase Price List.
 	  * Price List used by this Business Partner
 	  */
 	public int getPO_PriceList_ID();
@@ -439,10 +439,10 @@ public interface I_U_POSTerminal
     /** Column name SO_PriceList_ID */
     public static final String COLUMNNAME_SO_PriceList_ID = "SO_PriceList_ID";
 
-	/** Set Sales Pricelist	  */
+	/** Set Sales Price List	  */
 	public void setSO_PriceList_ID (int SO_PriceList_ID);
 
-	/** Get Sales Pricelist	  */
+	/** Get Sales Price List	  */
 	public int getSO_PriceList_ID();
 
 	public org.compiere.model.I_M_PriceList getSO_PriceList() throws RuntimeException;
@@ -450,12 +450,12 @@ public interface I_U_POSTerminal
     /** Column name UnlockingTime */
     public static final String COLUMNNAME_UnlockingTime = "UnlockingTime";
 
-	/** Set UnlockingTime.
+	/** Set Unlocking Time.
 	  * Time at which the terminal should be unlocked
 	  */
 	public void setUnlockingTime (Timestamp UnlockingTime);
 
-	/** Get UnlockingTime.
+	/** Get Unlocking Time.
 	  * Time at which the terminal should be unlocked
 	  */
 	public Timestamp getUnlockingTime();

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertProcessor
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertProcessor")
 public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName)
@@ -156,7 +156,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -164,7 +164,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -172,7 +172,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
-	/** Set Date next run.
+	/** Set Date Next Run.
 		@param DateNextRun Date the process will run next
 	*/
 	public void setDateNextRun (Timestamp DateNextRun)
@@ -180,7 +180,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
 	}
 
-	/** Get Date next run.
+	/** Get Date Next Run.
 		@return Date the process will run next
 	  */
 	public Timestamp getDateNextRun()

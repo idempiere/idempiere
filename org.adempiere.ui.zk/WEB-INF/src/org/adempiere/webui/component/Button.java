@@ -21,7 +21,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Button}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
  * @version $Revision: 0.10 $
@@ -29,38 +29,57 @@ import org.zkoss.zk.ui.event.Events;
 public class Button extends org.zkoss.zul.Button
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6562573800018819691L;
 	private String name;
     
+	/**
+	 * Default constructor
+	 */
     public Button()
     {
         super();
         setAutodisable("self");
     }
     
+    /**
+     * @param label
+     */
     public Button(String label)
     {
         super(label);
         setAutodisable("self");
     }
     
+    /**
+     * Set name of button 
+     * @param name
+     */
     public void setName(String name)
     {
         this.name = name;
     }
     
+    /**
+     * @return name of button
+     */
     public String getName()
     {
         return this.name;
     }
     
+    /**
+     * @param enabled
+     */
     public void setEnabled(boolean enabled)
     {
         super.setDisabled(!enabled);
     }
     
+    /**
+     * @return true if enable, false otherwise
+     */
     public boolean isEnabled()
     {
         return !super.isDisabled();

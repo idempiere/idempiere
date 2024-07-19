@@ -19,9 +19,8 @@ import org.adempiere.apps.graph.GraphColumn;
 import org.compiere.model.MGoal;
 
 /**
- * 
+ * Model for performance graph (PA_Goal)
  * @author hengsin
- *
  */
 public class GoalModel {
 	public MGoal goal;

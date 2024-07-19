@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for IMP_Processor
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="IMP_Processor")
 public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_IMP_Processor (Properties ctx, int IMP_Processor_ID, String trxName)
@@ -110,7 +110,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 		return (String)get_Value(COLUMNNAME_Account);
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -118,7 +118,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -126,7 +126,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
-	/** Set Date next run.
+	/** Set Date Next Run.
 		@param DateNextRun Date the process will run next
 	*/
 	public void setDateNextRun (Timestamp DateNextRun)
@@ -134,7 +134,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
 	}
 
-	/** Get Date next run.
+	/** Get Date Next Run.
 		@return Date the process will run next
 	  */
 	public Timestamp getDateNextRun()

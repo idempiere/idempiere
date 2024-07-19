@@ -17,13 +17,16 @@
 package org.compiere.model;
 
 import java.io.File;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
@@ -914,4 +917,122 @@ public class MRequest extends X_R_Request
 		this.m_changed = changed;
 	}
 	
+	/**
+	 * Get number of active and inactive request
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param whereClause
+	 * @param trxName
+	 * @return int[], [0] = inactive request count and [1] = active request count
+	 */
+	public static int[] getRequestCount(int AD_Table_ID, int Record_ID, StringBuilder whereClause, String trxName) {
+		int[] counts = new int[] {0, 0};
+		
+		whereClause.append("(AD_Table_ID=").append(AD_Table_ID)
+			.append(" AND Record_ID=").append(Record_ID)
+			.append(")");
+		//
+		if (AD_Table_ID == MUser.Table_ID)
+			whereClause.append(" OR AD_User_ID=").append(Record_ID)
+				.append(" OR SalesRep_ID=").append(Record_ID);
+		else if (AD_Table_ID == MBPartner.Table_ID)
+			whereClause.append(" OR C_BPartner_ID=").append(Record_ID);
+		else if (AD_Table_ID == MOrder.Table_ID)
+			whereClause.append(" OR C_Order_ID=").append(Record_ID);
+		else if (AD_Table_ID == MInvoice.Table_ID)
+			whereClause.append(" OR C_Invoice_ID=").append(Record_ID);
+		else if (AD_Table_ID == MPayment.Table_ID)
+			whereClause.append(" OR C_Payment_ID=").append(Record_ID);
+		else if (AD_Table_ID == MProduct.Table_ID)
+			whereClause.append(" OR M_Product_ID=").append(Record_ID);
+		else if (AD_Table_ID == MProject.Table_ID)
+			whereClause.append(" OR C_Project_ID=").append(Record_ID);
+		else if (AD_Table_ID == MCampaign.Table_ID)
+			whereClause.append(" OR C_Campaign_ID=").append(Record_ID);
+		else if (AD_Table_ID == MAsset.Table_ID)
+			whereClause.append(" OR A_Asset_ID=").append(Record_ID);
+		//
+		String sql = "SELECT Processed, COUNT(*) "
+			+ "FROM R_Request WHERE " + whereClause 
+			+ " GROUP BY Processed "
+			+ "ORDER BY Processed DESC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, trxName);
+			rs = pstmt.executeQuery ();
+			while (rs.next ())
+			{
+				if ("Y".equals(rs.getString(1)))
+					counts[0] += rs.getInt(2);
+				else
+					counts[1] += rs.getInt(2);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new AdempiereException(e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		
+		return counts;
+	}
+	
+	/**
+	 * Create new request
+	 * @param tab Grid Tab for request
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param C_BPartner_ID
+	 */
+	public static void newRequest(GridTab tab, int AD_Table_ID, int Record_ID, int C_BPartner_ID) {
+		tab.dataNew (false);
+		tab.setValue("AD_Table_ID", Integer.valueOf(AD_Table_ID));
+		tab.setValue("Record_ID", Integer.valueOf(Record_ID));
+		//
+		if (C_BPartner_ID != 0)
+			tab.setValue("C_BPartner_ID", Integer.valueOf(C_BPartner_ID));
+		//
+		if (AD_Table_ID == MBPartner.Table_ID)
+			tab.setValue("C_BPartner_ID", Integer.valueOf(Record_ID));
+		else if (AD_Table_ID == MUser.Table_ID)
+			tab.setValue("AD_User_ID", Integer.valueOf(Record_ID));
+		//
+		else if (AD_Table_ID == MProject.Table_ID)
+			tab.setValue("C_Project_ID", Integer.valueOf(Record_ID));
+		else if (AD_Table_ID == MAsset.Table_ID)
+			tab.setValue("A_Asset_ID", Integer.valueOf(Record_ID));
+		//
+		else if (AD_Table_ID == MOrder.Table_ID)
+			tab.setValue("C_Order_ID", Integer.valueOf(Record_ID));
+		else if (AD_Table_ID == MInvoice.Table_ID)
+			tab.setValue("C_Invoice_ID", Integer.valueOf(Record_ID));
+		//
+		else if (AD_Table_ID == MProduct.Table_ID)
+			tab.setValue("M_Product_ID", Integer.valueOf(Record_ID));
+		else if (AD_Table_ID == MPayment.Table_ID)
+			tab.setValue("C_Payment_ID", Integer.valueOf(Record_ID));
+		//
+		else if (AD_Table_ID == MInOut.Table_ID)
+			tab.setValue("M_InOut_ID", Integer.valueOf(Record_ID));
+		else if (AD_Table_ID == MRMA.Table_ID)
+			tab.setValue("M_RMA_ID", Integer.valueOf(Record_ID));
+		//
+		else if (AD_Table_ID == MCampaign.Table_ID)
+			tab.setValue("C_Campaign_ID", Integer.valueOf(Record_ID));
+		//
+		else if (AD_Table_ID == MRequest.Table_ID)
+			tab.setValue(MRequest.COLUMNNAME_R_RequestRelated_ID, Integer.valueOf(Record_ID));
+		// FR [2842165] - Order Ref link from SO line creating new request
+		else if (AD_Table_ID == MOrderLine.Table_ID) {
+			MOrderLine oLine = new MOrderLine(Env.getCtx(), Record_ID, null);
+			if (oLine != null) {
+				tab.setValue(MOrderLine.COLUMNNAME_C_Order_ID, Integer.valueOf(oLine.getC_Order_ID()));
+			}
+		}
+	}
 }	//	MRequest

@@ -209,7 +209,7 @@ public class MOrderTax extends X_C_OrderTax
 				orderTax.set_TrxName(trxName);
 				orderTax.setClientOrg(line);
 				orderTax.setC_Order_ID(line.getC_Order_ID());
-				orderTax.setC_Tax_ID(line.getC_Tax_ID());
+				orderTax.setC_Tax_ID(cTax.getC_Tax_ID());
 				orderTax.setPrecision(precision);
 				orderTax.setIsTaxIncluded(line.isTaxIncluded());
 				orderTaxes.add(orderTax);
@@ -299,8 +299,13 @@ public class MOrderTax extends X_C_OrderTax
 		//
 		boolean documentLevel = getTax().isDocumentLevel();
 		MTax tax = getTax();
+		int parentTaxId = tax.getParent_Tax_ID();
 		//
-		String sql = "SELECT LineNetAmt FROM C_OrderLine WHERE C_Order_ID=? AND C_Tax_ID=?";
+		String sql = "SELECT LineNetAmt FROM C_OrderLine WHERE C_Order_ID=? ";
+		if (parentTaxId > 0)
+			sql += "AND C_Tax_ID IN (?, ?) ";
+		else
+			sql += "AND C_Tax_ID=? ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -308,6 +313,8 @@ public class MOrderTax extends X_C_OrderTax
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_Order_ID());
 			pstmt.setInt (2, getC_Tax_ID());
+			if (parentTaxId > 0)
+				pstmt.setInt(3,  parentTaxId);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{

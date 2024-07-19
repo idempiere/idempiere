@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Imp_Inst
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Package_Imp_Inst 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Package_Imp_Inst
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_Package_Imp_Inst
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -99,10 +99,10 @@ public interface I_AD_Package_Imp_Inst
     /** Column name CreatedDate */
     public static final String COLUMNNAME_CreatedDate = "CreatedDate";
 
-	/** Set CreatedDate	  */
+	/** Set Created Date	  */
 	public void setCreatedDate (String CreatedDate);
 
-	/** Get CreatedDate	  */
+	/** Get Created Date	  */
 	public String getCreatedDate();
 
     /** Column name Creator */
@@ -117,10 +117,10 @@ public interface I_AD_Package_Imp_Inst
     /** Column name CreatorContact */
     public static final String COLUMNNAME_CreatorContact = "CreatorContact";
 
-	/** Set CreatorContact	  */
+	/** Set Creator Contact	  */
 	public void setCreatorContact (String CreatorContact);
 
-	/** Get CreatorContact	  */
+	/** Get Creator Contact	  */
 	public String getCreatorContact();
 
     /** Column name Description */
@@ -256,10 +256,10 @@ public interface I_AD_Package_Imp_Inst
     /** Column name UpdatedDate */
     public static final String COLUMNNAME_UpdatedDate = "UpdatedDate";
 
-	/** Set UpdatedDate	  */
+	/** Set Updated Date	  */
 	public void setUpdatedDate (String UpdatedDate);
 
-	/** Get UpdatedDate	  */
+	/** Get Updated Date	  */
 	public String getUpdatedDate();
 
     /** Column name Version */

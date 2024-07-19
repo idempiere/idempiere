@@ -22,29 +22,42 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 
+/**
+ * List model and List item renderer implementation for list of AD_Tab label.
+ * ADTabLabel class aside, this is not use any more.  
+ */
 public class ADTabListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt {
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7683969121090679214L;
-	List<ADTabLabel> listItems = null;
+	protected List<ADTabLabel> listItems = null;
 	private IADTabbox tabbox;
 	
+	/**
+	 * @param listItems
+	 * @param tabbox
+	 */
 	public ADTabListModel(List<ADTabLabel> listItems, IADTabbox tabbox) {
 		this.listItems = listItems;
 		this.tabbox = tabbox;
 	}
 
+	@Override
 	public Object getElementAt(int index) {
 		ADTabLabel item = index < listItems.size() ? listItems.get(index) : null;
 		return item;
 	}
 
+	@Override
 	public int getSize() {
 		return listItems.size();
 	}
 	
+	/**
+	 * Value object for AD_Tab
+	 */
 	public static class ADTabLabel {
 		public String label;
 		public int tabLevel;
@@ -83,14 +96,17 @@ public class ADTabListModel extends AbstractListModel<Object> implements Listite
 			cell.setVisible(false);
 	}
 	
+	@Override
 	public int getControls() {
 		return DETACH_ON_RENDER;
 	}
 
+	@Override
 	public Listcell newListcell(Listitem item) {
 		return null;
 	}
 
+	@Override
 	public Listitem newListitem(Listbox listbox) {
 		ListItem item = new ListItem();
 		item.applyProperties();

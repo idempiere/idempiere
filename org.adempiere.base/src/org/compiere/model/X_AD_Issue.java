@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Issue
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Issue")
 public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Issue (Properties ctx, int AD_Issue_ID, String trxName)
@@ -795,7 +795,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 			.getPO(getR_IssueUser_ID(), get_TrxName());
 	}
 
-	/** Set IssueUser.
+	/** Set Issue User.
 		@param R_IssueUser_ID User who reported issues
 	*/
 	public void setR_IssueUser_ID (int R_IssueUser_ID)
@@ -806,7 +806,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 			set_Value (COLUMNNAME_R_IssueUser_ID, Integer.valueOf(R_IssueUser_ID));
 	}
 
-	/** Get IssueUser.
+	/** Get Issue User.
 		@return User who reported issues
 	  */
 	public int getR_IssueUser_ID()

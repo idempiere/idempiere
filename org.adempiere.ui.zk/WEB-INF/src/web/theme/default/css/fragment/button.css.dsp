@@ -139,3 +139,28 @@
 .btn-cancel.z-button [class^="z-icon-"]:before {
 	color: red;	
 }
+
+.btn-negate.z-button {
+	background: none;
+	border: none;
+	margin: 0px !important;
+	padding: 0px;
+	min-width: 16px;
+	width: 16px;	
+	height: 10px;
+	min-height:10px;
+	font-size: 14px;
+	font-weight: lighter;		
+	position: absolute;
+	top: 5px;
+	right: 25px; 	
+}
+.btn-negate.z-button:active, .btn-negate.z-button:focus {
+	border: none;
+	box-shadow: none;
+}
+.btn-negate.z-button [class^="z-icon-"] {
+	font-size: 14px;
+	padding: 0px;
+	line-height: 14px;
+}

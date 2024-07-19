@@ -3,8 +3,8 @@ package org.compiere.process;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -27,7 +27,7 @@ public class BOMFlagValidate extends SvrProcess {
 			else if (name.equals("M_Product_Category_ID"))
 				p_M_Product_Category_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4367630918820342645L;
+	private static final long serialVersionUID = 7338447655641380126L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -84,6 +84,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+    public static final String DASHBOARD_LAYOUT_ORIENTATION = "DASHBOARD_LAYOUT_ORIENTATION";
     public static final String DEFAULT_COA_PATH = "DEFAULT_COA_PATH";
     public static final String DEFAULT_ENTITYTYPE = "DEFAULT_ENTITYTYPE"; // used as default in entity type columns with get_sysconfig
 	public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
@@ -101,6 +102,11 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
+    public static final String FORM_SQL_PROCESS_ALLOWED_KEYWORDS = "FORM_SQL_PROCESS_ALLOWED_KEYWORDS";
+    public static final String FORM_SQL_QUERY_ALLOWED_KEYWORDS = "FORM_SQL_QUERY_ALLOWED_KEYWORDS";
+    public static final String FORM_SQL_QUERY_LOG_ISSUE = "FORM_SQL_QUERY_LOG_ISSUE";
+    public static final String FORM_SQL_QUERY_MAX_RECORDS = "FORM_SQL_QUERY_MAX_RECORDS";
+    public static final String FORM_SQL_QUERY_TIMEOUT_IN_SECONDS = "FORM_SQL_QUERY_TIMEOUT_IN_SECONDS";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
     public static final String HTML_REPORT_MINIFY = "HTML_REPORT_MINIFY";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
@@ -112,6 +118,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
+    public static final String LABEL_AUTOMATIC_COLOR = "LABEL_AUTOMATIC_COLOR";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";
 	public static final String LDAP_TYPE = "LDAP_TYPE";
     public static final String LOCATION_MAPS_DESTINATION_ADDRESS = "LOCATION_MAPS_DESTINATION_ADDRESS";
@@ -120,13 +127,18 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String LOCATION_MAPS_URL_PREFIX = "LOCATION_MAPS_URL_PREFIX";
     public static final String LOCATION_MAX_CITY_ROWS = "LOCATION_MAX_CITY_ROWS";
     public static final String LOGIN_HELP_URL = "LOGIN_HELP_URL";
+	public static final String LOGIN_PREFIX_SEPARATOR = "LOGIN_PREFIX_SEPARATOR";
+    public static final String LOGIN_SELECT_ROLE_HELP_URL = "LOGIN_SELECT_ROLE_HELP_URL";
     public static final String LOGIN_SHOW_RESETPASSWORD = "LOGIN_SHOW_RESETPASSWORD";
+    public static final String LOGIN_WITH_TENANT_PREFIX = "LOGIN_WITH_TENANT_PREFIX";
     public static final String MAIL_DONT_SEND_TO_ADDRESS = "MAIL_DONT_SEND_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
+    public static final String MAIL_SMTP_TIMEOUT = "MAIL_SMTP_TIMEOUT";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
+	public static final String MAX_ROWS_IN_TABLE_COMBOLIST = "MAX_ROWS_IN_TABLE_COMBOLIST";
     public static final String MAX_TEXT_LENGTH_ON_GRID_VIEW = "MAX_TEXT_LENGTH_ON_GRID_VIEW";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
     public static final String MESSAGES_AT_TENANT_LEVEL = "MESSAGES_AT_TENANT_LEVEL";
@@ -134,8 +146,13 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String MFA_REGISTERED_DEVICE_EXPIRATION_DAYS = "MFA_REGISTERED_DEVICE_EXPIRATION_DAYS";
     public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";
     public static final String MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS";
+    public static final String MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT = "MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT";
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";
+    public static final String MSEQUENCE_GETNEXT_TIMEOUT = "MSEQUENCE_GETNEXT_TIMEOUT";
+    public static final String OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER = "OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER";
+    public static final String OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER = "OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER";
+	public static final String ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES = "ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD";
@@ -185,6 +202,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
     public static final String ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE = "ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE";
     public static final String ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL = "ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL";
+    /** @deprecated not use for the new billboard implementation */
+    @Deprecated(forRemoval = true, since = "11")
     public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";

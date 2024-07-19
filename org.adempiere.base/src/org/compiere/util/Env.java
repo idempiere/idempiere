@@ -47,6 +47,8 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
+import org.compiere.dbPort.Convert;
+import org.compiere.model.GridTab;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -54,6 +56,7 @@ import org.compiere.model.MLookupCache;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
+import org.compiere.model.MSequence;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -113,7 +116,9 @@ public final class Env
 	public static final String DB_TYPE = "#DBType";
 	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
 	public static final String HAS_ALIAS = "$HasAlias";
+	public static final String IS_CAN_APPROVE_OWN_DOC = "#IsCanApproveOwnDoc";
 	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
+	public static final String DEVELOPER_MODE = "#DeveloperMode";
 	/** Context Language identifier */
 	public static final String LANGUAGE = "#AD_Language";
 	public static final String LANGUAGE_NAME = "#LanguageName";
@@ -140,7 +145,6 @@ public final class Env
 	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
-
 	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
@@ -181,7 +185,7 @@ public final class Env
 	public static void exitEnv (int status)
 	{
 		//hengsin, avoid unncessary query of session when exit without log in
-		if (DB.isConnected(false)) {
+		if (DB.isConnected()) {
 			//	End Session
 			MSession session = MSession.get(Env.getCtx());	//	finish
 			if (session != null) {
@@ -688,9 +692,6 @@ public final class Env
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
 		String s = ctx.getProperty(WindowNo+"|"+TabNo+"|"+context);
-		// If TAB_INFO, don't check Window and Global context - teo_sarca BF [ 2017987 ]
-		if (TAB_INFO == TabNo)
-			return s != null ? s : "";
 		//
 		if (Util.isEmpty(s) && ! onlyTab)
 			return getContext(ctx, WindowNo, context, onlyWindow);
@@ -1598,7 +1599,19 @@ public final class Env
 				token = token.substring(0, idx);
 			}
 
-			String ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			String ctxInfo = null;
+			
+			if (token.equalsIgnoreCase(GridTab.CTX_Record_ID))
+			{
+				String keycolumnName = Env.getContext(Env.getCtx(), WindowNo, tabNo, GridTab.CTX_KeyColumnName,
+						onlyTab);
+				ctxInfo = Env.getContext(Env.getCtx(), WindowNo, tabNo, keycolumnName, onlyTab);
+			}
+			else
+			{
+				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			}
+
 			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
 				ctxInfo = getContext(ctx, token);	// get global context
 
@@ -2111,8 +2124,11 @@ public final class Env
 			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 			AD_Window_ID = table.getAD_Window_ID();
 			//  Nothing to Zoom to
-			if (AD_Window_ID == 0)
-				return AD_Window_ID;
+			if (AD_Window_ID == 0) 
+			{
+				AD_Window_ID = table.getWindowIDFromMenu();
+				return AD_Window_ID > 0 ? AD_Window_ID : 0;
+			}
 			
 			//	PO Zoom ?
 			boolean isSOTrx = true;
@@ -2190,4 +2206,51 @@ public final class Env
 		}
 	}
 
+	/**
+	 * @param tableName
+	 * @return true if log migration script is turn on and should be used for tableName
+	 */
+	public static boolean isLogMigrationScript(String tableName) {
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT, "N");
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+		
+		return logMigrationScript ? !Convert.isDontLogTable(tableName) : false;
+	}
+	
+	/**
+	 * @return true if centralized id is turn on and should be used for tableName
+	 */
+	public static boolean isUseCentralizedId(String tableName)
+	{
+		String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
+		boolean adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
+			adempiereSys = false;
+		
+		if (adempiereSys)
+		{
+			boolean b = MSysConfig.getBooleanValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, true);
+			if (b)
+				return !MSequence.isExceptionCentralized(tableName);
+			else
+				return b;
+		}
+		else
+		{
+			boolean queryProjectServer = false;
+			if (MSequence.isTableWithEntityType(tableName))
+				queryProjectServer = true;
+			if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(tableName))
+				queryProjectServer = true;
+			if (queryProjectServer && !MSequence.isExceptionCentralized(tableName)) {
+				return MSysConfig.getBooleanValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, false);
+			}
+		}
+		return false;
+	}
 }   //  Env

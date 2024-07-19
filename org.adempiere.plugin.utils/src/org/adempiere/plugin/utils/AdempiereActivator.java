@@ -103,9 +103,10 @@ public class AdempiereActivator extends AbstractActivator {
 				localSession.saveEx();
 			}
 			FileOutputStream zipstream = null;
+			InputStream stream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
-				InputStream stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();
+				stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();
 				File zipfile = File.createTempFile(getName(), ".zip");
 				zipstream = new FileOutputStream(zipfile);
 			    byte[] buffer = new byte[1024];
@@ -122,6 +123,11 @@ public class AdempiereActivator extends AbstractActivator {
 				if (zipstream != null) {
 					try {
 						zipstream.close();
+					} catch (Exception e2) {}
+				}
+				if (stream != null) {
+					try {
+						stream.close();
 					} catch (Exception e2) {}
 				}
 				if (localSession != null)
@@ -156,7 +162,7 @@ public class AdempiereActivator extends AbstractActivator {
 
 	protected void frameworkStarted() {
 		if (service != null) {
-			if (Adempiere.getThreadPoolExecutor() != null) {
+			if (Adempiere.isStarted()) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
 					@Override
 					public void run() {

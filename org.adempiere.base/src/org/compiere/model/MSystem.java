@@ -56,7 +56,7 @@ public class MSystem extends X_AD_System
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3090872841676580202L;
+	private static final long serialVersionUID = -1917493005917422880L;
 
 	/**
 	 * 	Load System Record
@@ -76,7 +76,12 @@ public class MSystem extends X_AD_System
 		//
 		if (!Ini.isClient() && system.setInfo())
 		{
-			system.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				system.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 		s_system.put(0, new MSystem(Env.getCtx(), system));
 		return system;
@@ -377,8 +382,8 @@ public class MSystem extends X_AD_System
 			+ "FROM AD_User u"
 			+ " INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID) "
 			+ "WHERE u.AD_Client_ID<>11"			//	no Demo
-			+ " AND u.AD_User_ID NOT IN (0,10,100)";	//	no System/SuperUser
-		int internalUsers = DB.getSQLValue(null, sql);
+			+ " AND u.AD_User_ID NOT IN (?,?,?)";	//	no System/SuperUser
+		int internalUsers = DB.getSQLValue(null, sql, SystemIDs.USER_SYSTEM_DEPRECATED, SystemIDs.USER_SYSTEM, SystemIDs.USER_SUPERUSER);
 		setSupportUnits(internalUsers);
 	}	//	setInternalUsers
 
@@ -519,6 +524,24 @@ public class MSystem extends X_AD_System
 		if (secureProps != null && secureProps.equals("false"))
 			return false;
 		return true;
+	}
+
+	/**
+	 * The system allows to use login prefix for tenant
+	 * @return
+	 */
+	public static boolean isUseLoginPrefix() {
+		String loginWithTenantPrefix = MSysConfig.getValue(MSysConfig.LOGIN_WITH_TENANT_PREFIX, "N");
+		return "F".equals(loginWithTenantPrefix) || "A".equals(loginWithTenantPrefix);
+	}
+
+	/**
+	 * The system forces to use login prefix for tenant
+	 * @return
+	 */
+	public static boolean isLoginPrefixMandatory() {
+		String loginWithTenantPrefix = MSysConfig.getValue(MSysConfig.LOGIN_WITH_TENANT_PREFIX, "N");
+		return "F".equals(loginWithTenantPrefix);
 	}
 
 }	//	MSystem

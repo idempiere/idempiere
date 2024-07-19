@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ValidCombination
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_ValidCombination")
 public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_ValidCombination (Properties ctx, int C_ValidCombination_ID, String trxName)

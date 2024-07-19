@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQResponse
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponse")
 public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_RfQResponse (Properties ctx, int C_RfQResponse_ID, String trxName)
@@ -118,9 +118,9 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 	public void setAD_User_ID (int AD_User_ID)
 	{
 		if (AD_User_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
+			set_Value (COLUMNNAME_AD_User_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.

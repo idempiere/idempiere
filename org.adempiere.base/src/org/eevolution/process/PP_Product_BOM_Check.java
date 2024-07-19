@@ -18,8 +18,7 @@
  *****************************************************************************/
 package org.eevolution.process;
 
-import java.util.logging.Level;
-
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -53,11 +52,10 @@ public class PP_Product_BOM_Check extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_Record_ID = getRecord_ID();
 	} // prepare

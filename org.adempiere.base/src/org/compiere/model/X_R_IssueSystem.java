@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueSystem
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueSystem")
 public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_IssueSystem (Properties ctx, int R_IssueSystem_ID, String trxName)

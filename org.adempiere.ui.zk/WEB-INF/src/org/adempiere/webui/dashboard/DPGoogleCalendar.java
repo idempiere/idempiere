@@ -17,17 +17,19 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zul.Iframe;
 
 /**
- * Dashboard item: Google calendar
+ * Dashboard gadget: Google calendar
  * @author Elaine
  * @date November 20, 2008
  */
 public class DPGoogleCalendar extends DashboardPanel {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6420016898259232438L;
 
+	/**
+	 * Default constructor
+	 */
 	public DPGoogleCalendar()
 	{
 		super();

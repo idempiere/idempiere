@@ -7,6 +7,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MDepreciationEntry;
 import org.compiere.model.MDepreciationExp;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
@@ -38,7 +39,6 @@ public class A_Depreciation_Exp_Modify extends SvrProcess
 			{
 				p_IsTest = para.getParameterAsBoolean();
 			}
-			
 			else if(name.equals(MDepreciationExp.COLUMNNAME_A_Depreciation_Exp_ID))
 			{
 				p_A_Depreciation_Exp_ID = para.getParameterAsInt();
@@ -51,6 +51,8 @@ public class A_Depreciation_Exp_Modify extends SvrProcess
 			{
 				p_CR_Account_ID = para.getParameterAsInt();
 			}
+			else
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 		
 	

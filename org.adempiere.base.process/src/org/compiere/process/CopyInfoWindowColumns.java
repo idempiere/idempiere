@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 
@@ -64,7 +65,7 @@ public class CopyInfoWindowColumns extends SvrProcess
 			else if (name.equals("AD_InfoWindow_ID"))
 				p_source_AD_InfoWindow_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_target_AD_InfoWindow_ID = getRecord_ID();
 	}	//	prepare

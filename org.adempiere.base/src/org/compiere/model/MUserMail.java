@@ -34,7 +34,7 @@ public class MUserMail extends X_AD_UserMail
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 925597416692485382L;
+	private static final long serialVersionUID = -6933973466878945692L;
 
 	/**
 	 * 	Standard Constructor
@@ -69,15 +69,7 @@ public class MUserMail extends X_AD_UserMail
 		this (parent.getCtx(), 0, parent.get_TrxName());
 		setAD_User_ID(AD_User_ID);
 		setR_MailText_ID(parent.getR_MailText_ID());
-		setSenderAndRecipient(mail);
-		//
-		if (mail.isSentOK())
-			setMessageID(mail.getMessageID());
-		else
-		{
-			setMessageID(mail.getSentMsg());
-			setIsDelivered(ISDELIVERED_No);
-		}
+		setMailValues(mail);
 	}	//	MUserMail
 	
 	/**
@@ -91,36 +83,33 @@ public class MUserMail extends X_AD_UserMail
 		this (po.getCtx(), 0, null);
 		setClientOrg(po);
 		setAD_User_ID(AD_User_ID);
-		setSubject(mail.getSubject());
-		setMailText(mail.getMessageCRLF());
-		setSenderAndRecipient(mail);
-		//
-		if (mail.isSentOK())
-			setMessageID(mail.getMessageID());
-		else
-		{
-			setMessageID(mail.getSentMsg());
-			setIsDelivered(ISDELIVERED_No);
-		}
+		setMailValues(mail);
 	}	//	MUserMail
 	
 	public MUserMail (Properties ctx, EMail mail)
 	{
 		this (ctx, 0, null);
 		setAD_User_ID(Env.getAD_User_ID(ctx));
+		setMailValues(mail);
+	}	//	MUserMail
+	
+	/**
+	 * Sets all columns related to the EMail
+	 * Subject - Mail Text - Sender - Recipient - Message ID - IsDelivered
+	 * @param mail
+	 */
+	private void setMailValues(EMail mail) {
 		setSubject(mail.getSubject());
 		setMailText(mail.getMessageCRLF());
 		setSenderAndRecipient(mail);
 		//
 		if (mail.isSentOK())
 			setMessageID(mail.getMessageID());
-		else
-		{
+		else {
 			setMessageID(mail.getSentMsg());
 			setIsDelivered(ISDELIVERED_No);
 		}
-	}	//	MUserMail
-	
+	}
 	
 	/**
 	 * 	Is it Delivered

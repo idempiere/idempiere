@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
@@ -467,10 +468,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			LocalServerController server = servers[i];
 			try
 			{
-				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
-				{
-					server.scheduleFuture.cancel(true);
-				}
+				server.stop();
 			}
 			catch (Exception e)
 			{
@@ -548,7 +546,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 
 		try
 		{
-			server.scheduleFuture.cancel(true);
+			server.stop();
 			Thread.sleep(10);	//	1/100 sec
 		}
 		catch (Exception e)
@@ -731,11 +729,15 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		return m_start;
 	}	//	getStartTime
 
+	/**
+	 * Controller for background server thread 
+	 */
 	private class LocalServerController implements Runnable
 	{
 
 		protected AdempiereServer server;
 		protected volatile ScheduledFuture<?> scheduleFuture;
+		protected AtomicBoolean stop;
 
 		private LocalServerController(AdempiereServer server) {
 			this(server, true);
@@ -743,22 +745,47 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		
 		private LocalServerController(AdempiereServer server, boolean start) {
 			this.server = server;
+			stop = new AtomicBoolean(true);
 			if (start)
 				start();
 		}
 		
+		/**
+		 * Submit request to thread pool.
+		 */
 		public void start() {
+			stop.set(false);
 			scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getInitialNap() * 1000 + server.getSleepMS(), TimeUnit.MILLISECONDS);
 		}
 
+		/**
+		 * Mark stop and interrupt background thread
+		 */
+		public void stop() {
+			stop.set(true);
+			if (scheduleFuture != null && !scheduleFuture.isDone())
+			{
+				scheduleFuture.cancel(true);
+			}
+		}
+		
 		@Override
 		public void run() {
+			if (stop.get()) {
+				scheduleFuture = null;
+				return;
+			}
+			
 			if (server.isSleeping()) {
 				server.run();
-				if (!isInterrupted()) {
+				if (!isInterrupted() && !stop.get()) {
 					if (server.getSleepMS() != 0) {
 						scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getSleepMS(), TimeUnit.MILLISECONDS);
+					} else {
+						scheduleFuture = null;
 					}
+				} else {
+					scheduleFuture = null;
 				}
 			}  else {
 				//server busy, try again after one minute
@@ -766,18 +793,33 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			}
 		}
 		
+		/**
+		 * @return {@link AdempiereServer}
+		 */
 		public AdempiereServer getServer() {
 			return server;
 		}
 
+		/**
+		 * @return true if server thread is running, false otherwise
+		 */
 		public boolean isAlive() {
-			return scheduleFuture != null && !scheduleFuture.isDone();
+			return scheduleFuture != null && !scheduleFuture.isDone() && !isStop();
 		}
 
+		/**
+		 * @return true if server thread have been interrupted (for e.g, by {@link #stop} call).
+		 */
 		public boolean isInterrupted() {
 			return scheduleFuture != null && scheduleFuture.isCancelled();
 		}
 		
+		/**
+		 * @return true if server have been marked as stop
+		 */
+		public boolean isStop() {
+			return stop.get();
+		}
 	}
 
 	@Override

@@ -26,6 +26,7 @@
 package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -33,9 +34,7 @@ import java.util.logging.Level;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.adempiere.util.Callback;
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -49,7 +48,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegisteredDevice;
@@ -57,12 +55,12 @@ import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
-import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Div;
 import org.zkoss.zhtml.Table;
@@ -70,11 +68,9 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Image;
@@ -83,20 +79,15 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2347409338340527333L;
+	private static final long serialVersionUID = 4777197666886479162L;
 
 	private static final CLogger logger = CLogger.getCLogger(ValidateMFAPanel.class);
 
-	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
-
 	protected LoginWindow wndLogin;
 	protected Login login;
-	private ValidateMFAPanel component;
 
 	/** Context */
 	protected Properties m_ctx;
-
-	protected boolean m_show = true;
 
 	protected Label lblMFAMechanism;
 	protected Combobox lstMFAMechanism;
@@ -107,6 +98,12 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	protected Checkbox chkRegisterDevice = null;
 
 	private KeyNamePair m_orgKNPair;
+	private KeyNamePair[] m_clientsKNPairs;
+
+	private boolean m_isClientDefined;
+	private String m_userName;
+	private boolean m_showRolePanel = true;
+	private boolean m_showMFAPanel = false;
 
 	/* Push the first OK automatically - when the first record is TOTP */
 	private boolean m_autoCall = false;
@@ -116,15 +113,17 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
 
-	public ValidateMFAPanel(Properties ctx, LoginWindow loginWindow, KeyNamePair orgKNPair) {
+	public ValidateMFAPanel(Properties ctx, LoginWindow loginWindow, KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs) {
 		this.wndLogin = loginWindow;
 		m_ctx = ctx;
 		this.m_orgKNPair = orgKNPair;
-		this.component = this;
+    	m_isClientDefined = isClientDefined;
+    	m_userName = userName;
+    	m_showRolePanel = showRolePanel;
+    	m_clientsKNPairs = clientsKNPairs;
 
 		String registerCookie = getCookie(getCookieName());
 		login = new Login(ctx);
-		this.addEventListener(ON_DEFER_LOGOUT, this);
 		if (login.isMFARequired(registerCookie)) {
 			initComponents(registerCookie != null);
 			init();
@@ -136,6 +135,8 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 			if (m_autoCall) {
 				validateMFAComplete(true);
+			} else {
+				m_showMFAPanel = true;
 			}
 
 		} else {
@@ -260,19 +261,18 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		lstMFAMechanism.setAutocomplete(true);
 		lstMFAMechanism.setAutodrop(true);
 		lstMFAMechanism.setId("lstMFAMechanism");
-		boolean first = true;
-		for (MMFARegistration reg : MMFARegistration.getValidRegistrationsFromUser()) {
+		List<MMFARegistration> regs = MMFARegistration.getValidRegistrationsFromUser();
+		for (MMFARegistration reg : regs) {
 			MMFAMethod method = new MMFAMethod(m_ctx, reg.getMFA_Method_ID(), reg.get_TrxName());
-			if (first) {
-				first = false;
-				if (MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
-					m_autoCall = true;
-				}
+			if (regs.size() == 1 && MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
+				m_autoCall = true;
 			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
-			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-			if (lstMFAMechanism.getFellowIfAny(id) == null)
-				ci.setId(id);
+    		if (SystemProperties.isZkUnitTest()) {
+    			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+    			if (lstMFAMechanism.getFellowIfAny(id) == null)
+    				ci.setId(id);
+    		}
 			lstMFAMechanism.appendChild(ci);
 		}
 		lstMFAMechanism.setSelectedIndex(0);
@@ -303,8 +303,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			validateMFAComplete(true);
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
 			SessionManager.logoutSession();
-		} else if (ON_DEFER_LOGOUT.equals(event.getName())) {
-			SessionManager.logoutSession();
 		}
 	}
 
@@ -317,6 +315,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			boolean enablePreferred = (lstMFAMechanism.getChildren().size() > 1 && lstMFAMechanism.getSelectedIndex() > 0);
 			chkSetPreferred.setVisible(enablePreferred);
 			MMFARegistration reg = new MMFARegistration(Env.getCtx(), registrationId, null);
+			m_showMFAPanel = true;
 			if (txtValidationCode.isDisabled()) {
 				String msg = reg.generateValidationCode(reg);
 				lblMFAMsg.setValue(msg);
@@ -377,42 +376,16 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				PO.clearCrossTenantSafe();
 			}
 		}
-
-		Session currSess = Executions.getCurrent().getDesktop().getSession();
-		HttpSession httpSess = (HttpSession) currSess.getNativeSession();
-		int timeout = MSysConfig.getIntValue(MSysConfig.ZK_SESSION_TIMEOUT_IN_SECONDS, -2,
-				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
-		if (timeout != -2) // default to -2 meaning not set
-			httpSess.setMaxInactiveInterval(timeout);
-
-		String msg = login.validateLogin(m_orgKNPair);
-		if (!Util.isEmpty(msg)) {
-			Env.getCtx().clear();
-			FDialog.error(0, this, "Error", msg, new Callback<Integer>() {					
-				@Override
-				public void onCallback(Integer result) {
-					Events.echoEvent(new Event(ON_DEFER_LOGOUT, component));
-				}
-			});
-			return;
-		}
-		// See if a popup should encourage user to change its password
-		if (!MUser.get(Env.getCtx()).isNoPasswordReset()) {
-			int notifyDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_PASSWORD_NOTIFY_DAY, 0);
-			int pwdAgeDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
-			if (notifyDay > 0 && pwdAgeDay > 0) {
-				Timestamp limit = TimeUtil.addDays(MUser.get(Env.getCtx()).getDatePasswordChanged(), pwdAgeDay);
-				Timestamp notifyAfter = TimeUtil.addDays(limit, -notifyDay);
-				Timestamp now = TimeUtil.getDay(null);
-
-				if (now.after(notifyAfter))
-					FDialog.warn(0, null, "", Msg.getMsg(m_ctx, "YourPasswordWillExpireInDays",
-							new Object[] { TimeUtil.getDaysBetween(now, limit) }));
-			}
-		}
-
 		Env.setContext(m_ctx, "#MFA_Registration_ID", registrationId);
-		wndLogin.loginCompleted();
+
+		if (m_isClientDefined) {
+			wndLogin.showRolePanel(m_userName, m_showRolePanel, m_clientsKNPairs, m_isClientDefined, true);
+		} else {
+			if (m_orgKNPair == null)
+				wndLogin.showRolePanel(m_userName, m_showRolePanel, m_clientsKNPairs, m_isClientDefined, true);
+			else
+				wndLogin.loginCompleted(login, m_orgKNPair, this);
+		}
 	}
 
 	/**
@@ -451,6 +424,10 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			}
 		}
 		return null;
+	}
+
+	public boolean show() {
+		return m_showMFAPanel;
 	}
 
 }

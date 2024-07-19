@@ -139,7 +139,7 @@ BEGIN
 			FROM	C_Conversion_Rate
 			WHERE	IsActive='Y' AND C_Currency_ID=v_CurrencyFrom AND C_Currency_ID_To=v_CurrencyTo
 			  AND	C_ConversionType_ID=v_ConversionType_ID
-			  AND	v_ConvDate BETWEEN ValidFrom AND ValidTo
+			  AND	TRUNC(v_ConvDate) BETWEEN ValidFrom AND ValidTo
 			  AND	AD_Client_ID IN (0,p_Client_ID) AND AD_Org_ID IN (0,p_Org_ID)
 			ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, ValidFrom DESC;
 	BEGIN

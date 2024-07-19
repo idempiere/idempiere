@@ -18,14 +18,15 @@ import org.compiere.grid.ICreateFrom;
 import org.compiere.model.GridTab;
 
 /**
- * 
+ * Static method to instantiate {@link ICreateFrom} instance.
  * @author hengsin
  *
  */
 public class WCreateFromFactory
 {
 	/**
-	 * 
+	 * Instantiate Create From form instance.
+	 * Delegate to {@link Extensions#getCreateFrom(GridTab)}.
 	 * @param mTab
 	 * @return ICreateFrom instance
 	 */

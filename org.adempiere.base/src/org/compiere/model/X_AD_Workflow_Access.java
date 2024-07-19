@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Workflow_Access
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Workflow_Access")
 public class X_AD_Workflow_Access extends PO implements I_AD_Workflow_Access, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Workflow_Access extends PO implements I_AD_Workflow_Access, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Workflow_Access (Properties ctx, int AD_Workflow_Access_ID, String trxName)

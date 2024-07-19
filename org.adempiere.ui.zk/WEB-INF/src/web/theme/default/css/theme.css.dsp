@@ -116,6 +116,8 @@ table.z-vbox > tbody > tr > td > table {
 
 <c:include page="fragment/help-window.css.dsp" />
 
+<c:include page="fragment/drill-window.css.dsp" />
+
 <c:include page="fragment/borderlayout.css.dsp" />
 
 <c:include page="fragment/parameter-process.css.dsp" />
@@ -123,6 +125,8 @@ table.z-vbox > tbody > tr > td > table {
 <c:include page="fragment/window-size.css.dsp" />
 
 <c:include page="fragment/font-icons.css.dsp" />
+
+<c:include page="fragment/drag-drop-attachment.css.dsp" />
 
 <c:if test="${u:isThemeHasCustomCSSFragment()}">
     <c:include page="fragment/custom.css.dsp" />

@@ -18,6 +18,7 @@ package org.compiere.print.layout;
 
 import java.awt.Container;
 import java.awt.Graphics;
+import java.awt.IllegalComponentStateException;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.io.Externalizable;
@@ -102,7 +103,11 @@ public class HTMLRenderer extends View implements Externalizable
 		m_container = new Container();
 		m_element = m_view.getElement();
 		// initially layout to the preferred size
-		setSize(m_view.getPreferredSpan(X_AXIS), m_view.getPreferredSpan(Y_AXIS));
+		try {
+			setSize(m_view.getPreferredSpan(X_AXIS), m_view.getPreferredSpan(Y_AXIS));
+		} catch (IllegalComponentStateException e) {
+			if (log.isLoggable(Level.INFO)) log.info("Exception ignored: " + e.toString() + " " + e.getLocalizedMessage());
+		}
 	}	//	HTMLRenderer
 
 	private int 			m_width;

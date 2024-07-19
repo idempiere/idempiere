@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertRule
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertRule")
 public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_AlertRule (Properties ctx, int AD_AlertRule_ID, String trxName)

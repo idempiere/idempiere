@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Group
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_Group")
 public class X_R_Group extends PO implements I_R_Group, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_Group (Properties ctx, int R_Group_ID, String trxName)

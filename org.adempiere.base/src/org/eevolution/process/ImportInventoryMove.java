@@ -33,6 +33,7 @@ import org.compiere.model.MLocator;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
 import org.compiere.model.MOrg;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProject;
 import org.compiere.model.MShipper;
@@ -93,7 +94,7 @@ public class ImportInventoryMove extends SvrProcess
 			else if (name.equals("DocAction"))
 				m_docAction = (String)para.getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);			
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 	}	//	prepare
 

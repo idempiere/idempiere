@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="S_TimeExpenseLine")
 public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20240110L;
 
     /** Standard Constructor */
     public X_S_TimeExpenseLine (Properties ctx, int S_TimeExpenseLine_ID, String trxName)
@@ -541,6 +541,25 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
+
+	/** Set Line Amount.
+		@param LineNetAmt Line Extended Amount (Quantity * Actual Price) without Freight and Charges
+	*/
+	public void setLineNetAmt (BigDecimal LineNetAmt)
+	{
+		set_Value (COLUMNNAME_LineNetAmt, LineNetAmt);
+	}
+
+	/** Get Line Amount.
+		@return Line Extended Amount (Quantity * Actual Price) without Freight and Charges
+	  */
+	public BigDecimal getLineNetAmt()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LineNetAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{

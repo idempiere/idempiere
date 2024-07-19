@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Reconciliation
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Reconciliation")
 public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName)

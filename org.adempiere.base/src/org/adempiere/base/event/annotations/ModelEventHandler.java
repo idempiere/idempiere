@@ -27,6 +27,7 @@ package org.adempiere.base.event.annotations;
 import java.lang.reflect.Field;
 import java.util.function.BiFunction;
 
+import org.adempiere.base.Model;
 import org.adempiere.base.event.EventHelper;
 import org.adempiere.base.event.EventManager;
 import org.compiere.model.PO;
@@ -58,8 +59,13 @@ public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 
 	private void findTableName() {
 		try {
-			Field field = modelClassType.getField("Table_Name");
-			this.tableName = (String) field.get(null);
+			Model model = modelClassType.getSuperclass().getAnnotation(Model.class);
+			if(model != null)
+				this.tableName = model.table();
+			else {
+				Field field = modelClassType.getField("Table_Name");
+                this.tableName = (String) field.get(null);
+			}
 			setEventPropertyFilter(EventManager.TABLE_NAME_PROPERTY, tableName);
 		} catch (Exception e) { 
 			if (e instanceof RuntimeException)

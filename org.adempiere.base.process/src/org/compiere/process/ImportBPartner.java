@@ -31,6 +31,7 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MContactInterest;
 import org.compiere.model.MLocation;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MUser;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.X_I_BPartner;
@@ -78,7 +79,7 @@ implements ImportProcess
 			else if (name.equals("IsValidateOnly"))
 				p_IsValidateOnly = para[i].getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DateValue == null)
 			m_DateValue = new Timestamp (System.currentTimeMillis());

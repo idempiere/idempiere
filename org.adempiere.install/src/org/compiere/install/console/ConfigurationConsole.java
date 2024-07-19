@@ -45,6 +45,7 @@ public class ConfigurationConsole {
 
 		try {
 			jvmHome(reader, writer);
+			jvmOptions(reader, writer);
 
 			adempiereHome(reader, writer);
 			keyStorePass(reader, writer);
@@ -425,6 +426,15 @@ public class ConfigurationConsole {
 		}
 	}
 
+	private void jvmOptions(BufferedReader reader, PrintWriter writer) throws IOException {
+		writer.println("Java Options ["+data.getJavaOptions()+"]:");
+		String input = reader.readLine();
+		if (input != null && input.trim().length() > 0)
+		{
+			data.setJavaOptions(input);
+		}
+	}
+	
 	private void dbExists(BufferedReader reader, PrintWriter writer) throws IOException {
 		String dbExists = data.getDatabaseExists() ? "Y" : "N";
 	

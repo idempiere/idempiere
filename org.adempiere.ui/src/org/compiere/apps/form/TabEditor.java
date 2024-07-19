@@ -282,39 +282,49 @@ public class TabEditor
 			AD_UserDef_Field_ID = udfield.getAD_UserDef_Field_ID();
 		
 		udfield = new MUserDefField(Env.getCtx(), AD_UserDef_Field_ID, null);
-		
-		if (field.getName() != null)
-			udfield.setName(field.getName());
-
-		if (field.getDescription() != null)
-			udfield.setDescription(field.getDescription());
-
-		if (field.getHelp() != null)
-			udfield.setHelp(field.getHelp());
-
-		if (field.getPlaceholder() != null)
-			udfield.setPlaceholder(field.getPlaceholder());
-
-		udfield.setIsActive(field.isActive());
-		udfield.setDisplayLogic(field.getDisplayLogic());
-		udfield.setDisplayLength(field.getDisplayLength());
-		udfield.setIsDisplayed(field.isDisplayed() ? "Y" : "N");
-		udfield.setIsReadOnly(field.isReadOnly() ? "Y" : "N");
 		udfield.setAD_Field_ID(field.get_ID());
-		udfield.setSeqNo(field.getSeqNo());
-		udfield.setXPosition(field.getXPosition());
-		udfield.setNumLines(field.getNumLines());
-		udfield.setColumnSpan(field.getColumnSpan());
 		udfield.setAD_UserDef_Tab_ID(AD_UserDef_Tab_ID);
-		udfield.setSortNo(field.getSortNo().intValue());
 		udfield.setAD_Org_ID(m_tab.getAD_Org_ID());
-		udfield.setMandatoryLogic(field.getMandatoryLogic());
-		udfield.setReadOnlyLogic(field.getReadOnlyLogic());
 
-		if (field.getAD_FieldGroup_ID() > 0)
-			udfield.setAD_FieldGroup_ID(field.getAD_FieldGroup_ID());
-		else
-			udfield.set_ValueOfColumn("ad_fieldgroup_id", null);
+		if (field.is_ValueChanged(MField.COLUMNNAME_Name))
+			udfield.setName(field.getName());
+		if (field.is_ValueChanged(MField.COLUMNNAME_Description))
+			udfield.setDescription(field.getDescription());
+		if (field.is_ValueChanged(MField.COLUMNNAME_Help))
+			udfield.setHelp(field.getHelp());
+		if (field.is_ValueChanged(MField.COLUMNNAME_Placeholder))
+			udfield.setPlaceholder(field.getPlaceholder());
+		if (field.is_ValueChanged(MField.COLUMNNAME_IsActive))
+			udfield.setIsActive(field.isActive());
+		if (field.is_ValueChanged(MField.COLUMNNAME_DisplayLogic))
+			udfield.setDisplayLogic(field.getDisplayLogic());
+		if (field.is_ValueChanged(MField.COLUMNNAME_DisplayLength))
+			udfield.setDisplayLength(field.getDisplayLength());
+		if (field.is_ValueChanged(MField.COLUMNNAME_IsDisplayed))
+			udfield.setIsDisplayed(field.isDisplayed() ? "Y" : "N");
+		if (field.is_ValueChanged(MField.COLUMNNAME_IsReadOnly))
+			udfield.setIsReadOnly(field.isReadOnly() ? "Y" : "N");
+		if (field.is_ValueChanged(MField.COLUMNNAME_SeqNo))
+			udfield.setSeqNo(field.getSeqNo());
+		if (field.is_ValueChanged(MField.COLUMNNAME_XPosition))
+			udfield.setXPosition(field.getXPosition());
+		if (field.is_ValueChanged(MField.COLUMNNAME_NumLines))
+			udfield.setNumLines(field.getNumLines());
+		if (field.is_ValueChanged(MField.COLUMNNAME_ColumnSpan))
+			udfield.setColumnSpan(field.getColumnSpan());
+		if (field.is_ValueChanged(MField.COLUMNNAME_SortNo))
+			udfield.setSortNo(field.getSortNo().intValue());
+		if (field.is_ValueChanged(MField.COLUMNNAME_MandatoryLogic))
+			udfield.setMandatoryLogic(field.getMandatoryLogic());
+		if (field.is_ValueChanged(MField.COLUMNNAME_ReadOnlyLogic))
+			udfield.setReadOnlyLogic(field.getReadOnlyLogic());
+
+		if (field.is_ValueChanged(MField.COLUMNNAME_AD_FieldGroup_ID)) {
+			if (field.getAD_FieldGroup_ID() > 0)
+				udfield.setAD_FieldGroup_ID(field.getAD_FieldGroup_ID());
+			else
+				udfield.setAD_FieldGroup_ID(0);
+		}
 
 		udfield.saveEx();
 

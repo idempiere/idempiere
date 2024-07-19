@@ -30,21 +30,52 @@ public abstract class CreateFromForm
 
 	private String title;
 	
+	/**
+	 * initialize form
+	 */
 	public abstract void initForm();
 
-	public abstract boolean dynInit() throws Exception;
+	/**
+	 * dynamic initialization, usually for loading of data
+	 * @return true if initialization is ok
+	 * @throws Exception
+	 */
+	protected abstract boolean dynInit() throws Exception;
 
+	/**
+	 * update status bar with info from miniTable
+	 * @param miniTable
+	 * @param statusBar
+	 */
 	public abstract void info(IMiniTable miniTable, IStatusBar statusBar);
 
+	/**
+	 * save changes
+	 * @param miniTable
+	 * @param trxName
+	 * @param gridTab
+	 * @return true if save succeed
+	 */
 	public abstract boolean save(IMiniTable miniTable, String trxName, GridTab gridTab);
 
+	/**
+	 * 
+	 * @return title
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * 
+	 * @param title
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 	
+	/**
+	 * execute query
+	 */
 	public abstract void executeQuery();
 }

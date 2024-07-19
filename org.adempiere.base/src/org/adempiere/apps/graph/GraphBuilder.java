@@ -45,7 +45,6 @@ public class GraphBuilder {
 	protected String		m_Y_AxisLabel = "Y Axis";
 	protected DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 	protected DefaultCategoryDataset linearDataset = new DefaultCategoryDataset();
-	@SuppressWarnings("rawtypes")
 	protected DefaultPieDataset pieDataset = new DefaultPieDataset();
 
 	private static final CLogger log = CLogger.getCLogger(GraphBuilder.class);
@@ -251,7 +250,6 @@ public class GraphBuilder {
 		return list;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void loadDataSet(List<GraphColumn> list) {
 		pieDataset = new DefaultPieDataset();
 		dataset = new DefaultCategoryDataset();

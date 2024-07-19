@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_FundRestriction
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="GL_FundRestriction")
 public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_GL_FundRestriction (Properties ctx, int GL_FundRestriction_ID, String trxName)

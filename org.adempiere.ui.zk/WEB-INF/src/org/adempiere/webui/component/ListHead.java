@@ -17,10 +17,13 @@
 
 package org.adempiere.webui.component;
 
+/**
+ * Extend {@link org.zkoss.zul.Listhead}
+ */
 public class ListHead extends org.zkoss.zul.Listhead 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7675491092309862710L;
 }

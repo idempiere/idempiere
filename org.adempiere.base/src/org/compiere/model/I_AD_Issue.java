@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Issue
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Issue 
 {
@@ -59,8 +59,8 @@ public interface I_AD_Issue
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -105,12 +105,12 @@ public interface I_AD_Issue
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -529,12 +529,12 @@ public interface I_AD_Issue
     /** Column name R_IssueUser_ID */
     public static final String COLUMNNAME_R_IssueUser_ID = "R_IssueUser_ID";
 
-	/** Set IssueUser.
+	/** Set Issue User.
 	  * User who reported issues
 	  */
 	public void setR_IssueUser_ID (int R_IssueUser_ID);
 
-	/** Get IssueUser.
+	/** Get Issue User.
 	  * User who reported issues
 	  */
 	public int getR_IssueUser_ID();

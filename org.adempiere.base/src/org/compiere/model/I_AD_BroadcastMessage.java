@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_BroadcastMessage 
 {
@@ -66,8 +66,8 @@ public interface I_AD_BroadcastMessage
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -75,12 +75,12 @@ public interface I_AD_BroadcastMessage
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -234,25 +234,25 @@ public interface I_AD_BroadcastMessage
     public static final String COLUMNNAME_LogAcknowledge = "LogAcknowledge";
 
 	/** Set Log Acknowledge.
-	  * Want to Log the Acknowledgement of Message?
+	  * Want to Log the Acknowledgment of Message?
 	  */
 	public void setLogAcknowledge (boolean LogAcknowledge);
 
 	/** Get Log Acknowledge.
-	  * Want to Log the Acknowledgement of Message?
+	  * Want to Log the Acknowledgment of Message?
 	  */
 	public boolean isLogAcknowledge();
 
     /** Column name Notification_Client_ID */
     public static final String COLUMNNAME_Notification_Client_ID = "Notification_Client_ID";
 
-	/** Set Notification Client.
-	  * Notification Client
+	/** Set Notification Tenant.
+	  * Notification Tenant
 	  */
 	public void setNotification_Client_ID (int Notification_Client_ID);
 
-	/** Get Notification Client.
-	  * Notification Client
+	/** Get Notification Tenant.
+	  * Notification Tenant
 	  */
 	public int getNotification_Client_ID();
 
@@ -286,12 +286,12 @@ public interface I_AD_BroadcastMessage
     public static final String COLUMNNAME_Target = "Target";
 
 	/** Set Target.
-	  * Target client
+	  * Target tenant
 	  */
 	public void setTarget (String Target);
 
 	/** Get Target.
-	  * Target client
+	  * Target tenant
 	  */
 	public String getTarget();
 
