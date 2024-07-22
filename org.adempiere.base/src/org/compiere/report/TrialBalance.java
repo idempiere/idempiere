@@ -282,6 +282,17 @@ public class TrialBalance extends SvrProcess
 		createBalanceLine();
 		createDetailLines();
 
+		boolean withDel = false;
+		if (withDel) {
+			String sql = "DELETE FROM T_TrialBalance WHERE AD_PInstance_ID = " + getAD_PInstance_ID()
+			+ " AND Account_ID IN (SELECT Account_ID FROM T_TrialBalance WHERE AD_PInstance_ID = " + getAD_PInstance_ID() + " AND AD_Table_ID IS NULL AND AmtAcctBalance = 0)"
+			+ " AND Account_ID IN (SELECT Account_ID FROM T_TrialBalance WHERE AD_PInstance_ID = " + getAD_PInstance_ID() + " GROUP BY Account_ID HAVING COUNT(*) = 1)";
+
+			System.out.println(sql);
+			int no =DB.executeUpdateEx(sql, get_TrxName());
+			System.out.println("del " + no);
+		}
+
 		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
 	}	//	doIt
