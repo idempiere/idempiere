@@ -1760,7 +1760,7 @@ public final class Env
 	 */
 	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
 			boolean useMsgForBoolean, boolean keepUnparseable) {
-		return parseVariable(expression, po, trxName, false, false, keepUnparseable, false);
+		return parseVariable(expression, po, trxName, useColumnDateFormat, false, keepUnparseable, false);
 	}
 	
 	/**
