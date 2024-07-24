@@ -1384,6 +1384,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (query != null && query.length() > 0) {
 			if (query.startsWith(VIRTUAL_UI_COLUMN_PREFIX) && nullForUI)
 				query = "NULL";
+			else if (query.startsWith(VIRTUAL_UI_COLUMN_PREFIX) && !nullForUI)
+				query = query.substring(5);
 			else if (query.startsWith(VIRTUAL_SEARCH_COLUMN_PREFIX) && nullForSearch)
 				query = "NULL";
 			else if (query.startsWith(VIRTUAL_SEARCH_COLUMN_PREFIX) && !nullForSearch)
