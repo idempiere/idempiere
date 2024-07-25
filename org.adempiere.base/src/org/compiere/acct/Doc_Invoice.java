@@ -674,13 +674,18 @@ public class Doc_Invoice extends Doc
 				serviceAmt = getAmount(Doc.AMTTYPE_Gross);
 				grossAmt = Env.ZERO;
 			}
-			if (grossAmt.signum() != 0)
+			if (grossAmt.signum() > 0)
 				fact.createLine(null, MAccount.get(getCtx(), payables_ID),
 					getC_Currency_ID(), null, grossAmt);
-			if (serviceAmt.signum() != 0)
+			else if (grossAmt.signum() < 0)
+				fact.createLine(null, MAccount.get(getCtx(), payables_ID),
+						getC_Currency_ID(), grossAmt.negate(), null);
+			if (serviceAmt.signum() > 0)
 				fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
 					getC_Currency_ID(), null, serviceAmt);
-
+			else if (serviceAmt.signum() < 0)
+				fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
+						getC_Currency_ID(), serviceAmt.negate(), null);
 			//  Set Locations
 			FactLine[] fLines = fact.getLines();
 			for (int i = 0; i < fLines.length; i++)
@@ -964,90 +969,108 @@ public class Doc_Invoice extends Doc
 			if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) || X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod))
 			{
 			
-				BigDecimal allocationAmt =  lca.getAmt();																		
+				BigDecimal allocationAmt =  lca.getAmt();
+				boolean reversal = false;
+				if (allocationAmt.signum() < 0) //reversal
+				{
+					allocationAmt = allocationAmt.negate();
+					reversal = true;
+				}
+				
 				BigDecimal estimatedAmt = BigDecimal.ZERO;
-				int oCurrencyId = 0;
+				BigDecimal costAdjustmentAmt = BigDecimal.ZERO;
 				boolean usesSchemaCurrency = false;
-				Timestamp oDateAcct = getDateAcct();
-				if (lca.getM_InOutLine_ID() > 0)
+				MInvoiceLine reversalLine = null;
+				if (reversal)
 				{
-					I_M_InOutLine iol = lca.getM_InOutLine();
-					if (iol.getC_OrderLine_ID() > 0)
+					MInvoice invoice = (MInvoice)getPO();
+					MInvoice reversalInvoice = new MInvoice(getCtx(), invoice.getReversal_ID(), getTrxName());
+					MInvoiceLine[] lines = invoice.getLines();
+					MInvoiceLine[] reversalLines = reversalInvoice.getLines();
+					for(int j = 0; j < lines.length; j++) {
+						if (lines[j].get_ID() == il.get_ID()) {
+							reversalLine = reversalLines[j];
+							break;
+						}
+					}
+				}
+				else
+				{
+					int oCurrencyId = 0;					
+					Timestamp oDateAcct = getDateAcct();
+					if (lca.getM_InOutLine_ID() > 0)
 					{
-						oCurrencyId =  iol.getC_OrderLine().getC_Currency_ID();
-						oDateAcct = iol.getC_OrderLine().getC_Order().getDateAcct();
-						MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(iol.getC_OrderLine_ID(), getTrxName());
-						for(MOrderLandedCostAllocation allocation : allocations)
+						I_M_InOutLine iol = lca.getM_InOutLine();
+						if (iol.getC_OrderLine_ID() > 0)
 						{
-							if (allocation.getC_OrderLandedCost().getM_CostElement_ID() != lca.getM_CostElement_ID())
-								continue;
-							
-							BigDecimal amt = allocation.getAmt();
-							BigDecimal qty = allocation.getQty();
-							if (qty.compareTo(iol.getMovementQty()) != 0)
+							oCurrencyId =  iol.getC_OrderLine().getC_Currency_ID();
+							oDateAcct = iol.getC_OrderLine().getC_Order().getDateAcct();
+							MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(iol.getC_OrderLine_ID(), getTrxName());
+							for(MOrderLandedCostAllocation allocation : allocations)
 							{
-								amt = amt.multiply(iol.getMovementQty()).divide(qty, 12, RoundingMode.HALF_UP);
+								if (allocation.getC_OrderLandedCost().getM_CostElement_ID() != lca.getM_CostElement_ID())
+									continue;
+								
+								BigDecimal amt = allocation.getAmt();
+								BigDecimal qty = allocation.getQty();
+								if (qty.compareTo(iol.getMovementQty()) != 0)
+								{
+									amt = amt.multiply(iol.getMovementQty()).divide(qty, 12, RoundingMode.HALF_UP);
+								}
+								estimatedAmt = estimatedAmt.add(amt); 
 							}
-							estimatedAmt = estimatedAmt.add(amt); 
 						}
 					}
-				}
-				
-				if (estimatedAmt.scale() > as.getCostingPrecision())
-				{
-					estimatedAmt = estimatedAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-				}
-				BigDecimal costAdjustmentAmt = allocationAmt;
-				if (estimatedAmt.signum() > 0)
-				{					
-					//get other allocation amt
-					StringBuilder sql = new StringBuilder("SELECT Sum(Amt) FROM C_LandedCostAllocation WHERE M_InOutLine_ID=? ")
-						.append("AND C_LandedCostAllocation_ID<>? ")
-						.append("AND M_CostElement_ID=? ")
-						.append("AND AD_Client_ID=? ");
-					BigDecimal otherAmt = DB.getSQLValueBD(getTrxName(), sql.toString(), lca.getM_InOutLine_ID(), lca.getC_LandedCostAllocation_ID(), 
-							lca.getM_CostElement_ID(), lca.getAD_Client_ID());
-					if (otherAmt != null) 
+					
+					if (estimatedAmt.scale() > as.getCostingPrecision())
 					{
-						estimatedAmt = estimatedAmt.subtract(otherAmt);
-						if (allocationAmt.signum() < 0)
-						{
-							//add back since the sum above would include the original trx
-							estimatedAmt = estimatedAmt.add(allocationAmt.negate());
-						}
-					}	
-					//added for IDEMPIERE-3014
-					//convert to accounting schema currency
-					if (estimatedAmt.signum() > 0 && oCurrencyId != getC_Currency_ID())
-					{
-						estimatedAmt = MConversionRate.convert(getCtx(), estimatedAmt,
-								oCurrencyId, as.getC_Currency_ID(),
-								oDateAcct, getC_ConversionType_ID(),
-								getAD_Client_ID(), getAD_Org_ID());
-
-						allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
-								getC_Currency_ID(), as.getC_Currency_ID(),
-								getDateAcct(), getC_ConversionType_ID(),
-								getAD_Client_ID(), getAD_Org_ID());
-						setC_Currency_ID(as.getC_Currency_ID());
-						usesSchemaCurrency = true;
+						estimatedAmt = estimatedAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 					}
-
+					costAdjustmentAmt = allocationAmt;
 					if (estimatedAmt.signum() > 0)
-					{						
-						if (allocationAmt.signum() > 0)
+					{					
+						//get other allocation amt
+						StringBuilder sql = new StringBuilder("SELECT Sum(Amt) FROM C_LandedCostAllocation WHERE M_InOutLine_ID=? ")
+							.append("AND C_LandedCostAllocation_ID<>? ")
+							.append("AND M_CostElement_ID=? ")
+							.append("AND AD_Client_ID=? ");
+						BigDecimal otherAmt = DB.getSQLValueBD(getTrxName(), sql.toString(), lca.getM_InOutLine_ID(), lca.getC_LandedCostAllocation_ID(), 
+								lca.getM_CostElement_ID(), lca.getAD_Client_ID());
+						if (otherAmt != null) 
+						{
+							estimatedAmt = estimatedAmt.subtract(otherAmt);
+						}	
+						//added for IDEMPIERE-3014
+						//convert to accounting schema currency
+						if (estimatedAmt.signum() > 0 && oCurrencyId != getC_Currency_ID())
+						{
+							estimatedAmt = MConversionRate.convert(getCtx(), estimatedAmt,
+									oCurrencyId, as.getC_Currency_ID(),
+									oDateAcct, getC_ConversionType_ID(),
+									getAD_Client_ID(), getAD_Org_ID());
+	
+							allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
+									getC_Currency_ID(), as.getC_Currency_ID(),
+									getDateAcct(), getC_ConversionType_ID(),
+									getAD_Client_ID(), getAD_Org_ID());
+							setC_Currency_ID(as.getC_Currency_ID());
+							usesSchemaCurrency = true;
+						}
+	
+						if (estimatedAmt.signum() > 0)
+						{						
 							costAdjustmentAmt = allocationAmt.subtract(estimatedAmt);
-						else if (allocationAmt.signum() < 0)
-							costAdjustmentAmt = allocationAmt.add(estimatedAmt);
+						}
 					}
+					
+					if (!dr)
+						costAdjustmentAmt = costAdjustmentAmt.negate();
 				}
-				
-				if (!dr)
-					costAdjustmentAmt = costAdjustmentAmt.negate();
 	
 				BigDecimal amtAsset = Env.ZERO;
 				BigDecimal amtVariance = Env.ZERO;
-				if (costAdjustmentAmt.signum() != 0)
+				BigDecimal costDetailQty = lca.getQty();
+				if (costAdjustmentAmt.signum() != 0 && !reversal)
 				{
 					Trx trx = Trx.get(getTrxName(), false);
 					Savepoint savepoint = null;					
@@ -1079,9 +1102,10 @@ public class Doc_Invoice extends Doc
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 									M_AttributeSetInstance_ID, null);
 							if (c != null && c.getCurrentQty().compareTo(qty) < 0)
-							{//TODO test reposting of landed cost invoice
+							{
 								amtAsset = c.getCurrentQty().multiply(costAdjustmentAmt.divide(lca.getQty()));
 								amtVariance = costAdjustmentAmt.subtract(amtAsset);
+								costDetailQty = c.getCurrentQty();
 							}
 						}
 						
@@ -1104,14 +1128,16 @@ public class Doc_Invoice extends Doc
 						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
 								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
-								costDetailAmt, lca.getQty(),
+								costDetailAmt, costDetailQty,
 								desc, getTrxName())) {
 							throw new RuntimeException("Failed to create cost detail record.");
 						}				
 					} catch (SQLException e) {
 						throw new RuntimeException(e.getLocalizedMessage(), e);
 					} catch (AverageCostingZeroQtyException e) {
-						try { //TODO test zero qty scenario
+						try { 
+							amtAsset = BigDecimal.ZERO;
+							amtVariance = costAdjustmentAmt;
 							trx.rollback(savepoint);
 							savepoint = null;
 						} catch (SQLException e1) {
@@ -1124,16 +1150,29 @@ public class Doc_Invoice extends Doc
 							} catch (SQLException e) {}
 						}
 					}
+				} else if (reversal) {
+					String key = lca.getM_Product_ID()+"_"+lca.getM_AttributeSetInstance_ID();
+					if (!costDetailAmtMap.containsKey(key)) {
+						costDetailAmtMap.put(key, BigDecimal.ZERO);
+						MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
+								reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
+						amtAsset = cd.getAmt();
+						costDetailQty = cd.getQty();
+						BigDecimal lcaQty = lca.getQty();
+						if (lcaQty.compareTo(costDetailQty) > 0) {
+							amtVariance = amtAsset.divide(costDetailQty, RoundingMode.HALF_UP).multiply(lcaQty.subtract(costDetailQty));
+						}
+						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
+								amtAsset.negate(), costDetailQty,
+								desc, getTrxName())) {
+							throw new RuntimeException("Failed to create cost detail record.");
+						}	
+					}
 				}
 								
-				boolean reversal = false;
-				if (allocationAmt.signum() < 0) //reversal
-				{
-					allocationAmt = allocationAmt.negate();
-					reversal = true;
-				}
-				
-				if (allocationAmt.signum() > 0)
+				if (allocationAmt.signum() > 0 && !reversal)
 				{
 					if (allocationAmt.scale() > as.getStdPrecision())
 					{
@@ -1143,52 +1182,53 @@ public class Doc_Invoice extends Doc
 					{
 						estimatedAmt = estimatedAmt.setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 					}
-					int compare = allocationAmt.compareTo(estimatedAmt);
 					if (allocationAmt.compareTo(estimatedAmt)!=0)
 					{
-						// TODO test more order allocation then landed costing
-						drAmt = dr ? (reversal ? null : estimatedAmt): (reversal ? estimatedAmt : null);
-						crAmt = dr ? (reversal ? estimatedAmt : null): (reversal ? null : estimatedAmt);						
-						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-						FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
-						fl.setDescription(desc);
-						fl.setM_Product_ID(lca.getM_Product_ID());
-						fl.setQty(line.getQty());
+						if (estimatedAmt.signum() != 0)
+						{
+							drAmt = dr ? (reversal ? null : estimatedAmt): (reversal ? estimatedAmt : null);
+							crAmt = dr ? (reversal ? estimatedAmt : null): (reversal ? null : estimatedAmt);						
+							account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+							FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+							fl.setDescription(desc);
+							fl.setM_Product_ID(lca.getM_Product_ID());
+							fl.setQty(line.getQty());
+						}
 						
-						if (amtVariance.compareTo(Env.ZERO) != 0) {
-							if (amtVariance.compareTo(Env.ZERO) > 0) {
-								drAmt = dr ? (reversal ? null : amtVariance) : (reversal ? amtVariance : null);
-								crAmt = dr ? (reversal ? amtVariance : null) : (reversal ? null : amtVariance);
+						if (amtVariance.signum() != 0) {
+							if (amtVariance.signum() > 0) {
+								drAmt = dr ? amtVariance : null;
+								crAmt = dr ? null : amtVariance;
 							} else {
 								BigDecimal underAmt = amtVariance.negate();
-								drAmt = dr ? (reversal ? underAmt : null) : (reversal ? null : underAmt);
-								crAmt = dr ? (reversal ? null : underAmt) : (reversal ? underAmt : null);
+								drAmt = dr ? null : underAmt;
+								crAmt = dr ? underAmt : null;
 							}
 
 							account = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
-							fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
+							FactLine fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
 							fl.setDescription(desc);
 							fl.setM_Product_ID(lca.getM_Product_ID());
 							fl.setQty(line.getQty());
 						}
 
-						if (amtAsset.compareTo(Env.ZERO) != 0) {
-							if (amtAsset.compareTo(Env.ZERO) > 0) {
-								drAmt = dr ? (reversal ? null : amtAsset) : (reversal ? amtAsset : null);
-								crAmt = dr ? (reversal ? amtAsset : null) : (reversal ? null : amtAsset);
+						if (amtAsset.signum() != 0) {
+							if (amtAsset.signum() > 0) {
+								drAmt = dr ? amtAsset : null;
+								crAmt = dr ? null : amtAsset;
 							} else {
 								BigDecimal underAmt = amtAsset.negate();
-								drAmt = dr ? (reversal ? underAmt : null) : (reversal ? null : underAmt);
-								crAmt = dr ? (reversal ? null : underAmt) : (reversal ? underAmt : null);
+								drAmt = dr ? null : underAmt;
+								crAmt = dr ? underAmt : null;
 							}
 							account = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-							fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
+							FactLine  fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
 							fl.setDescription(desc);
 							fl.setM_Product_ID(lca.getM_Product_ID());
 							fl.setQty(line.getQty());
 						}
 					}
-					else
+					else if (allocationAmt.signum() != 0)
 					{
 						drAmt = dr ? (reversal ? null : allocationAmt) : (reversal ? allocationAmt : null);
 						crAmt = dr ? (reversal ? allocationAmt : null) : (reversal ? null : allocationAmt);
@@ -1198,7 +1238,46 @@ public class Doc_Invoice extends Doc
 						fl.setM_Product_ID(lca.getM_Product_ID());
 						fl.setQty(line.getQty());
 					}
-				}				
+				} else if (reversal) {
+					account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+					FactLine fl = fact.createLine (line, account, getC_Currency_ID(), BigDecimal.ZERO, BigDecimal.ZERO);
+					fl.updateReverseLine(MInvoice.Table_ID, reversalLine.getC_Invoice_ID(), reversalLine.get_ID(), BigDecimal.ONE);
+					if (fl.getAmtAcctCr().signum() == 0 && fl.getAmtAcctDr().signum() == 0)
+						fact.remove(fl);
+					
+					if (amtVariance.signum() != 0) {
+						if (amtVariance.signum() > 0) {
+							drAmt = dr ? null : amtVariance;
+							crAmt = dr ? amtVariance : null;
+						} else {
+							BigDecimal underAmt = amtVariance.negate();
+							drAmt = dr ? underAmt : null;
+							crAmt = dr ? null : underAmt;
+						}
+
+						account = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+						fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
+					}
+
+					if (amtAsset.signum() != 0) {
+						if (amtAsset.signum() > 0) {
+							drAmt = dr ? null : amtAsset;
+							crAmt = dr ? amtAsset : null;
+						} else {
+							BigDecimal underAmt = amtAsset.negate();
+							drAmt = dr ? underAmt : null;
+							crAmt = dr ? null : underAmt;
+						}
+						account = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+						fl = fact.createLine(line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
+					}
+				}
 				if (usesSchemaCurrency)
 					setC_Currency_ID(line.getC_Currency_ID());
 			} 

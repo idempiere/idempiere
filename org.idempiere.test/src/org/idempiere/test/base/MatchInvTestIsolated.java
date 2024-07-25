@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.List;
 
 import org.compiere.acct.Doc;
@@ -66,6 +67,7 @@ import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
@@ -240,21 +242,13 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				MAccount acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as);
 				int C_AcctSchema_ID = as.getC_AcctSchema_ID();
 				
-				String whereClause2 = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + C_AcctSchema_ID;
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause2, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
+				List<MFactAcct> factAccts = query.list();
 				BigDecimal invMatchAmt = invoiceLine.getMatchedQty().multiply(invoiceLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 				mulchCost = mulchCost.setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), mulchCost.setScale(2, RoundingMode.HALF_UP), "");
-					else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "");
-					else if (fa.getAccount_ID() == acctIPV.getAccount_ID())
-						assertEquals(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()).setScale(2, RoundingMode.HALF_UP), invMatchAmt.subtract(mulchCost).setScale(2, RoundingMode.HALF_UP), "");
-				}
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, mulchCost, 2, true), new FactAcct(acctInvClr, invMatchAmt, 2, false),
+						new FactAcct(acctIPV, invMatchAmt.subtract(mulchCost), 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
 		} finally {
 			getTrx().rollback();

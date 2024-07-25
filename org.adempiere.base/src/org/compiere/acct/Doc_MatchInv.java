@@ -508,7 +508,6 @@ public class Doc_MatchInv extends Doc
 			}
 		}
 		
-//		String costingMethod = m_pc.getProduct().getCostingMethod(as);
 		MAccount account = m_pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 		if (m_pc.isService())
 			account = m_pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
