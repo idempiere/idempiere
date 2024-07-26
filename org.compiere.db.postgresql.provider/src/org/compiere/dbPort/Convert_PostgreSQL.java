@@ -171,11 +171,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		return retValue;
 	}
 	
+	/**
+	 * Convert LIKE to SIMILAR TO depending on the user preference P|IsUseSimilarTo - applies just to SELECT queries
+	 * @param statement
+	 * @return
+	 */
 	private String convertSimilarTo(String statement) {
 		String retValue = statement;
 		boolean useSimilarTo = isUseSimilarTo();
-		if (useSimilarTo) {
-			String replacement = "SIMILAR TO";
+		if (useSimilarTo && statement.matches("(?i)^\\s*SELECT\\b.*")) {
+			final String replacement = "SIMILAR TO";
 			try {
 				Matcher m = likePattern.matcher(retValue);
 				retValue = m.replaceAll(replacement);
@@ -188,6 +193,10 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		return retValue;
 	}
 
+	/**
+	 * True if the user preference IsUseSimilarTo is set to Y
+	 * @return
+	 */
 	private boolean isUseSimilarTo() {
 		return "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
 	}
