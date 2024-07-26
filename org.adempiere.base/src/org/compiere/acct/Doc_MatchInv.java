@@ -431,7 +431,7 @@ public class Doc_MatchInv extends Doc
 		String costingMethod = m_pc.getProduct().getCostingMethod(as);
 		BigDecimal amtVariance = Env.ZERO;
 		BigDecimal amtAsset = Env.ZERO;
-		BigDecimal qtyInv = m_invoiceLine.getQtyInvoiced();
+		BigDecimal qtyMatched = matchInv.getQty();
 		BigDecimal qtyCost = null;
 		Boolean isStockCoverage = false;
 		
@@ -460,15 +460,15 @@ public class Doc_MatchInv extends Doc
 			}else{
 				MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-					M_AttributeSetInstance_ID, null);
+					M_AttributeSetInstance_ID, getTrxName());
 				qtyCost = (c!=null? c.getCurrentQty():Env.ZERO);
 			}
 			
 			isStockCoverage = true;
-			if (qtyCost != null && qtyCost.compareTo(qtyInv) < 0 )
+			if (qtyCost != null && qtyCost.compareTo(qtyMatched) < 0 )
 			{
 				//If current cost qty < invoice qty
-				amtAsset = qtyCost.multiply(ipv).divide(qtyInv,as.getCostingPrecision(),RoundingMode.HALF_UP);
+				amtAsset = qtyCost.multiply(ipv).divide(qtyMatched,as.getCostingPrecision(),RoundingMode.HALF_UP);
 				amtVariance = ipv.subtract(amtAsset);
 				
 			}else{
