@@ -949,7 +949,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Collections.sort(gridFieldList, new Comparator<GridField>() {
 			@Override
 			public int compare(GridField o1, GridField o2) {
-				return o1.getSeqNoSelection()-o2.getSeqNoSelection();
+				// order by SeqNoSelection, sending the zeroes to the end
+				int sel1 = o1.getSeqNoSelection();
+				if (sel1 == 0)
+					sel1 = Integer.MAX_VALUE;
+				int sel2 = o2.getSeqNoSelection();
+				if (sel2 == 0)
+					sel2 = Integer.MAX_VALUE;
+				return sel1-sel2;
 			}
 		});
         
