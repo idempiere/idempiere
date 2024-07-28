@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_AcctSchema 
 {
@@ -298,6 +298,19 @@ public interface I_C_AcctSchema
 	  * Allow to post negative accounting values
 	  */
 	public boolean isAllowNegativePosting();
+
+    /** Column name IsDeleteReverseCorrectPosting */
+    public static final String COLUMNNAME_IsDeleteReverseCorrectPosting = "IsDeleteReverseCorrectPosting";
+
+	/** Set Delete Reverse Correct Posting.
+	  * This flag controls if Adempiere must delete the posting line when reverse correct document.
+	  */
+	public void setIsDeleteReverseCorrectPosting (boolean IsDeleteReverseCorrectPosting);
+
+	/** Get Delete Reverse Correct Posting.
+	  * This flag controls if Adempiere must delete the posting line when reverse correct document.
+	  */
+	public boolean isDeleteReverseCorrectPosting();
 
     /** Column name IsDiscountCorrectsTax */
     public static final String COLUMNNAME_IsDiscountCorrectsTax = "IsDiscountCorrectsTax";
