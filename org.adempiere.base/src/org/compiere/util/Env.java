@@ -2204,7 +2204,7 @@ public final class Env
 			
 			//	PO Zoom ?
 			boolean isSOTrx = true;
-			if (table.getPO_Window_ID() != 0)
+			if (table.getPO_Window_ID() != 0 && ((Record_ID > 0 || Record_UU != null)))
 			{
 				String whereClause;
 				if (Record_UU != null)
