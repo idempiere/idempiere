@@ -941,7 +941,8 @@ public class Doc_Invoice extends Doc
 		for (int i = 0; i < lcas.length; i++)
 			totalBase += lcas[i].getBase().doubleValue();
 
-		Map<String, BigDecimal> costDetailAmtMap = new HashMap<String, BigDecimal>();
+		Map<String, BigDecimal> costDetailAmtMap = new HashMap<>();
+		Map<String, BigDecimal> mcostQtyMap = new HashMap<>();
 		
 		//	Create New
 		MInvoiceLine il = new MInvoiceLine (getCtx(), C_InvoiceLine_ID, getTrxName());
@@ -1077,7 +1078,6 @@ public class Doc_Invoice extends Doc
 					try {
 						savepoint = trx.setSavepoint(null);
 						
-						BigDecimal qty = lca.getQty();
 						amtVariance = Env.ZERO;
 						amtAsset = costAdjustmentAmt;
 						
@@ -1100,12 +1100,25 @@ public class Doc_Invoice extends Doc
 									AD_Org_ID);
 							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-									M_AttributeSetInstance_ID, null);
-							if (c != null && c.getCurrentQty().compareTo(qty) < 0)
+									M_AttributeSetInstance_ID, getTrxName());
+							if (c != null)
 							{
-								amtAsset = c.getCurrentQty().multiply(costAdjustmentAmt.divide(lca.getQty()));
-								amtVariance = costAdjustmentAmt.subtract(amtAsset);
-								costDetailQty = c.getCurrentQty();
+								BigDecimal mcostQty = c.getCurrentQty();
+								if (mcostQtyMap.containsKey(c.get_UUID())) {
+									mcostQty = mcostQty.subtract(mcostQtyMap.get(c.get_UUID()));
+									if (mcostQty.signum() < 0)
+										mcostQty = new BigDecimal("0.00");
+								}
+								if (mcostQty.compareTo(lca.getQty()) < 0) {
+									amtAsset = mcostQty.multiply(costAdjustmentAmt.divide(lca.getQty(), as.getCostingPrecision(), RoundingMode.HALF_UP));
+									amtVariance = costAdjustmentAmt.subtract(amtAsset);
+									costDetailQty = mcostQty;									
+								}
+								if (mcostQtyMap.containsKey(c.get_UUID())) {
+									mcostQtyMap.put(c.get_UUID(), mcostQtyMap.get(c.get_UUID()).add(costDetailQty));
+								} else {
+									mcostQtyMap.put(c.get_UUID(), costDetailQty);
+								}
 							}
 						}
 						
