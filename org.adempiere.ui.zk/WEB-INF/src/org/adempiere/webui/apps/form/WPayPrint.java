@@ -436,10 +436,9 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			if (no >= 0)
 			{
 				//  Get File Info
-				tempFile = File.createTempFile(m_PaymentExport.getFilenamePrefix(), m_PaymentExport.getFilenameSuffix());
-				filenameForDownload = m_PaymentExport.getFilenamePrefix() + m_PaymentExport.getFilenameSuffix();
-				
+				tempFile = File.createTempFile(m_PaymentExport.getFilenamePrefix(), null);
 				no = m_PaymentExport.exportToFile(m_checks,(Boolean) fDepositBatch.getValue(),PaymentRule, tempFile, err);
+				filenameForDownload = m_PaymentExport.getFilenamePrefix() + m_PaymentExport.getFilenameSuffix();
 			}
 			
 			if (no >= 0) {
