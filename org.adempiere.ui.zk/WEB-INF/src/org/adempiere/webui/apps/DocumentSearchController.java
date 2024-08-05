@@ -29,6 +29,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
+import org.compiere.model.MPayment;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSearchDefinition;
@@ -280,6 +281,7 @@ public class DocumentSearchController implements EventListener<Event>{
 			MLookup lookup = new MLookup(lookupInfo, -1);
 			
 			if (sql != null) {
+/*
 				if (powindow != null) {
 					if (window != null) {
 						doRetrieval(msd, sql, params, lookup, window, table.getTableName(), " AND IsSOTrx='Y' ", list);
@@ -288,7 +290,29 @@ public class DocumentSearchController implements EventListener<Event>{
 				} else if (window != null) {
 					doRetrieval(msd, sql, params, lookup, window, table.getTableName(), null, list);
 				}
-				
+*/
+				if (powindow != null) {
+					String whereCol = null;
+					if (table.columnExistsInDictionary("IsSOTrx")) {
+						whereCol = " AND IsSOTrx=";
+					} else {
+						if (MPayment.Table_Name.equals(table.getTableName())) {
+							whereCol = " AND IsReceipt=";
+						}
+					}
+					if (whereCol == null) {
+						doRetrieval(msd, sql, params, lookup, powindow, table.getTableName(), null, list);
+					} else {
+						if (window != null) {
+							String soWhereTrx = whereCol + "'Y' ";
+							doRetrieval(msd, sql, params, lookup, window, table.getTableName(), soWhereTrx, list);
+						}
+						String poWhereTrx = whereCol + "'N' ";
+						doRetrieval(msd, sql, params, lookup, powindow, table.getTableName(), poWhereTrx, list);
+					}
+				} else if (window != null) {
+					doRetrieval(msd, sql, params, lookup, window, table.getTableName(), null, list);
+				}
 			}
 		}
 		return list;
