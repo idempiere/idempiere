@@ -281,16 +281,6 @@ public class DocumentSearchController implements EventListener<Event>{
 			MLookup lookup = new MLookup(lookupInfo, -1);
 			
 			if (sql != null) {
-/*
-				if (powindow != null) {
-					if (window != null) {
-						doRetrieval(msd, sql, params, lookup, window, table.getTableName(), " AND IsSOTrx='Y' ", list);
-					}
-					doRetrieval(msd, sql, params, lookup, powindow, table.getTableName(), " AND IsSOTrx='N' ", list);					
-				} else if (window != null) {
-					doRetrieval(msd, sql, params, lookup, window, table.getTableName(), null, list);
-				}
-*/
 				if (powindow != null) {
 					String whereCol = null;
 					if (table.columnExistsInDictionary("IsSOTrx")) {
