@@ -105,13 +105,8 @@ public class EnvTest extends AbstractTestCase {
 
 		//test '@@' escape sequence
 		expr = "test@@mail.com";
-		String parsedTextKeepEscape = Env.parseVariable(expr, null, getTrxName(), true, true, true, true);
-		String parsedTextRemoveEscape = Env.parseVariable(expr, null, getTrxName(), true, true, true, false);
-		assertEquals("test@@mail.com", parsedTextKeepEscape, "Unexpected parsed text for " + expr + " with keepEscapeSequence=true");
-		assertEquals("test@mail.com", parsedTextRemoveEscape, "Unexpected parsed text for " + expr + " with keepEscapeSequence=false");
+		parsedText = Env.parseVariable(expr, null, getTrxName(), true, true, true);
+		assertEquals("test@mail.com", parsedText, "Unexpected parsed text for " + expr);
 
-		expr = "@#AD_Client_ID<Name>@: test1@@mail.com, @C_BPartner_ID<Value>@: test2@@mail.com";
-		parsedTextKeepEscape = Env.parseVariable(expr, order, getTrxName(), true, true, true, false);
-		assertEquals(clientName + ": test1@mail.com, " + bpartnerValue + ": test2@mail.com", parsedTextKeepEscape, "Unexpected parsed text for " + expr);
 	}
 }

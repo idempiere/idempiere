@@ -1500,25 +1500,6 @@ public final class Env
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow, boolean ignoreUnparsable)
 	{
-		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false);
-	}
-	
-	/**
-	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
-	 *
-	 *  @param ctx context
-	 *	@param WindowNo	Number of Window
-	 *	@param value Expression to be parsed
-	 *  @param onlyWindow if true, do not use global context value
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
-	 *  If false, return "" if there are context variable that's not resolvable.  
-	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
-	 *	@return parsed expression
-	 */
-	public static String parseContext (Properties ctx, int WindowNo, String value,
-		boolean onlyWindow, boolean ignoreUnparsable, boolean keepEscapeSequence)
-	{
 		if (value == null || value.length() == 0)
 			return "";
 
@@ -1543,11 +1524,7 @@ public final class Env
 
 			if (j == 0)
 			{
-				if (keepEscapeSequence) {
-						outStr.append("@@");
-				} else {
-						outStr.append("@");
-				}
+				outStr.append("@");
 				inStr = inStr.substring(1);
 				i = inStr.indexOf('@');
 				continue;
@@ -1604,26 +1581,6 @@ public final class Env
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
 		boolean onlyTab, boolean ignoreUnparsable)
 	{
-		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, ignoreUnparsable, false);
-	}
-		
-	/**
-	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
-	 *
-	 *  @param ctx context
-	 *	@param WindowNo	Number of Window
-	 *	@param tabNo	Number of Tab
-	 *	@param value Expression to be parsed
-	 *  @param onlyTab if true, only context for tabNo are used
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
-	 *  If false, return "" if there are context variable that's not resolvable.
-	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
-	 *	@return parsed expression
-	 */
-	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
-		boolean onlyTab, boolean ignoreUnparsable, boolean keepEscapeSequence)
-	{
 		if (value == null || value.length() == 0)
 			return "";
 
@@ -1648,11 +1605,7 @@ public final class Env
 
 			if (j == 0)
 			{
-				if (keepEscapeSequence) {
-						outStr.append("@@");
-				} else {
-						outStr.append("@");
-				}
+				outStr.append("@");
 				inStr = inStr.substring(1);
 				i = inStr.indexOf('@');
 				continue;
@@ -1760,22 +1713,6 @@ public final class Env
 	 */
 	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
 			boolean useMsgForBoolean, boolean keepUnparseable) {
-		return parseVariable(expression, po, trxName, useColumnDateFormat, false, keepUnparseable, false);
-	}
-	
-	/**
-	 * Parse expression, replaces global or PO properties @tag@ with actual value.
-	 * @param expression
-	 * @param po
-	 * @param trxName
-	 * @param useColumnDateFormat
-	 * @param useMsgForBoolean
-	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
-	 * @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
-	 * @return Parsed expression
-	 */
-	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
-			boolean useMsgForBoolean, boolean keepUnparseable, boolean keepEscapeSequence) {
 		if (expression == null || expression.length() == 0)
 			return "";
 
@@ -1798,11 +1735,7 @@ public final class Env
 
 			if (j == 0)
 			{
-				if (keepEscapeSequence) {
-						outStr.append("@@");
-				} else {
-						outStr.append("@");
-				}
+				outStr.append("@");
 				inStr = inStr.substring(1);
 				i = inStr.indexOf('@');
 				continue;

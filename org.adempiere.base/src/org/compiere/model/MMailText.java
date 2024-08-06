@@ -183,11 +183,11 @@ public class MMailText extends X_R_MailText
 		if (Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
 		//	Parse User
-		text = parse (text, m_user, true);
+		text = parse (text, m_user);
 		//	Parse BP
-		text = parse (text, m_bpartner, true);
+		text = parse (text, m_bpartner);
 		//	Parse PO
-		text = parse (text, m_po, false);
+		text = parse (text, m_po);
 		//
 		return text;
 	}	//	parse
@@ -196,10 +196,9 @@ public class MMailText extends X_R_MailText
 	 * 	Parse variables in text (@variable expression@)
 	 *	@param text text
 	 *	@param po PO instance
-	 *	@param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
 	 *	@return parsed text
 	 */
-	protected String parse (String text, PO po, boolean keepEscapeSequence)
+	protected String parse (String text, PO po)
 	{
 		if (po == null || Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
@@ -222,7 +221,7 @@ public class MMailText extends X_R_MailText
 			}
 
 			token = inStr.substring(0, j);
-			outStr.append(parseVariable(token, po, keepEscapeSequence));		// replace context
+			outStr.append(parseVariable(token, po));		// replace context
 
 			inStr = inStr.substring(j+1, inStr.length());	// from second @
 			i = inStr.indexOf('@');
@@ -236,12 +235,11 @@ public class MMailText extends X_R_MailText
 	 * 	Get value for a variable expression
 	 *	@param variable variable expression
 	 *	@param po po
-	 *	@param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
 	 *	@return value for variable or if not found the original variable expression
 	 */
-	protected String parseVariable (String variable, PO po, boolean keepEscapeSequence)
+	protected String parseVariable (String variable, PO po)
 	{
-		return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true, true, true, keepEscapeSequence);
+		return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true, true, true);
 	}	//	translate
 	
 	/**
