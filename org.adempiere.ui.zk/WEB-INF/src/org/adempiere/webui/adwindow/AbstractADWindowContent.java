@@ -1597,6 +1597,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void saveAndNavigate(final Callback<Boolean> callback) {
 		if (adTabbox != null)
 		{
+			boolean newrecod = adTabbox.getSelectedGridTab().isNew();
 			if (adTabbox.isSortTab())
 			{
 				onSave(false, true, callback);
@@ -1611,12 +1612,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				{
 					//  new record, but nothing changed
 					adTabbox.dataIgnore();
+			        if (newrecod)
+			        	onRefresh(true, false);
 					callback.onCallback(true);
 				}
 			}   //  there is a change
 			else {
 				// just in case
 				adTabbox.dataIgnore();
+		        if (newrecod)
+		        	onRefresh(true, false);
 				callback.onCallback(true);
 			}
 		}
