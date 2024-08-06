@@ -1744,6 +1744,8 @@ public final class Env
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))
 						outStr.append("<").append(format).append(">");
+					if (!Util.isEmpty(defaultValue))
+	                    outStr.append(":").append(defaultValue);
 					outStr.append("@");
 				}
 			} else if (po != null && token.startsWith("=")) {
@@ -1765,6 +1767,8 @@ public final class Env
 						outStr.append("@").append(token);
 						if (!Util.isEmpty(format))
 							outStr.append("<").append(format).append(">");
+						if (!Util.isEmpty(defaultValue))
+		                    outStr.append(":").append(defaultValue);
 						outStr.append("@");
 					}
 				}
@@ -1782,6 +1786,8 @@ public final class Env
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))
 						outStr.append("<").append(format).append(">");
+					if (!Util.isEmpty(defaultValue))
+	                    outStr.append(":").append(defaultValue);
 					outStr.append("@");
 				}
 			}
