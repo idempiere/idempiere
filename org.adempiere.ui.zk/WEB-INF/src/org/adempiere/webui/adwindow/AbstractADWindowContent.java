@@ -516,14 +516,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				gridWindow.initTab(tabIndex);
 				//init parent tab by parent ids
 				StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName()).append(" FROM ").append(gTab.getTableName()).append(" WHERE ").append(query.getWhereClause());
-				List<Object> parentIds = DB.getSQLValueObjectsEx(null, sql.toString());
+				List<List<Object>> parentIds = DB.getSQLArrayObjectsEx(null, sql.toString());
 				if (parentIds!=null && parentIds.size() > 0)
 				{
 					GridTab parentTab = null;
 					Map<Integer, MQuery>queryMap = new TreeMap<Integer, MQuery>();
 
-					for (Object parentId : parentIds)
+					for (List<Object>parentIdList : parentIds)
 					{
+						Object parentId = parentIdList.get(0);
 						Map<Integer, Object[]>parentMap = new TreeMap<Integer, Object[]>();
 						int index = tabIndex;
 						Object oldpid = parentId;
