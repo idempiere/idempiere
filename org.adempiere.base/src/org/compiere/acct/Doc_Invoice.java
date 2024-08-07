@@ -1181,7 +1181,11 @@ public class Doc_Invoice extends Doc
 								amtAsset.negate(), costDetailQty,
 								desc, getTrxName())) {
 							throw new RuntimeException("Failed to create cost detail record.");
-						}	
+						}
+						if (getC_Currency_ID() != as.getC_Currency_ID()) {
+							usesSchemaCurrency = true;
+							setC_Currency_ID(as.getC_Currency_ID());
+						}
 					}
 				}
 								
