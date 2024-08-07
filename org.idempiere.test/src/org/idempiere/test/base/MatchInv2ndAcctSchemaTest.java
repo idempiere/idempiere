@@ -34,6 +34,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -59,6 +60,7 @@ import org.compiere.model.MProductPrice;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -1840,12 +1842,9 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 				
 				BigDecimal totalNIRAmtAcct = Env.ZERO;
 				BigDecimal totalInvClrAmtAcct = Env.ZERO;
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				for (MFactAcct fa : factAccts) {
 					if (acctNIR.getAccount_ID() == fa.getAccount_ID())
 						totalNIRAmtAcct = totalNIRAmtAcct.add(fa.getAmtAcctDr()).subtract(fa.getAmtAcctCr());
 					else if (acctInvClr.getAccount_ID() == fa.getAccount_ID())

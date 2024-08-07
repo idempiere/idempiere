@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 import org.compiere.acct.Doc;
@@ -68,6 +69,7 @@ import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
@@ -129,38 +131,11 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			ProductCost pc = new ProductCost(Env.getCtx(), rLine.getM_Product_ID(), 0, getTrxName());
 			MAccount productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
-			StringBuilder whereClause = new StringBuilder();
-			whereClause
-							.append(MFactAcct.COLUMNNAME_AD_Table_ID)
-							.append("=")
-							.append(MInOut.Table_ID)
-							.append(" AND ")
-							.append(MFactAcct.COLUMNNAME_Record_ID)
-							.append("=")
-							.append(rLine.getM_InOut_ID())
-							.append(" AND ")
-							.append(MFactAcct.COLUMNNAME_C_AcctSchema_ID)
-							.append("=")
-							.append(as.getC_AcctSchema_ID());
-
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause.toString(), getTrxName());
-
-			for (int id : ids)
-			{
-				// Test Accounting for MR
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-				{
-					assertEquals(BD_20, fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), "");
-					assertEquals(new BigDecimal("-10.00"), fa.getQty().setScale(2, RoundingMode.HALF_UP), "");
-				}
-				else if (fa.getAccount_ID() == productExpense.getAccount_ID())
-				{
-					assertEquals(BD_20, fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), "");
-					assertEquals(BigDecimal.TEN.setScale(2, RoundingMode.HALF_UP), fa.getQty().setScale(2, RoundingMode.HALF_UP), "");
-				}
-			}
-
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, rLine.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, BD_20, 2, false, BigDecimal.TEN.negate()),
+					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
+			assertFactAcctEntries(factAccts, expected);
 		}
 		finally
 		{
@@ -377,38 +352,11 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			// get AccPayable of the Invoice
 			MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
 
-			StringBuilder whereClause = new StringBuilder();
-
-			whereClause
-							.append(MFactAcct.COLUMNNAME_AD_Table_ID)
-							.append("=")
-							.append(MInvoice.Table_ID)
-							.append(" AND ")
-							.append(MFactAcct.COLUMNNAME_Record_ID)
-							.append("=")
-							.append(iLine.getC_Invoice_ID())
-							.append(" AND ")
-							.append(MFactAcct.COLUMNNAME_C_AcctSchema_ID)
-							.append("=")
-							.append(as.getC_AcctSchema_ID());
-
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause.toString(), getTrxName());
-
-			for (int id : ids)
-			{
-				// Test Accounting for Invoice
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctPT.getAccount_ID())
-				{
-					assertEquals(BD_20, fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), "");
-					assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), fa.getQty().setScale(2, RoundingMode.HALF_UP), "");
-				}
-				else if (fa.getAccount_ID() == productExpense.getAccount_ID())
-				{
-					assertEquals(BD_20, fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), "");
-					assertEquals(BigDecimal.TEN.setScale(2, RoundingMode.HALF_UP), fa.getQty().setScale(2, RoundingMode.HALF_UP), "");
-				}
-			}
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, iLine.getC_Invoice_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, BD_20, 2, false, BigDecimal.ZERO),
+					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
+			assertFactAcctEntries(factAccts, expected);
 			
 			//Accounting MatchInv
 			MMatchInv[] matchInvoices = MMatchInv.getInOut(Env.getCtx(), rLine.getM_InOut_ID(), getTrxName());
@@ -426,39 +374,11 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			pc = new ProductCost(Env.getCtx(), matchInvoices[0].getM_Product_ID(), 0, getTrxName());
 			productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
-			whereClause = null;
-			whereClause = new StringBuilder();
-			whereClause
-							.append(MFactAcct.COLUMNNAME_AD_Table_ID)
-							.append("=")
-							.append(MMatchInv.Table_ID)
-							.append(" AND ")
-							.append(MFactAcct.COLUMNNAME_Record_ID)
-							.append("=")
-							.append(matchInvoices[0].get_ID())
-							.append(" AND ")
-							.append(MFactAcct.COLUMNNAME_C_AcctSchema_ID)
-							.append("=")
-							.append(as.getC_AcctSchema_ID());
-
-			int[] idsMatchInv = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause.toString(), getTrxName());
-
-			for (int id : idsMatchInv)
-			{
-				// Test Accounting for MatchINV
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-				{
-					assertEquals(BD_20, fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), "");
-					assertEquals(BigDecimal.TEN.setScale(2, RoundingMode.HALF_UP), fa.getQty().setScale(2, RoundingMode.HALF_UP), "");
-				}
-				else if (fa.getAccount_ID() == productExpense.getAccount_ID())
-				{
-					assertEquals(BD_20, fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), "");
-					assertEquals(new BigDecimal("-10.00"), fa.getQty().setScale(2, RoundingMode.HALF_UP), "");
-				}
-			}
-
+			query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, matchInvoices[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(acctNIR, BD_20, 2, true, BigDecimal.TEN),
+					new FactAcct(productExpense, BD_20, 2, false, BigDecimal.TEN.negate()));
+			assertFactAcctEntries(factAccts, expected);
 		}
 		finally
 		{

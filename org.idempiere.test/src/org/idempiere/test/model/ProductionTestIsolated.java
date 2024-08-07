@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -312,17 +313,12 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mulchX.getM_Product_ID(), 0, getTrxName());
 			MAccount acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as);
 			
-			whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MProduction.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + production.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-				    + " AND " + MFactAcct.COLUMNNAME_Account_ID + "=" + acctVariance.getAccount_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MProduction.Table_ID, production.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
 			BigDecimal variance = BigDecimal.ZERO;
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				variance = fa.getAmtAcctDr().subtract(fa.getAmtAcctCr());
-				break;
-			}
+			Optional<MFactAcct> optional = factAccts.stream().filter(e -> e.getAccount_ID() == acctVariance.getAccount_ID()).findFirst();
+			if (optional.isPresent())
+				variance = optional.get().getAmtAcctDr().subtract(optional.get().getAmtAcctCr());
 			BigDecimal varianceExpected = componentCost.subtract(endProductCost).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 			assertEquals(varianceExpected.setScale(2, RoundingMode.HALF_UP), variance.setScale(2, RoundingMode.HALF_UP), "Variance not posted correctly.");
 		} finally {
