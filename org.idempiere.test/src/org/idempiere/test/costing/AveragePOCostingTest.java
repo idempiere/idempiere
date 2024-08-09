@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 import org.compiere.acct.Doc;
@@ -47,12 +48,16 @@ import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
+import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLine;
@@ -90,9 +95,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 
 	public AveragePOCostingTest() {
 	}
-
+	
 	@Test
 	public void testMaterialReceipt() {
+		testMaterialReceipt(false);
+		testMaterialReceipt(true);
+	}
+
+	public void testMaterialReceipt(boolean isBackOrder) {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
@@ -118,8 +128,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			pp.setPriceStd(new BigDecimal("2"));
 			pp.setPriceList(new BigDecimal("2"));
 			pp.saveEx();
-			
-			MInOutLine receiptLine = createPOAndMRForProduct(product.get_ID(), null, null);
+			 
+			MInOutLine receiptLine = createPOAndMRForProduct(product.get_ID(), null, null, isBackOrder);
 			
 			product.set_TrxName(getTrxName());
 			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
@@ -130,8 +140,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for material receipt line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, receiptLine.getParent().getDateAcct());
 			
-			receiptLine = createPOAndMRForProduct(product.get_ID(), null, new BigDecimal("3.00"));
+			receiptLine = createPOAndMRForProduct(product.get_ID(), null, new BigDecimal("3.00"), isBackOrder);
 			cost.load(getTrxName());
 			//(2+3)/2
 			assertEquals(new BigDecimal("2.50"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
@@ -139,12 +150,83 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for material receipt line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, receiptLine.getParent().getDateAcct());
+			
+			//	invoice
+			MInOut receipt = new MInOut(Env.getCtx(), receiptLine.getM_InOut_ID(), getTrxName());
+			MInvoice invoice = new MInvoice(receipt, receipt.getMovementDate());
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
+			invoiceLine.setLine(10);
+			invoiceLine.setProduct(product);
+			invoiceLine.setQty(BigDecimal.ONE);
+			invoiceLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+			
+			if (!invoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			invoice.load(getTrxName());
+			assertTrue(invoice.isPosted());
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine.getParent().getDateAcct());
+			
+			//	matched invoice
+			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertTrue(error == null);
+				}
+				mi.load(getTrxName()); 
+				assertTrue(mi.isPosted());
+
+				cd = MCostDetail.get(Env.getCtx(), "M_MatchInv_ID=?", mi.getM_MatchInv_ID(), 0, as.get_ID(), getTrxName());
+				assertNotNull(cd, "MCostDetail not found for matched invoice line");
+				validateCostDetailDateAcctBackDate(cd, mi.getDateAcct());
+			}
+			
+			//	reverse invoice
+			info = MWorkflow.runDocumentActionWorkflow(invoice, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus(), "Unexpected Document Status");
+			
+			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
+			if (!reversalInvoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), reversalInvoice.getAD_Client_ID(), reversalInvoice.get_Table_ID(), reversalInvoice.get_ID(), false, getTrxName());
+				assertNull(error, error);
+			}
+			reversalInvoice.load(getTrxName());
+			assertTrue(reversalInvoice.isPosted());
+ 			 
+			//	reverse matched invoice 
+			miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) { 
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertTrue(error == null);
+				}
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+			}
 			
 			//reverse MR2
-			MInOut receipt = new MInOut(Env.getCtx(), receiptLine.getM_InOut_ID(), getTrxName());
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Reverse_Accrual);
+			info = MWorkflow.runDocumentActionWorkflow(receipt, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 			assertFalse(info.isError(), info.getSummary());
-			receipt.load(getTrxName());
+  			receipt.load(getTrxName());
 			assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus(), "Unexpected Document Status");
 			MInOut reverse = new MInOut(Env.getCtx(), receipt.getReversal_ID(), getTrxName());
 			if (!reverse.isPosted()) {
@@ -158,6 +240,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("0.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, receiptLine.getParent().getDateAcct());
 		} finally {
 			rollback();
 			
@@ -170,13 +253,18 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	
 	@Test
 	public void testShipment() {
+		testShipment(false);
+		testShipment(true);
+	}
+
+	public void testShipment(boolean isBackOrder) {
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, getTrxName());
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0) {
-			createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, new BigDecimal("5.00"));
+			createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, new BigDecimal("5.00"), isBackOrder);
 			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		}
 		BigDecimal currentCost = cost.getCurrentCostPrice();
@@ -188,6 +276,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		if (isBackOrder) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			today = new Timestamp(cal.getTimeInMillis());
+		}
+		order.setDateAcct(today);
+		order.setDateOrdered(today);		
 		order.setDatePromised(today);
 		order.saveEx();
 		
@@ -225,10 +321,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.get_ID(), 0, as.get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for shipment line");
 		assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
-		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");		
+		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+		validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct());
 		
 		//reverse shipment
-		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Accrual);
+		info = MWorkflow.runDocumentActionWorkflow(shipment, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Unexpected Document Status");
@@ -240,17 +337,23 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].get_ID(), 0, as.get_ID(), getTrxName());
 		assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
+		validateCostDetailDateAcctBackDate(cd, reversalLines[0].getParent().getDateAcct());
 	}
 	
 	@Test
 	public void testInternalUse() {
+		testInternalUse(false);
+		testInternalUse(true);
+	}
+
+	public void testInternalUse(boolean isBackOrder) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
-			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null, isBackOrder);
 			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		}
 		assertNotNull(cost, "No MCost Record");
@@ -258,6 +361,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		
 		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
 		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.INTERNAL_USE_INVENTORY.id);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		if (isBackOrder) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			today = new Timestamp(cal.getTimeInMillis());
+		}
+		inventory.setMovementDate(today);
 		inventory.saveEx();
 		
 		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
@@ -266,7 +377,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		line.setQtyInternalUse(new BigDecimal("1.00"));
 		line.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
 		line.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
-		line.saveEx();
+		line.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
 		inventory.load(getTrxName());
@@ -279,9 +390,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, line.getParent().getMovementDate());
 		
 		//reverse internal use
-		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Reverse_Accrual);
+		info = MWorkflow.runDocumentActionWorkflow(inventory, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 		inventory.load(getTrxName());
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, inventory.getDocStatus(), "Unexpected Document Status");
@@ -293,17 +405,23 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, reversal.getLines(false)[0].getParent().getMovementDate());
 	}
 	
 	@Test
 	public void testProjectIssue() {
+		testProjectIssue(false);
+		testProjectIssue(true);
+	}
+
+	public void testProjectIssue(boolean isBackOrder) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
-			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null, isBackOrder);
 			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		}
 		assertNotNull(cost, "No MCost Record");
@@ -315,6 +433,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		project.saveEx();
 		
 		MProjectIssue issue = new MProjectIssue(project);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		if (isBackOrder) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			today = new Timestamp(cal.getTimeInMillis());
+		}
+		issue.setMovementDate(today);
 		issue.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
 		issue.setLine(10);
 		issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
@@ -336,9 +462,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, issue.getMovementDate());
 		
 		//reverse issue
-		info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Reverse_Accrual);
+		info = MWorkflow.runDocumentActionWorkflow(issue, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 		issue.load(getTrxName());
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, issue.getDocStatus(), "Unexpected Document Status");
@@ -349,10 +476,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, issue.getReversal().getMovementDate());
 	}
 	
 	@Test
 	public void testProduction() {
+		testProduction(false);
+		testProduction(true);
+	}
+
+	public void testProduction(boolean isBackOrder) {
 		MProduct mulch = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		MProduct azb = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, getTrxName());
 		
@@ -373,13 +506,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 			MCost cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
-				createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+				createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null, isBackOrder);
 				cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			}
 			BigDecimal mulchCost = cost.getCurrentCostPrice();
 			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
-				createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, null);
+				createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, null, isBackOrder);
 				cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			}
 			BigDecimal azbCost = cost.getCurrentCostPrice();
@@ -409,7 +542,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			production.setM_Product_ID(mulchX.get_ID());
 			production.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			production.setIsUseProductionPlan(false);
-			production.setMovementDate(getLoginDate());
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			if (isBackOrder) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(today.getTime());
+				cal.add(Calendar.DAY_OF_MONTH, -1);
+				today = new Timestamp(cal.getTimeInMillis());
+			}
+			production.setMovementDate(today);
 			production.setDocAction(DocAction.ACTION_Complete);
 			production.setDocStatus(DocAction.STATUS_Drafted);
 			production.setIsComplete(false);
@@ -446,6 +586,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			mulchX.set_TrxName(getTrxName());
 			cost = mulchX.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertEquals(rollup.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+			validateCostDetailDateAcctBackDate(cd, plines[0].getM_Production().getMovementDate());
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[1].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
@@ -453,6 +594,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(mulchCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertEquals(mulchCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+			validateCostDetailDateAcctBackDate(cd, plines[1].getM_Production().getMovementDate());
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[2].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
@@ -460,9 +602,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(azbCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertEquals(azbCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+			validateCostDetailDateAcctBackDate(cd, plines[2].getM_Production().getMovementDate());
 			
 			//reverse production
-			info = MWorkflow.runDocumentActionWorkflow(production, DocAction.ACTION_Reverse_Accrual);
+			info = MWorkflow.runDocumentActionWorkflow(production, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 			production.load(getTrxName());
 			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Reversed, production.getDocStatus(), "Production Status="+production.getDocStatus());
@@ -474,6 +617,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(rollup.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, reversalLines[0].getM_Production().getMovementDate());
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[1].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
@@ -481,12 +625,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(mulchCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertEquals(mulchCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+			validateCostDetailDateAcctBackDate(cd, reversalLines[1].getM_Production().getMovementDate());
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[2].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(azbCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			validateCostDetailDateAcctBackDate(cd, reversalLines[2].getM_Production().getMovementDate());
 		} finally {
 			rollback();
 			DB.executeUpdateEx("delete from m_cost where m_product_id=?", new Object[] {mulchX.get_ID()}, null);
@@ -497,6 +643,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	
 	@Test
 	public void testMRAndShipmentByLot() {
+		testMRAndShipmentByLot(false);
+		testMRAndShipmentByLot(true);
+	}
+
+	public void testMRAndShipmentByLot(boolean isBackOrder) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		
@@ -553,23 +704,25 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			asi1.setLot("Lot1");
 			asi1.saveEx();			
-			MInOutLine line1 = createPOAndMRForProduct(product.get_ID(), asi1, new BigDecimal("2.00"));
+			MInOutLine line1 = createPOAndMRForProduct(product.get_ID(), asi1, new BigDecimal("2.00"), isBackOrder);
 			
 			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
 			asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			asi2.setLot("Lot2");
 			asi2.saveEx();			
-			MInOutLine line2 = createPOAndMRForProduct(product.get_ID(), asi2, new BigDecimal("3.00"));
+			MInOutLine line2 = createPOAndMRForProduct(product.get_ID(), asi2, new BigDecimal("3.00"), isBackOrder);
 			
 			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), asi1.get_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, line1.getParent().getDateAcct());
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.get_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, line2.getParent().getDateAcct());
 			
 			product.set_TrxName(getTrxName());
 			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
@@ -617,6 +770,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			order.setDocStatus(DocAction.STATUS_Drafted);
 			order.setDocAction(DocAction.ACTION_Complete);
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			if (isBackOrder) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(today.getTime());
+				cal.add(Calendar.DAY_OF_MONTH, -1);
+				today = new Timestamp(cal.getTimeInMillis());
+			}
+			order.setDateAcct(today);
+			order.setDateOrdered(today);
 			order.setDatePromised(today);
 			order.saveEx();
 			
@@ -690,14 +851,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2").negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct());
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[1].getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3").negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct());
 			
 			//reverse shipment
-			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Accrual);
+			info = MWorkflow.runDocumentActionWorkflow(shipment, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 			assertFalse(info.isError(), info.getSummary());
 			shipment.load(getTrxName());
 			assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Unexpected document status");
@@ -709,11 +872,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
-			
+			validateCostDetailDateAcctBackDate(cd, reversalLines[0].getParent().getDateAcct());
+
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, reversalLines[0].getParent().getDateAcct());
 			
 			cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
 			assertNotNull(cost1, "MCost record not found");
@@ -725,7 +890,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//reverse MR2
 			MInOut mr2 = new MInOut(Env.getCtx(), line2.getM_InOut_ID(), getTrxName());
-			info = MWorkflow.runDocumentActionWorkflow(mr2, DocAction.ACTION_Reverse_Accrual);
+			info = MWorkflow.runDocumentActionWorkflow(mr2, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 			assertFalse(info.isError(), info.getSummary());
 			mr2.load(getTrxName());
 			assertEquals(DocAction.STATUS_Reversed, mr2.getDocStatus(), "Unexpected document status");
@@ -734,6 +899,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for order line2");
 			assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			validateCostDetailDateAcctBackDate(cd, line2.getParent().getDateAcct());
 		} finally {
 			rollback();
 			
@@ -754,13 +920,18 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	
 	@Test
 	public void testCostAdjustment() {
+		testCostAdjustment(false);
+		testCostAdjustment(true);
+	}
+
+	public void testCostAdjustment(boolean isBackOrder) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
-			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null, isBackOrder);
 			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		}
 		assertNotNull(cost, "No MCost Record");
@@ -771,6 +942,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.COST_ADJUSTMENT.id);
 		inventory.setC_Currency_ID(as.getC_Currency_ID());
 		inventory.setCostingMethod(as.getCostingMethod());
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		if (isBackOrder) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			today = new Timestamp(cal.getTimeInMillis());
+		}
+		inventory.setMovementDate(today);
 		inventory.saveEx();
 		
 		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
@@ -792,9 +971,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(adjustment.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.add(adjustment).setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, line.getParent().getMovementDate());
 		
 		//reverse cost adjustment
-		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Reverse_Accrual);
+		info = MWorkflow.runDocumentActionWorkflow(inventory, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 		inventory.load(getTrxName());
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, inventory.getDocStatus(), "Unexpected Document Status");
@@ -807,21 +987,35 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(adjustment.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, reversalLines[0].getParent().getMovementDate());
 	}
 	
 	@Test
 	public void testPhysicalInventory() {
+		testPhysicalInventory(false);
+		testPhysicalInventory(true);
+	}
+
+	public void testPhysicalInventory(boolean isBackOrder) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
-		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null, isBackOrder);
 		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		assertNotNull(cost, "No MCost Record");
 		BigDecimal currentCost = cost.getCurrentCostPrice();
 		
 		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
 		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		if (isBackOrder) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			today = new Timestamp(cal.getTimeInMillis());
+		}
+		inventory.setMovementDate(today);
 		inventory.saveEx();
 		
 		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
@@ -844,9 +1038,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		validateCostDetailDateAcctBackDate(cd, line.getParent().getMovementDate());
 		
 		//reverse physical inventory
-		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Reverse_Accrual);
+		info = MWorkflow.runDocumentActionWorkflow(inventory, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 		inventory.load(getTrxName());
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, inventory.getDocStatus(), "Unexpected Document Status");
@@ -859,11 +1054,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
-	
+		validateCostDetailDateAcctBackDate(cd, reversalLines[0].getParent().getMovementDate());	
 	}
 	
 	@Test
 	public void testLandedCostForPO() {
+		testLandedCostForPO(false);
+		testLandedCostForPO(true);
+	}
+
+	public void testLandedCostForPO(boolean isBackOrder) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
@@ -898,6 +1098,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			order.setDocStatus(DocAction.STATUS_Drafted);
 			order.setDocAction(DocAction.ACTION_Complete);
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			if (isBackOrder) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(today.getTime());
+				cal.add(Calendar.DAY_OF_MONTH, -1);
+				today = new Timestamp(cal.getTimeInMillis());
+			}
+			order.setDateAcct(today);
 			order.setDateOrdered(today);
 			order.setDatePromised(today);
 			order.saveEx();
@@ -951,6 +1158,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 					assertEquals(new BigDecimal("0.30").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 				}
+				validateCostDetailDateAcctBackDate(cd, line1.getParent().getDateAcct()); 
 			}
 			
 			product.set_TrxName(getTrxName());
@@ -959,7 +1167,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(new BigDecimal("2.30"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			//reverse receipt
-			info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Reverse_Accrual);
+			info = MWorkflow.runDocumentActionWorkflow(receipt1, isBackOrder ? DocAction.ACTION_Reverse_Correct : DocAction.ACTION_Reverse_Accrual);
 			assertFalse(info.isError(), info.getSummary());
 			receipt1.load(getTrxName());
 			assertEquals(DocAction.STATUS_Reversed, receipt1.getDocStatus());
@@ -974,6 +1182,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 					assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 				}
+				validateCostDetailDateAcctBackDate(cd, line1.getParent().getDateAcct());
 			}
 		} finally {
 			rollback();
@@ -985,7 +1194,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
-	private MInOutLine createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal price) {
+	private MInOutLine createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal price, boolean isBackOrder) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -994,8 +1203,15 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		if (isBackOrder) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			today = new Timestamp(cal.getTimeInMillis());
+		}
+		order.setDateAcct(today);
 		order.setDateOrdered(today);
-		order.setDatePromised(today);
+		order.setDatePromised(today);		
 		order.saveEx();
 
 		MOrderLine line1 = new MOrderLine(order);
@@ -1036,5 +1252,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		}
 		
 		return receiptLine1;
+	}
+	
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-6203
+	 */
+	public static void validateCostDetailDateAcctBackDate(MCostDetail cd, Timestamp dateAcct) {
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		assertEquals(cd.getDateAcct(), dateAcct, "Unexpected MCostDetail DateAcct");
+		assertEquals(cd.isBackDate(), dateAcct.before(today), "Unexpected MCostDetail IsBackDate");
 	}
 }

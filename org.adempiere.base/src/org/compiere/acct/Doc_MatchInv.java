@@ -439,7 +439,7 @@ public class Doc_MatchInv extends Doc
 			if (!MCostDetail.createMatchInvoice(as, m_invoiceLine.getAD_Org_ID(),
 					m_invoiceLine.getM_Product_ID(), m_invoiceLine.getM_AttributeSetInstance_ID(),
 					matchInv.getM_MatchInv_ID(), 0,
-					ipv, BigDecimal.ZERO, "Invoice Price Variance", getTrxName())) {
+					ipv, BigDecimal.ZERO, "Invoice Price Variance", getDateAcct(), getTrxName())) {
 				throw new RuntimeException("Failed to create cost detail record.");
 			}				
 		} catch (SQLException e) {
@@ -615,7 +615,7 @@ public class Doc_MatchInv extends Doc
 			if (!MCostDetail.createInvoice(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					m_invoiceLine.getC_InvoiceLine_ID(), 0,		//	No cost element
-					tAmt, tQty,	getDescription(), getTrxName()))
+					tAmt, tQty,	getDescription(), getDateAcct(), getTrxName()))
 			{
 				return "Failed to create cost detail record";
 			}
@@ -668,7 +668,7 @@ public class Doc_MatchInv extends Doc
 				if (!MCostDetail.createShipment(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					m_receiptLine.getM_InOutLine_ID(), elementId,
-					amt, tQty,	getDescription(), false, getTrxName()))
+					amt, tQty,	getDescription(), false, getDateAcct(), getTrxName()))
 				{
 					return "Failed to create cost detail record";
 				}

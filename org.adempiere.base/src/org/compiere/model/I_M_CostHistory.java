@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_CostHistory
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_CostHistory 
 {
@@ -78,6 +78,19 @@ public interface I_M_CostHistory
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -90,6 +103,15 @@ public interface I_M_CostHistory
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsBackDate */
+    public static final String COLUMNNAME_IsBackDate = "IsBackDate";
+
+	/** Set Back-Date	  */
+	public void setIsBackDate (boolean IsBackDate);
+
+	/** Get Back-Date	  */
+	public boolean isBackDate();
 
     /** Column name M_AttributeSetInstance_ID */
     public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
@@ -201,19 +223,6 @@ public interface I_M_CostHistory
 	  */
 	public BigDecimal getNewCAmt();
 
-    /** Column name NewCostPrice */
-    public static final String COLUMNNAME_NewCostPrice = "NewCostPrice";
-
-	/** Set New Cost Price.
-	  * New current cost price after processing of M_CostDetail
-	  */
-	public void setNewCostPrice (BigDecimal NewCostPrice);
-
-	/** Get New Cost Price.
-	  * New current cost price after processing of M_CostDetail
-	  */
-	public BigDecimal getNewCostPrice();
-
     /** Column name NewCQty */
     public static final String COLUMNNAME_NewCQty = "NewCQty";
 
@@ -226,6 +235,19 @@ public interface I_M_CostHistory
 	  * New Accumulated Qty after processing of M_CostDetail
 	  */
 	public BigDecimal getNewCQty();
+
+    /** Column name NewCostPrice */
+    public static final String COLUMNNAME_NewCostPrice = "NewCostPrice";
+
+	/** Set New Cost Price.
+	  * New current cost price after processing of M_CostDetail
+	  */
+	public void setNewCostPrice (BigDecimal NewCostPrice);
+
+	/** Get New Cost Price.
+	  * New current cost price after processing of M_CostDetail
+	  */
+	public BigDecimal getNewCostPrice();
 
     /** Column name NewQty */
     public static final String COLUMNNAME_NewQty = "NewQty";
@@ -253,19 +275,6 @@ public interface I_M_CostHistory
 	  */
 	public BigDecimal getOldCAmt();
 
-    /** Column name OldCostPrice */
-    public static final String COLUMNNAME_OldCostPrice = "OldCostPrice";
-
-	/** Set Old Current Cost Price.
-	  * Old current cost price before the processing of M_CostDetail
-	  */
-	public void setOldCostPrice (BigDecimal OldCostPrice);
-
-	/** Get Old Current Cost Price.
-	  * Old current cost price before the processing of M_CostDetail
-	  */
-	public BigDecimal getOldCostPrice();
-
     /** Column name OldCQty */
     public static final String COLUMNNAME_OldCQty = "OldCQty";
 
@@ -278,6 +287,19 @@ public interface I_M_CostHistory
 	  * Old accumulated qty before the processing of M_CostDetail
 	  */
 	public BigDecimal getOldCQty();
+
+    /** Column name OldCostPrice */
+    public static final String COLUMNNAME_OldCostPrice = "OldCostPrice";
+
+	/** Set Old Current Cost Price.
+	  * Old current cost price before the processing of M_CostDetail
+	  */
+	public void setOldCostPrice (BigDecimal OldCostPrice);
+
+	/** Get Old Current Cost Price.
+	  * Old current cost price before the processing of M_CostDetail
+	  */
+	public BigDecimal getOldCostPrice();
 
     /** Column name OldQty */
     public static final String COLUMNNAME_OldQty = "OldQty";
