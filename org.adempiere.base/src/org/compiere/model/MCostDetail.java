@@ -50,11 +50,8 @@ import org.compiere.util.Util;
  */
 public class MCostDetail extends X_M_CostDetail
 {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -3896161579785627935L;
-
+	private static final long serialVersionUID = 8436354578317073178L;
+	
 	protected static final String INOUTLINE_DOCBASETYPE_SQL =
 		    "SELECT c.DocBaseType From M_InOut io " +
 			"INNER JOIN M_InOutLine iol ON io.M_InOut_ID=iol.M_InOut_ID " +
