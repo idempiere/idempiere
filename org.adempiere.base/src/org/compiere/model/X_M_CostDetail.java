@@ -19,12 +19,13 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostDetail
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_CostDetail")
 public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 {
@@ -32,7 +33,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20240805L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -42,6 +43,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -59,6 +63,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -76,6 +83,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -93,6 +103,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -337,6 +350,22 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return bd;
 	}
 
+	/** Set Account Date.
+		@param DateAcct Accounting Date
+	*/
+	public void setDateAcct (Timestamp DateAcct)
+	{
+		set_Value (COLUMNNAME_DateAcct, DateAcct);
+	}
+
+	/** Get Account Date.
+		@return Accounting Date
+	  */
+	public Timestamp getDateAcct()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
+	}
+
 	/** Set Delta Amount.
 		@param DeltaAmt Difference Amount
 	*/
@@ -389,6 +418,28 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Back-Date.
+		@param IsBackDate Back-Date
+	*/
+	public void setIsBackDate (boolean IsBackDate)
+	{
+		set_Value (COLUMNNAME_IsBackDate, Boolean.valueOf(IsBackDate));
+	}
+
+	/** Get Back-Date.
+		@return Back-Date	  */
+	public boolean isBackDate()
+	{
+		Object oo = get_Value(COLUMNNAME_IsBackDate);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Sales Transaction.

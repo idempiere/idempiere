@@ -240,7 +240,7 @@ public class Doc_Movement extends Doc
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs.negate(), line.getQty().negate(), true,
-					description + "(|->)", getTrxName()))
+					description + "(|->)", line.getDateAcct(), getTrxName()))
 				{
 					p_Error = "Failed to create cost detail record";
 					return null;
@@ -250,7 +250,7 @@ public class Doc_Movement extends Doc
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs, line.getQty(), false,
-					description + "(|<-)", getTrxName()))
+					description + "(|<-)", line.getDateAcct(), getTrxName()))
 				{
 					p_Error = "Failed to create cost detail record";
 					return null;

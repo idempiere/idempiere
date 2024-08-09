@@ -445,7 +445,7 @@ public class Doc_Production extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							bomCost.negate(), qtyProduced,
-							description, getTrxName()))
+							description, line.getDateAcct(), getTrxName()))
 					 {
 						 p_Error = "Failed to create cost detail record";
 						 return null;
@@ -461,7 +461,7 @@ public class Doc_Production extends Doc
 								line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								maCost, ma.getMovementQty(),
-								description, getTrxName()))
+								description, line.getDateAcct(), getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
@@ -475,7 +475,7 @@ public class Doc_Production extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							costs, line.getQty(),
-							description, getTrxName()))
+							description, line.getDateAcct(), getTrxName()))
 					 {
 						 p_Error = "Failed to create cost detail record";
 						 return null;
@@ -490,7 +490,7 @@ public class Doc_Production extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							bomCost.negate(), line.getQty(),
-							description, getTrxName()))
+							description, line.getDateAcct(), getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
@@ -502,7 +502,7 @@ public class Doc_Production extends Doc
 						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						line.get_ID(), 0,
 						costs, line.getQty(),
-						description, getTrxName()))
+						description, line.getDateAcct(), getTrxName()))
 					{
 						p_Error = "Failed to create cost detail record";
 						return null;

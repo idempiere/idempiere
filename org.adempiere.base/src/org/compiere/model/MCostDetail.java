@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
@@ -73,22 +75,50 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param trxName transaction
 	 *	@return true if created
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createOrder (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_OrderLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
+		return createOrder (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_OrderLine_ID, M_CostElement_ID, 
+				Amt, Qty, Description, null, trxName);
+	}
+	
+	/**
+	 * 	Create New Cost Detail record for Purchase Orders.
+	 * 	Called from Doc_MatchPO.
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param C_OrderLine_ID order
+	 *	@param M_CostElement_ID optional cost element for Freight
+	 *	@param Amt amt total amount
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if created
+	 */
+	public static boolean createOrder (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int C_OrderLine_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, Timestamp DateAcct, String trxName)
+	{
 		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
-		if (cd == null)		//	createNew
+		if (cd == null)		//	createNew 
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setC_OrderLine_ID (C_OrderLine_ID);
 		}
 		else
@@ -138,12 +168,40 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param trxName transaction
 	 *	@return true if created
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createInvoice (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_InvoiceLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
+	{
+		return createInvoice (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_InvoiceLine_ID, M_CostElement_ID, 
+				Amt, Qty, Description, null, trxName);
+	}
+	
+	/**
+	 * 	Create New Cost Detail record for AP Invoices.
+	 * 	Called from Doc_Invoice - for Invoice Adjustments.
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param C_InvoiceLine_ID invoice
+	 *	@param M_CostElement_ID optional cost element for Freight
+	 *	@param Amt amt
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if created
+	 */
+	public static boolean createInvoice (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int C_InvoiceLine_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, Timestamp DateAcct, String trxName)
 	{
 		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
 			C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
@@ -153,7 +211,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setC_InvoiceLine_ID (C_InvoiceLine_ID);
 		}
 		else
@@ -204,12 +262,41 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param IsSOTrx sales order
 	 *	@param trxName transaction
 	 *	@return true if no error
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createShipment (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InOutLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, boolean IsSOTrx, String trxName)
+	{
+		return createShipment (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_InOutLine_ID, M_CostElement_ID, 
+				Amt, Qty, Description, IsSOTrx, null, trxName);
+	}
+	
+	/**
+	 * 	Create New Cost Detail record for SO Shipments.
+	 * 	Called from Doc_MInOut - for SO Shipments.  
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param M_InOutLine_ID shipment
+	 *	@param M_CostElement_ID optional cost element for Freight
+	 *	@param Amt amt
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param IsSOTrx sales order
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if no error
+	 */
+	public static boolean createShipment (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int M_InOutLine_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, boolean IsSOTrx, Timestamp DateAcct, String trxName)
 	{
 		MCostDetail cd = get (as.getCtx(), "M_InOutLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			M_InOutLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
@@ -219,7 +306,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setM_InOutLine_ID(M_InOutLine_ID);
 			cd.setIsSOTrx(IsSOTrx);
 		}
@@ -270,12 +357,40 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param trxName transaction
 	 *	@return true if no error
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createInventory (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InventoryLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
+	{
+		return createInventory (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_InventoryLine_ID, M_CostElement_ID, 
+				Amt, Qty, Description, null, trxName);
+	}
+	
+	/**
+	 * 	Create New Cost Detail record for Physical Inventory.
+	 * 	Called from Doc_Inventory.
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param M_InventoryLine_ID order
+	 *	@param M_CostElement_ID optional cost element
+	 *	@param Amt amt total amount
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if no error
+	 */
+	public static boolean createInventory (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int M_InventoryLine_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, Timestamp DateAcct, String trxName)
 	{
 		MCostDetail cd = get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
@@ -285,7 +400,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setM_InventoryLine_ID(M_InventoryLine_ID);
 		}
 		else
@@ -336,12 +451,41 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param trxName transaction
 	 *	@return true if no error
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createMovement (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_MovementLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty, boolean from,
 		String Description, String trxName)
+	{
+		return createMovement (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_MovementLine_ID, M_CostElement_ID, 
+				Amt, Qty, from, Description, null, trxName);
+	}
+	
+	/**
+	 * 	Create New Cost Detail record for Inventory Movements.
+	 * 	Called from Doc_Movement.
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param M_MovementLine_ID movement
+	 *	@param M_CostElement_ID optional cost element for Freight
+	 *	@param Amt amt total amount
+	 *	@param Qty qty
+	 *	@param from if true the from (reduction)
+	 *	@param Description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if no error
+	 */
+	public static boolean createMovement (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int M_MovementLine_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty, boolean from,
+		String Description, Timestamp DateAcct, String trxName)
 	{
 		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
 				.append((from ? "'Y'" : "'N'")).append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
@@ -353,7 +497,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setM_MovementLine_ID (M_MovementLine_ID);
 			cd.setIsSOTrx(from);
 		}
@@ -404,12 +548,40 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param trxName transaction
 	 *	@return true if no error
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createProduction (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_ProductionLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
+	{
+		return createProduction (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_ProductionLine_ID, M_CostElement_ID,
+				Amt, Qty, Description, null, trxName);
+	}
+	
+	/**
+	 * 	Create New Cost Detail record for Production.
+	 * 	Called from Doc_Production.
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param M_ProductionLine_ID production line
+	 *	@param M_CostElement_ID optional cost element
+	 *	@param Amt amt total amount
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if no error
+	 */
+	public static boolean createProduction (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int M_ProductionLine_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, Timestamp DateAcct, String trxName)
 	{
 		MCostDetail cd = get (as.getCtx(), "M_ProductionLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
@@ -419,7 +591,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setM_ProductionLine_ID(M_ProductionLine_ID);
 		}
 		else
@@ -456,24 +628,51 @@ public class MCostDetail extends X_M_CostDetail
 	}	//	createProduction
 	
 	/**
-	 * Create cost detail record for Match Invoice (M_MatchInv).
-	 * @param as
-	 * @param AD_Org_ID
-	 * @param M_Product_ID
-	 * @param M_AttributeSetInstance_ID
-	 * @param M_MatchInv_ID
-	 * @param M_CostElement_ID
-	 * @param Amt
-	 * @param Qty
-	 * @param Description
-	 * @param trxName
-	 * @return true if no error
+	 *	Create cost detail record for Match Invoice (M_MatchInv).
+	 *	@param as
+	 *	@param AD_Org_ID
+	 *	@param M_Product_ID
+	 *	@param M_AttributeSetInstance_ID
+	 *	@param M_MatchInv_ID
+	 *	@param M_CostElement_ID
+	 *	@param Amt
+	 *	@param Qty
+	 *	@param Description
+	 *	@param trxName
+	 *	@return true if no error
+	 *	@deprecated
 	 */
+	@Deprecated
 	public static boolean createMatchInvoice (MAcctSchema as, int AD_Org_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MatchInv_ID, int M_CostElement_ID, 
 			BigDecimal Amt, BigDecimal Qty,
 			String Description, String trxName)
+	{
+		return createMatchInvoice (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_MatchInv_ID, M_CostElement_ID,
+				Amt, Qty, Description, null, trxName);
+	}
+	
+	/**
+	 *	Create cost detail record for Match Invoice (M_MatchInv).
+	 *	@param as
+	 *	@param AD_Org_ID
+	 *	@param M_Product_ID
+	 *	@param M_AttributeSetInstance_ID
+	 *	@param M_MatchInv_ID
+	 *	@param M_CostElement_ID
+	 *	@param Amt
+	 *	@param Qty
+	 *	@param Description
+	 *	@param dateAcct account date
+	 *	@param trxName
+	 *	@return true if no error
+	 */
+	public static boolean createMatchInvoice (MAcctSchema as, int AD_Org_ID, 
+			int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_MatchInv_ID, int M_CostElement_ID, 
+			BigDecimal Amt, BigDecimal Qty,
+			String Description, Timestamp DateAcct, String trxName)
 	{
 		MCostDetail cd = get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
@@ -483,7 +682,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setM_MatchInv_ID(M_MatchInv_ID);
 		}
 		else
@@ -532,12 +731,40 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param trxName transaction
 	 *	@return true if no error
+	 *	@deprecated
 	 */
-	public static boolean createProjectIssue(MAcctSchema as, int AD_Org_ID, 
+	@Deprecated
+	public static boolean createProjectIssue (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_ProjectIssue_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
+	{
+		return createProjectIssue (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_ProjectIssue_ID, M_CostElement_ID,
+				Amt, Qty, Description, null, trxName);
+	}
+	
+	/**
+	 * 	Create Cost Detail for Project Issue (C_ProjectIssue).
+	 * 	Called from Doc_ProjectIssue
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param C_ProjectIssue_ID project issue line
+	 *	@param M_CostElement_ID optional cost element
+	 *	@param Amt amt total amount
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 *	@return true if no error
+	 */
+	public static boolean createProjectIssue (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int C_ProjectIssue_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, Timestamp DateAcct, String trxName)
 	{
 		MCostDetail cd = get (as.getCtx(), "C_ProjectIssue_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 				C_ProjectIssue_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
@@ -547,7 +774,7 @@ public class MCostDetail extends X_M_CostDetail
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, trxName);
+				Amt, Qty, Description, DateAcct, trxName);
 			cd.setC_ProjectIssue_ID(C_ProjectIssue_ID);
 		}
 		else
@@ -765,11 +992,34 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param qty Quantity
 	 *	@param description optional description
 	 *	@param trxName transaction
+	 *	@deprecated
 	 */
+	@Deprecated
 	public MCostDetail (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
 		String description, String trxName)
+	{
+		this (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_CostElement_ID, amt, qty, description, null, trxName);
+	}
+	
+	/**
+	 * 	New Constructor
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param M_CostElement_ID optional cost element for Freight
+	 *	@param amt Amount
+	 *	@param qty Quantity
+	 *	@param description optional description
+	 *	@param dateAcct account date
+	 *	@param trxName transaction
+	 */
+	public MCostDetail (MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
+		String description, Timestamp dateAcct, String trxName)
 	{
 		this (as.getCtx(), 0, trxName);
 		setClientOrg(as.getAD_Client_ID(), AD_Org_ID);
@@ -781,6 +1031,8 @@ public class MCostDetail extends X_M_CostDetail
 		setAmt (amt);
 		setQty (qty);
 		setDescription(description);
+		
+		setDateAcct(dateAcct);
 	}	//	MCostDetail
 	
 	/**
@@ -863,6 +1115,27 @@ public class MCostDetail extends X_M_CostDetail
 		return !(getDeltaAmt().signum() == 0 
 			&& getDeltaQty().signum() == 0);
 	}	//	isDelta
+
+	
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (newRecord) {
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Timestamp dateAcct = getDateAcct();
+			if (dateAcct == null)
+			{
+				setDateAcct(today);
+				setIsBackDate(false);
+			}
+			else
+			{
+				setDateAcct(dateAcct);
+				setIsBackDate(dateAcct.before(today));
+			}
+		}
+		
+		return super.beforeSave(newRecord);
+	}
 
 	@Override
 	protected boolean beforeDelete ()
@@ -1026,6 +1299,8 @@ public class MCostDetail extends X_M_CostDetail
 		X_M_CostHistory history = new X_M_CostHistory(getCtx(), 0, get_TrxName());
 		history.setM_AttributeSetInstance_ID(cost.getM_AttributeSetInstance_ID());
 		history.setM_CostDetail_ID(this.getM_CostDetail_ID());
+		history.setDateAcct(this.getDateAcct());
+		history.setIsBackDate(this.isBackDate());
 		history.setM_CostElement_ID(ce.getM_CostElement_ID());
 		history.setM_CostType_ID(cost.getM_CostType_ID());
 		history.setM_Product_ID(cost.getM_Product_ID());

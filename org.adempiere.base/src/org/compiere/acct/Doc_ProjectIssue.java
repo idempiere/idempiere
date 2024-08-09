@@ -171,7 +171,7 @@ public class Doc_ProjectIssue extends Doc
 				m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
 				m_line.get_ID(), 0,
 				costDetailAmt, costDetailQty,
-				m_line.getDescription(), getTrxName()))
+				m_line.getDescription(), m_line.getDateAcct(), getTrxName()))
 			{
 				p_Error = "Failed to create cost detail record";
 				return null;

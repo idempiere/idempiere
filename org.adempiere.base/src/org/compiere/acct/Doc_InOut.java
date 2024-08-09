@@ -361,7 +361,7 @@ public class Doc_InOut extends Doc
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										amt, qty,
-										line.getDescription(), true, getTrxName()))
+										line.getDescription(), true, line.getDateAcct(), getTrxName()))
 								{
 									p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 									return null;
@@ -381,7 +381,7 @@ public class Doc_InOut extends Doc
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), true, getTrxName()))
+								line.getDescription(), true, line.getDateAcct(), getTrxName()))
 							{
 								p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 								return null;
@@ -401,7 +401,7 @@ public class Doc_InOut extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							amt, line.getQty(),
-							line.getDescription(), true, getTrxName()))
+							line.getDescription(), true, line.getDateAcct(), getTrxName()))
 						{
 							p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 							return null;
@@ -551,7 +551,7 @@ public class Doc_InOut extends Doc
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										amt, qty,
-										line.getDescription(), true, getTrxName()))
+										line.getDescription(), true, line.getDateAcct(), getTrxName()))
 								{
 									p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 									return null;
@@ -569,7 +569,7 @@ public class Doc_InOut extends Doc
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), true, getTrxName()))
+								line.getDescription(), true, line.getDateAcct(), getTrxName()))
 							{
 								p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 								return null;
@@ -588,7 +588,7 @@ public class Doc_InOut extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							amt, line.getQty(),
-							line.getDescription(), true, getTrxName()))
+							line.getDescription(), true, line.getDateAcct(), getTrxName()))
 						{
 							p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 							return null;
@@ -1124,7 +1124,7 @@ public class Doc_InOut extends Doc
 						MInOutLineMA ma = mas[j];
 						if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
 								ma.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, ma.getMovementQty().negate(), 
-								line.getDescription(), false, getTrxName()))
+								line.getDescription(), false, line.getDateAcct(), getTrxName()))
 							return "SaveError";
 					}
 				}
@@ -1133,7 +1133,7 @@ public class Doc_InOut extends Doc
 			{
 				if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
-						line.getDescription(), false, getTrxName()))
+						line.getDescription(), false, line.getDateAcct(), getTrxName()))
 					return "SaveError";
 			}
 		} 
@@ -1141,7 +1141,7 @@ public class Doc_InOut extends Doc
 		{
 			if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
 					line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
-					line.getDescription(), false, getTrxName()))
+					line.getDescription(), false, line.getDateAcct(), getTrxName()))
 				return "SaveError";
 		}
 		return "";

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_CostDetail
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_CostDetail 
 {
@@ -203,6 +203,19 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getCurrentQty();
 
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
+
     /** Column name DeltaAmt */
     public static final String COLUMNNAME_DeltaAmt = "DeltaAmt";
 
@@ -254,6 +267,15 @@ public interface I_M_CostDetail
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsBackDate */
+    public static final String COLUMNNAME_IsBackDate = "IsBackDate";
+
+	/** Set Back-Date	  */
+	public void setIsBackDate (boolean IsBackDate);
+
+	/** Get Back-Date	  */
+	public boolean isBackDate();
 
     /** Column name IsSOTrx */
     public static final String COLUMNNAME_IsSOTrx = "IsSOTrx";

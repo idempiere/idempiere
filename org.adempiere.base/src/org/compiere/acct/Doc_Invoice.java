@@ -654,7 +654,7 @@ public class Doc_Invoice extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,		//	No Cost Element
 							line.getAmtSource(), line.getQty(),
-							line.getDescription(), getTrxName());
+							line.getDescription(), line.getDateAcct(), getTrxName());
 				}
 			}
 
@@ -761,7 +761,7 @@ public class Doc_Invoice extends Doc
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,		//	No Cost Element
 							line.getAmtSource().negate(), line.getQty(),
-							line.getDescription(), getTrxName());
+							line.getDescription(), line.getDateAcct(), getTrxName());
 				}
 			}
 
@@ -1070,7 +1070,7 @@ public class Doc_Invoice extends Doc
 								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
 								costDetailAmt, lca.getQty(),
-								desc, getTrxName())) {
+								desc, getDateAcct(), getTrxName())) {
 							throw new RuntimeException("Failed to create cost detail record.");
 						}				
 					} catch (SQLException e) {

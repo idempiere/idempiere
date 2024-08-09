@@ -398,7 +398,7 @@ public class Doc_Inventory extends Doc
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										maCost, qty,
-										line.getDescription(), getTrxName()))
+										line.getDescription(), line.getDateAcct(), getTrxName()))
 								{
 									p_Error = "Failed to create cost detail record";
 									return null;
@@ -413,7 +413,7 @@ public class Doc_Inventory extends Doc
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), getTrxName()))
+								line.getDescription(), line.getDateAcct(), getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
@@ -428,7 +428,7 @@ public class Doc_Inventory extends Doc
 						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						line.get_ID(), 0,
 						amt, line.getQty(),
-						line.getDescription(), getTrxName()))
+						line.getDescription(), line.getDateAcct(), getTrxName()))
 					{
 						p_Error = "Failed to create cost detail record";
 						return null;
