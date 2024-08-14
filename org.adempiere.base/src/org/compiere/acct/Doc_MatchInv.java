@@ -434,9 +434,11 @@ public class Doc_MatchInv extends Doc
 		BigDecimal qtyMatched = matchInv.getQty();
 		BigDecimal qtyCost = null;
 		Boolean isStockCoverage = false;
-		
-		if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)  && m_invoiceLine.getM_Product_ID() > 0)
+
+		boolean isReversal = matchInv.getReversal_ID() > 0 && matchInv.getReversal_ID() < matchInv.get_ID();
+		if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)  && m_invoiceLine.getM_Product_ID() > 0 && !isReversal)
 		{
+			isStockCoverage = true;
 
 			int AD_Org_ID = m_receiptLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
@@ -463,8 +465,7 @@ public class Doc_MatchInv extends Doc
 					M_AttributeSetInstance_ID, getTrxName());
 				qtyCost = (c!=null? c.getCurrentQty():Env.ZERO);
 			}
-			
-			isStockCoverage = true;
+						
 			if (qtyCost != null && qtyCost.compareTo(qtyMatched) < 0 )
 			{
 				//If current cost qty < invoice qty
@@ -476,6 +477,15 @@ public class Doc_MatchInv extends Doc
 				amtAsset = ipv;
 			}
 			
+		}
+		else if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)  && m_invoiceLine.getM_Product_ID() > 0 && isReversal)
+		{
+			isStockCoverage = true;
+			int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
+			MCostDetail cd = MCostDetail.get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)=0", 
+					matchInv.getReversal_ID(), M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), getTrxName());
+			amtAsset = cd.getAmt().negate();
+			amtVariance = ipv.subtract(amtAsset);
 		}
 		
 		Trx trx = Trx.get(getTrxName(), false);

@@ -34,8 +34,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -596,6 +598,60 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 						new FactAcct(nirAccount, orderPrice.multiply(BigDecimal.TEN), 2, true),
 						new FactAcct(acctInvClr, invoicePrice.multiply(BigDecimal.TEN), 2, false));
 				assertFactAcctEntries(factAccts, expected);
+			}
+			
+			//test reversal posting
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
+			assertTrue(invoice.getReversal_ID() > 0, "No reversal invoice id");
+			
+			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
+			assertEquals(invoice.getReversal_ID(), reversalInvoice.get_ID(), "Failed to load reversal invoice");			
+			if (!reversalInvoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), reversalInvoice.getAD_Client_ID(), MInvoice.Table_ID, reversalInvoice.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			reversalInvoice.load(getTrxName());
+			assertTrue(reversalInvoice.isPosted());
+			
+			for (MMatchInv mi : miList) {
+				mi.load(getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.get_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.getReversal_ID(), as.get_ID(), getTrxName());
+				List<MFactAcct> rFactAccts = query.list();
+				ArrayList<FactAcct> expected = new ArrayList<FactAcct>();
+				for(MFactAcct factAcct : factAccts) {
+					MAccount acct = MAccount.get(factAcct, getTrxName());
+					if (factAcct.getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
+					} else if (factAcct.getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+					}
+				}
+				assertFactAcctEntries(rFactAccts, expected);
+
+				MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+				Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+				if (optional.isPresent()) {
+					MAcctSchema as2 = optional.get();
+					query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as2.get_ID(), getTrxName());
+					factAccts = query.list();
+					query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.getReversal_ID(), as2.get_ID(), getTrxName());
+					rFactAccts = query.list();
+					expected = new ArrayList<FactAcct>();
+					for(MFactAcct factAcct : factAccts) {
+						MAccount acct = MAccount.get(factAcct, getTrxName());
+						if (factAcct.getAmtAcctDr().signum() != 0) {
+							expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
+						} else if (factAcct.getAmtAcctCr().signum() != 0) {
+							expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+						}
+					}
+					assertFactAcctEntries(rFactAccts, expected);
+				}
 			}
 		} finally {
 			rollback();
