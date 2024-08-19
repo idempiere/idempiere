@@ -996,8 +996,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * @param newUserCc
 	 */
 	public void setUserCc(int newUserCc) {
-		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCc.getValue(), newUserCc);
-		fUser.valueChange(vce);
+		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCcUser.getValue(), newUserCc);
+		fCcUser.valueChange(vce);
 	}
 
 	/**
