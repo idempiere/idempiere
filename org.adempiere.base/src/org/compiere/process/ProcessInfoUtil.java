@@ -187,15 +187,20 @@ public class ProcessInfoUtil
 	public static void setParameterFromDB (ProcessInfo pi)
 	{
 		ArrayList<ProcessInfoParameter> list = new ArrayList<ProcessInfoParameter>();
-		String sql = "SELECT p.ParameterName,"         			    	//  1
+		String sql = "SELECT DISTINCT pp.ColumnName,"					//  1
 			+ " p.P_String,p.P_String_To, p.P_Number,p.P_Number_To,"    //  2/3 4/5
 			+ " p.P_Date,p.P_Date_To, p.Info,p.Info_To, "               //  6/7 8/9
 			+ " i.AD_Client_ID, i.AD_Org_ID, i.AD_User_ID, "			//	10..12
-			+ " p.IsNotClause "											//  13
-			+ "FROM AD_PInstance_Para p"
-			+ " INNER JOIN AD_PInstance i ON (p.AD_PInstance_ID=i.AD_PInstance_ID) "
-			+ "WHERE p.AD_PInstance_ID=? "
-			+ "ORDER BY p.SeqNo";
+			+ " COALESCE(p.IsNotClause,'N') AS IsNotClause, pp.SeqNo "	//  13..14
+			+ "FROM AD_PInstance i"
+			+ " JOIN AD_Process_Para pp ON (pp.AD_Process_ID=i.AD_Process_ID) "
+			+ " LEFT JOIN AD_PInstance_Para p ON (p.AD_PInstance_ID = i.AD_PInstance_ID AND p.ParameterName=pp.ColumnName) "
+			+ "WHERE i.AD_PInstance_ID=? "
+			+ "ORDER BY pp.SeqNo, pp.ColumnName, "
+			+ " p.P_String,p.P_String_To, p.P_Number,p.P_Number_To,"
+			+ " p.P_Date,p.P_Date_To, p.Info,p.Info_To, "
+			+ " i.AD_Client_ID, i.AD_Org_ID, i.AD_User_ID, "
+			+ " COALESCE(p.IsNotClause,'N')";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
