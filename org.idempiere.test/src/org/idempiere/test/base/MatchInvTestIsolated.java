@@ -48,6 +48,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
@@ -71,10 +72,12 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
@@ -423,9 +426,30 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	public void testAverageCostingIPVAfterShipment() {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+		List<MAcctSchema> allowNegatives = new ArrayList<MAcctSchema>();
+		Arrays.stream(ass).forEach(e -> {
+			MAcctSchema copy = MAcctSchema.getCopy(Env.getCtx(), e.getC_AcctSchema_ID(), null);
+			if (copy.isAllowNegativePosting())
+			{
+				copy.setIsAllowNegativePosting(false);
+				copy.saveEx();
+				allowNegatives.add(copy);
+			}
+		});
+		if (allowNegatives.size() > 0)
+			CacheMgt.get().reset(MAcctSchema.Table_Name);
+		ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
-		
+					
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; 
+		Timestamp today = TimeUtil.getDay(null);		
+		Timestamp tomorrow = TimeUtil.addDays(today, 1);
+		MConversionRate cr1 = ConversionRateHelper.createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, today, new BigDecimal("0.91"), true);	
+		MConversionRate cr2 = ConversionRateHelper.createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, tomorrow, new BigDecimal("0.85"), true);
 		try {						
 			product = new MProduct(Env.getCtx(), 0, null);
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
@@ -508,7 +532,6 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			salesOrder.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 			salesOrder.setDocStatus(DocAction.STATUS_Drafted);
 			salesOrder.setDocAction(DocAction.ACTION_Complete);
-			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 			salesOrder.setDatePromised(today);
 			salesOrder.saveEx();
 			
@@ -601,7 +624,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			}
 			
 			//test reversal posting
-			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
+			Env.setContext(Env.getCtx(), Env.DATE, tomorrow);
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Accrual);
 			invoice.load(getTrxName());
 			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
@@ -611,7 +635,7 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			assertEquals(invoice.getReversal_ID(), reversalInvoice.get_ID(), "Failed to load reversal invoice");			
 			if (!reversalInvoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), reversalInvoice.getAD_Client_ID(), MInvoice.Table_ID, reversalInvoice.get_ID(), false, getTrxName());
-				assertTrue(error == null);
+				assertTrue(error == null, error);
 			}
 			reversalInvoice.load(getTrxName());
 			assertTrue(reversalInvoice.isPosted());
@@ -633,7 +657,6 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				}
 				assertFactAcctEntries(rFactAccts, expected);
 
-				MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 				Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
 				if (optional.isPresent()) {
 					MAcctSchema as2 = optional.get();
@@ -653,6 +676,41 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 					assertFactAcctEntries(rFactAccts, expected);
 				}
 			}
+			
+			//assert reversal invoice posting
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.getReversal_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> rFactAccts = query.list();
+			ArrayList<FactAcct> expected = new ArrayList<FactAcct>();
+			for(MFactAcct factAcct : factAccts) {
+				MAccount acct = MAccount.get(factAcct, getTrxName());
+				if (factAcct.getAmtAcctDr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
+				} else if (factAcct.getAmtAcctCr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+				}
+			}
+			assertFactAcctEntries(rFactAccts, expected);
+
+			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			if (optional.isPresent()) {
+				MAcctSchema as2 = optional.get();
+				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as2.get_ID(), getTrxName());
+				factAccts = query.list();
+				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.getReversal_ID(), as2.get_ID(), getTrxName());
+				rFactAccts = query.list();
+				expected = new ArrayList<FactAcct>();
+				for(MFactAcct factAcct : factAccts) {
+					MAccount acct = MAccount.get(factAcct, getTrxName());
+					if (factAcct.getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
+					} else if (factAcct.getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+					}
+				}
+				assertFactAcctEntries(rFactAccts, expected);
+			}
 		} finally {
 			rollback();
 			
@@ -660,6 +718,16 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				product.set_TrxName(null);
 				product.deleteEx(true);
 			}
+			cr1.deleteEx(true);
+			cr2.deleteEx(true);
+			
+			if (allowNegatives.size() > 0) {
+				allowNegatives.forEach(e -> {
+					e.setIsAllowNegativePosting(true);
+					e.saveEx();
+				});
+			}
+				
 		}
 	}
 	

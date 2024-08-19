@@ -424,7 +424,7 @@ public class Doc_Invoice extends Doc
 		//  ** ARI, ARF
 		if (getDocumentType().equals(DOCTYPE_ARInvoice)
 			|| getDocumentType().equals(DOCTYPE_ARProForma))
-		{
+		{			
 			BigDecimal grossAmt = getAmount(Doc.AMTTYPE_Gross);
 			BigDecimal serviceAmt = Env.ZERO;
 
@@ -442,7 +442,7 @@ public class Doc_Invoice extends Doc
 					FactLine tl = fact.createLine(null, m_taxes[i].getAccount(DocTax.ACCTTYPE_TaxDue, as),
 						getC_Currency_ID(), null, amt);
 					if (tl != null)
-						tl.setC_Tax_ID(m_taxes[i].getC_Tax_ID());
+						tl.setC_Tax_ID(m_taxes[i].getC_Tax_ID());					
 				}
 			}
 			//  Revenue                 CR
@@ -590,6 +590,12 @@ public class Doc_Invoice extends Doc
 		//  ** API
 		else if (getDocumentType().equals(DOCTYPE_APInvoice))
 		{
+			MInvoice invoice = (MInvoice)getPO();
+			MInvoice originalInvoice = null;
+			if (invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+			{
+				originalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), invoice.get_TrxName());
+			}
 			BigDecimal grossAmt = getAmount(Doc.AMTTYPE_Gross);
 			BigDecimal serviceAmt = Env.ZERO;
 
@@ -603,6 +609,10 @@ public class Doc_Invoice extends Doc
 					getC_Currency_ID(), m_taxes[i].getAmount(), null);
 				if (tl != null)
 					tl.setC_Tax_ID(m_taxes[i].getC_Tax_ID());
+				if (tl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+				{
+					tl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE);
+				}
 			}
 			//  Expense         DR
 			for (int i = 0; i < p_lines.length; i++)
@@ -622,6 +632,17 @@ public class Doc_Invoice extends Doc
 					else
 						desc += " 100%";
 					fl.setDescription(desc);
+					if (invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+					{
+						int lineId = 0;
+						if (originalInvoice != null)
+						{
+							MInvoiceLine[] lines = originalInvoice.getLines();
+							if (lines.length > i)
+								lineId = lines[i].getC_InvoiceLine_ID();
+						}
+						fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), lineId, BigDecimal.ONE);
+					}
 				}
 				if (!landedCost)
 				{
@@ -638,12 +659,34 @@ public class Doc_Invoice extends Doc
 							amt = amt.add(discount);
 							dAmt = discount;
 							MAccount tradeDiscountReceived = line.getAccount(ProductCost.ACCTTYPE_P_TDiscountRec, as);
-							fact.createLine (line, tradeDiscountReceived,
+							FactLine fl = fact.createLine (line, tradeDiscountReceived,
 									getC_Currency_ID(), null, dAmt);
+							if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+							{
+								int lineId = 0;
+								if (originalInvoice != null)
+								{
+									MInvoiceLine[] lines = originalInvoice.getLines();
+									if (lines.length > i)
+										lineId = lines[i].getC_InvoiceLine_ID();
+								}
+								fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), lineId, BigDecimal.ONE);
+							}
 						}
 					}
-					fact.createLine (line, expense,
+					FactLine fl = fact.createLine (line, expense,
 						getC_Currency_ID(), amt, null);
+					if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+					{
+						int lineId = 0;
+						if (originalInvoice != null)
+						{
+							MInvoiceLine[] lines = originalInvoice.getLines();
+							if (lines.length > i)
+								lineId = lines[i].getC_InvoiceLine_ID();
+						}
+						fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), lineId, BigDecimal.ONE);
+					}
 					if (!line.isItem())
 					{
 						grossAmt = grossAmt.subtract(amt);
@@ -674,18 +717,23 @@ public class Doc_Invoice extends Doc
 				serviceAmt = getAmount(Doc.AMTTYPE_Gross);
 				grossAmt = Env.ZERO;
 			}
+			FactLine fl = null;
 			if (grossAmt.signum() > 0)
-				fact.createLine(null, MAccount.get(getCtx(), payables_ID),
+				fl = fact.createLine(null, MAccount.get(getCtx(), payables_ID),
 					getC_Currency_ID(), null, grossAmt);
 			else if (grossAmt.signum() < 0)
-				fact.createLine(null, MAccount.get(getCtx(), payables_ID),
+				fl = fact.createLine(null, MAccount.get(getCtx(), payables_ID),
 						getC_Currency_ID(), grossAmt.negate(), null);
 			if (serviceAmt.signum() > 0)
-				fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
+				fl = fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
 					getC_Currency_ID(), null, serviceAmt);
 			else if (serviceAmt.signum() < 0)
-				fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
+				fl = fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
 						getC_Currency_ID(), serviceAmt.negate(), null);
+			if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+			{
+				fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE);
+			}
 			//  Set Locations
 			FactLine[] fLines = fact.getLines();
 			for (int i = 0; i < fLines.length; i++)
@@ -1175,12 +1223,43 @@ public class Doc_Invoice extends Doc
 						if (lcaQty.compareTo(costDetailQty) > 0) {
 							amtVariance = amtAsset.divide(costDetailQty, RoundingMode.HALF_UP).multiply(lcaQty.subtract(costDetailQty));
 						}
-						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
-								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
-								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
-								amtAsset.negate(), costDetailQty,
-								desc, getTrxName())) {
-							throw new RuntimeException("Failed to create cost detail record.");
+						int AD_Org_ID = lca.getAD_Org_ID();
+						int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
+
+						if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+						{
+							AD_Org_ID = 0;
+							M_AttributeSetInstance_ID = 0;
+						}
+						else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+							M_AttributeSetInstance_ID = 0;
+						else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+							AD_Org_ID = 0;
+						
+						MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
+								AD_Org_ID);
+						MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
+								as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
+								M_AttributeSetInstance_ID, getTrxName());
+						if (c != null) {
+							if (c.getCurrentQty().signum() == 0) {
+								amtVariance = amtVariance.add(amtAsset);
+								amtAsset = BigDecimal.ZERO;
+							} else if (c.getCurrentQty().compareTo(costDetailQty) < 0) {
+								BigDecimal currentAmtAsset = amtAsset;
+								amtAsset = amtAsset.divide(costDetailQty, RoundingMode.HALF_UP).multiply(c.getCurrentQty());
+								amtVariance = amtVariance.add(currentAmtAsset.subtract(amtAsset));
+								costDetailQty = c.getCurrentQty();
+							}
+						}
+						if (amtAsset.signum() != 0) {
+							if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+									lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+									C_InvoiceLine_ID, lca.getM_CostElement_ID(),
+									amtAsset.negate(), costDetailQty,
+									desc, getTrxName())) {
+								throw new RuntimeException("Failed to create cost detail record.");
+							}
 						}
 						if (getC_Currency_ID() != as.getC_Currency_ID()) {
 							usesSchemaCurrency = true;
