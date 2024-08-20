@@ -1071,17 +1071,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ListItem listItem = new ListItem();
         listItem.setId("Row"+ rowCount++);
 
-        int id = 0;
-
-        if(advancedPanel.getItemCount()>0){
-			String previousID = advancedPanel.getItems().get(advancedPanel.getItemCount()-1).getId();
-			previousID = previousID.substring(3, previousID.length());
-			id = Integer.valueOf(previousID);
-			id++;
-        }
-
-        listItem.setId("Row"+id);
-
         Combobox listTable = new Combobox();
         listTable.setId("listTable"+listItem.getId());
         listTable.setName("listTable");
