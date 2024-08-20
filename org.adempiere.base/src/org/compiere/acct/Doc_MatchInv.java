@@ -484,7 +484,7 @@ public class Doc_MatchInv extends Doc
 			int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
 			MCostDetail cd = MCostDetail.get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)=0", 
 					matchInv.getReversal_ID(), M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), getTrxName());
-			amtAsset = cd.getAmt().negate();
+			amtAsset = cd != null ? cd.getAmt().negate() : BigDecimal.ZERO;
 			amtVariance = ipv.subtract(amtAsset);
 		}
 		
