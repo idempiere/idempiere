@@ -1265,6 +1265,10 @@ public class Doc_Invoice extends Doc
 							Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversalLine.getC_Invoice_ID(), as.getC_AcctSchema_ID(), getTrxName());
 							List<MFactAcct> factAccts = query.list();
 							for(MFactAcct factAcct : factAccts) {
+								if (factAcct.getM_Product_ID() != lca.getM_Product_ID())
+									continue;
+								if (factAcct.getLine_ID() != reversalLine.get_ID())
+									continue;
 								if (factAcct.getAccount_ID() == assetAccount.getAccount_ID()) {
 									if (factAcct.getAmtAcctDr().signum() != 0)
 										amtAsset = amtAsset.add(factAcct.getAmtAcctDr());
