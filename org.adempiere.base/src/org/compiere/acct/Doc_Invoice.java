@@ -1189,7 +1189,8 @@ public class Doc_Invoice extends Doc
 							costDetailAmt = costDetailAmt.add(prevAmt);
 						}
 						costDetailAmtMap.put(key, costDetailAmt);
-						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+						if (costDetailAmt.signum() != 0 && 
+							!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
 								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
 								costDetailAmt, costDetailQty,
@@ -1218,16 +1219,34 @@ public class Doc_Invoice extends Doc
 					String key = lca.getM_Product_ID()+"_"+lca.getM_AttributeSetInstance_ID();
 					if (!costDetailAmtMap.containsKey(key)) {
 						costDetailAmtMap.put(key, BigDecimal.ZERO);
+						amtAsset = BigDecimal.ZERO;
+						amtVariance = BigDecimal.ZERO;
+						MAccount varianceAccount = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+						MAccount assetAccount = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+						Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversalLine.getC_Invoice_ID(), as.getC_AcctSchema_ID(), getTrxName());
+						List<MFactAcct> factAccts = query.list();
+						for(MFactAcct factAcct : factAccts) {
+							if (factAcct.getM_Product_ID() != lca.getM_Product_ID())
+								continue;
+							if (factAcct.getLine_ID() != reversalLine.get_ID())
+								continue;
+							if (factAcct.getAccount_ID() == assetAccount.getAccount_ID()) {
+								if (factAcct.getAmtAcctDr().signum() != 0)
+									amtAsset = amtAsset.add(factAcct.getAmtAcctDr());
+								else if (factAcct.getAmtAcctCr().signum() != 0)
+									amtAsset = amtAsset.subtract(factAcct.getAmtAcctCr());
+							} else if (factAcct.getAccount_ID() == varianceAccount.getAccount_ID()) {
+								if (factAcct.getAmtAcctDr().signum() != 0)
+									amtVariance = amtVariance.add(factAcct.getAmtAcctDr());
+								else if (factAcct.getAmtAcctCr().signum() != 0)
+									amtVariance = amtVariance.subtract(factAcct.getAmtAcctCr());
+							}
+						}
 						MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
 								reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
-						amtAsset = cd != null ? cd.getAmt() : BigDecimal.ZERO;
 						costDetailQty = cd != null ? cd.getQty() : BigDecimal.ZERO;
-						if (amtAsset.signum() != 0)
+						if (costDetailQty.signum() != 0)
 						{
-							BigDecimal lcaQty = lca.getQty();
-							if (lcaQty.compareTo(costDetailQty) > 0) {
-								amtVariance = amtAsset.divide(costDetailQty, RoundingMode.HALF_UP).multiply(lcaQty.subtract(costDetailQty));
-							}
 							int AD_Org_ID = lca.getAD_Org_ID();
 							int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
 	
@@ -1255,30 +1274,6 @@ public class Doc_Invoice extends Doc
 									amtAsset = amtAsset.divide(costDetailQty, RoundingMode.HALF_UP).multiply(c.getCurrentQty());
 									amtVariance = amtVariance.add(currentAmtAsset.subtract(amtAsset));
 									costDetailQty = c.getCurrentQty();
-								}
-							}
-						} else {
-							amtAsset = BigDecimal.ZERO;
-							amtVariance = BigDecimal.ZERO;
-							MAccount varianceAccount = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
-							MAccount assetAccount = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-							Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversalLine.getC_Invoice_ID(), as.getC_AcctSchema_ID(), getTrxName());
-							List<MFactAcct> factAccts = query.list();
-							for(MFactAcct factAcct : factAccts) {
-								if (factAcct.getM_Product_ID() != lca.getM_Product_ID())
-									continue;
-								if (factAcct.getLine_ID() != reversalLine.get_ID())
-									continue;
-								if (factAcct.getAccount_ID() == assetAccount.getAccount_ID()) {
-									if (factAcct.getAmtAcctDr().signum() != 0)
-										amtAsset = amtAsset.add(factAcct.getAmtAcctDr());
-									else if (factAcct.getAmtAcctCr().signum() != 0)
-										amtAsset = amtAsset.subtract(factAcct.getAmtAcctCr());
-								} else if (factAcct.getAccount_ID() == varianceAccount.getAccount_ID()) {
-									if (factAcct.getAmtAcctDr().signum() != 0)
-										amtVariance = amtVariance.add(factAcct.getAmtAcctDr());
-									else if (factAcct.getAmtAcctCr().signum() != 0)
-										amtVariance = amtVariance.subtract(factAcct.getAmtAcctCr());
 								}
 							}
 						}

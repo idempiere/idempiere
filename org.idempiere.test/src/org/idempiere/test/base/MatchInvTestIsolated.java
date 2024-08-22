@@ -718,8 +718,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				product.set_TrxName(null);
 				product.deleteEx(true);
 			}
-			cr1.deleteEx(true);
-			cr2.deleteEx(true);
+			ConversionRateHelper.deleteConversionRate(cr1);
+			ConversionRateHelper.deleteConversionRate(cr2);
 			
 			if (allowNegatives.size() > 0) {
 				allowNegatives.forEach(e -> {
