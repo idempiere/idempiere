@@ -1260,7 +1260,7 @@ public class Doc_Invoice extends Doc
 									"""
 										SELECT SUM(Qty)
 										FROM M_CostDetail
-										WHERE C_InvoiceLine_ID=? C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)=?
+										WHERE C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)=?
 										AND M_Product_ID=? AND C_AcctSchema_ID=? 										
 									""";
 							costDetailQty = DB.getSQLValueBDEx(getTrxName(), sql, reversalLine.get_ID(), lca.getM_CostElement_ID(), lca.getM_Product_ID(), as.getC_AcctSchema_ID());
