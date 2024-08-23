@@ -1216,7 +1216,20 @@ public class Doc_Invoice extends Doc
 						}
 					}
 				} else if (reversal) {
-					String key = lca.getM_Product_ID()+"_"+lca.getM_AttributeSetInstance_ID();
+					costDetailQty = BigDecimal.ZERO;
+					int AD_Org_ID = lca.getAD_Org_ID();
+					int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
+
+					if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+					{
+						AD_Org_ID = 0;
+						M_AttributeSetInstance_ID = 0;
+					}
+					else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+						M_AttributeSetInstance_ID = 0;
+					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+						AD_Org_ID = 0;
+					String key = lca.getM_Product_ID()+"_"+M_AttributeSetInstance_ID;
 					if (!costDetailAmtMap.containsKey(key)) {
 						costDetailAmtMap.put(key, BigDecimal.ZERO);
 						amtAsset = BigDecimal.ZERO;
@@ -1242,24 +1255,39 @@ public class Doc_Invoice extends Doc
 									amtVariance = amtVariance.subtract(factAcct.getAmtAcctCr());
 							}
 						}
-						MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
-								reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
-						costDetailQty = cd != null ? cd.getQty() : BigDecimal.ZERO;
+						if (lca.getM_AttributeSetInstance_ID() > 0 && M_AttributeSetInstance_ID == 0) {
+							String sql = 
+									"""
+										SELECT SUM(Qty)
+										FROM M_CostDetail
+										WHERE C_InvoiceLine_ID=? C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)=?
+										AND M_Product_ID=? AND C_AcctSchema_ID=? 										
+									""";
+							costDetailQty = DB.getSQLValueBDEx(getTrxName(), sql, reversalLine.get_ID(), lca.getM_CostElement_ID(), lca.getM_Product_ID(), as.getC_AcctSchema_ID());
+							if (costDetailQty == null)
+								costDetailQty = BigDecimal.ZERO;
+						} else if (lca.getM_AttributeSetInstance_ID() > 0 && M_AttributeSetInstance_ID > 0) {
+							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
+									reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
+							costDetailQty = cd != null ? cd.getQty() : BigDecimal.ZERO;
+							if (cd != null) {
+								amtAsset = cd.getAmt();
+							}
+							if (i > 0) {
+								for(int j = 0; j < i; j++) {
+									if (lcas[j].getM_Product_ID() == lca.getM_Product_ID()) {
+										//variance have been posted by product
+										amtVariance = BigDecimal.ZERO;
+									}
+								}
+							}
+						} else {
+							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
+									reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
+							costDetailQty = cd != null ? cd.getQty() : BigDecimal.ZERO;
+						}
 						if (costDetailQty.signum() != 0)
 						{
-							int AD_Org_ID = lca.getAD_Org_ID();
-							int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
-	
-							if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-							{
-								AD_Org_ID = 0;
-								M_AttributeSetInstance_ID = 0;
-							}
-							else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-								M_AttributeSetInstance_ID = 0;
-							else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-								AD_Org_ID = 0;
-							
 							MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
 									AD_Org_ID);
 							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
