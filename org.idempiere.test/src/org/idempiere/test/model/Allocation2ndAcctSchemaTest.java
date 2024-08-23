@@ -1454,11 +1454,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			BigDecimal allocAmount = new BigDecimal(1000);
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
 			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			BigDecimal gainLossAmt = new BigDecimal(1000).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
+			BigDecimal gainLossAmt = BigDecimal.ZERO;
 			gainLossLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
