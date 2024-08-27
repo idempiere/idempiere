@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.Core;
@@ -58,6 +59,7 @@ import org.compiere.model.MTax;
 import org.compiere.model.MTaxCategory;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.model.Tax;
 import org.compiere.model.X_C_Order;
 import org.compiere.process.DocAction;
@@ -325,13 +327,10 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
 			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + schema.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), schema.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
 			BigDecimal totalDebit = new BigDecimal("0.00");
-			for(int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			for(MFactAcct fa : factAccts) {
 				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
 					totalDebit = totalDebit.add(fa.getAmtAcctDr());
 				}
@@ -470,13 +469,10 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
 			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + schema.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), schema.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
 			BigDecimal totalDebit = new BigDecimal("0.00");
-			for(int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			for(MFactAcct fa : factAccts) {
 				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
 					totalDebit = totalDebit.add(fa.getAmtAcctDr());
 				}

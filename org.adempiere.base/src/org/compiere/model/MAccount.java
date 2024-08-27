@@ -277,13 +277,24 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 	 */
 	public static MAccount get (X_Fact_Acct fa)
 	{
+		return get(fa, (String)null);
+	}
+	
+	/**
+	 * 	Get from existing Accounting fact
+	 *	@param fa accounting fact
+	 *  @param trxName
+	 *	@return account
+	 */
+	public static MAccount get (X_Fact_Acct fa, String trxName)
+	{
 		MAccount acct = get (fa.getCtx(),
 			fa.getAD_Client_ID(), fa.getAD_Org_ID(), fa.getC_AcctSchema_ID(), 
 			fa.getAccount_ID(), fa.getC_SubAcct_ID(),
 			fa.getM_Product_ID(), fa.getC_BPartner_ID(), fa.getAD_OrgTrx_ID(), 
 			fa.getC_LocFrom_ID(), fa.getC_LocTo_ID(), fa.getC_SalesRegion_ID(), 
 			fa.getC_Project_ID(), fa.getC_Campaign_ID(), fa.getC_Activity_ID(),
-			fa.getUser1_ID(), fa.getUser2_ID(), fa.getUserElement1_ID(), fa.getUserElement2_ID());
+			fa.getUser1_ID(), fa.getUser2_ID(), fa.getUserElement1_ID(), fa.getUserElement2_ID(), trxName);
 		return acct;
 	}	//	get
 	
