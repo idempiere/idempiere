@@ -44,7 +44,7 @@ public class TextHeightCommand extends AbstractCommand implements Command {
 		if (comp == null)
 			throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED, TextHeightCommand.class.getCanonicalName());
 
-		final Map data = (Map) request.getData();
+		final Map<?, ?> data = (Map<?, ?>) request.getData();
 		if (data == null || data.size() != 4)
 			throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {Objects.toString(data), TextHeightCommand.class.getCanonicalName() });
 		
