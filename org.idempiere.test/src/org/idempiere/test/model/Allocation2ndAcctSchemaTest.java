@@ -34,6 +34,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -1453,11 +1454,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			BigDecimal allocAmount = new BigDecimal(1000);
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
 			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			BigDecimal gainLossAmt = new BigDecimal(1000).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
+			BigDecimal gainLossAmt = BigDecimal.ZERO;
 			gainLossLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
@@ -2181,12 +2182,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 				BigDecimal totalTradeAmtAcct = Env.ZERO;
 				BigDecimal totalGainLossAmtAcct = Env.ZERO;
 				BigDecimal totalCurrBalAmtAcct = Env.ZERO;
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				for (MFactAcct fa : factAccts) {
 					if (C_Charge_ID != 0 && acctCharge != null && acctCharge.getAccount_ID() == fa.getAccount_ID())
 						totalPaymentAmtAcct = totalPaymentAmtAcct.add(fa.getAmtAcctDr()).subtract(fa.getAmtAcctCr());
 					else if (C_Charge_ID == 0 && acctUnallocatedCash != null && acctUnallocatedCash.getAccount_ID() == fa.getAccount_ID())
