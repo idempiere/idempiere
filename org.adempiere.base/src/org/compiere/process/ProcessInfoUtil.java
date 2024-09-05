@@ -168,7 +168,7 @@ public class ProcessInfoUtil
 		{
 			MPInstanceLog il = new MPInstanceLog(pi.getAD_PInstance_ID(), logs[i].getLog_ID(), logs[i].getP_Date(),
 					logs[i].getP_ID(), logs[i].getP_Number(), logs[i].getP_Msg(),
-					logs[i].getAD_Table_ID(), logs[i].getRecord_ID(), 
+					logs[i].getAD_Table_ID(), logs[i].getRecord_ID(), logs[i].getJsonData(),
 					!Util.isEmpty(logs[i].getPInstanceLogType()) ? logs[i].getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
 			il.save();
 		}
