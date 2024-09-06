@@ -80,6 +80,19 @@ public interface I_AD_PInstance_Log
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
+    /** Column name JsonData */
+    public static final String COLUMNNAME_JsonData = "JsonData";
+
+	/** Set JSON Data.
+	  * The json field stores json data.
+	  */
+	public void setJsonData (String JsonData);
+
+	/** Get JSON Data.
+	  * The json field stores json data.
+	  */
+	public String getJsonData();
+
     /** Column name Log_ID */
     public static final String COLUMNNAME_Log_ID = "Log_ID";
 
