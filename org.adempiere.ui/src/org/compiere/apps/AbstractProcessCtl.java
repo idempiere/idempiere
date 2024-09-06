@@ -175,6 +175,7 @@ public abstract class AbstractProcessCtl implements Runnable
 				String errmsg = m_pi.getSummary();
 				pinstance.setResult(!m_pi.isError());
 				pinstance.setErrorMsg(errmsg);	
+				pinstance.setJsonData(m_pi.getJsonData());
 				pinstance.saveEx();
 				unlock();
 			}

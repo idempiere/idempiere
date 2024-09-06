@@ -761,6 +761,7 @@ public abstract class SvrProcess implements ProcessCall
 				mpi.setIsProcessing(false);
 				mpi.setResult(!m_pi.isError());
 				mpi.setErrorMsg(m_pi.getSummary());
+				mpi.setJsonData(m_pi.getJsonData());
 				mpi.saveEx();
 				if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
 				

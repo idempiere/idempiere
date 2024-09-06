@@ -43,9 +43,10 @@ public class ProcessInfoLog implements Serializable
 	 *	@param P_Msg Process Message
 	 *	@param AD_Table_ID Table ID
 	 *	@param Record_ID Record ID
+	 *  @param jsonData jsonData
 	 *	@param PInstanceLogType Log Type
 	 */
-	public ProcessInfoLog (String AD_PInstance_Log_UU, int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID, String PInstanceLogType)
+	public ProcessInfoLog (String AD_PInstance_Log_UU, int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID, String jsonData, String PInstanceLogType)
 	{
 		setLog_ID (Log_ID);
 		setP_ID (P_ID);
@@ -54,6 +55,7 @@ public class ProcessInfoLog implements Serializable
 		setP_Msg (P_Msg);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setJsonData(jsonData);
 		setPInstanceLogType(PInstanceLogType);
 		setAD_PInstance_Log_UU(AD_PInstance_Log_UU);
 		
@@ -71,7 +73,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
 	{
-		this("", Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null); 
+		this("", Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null, null);
 	}
 	
 	/**
@@ -86,7 +88,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID, String PInstanceLogType)
 	{
-		this("", s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, PInstanceLogType); 
+		this("", s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null, PInstanceLogType);
 	}
 	
 	/**
@@ -101,7 +103,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
 	{
-		this(AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null); 
+		this(AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null, null);
 	}
 
 	/**
@@ -154,7 +156,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, String PInstanceLogType)
 	{
-		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0, 0, PInstanceLogType);
+		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0, 0, null, PInstanceLogType);
 	}	//	ProcessInfoLog
 	
 	/**
@@ -167,7 +169,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0,0,null);
+		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0,0, null, null);
 	}	//	ProcessInfoLog
 	
 	/**
@@ -181,7 +183,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, String PInstanceLogType)
 	{
-		this ("", Log_ID, P_ID, P_Date, P_Number, P_Msg, 0, 0, PInstanceLogType);
+		this ("", Log_ID, P_ID, P_Date, P_Number, P_Msg, 0, 0, null, PInstanceLogType);
 	}	//	ProcessInfoLog
 
 	private static int	s_Log_ID = 0;
@@ -193,6 +195,7 @@ public class ProcessInfoLog implements Serializable
 	private String 		m_P_Msg;
 	private int 		m_AD_Table_ID;
 	private int 		m_Record_ID;
+	private String 		m_JsonData;
 	private String 		m_PInstanceLogType;
 	private String		m_AD_PInstance_Log_UU;
 
@@ -294,6 +297,21 @@ public class ProcessInfoLog implements Serializable
 	public void setP_Msg (String P_Msg)
 	{
 		m_P_Msg = P_Msg;
+	}
+
+	/**
+	 * Get JsonData
+	 * @returnJsonData
+	 */
+	public String getJsonData() {
+		return m_JsonData;
+	}
+	/**
+	 * Set JsonData
+	 * @param jsonData
+	 */
+	public void setJsonData(String jsonData) {
+		this.m_JsonData = jsonData;
 	}
 
 	/**
