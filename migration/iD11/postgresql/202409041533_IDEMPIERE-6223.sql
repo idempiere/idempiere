@@ -6,7 +6,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Sep 4, 2024, 3:33:16 PM BRT
-ALTER TABLE AD_PInstance ADD COLUMN JsonData TEXT DEFAULT NULL CONSTRAINT AD_PInstance_JsonData_isjson CHECK (JsonData IS JSON)
+ALTER TABLE AD_PInstance ADD COLUMN JsonData JSON DEFAULT NULL
 ;
 
 -- Sep 4, 2024, 3:33:39 PM BRT
@@ -62,7 +62,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Sep 4, 2024, 3:34:43 PM BRT
-ALTER TABLE AD_PInstance_Log ADD COLUMN JsonData TEXT DEFAULT NULL CONSTRAINT AD_PInstance_Log_JsonData_isjson CHECK (JsonData IS JSON)
+ALTER TABLE AD_PInstance_Log ADD COLUMN JsonData JSON DEFAULT NULL
 ;
 
 -- Sep 4, 2024, 3:35:54 PM BRT

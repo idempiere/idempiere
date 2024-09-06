@@ -170,7 +170,7 @@ public class MPInstanceLog
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
 			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, JsonData, PInstanceLogType)"
-			+ " VALUES (?,?,?,?,?,?,?,?,?,?,?) ";
+			+ " VALUES (?,?,?,?,?,?,?,?,?," + DB.getJSONCast() + ",?) ";
 	
 	private final static String updateSql = "UPDATE AD_PInstance_Log "
 			+ " SET P_Date = ?, "
@@ -179,7 +179,7 @@ public class MPInstanceLog
 			+ " 	P_Msg = ?, "
 			+ " 	AD_Table_ID = ?, "
 			+ " 	Record_ID = ?, "
-			+ " 	JsonData = ?, "
+			+ " 	JsonData = " + DB.getJSONCast() + ", "
 			+ " 	PInstanceLogType = ? "
 			+ " WHERE AD_PInstance_Log_UU = ? ";
 
