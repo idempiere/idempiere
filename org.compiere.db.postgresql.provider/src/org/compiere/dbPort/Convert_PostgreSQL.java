@@ -1106,10 +1106,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						begin_default = rest.toUpperCase().indexOf(
 								" DEFAULT ") + 9;
 						defaultvalue = rest.substring(begin_default);
-						int nextspace = defaultvalue.indexOf(' ');
-						if (nextspace > -1) {
-						    rest = defaultvalue.substring(nextspace);
-						    defaultvalue = defaultvalue.substring(0, defaultvalue.indexOf(' '));
+						String endDefaultChar = " ";
+						int shift = 0;
+						if (defaultvalue.startsWith("'")) {
+							endDefaultChar = "'";
+							shift = 1;
+						}
+						int endDefault = defaultvalue.substring(shift).indexOf(endDefaultChar) + shift;
+						if (endDefault > -1+shift) {
+						    rest = defaultvalue.substring(endDefault+shift);
+						    defaultvalue = defaultvalue.substring(0, endDefault+shift);
 						} else {
 							rest = "";
 						}
@@ -1168,10 +1174,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						begin_default = rest.toUpperCase().indexOf(
 								" DEFAULT ") + 9;
 						defaultvalue = rest.substring(begin_default);
-						int nextspace = defaultvalue.indexOf(' ');
-						if (nextspace > -1) {
-						    rest = defaultvalue.substring(nextspace);
-						    defaultvalue = defaultvalue.substring(0, defaultvalue.indexOf(' '));
+						String endDefaultChar = " ";
+						int shift = 0;
+						if (defaultvalue.startsWith("'")) {
+							endDefaultChar = "'";
+							shift = 1;
+						}
+						int endDefault = defaultvalue.substring(shift).indexOf(endDefaultChar) + shift;
+						if (endDefault > -1+shift) {
+						    rest = defaultvalue.substring(endDefault+shift);
+						    defaultvalue = defaultvalue.substring(0, endDefault+shift);
 						} else {
 							rest = "";
 						}
