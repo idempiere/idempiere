@@ -1,5 +1,6 @@
 package org.adempiere.webui.editor;
 
+import org.adempiere.webui.event.ValueChangeEvent;
 import org.compiere.model.GridField;
 import org.compiere.util.Util;
 
@@ -31,9 +32,15 @@ public class WJsonEditor extends WStringEditor {
     @Override
     public void setValue(Object value) {
     	super.setValue(value);
-    	
-    	if (value != null && !Util.isEmpty(value.toString()))
-    		getComponent().setValue(Util.prettifyJSONString(value.toString()));
+
+    	String prettyValue = null;
+    	if (value != null && !Util.isEmpty(value.toString())) {
+    		prettyValue = Util.prettifyJSONString(value.toString());
+    		if (! prettyValue.equals(value)) {
+        		ValueChangeEvent vce = new ValueChangeEvent(this, getColumnName(), value, prettyValue);
+        		super.fireValueChange(vce);
+    		}
+    	}
     }
     
 }
