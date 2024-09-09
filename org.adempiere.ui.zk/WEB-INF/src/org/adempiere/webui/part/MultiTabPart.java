@@ -21,7 +21,7 @@ import org.adempiere.webui.component.Tabs;
 import org.zkoss.zk.ui.Component;
 
 /**
- * Tabbox based UI block 
+ * Controller for multiple tab UI block. 
  * @author Low Heng Sin
  *
  */
@@ -109,6 +109,7 @@ public class MultiTabPart extends AbstractUIPart
     }
 
     /**
+     * Get root component of UI block
      * @return Tabbox 
      */
 	public Tabbox getComponent() {

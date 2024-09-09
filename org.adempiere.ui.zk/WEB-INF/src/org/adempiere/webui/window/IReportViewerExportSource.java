@@ -33,9 +33,8 @@ import org.idempiere.ui.zk.media.Medias;
 import org.zkoss.util.media.AMedia;
 
 /**
- * 
+ * Media source interface for report viewer export
  * @author hengsin
- *
  */
 public interface IReportViewerExportSource {
 	

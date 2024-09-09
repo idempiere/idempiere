@@ -1001,7 +1001,7 @@ public final class MLookup extends Lookup implements Serializable
 	 * @param tableID
 	 * @param windowNo
 	 * @param tabNo
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo) {
 		return getRecordsLookup(tableID, windowNo, tabNo, false);
@@ -1013,7 +1013,7 @@ public final class MLookup extends Lookup implements Serializable
 	 * @param windowNo
 	 * @param tabNo
 	 * @param useUUIDKey - default false
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo, boolean useUUIDKey) {
 		if(tableID <= 0)	

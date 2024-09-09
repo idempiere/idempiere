@@ -45,6 +45,7 @@ public abstract class DashboardPanel extends Window implements IDashboardPanel {
 	}
 	
 	/**
+	 * Is using polling for update
 	 * @return true if this dashboard widget uses polling to update its content
 	 */
 	public boolean isPooling() {

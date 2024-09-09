@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImportTemplate
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_ImportTemplate")
 public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240327L;
+	private static final long serialVersionUID = 20240513L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
@@ -300,12 +300,12 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 
 	/** ImportTemplateType AD_Reference_ID=200268 */
 	public static final int IMPORTTEMPLATETYPE_AD_Reference_ID=200268;
-	/** CSV = CSV */
-	public static final String IMPORTTEMPLATETYPE_CSV = "CSV";
+	/** Comma-separated values (CSV) = CSV */
+	public static final String IMPORTTEMPLATETYPE_Comma_SeparatedValuesCSV = "CSV";
 	/** XLS = XLS */
 	public static final String IMPORTTEMPLATETYPE_XLS = "XLS";
-	/** XLSX = XLSX */
-	public static final String IMPORTTEMPLATETYPE_XLSX = "XLSX";
+	/** Excel (XLS/XLSX) = XLSX */
+	public static final String IMPORTTEMPLATETYPE_ExcelXLSXLSX = "XLSX";
 	/** Set Import Template Type.
 		@param ImportTemplateType Import Template Type
 	*/

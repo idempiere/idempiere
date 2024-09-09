@@ -194,6 +194,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     /**
 	 * @return {@link ClientInfo}
 	 */
+	@Override
 	public ClientInfo getClientInfo() {
 		return clientInfo;
 	}
@@ -201,6 +202,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	/**
 	 * @param clientInfo
 	 */
+	@Override
 	public void setClientInfo(ClientInfo clientInfo) {
 		this.clientInfo = clientInfo;
 	}
@@ -208,6 +210,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	/**
 	 * @param win
 	 */
+	@Override
 	public int registerWindow(Object win) {
 		List<Object> windows = getWindows();
 		int retValue = windows.size();
@@ -219,6 +222,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 * Remove from registered window list and clear environment context
 	 * @param WindowNo
 	 */
+	@Override
 	public void unregisterWindow(int WindowNo) {
 		List<Object> windows = getWindows();
 		if (windows != null && WindowNo < windows.size())
@@ -231,6 +235,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @param WindowNo
      * @return Object
      */
+	@Override
 	public Object findWindow(int WindowNo) {
 		List<Object> windows = getWindows();
 		if (windows != null && WindowNo < windows.size())
@@ -262,6 +267,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 * Delegate to {@link #showWindow(Window, String)}
      * @param win
      */
+    @Override
     public void showWindow(Window win) 
     {
     	String pos = win.getPosition();
@@ -274,6 +280,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @param win Window
      * @param pos see {@link org.zkoss.zul.Window#setPosition(String)}
      */
+    @Override
    	public void showWindow(final Window win, final String pos)
 	{
 		final Window.Mode windowMode = win.getModeAttribute();		
@@ -303,7 +310,6 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	}
 
    	/**
-   	 * 
    	 * @param win Window
    	 * @param pos see {@link org.zkoss.zul.Window#setPosition(String)}
    	 * @param mode {@link Mode} (POPUP, OVERLAPPED, EMBEDDED or HIGHLIGHTED)

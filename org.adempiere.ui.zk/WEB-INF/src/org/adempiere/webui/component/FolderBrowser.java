@@ -52,6 +52,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 
 	private boolean browseForFolder = false;
 	private String path;
+	/** Root folder */
 	private File root;
 
 	/**

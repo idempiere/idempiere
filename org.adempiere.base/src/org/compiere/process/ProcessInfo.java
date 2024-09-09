@@ -130,6 +130,8 @@ public class ProcessInfo implements Serializable
 	private int					m_InfoWindowID = 0;
 	/** Summary of Execution        */
 	private String    			m_Summary = "";
+	/** JsonData of Execution **/
+	private String				m_jsonData;
 	/** Execution had an error      */
 	private boolean     		m_Error = false;
 
@@ -288,13 +290,33 @@ public class ProcessInfo implements Serializable
 		if (m_transactionName != null)
 			sb.append(",Trx=").append(m_transactionName);
 		sb.append(",Summary=").append(getSummary())
+			.append(",JsonData=").append(getJsonData())
 			.append(",Log=").append(m_logs == null ? 0 : m_logs.size());
 		//	.append(getLogInfo(false));
 		sb.append("]");
 		return sb.toString();
 	}   //  toString
 	
+
+	/**************************************************************************
+	 * 	Set JsonData
+	 * 	@param jsonData jsonData (valid json string)
+	 */
+	public void setJsonData (String jsonData)
+	{
+		if (jsonData != null && !Util.isEmpty(jsonData))
+			m_jsonData = Util.prettifyJSONString(jsonData);
+	}	//	setJsonData
 	/**
+	 * Method getJsonData
+	 * @return String
+	 */
+	public String getJsonData ()
+	{
+		return m_jsonData;
+	}	//	getJsonData
+
+	/**************************************************************************
 	 * 	Set Summary
 	 * 	@param summary summary (will be translated)
 	 */
@@ -829,6 +851,7 @@ public class ProcessInfo implements Serializable
 				logEntry.getP_Msg(),
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
+				logEntry.getJsonData(),
 				logEntry.getPInstanceLogType());
 		il.saveEx();
 		return il.getAD_PInstance_Log_UU();
@@ -866,6 +889,7 @@ public class ProcessInfo implements Serializable
 				logEntry.getP_Msg(),
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
+				logEntry.getJsonData(),
 				logEntry.getPInstanceLogType());
 		return il.update();
 	}	//	saveLog

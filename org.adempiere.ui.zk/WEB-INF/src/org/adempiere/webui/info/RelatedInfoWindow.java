@@ -50,8 +50,8 @@ import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.ext.Sortable;
 
 /**
+ * Related info window implementation (AD_InfoRelated)
  * @author hengsin
- *
  */
 public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>{
 
@@ -101,7 +101,8 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 	}
 
 	/**
-	 * @param id
+	 * Refresh info window
+	 * @param id id from parent info window
 	 */
 	public void refresh(Object id) {
 		parentId = id;

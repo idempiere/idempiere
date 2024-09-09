@@ -1744,6 +1744,8 @@ public final class Env
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))
 						outStr.append("<").append(format).append(">");
+					if (!Util.isEmpty(defaultValue))
+	                    outStr.append(":").append(defaultValue);
 					outStr.append("@");
 				}
 			} else if (po != null && token.startsWith("=")) {
@@ -1765,6 +1767,8 @@ public final class Env
 						outStr.append("@").append(token);
 						if (!Util.isEmpty(format))
 							outStr.append("<").append(format).append(">");
+						if (!Util.isEmpty(defaultValue))
+		                    outStr.append(":").append(defaultValue);
 						outStr.append("@");
 					}
 				}
@@ -1782,6 +1786,8 @@ public final class Env
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))
 						outStr.append("<").append(format).append(">");
+					if (!Util.isEmpty(defaultValue))
+	                    outStr.append(":").append(defaultValue);
 					outStr.append("@");
 				}
 			}
@@ -2210,7 +2216,7 @@ public final class Env
 			
 			//	PO Zoom ?
 			boolean isSOTrx = true;
-			if (table.getPO_Window_ID() != 0)
+			if (table.getPO_Window_ID() != 0 && ((Record_ID > 0 || Record_UU != null)))
 			{
 				String whereClause;
 				if (Record_UU != null)
@@ -2333,6 +2339,14 @@ public final class Env
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Is read only session?  Based on user preference
+	 * @return
+	 */
+	public static boolean isReadOnlySession() {
+		return "Y".equals(Env.getContext(Env.getCtx(), "IsReadOnlySession"));
 	}
 
 }   //  Env

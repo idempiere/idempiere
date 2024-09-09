@@ -96,7 +96,17 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum AD_SysConfig {
+		TAX_LOOKUP_SERVICE(200198);
+		
+		public final int id;
+
+		private AD_SysConfig(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum AD_User {
 		GARDEN_ADMIN(101),
 		GARDEN_USER(102),
@@ -295,7 +305,17 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum C_Location {
+		ORG_WH_HQ(114);
+
+		public final int id;
+
+		private C_Location(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_PaymentTerm {
 		NET_30(100),
 		NET_30_DAYS(107),
@@ -345,6 +365,16 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum C_Region {
+		CT(102);
+
+		public final int id;
+
+		private C_Region(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_Tax {
 		STANDARD(104),
 		CT_SALES(105),

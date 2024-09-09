@@ -54,7 +54,6 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	private static final int AUTO_COMPLETE_QUERY_TIMEOUT = 1; //1 second
 	
 	/**
-	 * 
 	 * @param lookup
 	 * @param gridField
 	 * @param tableName
@@ -68,7 +67,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	}
 	
 	/**
-	 * 
+	 * Set where clause
 	 * @param whereClause
 	 */
 	public void setWhereClause(String whereClause) {
@@ -76,7 +75,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	}
 	
 	/**
-	 * 
+	 * Get where clause
 	 * @return where clause
 	 */
 	public String getWhereClause() {

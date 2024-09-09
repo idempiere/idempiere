@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 import org.compiere.acct.Doc;
@@ -70,6 +71,7 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
@@ -146,23 +148,14 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (receiptLine.get_ID() == fa.getLine_ID()) {
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtSourceCr().compareTo(acctSource) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-							assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getC_Currency().getStdPrecision(), false, receiptLine.get_ID()));
+				assertFactAcctEntries(factAccts, expected);
 			}
 			
 			order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Spot_ConversionType_ID);
@@ -185,23 +178,14 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (receiptLine.get_ID() == fa.getLine_ID()) {							
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
 									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtSourceCr().compareTo(acctSource) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-							assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getC_Currency().getStdPrecision(), false, receiptLine.get_ID()));
+				assertFactAcctEntries(factAccts, expected);
 			}
 		} finally {
 			rollback();
@@ -276,20 +260,14 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
 				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> fas = query.list();
-				for (MFactAcct fa : fas) {
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (receiptLine.get_ID() == fa.getLine_ID()) {
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtSourceCr().compareTo(acctSource) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-							assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, false, receiptLine.get_ID()));
+				assertFactAcctEntries(fas, expected);
 			}
 			
 			MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
@@ -343,19 +321,14 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(delivery.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
 				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, delivery.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> fas = query.list();
-				for (MFactAcct fa : fas) {
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (deliveryLine.get_ID() == fa.getLine_ID()) {
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtAcctDr().compareTo(acctAmount) == 0, fa.getAmtAcctDr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, null, 2, true, deliveryLine.get_ID()));
+				assertFactAcctEntries(fas, expected);
 			}
 		} finally {
 			rollback();

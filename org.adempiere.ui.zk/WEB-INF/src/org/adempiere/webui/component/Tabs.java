@@ -32,7 +32,6 @@ import org.zkoss.zul.Tabpanels;
  * Extend {@link org.zkoss.zul.Tabs}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 2, 2007
- * @version $Revision: 0.10 $
  */
 public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 {
@@ -98,7 +97,7 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 	}
 	
 	/**
-	 * setup {@link Tab} to support drag|drop
+	 * Setup {@link Tab} to enable drag and drop
 	 * @param tab
 	 */
 	protected void setDragDropTab (org.zkoss.zul.Tab tab){
@@ -109,7 +108,7 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 	}
 	
 	/**
-	 * setup {@link Tab} to un-support drag|drop
+	 * Setup {@link Tab} to disable drag and drop
 	 * @param tab
 	 */
 	protected void unsetDragDropTab (org.zkoss.zul.Tab tab){
@@ -172,10 +171,10 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 	}
 	
 	/**
-	 * just allow drag|drop {@link Tab} on same {@link org.zkoss.zul.Tabs}
+	 * Just allow drag|drop between {@link Tab} on same {@link org.zkoss.zul.Tabs}
 	 * @param dropComp
 	 * @param draggComp
-	 * @return
+	 * @return true if operation is valid, false otherwise
 	 */
 	protected boolean isValidateDragDropComponent(Component dropComp, Component draggComp) {
 		if (dropComp == null || draggComp == null || !(dropComp instanceof org.zkoss.zul.Tab || dropComp instanceof org.zkoss.zul.Tabs) || !(draggComp instanceof Tab))// make sure drag and drop component is tab

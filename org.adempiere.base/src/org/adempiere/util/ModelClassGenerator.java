@@ -19,8 +19,6 @@
  *****************************************************************************/
 package org.adempiere.util;
 
-import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -318,6 +316,10 @@ public class ModelClassGenerator
 			+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') "
 			+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 			+ " ORDER BY c.ColumnName";
+		if (DB.isOracle())
+			sql += " COLLATE \"BINARY\"";
+		else if (DB.isPostgreSQL())
+			sql += " COLLATE \"C\"";
 		boolean isKeyNamePairCreated = false; // true if the method "getKeyNamePair" is already generated
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -470,13 +472,6 @@ public class ModelClassGenerator
 		{
 			String staticVar = addListValidation (sb, AD_Reference_ID, columnName);
 			sb.insert(0, staticVar);
-		}
-		
-		//	Payment Validation
-		if (displayType == DisplayType.Payment)
-		{
-			String staticVar = addListValidation (sb, REFERENCE_PAYMENTRULE, columnName);
-			sb.insert(0, staticVar);			
 		}
 
 		//	setValue ("ColumnName", xx);
@@ -669,6 +664,10 @@ public class ModelClassGenerator
 		StringBuilder statement = new StringBuilder();
 		//
 		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? ORDER BY Value"; // even inactive, see IDEMPIERE-4979
+		if (DB.isOracle())
+			sql += " COLLATE \"BINARY\"";
+		else if (DB.isPostgreSQL())
+			sql += " COLLATE \"C\"";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

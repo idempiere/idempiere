@@ -252,6 +252,10 @@ public class ModelInterfaceGenerator
 				+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') "
 				+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 				+ " ORDER BY c.ColumnName";
+		if (DB.isOracle())
+			sql += " COLLATE \"BINARY\"";
+		else if (DB.isPostgreSQL())
+			sql += " COLLATE \"C\"";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {

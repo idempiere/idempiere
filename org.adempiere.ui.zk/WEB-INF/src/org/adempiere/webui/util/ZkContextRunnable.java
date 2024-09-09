@@ -30,7 +30,7 @@ import org.adempiere.util.ContextRunnable;
 import org.zkoss.util.Locales;
 
 /**
- * This class setup additional zk specific session context.
+ * This class setup additional zk specific session context.<br/>
  * Zk web UI code should use this instead of ContextRunnable.
  * @author hengsin
  */

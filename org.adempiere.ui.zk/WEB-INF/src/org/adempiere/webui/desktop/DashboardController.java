@@ -46,6 +46,8 @@ import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
+import org.adempiere.webui.component.Anchorchildren;
+import org.adempiere.webui.component.Anchorlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
@@ -109,8 +111,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MaximizeEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Anchorchildren;
-import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -1587,9 +1587,7 @@ public class DashboardController implements EventListener<Event> {
 			.replace("<", "&lt;");
 		return htmlString;
 	}
-	
-	
-	
+		
 	/**
 	 * Run report
 	 * @param AD_Process_ID
@@ -1871,6 +1869,13 @@ public class DashboardController implements EventListener<Event> {
 		return true;
 	}
 
+	/**
+	 * Get display text for CSV values
+	 * @param i
+	 * @param ip
+	 * @param values comma separated value
+	 * @return display text
+	 */
 	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String values) {
 		String returnValue = "";
 		String[] splittedValues = values.split("[,]");
@@ -1882,6 +1887,13 @@ public class DashboardController implements EventListener<Event> {
 		return returnValue;
 	}
 	
+	/**
+	 * Get display text for value
+	 * @param i
+	 * @param ip
+	 * @param value
+	 * @return display text
+	 */
 	private String getDisplay(MPInstance i, MPInstancePara ip, Object value) {
 		try {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());

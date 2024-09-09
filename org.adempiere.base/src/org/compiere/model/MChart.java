@@ -27,6 +27,9 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 
+/**
+ * Extended model class for AD_Chart
+ */
 public class MChart extends X_AD_Chart {
 	/**
 	 * generated serial id

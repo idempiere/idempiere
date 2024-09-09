@@ -50,7 +50,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Mar 2, 2007
  * @date    July 7, 2007
- * @version $Revision: 0.20 $
  */
 
 public class HeaderPanel extends Panel implements EventListener<Event>

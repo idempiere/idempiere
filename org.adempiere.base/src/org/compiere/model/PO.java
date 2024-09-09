@@ -114,10 +114,10 @@ import org.w3c.dom.Element;
 public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 6591172659109078284L;
+	private static final long serialVersionUID = 1335945052825334098L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -2366,6 +2366,8 @@ public abstract class PO
 			return true;
 		}
 
+		if (!checkReadOnlySession())
+			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
@@ -2589,6 +2591,32 @@ public abstract class PO
 			}
 		}
 	}	//	save
+
+
+	/**
+	 * Tables allowed to be written in a read-only session
+	 */
+	final Set<String> ALLOWED_TABLES_IN_RO_SESSION = new HashSet<>(Arrays.asList(new String[] {
+			"AD_ChangeLog",
+			"AD_Preference",
+			"AD_Session",
+			"AD_UserPreference",
+			"AD_Wlistbox_Customization"
+	}));
+
+	/**
+	 * Do not allow saving if in a read-only session, except the allowed tables
+	 * @return
+	 */
+	private boolean checkReadOnlySession() {
+		if (Env.isReadOnlySession()) {
+			if (! ALLOWED_TABLES_IN_RO_SESSION.contains(get_TableName())) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ReadOnlySession") + " [" + get_TableName() + "]");
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Update or insert new record.
@@ -4028,6 +4056,8 @@ public abstract class PO
 		if (is_new())
 			return true;
 
+		if (!checkReadOnlySession())
+			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
@@ -4180,17 +4210,17 @@ public abstract class PO
 					delete_Tree(MTree_Base.TREETYPE_CustomTable);
 				}
 
-				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
+				if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable()) {
 					//delete cascade only for single key column record
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
-					//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
-					PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, localTrxName);
+					//	Delete Cascade AD_Table_ID/Record_ID except Attachments/Archive (that's postponed until trx commit)
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName NOT IN ('AD_Attachment','AD_Archive')", localTrxName);
 					// Set referencing Record_ID Null AD_Table_ID/Record_ID
 					PO_Record.setRecordNull(AD_Table_ID, Record_ID, localTrxName);
 				}
 				if (Record_UU != null) {
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_UU, localTrxName);
-					PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, localTrxName);
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName NOT IN ('AD_Attachment','AD_Archive')", localTrxName);
 					PO_Record.setRecordNull(AD_Table_ID, Record_UU, localTrxName);
 				}
 		
@@ -4331,9 +4361,10 @@ public abstract class PO
 			}
 			else
 			{
-				if (CacheMgt.get().hasCache(p_info.getTableName())) {
-					Trx trxdel = Trx.get(get_TrxName(), false);
-					if (trxdel != null) {
+				Trx trxdel = Trx.get(get_TrxName(), false);
+				if (trxdel != null) {
+					// Schedule the reset cache for after committed the delete
+					if (CacheMgt.get().hasCache(p_info.getTableName())) {
 						trxdel.addTrxEventListener(new TrxEventListener() {
 							@Override
 							public void afterRollback(Trx trxdel, boolean success) {
@@ -4350,6 +4381,28 @@ public abstract class PO
 							}
 						});
 					}
+					// trigger the deletion of attachments and archives for after committed the delete
+					trxdel.addTrxEventListener(new TrxEventListener() {
+						@Override
+						public void afterRollback(Trx trxdel, boolean success) {
+							trxdel.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterCommit(Trx trxdel, boolean success) {
+							if (success) {
+								if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
+									// Delete Cascade AD_Table_ID/Record_ID on Attachments/Archive
+									// after commit because operations on external storage providers don't have rollback
+									PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+								if (Record_UU != null)
+									PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+							}
+							trxdel.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterClose(Trx trxdel) {
+						}
+					});
 				}
 				if (localTrx != null)
 				{
@@ -5028,7 +5081,6 @@ public abstract class PO
 	 * @param tableName
 	 * @param clientID
 	 * @param trxName
-	 * @param parent id 
 	 */
 	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName) {
 		return retrieveIdOfParentValue(value, tableName, null, 0, clientID, trxName);

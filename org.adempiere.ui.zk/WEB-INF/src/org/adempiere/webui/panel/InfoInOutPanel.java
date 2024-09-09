@@ -180,11 +180,11 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		fDescription.addEventListener(Events.ON_CHANGE, this);
 		fPOReference.addEventListener(Events.ON_CHANGE, this);
 		
-		fDocumentNo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentNo");
-		fDescription.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "description");
-		fPOReference.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "poreference");
-		fDateFrom.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateFrom");
-		fDateTo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateTo");
+		fDocumentNo.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentNo");
+		fDescription.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "description");
+		fPOReference.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "poreference");
+		fDateFrom.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateFrom");
+		fDateTo.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateTo");
 
 		fIsSOTrx.setLabel(Msg.translate(Env.getCtx(), "IsSOTrx"));
 		fIsSOTrx.setChecked(!"N".equals(Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx")));

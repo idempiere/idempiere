@@ -336,7 +336,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
     			{
     				final WPaymentFormWindow window = (WPaymentFormWindow) pf.getWindow();
     				
-    				window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "paymentForm");
+    				window.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "paymentForm");
     				if (window.isInitOK())
     				{
 	    				window.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);

@@ -94,6 +94,7 @@ public class Group extends org.zkoss.zul.Group {
 	}	
 	
 	/**
+	 * Auto create first cell for group header
 	 * @return GroupHeader
 	 */
 	private GroupHeader autoFirstCell() {

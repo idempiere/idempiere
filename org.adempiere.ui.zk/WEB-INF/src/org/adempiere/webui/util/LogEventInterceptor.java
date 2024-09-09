@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.EventInterceptor;
 
 /**
- * Zk event interceptor for event tracing/debugging use.
+ * Zk event interceptor for event tracing/debugging use.<br/>
  * To use this, follow the instruction in WEB-INF/zk.xml
  * @author hengsin
  *

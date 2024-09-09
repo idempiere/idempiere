@@ -60,7 +60,6 @@ import org.zkoss.zul.South;
  *	Window to view and manage scheduling of resources (S_Resource and S_ResourceAssignment)
  *
  * 	@author 	Jorg Janke
- * 	@version 	$Id: VSchedule.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  * 
  *  Zk Port
  *  @author Low Heng Sin

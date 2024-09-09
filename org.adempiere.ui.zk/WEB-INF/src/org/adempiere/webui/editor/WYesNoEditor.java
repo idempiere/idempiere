@@ -38,7 +38,6 @@ import org.zkoss.zk.ui.event.Events;
  * Implemented with {@link Checkbox} component.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  */
 public class WYesNoEditor extends WEditor implements ContextMenuListener
 {

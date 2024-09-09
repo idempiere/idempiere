@@ -358,7 +358,6 @@ public class ImageElement extends PrintElement
 	/**
 	 * Get image scale factor.
 	 * 
-	 * @author teo_sarca - [ 1673548 ] Image is not scaled in a report table cell
 	 * @return scale factor
 	 */
 	public double getScaleFactor() {

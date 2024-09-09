@@ -25,9 +25,6 @@ import org.zkoss.zk.ui.util.UiLifeCycle;
  */
 public class UiLifeCycleListener implements UiLifeCycle {
 
-	/**
-	 * 
-	 */
 	public UiLifeCycleListener() {
 	}
 

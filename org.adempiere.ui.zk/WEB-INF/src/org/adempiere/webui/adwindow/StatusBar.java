@@ -47,12 +47,8 @@ import org.zkoss.zul.Space;
 /**
  * Status bar component of AD Window.
  * 
- * This class is based on org.compiere.apps.StatusBar written by Jorg Janke.
- * @author Jorg Janke
- *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class StatusBar extends Panel implements EventListener<Event> 
 {
@@ -233,7 +229,7 @@ public class StatusBar extends Panel implements EventListener<Event>
     }
 
     /**
-     * add document/record link from ProcessInfoLog to popup
+     * Add document/record link from ProcessInfoLog to popup
      * @param m_logs
      * @return
      */
@@ -265,7 +261,7 @@ public class StatusBar extends Panel implements EventListener<Event>
     }
     
     /**
-     * shorten statusText if exceed predefine max length of 80
+     * Shorten statusText if exceed predefine max length of 80
      * @param statusText
      * @return shorten statusText
      */
@@ -341,6 +337,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 	}
 	
 	/**
+	 * Get process logs
 	 * @return process logs
 	 */
 	public ProcessInfoLog[] getPLogs() {
@@ -348,6 +345,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 	}
 
 	/**
+	 * Get status line text
      * @return current status line text
      */
     public String getStatusLine() {
@@ -355,6 +353,7 @@ public class StatusBar extends Panel implements EventListener<Event>
   	}
    
     /**
+     * Get status error text
      * @return true if current status text is error text
      */
     public boolean getStatusError() {
@@ -383,7 +382,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 	}
 
     /**
-     * handle onClientInfo event from browser
+     * Handle onClientInfo event from browser
      */
     protected void onClientInfo() {
     	ZKUpdateUtil.setWindowWidthX(msgPopup, 500);

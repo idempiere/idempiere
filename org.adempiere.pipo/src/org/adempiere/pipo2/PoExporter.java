@@ -309,6 +309,8 @@ public class PoExporter {
 					String lookupColumn = info.getColumnLookup(i).getColumnName();
 					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
 				}
+				if (tableName == null)
+					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
 				if (   info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
 					|| DisplayType.isMultiID(info.getColumnDisplayType(i))) {
 					addTableReferenceMulti(columnName, tableName, new AttributesImpl());

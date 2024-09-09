@@ -27,9 +27,8 @@ import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MShipperLabels;
 
 /**
- * 
+ * Default implementation of {@link IPrintShippingLabel}
  * @author Elaine
- *
  */
 public class DefaultPrintShippingLabel implements IPrintShippingLabel
 {

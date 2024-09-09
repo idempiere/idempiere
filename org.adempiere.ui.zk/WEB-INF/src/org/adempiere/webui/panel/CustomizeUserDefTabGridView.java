@@ -695,6 +695,9 @@ public class CustomizeUserDefTabGridView extends Panel
 		}
 	}
 	
+	/**
+	 * Listener for list item drop event
+	 */
 	private class DragListener implements EventListener<Event>
 	{
 		@Override

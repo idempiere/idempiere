@@ -37,7 +37,6 @@ import org.compiere.util.Util;
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabbox
 {
@@ -59,7 +58,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     *  Add new tab(AD_Tab).
+     *  Add new tab(AD_Tab).<br/>
      *  Delegate to {@link #doAddTab(GridTab, IADTabpanel)}
      *  @param gTab grid tab model
      *  @param tabPanel
@@ -81,7 +80,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }//  addTab
     
     /**
-     * Handle add new tab to UI.
+     * Handle add new tab to UI.<br/>
      * Override to implement add new tab to UI.
      * @param tab
      * @param tabPanel
@@ -89,7 +88,8 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     protected abstract void doAddTab(GridTab tab, IADTabpanel tabPanel);
 
 	/**
-     * @param index of tab panel
+	 * Is tab enable at index
+     * @param index of tab
      * @return true if enable, false otherwise
      */
     public boolean isEnabledAt(int index) 
@@ -118,7 +118,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     * Change selected tab index from oldIndex to newIndex.
+     * Change selected tab index from oldIndex to newIndex.<br/>
      * Delegate to {@link #doTabSelectionChanged(int, int)}.
      * @param oldIndex
      * @param newIndex
@@ -210,7 +210,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
 	}
 
     /**
-     * Handle tab selection change event.
+     * Handle tab selection change event.<br/>
      * Override to update UI for tab selection change.
      * @param oldIndex
      * @param newIndex
@@ -249,7 +249,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
 	}
 
     /**
-     * 
+     * Is navigation allow from fromIndex to toIndex
      * @param fromIndex
      * @param toIndex
      * @param checkRecordID true to validate fromIndex has a valid record id
@@ -304,7 +304,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     
     /**
      * Get break crumb path
-     * @return full path
+     * @return full break crumb path
      */
     public String getPath() {
     	StringBuilder path = new StringBuilder();
@@ -332,7 +332,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     *  Handle DataStatusEvent.
+     *  Handle DataStatusEvent.<br/>
      *  Delegate to {@link #updateTabState()}.
      *  @param e event
      */
@@ -363,6 +363,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     protected abstract void updateTabState();
 
 	/**
+	 * Get number of tab
      * @return the number of tab panels present
      */
     public int getTabCount()
@@ -371,6 +372,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
+     * Get IADTabpanel at index
      * @param index
      * @return {@link IADTabpanel}
      */
@@ -388,8 +390,8 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     * Set newIndex as selected tab
-     * Delegate to {@link #updateSelectedIndex(int, int)}
+     * Set newIndex as selected tab.<br/>
+     * Delegate to {@link #updateSelectedIndex(int, int)}.
      * @param newIndex
      */
     @Override
@@ -399,6 +401,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
 
     /**
+     * Set parent AD window panel
      * @param abstractADWindowPanel
      */
 	public void setADWindowPanel(AbstractADWindowContent abstractADWindowPanel) {

@@ -30,7 +30,6 @@ import org.zkoss.zk.ui.event.Events;
  * Extend {@link org.zkoss.zul.Window}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Window extends org.zkoss.zul.Window implements ISupportMask
 {
@@ -74,7 +73,7 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
     }
     
     /**
-     * alias for detach, to ease porting of swing form
+     * Alias for detach, to ease porting of swing form
      */
     public void dispose()
     {

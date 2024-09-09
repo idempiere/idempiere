@@ -23,8 +23,8 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 
 /**
  * Utility function to support ZK functions.
- *
- * Provides functionsfor manipulating the CSS style of
+ * <p>
+ * Provides functions for manipulating the CSS style of
  * ZK components.
  *
  * @author Andrew Kimball
@@ -66,9 +66,8 @@ public final class ZkCssHelper
 		return colorString;
 	}
 
-
     /**
-     * Adds a new CSS style to <code>component</code>.
+     * Adds a new CSS style to <code>component</code>.<br/>
      * The ";" prefix is not required.
      *
      * @param component	the HTML based ZK component whose CSS style is to be modified
@@ -88,7 +87,7 @@ public final class ZkCssHelper
 
     /**
      * Adds a CSS color style to <code>component</code>.
-     *
+     * <p>
      * The current style of the component is retained.
      *
      * @param component the HTML based ZK component whose CSS style is to be modified
@@ -106,7 +105,7 @@ public final class ZkCssHelper
 
     /**
      * Sets CSS color style for <code>component</code>.
-     *
+     * <p>
      * Current style of component will be replaced.
      *
      * @param component the HTML based ZK component whose CSS style is to be modified
@@ -123,7 +122,7 @@ public final class ZkCssHelper
 
     /**
      * Adds a CSS background color style to <code>component</code>.
-     *
+     * <p>
      * The current style of the component is retained.
      *
      * @param component the HTML based ZK component whose CSS style is to be modified
@@ -139,7 +138,7 @@ public final class ZkCssHelper
 
     /**
      * Sets CSS background color style for <code>component</code>.
-     *
+     * <p>
      * Current style of component will be replaced.
      *
      * @param component the HTML based ZK component whose CSS style is to be modified

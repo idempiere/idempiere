@@ -126,9 +126,10 @@ import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * Search dialog that works in two mode. <br/>
- * Lookup mode: Search and return selection to lookup field. <br/>
- * Window mode: Search and view search results. Optional support for execution of process.
+ * Abstract base class for info panel and info window.<br/>
+ * Info window that works in two mode. <br/>
+ * Lookup mode: Popup dialog for a field. Search and return selection to lookup field. <br/>
+ * Viewing mode: Independent popup or embedded window. Search and view search results. Optional support for execution of process.
  *
  * @author Sendy Yagambrum
  * @author Elaine
@@ -348,7 +349,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		});
 		
-		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
+		setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
 		
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
@@ -475,7 +476,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         if (isLookup())
         	addEventListener(Events.ON_CANCEL, this);
         contentPanel.setOddRowSclass(null);
-        contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
+        contentPanel.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
         contentPanel.addEventListener("onAfterRender", this);
         contentPanel.setSclass("z-word-nowrap");
         

@@ -14,7 +14,7 @@
       </application>
    </extension>
    <extension
-         id="server_product"
+         id="org.adempiere.server.product"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.adempiere.server.application"
@@ -25,5 +25,4 @@
          </property>
       </product>
    </extension>
-
 </plugin>

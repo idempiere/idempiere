@@ -195,6 +195,24 @@ public class Doc_AllocationHdr extends Doc
 		invGainLossFactLines = new ArrayList<FactLine>();
 		payGainLossFactLines = new ArrayList<FactLine>();
 
+		// Do not create fact lines for reversal of invoice
+		if (p_lines.length == 2)
+		{
+			DocLine_Allocation line1 = (DocLine_Allocation)p_lines[0];
+			DocLine_Allocation line2 = (DocLine_Allocation)p_lines[1];
+			if (line1.getC_Payment_ID() == 0 && line1.getC_Order_ID() == 0 && line1.getC_CashLine_ID() == 0 && line1.getC_Invoice_ID() > 0
+				&& line2.getC_Payment_ID() == 0 && line2.getC_Order_ID() == 0 && line2.getC_CashLine_ID() == 0 && line2.getC_Invoice_ID() > 0)
+			{
+				MInvoice invoice1 = new MInvoice(Env.getCtx(), line1.getC_Invoice_ID(), getTrxName());
+				MInvoice invoice2 = new MInvoice(Env.getCtx(), line2.getC_Invoice_ID(), getTrxName());
+				if (invoice1.getGrandTotal().equals(invoice2.getGrandTotal().negate()) 
+					&& invoice2.getReversal_ID() == invoice1.getC_Invoice_ID())
+				{
+					return m_facts;
+				}
+			}
+		}
+		
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		Fact factForRGL = new Fact(this, as, Fact.POST_Actual); // dummy fact (not posted) to calculate Realized Gain & Loss

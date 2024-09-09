@@ -55,7 +55,7 @@ public class CalloutProduction extends CalloutEngine
 		}
 		else
 		{
-			mTab.setValue("M_AttributeSetInstance_ID", null);
+			mTab.setValue("M_AttributeSetInstance_ID", 0);
 		}
 		
 		MProduct product = MProduct.get(ctx, M_Product_ID);

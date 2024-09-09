@@ -365,7 +365,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         this.setSizable(true);  
         this.setMaximizable(false);
         
-        this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
+        this.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
         this.setId("findWindow_"+targetWindowNo+"_"+targetTabNo);
         LayoutUtils.addSclass("find-window", this);
         
@@ -949,7 +949,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Collections.sort(gridFieldList, new Comparator<GridField>() {
 			@Override
 			public int compare(GridField o1, GridField o2) {
-				return o1.getSeqNoSelection()-o2.getSeqNoSelection();
+				// order by SeqNoSelection, sending the zeroes to the end
+				int sel1 = o1.getSeqNoSelection();
+				if (sel1 == 0)
+					sel1 = Integer.MAX_VALUE;
+				int sel2 = o2.getSeqNoSelection();
+				if (sel2 == 0)
+					sel2 = Integer.MAX_VALUE;
+				return sel1-sel2;
 			}
 		});
         
@@ -1063,17 +1070,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     			return;
         ListItem listItem = new ListItem();
         listItem.setId("Row"+ rowCount++);
-
-        int id = 0;
-
-        if(advancedPanel.getItemCount()>0){
-			String previousID = advancedPanel.getItems().get(advancedPanel.getItemCount()-1).getId();
-			previousID = previousID.substring(3, previousID.length());
-			id = Integer.valueOf(previousID);
-			id++;
-        }
-
-        listItem.setId("Row"+id);
 
         Combobox listTable = new Combobox();
         listTable.setId("listTable"+listItem.getId());

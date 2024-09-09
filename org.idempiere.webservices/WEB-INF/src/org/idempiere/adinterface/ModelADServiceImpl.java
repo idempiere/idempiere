@@ -147,17 +147,16 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	}
 
 	public ModelADServiceImpl()
-	{
-		
-		log.info("Creating session object ADService");
+	{		
+		if (log.isLoggable(Level.INFO)) log.info("Creating session object ADService");
 	}
 	
 	public ModelADServiceImpl(WebServiceContext soapContext,  MessageContext jaxrsContext)
 	{
 		this.jaxwsContext = soapContext;
 		this.jaxrsContext = jaxrsContext;
-		
-		log.info("Creating session object ADService");
+				
+		if (log.isLoggable(Level.INFO)) log.info("Creating session object ADService");
 	}
 	public String getVersion() {
 		return "0.8.0";

@@ -27,7 +27,6 @@ import org.compiere.util.ValueNamePair;
  * Extend {@link org.zkoss.zul.Listitem}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ListItem extends org.zkoss.zul.Listitem
 {
@@ -35,6 +34,7 @@ public class ListItem extends org.zkoss.zul.Listitem
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8052056834118074979L;
+	@Deprecated
 	private PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
     
 	/**
@@ -56,7 +56,9 @@ public class ListItem extends org.zkoss.zul.Listitem
     
     /**
      * @param l PropertyChangeListener
+     * @deprecated not implemented
      */
+    @Deprecated
     public synchronized void addPropertyChangeListener(PropertyChangeListener l)
 	{
 		m_propertyChangeListeners.addPropertyChangeListener(l);

@@ -27,9 +27,11 @@ tr.z-group {
 }
 .z-group-icon-close:before {
 	content: "\f0da";
+	font-weight: 900;
 }
 .z-group-icon-open:before {
 	content: "\f0d7";
+	font-weight: 900;
 }
 
 div.z-listbox-body .z-listgroup-header {

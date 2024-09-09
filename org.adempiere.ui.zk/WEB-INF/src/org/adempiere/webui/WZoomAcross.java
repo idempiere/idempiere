@@ -40,7 +40,6 @@ import org.zkoss.zul.Popup;
  * Handle Zoom Across button action.
  *
  * @author Jorg Janke
- * @version $Id: AZoomAcross.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL - FR [ 1762465 ]
  *

@@ -29,7 +29,7 @@
 	</servlet>
     <servlet>
     	<servlet-name>default</servlet-name>
-    	<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+    	<servlet-class>org.eclipse.jetty.ee8.servlet.DefaultServlet</servlet-class>
     	<init-param>
       		<param-name>dirAllowed</param-name>
       		<param-value>false</param-value>

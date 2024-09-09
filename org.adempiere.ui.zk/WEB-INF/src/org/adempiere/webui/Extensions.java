@@ -62,6 +62,7 @@ public class Extensions {
 	private final static CCache<String, IServiceReferenceHolder<IFormFactory>> s_formFactoryCache = new CCache<>(null, "IFormFactory", 100, false);
 	
 	/**
+	 * Get ADForm instance
 	 * @param formId Java class name, OSGi component name or equinox extension Id
 	 * @return IFormController instance or null if formId not found
 	 */
@@ -96,7 +97,7 @@ public class Extensions {
 	private final static CCache<String, List<IServiceReferenceHolder<IProcessParameterListener>>> s_processParameterListenerCache = new CCache<>(null, "List<IProcessParameterListener>", 100, false);
 	
 	/**
-	 * 
+	 * Get process parameter listeners
 	 * @param processClass Java class name of process
 	 * @param columnName
 	 * @return list of {@link IProcessParameterListener}
@@ -122,6 +123,7 @@ public class Extensions {
 	private final static CCache<String, IServiceReferenceHolder<ICreateFromFactory>> s_createFromFactoryCache = new CCache<>(null, "ICreateFromFactory", 100, false);
 	
 	/**
+	 * Get CreateFrom instance
 	 * @param mTab
 	 * @return ICreateFrom instance
 	 */
@@ -160,6 +162,7 @@ public class Extensions {
 	private static final CCache<String, IServiceReferenceHolder<IPaymentFormFactory>> s_paymentFormFactoryCache = new CCache<>(null, "IPaymentFormFactory", 100, false);
 	
 	/**
+	 * Get payment form instance
 	 * @param windowNo
 	 * @param mTab GridTab
 	 * @param paymentRule
@@ -196,6 +199,7 @@ public class Extensions {
 	private static final CCache<String, IServiceReferenceHolder<IDashboardGadgetFactory>> s_dashboardGadgetFactoryCache = new CCache<>(null, "IDashboardGadgetFactory", 100, false);
 	
 	/**
+	 * Get dashboard gadget component
 	 * @param url
 	 * @param parent
 	 * @return Gadget component
@@ -205,6 +209,7 @@ public class Extensions {
 	}
 
 	/**
+	 * Get dashboard gadget component
 	 * @param url
 	 * @param parent
 	 * @param dc
@@ -238,6 +243,7 @@ public class Extensions {
 	}
 	
 	/**
+	 * Get chart renderer services
 	 * @return list of {@link IChartRendererService}
 	 */
 	public static final List<IChartRendererService> getChartRendererServices() {
@@ -247,6 +253,7 @@ public class Extensions {
 	private static IServiceReferenceHolder<IMappedFormFactory> s_mappedFormFactoryReference = null;
 
 	/**
+	 * Get mapped form factory service
 	 * @return {@link IMappedFormFactory} instance
 	 */
 	public static IMappedFormFactory getMappedFormFactory(){
@@ -268,8 +275,9 @@ public class Extensions {
 	private final static CCache<Integer, IServiceReferenceHolder<IQuickEntryFactory>> s_quickEntryFactoryCache = new CCache<>(null, "IQuickEntryFactory", 100, false);
 	
 	/**
+	 * Get quick entry instance
 	 * @param AdWindowID AD_Window_ID
-	 * @return IQuickEntryFactory instance or null if AdWindowID not found
+	 * @return AbstractWQuickEntry instance or null if AdWindowID not found
 	 */
 	public static AbstractWQuickEntry getQuickEntry(Integer AdWindowID) {
 		IServiceReferenceHolder<IQuickEntryFactory> cache = s_quickEntryFactoryCache.get(AdWindowID);
@@ -299,10 +307,11 @@ public class Extensions {
 	}	
 	
 	/**
+	 * Get quick entry instance
 	 * @param WindowNo 
 	 * @param TabNo 
 	 * @param AdWindowID AD_Window_ID
-	 * @return IQuickEntry instance or null if AdWindowID not found
+	 * @return AbstractWQuickEntry instance or null if AdWindowID not found
 	 */
 	public static AbstractWQuickEntry getQuickEntry(int WindowNo, int TabNo, int AdWindowID) {
 		IServiceReferenceHolder<IQuickEntryFactory> cache = s_quickEntryFactoryCache.get(AdWindowID);
@@ -335,6 +344,7 @@ public class Extensions {
 	private static final CCache<String, IServiceReferenceHolder<IMediaViewProvider>> s_mediaViewProviderCache = new CCache<>("_IMediaViewProvider_Cache", "IMediaViewProvider", 100, false);
 	
 	/**
+	 * Get media viewer service
 	 * @param contentType
 	 * @param extension
 	 * @param mobile true for mobile, otherwise for desktop
@@ -373,6 +383,7 @@ public class Extensions {
 	}
 	
 	/**
+	 * Get IADTabpanel instance
 	 * @param  tabType build in - FORM or SORT, custom - through IADTabPanelFactory extension
 	 * @return {@link IADTabpanel} instance
 	 */
@@ -393,6 +404,7 @@ public class Extensions {
 	} // getADTabPanel
 	
 	/**
+	 * Get report viewer renderers
 	 * @return list of {@link IReportViewerRenderer}
 	 */
 	public static List<IReportViewerRenderer> getReportViewerRenderers() {

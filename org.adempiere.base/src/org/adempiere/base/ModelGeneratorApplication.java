@@ -25,8 +25,6 @@ import org.adempiere.util.ModelInterfaceGenerator;
 import org.compiere.Adempiere;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * Eclipse application to launch the swing based model generation dialog.
@@ -63,13 +61,7 @@ public class ModelGeneratorApplication implements IApplication {
 				@Override
 				public void windowClosed(WindowEvent e) {
 					context.setResult(IApplication.EXIT_OK, ModelGeneratorApplication.this);
-					try {
-						// async stop https://www.eclipse.org/forums/index.php?t=msg&th=31999&goto=103832&#msg_103832
-						// can cast getBundle(0) to org.osgi.framework.launch.Framework in case want more
-						FrameworkUtil.getBundle(ModelGeneratorApplication.class).getBundleContext().getBundle(0).stop();
-					} catch (BundleException be) {
-						System.exit(0);
-					}
+					stop();
 				}
 				
 			});
@@ -90,6 +82,7 @@ public class ModelGeneratorApplication implements IApplication {
 	 */
 	@Override
 	public void stop() {
+		System.exit(0);
 	}
 
 }

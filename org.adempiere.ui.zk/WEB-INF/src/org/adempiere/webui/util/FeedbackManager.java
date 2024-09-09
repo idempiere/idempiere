@@ -25,8 +25,8 @@ import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.Env;
 
 /**
+ * Static methods for user feedback service
  * @author hengsin
- *
  */
 public class FeedbackManager {
 

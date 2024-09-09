@@ -126,6 +126,7 @@ public class MFactAcct extends X_Fact_Acct
 		sb.append(get_ID()).append("-Acct=").append(getAccount_ID())
 			.append(",Dr=").append(getAmtSourceDr()).append("|").append(getAmtAcctDr())
 			.append(",Cr=").append(getAmtSourceCr()).append("|").append(getAmtAcctCr())
+			.append(",C_Currency_ID=").append(getC_Currency_ID())
 			.append ("]");
 		return sb.toString ();
 	}	//	toString

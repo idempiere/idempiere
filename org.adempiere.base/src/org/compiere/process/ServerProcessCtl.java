@@ -278,6 +278,12 @@ public class ServerProcessCtl implements Runnable {
 			m_pi.setReportingProcess(true);
 			m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
 			startProcess();
+			if (m_pi.isError()) {
+				MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
+				pinstance.setErrorMsg(m_pi.getSummary());
+				pinstance.setJsonData(m_pi.getJsonData());
+				pinstance.saveEx();
+			}
 			return;
 		}
 		
