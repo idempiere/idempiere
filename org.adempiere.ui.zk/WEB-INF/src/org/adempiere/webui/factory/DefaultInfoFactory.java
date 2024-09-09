@@ -39,6 +39,7 @@ import org.compiere.model.I_M_InOut;
 import org.compiere.model.Lookup;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MTable;
 import org.compiere.util.Env;
 
 /**
@@ -233,7 +234,10 @@ public class DefaultInfoFactory implements IInfoFactory {
 	public InfoWindow create(int windowNo, int AD_InfoWindow_ID, String predefinedContextVariables) {
 		MInfoWindow infoWindow = MInfoWindow.getInfoWindow(AD_InfoWindow_ID);
 		String tableName = infoWindow.getAD_Table().getTableName();
+		MTable table = (MTable)infoWindow.getAD_Table();
 		String keyColumn = tableName + "_ID";
+		if(table.isUUIDKeyTable())
+			keyColumn = tableName + "_UU";
 		InfoPanel info = create(windowNo, tableName, keyColumn, null, false, null, AD_InfoWindow_ID, false, predefinedContextVariables, null);
 		if (info instanceof InfoWindow)
 			return (InfoWindow) info;
