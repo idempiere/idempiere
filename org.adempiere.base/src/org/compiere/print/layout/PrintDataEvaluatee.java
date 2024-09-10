@@ -55,7 +55,7 @@ public class PrintDataEvaluatee implements Evaluatee {
 		}
 		
 		String value = null;
-		if (variableName.startsWith("#") || variableName.startsWith("$")) {
+		if (Env.isGlobalVariable(variableName)) {
 			value  = Env.getContext(Env.getCtx(), variableName);
 		} else {
 			Object obj = m_data.getNode(variableName);
@@ -89,7 +89,7 @@ public class PrintDataEvaluatee implements Evaluatee {
 							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
 							+ foreignTable + "_ID = ?", id);
 				} else {
-					if (variableName.startsWith("#") || variableName.startsWith("$")) {
+					if (Env.isGlobalVariable(variableName)) {
 						variableName = variableName.substring(1);
 					} else if (variableName.indexOf("|") > 0) {
 						variableName = variableName.substring(variableName.lastIndexOf("|")+1);
