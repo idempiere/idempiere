@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import org.adempiere.base.IModelFactory;
@@ -332,8 +334,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		this(ctx, -1, trxName);
 		copyPO(copy);
 		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MColumn(ctx, e, trxName);}).toArray(MColumn[]::new): null;
-		this.m_columnNameMap = copy.m_columnNameMap != null ? new HashMap<String, Integer>(copy.m_columnNameMap) : null;
-		this.m_columnIdMap = copy.m_columnIdMap != null ? new HashMap<Integer, Integer>(copy.m_columnIdMap) : null;
+		this.m_columnNameMap = copy.m_columnNameMap != null ? new ConcurrentHashMap<String, Integer>(copy.m_columnNameMap) : null;
+		this.m_columnIdMap = copy.m_columnIdMap != null ? new ConcurrentHashMap<Integer, Integer>(copy.m_columnIdMap) : null;
 		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
 	}
 
@@ -342,9 +344,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/** Key Columns					*/
 	private String[]	m_KeyColumns = null;
 	/** column name to column index map **/
-	private Map<String, Integer> m_columnNameMap;
+	private ConcurrentMap<String, Integer> m_columnNameMap;
 	/** ad_column_id to column index map **/
-	private Map<Integer, Integer> m_columnIdMap;
+	private ConcurrentMap<Integer, Integer> m_columnIdMap;
 	/** View Components		*/
 	private MViewComponent[]	m_viewComponents = null;
 
@@ -357,8 +359,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		if (m_columns != null && !requery)
 			return m_columns;
-		m_columnNameMap = new HashMap<String, Integer>();
-		m_columnIdMap = new HashMap<Integer, Integer>();
+		m_columnNameMap = new ConcurrentHashMap<String, Integer>();
+		m_columnIdMap = new ConcurrentHashMap<Integer, Integer>();
 		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' ORDER BY ColumnName";
 		ArrayList<MColumn> list = new ArrayList<MColumn>();
 		PreparedStatement pstmt = null;
