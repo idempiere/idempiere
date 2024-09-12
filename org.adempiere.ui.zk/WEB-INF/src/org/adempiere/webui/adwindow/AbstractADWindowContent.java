@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -700,6 +701,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		final GridTab gTab = gridWindow.getTab(tabIndex);
 		Env.setContext(ctx, curWindowNo, tabIndex, GridTab.CTX_TabLevel, Integer.toString(gTab.getTabLevel()));
 
+		AtomicBoolean zoomQuery = new AtomicBoolean(false);
 		// Query first tab
 		if (tabIndex == 0)
 		{
@@ -732,6 +734,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 					    initQueryOnNew(result);
 				    }
+					if (query != null && query == result)
+						zoomQuery.set(true);
 				}
 
 			});
@@ -774,6 +778,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			//fallback to ADTabpanel
 			ADTabpanel fTabPanel = new ADTabpanel();
 			initTabPanel(query, tabIndex, gTab, fTabPanel);
+			// force single row mode for zoom query that return 1 record
+			if (query != null && zoomQuery.get())
+			{
+				if (gTab.getRowCount() == 1 && !gTab.isNew() && adTabbox.getSelectedTabpanel().isGridView()
+						&& adTabbox.getSelectedTabpanel().getGridTab() == gTab)
+				{
+					adTabbox.getSelectedTabpanel().switchRowPresentation();
+				}
+			}
 		}
 
 		return gTab;
