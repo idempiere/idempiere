@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_AttributeUse
+/** Generated Interface for AD_TableAttribute
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 7.1
  */
-public interface I_M_AttributeUse 
+public interface I_AD_TableAttribute 
 {
 
-    /** TableName=M_AttributeUse */
-    public static final String Table_Name = "M_AttributeUse";
+    /** TableName=AD_TableAttribute */
+    public static final String Table_Name = "AD_TableAttribute";
 
-    /** AD_Table_ID=563 */
-    public static final int Table_ID = 563;
+    /** AD_Table_ID=200390 */
+    public static final int Table_ID = 200390;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -44,8 +44,8 @@ public interface I_M_AttributeUse
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,14 +53,47 @@ public interface I_M_AttributeUse
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AD_TableAttribute_ID */
+    public static final String COLUMNNAME_AD_TableAttribute_ID = "AD_TableAttribute_ID";
+
+	/** Set AD_TableAttribute_ID	  */
+	public void setAD_TableAttribute_ID (int AD_TableAttribute_ID);
+
+	/** Get AD_TableAttribute_ID	  */
+	public int getAD_TableAttribute_ID();
+
+    /** Column name AD_TableAttribute_UU */
+    public static final String COLUMNNAME_AD_TableAttribute_UU = "AD_TableAttribute_UU";
+
+	/** Set AD_TableAttribute_UU	  */
+	public void setAD_TableAttribute_UU (String AD_TableAttribute_UU);
+
+	/** Get AD_TableAttribute_UU	  */
+	public String getAD_TableAttribute_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -77,21 +110,6 @@ public interface I_M_AttributeUse
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name DefaultValue */
-    public static final String COLUMNNAME_DefaultValue = "DefaultValue";
-
-	/** Set Default Logic.
-	  * Default value hierarchy, separated by ;
-
-	  */
-	public void setDefaultValue (String DefaultValue);
-
-	/** Get Default Logic.
-	  * Default value hierarchy, separated by ;
-
-	  */
-	public String getDefaultValue();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -121,44 +139,33 @@ public interface I_M_AttributeUse
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
-    /** Column name M_AttributeSet_ID */
-    public static final String COLUMNNAME_M_AttributeSet_ID = "M_AttributeSet_ID";
+    /** Column name M_AttributeValue_ID */
+    public static final String COLUMNNAME_M_AttributeValue_ID = "M_AttributeValue_ID";
 
-	/** Set Attribute Set.
-	  * Product Attribute Set
+	/** Set Attribute Value.
+	  * Product Attribute Value
 	  */
-	public void setM_AttributeSet_ID (int M_AttributeSet_ID);
+	public void setM_AttributeValue_ID (int M_AttributeValue_ID);
 
-	/** Get Attribute Set.
-	  * Product Attribute Set
+	/** Get Attribute Value.
+	  * Product Attribute Value
 	  */
-	public int getM_AttributeSet_ID();
+	public int getM_AttributeValue_ID();
 
-	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
+	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException;
 
-    /** Column name M_AttributeUse_UU */
-    public static final String COLUMNNAME_M_AttributeUse_UU = "M_AttributeUse_UU";
+    /** Column name Record_ID */
+    public static final String COLUMNNAME_Record_ID = "Record_ID";
 
-	/** Set M_AttributeUse_UU	  */
-	public void setM_AttributeUse_UU (String M_AttributeUse_UU);
-
-	/** Get M_AttributeUse_UU	  */
-	public String getM_AttributeUse_UU();
-
-    /** Column name SeqNo */
-    public static final String COLUMNNAME_SeqNo = "SeqNo";
-
-	/** Set Sequence.
-	  * Method of ordering records;
- lowest number comes first
+	/** Set Record ID.
+	  * Direct internal record ID
 	  */
-	public void setSeqNo (int SeqNo);
+	public void setRecord_ID (int Record_ID);
 
-	/** Get Sequence.
-	  * Method of ordering records;
- lowest number comes first
+	/** Get Record ID.
+	  * Direct internal record ID
 	  */
-	public int getSeqNo();
+	public int getRecord_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -175,4 +182,39 @@ public interface I_M_AttributeUse
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name Value */
+    public static final String COLUMNNAME_Value = "Value";
+
+	/** Set Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
+	public void setValue (String Value);
+
+	/** Get Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
+	public String getValue();
+
+    /** Column name ValueDate */
+    public static final String COLUMNNAME_ValueDate = "ValueDate";
+
+	/** Set Value Date	  */
+	public void setValueDate (Timestamp ValueDate);
+
+	/** Get Value Date	  */
+	public Timestamp getValueDate();
+
+    /** Column name ValueNumber */
+    public static final String COLUMNNAME_ValueNumber = "ValueNumber";
+
+	/** Set Value.
+	  * Numeric Value
+	  */
+	public void setValueNumber (BigDecimal ValueNumber);
+
+	/** Get Value.
+	  * Numeric Value
+	  */
+	public BigDecimal getValueNumber();
 }

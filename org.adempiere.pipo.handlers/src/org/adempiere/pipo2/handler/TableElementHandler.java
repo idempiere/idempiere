@@ -34,6 +34,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.MColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -179,12 +180,36 @@ public class TableElementHandler extends AbstractElementHandler {
 		PackOut packOut = ctx.packOut;
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Table m_Table = new X_AD_Table (ctx.ctx, AD_Table_ID, null);
+		if (m_Table.getM_AttributeSet_ID() > 0)
+		{
+			try
+			{
+				new AttributeSetElementHandler().packOut(ctx.packOut, document, null, m_Table.getM_AttributeSet_ID());
+			}
+			catch (Exception e)
+			{
+				if (log.isLoggable(Level.INFO))
+					log.info(e.toString());
+			}
+		}
 		boolean createElement = isPackOutElement(ctx, m_Table);
 		if (createElement) {
 			verifyPackOutRequirement(m_Table);
 			addTypeName(atts, "table");
 			document.startElement("","",I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
+		}
+		
+		packOut.getCtx().ctx.put("Table_Name", I_AD_Table.Table_Name);
+		try
+		{
+			ElementHandler handler = packOut.getHandler(I_AD_TableAttribute.Table_Name);
+			handler.packOut(packOut, document, null, m_Table.get_ID());
+		}
+		catch (Exception e)
+		{
+			if (log.isLoggable(Level.INFO))
+				log.info(e.toString());
 		}
 
 		try {

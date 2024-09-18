@@ -76,6 +76,7 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.panel.TableAttributePanel;
 import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.panel.WDocActionPanel;
 import org.adempiere.webui.panel.action.CSVImportAction;
@@ -1434,6 +1435,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		AEnv.showWindow(form);
 	} // onQuickForm
 
+	public void onAttributeForm()
+	{
+		new TableAttributePanel(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+	}
+	
     /**
      * @param event
      * @see EventListener#onEvent(Event)
@@ -1759,6 +1765,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
 
 		toolbar.enableQuickForm(adTabbox.getSelectedTabpanel().isEnableQuickFormButton() && !adTabbox.getSelectedGridTab().isReadOnly());
+
+		toolbar.enableAttributeForm((MTable.get(Env.getCtx(), adTabbox.getSelectedGridTab().getAD_Table_ID()).getM_AttributeSet_ID() > 0));
 
 		boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
         
