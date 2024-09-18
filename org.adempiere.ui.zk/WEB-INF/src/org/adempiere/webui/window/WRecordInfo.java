@@ -339,24 +339,21 @@ public class WRecordInfo extends Window implements EventListener<Event>
 					if (! m_info.toString().contains(uuinfo))
 						m_info.append("\n ").append(uuinfo);
 				}
-				if (po.get_KeyColumns().length == 1) {
-					String ticketURL;
-					if (Record_ID <= 0)
-						ticketURL = AEnv.getZoomUrlTableUU(po);
-					else
-						ticketURL = AEnv.getZoomUrlTableID(po);
-					m_permalink.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-						public void onEvent(Event event) throws Exception {
-							StringBuffer sb = new StringBuffer("navigator.clipboard.writeText(\"")
+				String ticketURL;
+				if (Record_ID <= 0)
+					ticketURL = AEnv.getZoomUrlTableUU(po);
+				else
+					ticketURL = AEnv.getZoomUrlTableID(po);
+				m_permalink.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+					public void onEvent(Event event) throws Exception {
+						StringBuffer sb = new StringBuffer("navigator.clipboard.writeText(\"")
 								.append(ticketURL)
 								.append("\");");
-							Clients.evalJavaScript(sb.toString());
-							Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_permalink, "end_before", 1000);
-						}
-					});
-				}
-				m_permalink.setVisible(po.get_KeyColumns().length == 1);
-				final String whereClause = po.get_WhereClause(true, Record_UU);
+						Clients.evalJavaScript(sb.toString());
+						Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_permalink, "end_before", 1000);
+					}
+				});
+				final String whereClause = po.get_WhereClause(true);
 				m_copySelect.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						StringBuffer query = new StringBuffer("navigator.clipboard.writeText(\"SELECT * FROM ")
