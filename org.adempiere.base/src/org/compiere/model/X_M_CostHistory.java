@@ -33,7 +33,7 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240805L;
+	private static final long serialVersionUID = 20240903L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)
@@ -150,6 +150,22 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Back-Date Processed On.
+		@param BackDateProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn)
+	{
+		set_Value (COLUMNNAME_BackDateProcessedOn, BackDateProcessedOn);
+	}
+
+	/** Get Back-Date Processed On.
+		@return The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_BackDateProcessedOn);
+	}
 
 	/** Set Account Date.
 		@param DateAcct Accounting Date

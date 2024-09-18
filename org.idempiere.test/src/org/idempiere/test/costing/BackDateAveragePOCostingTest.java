@@ -20,7 +20,7 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - Elaine Tan                         								   *
+ * - Elaine Tan                         							   *
  **********************************************************************/
 package org.idempiere.test.costing;
 
@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
@@ -56,6 +57,7 @@ import org.compiere.model.MProductPrice;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
@@ -85,9 +87,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
-
+		
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateLandedCostZeroStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -124,10 +126,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
-//			assertNotNull(cd, "MCostDetail not found for invoice line");
-//			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -138,6 +137,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -160,9 +160,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateLandedCostInsufficientStock", new BigDecimal(5));
 			
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -213,6 +213,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -235,9 +236,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateLandedCostSufficientStock", new BigDecimal(5));
 			
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -292,6 +293,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -313,9 +315,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateReceiptAfterShipmentInventory", new BigDecimal(10));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -370,6 +372,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, inventoryLine.getParent().getMovementDate(), false, new BigDecimal("13.50"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -393,9 +396,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateReceiptBeforeLandedCostZero2InsufficientStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -421,9 +424,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			
 			// Landed Cost
 			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
-//			assertNotNull(cd, "MCostDetail not found for invoice line");
-//			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.00"));
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
@@ -443,7 +443,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-//			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 //			assertNotNull(cd, "MCostDetail not found for invoice line");
 //			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
@@ -456,6 +456,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -479,9 +480,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateReceiptBeforeLandedCostZero2SufficientStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -508,9 +509,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			// Landed Cost
 			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
-//			assertNotNull(cd, "MCostDetail not found for invoice line");
-//			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.00"));
-			
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
@@ -529,9 +530,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-//			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
-//			assertNotNull(cd, "MCostDetail not found for invoice line");
-//			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -542,6 +543,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.55"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -565,9 +567,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
-		try {
+		try { 
+			configureAcctSchema(as);
 			product = createProduct("testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -628,6 +630,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.31"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -648,9 +651,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateShipmentBeforeReceiptShipment", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -695,6 +698,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -717,9 +721,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2ZeroStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -763,7 +767,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
-			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -774,6 +778,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -795,10 +800,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	public void testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock() {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		MAcctSchema as = client.getAcctSchema(); 
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -853,6 +858,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -875,9 +881,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -932,6 +938,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.43"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -951,9 +958,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testPostDateShipment", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -978,13 +985,14 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
-			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -1007,9 +1015,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testReverseCorrectReceiptAfterShipment", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -1057,6 +1065,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -1079,9 +1088,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testReverseCorrectShipmentAfterAVGCostMoved", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -1129,6 +1138,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 		} finally {
 			rollback();
+			as.load(getTrxName());
 			
 			if (product != null) {
 				product.set_TrxName(null);
@@ -1150,9 +1160,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		try {
+			configureAcctSchema(as);
 			product = createProduct("testReverseCorrectLandedCost", new BigDecimal(5));
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -1185,9 +1195,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, reversalLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
-			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
 		} finally {
 			rollback();
 			
@@ -1449,5 +1459,23 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	public static void validateCostDetailDateAcctBackDate(MCostDetail cd, Timestamp dateAcct, boolean isBackDate, BigDecimal currentCostPrice) {
 		assertEquals(cd.getDateAcct(), dateAcct, "Unexpected MCostDetail DateAcct");
 		assertEquals(cd.isBackDate(), isBackDate, "Unexpected MCostDetail IsBackDate");
+		
+		if (currentCostPrice != null)
+			assertEquals(cd.getCurrentCostPrice().setScale(currentCostPrice.scale(), RoundingMode.HALF_UP), currentCostPrice, "Unexpected MCostDetail CurrentCostPrice");
+		
+		if (isBackDate)
+			assertNotNull(cd.getBackDateProcessedOn(), "Unexpected MCostDetail DateBackDateProcess");
+	}
+	
+	private void configureAcctSchema(MAcctSchema as) {
+		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		
+		if (as.getBackDateDay() < 3) {
+			String sql = "UPDATE C_AcctSchema SET BackDateDay=? WHERE C_AcctSchema_ID=?";
+			DB.executeUpdate(sql, new Object[] {3, as.getC_AcctSchema_ID()}, false, getTrxName());
+			as.load(getTrxName());
+		}
+		
+		assertTrue(as.getBackDateDay() >= 3, "Unexpected MAcctSchema BackDateDay");
 	}
 }

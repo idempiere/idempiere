@@ -462,7 +462,8 @@ public class Doc_MatchInv extends Doc
 			}else{
 				MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-					M_AttributeSetInstance_ID, getTrxName());
+					M_AttributeSetInstance_ID, 
+					getDateAcct(), null, getTrxName());
 				qtyCost = (c!=null? c.getCurrentQty():Env.ZERO);
 			}
 						

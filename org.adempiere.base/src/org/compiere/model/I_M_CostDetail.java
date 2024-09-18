@@ -75,6 +75,19 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getAmt();
 
+    /** Column name BackDateProcessedOn */
+    public static final String COLUMNNAME_BackDateProcessedOn = "BackDateProcessedOn";
+
+	/** Set Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn);
+
+	/** Get Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 

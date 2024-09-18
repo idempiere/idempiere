@@ -62,6 +62,19 @@ public interface I_M_CostHistory
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name BackDateProcessedOn */
+    public static final String COLUMNNAME_BackDateProcessedOn = "BackDateProcessedOn";
+
+	/** Set Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn);
+
+	/** Get Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 

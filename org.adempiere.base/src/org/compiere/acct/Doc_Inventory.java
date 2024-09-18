@@ -35,6 +35,7 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
 import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
+import org.compiere.model.X_M_CostHistory;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -239,8 +240,14 @@ public class Doc_Inventory extends Doc
 				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
+				X_M_CostHistory history = null;
+				MCostDetail cd = MCostDetail.get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+product.getM_Product_ID(), 
+						get_ID(), asiId, as.getC_AcctSchema_ID(), getTrxName());
+				if (cd != null)
+					history = cd.getCostHistory(as);
 				MCost cost = MCost.get(product, asiId, as, 
-						orgId, ce.getM_CostElement_ID(), getTrxName());					
+						orgId, ce.getM_CostElement_ID(), 
+						getDateAcct(), history, getTrxName());					
 				DB.getDatabase().forUpdate(cost, 120);
 				BigDecimal currentQty = cost.getCurrentQty();
 				adjustmentDiff = costs;

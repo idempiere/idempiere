@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
@@ -395,6 +396,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 
 		//	Std Period open?
 		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+		
 		MInventoryLine[] lines = getLines(false);
 		if (lines.length == 0)
 		{
@@ -539,7 +542,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							}
 						}
 	
-						MCost cost = product.getCostingRecord(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod());
+						MCost cost = product.getCostingRecord(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod(), getMovementDate());
 						if (cost != null && cost.getCurrentCostPrice().compareTo(currentCost) != 0) 
 						{
 							m_processMsg = "Current Cost for Line " + line.getLine() + " have changed.";
@@ -729,6 +732,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
+			MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
@@ -977,6 +981,15 @@ public class MInventory extends X_M_Inventory implements DocAction
 				accrual = true;
 			}
 			
+			try
+			{
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+			}
+			catch (BackDateTrxNotAllowedException e)
+			{
+				accrual = true;
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -1053,6 +1066,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		
 		MDocType dt = MDocType.get(getC_DocType_ID());
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate);
 
 		//	Deep Copy
 		MInventory reversal = new MInventory(getCtx(), 0, get_TrxName());

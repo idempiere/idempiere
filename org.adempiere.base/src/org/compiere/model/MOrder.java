@@ -1541,6 +1541,12 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getDateAcct()))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
+			return DocAction.STATUS_Invalid;
+		}
+		
 		if (isSOTrx() && getDeliveryViaRule().equals(DELIVERYVIARULE_Shipper))
 		{
 			if (getM_Shipper_ID() == 0)
@@ -2390,6 +2396,7 @@ public class MOrder extends X_C_Order implements DocAction
 				if (getDateAcct().before(getDateOrdered())) {
 					setDateAcct(getDateOrdered());
 					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+					MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
 				}
 			}
 		}
@@ -3030,6 +3037,7 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		// Test period
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		String DocSubTypeSO = dt.getDocSubTypeSO();

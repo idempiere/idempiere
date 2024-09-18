@@ -33,7 +33,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240805L;
+	private static final long serialVersionUID = 20240903L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -160,6 +160,22 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Back-Date Processed On.
+		@param BackDateProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn)
+	{
+		set_Value (COLUMNNAME_BackDateProcessedOn, BackDateProcessedOn);
+	}
+
+	/** Get Back-Date Processed On.
+		@return The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_BackDateProcessedOn);
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException

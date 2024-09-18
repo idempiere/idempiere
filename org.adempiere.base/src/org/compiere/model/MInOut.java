@@ -32,6 +32,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -1448,6 +1449,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			m_processMsg = "@PeriodClosed@";
 			return DocAction.STATUS_Invalid;
 		}
+		
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getDateAcct()))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
+			return DocAction.STATUS_Invalid;
+		}
 
 		// Validate Close Order
 		if (!isReversal())
@@ -2303,6 +2310,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			if (getDateAcct().before(getMovementDate())) {
 				setDateAcct(getMovementDate());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -2625,6 +2633,15 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				accrual = true;
 			}
 			
+			try
+			{
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
+			}
+			catch (BackDateTrxNotAllowedException e)
+			{
+				accrual = true;
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -2708,6 +2725,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (!MPeriod.isOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID()))
 		{
 			m_processMsg = "@PeriodClosed@";
+			return null;
+		}
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), reversalDate))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
 			return null;
 		}
 

@@ -43,6 +43,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.MatchPOAutoMatch;
 import org.compiere.model.ProductCost;
+import org.compiere.model.X_M_CostHistory;
 import org.compiere.model.X_M_InOut;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
@@ -417,7 +418,8 @@ public class Doc_MatchPO extends Doc
 		String costingMethod = product.getCostingMethod(as);
 		//get standard cost and also make sure cost for other costing method is updated
 		BigDecimal costs = m_pc.getProductCosts(as, getAD_Org_ID(),
-			MAcctSchema.COSTINGMETHOD_StandardCosting, m_C_OrderLine_ID, false);	//	non-zero costs
+			MAcctSchema.COSTINGMETHOD_StandardCosting, m_C_OrderLine_ID, false, 
+			getDateAcct(), (X_M_CostHistory) null, isPostProcess());	//	non-zero costs
 
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{

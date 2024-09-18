@@ -85,7 +85,7 @@ public class CostAdjustmentLineASI implements IColumnCallout {
 						as = a ; 
 				}
 			}
-			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);
+			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod, inventory.getMovementDate());
 			if (cost == null) {
 				if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 					mTab.setValue(mField, null);

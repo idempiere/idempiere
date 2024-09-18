@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -55,7 +56,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6847265056758898333L;
+	private static final long serialVersionUID = -9041255212036473767L;
 
 	/**
 	 * 	Get MProduct from Cache (immutable)
@@ -1107,7 +1108,19 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
-		
+		return getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod, null);
+	}
+	
+	/**
+	 * @param as
+	 * @param AD_Org_ID
+	 * @param M_ASI_ID
+	 * @param costingMethod
+	 * @param dateAcct
+	 * @return MCost or null
+	 */
+	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
+	{		
 		String costingLevel = getCostingLevel(as);
 		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
 		{
@@ -1126,7 +1139,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (ce == null) {
 			return null;
 		}
-		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), get_TrxName());
+		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), dateAcct, null, get_TrxName());
 		return cost.is_new() ? null : cost;
 	}
 	

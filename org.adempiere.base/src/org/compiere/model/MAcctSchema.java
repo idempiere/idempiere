@@ -17,18 +17,22 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
+import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -46,8 +50,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 405097978362430053L;
-
+	private static final long serialVersionUID = 2740537819749888011L;
 
 	/**
 	 *  Get AccountSchema
@@ -767,5 +770,95 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			m_default.markImmutable();
 		return this;
 	}
+	
+	/**
+	 * Convenient method for testing if a back-date transaction is allowed in primary accounting schema
+	 * @param ctx
+	 * @param dateAcct
+	 * @throws BackDateTrxNotAllowedException
+	 */
+	public static void testBackDateTrxAllowed(Properties ctx, Timestamp dateAcct)
+	throws BackDateTrxNotAllowedException
+	{
+		if (!MAcctSchema.isBackDateTrxAllowed(ctx, dateAcct)) {
+			throw new BackDateTrxNotAllowedException(dateAcct);
+		}
+	}
+	
+	/**
+	 * Is Back-Date transaction allowed in primary accounting schema?
+	 * @param ctx context
+	 * @param tableID
+	 * @param recordID
+	 * @param trxName 
+	 * @return
+	 */
+	public static boolean isBackDateTrxAllowed(Properties ctx, int tableID, int recordID, String trxName)
+	{
+		MTable table = MTable.get(ctx, tableID);
+		PO po = table.getPO(recordID, trxName);
+			
+		// obtain DateAcct
+		int index = -1;
+		if (tableID == MInventory.Table_ID
+				|| tableID == MMovement.Table_ID
+				|| tableID == MProduction.Table_ID
+				|| tableID == MProjectIssue.Table_ID) {
+			index = po.get_ColumnIndex("MovementDate");
+		} else if (tableID == MOrder.Table_ID
+				|| tableID == MMatchPO.Table_ID
+				|| tableID == MInvoice.Table_ID
+				|| tableID == MInOut.Table_ID
+				|| tableID == MMatchInv.Table_ID) {
+			index = po.get_ColumnIndex("DateAcct");
+		}
+		if (index < 0)
+			return true;
+		
+		Timestamp dateAcct = null;
+		Object objts = po.get_Value(index);
+		if (objts != null && objts instanceof Timestamp) {
+			dateAcct = (Timestamp) objts;
+		} else {
+			return true;
+		}
+		
+		return isBackDateTrxAllowed(ctx, dateAcct);
+	}
+	
+	/**
+	 * Is Back-Date transaction allowed in primary accounting schema?
+	 * @param ctx context
+	 * @param dateAcct account date
+	 * @return true if back-date transaction is allowed
+	 */
+	public static boolean isBackDateTrxAllowed(Properties ctx, Timestamp dateAcct)
+	{
+		if (dateAcct == null)
+			return true;
+		MAcctSchema as = MClient.get(ctx, Env.getAD_Client_ID(ctx)).getAcctSchema();
+		return as.isBackDateTrxAllowed(dateAcct);
+	}
 
+	/**
+	 * Is Back-Date transaction allowed?
+	 * @param dateAcct account date
+	 * @return true if back-date transaction is allowed
+	 */
+	public boolean isBackDateTrxAllowed(Timestamp dateAcct)
+	{
+		if (dateAcct == null)
+			return true;
+		if (getBackDateDay() != 0)
+		{
+			Timestamp today = TimeUtil.trunc(new Timestamp (System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
+			Timestamp allowedBackDate = TimeUtil.addDays(today, - getBackDateDay());
+			if (dateAcct.before(allowedBackDate))
+			{
+				log.warning("Back-Date Days Control" + dateAcct + " before allowed back-date - " + allowedBackDate);
+				return false;
+			}
+		}
+		return true;
+	}
 }	//	MAcctSchema

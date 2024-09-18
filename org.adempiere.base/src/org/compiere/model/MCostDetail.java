@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
@@ -50,7 +52,7 @@ import org.compiere.util.Util;
  */
 public class MCostDetail extends X_M_CostDetail
 {
-	private static final long serialVersionUID = 8436354578317073178L;
+	private static final long serialVersionUID = -1335068237409351446L;
 	
 	protected static final String INOUTLINE_DOCBASETYPE_SQL =
 		    "SELECT c.DocBaseType From M_InOut io " +
@@ -914,7 +916,40 @@ public class MCostDetail extends X_M_CostDetail
 		int counterError = 0;
 		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
 		.setParameters(product.getM_Product_ID(),false)
-		.setOrderBy("C_AcctSchema_ID, M_CostElement_ID, AD_Org_ID, M_AttributeSetInstance_ID, Created")
+		.setOrderBy("C_AcctSchema_ID, M_CostElement_ID, AD_Org_ID, M_AttributeSetInstance_ID, DateAcct, M_CostDetail_ID")
+		.list();
+		for (MCostDetail cd : list) {
+			if (cd.process())	//	saves
+				counterOK++;
+			else
+				counterError++;
+		}
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("OK=" + counterOK + ", Errors=" + counterError);
+		return counterError == 0;
+	}	//	processProduct
+	
+	/**
+	 * Process Cost Details for product
+	 * @param as accounting schema
+	 * @param product product
+	 * @param dateAcct account date
+	 * @param trxName transaction
+	 * @return true if no error
+	 */
+	public static boolean processProduct(MAcctSchema as, MProduct product, Timestamp dateAcct, String trxName)
+	{
+		if (dateAcct == null)
+			dateAcct = TimeUtil.getDay(System.currentTimeMillis());
+		
+		final String whereClause = I_M_CostDetail.COLUMNNAME_C_AcctSchema_ID + "=?"
+				+ " AND " + I_M_CostDetail.COLUMNNAME_M_Product_ID + "=?"
+				+ " AND " + I_M_CostDetail.COLUMNNAME_DateAcct + "<=?"
+				+ " AND " + I_M_CostDetail.COLUMNNAME_Processed + "=?";
+		int counterOK = 0;
+		int counterError = 0;
+		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
+		.setParameters(as.getC_AcctSchema_ID(), product.getM_Product_ID(), dateAcct, false)
+		.setOrderBy("M_CostElement_ID, AD_Org_ID, M_AttributeSetInstance_ID, DateAcct, M_CostDetail_ID")
 		.list();
 		for (MCostDetail cd : list) {
 			if (cd.process())	//	saves
@@ -1117,7 +1152,11 @@ public class MCostDetail extends X_M_CostDetail
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (newRecord) {
+			final String sql = "SELECT MAX(DateAcct) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y'";
+			Timestamp MaxDateAcct = DB.getSQLValueTS(get_TrxName(), sql, getM_Product_ID());
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			if (MaxDateAcct != null && MaxDateAcct.after(today))
+				today = MaxDateAcct;
 			Timestamp dateAcct = getDateAcct();
 			if (dateAcct == null)
 			{
@@ -1128,6 +1167,12 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				setDateAcct(dateAcct);
 				setIsBackDate(dateAcct.before(today));
+			}
+		} else {
+			if (is_ValueChanged(COLUMNNAME_DateAcct))
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeProcessedDate"));
+				return false;
 			}
 		}
 		
@@ -1286,9 +1331,11 @@ public class MCostDetail extends X_M_CostDetail
 			if (ce.isAverageInvoice())
 				return true;
 		}
-		
+
+		X_M_CostHistory oldHistory = getCostHistory(as);
 		MCost cost = MCost.get(product, M_ASI_ID, as, 
-			Org_ID, ce.getM_CostElement_ID(), get_TrxName());
+			Org_ID, ce.getM_CostElement_ID(), 
+			getDateAcct(), oldHistory, get_TrxName());
 		
 		DB.getDatabase().forUpdate(cost, 120);
 		
@@ -1298,6 +1345,7 @@ public class MCostDetail extends X_M_CostDetail
 		history.setM_CostDetail_ID(this.getM_CostDetail_ID());
 		history.setDateAcct(this.getDateAcct());
 		history.setIsBackDate(this.isBackDate());
+		history.setBackDateProcessedOn(this.getBackDateProcessedOn());
 		history.setM_CostElement_ID(ce.getM_CostElement_ID());
 		history.setM_CostType_ID(cost.getM_CostType_ID());
 		history.setM_Product_ID(cost.getM_Product_ID());
@@ -1673,8 +1721,10 @@ public class MCostDetail extends X_M_CostDetail
 		history.setNewCAmt(cost.getCumulatedAmt());
 		history.setNewCQty(cost.getCumulatedQty());
 		//save history if there are movement of qty or costprice
+		//save history if the costing method is average po or average invoice
 		if (history.getNewQty().compareTo(history.getOldQty()) != 0 
-				|| history.getNewCostPrice().compareTo(history.getOldCostPrice()) != 0)
+				|| history.getNewCostPrice().compareTo(history.getOldCostPrice()) != 0
+				|| (ce.isAveragePO() || ce.isAverageInvoice()))
 		{
 			if (!history.save())
 				return false;
@@ -1682,5 +1732,72 @@ public class MCostDetail extends X_M_CostDetail
 		
 		return cost.save();
 	}	//	process
+	
+	/**
+	 * Get Cost History Record
+	 * @param as accounting schema
+	 * @return X_M_CostHistory or null
+	 */
+	public X_M_CostHistory getCostHistory(MAcctSchema as)
+	{
+		int AD_Org_ID = getAD_Org_ID();
+		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
+		String costingMethod = null;
+
+		MProduct product = MProduct.get(getCtx(), getM_Product_ID(), get_TrxName());
+		String CostingLevel = product.getCostingLevel(as);
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
+		{
+			AD_Org_ID = 0;
+			M_AttributeSetInstance_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
+			M_AttributeSetInstance_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
+			AD_Org_ID = 0;
+		//	Costing Method
+		if (costingMethod == null)
+		{
+			costingMethod = product.getCostingMethod(as);
+			if (costingMethod == null)
+			{
+				throw new IllegalArgumentException("No Costing Method");
+			}
+		}
+		
+		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+			return null;
+		
+		StringBuilder sql0 = new StringBuilder();
+		sql0.append("SELECT c.M_CostHistory_ID ");
+		sql0.append("FROM M_CostMovement_v c ");
+		sql0.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed=?) ");
+		sql0.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
+		sql0.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
+		sql0.append(" AND c.M_Product_ID=? ");
+		sql0.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
+		sql0.append(" AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=? ");
+		sql0.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
+		sql0.append(" AND c.M_CostDetail_ID=? ");
+		sql0.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC");
+		
+		List<Object> params0 = new ArrayList<Object>();
+		params0.add(isDelta() ? "N" : "Y"); // cost detail is set to processed=N when it is a delta record
+		params0.add(getAD_Client_ID());
+		params0.add(AD_Org_ID);
+		params0.add(getM_Product_ID());
+		params0.add(M_AttributeSetInstance_ID);
+		params0.add(as.getM_CostType_ID());
+		params0.add(as.getC_AcctSchema_ID());
+		params0.add(costingMethod);
+		params0.add(getM_CostDetail_ID());
+		
+		int M_CostHistory_ID = DB.getSQLValueEx(get_TrxName(), sql0.toString(), params0);
+		X_M_CostHistory costHistory = null;
+		if (M_CostHistory_ID > 0)
+			costHistory = new X_M_CostHistory(getCtx(), M_CostHistory_ID, get_TrxName());
+		
+		return costHistory;
+	}
 	
 }	//	MCostDetail

@@ -458,7 +458,8 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		// Complete                    ..  CO
 		if (AD_Table_ID == get_Table_ID() && docStatus.equals(DocumentEngine.STATUS_Completed)) {
 			boolean periodOpen = MPeriod.isOpen(Env.getCtx(), getMovementDate(), MDocType.DOCBASETYPE_ProjectIssue, getAD_Org_ID());
-			if (periodOpen) {
+			boolean isBackDateTrxAllowed = MAcctSchema.isBackDateTrxAllowed(Env.getCtx(), getMovementDate());
+			if (periodOpen && isBackDateTrxAllowed) {
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 			}
 			options[index++] = DocumentEngine.ACTION_Reverse_Accrual;

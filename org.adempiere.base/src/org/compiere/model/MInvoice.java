@@ -38,6 +38,7 @@ import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.model.ITaxProvider;
@@ -1708,6 +1709,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return DocAction.STATUS_Invalid;
 
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
 
 		//	Lines
 		MInvoiceLine[] lines = getLines(true);
@@ -2377,6 +2379,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			if (getDateAcct().before(getDateInvoiced())) {
 				setDateAcct(getDateInvoiced());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -2540,6 +2543,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				accrual = true;
 			}
 			
+			try
+			{
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct());
+			}
+			catch (BackDateTrxNotAllowedException e)
+			{
+				accrual = true;
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -2619,6 +2631,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateInvoiced();
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate);
 		//
 		reverseAllocations(accrual, getC_Invoice_ID());
 		//	Reverse/Delete Matching
