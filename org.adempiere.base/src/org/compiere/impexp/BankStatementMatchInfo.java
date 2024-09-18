@@ -37,6 +37,7 @@ public class BankStatementMatchInfo
 	private int m_C_BPartner_ID = 0;
 	private int m_C_Payment_ID = 0;
 	private int m_C_Invoice_ID = 0;
+	private int m_C_DepositBatch_ID = 0;
 
 	/**
 	 * 	Do we have a match?
@@ -44,7 +45,7 @@ public class BankStatementMatchInfo
 	 */
 	public boolean isMatched()
 	{
-		return m_C_BPartner_ID > 0 || m_C_Payment_ID > 0 || m_C_Invoice_ID > 0;
+		return m_C_BPartner_ID > 0 || m_C_Payment_ID > 0 || m_C_Invoice_ID > 0 || m_C_DepositBatch_ID > 0;
 	}	//	isValid
 
 	/**
@@ -96,6 +97,24 @@ public class BankStatementMatchInfo
 	public void setC_Invoice_ID (int C_Invoice_ID) 
 	{
 		m_C_Invoice_ID = C_Invoice_ID;
+	}
+	
+	/**
+	 *	Get matched Deposit Batch
+	 *	@return Deposit Batch
+	 */
+	public int getC_DepositBatch_ID() 
+	{
+		return m_C_DepositBatch_ID;
+	}
+	
+	/**
+	 * 	Set matched Deposit Batch
+	 *	@param C_DepositBatch_ID 
+	 */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID) 
+	{
+		m_C_DepositBatch_ID = C_DepositBatch_ID;
 	}
 	
 }	//	BankStatementMatchInfo
