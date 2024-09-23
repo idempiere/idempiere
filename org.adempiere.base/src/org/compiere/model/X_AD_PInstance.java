@@ -415,6 +415,22 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return false;
 	}
 
+	/** Set JSON Data.
+		@param JsonData The json field stores json data.
+	*/
+	public void setJsonData (String JsonData)
+	{
+		set_Value (COLUMNNAME_JsonData, JsonData);
+	}
+
+	/** Get JSON Data.
+		@return The json field stores json data.
+	  */
+	public String getJsonData()
+	{
+		return (String)get_Value(COLUMNNAME_JsonData);
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/

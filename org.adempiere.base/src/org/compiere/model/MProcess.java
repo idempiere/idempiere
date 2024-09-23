@@ -327,6 +327,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		//	Unlock
 		pInstance.setResult(ok ? MPInstance.RESULT_OK : MPInstance.RESULT_ERROR);
 		pInstance.setErrorMsg(processInfo.getSummary());
+		pInstance.setJsonData(processInfo.getJsonData());
 		pInstance.setIsProcessing(false);
 		pInstance.saveEx();
 		//
@@ -379,6 +380,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 				String errmsg = pi.getSummary();
 				pinstance.setResult(!pi.isError());
 				pinstance.setErrorMsg(errmsg);
+				pinstance.setJsonData(pi.getJsonData());
 				pinstance.saveEx();
 				ok = !pi.isError();
 			}

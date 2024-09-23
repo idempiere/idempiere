@@ -178,6 +178,22 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 		return ii.intValue();
 	}
 
+	/** Set JSON Data.
+		@param JsonData The json field stores json data.
+	*/
+	public void setJsonData (String JsonData)
+	{
+		set_Value (COLUMNNAME_JsonData, JsonData);
+	}
+
+	/** Get JSON Data.
+		@return The json field stores json data.
+	  */
+	public String getJsonData()
+	{
+		return (String)get_Value(COLUMNNAME_JsonData);
+	}
+
 	/** Set Log.
 		@param Log_ID Log
 	*/

@@ -103,6 +103,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 
 		} else {
 
+			statement = convertAddJson(statement);
 			statement = convertWithConvertMap(statement);
 			statement = convertSimilarTo(statement);
 			statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
@@ -1105,10 +1106,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						begin_default = rest.toUpperCase().indexOf(
 								" DEFAULT ") + 9;
 						defaultvalue = rest.substring(begin_default);
-						int nextspace = defaultvalue.indexOf(' ');
-						if (nextspace > -1) {
-						    rest = defaultvalue.substring(nextspace);
-						    defaultvalue = defaultvalue.substring(0, defaultvalue.indexOf(' '));
+						String endDefaultChar = " ";
+						int shift = 0;
+						if (defaultvalue.startsWith("'")) {
+							endDefaultChar = "'";
+							shift = 1;
+						}
+						int endDefault = defaultvalue.substring(shift).indexOf(endDefaultChar) + shift;
+						if (endDefault > -1+shift) {
+						    rest = defaultvalue.substring(endDefault+shift);
+						    defaultvalue = defaultvalue.substring(0, endDefault+shift);
 						} else {
 							rest = "";
 						}
@@ -1167,10 +1174,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						begin_default = rest.toUpperCase().indexOf(
 								" DEFAULT ") + 9;
 						defaultvalue = rest.substring(begin_default);
-						int nextspace = defaultvalue.indexOf(' ');
-						if (nextspace > -1) {
-						    rest = defaultvalue.substring(nextspace);
-						    defaultvalue = defaultvalue.substring(0, defaultvalue.indexOf(' '));
+						String endDefaultChar = " ";
+						int shift = 0;
+						if (defaultvalue.startsWith("'")) {
+							endDefaultChar = "'";
+							shift = 1;
+						}
+						int endDefault = defaultvalue.substring(shift).indexOf(endDefaultChar) + shift;
+						if (endDefault > -1+shift) {
+						    rest = defaultvalue.substring(endDefault+shift);
+						    defaultvalue = defaultvalue.substring(0, endDefault+shift);
 						} else {
 							rest = "";
 						}
@@ -1220,4 +1233,21 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 
 		return sqlStatement;
 	}
+
+	/**
+	 * For JSON columns Oracle uses CLOB ... CONSTRAINT ... CHECK IS JSON
+	 * while oracle uses JSONB, no constraint
+	 * @param statement
+	 * @return
+	 */
+	private String convertAddJson(String statement) {
+		if (statement.toUpperCase().matches(".*\\bCLOB\\b.*\\bCONSTRAINT\\b.*CHECK\\b.*\\bIS JSON\\).*")) {
+			// remove the CONSTRAINT ... IS JSON part
+			statement = statement.replaceAll("(?i)\\bCONSTRAINT\\b.*CHECK\\b.*\\(.*\\bIS JSON\\)", "");
+			// change type CLOB to JSONB
+			statement = statement.replaceAll("(?i)\\bCLOB\\b", "JSONB");
+		}
+		return statement;
+	}
+
 } // Convert
