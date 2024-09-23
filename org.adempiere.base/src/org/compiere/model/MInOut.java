@@ -82,8 +82,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8699990804131725782L;
-
+	private static final long serialVersionUID = 327740106819501242L;
+	
 	/** Matching SQL Template for M_InOut */
 	private static final String BASE_MATCHING_SQL = 
 			"""
@@ -2732,6 +2732,13 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			m_processMsg = "@BackDateTrxNotAllowed@";
 			return null;
 		}
+		
+		//	Stock Coverage Check
+		if (!stockCoverageCheckForReversal())
+		{
+			m_processMsg = "@InsufficientStockCoverage@";
+			return null;
+		}
 
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
@@ -3322,5 +3329,65 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setUser2_ID(originalIO.getUser2_ID());
 		}
 		saveEx();
+	}
+	
+	/**
+	 * Stock coverage check - A reversal should not be possible if there is insufficient stock coverage
+	 * @return false when there is insufficient stock coverage
+	 */
+	private boolean stockCoverageCheckForReversal()
+	{
+		MAcctSchema as = MClient.get(getCtx(), Env.getAD_Client_ID(getCtx())).getAcctSchema();
+		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
+				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+			return true;
+		
+		final StringBuilder whereClause = new StringBuilder();
+		whereClause.append("AD_Client_ID=? ");
+		whereClause.append("AND C_AcctSchema_ID=? ");
+		whereClause.append("AND M_Product_ID=? ");
+		whereClause.append("AND (DateAcct, M_CostDetail_ID) > ("); 
+		whereClause.append(" SELECT DateAcct, M_CostDetail_ID ");
+		whereClause.append(" FROM M_CostDetail ");
+		whereClause.append(" WHERE M_CostDetail_ID=? ");
+		whereClause.append(") "); 
+		whereClause.append("AND DateAcct >= ? ");
+		whereClause.append("AND Processed='Y' ");
+		whereClause.append("AND (M_InOutLine_ID <> 0 OR C_ProjectIssue_ID <> 0) ");
+		
+		MMatchPO[] mMatchPOList = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+		for (MMatchPO mMatchPO : mMatchPOList)
+		{
+			if (mMatchPO.getReversal_ID() > 0)
+				continue;
+			
+			MCostDetail cd = MCostDetail.get(getCtx(), "C_OrderLine_ID=?", 
+					mMatchPO.getC_OrderLine_ID(), mMatchPO.getM_AttributeSetInstance_ID(), 
+					as.getC_AcctSchema_ID(), get_TrxName());
+			if (cd == null)
+				continue;
+			
+			BigDecimal qty = cd.getQty().negate();
+			
+			List<MCostDetail> costDetailList = new Query(getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
+					.setParameters(getAD_Client_ID(), as.getC_AcctSchema_ID(), cd.getM_Product_ID(), cd.getM_CostDetail_ID(), cd.getDateAcct())
+					.list();
+			for (MCostDetail costDetail : costDetailList) {
+				if (costDetail.getM_InOutLine_ID() > 0) {
+					if (costDetail.getM_InOutLine().getM_InOut().getReversal_ID() > 0)
+						continue;
+				} else if (costDetail.getC_ProjectIssue_ID() > 0) {
+					if (costDetail.getC_ProjectIssue().getReversal_ID() > 0)
+						continue;
+				} else {
+					continue;
+				}
+				if (costDetail.getCurrentQty().add(qty).signum() < 0) {
+					log.log(Level.SEVERE, "Insufficient stock coverage" + costDetail);
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }	//	MInOut

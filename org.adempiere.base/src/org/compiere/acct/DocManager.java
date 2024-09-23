@@ -544,8 +544,10 @@ public class DocManager {
 			conditionSql.append("(C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
 				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
 		}
-		else if (AD_Table_ID == MMatchInv.Table_ID)
-			conditionSql.append("M_MatchInv_ID=?");
+		else if (AD_Table_ID == MMatchInv.Table_ID) {
+			conditionSql.append("(M_MatchInv_ID=?) OR ");
+			conditionSql.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
+		}
 		else if (AD_Table_ID == MInventory.Table_ID)
 			conditionSql.append("M_InventoryLine_ID IN (SELECT M_InventoryLine_ID FROM M_InventoryLine WHERE M_Inventory_ID=?)");
 		else if (AD_Table_ID == MMovement.Table_ID)
@@ -692,6 +694,15 @@ public class DocManager {
 				String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
 				if (error != null)
 					return error;
+				
+				if (tableID == MInvoice.Table_ID) {
+					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
+					for (MMatchInv mi : miList) {
+						error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
+						if (error != null)
+							return error;
+					}
+				}
 			}
 		}
 		

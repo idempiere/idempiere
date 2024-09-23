@@ -47,6 +47,7 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLandedCost;
+import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLine;
@@ -107,6 +108,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -118,6 +124,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
@@ -131,6 +142,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -180,6 +195,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -191,6 +211,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.5));
@@ -207,6 +232,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -256,6 +285,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -267,6 +301,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.5));
@@ -287,6 +326,281 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 2 Back-Date product invoice with price variance or foreign currency
+	 * 2.1 Stock as of account date is zero
+	 * MR1
+	 * SH1
+	 * Landed Cost (Back-Date)
+	 * MR2
+	 * SH2
+	 */
+	@Test
+	public void testBackDateLandedCostZeroStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateLandedCostZeroStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// SH2
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// Landed Cost (Back-Date)
+			createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	} 
+	
+	/**
+	 * Scenarios 2 Back-Date product invoice with price variance or foreign currency
+	 * 2.2 Stock as of account date is not sufficient coverage
+	 * MR1
+	 * SH1
+	 * Landed Cost (Back-Date)
+	 * MR2
+	 * SH2
+	 */
+	@Test
+	public void testBackDateLandedCostInsufficientStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateLandedCostInsufficientStock", new BigDecimal(5));
+			
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
+			
+			// SH2
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
+			
+			// Landed Cost (Back-Date)
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 2 Back-Date product invoice with price variance or foreign currency
+	 * 2.3 Stock as of account date is sufficient coverage
+	 * MR1
+	 * Landed Cost (Back-Date)
+	 * SH1
+	 * MR2
+	 * SH2
+	 */
+	@Test
+	public void testBackDateLandedCostSufficientStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateLandedCostSufficientStock", new BigDecimal(5));
+			
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
+			
+			// SH2
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
+			
+			// Landed Cost (Back-Date)
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -335,6 +649,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("10.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("10.00"));
+			
 			// SH
 			MInOutLine shipmentLine = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(1), new BigDecimal(10));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -346,6 +665,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("14.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(16));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("14.00"));
 			
 			// Internal use inventory
 			MInventoryLine inventoryLine = createInventoryUse(today, product.getM_Product_ID(), new BigDecimal(1));
@@ -359,6 +683,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("11.00"));
 			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(13));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("11.00"));
+			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("11.00"));
@@ -366,6 +695,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("13.50"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("13.50"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", inventoryLine.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for inventory line");
@@ -416,6 +749,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -431,6 +769,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -443,13 +786,22 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
-//			assertNotNull(cd, "MCostDetail not found for invoice line");
-//			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -500,6 +852,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -518,6 +875,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -530,6 +892,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -537,6 +904,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.55"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.55"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -587,6 +958,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -605,6 +981,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
 			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.75));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -617,6 +998,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.71"));
@@ -624,6 +1010,325 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.31"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.31"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.31"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 5 Back-Date material receipt to date before product invoice with price variance or foreign currency
+	 * 5.1 Stock as of landed cost account date changed from zero to not sufficient coverage. Landed cost posting in expense before performing back-date MR.
+	 * MR1
+	 * SH1
+	 * MR3 (Back-Date)
+	 * Landed Cost
+	 * MR2
+	 * SH2
+	 */
+	@Test
+	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateReceiptBeforeLandedCostZero2InsufficientStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// Landed Cost
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// SH2
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// MR3 (Back-Date)
+			MInOutLine receiptLine3 = createPOAndMRForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(4), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine3.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 5 Back-Date material receipt to date before product invoice with price variance or foreign currency
+	 * 5.2 Stock as of landed cost account date changed from zero to sufficient coverage. Landed cost posting in expense before performing back-date MR.
+	 * MR1
+	 * SH1
+	 * MR3 (Back-Date)
+	 * Landed Cost
+	 * MR2
+	 * SH2
+	 */
+	@Test
+	public void testBackDateReceiptBeforeLandedCostZero2SufficientStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateReceiptBeforeLandedCostZero2SufficientStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// Landed Cost
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// SH2
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// MR3 (Back-Date)
+			MInOutLine receiptLine3 = createPOAndMRForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine3.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.45"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.55"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.55"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 5 Back-Date material receipt to date before product invoice with price variance or foreign currency
+	 * 5.3 Stock as of landed cost account date changed from shortage to sufficient coverage.
+	 * MR1
+	 * SH1
+	 * MR3 (Back-Date)
+	 * Landed Cost
+	 * MR2
+	 * SH2
+	 */
+	@Test
+	public void testBackDateReceiptBeforeLandedCostInsufficient2SufficientStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try { 
+			configureAcctSchema(as);
+			product = createProduct("testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// Landed Cost
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.25"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			// SH2
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.75));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			// MR3 (Back-Date)
+			MInOutLine receiptLine3 = createPOAndMRForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine3.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine3 = createInvoiceForMR(receiptLine3, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine3.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.71"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.38"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.31"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -671,11 +1376,21 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			 
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6));
@@ -692,6 +1407,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -741,11 +1460,21 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6));
@@ -768,6 +1497,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -821,11 +1554,21 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(16), new BigDecimal(6));
@@ -848,6 +1591,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -901,11 +1648,21 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6));
@@ -928,6 +1685,292 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.43"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.43"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.43"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.43"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 8 Back-Date shipment to date before product invoice with price variance or foreign currency
+	 * 8.1 Stock as of landed cost account date changed from sufficient coverage to zero.
+	 * MR1
+	 * SH2 (Back-Date)
+	 * MR2
+	 * SH1
+	 * Landed Cost
+	 */
+	@Test
+	public void testBackDateShipmentBeforeLandedCostSufficient2ZeroStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2ZeroStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// Landed Cost
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// SH2 (Back-Date)
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 8 Back-Date shipment to date before product invoice with price variance or foreign currency
+	 * 8.2 Stock as of landed cost account date changed from not sufficient coverage to zero.
+	 * MR1
+	 * SH2 (Back-Date)
+	 * MR2
+	 * SH1
+	 * Landed Cost
+	 */
+	@Test
+	public void testBackDateShipmentBeforeLandedCostInsufficient2ZeroStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema(); 
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(16), new BigDecimal(6));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// Landed Cost
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// SH2 (Back-Date)
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(4), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+		} finally {
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
+	 * Scenarios 8 Back-Date shipment to date before product invoice with price variance or foreign currency
+	 * 8.3 Stock as of landed cost account date changed from sufficient coverage to not sufficient.
+	 * MR1
+	 * SH2 (Back-Date)
+	 * MR2
+	 * SH1
+	 * Landed Cost
+	 */
+	@Test
+	public void testBackDateShipmentBeforeLandedCostSufficient2InsufficientStockWithPV() {
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// SH1
+			MInOutLine shipmentLine1 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// Landed Cost
+			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			// SH2 (Back-Date)
+			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.43"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -975,6 +2018,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), false, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
 			// SH (Post-Date)
 			MInOutLine shipmentLine = createSOAndSHForProduct(postDate, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -986,6 +2034,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -1032,11 +2085,21 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(backDate, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			// SH
 			MInOutLine shipmentLine = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(6));
@@ -1051,10 +2114,15 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.71"));
 			
 			// MR2 Reversal (Back-Date)
-			MInOutLine reversalLine = reverseCorrectInOut(receiptLine2);
-			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", reversalLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			MInOutLine reversalReceiptLine = reverseCorrectInOut(receiptLine2);
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", reversalReceiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
-			validateCostDetailDateAcctBackDate(cd, reversalLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			validateCostDetailDateAcctBackDate(cd, reversalReceiptLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine reversalInvoiceLine = reverseCorrectInvoice(invoiceLine2);
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName()); // get cost detail using original invoice line
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, reversalInvoiceLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -1105,6 +2173,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine1, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
 			// SH1
 			MInOutLine shipmentLine1 = createSOAndSHForProduct(backDate, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
@@ -1116,6 +2189,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.43"));
+			
+			MInvoiceLine invoiceLine2 = createInvoiceForMR(receiptLine2, new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.43"));
 
 			// SH2
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(6.43));
@@ -1132,6 +2210,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine2.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -1176,6 +2258,11 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
 			validateCostDetailDateAcctBackDate(cd, receiptLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			MInvoiceLine invoiceLine1 = createInvoiceForMR(receiptLine, new BigDecimal(5));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine1.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
 			MInvoiceLine landedCost = createLandedCostForMR(receiptLine, backDate, new BigDecimal(10));
@@ -1448,6 +2535,75 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		}
 		reversal.load(getTrxName());
 		assertTrue(reversal.isPosted());
+		
+		MInvoiceLine[] reversalLines = reversal.getLines();
+		return reversalLines[0];
+	}
+	
+	private MInvoiceLine createInvoiceForMR(MInOutLine receiptLine, BigDecimal price) {
+		MInOut receipt = receiptLine.getParent();
+		MInvoice invoice = new MInvoice(receipt, receipt.getMovementDate());
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(receiptLine.getProduct());
+		invoiceLine.setQty(receiptLine.getMovementQty());
+		invoiceLine.setPrice(price);
+		invoiceLine.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		if (!invoice.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		invoice.load(getTrxName());
+		assertTrue(invoice.isPosted());
+		
+		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+		for (MMatchInv mi : miList) {
+			if (!mi.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			mi.load(getTrxName());
+			assertTrue(mi.isPosted());
+		}
+		
+		return invoiceLine;
+	}
+	
+	private MInvoiceLine reverseCorrectInvoice(MInvoiceLine il) {
+		MInvoice inv = new MInvoice(Env.getCtx(), il.getC_Invoice_ID(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inv, DocAction.ACTION_Reverse_Correct);
+		inv.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Reversed, inv.getDocStatus(), "Unexpected Document Status");
+		
+		MInvoice reversal = new MInvoice(Env.getCtx(), inv.getReversal_ID(), getTrxName());
+		if (!reversal.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(), reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		reversal.load(getTrxName());
+		assertTrue(reversal.isPosted());
+		
+		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), reversal.get_ID(), getTrxName());
+		for (MMatchInv mi : miList) {
+			if (!mi.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			mi.load(getTrxName());
+			assertTrue(mi.isPosted());
+		}
 		
 		MInvoiceLine[] reversalLines = reversal.getLines();
 		return reversalLines[0];

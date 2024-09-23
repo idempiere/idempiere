@@ -25,7 +25,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
-import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;

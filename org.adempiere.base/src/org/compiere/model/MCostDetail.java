@@ -99,7 +99,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Amt amt total amount
 	 *	@param Qty qty
 	 *	@param Description optional description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if created
 	 */
@@ -192,7 +192,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Amt amt
 	 *	@param Qty qty
 	 *	@param Description optional description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if created
 	 */
@@ -287,7 +287,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param Description optional description
 	 *	@param IsSOTrx sales order
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -381,7 +381,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Amt amt total amount
 	 *	@param Qty qty
 	 *	@param Description optional description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -476,7 +476,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param from if true the from (reduction)
 	 *	@param Description optional description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -572,7 +572,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Amt amt total amount
 	 *	@param Qty qty
 	 *	@param Description optional description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -663,7 +663,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Amt
 	 *	@param Qty
 	 *	@param Description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName
 	 *	@return true if no error
 	 */
@@ -755,7 +755,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Amt amt total amount
 	 *	@param Qty qty
 	 *	@param Description optional description
-	 *	@param dateAcct account date
+	 *	@param DateAcct account date
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
