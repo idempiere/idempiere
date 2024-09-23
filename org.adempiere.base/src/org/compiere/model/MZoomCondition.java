@@ -412,7 +412,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 		
 		MTable table = MTable.get(Env.getCtx(), getAD_Table_ID());
 		String tableName = table.getTableName();
-		StringBuilder builder = new StringBuilder("SELECT Count(*) FROM ");
+		StringBuilder builder = new StringBuilder("SELECT 1 FROM ");
 		builder.append(tableName)
 			.append(" WHERE ")
 			.append(whereClause)
