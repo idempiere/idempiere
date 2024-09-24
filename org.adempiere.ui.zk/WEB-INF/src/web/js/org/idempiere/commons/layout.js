@@ -95,3 +95,70 @@ window.idempiere.syncScrollFrozen = function(wgt){
 	}
 	wgt.$syncScroll ();
 }
+
+window.idempiere.showFullSizeImage = function (event) {
+  // Get the original image URL
+  const imageUrl = event.target.src;
+  if (!imageUrl || imageUrl.trim() === '')
+	return;
+
+  //zk spacer image (Images.BASE64SPACERIMAGE)
+  if (imageUrl == 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAUUAAEALAAAAAABAAEAAAICTAEAOw==')
+	return;
+
+  // Get the mouse pointer position relative to the document
+  const mouseX = event.pageX + 10;
+  const mouseY = event.pageY + 10;
+	
+  // Create a new image element to display the original size
+  const fullsizeImage = new Image();
+  fullsizeImage.src = imageUrl;
+	  
+  // Set the position of the original image to the mouse pointer position
+  fullsizeImage.style.position = "absolute";
+  fullsizeImage.style.left = mouseX + "px";
+  fullsizeImage.style.top = mouseY + "px";  
+  fullsizeImage.style.display = "block";
+  fullsizeImage.style.width = "auto";
+  fullsizeImage.style.height = "auto";
+  fullsizeImage.style.maxHeight = "90%";
+  fullsizeImage.style.maxWidth = "90%";
+  fullsizeImage.style.zIndex = 10;
+  fullsizeImage.classList.add('fullsize-image');
+
+  // Add the original image to the document body
+  document.body.appendChild(fullsizeImage);
+
+  event.target._fullsize = fullsizeImage;
+  
+  const rect = event.target._fullsize.getBoundingClientRect();
+  const viewportHeight = jq(window).height();
+  const viewportWidth = jq(window).width();
+  if (rect.bottom > viewportHeight || rect.right > viewportWidth) {
+	 if (rect.right > viewportWidth) {
+		const rw = rect.right - rect.left;
+		let x = event.pageX - rw - 10;
+		if (x < 0)
+			x = 0;
+		event.target._fullsize.style.left = x + "px";
+	 }
+	 if (rect.bottom > viewportHeight) {
+		const rh = rect.bottom - rect.top;
+		let y = event.pageY - rh - 10
+		if (y < 0)
+			y = 0;
+		event.target._fullsize.style.top = y + "px";
+	 }
+  }
+  event.target._fullsize.style.display = "none";
+  jq(event.target._fullsize).fadeIn();	    
+}
+
+window.idempiere.hideFullSizeImage = function (event) {
+    try {
+  		if (event.target._fullsize && event.target._fullsize instanceof HTMLImageElement) {
+			document.body.removeChild(event.target._fullsize);
+  			event.target._fullsize = null;
+  		}
+    } catch (error) {}
+}
