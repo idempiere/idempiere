@@ -474,7 +474,7 @@ public class DocManager {
 					trx.commit();
 				}
 			}
-			if (!isPostProcess) // skip if it is part of the post process
+			if (error == null && !isPostProcess) // skip if it is part of the post process
 				postProcessBackDateTrx(ass, AD_Table_ID, Record_ID, trxName);
 		}
 		catch (Exception e)
