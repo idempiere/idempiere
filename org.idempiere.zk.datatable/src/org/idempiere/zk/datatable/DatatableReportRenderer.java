@@ -174,7 +174,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				MPrintFormatItem item = printFormat.getItem(col);
 				if (item.isPrinted())
 				{
-					if (item.isNextLine() && item.getBelowColumn() >= 0) 
+					if (item.isNextLine() && item.getBelowColumn() >= 1) 
 					{
 						columns.add(item);
 						continue;
@@ -299,7 +299,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 						item = ((InstanceAttributeColumn) colobj).getPrintFormatItem();
 					if(item != null)
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 0)
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
 							continue;
 						printColIndex++;
 						HTMLReportRenderer.addCssInfo(printFormat, item, printColIndex, mapCssInfo);
@@ -418,7 +418,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 					MPrintFormatItem item = printFormat.getItem(col);
 					if (item.isPrinted())
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 0)
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
 							continue;
 						var printName = item.getPrintName(language);
 						if (!Util.isEmpty(printName))
@@ -446,8 +446,6 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				if (row != -1)
 				{
 					printData.setRowIndex(row);
-					if(printData.isFunctionRow())
-						continue;
 					if (extension != null && !isExport)
 					{
 						extension.extendRowElement(tr, printData);
@@ -457,8 +455,6 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 					} else if ( row < printData.getRowCount() && printData.isFunctionRow(row+1)) {
 						tr.setClass(cssPrefix + "-lastgrouprow");
 					}
-					// add row to table body
-					//tbody.addElement(tr);
 				} else {
 					// add row to table header
 					thead.addElement(tr);
@@ -482,18 +478,20 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 					}
 					if (item != null)
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 0)
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
 						{
 							if (row != -1)
 							{
+								//adjust to zero base
+								int belowColumn = item.getBelowColumn()-1;
 								if (belowColumnMap.isEmpty())
 									belowColumnMap.add(new HashMap<>());
 								boolean added = false;
 								for(Map<Integer, Integer> map : belowColumnMap)
 								{
-									if (!map.containsKey(item.getBelowColumn()))
+									if (!map.containsKey(belowColumn))
 									{
-										map.put(item.getBelowColumn(), col);
+										map.put(belowColumn, col);
 										added = true;
 										break;
 									}
@@ -501,7 +499,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 								if (!added)
 								{
 									Map<Integer, Integer> map = new HashMap<>();
-									map.put(item.getBelowColumn(), col);
+									map.put(belowColumn, col);
 									belowColumnMap.add(map);
 								}
 							}
@@ -531,27 +529,8 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 								suppressMap.put(printColIndex, th);
 								th.setID("report-th-"+printColIndex);
 							}
-							// Calculate DateTables Options
-							if(isDataTableFunctionColumn(item)) {
-								if(item.isOrderBy())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.ORDER_BY, item.isDesc() ? dataTableOptions.DESC_OFFSET + printColIndex :  printColIndex);
-								if(item.isGroupBy())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.GROUP_BY, printColIndex);
-								if(item.isSummarized())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.SUM, printColIndex);
-								if(item.isCounted())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.COUNT, printColIndex);
-								if(item.isMinCalc())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.MIN, printColIndex);
-								if(item.isMaxCalc())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.MAX, printColIndex);
-								if(item.isAveraged())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.AVG, printColIndex);
-								if(item.isDeviationCalc())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.DEVIATION, printColIndex);
-								if(item.isVarianceCalc())
-									dataTableOptions.addPrintColumnIndex(FunctionTypes.VARIANCE, printColIndex);
-							}
+							if (item.isGroupBy())
+								dataTableOptions.setOrdering(false);
 
 							if(item.getAD_Column_ID() > 0) {
 								MColumn column = MColumn.get(item.getAD_Column_ID());
@@ -591,10 +570,10 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 							if (map.containsValue(col))
 								continue;
 							printColIndex++;
-							if (!map.containsKey(col)) {
+							if (!map.containsKey(printColIndex)) {
 								continue;
 							}
-							int mapTo = map.get(col);
+							int mapTo = map.get(printColIndex);
 							Object colObj = columns.get(mapTo);
 							MPrintFormatItem item = null;
 							InstanceAttributeColumn instanceAttributeColumn = null;
@@ -610,6 +589,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 								td.addElement(div);
 								printColumn(reportEngine, language, extension, isExport, div, item, instanceAttributeColumn, row, printData,
 										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, printFormat, mapCssInfo);
+								div.setClass("");
 							}
 						}
 					}
@@ -643,34 +623,9 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				String dataTableOptionString = dataTableOptions.getDataTableOptions();
 				if( dataTableOptionString != null ) {
 					w.print("<script type=\"text/javascript\"> ");
-					w.print(HTMLReportRenderer.compress(
-						"""
-						 class NumberParser {\s\
-						  constructor(locale) {\
-						    const parts = new Intl.NumberFormat(locale).formatToParts(12345.6);\s\
-						    const numerals = [...new Intl.NumberFormat(locale, {useGrouping: false}).format(9876543210)].reverse();\s\
-						    const index = new Map(numerals.map((d, i) => [d, i]));\s\
-							   let groupValue = parts.find(d => d.type === "group").value;\
-						    this._group = new RegExp(`[${groupValue.charCodeAt(0)==160 ? '&nbsp;' : groupValue}]`, "g");\s\
-						    this._decimal = new RegExp(`[${parts.find(d => d.type === "decimal").value}]`);\s\
-						    this._numeral = new RegExp(`[${numerals.join("")}]`, "g");\s\
-							\
-						    this._index = d => index.get(d); }\s\
-						  parse(string) {\s\
-						    let retValue = (string = string.trim()\s\
-						      .replace(this._group, "")\s\
-						      .replace(this._decimal, ".")\s\
-								.replace(this._numeral, this._index)) ? +string : 0;\s\
-								return Number.isNaN(retValue) ? 0 : retValue;\
-						  } }
-						 """,true));
 					String jsDataTables = "$(document).ready(function() { "
 							+ "  let t = $('#"+JS_DATA_IDENTIFIER+"').DataTable( " + dataTableOptionString + " ); "
 							+ " });";
-//							+ " $('#"+JS_DATA_IDENTIFIER+" thead th').each(function () {\r\n"
-//							+ "        var title = $(this).text();\r\n"
-//							+ "        $(this).append('<input type=\"text\"   placeholder=\"Search ' + title + '\" />');\r\n" //placeholder=\"Search ' + title + '\"
-//							+ "    }); " ;
 
 					w.print(jsDataTables);
 					w.print("</script>");
@@ -846,25 +801,6 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
 	}
 
-	/** 
-	 * Is PrintFormat Item Function for DataTables
-	 * @param item
-	 * @return
-	 */
-	private boolean isDataTableFunctionColumn(MPrintFormatItem item) {
-		if(item.isOrderBy()
-				|| item.isGroupBy()
-				|| item.isSummarized()
-				|| item.isCounted()
-				|| item.isMinCalc()
-				|| item.isAveraged()
-				|| item.isDeviationCalc()
-				|| item.isMaxCalc()
-				|| item.isVarianceCalc())
-			return true;
-		return false;
-	}
-	
 	/**
 	 * If isExport, embed script content, otherwise embed script url
 	 * @param doc

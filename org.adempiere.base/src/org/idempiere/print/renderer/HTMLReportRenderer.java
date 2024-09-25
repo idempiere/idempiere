@@ -276,7 +276,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 						item = ((InstanceAttributeColumn) colobj).getPrintFormatItem();
 					if(item != null)
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 0)
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
 							continue;
 						printColIndex++;
 						addCssInfo(printFormat, item, printColIndex, mapCssInfo);
@@ -406,8 +406,6 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					} else if ( row < printData.getRowCount() && printData.isFunctionRow(row+1)) {
 						tr.setClass(cssPrefix + "-lastgrouprow");
 					}
-					// add row to table body
-					//tbody.addElement(tr);
 				} else {
 					// add row to table header
 					thead.addElement(tr);
@@ -431,18 +429,20 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					}
 					if (item != null)
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 0)
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
 						{
 							if (row != -1)
 							{
+								//adjust to zero base
+								int belowColumn = item.getBelowColumn()-1;
 								if (belowColumnMap.isEmpty())
 									belowColumnMap.add(new HashMap<>());
 								boolean added = false;
 								for(Map<Integer, Integer> map : belowColumnMap)
 								{
-									if (!map.containsKey(item.getBelowColumn()))
+									if (!map.containsKey(belowColumn))
 									{
-										map.put(item.getBelowColumn(), col);
+										map.put(belowColumn, col);
 										added = true;
 										break;
 									}
@@ -450,7 +450,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 								if (!added)
 								{
 									Map<Integer, Integer> map = new HashMap<>();
-									map.put(item.getBelowColumn(), col);
+									map.put(belowColumn, col);
 									belowColumnMap.add(map);
 								}
 							}
@@ -509,10 +509,10 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 							if (map.containsValue(col))
 								continue;
 							printColIndex++;
-							if (!map.containsKey(col)) {
+							if (!map.containsKey(printColIndex)) {
 								continue;
 							}
-							int mapTo = map.get(col);
+							int mapTo = map.get(printColIndex);
 							Object colObj = columns.get(mapTo);
 							MPrintFormatItem item = null;
 							InstanceAttributeColumn instanceAttributeColumn = null;
@@ -528,6 +528,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 								td.addElement(div);
 								printColumn(reportEngine, language, extension, isExport, div, item, instanceAttributeColumn, row, printData,
 										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
+								div.setClass("");
 							}
 						}
 					}
