@@ -302,6 +302,12 @@ public final class EMail implements Serializable
 		props.put("mail.host", m_smtpHost);
 		//Timeout for sending the email defaulted to 20 seconds if not defined in a SysConfig Key
 		props.put("mail.smtp.timeout", MSysConfig.getIntValue(MSysConfig.MAIL_SMTP_TIMEOUT, 20000, Env.getAD_Client_ID(m_ctx)));
+		int mail_smtp_connectiontimeout = MSysConfig.getIntValue(MSysConfig.MAIL_SMTP_CONNECTIONTIMEOUT, -1, Env.getAD_Client_ID(m_ctx));
+		if (mail_smtp_connectiontimeout >= 0)
+			props.put("mail.smtp.connectiontimeout", mail_smtp_connectiontimeout);
+		int mail_smtp_writetimeout = MSysConfig.getIntValue(MSysConfig.MAIL_SMTP_WRITETIMEOUT, -1, Env.getAD_Client_ID(m_ctx));
+		if (mail_smtp_writetimeout >= 0)
+			props.put("mail.smtp.writetimeout", mail_smtp_writetimeout);
 
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");

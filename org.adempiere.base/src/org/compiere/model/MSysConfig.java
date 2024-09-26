@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5739824752288579881L;
+	private static final long serialVersionUID = -2729894615883031395L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -152,7 +152,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
+	public static final String MAIL_SMTP_CONNECTIONTIMEOUT = "MAIL_SMTP_CONNECTIONTIMEOUT";
     public static final String MAIL_SMTP_TIMEOUT = "MAIL_SMTP_TIMEOUT";
+	public static final String MAIL_SMTP_WRITETIMEOUT = "MAIL_SMTP_WRITETIMEOUT";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_ROWS_IN_TABLE_COMBOLIST = "MAX_ROWS_IN_TABLE_COMBOLIST";
