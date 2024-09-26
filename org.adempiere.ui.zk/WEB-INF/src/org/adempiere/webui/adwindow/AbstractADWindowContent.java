@@ -4351,6 +4351,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @param pi
 	 */
 	private void onModalClose(ProcessInfo pi) {
+		if (getActiveGridTab().isQuickForm){
+			statusBarQF.setStatusLine(null);
+		}else{
+			statusBar.setStatusLine(null);
+		}
+		
 		boolean notPrint = pi != null
 		&& pi.getAD_Process_ID() != adTabbox.getSelectedGridTab().getAD_Process_ID()
 		&& pi.isReportingProcess() == false;
