@@ -32,14 +32,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
+import org.compiere.acct.Doc;
+import org.compiere.acct.DocManager;
+import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MCharge;
 import org.compiere.model.MClient;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MDocType;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInventory;
@@ -55,6 +62,8 @@ import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
+import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -65,6 +74,7 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
@@ -137,7 +147,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// Landed Cost (Back-Date)
-			createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -150,6 +160,17 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("10.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -224,10 +245,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -240,6 +261,27 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("6.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("4.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("67.50"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("67.50"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -314,10 +356,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -334,6 +376,32 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("10.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment1 = shipmentLine1.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment1.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("36.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("36.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInOut shipment2 = shipmentLine2.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("67.50"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("67.50"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -495,10 +563,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -585,10 +653,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
@@ -703,6 +771,25 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", inventoryLine.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for inventory line");
 			validateCostDetailDateAcctBackDate(cd, inventoryLine.getParent().getMovementDate(), false, new BigDecimal("13.50"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment = shipmentLine.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("11.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("11.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInventory inventory = inventoryLine.getParent();
+			MAccount invDiffAccount = MCharge.getAccount(inventoryLine.getC_Charge_ID(), as);
+			query = MFactAcct.createRecordIdQuery(MInventory.Table_ID, inventory.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(invDiffAccount, new BigDecimal("13.50"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("13.50"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -761,7 +848,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
@@ -791,9 +878,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -806,6 +893,27 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.75"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("6.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("4.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("67.50"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("67.50"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -864,10 +972,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
 
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
@@ -897,9 +1005,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -912,6 +1020,25 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.55"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("10.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("65.45"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("65.45"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -970,10 +1097,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
@@ -1003,9 +1130,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.71"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("5.71"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -1018,6 +1145,25 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.31"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("10.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("63.08"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("63.08"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1076,7 +1222,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
@@ -1106,9 +1252,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -1179,10 +1325,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
 
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
@@ -1212,9 +1358,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -1285,10 +1431,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
@@ -1318,9 +1464,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, invoiceLine3.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("5.71"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("5.71"));
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -1415,6 +1561,23 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine1.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("20.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("20.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInOut shipment1 = shipmentLine1.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment1.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("62.50"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("62.50"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1483,10 +1646,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2 (Back-Date)
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
@@ -1506,9 +1669,36 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("50.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("50.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInOut shipment1 = shipmentLine1.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment1.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("70.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("70.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("10.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1577,10 +1767,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2 (Back-Date)
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(4), new BigDecimal(5));
@@ -1600,9 +1790,36 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("20.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("20.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInOut shipment1 = shipmentLine1.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment1.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("100.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("100.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("10.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1671,10 +1888,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2 (Back-Date)
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
@@ -1694,9 +1911,37 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.43"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.43"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.43"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment2 = shipmentLine2.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("30.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("30.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInOut shipment1 = shipmentLine1.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment1.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("64.29"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("64.29"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("6.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("4.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1765,10 +2010,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2 (Back-Date)
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
@@ -1788,9 +2033,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1859,10 +2104,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2 (Back-Date)
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(4), new BigDecimal(5));
@@ -1882,9 +2127,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.25"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.25"));
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -1953,10 +2198,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// SH2 (Back-Date)
 			MInOutLine shipmentLine2 = createSOAndSHForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(5));
@@ -1976,9 +2221,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.43"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("7.43"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.43"));
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -2043,6 +2288,16 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment = shipmentLine.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("36.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("36.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -2108,10 +2363,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.71"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.71"));
 			
 			// MR2 Reversal (Back-Date)
 			MInOutLine reversalReceiptLine = reverseCorrectInOut(receiptLine2);
@@ -2128,9 +2383,30 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment = shipmentLine.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("30.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("30.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount varianceAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			MInvoice landedCost = landedCostLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(varianceAccount, new BigDecimal("6.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("4.00"), 2, true),
+					new FactAcct(apAccount, landedCost.getGrandTotal(), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -2218,6 +2494,23 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine2.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment1 = reversalLine.getParent();
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment1.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("30.00"), 2, false),
+					new FactAcct(assetAccount, new BigDecimal("30.00"), 2, true));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MInOut shipment2 = shipmentLine2.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment2.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("60.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("60.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			as.load(getTrxName());
@@ -2265,10 +2558,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCost = createLandedCostForMR(receiptLine, backDate, new BigDecimal(10));
-			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCost.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine, backDate, new BigDecimal(10));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
-			validateCostDetailDateAcctBackDate(cd, landedCost.getParent().getDateAcct(), true, new BigDecimal("6.00"));
+			validateCostDetailDateAcctBackDate(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
 			
 			// SH
 			MInOutLine shipmentLine = createSOAndSHForProduct(today, product.getM_Product_ID(), new BigDecimal(6), new BigDecimal(6));
@@ -2277,7 +2570,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost Reversal (Back-Date)
-			MInvoiceLine reversalLine = reverseCorrectLandedCost(landedCost);
+			MInvoiceLine reversalLine = reverseCorrectLandedCost(landedCostLine);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", reversalLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetailDateAcctBackDate(cd, reversalLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
@@ -2285,6 +2578,25 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetailDateAcctBackDate(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
+			
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			MInvoice landedCost = reversalLine.getParent();
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, landedCost.get_ID(), getTrxName());
+			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, landedCost.get_ID(), as.get_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("10.00"), 2, false),
+					new FactAcct(apAccount, landedCost.getGrandTotal().negate(), 2, true));
+			assertFactAcctEntries(factAccts, expected);
+			
+			MAccount cogsAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			MInOut shipment = shipmentLine.getParent();
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount, new BigDecimal("30.00"), 2, true),
+					new FactAcct(assetAccount, new BigDecimal("30.00"), 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			
@@ -2294,7 +2606,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			}
 		}
 	}
-	
 	
 	private MProduct createProduct(String name, BigDecimal price) {
 		MProduct product = new MProduct(Env.getCtx(), 0, null);
