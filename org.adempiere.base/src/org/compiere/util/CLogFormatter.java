@@ -296,7 +296,7 @@ public class CLogFormatter extends Formatter
 		int adempiereTraceNo = 0;
         for (int i=0; i < trace.length; i++)
         {
-        	adempiereTrace = trace[i].getClassName().startsWith("org.compiere.");
+        	adempiereTrace = trace[i].getClassName().startsWith("org.compiere.") || trace[i].getClassName().startsWith("org.adempiere.") || trace[i].getClassName().startsWith("org.idempiere.");
         	if (thrown instanceof ServerException	//	RMI
         		|| adempiereTrace)
         	{
