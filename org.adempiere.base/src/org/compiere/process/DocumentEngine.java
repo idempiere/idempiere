@@ -979,7 +979,7 @@ public class DocumentEngine implements DocAction
 	 * @param docAction
 	 * @param options
 	 * @param periodOpen - flag indicating if the period is Open - to avoid including Void and ReverseCorrect options in the list
-	 * @param isBackDateTrxAllowed - flag indicating if back-date transaction is allowed
+	 * @param po
 	 * @return End index of valid options[] (exclusive)
 	 */
 	public static int getValidActions(String docStatus, Object processing,
@@ -1000,6 +1000,7 @@ public class DocumentEngine implements DocAction
 	 * @param options
 	 * @param periodOpen - flag indicating if the period is Open - to avoid including Void and ReverseCorrect options in the list
 	 * @param isBackDateTrxAllowed - flag indicating if back-date transaction is allowed
+	 * @param po
 	 * @return End index of valid options[] (exclusive)
 	 */
 	public static int getValidActions(String docStatus, Object processing,

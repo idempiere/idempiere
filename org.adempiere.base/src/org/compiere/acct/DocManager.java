@@ -299,17 +299,17 @@ public class DocManager {
 	
 	/**
 	 * Post Document 
-	 * @param ass 			Accounting schema
-	 * @param AD_Table_ID	Transaction table
-	 * @param Record_ID		Record ID of this document
-	 * @param force 		Force posting
-	 * @param repost		Repost document
-	 * @param isPostProcess	Post process
-	 * @param trxName		Transaction name
+	 * @param ass 				Accounting schema
+	 * @param AD_Table_ID		Transaction table
+	 * @param Record_ID			Record ID of this document
+	 * @param force 			Force posting
+	 * @param repost			Repost document
+	 * @param isBackDateProcess	Back-date process
+	 * @param trxName			Transaction name
 	 * @return null if the document was posted or error message
 	 */
 	protected static String postDocument(MAcctSchema[] ass,
-		int AD_Table_ID, int Record_ID, boolean force, boolean repost, boolean isPostProcess, String trxName) {
+		int AD_Table_ID, int Record_ID, boolean force, boolean repost, boolean isBackDateProcess, String trxName) {
 
 		String tableName = null;
 		for (int i = 0; i < getDocumentsTableID().length; i++)
@@ -339,7 +339,7 @@ public class DocManager {
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
-				return postDocument(ass, AD_Table_ID, rs, force, repost, isPostProcess, trxName);
+				return postDocument(ass, AD_Table_ID, rs, force, repost, isBackDateProcess, trxName);
 			}
 			else
 			{
@@ -379,17 +379,17 @@ public class DocManager {
 	
 	/**
 	 * Post Document
-	 * @param ass			Accounting schema	
-	 * @param AD_Table_ID	Transaction table
-	 * @param rs			Result set
-	 * @param force			Force posting
-	 * @param repost		Repost document
-	 * @param isPostProcess	Post process
-	 * @param trxName		Transaction name
+	 * @param ass				Accounting schema	
+	 * @param AD_Table_ID		Transaction table
+	 * @param rs				Result set
+	 * @param force				Force posting
+	 * @param repost			Repost document
+	 * @param isBackDateProcess	Back-date process
+	 * @param trxName			Transaction name
 	 * @return null if the document was posted or error message
 	 */
 	private static String postDocument(MAcctSchema[] ass,
-			int AD_Table_ID, ResultSet rs, boolean force, boolean repost, boolean isPostProcess, String trxName) {
+			int AD_Table_ID, ResultSet rs, boolean force, boolean repost, boolean isBackDateProcess, String trxName) {
 		String localTrxName = null;
 		if (trxName == null)
 		{
@@ -411,7 +411,7 @@ public class DocManager {
 				Doc doc = Doc.get (as, AD_Table_ID, rs, trxName);
 				if (doc != null)
 				{
-					error = doc.post (force, repost, isPostProcess);	//	repost
+					error = doc.post (force, repost, isBackDateProcess);	//	repost
 					status = doc.getPostStatus();
 					if (error != null && error.trim().length() > 0)
 					{
@@ -474,8 +474,8 @@ public class DocManager {
 					trx.commit();
 				}
 			}
-			if (error == null && !isPostProcess) // skip if it is part of the post process
-				postProcessBackDateTrx(ass, AD_Table_ID, Record_ID, trxName);
+			if (error == null && !isBackDateProcess) // skip if it is part of the back-date process
+				startBackDateProcess(ass, AD_Table_ID, Record_ID, trxName);
 		}
 		catch (Exception e)
 		{
@@ -522,14 +522,14 @@ public class DocManager {
 	}   //  save
 	
 	/**
-	 * Post process of a back-date transaction
+	 * Back-date process
 	 * @param ass 			Accounting schema
 	 * @param AD_Table_ID	Transaction table
 	 * @param Record_ID		Record ID of this document
 	 * @param trxName		Transaction name
-	 * @return null if the post process was processed or error message
+	 * @return null if the back-date process was processed or error message
 	 */
-	private static String postProcessBackDateTrx(MAcctSchema[] ass, int AD_Table_ID, int Record_ID, String trxName) {
+	private static String startBackDateProcess(MAcctSchema[] ass, int AD_Table_ID, int Record_ID, String trxName) {
 		if (ass.length == 0)
 			return null;
 		

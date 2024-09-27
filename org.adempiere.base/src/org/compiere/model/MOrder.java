@@ -1541,12 +1541,6 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
-		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getDateAcct()))
-		{
-			m_processMsg = "@BackDateTrxNotAllowed@";
-			return DocAction.STATUS_Invalid;
-		}
-		
 		if (isSOTrx() && getDeliveryViaRule().equals(DELIVERYVIARULE_Shipper))
 		{
 			if (getM_Shipper_ID() == 0)

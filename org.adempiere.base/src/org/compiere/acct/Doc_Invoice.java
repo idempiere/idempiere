@@ -48,7 +48,6 @@ import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
 import org.compiere.model.X_M_Cost;
-import org.compiere.model.X_M_CostHistory;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
@@ -1150,15 +1149,12 @@ public class Doc_Invoice extends Doc
 							
 							MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
 									AD_Org_ID);
-							X_M_CostHistory history = null;
 							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
 									C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), getTrxName());
-							if (cd != null)
-								history = cd.getCostHistory(as);
 							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 									M_AttributeSetInstance_ID, 
-									getDateAcct(), history, getTrxName());
+									getDateAcct(), cd, getTrxName());
 							if (c != null)
 							{
 								BigDecimal mcostQty = c.getCurrentQty();
@@ -1297,15 +1293,12 @@ public class Doc_Invoice extends Doc
 						{
 							MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
 									AD_Org_ID);
-							X_M_CostHistory history = null;
 							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
 									C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), getTrxName());
-							if (cd != null)
-								history = cd.getCostHistory(as);
 							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 									M_AttributeSetInstance_ID, 
-									getDateAcct(), history, getTrxName());
+									getDateAcct(), cd, getTrxName());
 							if (c != null) {
 								if (c.getCurrentQty().signum() == 0) {
 									amtVariance = amtVariance.add(amtAsset);

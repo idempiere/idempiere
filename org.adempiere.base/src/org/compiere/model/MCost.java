@@ -60,7 +60,7 @@ public class MCost extends X_M_Cost
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6697414777967390448L;
+	private static final long serialVersionUID = -2126771867435966391L;
 
 	/**
 	 * @param product
@@ -95,11 +95,11 @@ public class MCost extends X_M_Cost
 		BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
 	{
-		return getCurrentCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, qty, C_OrderLine_ID, zeroCostsOK, null, null, false, trxName);
+		return getCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, qty, C_OrderLine_ID, zeroCostsOK, null, null, false, trxName);
 	}
 	
 	/**
-	 * Retrieve/Calculate Current Cost Price
+	 * Retrieve/Calculate Cost Price
 	 * @param product product
 	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
 	 * @param as schema
@@ -109,17 +109,17 @@ public class MCost extends X_M_Cost
 	 * @param C_OrderLine_ID optional order line
 	 * @param zeroCostsOK zero/no costs are OK
 	 * @param dateAcct account date
-	 * @param history cost history record
-	 * @param isPostProcess post process
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param isBackDateProcess back-date process
 	 * @param trxName trx
-	 * @return current cost price or null
+	 * @return cost price or null
 	 */
-	protected static BigDecimal getCurrentCost (MProduct product,
+	protected static BigDecimal getCost (MProduct product,
 			int M_AttributeSetInstance_ID,
 			MAcctSchema as, int AD_Org_ID, String costingMethod,
 			BigDecimal qty, int C_OrderLine_ID,
 			boolean zeroCostsOK, 
-			Timestamp dateAcct, X_M_CostHistory history, boolean isPostProcess,
+			Timestamp dateAcct, MCostDetail costDetail, boolean isBackDateProcess,
 			String trxName)
 	{
 		String CostingLevel = product.getCostingLevel(as);
@@ -143,14 +143,22 @@ public class MCost extends X_M_Cost
 		}
 
 		//	Create/Update Costs
-		if (!isPostProcess) // skip if it is a post process
+		if (!isBackDateProcess) // skip if it is a post process
 			MCostDetail.processProduct (as, product, dateAcct, trxName);
+		 
+		X_M_CostHistory history = null;
+		if (costDetail != null) // get the latest cost history record of the cost detail
+			history = getCostHistoryByCostDetail(product.getCtx(), AD_Org_ID, 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, costDetail, trxName);
+		if (history == null && dateAcct != null) // get cost history record based on the account date
+			history = getCostHistoryByDateAcct(product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(),
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
 
-		return getCurrentCost (
+		return getCost (
 			product, M_AttributeSetInstance_ID,
 			as, AD_Org_ID, as.getM_CostType_ID(), costingMethod, qty,
 			C_OrderLine_ID, zeroCostsOK, 
-			dateAcct, history, trxName);
+			history == null ? null : history.getNewCostPrice(), trxName);
 	}	//	getCurrentCost
 
 	/**
@@ -172,11 +180,11 @@ public class MCost extends X_M_Cost
 		String costingMethod, BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
 	{
-		return getCurrentCost(product, M_ASI_ID, as, Org_ID, M_CostType_ID, costingMethod, qty, C_OrderLine_ID, zeroCostsOK, null, null, trxName);
+		return getCost(product, M_ASI_ID, as, Org_ID, M_CostType_ID, costingMethod, qty, C_OrderLine_ID, zeroCostsOK, null, trxName);
 	}
 	
 	/**
-	 * Calculate and Get Current Cost Price for Costing Level
+	 * Calculate and Get Cost Price for Costing Level
 	 * @param product product
 	 * @param M_ASI_ID M_AttributeSetInstance_ID for batchlot costing level
 	 * @param as AcctSchema
@@ -187,14 +195,14 @@ public class MCost extends X_M_Cost
 	 * @param C_OrderLine_ID optional order line
 	 * @param zeroCostsOK zero/no costs are OK
 	 * @param dateAcct account date
-	 * @param history cost history record
+	 * @param historyCostPrice optional cost price from the cost history
 	 * @param trxName trx
 	 * @return cost price or null
 	 */
-	private static BigDecimal getCurrentCost (MProduct product, int M_ASI_ID,
+	private static BigDecimal getCost (MProduct product, int M_ASI_ID,
 			MAcctSchema as, int Org_ID, int M_CostType_ID,
 			String costingMethod, BigDecimal qty, int C_OrderLine_ID,
-			boolean zeroCostsOK, Timestamp dateAcct, X_M_CostHistory history, String trxName)
+			boolean zeroCostsOK, BigDecimal historyCostPrice, String trxName)
 	{
 		String costElementType = null;
 		BigDecimal percent = null;
@@ -203,13 +211,6 @@ public class MCost extends X_M_Cost
 		BigDecimal otherCostEach = Env.ZERO;
 		BigDecimal percentage = Env.ZERO;
 		int count = 0;
-		
-		// get cost history record based on the account date
-		if (history == null && dateAcct != null) {
-			history = getCostHistory(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(),
-					M_CostType_ID, as.getC_AcctSchema_ID(), costingMethod, M_ASI_ID, dateAcct, trxName);
-		}
-		
 		//
 		String sql = "SELECT"
 			+ " COALESCE(SUM(c.CurrentCostPrice),0),"		// 1
@@ -251,8 +252,8 @@ public class MCost extends X_M_Cost
 					+ ", Percent=" + percent);
 				
 				// use the cost price from the cost history record
-				if (history != null && history.getNewCostPrice().compareTo(currentCostPrice) != 0)
-					currentCostPrice = history.getNewCostPrice();
+				if (historyCostPrice != null && historyCostPrice.compareTo(currentCostPrice) != 0)
+					currentCostPrice = historyCostPrice;
 				
 				if (currentCostPrice != null && currentCostPrice.signum() != 0)
 				{
@@ -1435,6 +1436,7 @@ public class MCost extends X_M_Cost
 	 *	@param as accounting schema
 	 *	@param AD_Org_ID costing level org
 	 *	@param M_CostElement_ID element
+	 *	@param trxName transaction name
 	 *	@return cost price or null
 	 */
 	public static MCost get (MProduct product, int M_AttributeSetInstance_ID,
@@ -1444,21 +1446,23 @@ public class MCost extends X_M_Cost
 	}
 	
 	/**
-	 * 	Get/Create Cost Record.
-	 * 	CostingLevel is not validated.
-	 *	@param product product
-	 *	@param M_AttributeSetInstance_ID costing level asi
-	 *	@param as accounting schema
-	 *	@param AD_Org_ID costing level org
-	 *	@param M_CostElement_ID element
-	 *	@param dateAcct account date
-	 *	@return cost price or null
+	 * Get/Create Cost Record.
+	 * CostingLevel is not validated.
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID costing level asi
+	 * @param as accounting schema
+	 * @param AD_Org_ID costing level org
+	 * @param M_CostElement_ID element
+	 * @param dateAcct account date
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param trxName transaction name
+	 * @return cost price or null
 	 */
 	public static MCost get (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, Timestamp dateAcct, X_M_CostHistory history, String trxName)
+		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, Timestamp dateAcct, MCostDetail costDetail, String trxName)
 	{
 		MCost cost = get (product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(), 
-				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, dateAcct, history, trxName);
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, dateAcct, costDetail, trxName);
 		//	New
 		if (cost == null)
 		{
@@ -1508,21 +1512,25 @@ public class MCost extends X_M_Cost
 	 * @param M_CostElement_ID cost element
 	 * @param M_AttributeSetInstance_ID asi
 	 * @param dateAcct account date
-	 * @param history cost history record
+	 * @param costDetail optional cost detail - use to retrieve the cost history
 	 * @param trxName transaction name
 	 * @return MCost or null
 	 */
 	public static MCost get (Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
 			int M_CostType_ID, int C_AcctSchema_ID, int M_CostElement_ID,
 			int M_AttributeSetInstance_ID, 
-			Timestamp dateAcct, X_M_CostHistory history,
+			Timestamp dateAcct, MCostDetail costDetail,
 			String trxName)
 	{
-		// get cost history record based on the account date
-		if (history == null && dateAcct != null) {
-			history = getCostHistory(ctx, AD_Client_ID, AD_Org_ID, M_Product_ID, M_CostType_ID, C_AcctSchema_ID, M_CostElement_ID,
+		MCostElement ce = MCostElement.get(M_CostElement_ID);
+		String costingMethod = ce.getCostingMethod();
+		X_M_CostHistory history = null;
+		if (costDetail != null) // get the latest cost history record of the cost detail
+			history = getCostHistoryByCostDetail(ctx, AD_Org_ID, 
+					M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID, M_AttributeSetInstance_ID, costDetail, trxName);
+		if (history == null && dateAcct != null) // get cost history record based on the account date
+			history = getCostHistoryByDateAcct(ctx, AD_Client_ID, AD_Org_ID, M_Product_ID, M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID,
 					M_AttributeSetInstance_ID, dateAcct, trxName);
-		}
 		
 		final String whereClause = "AD_Client_ID=? AND AD_Org_ID=?"
 									+" AND "+COLUMNNAME_M_Product_ID+"=?"
@@ -1560,7 +1568,86 @@ public class MCost extends X_M_Cost
 	}
 	
 	/**
-	 * Get Cost History Record
+	 * Get Cost History Record by Cost Detail
+	 * @param ctx context
+	 * @param AD_Org_ID org
+	 * @param M_CostType_ID cost type
+	 * @param C_AcctSchema_ID accounting schema
+	 * @param costingMethod cost method
+	 * @param M_CostElement_ID optional cost element
+	 * @param M_AttributeSetInstance_ID asi
+	 * @param cd cost detail
+	 * @param trxName transaction name
+	 * @return X_M_CostHistory or null
+	 */
+	private static X_M_CostHistory getCostHistoryByCostDetail(Properties ctx, int AD_Org_ID,
+			int M_CostType_ID, int C_AcctSchema_ID, String costingMethod, int M_CostElement_ID,
+			int M_AttributeSetInstance_ID, MCostDetail cd, 
+			String trxName)
+	{
+		if (cd == null)
+			return null;
+		
+		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+			return null;
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT c.* ");
+		sql.append("FROM M_CostHistory c ");
+		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed=?) ");
+		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
+		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
+		sql.append(" AND c.M_Product_ID=? ");
+		sql.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
+		sql.append(" AND c.M_CostType_ID=? AND cd.C_AcctSchema_ID=? ");
+		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
+		if (M_CostElement_ID > 0)
+			sql.append(" AND c.M_CostElement_ID=? ");
+		sql.append(" AND c.M_CostDetail_ID=? ");
+		sql.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC ");
+		if (DB.isOracle())
+			sql.append("ROWNUM=1");
+		else if (DB.isPostgreSQL())
+			sql.append("LIMIT 1");
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(cd.isDelta() ? "N" : "Y"); // cost detail is set to processed=N when it is a delta record
+		params.add(cd.getAD_Client_ID());
+		params.add(AD_Org_ID);
+		params.add(cd.getM_Product_ID());
+		params.add(M_AttributeSetInstance_ID);
+		params.add(M_CostType_ID);
+		params.add(C_AcctSchema_ID);
+		params.add(costingMethod);
+		if (M_CostElement_ID > 0)
+			params.add(M_CostElement_ID);
+		params.add(cd.getM_CostDetail_ID());
+		
+		X_M_CostHistory costHistory = null;
+		PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	try
+    	{
+    		pstmt = DB.prepareStatement(sql.toString(), trxName);
+    		DB.setParameters(pstmt, params);
+    		rs = pstmt.executeQuery();
+    		if (rs.next())
+    			costHistory = new X_M_CostHistory(ctx, rs, trxName);
+    	}
+    	catch (SQLException e)
+		{
+			throw new DBException(e, sql.toString());
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}		
+		return costHistory;
+	}
+	
+	/**
+	 * Get Cost History Record by Account Date
 	 * @param ctx context
 	 * @param AD_Client_ID client
 	 * @param AD_Org_ID org
@@ -1568,13 +1655,14 @@ public class MCost extends X_M_Cost
 	 * @param M_CostType_ID cost type
 	 * @param C_AcctSchema_ID as
 	 * @param costingMethod costing method
+	 * @param M_CostElement_ID optional costing element
 	 * @param M_AttributeSetInstance_ID asi
 	 * @param dateAcct account date
 	 * @param trxName transaction name
 	 * @return X_M_CostHistory or null
 	 */
-	private static X_M_CostHistory getCostHistory(Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
-			int M_CostType_ID, int C_AcctSchema_ID, String costingMethod,
+	private static X_M_CostHistory getCostHistoryByDateAcct(Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
+			int M_CostType_ID, int C_AcctSchema_ID, String costingMethod, int M_CostElement_ID,
 			int M_AttributeSetInstance_ID, Timestamp dateAcct, 
 			String trxName)
 	{
@@ -1585,17 +1673,23 @@ public class MCost extends X_M_Cost
 			return null;
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT c.M_CostHistory_ID ");
-		sql.append("FROM M_CostMovement_v c ");
+		sql.append("SELECT c.* ");
+		sql.append("FROM M_CostHistory c ");
 		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
 		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
 		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
 		sql.append(" AND c.M_Product_ID=? ");
 		sql.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
-		sql.append(" AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=? ");
+		sql.append(" AND c.M_CostType_ID=? AND cd.C_AcctSchema_ID=? ");
 		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
+		if (M_CostElement_ID > 0)
+			sql.append(" AND c.M_CostElement_ID=? ");
 		sql.append(" AND c.DateAcct<=? ");
-		sql.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC");
+		sql.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC ");
+		if (DB.isOracle())
+			sql.append("ROWNUM=1");
+		else if (DB.isPostgreSQL())
+			sql.append("LIMIT 1");
 		
 		List<Object> params = new ArrayList<Object>();
 		params.add(AD_Client_ID);
@@ -1605,69 +1699,30 @@ public class MCost extends X_M_Cost
 		params.add(M_CostType_ID);
 		params.add(C_AcctSchema_ID);
 		params.add(costingMethod);
+		if (M_CostElement_ID > 0)
+			params.add(M_CostElement_ID);
 		params.add(dateAcct);
 		
-		int M_CostHistory_ID = DB.getSQLValueEx(trxName, sql.toString(), params);
 		X_M_CostHistory costHistory = null;
-		if (M_CostHistory_ID > 0)
-			costHistory = new X_M_CostHistory(ctx, M_CostHistory_ID, trxName);
-		
-		return costHistory;
-	}
-	
-	/**
-	 * Get Cost History Record
-	 * @param ctx context
-	 * @param AD_Client_ID client
-	 * @param AD_Org_ID org
-	 * @param M_Product_ID product
-	 * @param M_CostType_ID cost type
-	 * @param C_AcctSchema_ID as
-	 * @param M_CostElement_ID cost element
-	 * @param M_AttributeSetInstance_ID asi
-	 * @param dateAcct account date
-	 * @param trxName transaction name
-	 * @return X_M_CostHistory or null
-	 */
-	private static X_M_CostHistory getCostHistory(Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
-			int M_CostType_ID, int C_AcctSchema_ID, int M_CostElement_ID,
-			int M_AttributeSetInstance_ID, Timestamp dateAcct,
-			String trxName)
-	{
-		if (dateAcct == null)
-			return null;
-		
-		MCostElement ce = MCostElement.get(M_CostElement_ID);
-		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(ce.getCostingMethod()))
-			return null;
-		
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT c.M_CostHistory_ID ");
-		sql.append("FROM M_CostMovement_v c ");
-		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
-		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
-		sql.append(" AND c.M_Product_ID=? ");
-		sql.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
-		sql.append(" AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=? ");
-		sql.append(" AND c.M_CostElement_ID=? ");
-		sql.append(" AND c.DateAcct<=? ");
-		sql.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC");
-		
-		List<Object> params = new ArrayList<Object>();
-		params.add(AD_Client_ID);
-		params.add(AD_Org_ID);
-		params.add(M_Product_ID);
-		params.add(M_AttributeSetInstance_ID);
-		params.add(M_CostType_ID);
-		params.add(C_AcctSchema_ID);
-		params.add(M_CostElement_ID);
-		params.add(dateAcct);
-		
-		int M_CostHistory_ID = DB.getSQLValueEx(trxName, sql.toString(), params);
-		X_M_CostHistory costHistory = null;
-		if (M_CostHistory_ID > 0)
-			costHistory = new X_M_CostHistory(ctx, M_CostHistory_ID, trxName);
-		
+		PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	try
+    	{
+    		pstmt = DB.prepareStatement(sql.toString(), trxName);
+    		DB.setParameters(pstmt, params);
+    		rs = pstmt.executeQuery();
+    		if (rs.next())
+    			costHistory = new X_M_CostHistory(ctx, rs, trxName);
+    	}
+    	catch (SQLException e)
+		{
+			throw new DBException(e, sql.toString());
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}		
 		return costHistory;
 	}
 

@@ -313,18 +313,20 @@ public class ProductCost
 	}
 	
 	/**
-	 *  Get Total Costs (amt*qty) in Accounting Schema Currency
-	 *  @param as accounting schema
-	 *  @param AD_Org_ID trx org
-	 *  @param costingMethod if null uses Accounting Schema - AcctSchema.COSTINGMETHOD_*
-	 *  @param C_OrderLine_ID optional order line
-	 *	@param zeroCostsOK zero/no costs are OK
-	 *	@param dateAcct account date
-	 *  @return cost or null, if qty or costs cannot be determined
+	 * Get Total Costs (amt*qty) in Accounting Schema Currency
+	 * @param as accounting schema
+	 * @param AD_Org_ID trx org
+	 * @param costingMethod if null uses Accounting Schema - AcctSchema.COSTINGMETHOD_*
+	 * @param C_OrderLine_ID optional order line
+	 * @param zeroCostsOK zero/no costs are OK
+	 * @param dateAcct account date
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param isBackDateProcess back-date process
+	 * @return cost or null, if qty or costs cannot be determined
 	 */
 	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, 
 		String costingMethod, int C_OrderLine_ID, boolean zeroCostsOK, 
-		Timestamp dateAcct, X_M_CostHistory history, boolean isBackDateProcess)
+		Timestamp dateAcct, MCostDetail costDetail, boolean isBackDateProcess)
 	{
 		if (m_qty == null)
 		{
@@ -339,8 +341,8 @@ public class ProductCost
 			return null;
 		}
 		//
-		BigDecimal cost = MCost.getCurrentCost (m_product, m_M_AttributeSetInstance_ID, 
-			as, AD_Org_ID, costingMethod, m_qty, C_OrderLine_ID, zeroCostsOK, dateAcct, history, isBackDateProcess, m_trxName);
+		BigDecimal cost = MCost.getCost (m_product, m_M_AttributeSetInstance_ID, 
+			as, AD_Org_ID, costingMethod, m_qty, C_OrderLine_ID, zeroCostsOK, dateAcct, costDetail, isBackDateProcess, m_trxName);
 		if (cost == null)
 		{
 			log.fine("No Costs");

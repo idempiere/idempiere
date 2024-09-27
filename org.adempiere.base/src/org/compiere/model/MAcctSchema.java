@@ -790,7 +790,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 * @param tableID
 	 * @param recordID
 	 * @param trxName 
-	 * @return
+	 * @return true if back-date transaction is allowed
 	 */
 	public static boolean isBackDateTrxAllowed(Properties ctx, int tableID, int recordID, String trxName)
 	{

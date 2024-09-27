@@ -27,7 +27,6 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
-import org.compiere.model.X_M_CostHistory;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -773,10 +772,8 @@ public class DocLine
 					get_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), p_po.get_TrxName());
 			if (cd != null)
 			{
-				// get the latest cost history record of the cost detail record
-				X_M_CostHistory history = cd.getCostHistory(as);
 				BigDecimal amt = cd.getAmt();
-				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK, history);
+				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK, cd);
 				if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
 					return pcost;
 				else
@@ -796,7 +793,7 @@ public class DocLine
 	 */
 	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK)
 	{
-		return getProductCosts(as, AD_Org_ID, zeroCostsOK, (X_M_CostHistory) null);
+		return getProductCosts(as, AD_Org_ID, zeroCostsOK, (MCostDetail) null);
 	}
 	
 	/**
@@ -804,17 +801,17 @@ public class DocLine
 	 * @param as accounting schema
 	 * @param AD_Org_ID trx org
 	 * @param zeroCostsOK zero/no costs are OK
-	 * @param history cost history
-	 * @return
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @return costs
 	 */
-	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK, X_M_CostHistory history)
+	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK, MCostDetail costDetail)
 	{
 		ProductCost pc = getProductCost();
 		int C_OrderLine_ID = getC_OrderLine_ID();
 		String costingMethod = null;
 		BigDecimal costs = pc.getProductCosts(as, AD_Org_ID, costingMethod, 
 			C_OrderLine_ID, zeroCostsOK, 
-			getDateAcct(), history, m_doc.isPostProcess());
+			getDateAcct(), costDetail, m_doc.isBackDateProcess());
 		if (costs != null)
 			return costs;
 		return Env.ZERO;
