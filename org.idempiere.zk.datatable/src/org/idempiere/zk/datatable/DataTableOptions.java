@@ -58,6 +58,8 @@ public class DataTableOptions {
 	private Integer printColLastIndex;
 	
 	private String locale;
+
+	private boolean ordering = true;
 	
 	/**
 	 * @param locale
@@ -80,7 +82,7 @@ public class DataTableOptions {
 		dataOptions.append(", lengthMenu: [ [250, 500, 1000, -1], [250, 500, 1000,\"").append(Msg.getMsg( Language.getAD_Language(locale), "All")).append("\" ] ] ");
 		dataOptions.append(", colReorder: true");
 		dataOptions.append(", responsive: false");
-		dataOptions.append(", ordering: true");
+		dataOptions.append(", ordering: ").append(ordering ? "true " : "false ");
 		if (i18nPath != null)
 			dataOptions.append(", language: { url: '").append(i18nPath).append("' }");
 		dataOptions.append(", layout: {topStart:['buttons'], topEnd:['pageLength'], bottomStart: ['info'], bottomEnd: ['paging']} ");
@@ -545,6 +547,13 @@ public class DataTableOptions {
 		}
 		return orderArray.toString();
 
+	}
+
+	/**
+	 * Enable/disable column sorting option for user
+	 */
+	public void setOrdering(boolean ordering) {
+		this.ordering = ordering;
 	}
 	
 	
