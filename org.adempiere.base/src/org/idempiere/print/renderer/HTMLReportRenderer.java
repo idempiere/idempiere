@@ -523,6 +523,17 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 								item = instanceAttributeColumn.getPrintFormatItem();
 							}
 							if (item != null) {
+								Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
+										: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+								if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
+									continue;
+								} else if (obj instanceof PrintDataElement pde) {
+									String value = pde.getValueDisplay(language);
+									if (Util.isEmpty(value, true))
+										continue;
+								} else {
+									continue;
+								}
 								td td = tdMap.get(printColIndex);
 								div div = new div();
 								td.addElement(div);
