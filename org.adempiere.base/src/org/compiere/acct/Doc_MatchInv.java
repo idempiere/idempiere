@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.compiere.model.ICostInfo;
 import org.compiere.model.I_C_Order;
 import org.compiere.model.I_C_OrderLine;
 import org.compiere.model.MAccount;
@@ -460,7 +461,7 @@ public class Doc_MatchInv extends Doc
 			if(cd!=null){
 				qtyCost = cd.getCurrentQty();
 			}else{
-				MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
+				ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 					M_AttributeSetInstance_ID, 
 					getDateAcct(), null, getTrxName());

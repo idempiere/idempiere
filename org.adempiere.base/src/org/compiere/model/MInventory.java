@@ -542,7 +542,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							}
 						}
 	
-						MCost cost = product.getCostingRecord(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod(), getMovementDate());
+						ICostInfo cost = product.getCostInfo(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod(), getMovementDate());
 						if (cost != null && cost.getCurrentCostPrice().compareTo(currentCost) != 0) 
 						{
 							m_processMsg = "Current Cost for Line " + line.getLine() + " have changed.";

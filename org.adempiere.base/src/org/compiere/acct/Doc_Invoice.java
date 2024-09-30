@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.compiere.model.ICostInfo;
 import org.compiere.model.I_M_InOutLine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -1151,7 +1152,7 @@ public class Doc_Invoice extends Doc
 									AD_Org_ID);
 							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
 									C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), getTrxName());
-							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
+							ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 									M_AttributeSetInstance_ID, 
 									getDateAcct(), cd, getTrxName());
@@ -1295,7 +1296,7 @@ public class Doc_Invoice extends Doc
 									AD_Org_ID);
 							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
 									C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), getTrxName());
-							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
+							ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 									M_AttributeSetInstance_ID, 
 									getDateAcct(), cd, getTrxName());

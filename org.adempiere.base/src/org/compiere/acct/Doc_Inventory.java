@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.compiere.model.ICostInfo;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -35,7 +36,6 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
 import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -241,10 +241,9 @@ public class Doc_Inventory extends Doc
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
 				MCostDetail cd = MCostDetail.get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+product.getM_Product_ID(), 
 						get_ID(), asiId, as.getC_AcctSchema_ID(), getTrxName());
-				MCost cost = MCost.get(product, asiId, as, 
+				ICostInfo cost = MCost.getCostInfo(product, asiId, as, 
 						orgId, ce.getM_CostElement_ID(), 
-						getDateAcct(), cd, getTrxName());					
-				DB.getDatabase().forUpdate(cost, 120);
+						getDateAcct(), cd, getTrxName());
 				BigDecimal currentQty = cost.getCurrentQty();
 				adjustmentDiff = costs;
 				costs = costs.multiply(currentQty);

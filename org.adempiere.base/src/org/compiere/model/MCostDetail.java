@@ -1331,27 +1331,22 @@ public class MCostDetail extends X_M_CostDetail
 				return true;
 		}
 
-		MCost cost = MCost.get(product, M_ASI_ID, as, 
-			Org_ID, ce.getM_CostElement_ID(), 
-			getDateAcct(), this, get_TrxName());
+		MCost cost = MCost.get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
+		
+		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), this, get_TrxName());
+		if (costInfo != null)
+		{
+			cost.setCurrentQty(costInfo.getCurrentQty());
+			cost.setCurrentCostPrice(costInfo.getCurrentCostPrice());
+			cost.setCumulatedQty(costInfo.getCumulatedQty());
+			cost.setCumulatedAmt(costInfo.getCumulatedAmt());
+		}
 		
 		DB.getDatabase().forUpdate(cost, 120);
 		
 		//save history for m_cost
-		X_M_CostHistory history = new X_M_CostHistory(getCtx(), 0, get_TrxName());
-		history.setM_AttributeSetInstance_ID(cost.getM_AttributeSetInstance_ID());
-		history.setM_CostDetail_ID(this.getM_CostDetail_ID());
-		history.setDateAcct(this.getDateAcct());
-		history.setIsBackDate(this.isBackDate());
-		history.setBackDateProcessedOn(this.getBackDateProcessedOn());
-		history.setM_CostElement_ID(ce.getM_CostElement_ID());
-		history.setM_CostType_ID(cost.getM_CostType_ID());
-		history.setM_Product_ID(cost.getM_Product_ID());
-		history.setClientOrg(cost.getAD_Client_ID(), cost.getAD_Org_ID());
-		history.setOldQty(cost.getCurrentQty());
-		history.setOldCostPrice(cost.getCurrentCostPrice());
-		history.setOldCAmt(cost.getCumulatedAmt());
-		history.setOldCQty(cost.getCumulatedQty());
+		MCostHistory history = new MCostHistory(this, cost, ce);
 		
 		// MZ Goodwill
 		// used deltaQty and deltaAmt if exist 
