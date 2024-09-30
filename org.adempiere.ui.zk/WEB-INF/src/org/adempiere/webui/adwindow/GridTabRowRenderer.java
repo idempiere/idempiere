@@ -847,7 +847,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 			GridTableListModel model = (GridTableListModel) grid.getModel();
 			model.setEditing(true);
-
+			Clients.evalJavaScript("jq('img.fullsize-image').remove();");
 		}
 	}
 

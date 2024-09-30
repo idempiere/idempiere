@@ -425,7 +425,8 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionSearch
 			|| displayType == TimeZoneId
 			|| displayType == UUID || displayType == RecordUU
-			|| displayType == TableDirUU || displayType == TableUU || displayType == SearchUU)
+			|| displayType == TableDirUU || displayType == TableUU || displayType == SearchUU
+			|| displayType == ImageURL)
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -1140,6 +1141,8 @@ public final class DisplayType
 			return "ID";
 		case Image:
 			return "Image";
+		case ImageURL:
+			return "Image URL";
 		case Integer:
 			return "Integer";
 		case List:
