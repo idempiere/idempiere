@@ -76,7 +76,6 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
-import org.adempiere.webui.panel.TableAttributePanel;
 import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.panel.WDocActionPanel;
 import org.adempiere.webui.panel.action.CSVImportAction;
@@ -94,6 +93,7 @@ import org.adempiere.webui.window.LabelAction;
 import org.adempiere.webui.window.WChat;
 import org.adempiere.webui.window.WPostIt;
 import org.adempiere.webui.window.WRecordAccessDialog;
+import org.adempiere.webui.window.WTableAttribute;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -1435,9 +1435,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		AEnv.showWindow(form);
 	} // onQuickForm
 
+	/**
+	 * Open Table Attribute Window
+	 */
 	public void onAttributeForm()
 	{
-		new TableAttributePanel(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+		new WTableAttribute(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+		
 	}
 	
     /**

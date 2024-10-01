@@ -10,7 +10,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.panel;
+package org.adempiere.webui.window;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -49,12 +49,19 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Vbox;
 
-public class TableAttributePanel extends Window implements EventListener<Event>
+/**
+ * Window for editing custom attributes related to record based on configured
+ * attribute set on AD Table
+ * 
+ * @author DPansheriya
+ *
+ */
+public class WTableAttribute extends Window implements EventListener<Event>
 {
 	/**
 	 * generated serial id
 	 */
-	private static final long	serialVersionUID	= -4922961793415942591L;
+	private static final long serialVersionUID = -6423631584481652137L;
 
 	/** the attribute set selected on the InfoProduct window */
 	private int					p_M_AttributeSet_ID	= 0;
@@ -69,13 +76,13 @@ public class TableAttributePanel extends Window implements EventListener<Event>
 	 * @param tableID
 	 * @param recordID
 	 */
-	public TableAttributePanel(Integer tableID, int recordID)
+	public WTableAttribute(Integer tableID, int recordID)
 	{
 		super();
 		p_AD_Table_ID = tableID;
 		p_Record_ID = recordID;
 		p_M_AttributeSet_ID = MTable.get(Env.getCtx(), tableID).getM_AttributeSet_ID();
-		setTitle(Msg.getMsg(Env.getCtx(), "InfoPAttribute"));
+		setTitle(Msg.getMsg(Env.getCtx(), "TableAttribute"));
 		this.setBorder("normal");
 		this.setMaximizable(false);
 		this.setSizable(false);
@@ -83,20 +90,20 @@ public class TableAttributePanel extends Window implements EventListener<Event>
 
 		try
 		{
-			jbInit();
+			init();
 			dynInit();
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "InfoPAttribute", e);
+			log.log(Level.SEVERE, "TableAttribute", e);
 		}
 		AEnv.showWindow(this);
-	} // InfoPAttribute
+	} // WTableAttribute
 
 	/** Attribute Editors */
 	private Map<Integer, WEditor>	m_attEditors	= new HashMap<Integer, WEditor>();
 	/** Logger */
-	private static final CLogger	log				= CLogger.getCLogger(TableAttributePanel.class);
+	private static final CLogger	log				= CLogger.getCLogger(WTableAttribute.class);
 
 	private Rows					rows			= null;
 	private ConfirmPanel			confirmPanel	= new ConfirmPanel(true);
@@ -106,7 +113,7 @@ public class TableAttributePanel extends Window implements EventListener<Event>
 	 * 
 	 * @throws Exception
 	 */
-	private void jbInit() throws Exception
+	private void init() throws Exception
 	{
 		Vbox vbox = new Vbox();
 		this.appendChild(vbox);
@@ -208,6 +215,11 @@ public class TableAttributePanel extends Window implements EventListener<Event>
 		return 0;
 	} // addProductAttributes
 
+	/**
+	 * Get Field editor for attribute
+	 * @param attribute
+	 * @return
+	 */
 	public GridField getGridField(MAttribute attribute)
 	{
 		GridFieldVO vo = GridFieldVO
@@ -294,7 +306,9 @@ public class TableAttributePanel extends Window implements EventListener<Event>
 			dispose();
 		}
 	}
-
+	/**
+	 * save attribute values
+	 */
 	private void saveAttribute()
 	{
 		for (Integer att_ID : m_attEditors.keySet())

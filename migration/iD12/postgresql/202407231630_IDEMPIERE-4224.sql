@@ -477,3 +477,7 @@ UPDATE M_AttributeUse SET EntityType = 'D' WHERE  M_AttributeSet_ID  < 1000000 A
 UPDATE M_Attribute SET EntityType = 'D' WHERE M_Attribute_ID < 1000000;
 
 UPDATE M_AttributeValue SET EntityType = 'D' WHERE M_AttributeValue_ID < 1000000;
+
+-- 01-Oct-2024, 11:32:59 PM IST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('M','Table Attributes',0,0,'Y',TO_TIMESTAMP('2024-10-01 23:32:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-10-01 23:32:58','YYYY-MM-DD HH24:MI:SS'),100,200906,'TableAttribute','D','b4a225ad-d48b-4cf2-a9c8-a3ce54406c6d')
+;
