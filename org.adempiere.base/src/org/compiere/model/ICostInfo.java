@@ -53,10 +53,4 @@ public interface ICostInfo {
 	 * @return Current Quantity
 	 */
 	public BigDecimal getCurrentQty();
-	
-	/**
-	 * Get UUID
-	 * @return UUID value
-	 */
-	public String get_UUID();
 }

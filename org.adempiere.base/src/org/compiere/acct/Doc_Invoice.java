@@ -1156,11 +1156,14 @@ public class Doc_Invoice extends Doc
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 									M_AttributeSetInstance_ID, 
 									getDateAcct(), cd, getTrxName());
+							String key = getAD_Client_ID() + "_" + lca.getM_Product_ID() + "_" 
+									+ as.getM_CostType_ID() + "_" + as.getC_AcctSchema_ID() + "_" + ce.getM_CostElement_ID() + "_" 
+									+ M_AttributeSetInstance_ID;
 							if (c != null)
 							{
 								BigDecimal mcostQty = c.getCurrentQty();
-								if (mcostQtyMap.containsKey(c.get_UUID())) {
-									mcostQty = mcostQty.subtract(mcostQtyMap.get(c.get_UUID()));
+								if (mcostQtyMap.containsKey(key)) {
+									mcostQty = mcostQty.subtract(mcostQtyMap.get(key));
 									if (mcostQty.signum() < 0)
 										mcostQty = new BigDecimal("0.00");
 								}
@@ -1169,10 +1172,10 @@ public class Doc_Invoice extends Doc
 									amtVariance = costAdjustmentAmt.subtract(amtAsset);
 									costDetailQty = mcostQty;									
 								}
-								if (mcostQtyMap.containsKey(c.get_UUID())) {
-									mcostQtyMap.put(c.get_UUID(), mcostQtyMap.get(c.get_UUID()).add(costDetailQty));
+								if (mcostQtyMap.containsKey(key)) {
+									mcostQtyMap.put(key, mcostQtyMap.get(key).add(costDetailQty));
 								} else {
-									mcostQtyMap.put(c.get_UUID(), costDetailQty);
+									mcostQtyMap.put(key, costDetailQty);
 								}
 							}
 						}
