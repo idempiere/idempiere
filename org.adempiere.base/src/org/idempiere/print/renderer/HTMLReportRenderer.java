@@ -42,16 +42,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
-import org.apache.ecs.xhtml.a;
-import org.apache.ecs.xhtml.script;
-import org.apache.ecs.xhtml.span;
-import org.apache.ecs.xhtml.style;
-import org.apache.ecs.xhtml.table;
-import org.apache.ecs.xhtml.tbody;
-import org.apache.ecs.xhtml.td;
-import org.apache.ecs.xhtml.th;
-import org.apache.ecs.xhtml.thead;
-import org.apache.ecs.xhtml.tr;
+import org.apache.ecs.xhtml.*;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -285,6 +276,8 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 						item = ((InstanceAttributeColumn) colobj).getPrintFormatItem();
 					if(item != null)
 					{
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
+							continue;
 						printColIndex++;
 						addCssInfo(printFormat, item, printColIndex, mapCssInfo);
 					}
@@ -396,6 +389,10 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < printData.getRowCount(); row++)
 			{
+				//list of next line + below column items List<below column:column>
+				List<Map<Integer, Integer>> belowColumnMap = new ArrayList<>();
+				//print column index:td
+				Map<Integer, td> tdMap = new HashMap<>();
 				tr tr = new tr();
 				if (row != -1)
 				{
@@ -409,8 +406,6 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					} else if ( row < printData.getRowCount() && printData.isFunctionRow(row+1)) {
 						tr.setClass(cssPrefix + "-lastgrouprow");
 					}
-					// add row to table body
-					//tbody.addElement(tr);
 				} else {
 					// add row to table header
 					thead.addElement(tr);
@@ -434,6 +429,33 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					}
 					if (item != null)
 					{
+						if (item.isNextLine() && item.getBelowColumn() >= 1)
+						{
+							if (row != -1)
+							{
+								//adjust to zero base
+								int belowColumn = item.getBelowColumn()-1;
+								if (belowColumnMap.isEmpty())
+									belowColumnMap.add(new HashMap<>());
+								boolean added = false;
+								for(Map<Integer, Integer> map : belowColumnMap)
+								{
+									if (!map.containsKey(belowColumn))
+									{
+										map.put(belowColumn, col);
+										added = true;
+										break;
+									}
+								}
+								if (!added)
+								{
+									Map<Integer, Integer> map = new HashMap<>();
+									map.put(belowColumn, col);
+									belowColumnMap.add(map);
+								}
+							}
+							continue;
+						}
 						printColIndex++;
 						//	header row
 						if (row == -1)
@@ -459,141 +481,13 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 								th.setID("report-th-"+printColIndex);
 							}
 						}
-						else
+						else 
 						{
 							td td = new td();
 							tr.addElement(td);
-							MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
-							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
-									: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-							if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
-								td.addElement("&nbsp;");
-								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
-									preValues[printColIndex] = null;
-								}
-								if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
-									suppressMap.remove(printColIndex);
-							}
-							else if (obj instanceof PrintDataElement)
-							{
-								PrintDataElement pde = (PrintDataElement) obj;
-								String value = pde.getValueDisplay(language);	//	formatted
-
-								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
-									if (value.equals(preValues[printColIndex])){
-										td.addElement("&nbsp;");
-										continue;
-									}else{
-										preValues[printColIndex] = value;
-									}
-								}
-
-								if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
-									suppressMap.remove(printColIndex);
-								
-								if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
-								{
-									boolean isZoom = false;
-									if (item.getColumnName().equals("Record_ID")) {
-										Object tablePDE = printData.getNode("AD_Table_ID");
-										if (tablePDE != null && tablePDE instanceof PrintDataElement) {
-											int tableID = -1;
-											try {
-												tableID = Integer.parseInt(((PrintDataElement)tablePDE).getValueAsString());
-											} catch (Exception e) {
-												tableID = -1;
-											}
-											if (tableID > 0) {
-												MTable mTable = MTable.get(Env.getCtx(), tableID);
-												String tableName = mTable.getTableName();
-												
-												value = reportEngine.getIdentifier(mTable, tableName, Integer.parseInt(value));
-												
-												String foreignColumnName = tableName + "_ID";
-												pde.setForeignColumnName(foreignColumnName);
-												isZoom = true;
-											}
-										}
-									} else {
-										isZoom = true;
-									}
-									if (isZoom) {
-										// check permission on the zoomed window
-										MTable mTable = MTable.get(Env.getCtx(), pde.getForeignColumnName().substring(0, pde.getForeignColumnName().length()-3));
-										int Record_ID = -1;
-										try {
-											Record_ID = Integer.parseInt(pde.getValueAsString());
-										} catch (Exception e) {
-											Record_ID = -1;
-										}
-							    		Boolean canAccess = null;
-										if (Record_ID >= 0 && mTable != null) {
-											int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
-								    		canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
-										}
-							    		if (canAccess == null) {
-							    			isZoom = false;
-							    		}
-									}
-									if (isZoom) {
-										//link for column
-										a href = new a("javascript:void(0)");
-										href.setID(pde.getColumnName() + "_" + row + "_a");									
-										td.addElement(href);
-										href.addElement(Util.maskHTML(value));
-										if (cssPrefix != null)
-											href.setClass(cssPrefix + "-href");
-										// Set Style
-										if(style != null && style.isWrapWithSpan())
-											setStyle(printData, href, style);
-										else
-											setStyle(printData, td, style);
-										extension.extendIDColumn(row, td, href, pde);
-									} else {
-										// Set Style
-										if(style != null && style.isWrapWithSpan()) {
-											span span = new span();
-											setStyle(printData, span, style);
-											span.addElement(Util.maskHTML(value));
-											td.addElement(span);
-										}
-										else {
-											setStyle(printData, td, style);
-											td.addElement(Util.maskHTML(value));
-										}
-									}
-
-								}
-								else
-								{
-									// Set Style
-									if(style != null && style.isWrapWithSpan()) {
-										span span = new span();
-										setStyle(printData, span, style);
-										span.addElement(Util.maskHTML(value));
-										td.addElement(span);
-									}
-									else {
-										setStyle(printData, td, style);
-										td.addElement(Util.maskHTML(value));
-									}
-								}
-								if (cssPrefix != null)
-								{
-									if (DisplayType.isNumeric(pde.getDisplayType()))
-										td.setClass(cssPrefix + "-number");
-									else if (DisplayType.isDate(pde.getDisplayType()))
-										td.setClass(cssPrefix + "-date");
-									else
-										td.setClass(cssPrefix + "-text");
-								}											
-							}
-							else if (obj instanceof PrintData)
-							{
-								//	ignore contained Data
-							}
-							else
-								log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
+							tdMap.put(printColIndex, td);
+							printColumn(reportEngine, language, extension, isExport, td, item, instanceAttributeColumn, row, printData,
+									colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
 						}
 					}	//	printed
 				}	//	for all columns
@@ -603,11 +497,57 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					w.print(compress(thead.toString(), minify));
 					// output open of tbody
 					w.print(compress(tbody.toString(), minify));
-				}else{
-					// output row by row 
-					w.print(compress(tr.toString(), minify));
 				}
 				
+				//render next line+below column items
+				if (!belowColumnMap.isEmpty())
+				{
+					for(Map<Integer, Integer> map : belowColumnMap)
+					{
+						printColIndex = -1;
+						for (int col = 0; col < columns.size(); col++) {
+							if (map.containsValue(col))
+								continue;
+							printColIndex++;
+							if (!map.containsKey(printColIndex)) {
+								continue;
+							}
+							int mapTo = map.get(printColIndex);
+							Object colObj = columns.get(mapTo);
+							MPrintFormatItem item = null;
+							InstanceAttributeColumn instanceAttributeColumn = null;
+							if (colObj instanceof MPrintFormatItem) {
+								item = (MPrintFormatItem) colObj;
+							} else if (colObj instanceof InstanceAttributeColumn) {
+								instanceAttributeColumn = (InstanceAttributeColumn) colObj;
+								item = instanceAttributeColumn.getPrintFormatItem();
+							}
+							if (item != null) {
+								Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
+										: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+								if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
+									continue;
+								} else if (obj instanceof PrintDataElement pde) {
+									String value = pde.getValueDisplay(language);
+									if (Util.isEmpty(value, true))
+										continue;
+								} else {
+									continue;
+								}
+								td td = tdMap.get(printColIndex);
+								div div = new div();
+								td.addElement(div);
+								printColumn(reportEngine, language, extension, isExport, div, item, instanceAttributeColumn, row, printData,
+										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
+								div.setClass("");
+							}
+						}
+					}
+				}
+
+				// output row by row
+				if (row != -1)						
+					w.print(compress(tr.toString(), minify));
 			}	//	for all rows
 			
 			w.print("</tbody>");
@@ -642,7 +582,160 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			throw new AdempiereException(e);
 		}
 	}	//	createHTML
-	
+
+	/**
+	 * Create content for column
+	 * @param reportEngine
+	 * @param language
+	 * @param extension
+	 * @param isExport
+	 * @param td column parent element
+	 * @param item
+	 * @param instanceAttributeColumn
+	 * @param row
+	 * @param printData
+	 * @param colSuppressRepeats
+	 * @param printColIndex
+	 * @param preValues
+	 * @param suppressMap
+	 * @param cssPrefix
+	 */
+	private static void printColumn(ReportEngine reportEngine, Language language, IHTMLExtension extension, boolean isExport, MultiPartElement td, 
+									   MPrintFormatItem item, InstanceAttributeColumn instanceAttributeColumn, int row, PrintData printData, 
+									   Boolean[] colSuppressRepeats, int printColIndex, Object[] preValues, HashMap<Integer, th> suppressMap, String cssPrefix) {
+		MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
+		Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
+				: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+		if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
+			td.addElementToRegistry("&nbsp;");
+			if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
+				preValues[printColIndex] = null;
+			}
+			if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
+				suppressMap.remove(printColIndex);
+		}
+		else if (obj instanceof PrintDataElement)
+		{
+			PrintDataElement pde = (PrintDataElement) obj;
+			String value = pde.getValueDisplay(language);	//	formatted
+
+			if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
+				if (value.equals(preValues[printColIndex])){
+					td.addElementToRegistry("&nbsp;");
+					return;
+				}else{
+					preValues[printColIndex] = value;
+				}
+			}
+
+			if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
+				suppressMap.remove(printColIndex);
+			
+			if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
+			{
+				boolean isZoom = false;
+				if (item.getColumnName().equals("Record_ID")) {
+					Object tablePDE = printData.getNode("AD_Table_ID");
+					if (tablePDE != null && tablePDE instanceof PrintDataElement) {
+						int tableID = -1;
+						try {
+							tableID = Integer.parseInt(((PrintDataElement)tablePDE).getValueAsString());
+						} catch (Exception e) {
+							tableID = -1;
+						}
+						if (tableID > 0) {
+							MTable mTable = MTable.get(Env.getCtx(), tableID);
+							String tableName = mTable.getTableName();
+							
+							value = reportEngine.getIdentifier(mTable, tableName, Integer.parseInt(value));
+							
+							String foreignColumnName = tableName + "_ID";
+							pde.setForeignColumnName(foreignColumnName);
+							isZoom = true;
+						}
+					}
+				} else {
+					isZoom = true;
+				}
+				if (isZoom) {
+					// check permission on the zoomed window
+					MTable mTable = MTable.get(Env.getCtx(), pde.getForeignColumnName().substring(0, pde.getForeignColumnName().length()-3));
+					int Record_ID = -1;
+					try {
+						Record_ID = Integer.parseInt(pde.getValueAsString());
+					} catch (Exception e) {
+						Record_ID = -1;
+					}
+					Boolean canAccess = null;
+					if (Record_ID >= 0 && mTable != null) {
+						int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
+						canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
+					}
+					if (canAccess == null) {
+						isZoom = false;
+					}
+				}
+				if (isZoom) {
+					//link for column
+					a href = new a("javascript:void(0)");
+					href.setID(pde.getColumnName() + "_" + row + "_a");									
+					td.addElementToRegistry(href);
+					href.addElement(Util.maskHTML(value));
+					if (cssPrefix != null)
+						href.setClass(cssPrefix + "-href");
+					// Set Style
+					if(style != null && style.isWrapWithSpan())
+						setStyle(printData, href, style);
+					else
+						setStyle(printData, td, style);
+					extension.extendIDColumn(row, td, href, pde);
+				} else {
+					// Set Style
+					if(style != null && style.isWrapWithSpan()) {
+						span span = new span();
+						setStyle(printData, span, style);
+						span.addElement(Util.maskHTML(value));
+						td.addElementToRegistry(span);
+					}
+					else {
+						setStyle(printData, td, style);
+						td.addElementToRegistry(Util.maskHTML(value));
+					}
+				}
+
+			}
+			else
+			{
+				// Set Style
+				if(style != null && style.isWrapWithSpan()) {
+					span span = new span();
+					setStyle(printData, span, style);
+					span.addElement(Util.maskHTML(value));
+					td.addElementToRegistry(span);
+				}
+				else {
+					setStyle(printData, td, style);
+					td.addElementToRegistry(Util.maskHTML(value));
+				}
+			}
+			if (cssPrefix != null)
+			{
+				if (DisplayType.isNumeric(pde.getDisplayType()))
+					td.setClass(cssPrefix + "-number");
+				else if (DisplayType.isDate(pde.getDisplayType()))
+					td.setClass(cssPrefix + "-date");
+				else
+					td.setClass(cssPrefix + "-text");
+			}											
+		}
+		else if (obj instanceof PrintData)
+		{
+			//	ignore contained Data
+		}
+		else
+			log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
+	}
+
 	/**
 	 * Compress html content
 	 * @param src
