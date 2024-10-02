@@ -2141,7 +2141,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			keyColumnName += getIdColumnName(TableName); 
 	
 			//log.fine("addAccessSQL - " + TableName + "(" + AD_Table_ID + ") " + keyColumnName);
-			String recordWhere = getRecordWhere (AD_Table_ID, keyColumnName, rw);
+			String recordWhere = getRecordWhere (AD_Table_ID, keyColumnName, rw, TableName, ti[i].getSynonym());
 			if (recordWhere.length() > 0)
 			{
 				retSQL.append(" AND ").append(recordWhere);
@@ -2476,9 +2476,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@param AD_Table_ID table
 	 *	@param keyColumnName (fully qualified) key column name
 	 *	@param rw true if read write
+	 *  @param tableName 
+	 *  @param alias 
 	 *	@return where clause or ""
 	 */
-	private String getRecordWhere (int AD_Table_ID, String keyColumnName, boolean rw)
+	private String getRecordWhere (int AD_Table_ID, String keyColumnName, boolean rw, String tableName, String alias)
 	{
 		loadRecordAccess(false);
 		//
@@ -2540,6 +2542,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (sb.length() > 0)
 				sb.append(" AND ");
 			String wherevr = Env.parseContext(p_ctx, 0, tvr.getCode(), false);
+			if (! Util.isEmpty(alias) && ! alias.equals(tableName))
+				wherevr = wherevr.replaceAll("\\b" + tableName + "\\b", alias);
 			sb.append(" (").append(wherevr).append(") ");
 		}
 
