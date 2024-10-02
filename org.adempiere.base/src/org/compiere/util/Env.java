@@ -1524,6 +1524,14 @@ public final class Env
 				break;
 			}
 
+			if (j == 0)
+			{
+				outStr.append("@");
+				inStr = inStr.substring(1);
+				i = inStr.indexOf('@');
+				continue;
+			}
+
 			token = inStr.substring(0, j);
 
 			// IDEMPIERE-194 Handling null context variable
@@ -1595,6 +1603,14 @@ public final class Env
 				//not context variable, add back @ and break
 				outStr.append("@");
 				break;
+			}
+
+			if (j == 0)
+			{
+				outStr.append("@");
+				inStr = inStr.substring(1);
+				i = inStr.indexOf('@');
+				continue;
 			}
 
 			token = inStr.substring(0, j);
@@ -1711,7 +1727,7 @@ public final class Env
 		{
 			outStr.append(inStr.substring(0, i));			// up to @
 			inStr = inStr.substring(i+1, inStr.length());	// from first @
-
+			
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
@@ -1719,6 +1735,14 @@ public final class Env
 				return "";						//	no second tag
 			}
 
+			if (j == 0)
+			{
+				outStr.append("@");
+				inStr = inStr.substring(1);
+				i = inStr.indexOf('@');
+				continue;
+			}
+			
 			token = inStr.substring(0, j);
 
 			String defaultValue = "";
