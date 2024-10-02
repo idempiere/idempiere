@@ -520,7 +520,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    				
    				// init button to show menu
    				btMenuProcess = confirmPanel.addButton("ProcessMenu", null);
-   				btMenuProcess.setPopup("ipMenu, before_start");   				
+   				btMenuProcess.addEventListener(Events.ON_CLICK, e -> {
+   					ipMenu.open(btMenuProcess, "before_start");
+   				});
    			}
    		}
 	}
@@ -591,7 +593,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void bindInfoProcessMenu (){
 		if (infoProcessMenuList == null || infoProcessMenuList == null)
 			return;
-		
+				
 		ipMenu.getChildren().clear();
 		for (MInfoProcess infoProcess : infoProcessMenuList){
 			if (!infoProcess.isDisplayed(infoContext, p_WindowNo)){
@@ -603,7 +605,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    	   		Menuitem ipMenuItem = new Menuitem();
    	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
    	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
-   	   			if (ThemeManager.isUseFontIconForImage())
+   	   			if (infoProcess.getImageURL().indexOf("://") > 0)
+   	   				ipMenuItem.setImage(infoProcess.getImageURL());
+   	   			else if (ThemeManager.isUseFontIconForImage())
    	   				ipMenuItem.setIconSclass(ThemeManager.getIconSclass(infoProcess.getImageURL()));
    	   			else
    	   				ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL()));
