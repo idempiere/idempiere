@@ -311,7 +311,9 @@ public final class ConfirmPanel extends Div
     	// replace default image with image set at info process
     	if (m_withImage && imgName != null && imgName.trim().length() > 0)
     	{
-    		if (ThemeManager.isUseFontIconForImage())
+    		if (imgName.indexOf("://") > 0)
+    			btProcess.setImage(imgName);
+    		else if (ThemeManager.isUseFontIconForImage())
     			btProcess.setIconSclass(ThemeManager.getIconSclass(imgName));
     		else
     			btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));

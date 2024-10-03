@@ -176,7 +176,6 @@ public class WImageEditor extends WEditor
 		getComponent().setContent(img);
     }
     
-	
     @Override
 	public String getDisplayTextForGridView(Object value) {
 		if (value == null) {
@@ -230,5 +229,6 @@ public class WImageEditor extends WEditor
 	 */
 	@Override
 	public void fillHorizontal() {
-	}		
+	}
+
 }

@@ -5,5 +5,5 @@
 
 	<!-- this js module doesn't actually exists and it is here for breeze theme version -->
 	<!-- since loading of js module is on demand, it doesn't cause any error as long as you don't try to load it -->
-	<javascript-module name="idempiere.theme.default" version="202406260800" />
+	<javascript-module name="idempiere.theme.default" version="202410030205" />
 </language>

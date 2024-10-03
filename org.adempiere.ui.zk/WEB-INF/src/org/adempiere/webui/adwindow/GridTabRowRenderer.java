@@ -63,6 +63,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.RendererCtrl;
@@ -337,6 +338,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.getComponent().setAttribute(GRID_ROW_INDEX_ATTR, rowIndex);
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
+		} else if (gridField.getDisplayType() == DisplayType.Image) {
+			WImageEditor editor = new WImageEditor(gridField);
+			editor.setReadWrite(false);
+			editor.setValue(value);
+			Image image = editor.getComponent();
+			if (image.getContent() != null) {
+				image.setWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
+				image.setHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
+				image.setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
+				image.setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
+			}
+			component = image;
 		} else {
 			String text = getDisplayText(value, gridField, rowIndex, isForceGetValue);
 			WEditor editor = getEditorCell(gridField);
@@ -834,7 +847,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 			GridTableListModel model = (GridTableListModel) grid.getModel();
 			model.setEditing(true);
-
+			Clients.evalJavaScript("jq('img.fullsize-image').remove();");
 		}
 	}
 
