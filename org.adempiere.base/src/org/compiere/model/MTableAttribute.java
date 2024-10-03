@@ -38,11 +38,12 @@ public class MTableAttribute extends X_AD_TableAttribute
 	private static final long serialVersionUID = -2624557341374329315L;
 
 	/** Get Default value of the attribute **/
-	private static final String				TABLE_ATTRIBUTE_DEFAULTVALUE_SQL	= "SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, COALESCE(atsu.DefaultValue , a.DefaultValue)	"
-																					+ "	FROM AD_Table tb "
-																					+ "	INNER JOIN M_AttributeUse atsu ON (atsu.M_AttributeSet_ID = tb.M_AttributeSet_ID) "
-																					+ "	INNER JOIN M_Attribute a ON (a.M_Attribute_ID = atsu.M_Attribute_ID) "
-																					+ "	WHERE a.Name = ? AND a.IsActive = 'Y' AND tb.AD_Table_ID = ?	";
+	private static final String TABLE_ATTRIBUTE_DEFAULTVALUE_SQL = """
+														SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, COALESCE(atsu.DefaultValue , a.DefaultValue)
+																FROM AD_Table tb
+																INNER JOIN M_AttributeUse atsu ON (atsu.M_AttributeSet_ID = tb.M_AttributeSet_ID)
+																INNER JOIN M_Attribute a ON (a.M_Attribute_ID = atsu.M_Attribute_ID)
+																WHERE a.Name = ? AND a.IsActive = 'Y' AND tb.AD_Table_ID = ?	""";
 
 	private static CCache<String, Object> s_tableAttributeDefault = new CCache<String, Object>("AD_TableAttribute_Default", 30);	
 	

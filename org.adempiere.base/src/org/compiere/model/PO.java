@@ -128,10 +128,11 @@ public abstract class PO
 	private static final int QUERY_TIME_OUT = 300;
 	
 	/** Get value of the attribute for Table ID and Record ID  **/
-	private static final String	TABLE_ATTRIBUTE_VALUE_SQL = "SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, ta.Value, ta.ValueDate, ta.ValueNumber, ta.M_AttributeValue_ID "
-																		+ "	FROM AD_TableAttribute ta "
-																		+ "	INNER JOIN M_Attribute a ON (a.M_Attribute_ID = ta.M_Attribute_ID) "
-																		+ "	WHERE ta.AD_Table_ID = ? AND Record_ID = ? AND a.IsActive = 'Y' ";
+	private static final String	TABLE_ATTRIBUTE_VALUE_SQL = """
+															SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, ta.Value, ta.ValueDate, ta.ValueNumber, ta.M_AttributeValue_ID 
+																		FROM AD_TableAttribute ta 
+																		INNER JOIN M_Attribute a ON (a.M_Attribute_ID = ta.M_Attribute_ID) 
+																		WHERE ta.AD_Table_ID = ? AND Record_ID = ? AND a.IsActive = 'Y' """;
 
 	/** Record Attribute and Value Map */
 	private Map<String, Object> attributeMap = new HashMap<String, Object>();
