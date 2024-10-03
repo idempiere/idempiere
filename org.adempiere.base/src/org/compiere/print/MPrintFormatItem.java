@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.GridField;
+import org.compiere.model.I_AD_PrintFormatItem;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
@@ -49,9 +50,9 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 2950704375830865408L;
+	private static final long serialVersionUID = -971583490682254014L;
 
-    /**
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_PrintFormatItem_UU  UUID key
@@ -179,8 +180,22 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 
 	private static CLogger		s_log = CLogger.getCLogger (MPrintFormatItem.class);
 
+	public String getPrintName () {
+		if (Util.isEmpty(super.getPrintName(), true)) {
+			return getName();
+		}
+		
+		return super.getPrintName();
+	}
 	/**
-	 *	Get print name with language
+	 *	Get print name with language<br/>
+	 *	Order of alternative values when encountering empty value<br/>
+	 *  <ul>
+	 *		<li>print name with language</li>
+	 *		<li>print name</li>
+	 *		<li>name with language</li>
+	 *		<li>name</li>
+	 *  </ul>
 	 * 	@param language language - ignored if IsMultiLingualDocument not 'Y'
 	 * 	@return print name
 	 */
@@ -190,9 +205,20 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			return getPrintName();
 		loadTranslations();
 		String retValue = (String)m_translationLabel.get(language.getAD_Language());
-		if (retValue == null || retValue.length() == 0)
-			return getPrintName();
-		return retValue;
+		String altValue = retValue;
+		if (Util.isEmpty(altValue, true))
+			altValue = super.getPrintName();
+		
+		if (Util.isEmpty(altValue, true))
+			altValue = get_Translation(I_AD_PrintFormatItem.COLUMNNAME_Name, language.getAD_Language());
+
+		if (Util.isEmpty(altValue, true))
+			altValue = getName();
+		
+		if (Util.isEmpty(retValue, true) && !Util.isEmpty(altValue, true))
+			m_translationLabel.put(language.getAD_Language(), altValue);
+
+		return altValue;
 	}	//	getPrintName
 
 	/**
@@ -437,7 +463,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		StringBuilder sb = new StringBuilder("MPrintFormatItem[");
 		sb.append("ID=").append(get_ID())
 			.append(",Name=").append(getName())
-			.append(",Print=").append(getPrintName())
+			.append(",Print=").append(super.getPrintName())
 			.append(", Seq=").append(getSeqNo())
 			.append(",Sort=").append(getSortNo())
 			.append(", Area=").append(getPrintAreaType())
@@ -776,7 +802,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	{
 		//	Set Translation from Element
 		if (newRecord 
-			&& getPrintName() != null && getPrintName().length() > 0)
+			&& super.getPrintName() != null && super.getPrintName().length() > 0)
 		{
 			String sql = "UPDATE AD_PrintFormatItem_Trl "
 				+ "SET PrintName = (SELECT e.PrintName "
