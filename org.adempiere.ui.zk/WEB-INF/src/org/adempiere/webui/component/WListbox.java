@@ -1281,17 +1281,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		for (int col = 0; col < layout.length; col++)
 		{
 			Class<?> c = layout[col].getColClass();
-			if (c == BigDecimal.class)
+			if (c == BigDecimal.class || c == Double.class || c == Integer.class)
 			{	
 				setValueAt(total[col] , row - 1, col);
-			}
-			else if (c == Double.class)
-			{
-				setValueAt(total[col] , row -1 , col);
-			}
-			else if (c == Integer.class)
-			{
-				setValueAt(total[col] , row -1 , col);
 			}
 			else
 			{	
