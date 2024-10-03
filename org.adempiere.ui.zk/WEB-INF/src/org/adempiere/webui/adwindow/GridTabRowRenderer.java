@@ -70,6 +70,7 @@ import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.RowRendererExt;
+import org.zkoss.zul.Span;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -339,17 +340,23 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else if (gridField.getDisplayType() == DisplayType.Image) {
-			WImageEditor editor = new WImageEditor(gridField);
-			editor.setReadWrite(false);
-			editor.setValue(value);
-			Image image = editor.getComponent();
-			if (image.getContent() != null) {
-				image.setWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
-				image.setHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
-				image.setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
-				image.setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
+			if (value != null) {
+				WImageEditor editor = new WImageEditor(gridField);
+				editor.setReadWrite(false);
+				editor.setValue(value);
+				Image image = editor.getComponent();
+				if (image.getContent() != null) {
+					image.setWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
+					image.setHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
+					image.setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
+					image.setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
+				}
+				component = image;
+			} else {
+				Span span = new Span();
+				span.setSclass("no-image");
+				component = span;
 			}
-			component = image;
 		} else {
 			String text = getDisplayText(value, gridField, rowIndex, isForceGetValue);
 			WEditor editor = getEditorCell(gridField);
@@ -359,8 +366,17 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				component = label;
 			}else{
 				component = editor.getDisplayComponent();
-				if (component instanceof Html){
-					((Html)component).setContent(text);
+				if (component instanceof Html html){
+					if (Util.isEmpty(text) && value == null) {
+						String nullText = editor.getDisplayTextForGridView(value);
+						if (!Util.isEmpty(nullText)) {
+							html.setContent(nullText);
+						} else {
+							html.setContent(text);
+						}
+					} else {
+						html.setContent(text);
+					}
 				}else{
 					throw new UnsupportedOperationException("Only implemented for Html component.");
 				}

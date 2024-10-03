@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 
 /**
@@ -178,8 +179,8 @@ public class WImageEditor extends WEditor
     
     @Override
 	public String getDisplayTextForGridView(Object value) {
-		if (value == null) {
-			return "";
+		if (value == null || (value instanceof Integer && (Integer)value == 0)) {
+			return "<span class='no-image'/>";
 		} else {
 			return "...";
 		}
@@ -229,6 +230,14 @@ public class WImageEditor extends WEditor
 	 */
 	@Override
 	public void fillHorizontal() {
+	}
+
+	@Override
+	public Component getDisplayComponent() {
+		if (m_mImage == null)
+			return new Html();
+		else
+			return null;
 	}
 
 }

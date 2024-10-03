@@ -231,7 +231,7 @@ public class WImageURLEditor extends WEditor
 				.append("onmouseenter='idempiere.showFullSizeImage(event)' onmouseleave='idempiere.hideFullSizeImage(event)'/>");
 			return builder.toString();
 		} else {
-			return "";
+			return "<span class='no-image'/>";
 		}
 	}		
 }
