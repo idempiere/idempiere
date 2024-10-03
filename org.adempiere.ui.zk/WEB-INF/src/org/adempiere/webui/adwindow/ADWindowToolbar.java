@@ -144,6 +144,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     private ToolBarButton btnProcess;
     
     private ToolBarButton btnQuickForm;
+    private ToolBarButton btnAttributeForm;
     /** button to open overflow popup for toolbar buttons with IsShowMore=Y (for non-mobile client) **/
     private ToolBarButton btnShowMore;
     /** Button Name:ToolBarButton. Map for all buttons **/
@@ -295,6 +296,9 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
         btnQuickForm = createButton("QuickForm", "QuickForm", "QuickForm");
         btnQuickForm.setDisabled(false);
+
+        btnAttributeForm = createButton("AttributeForm", "AttributeForm", "AttributeForm");
+        btnAttributeForm.setDisabled(false);
 
         // Help and Exit should always be enabled
         btnHelp.setDisabled(false);
@@ -857,6 +861,15 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	public void enableQuickForm(boolean enabled)
 	{
 		btnQuickForm.setDisabled(!enabled);
+	}
+	
+    /**
+     * Enable/disable Attribute Form button
+     * @param enabled
+     */
+	public void enableAttributeForm(boolean enabled)
+	{
+		btnAttributeForm.setDisabled(!enabled);
 	}
 
 	/**

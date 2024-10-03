@@ -32,6 +32,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Process_Para;
+import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Process_Para;
 import org.compiere.util.Env;
@@ -114,25 +115,43 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 			}
 		}
 
-		if (!isPackOutElement(ctx, m_Processpara))
-			return;
-		
-		verifyPackOutRequirement(m_Processpara);
-		
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Process_Para.Table_Name, atts);
-		createProcessParaBinding(ctx, document, m_Processpara);
-
+		boolean createElement = isPackOutElement(ctx, m_Processpara);
 		PackOut packOut = ctx.packOut;
-		packOut.getCtx().ctx.put("Table_Name",I_AD_Process_Para.Table_Name);
-		try {
-			new CommonTranslationHandler().packOut(packOut,document,null,m_Processpara.get_ID());
-		} catch(Exception e) {
-			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		if (createElement)
+		{
+			verifyPackOutRequirement(m_Processpara);
+
+			AttributesImpl atts = new AttributesImpl();
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_Process_Para.Table_Name, atts);
+			createProcessParaBinding(ctx, document, m_Processpara);
+
+			packOut.getCtx().ctx.put("Table_Name", I_AD_Process_Para.Table_Name);
+			try
+			{
+				new CommonTranslationHandler().packOut(packOut, document, null, m_Processpara.get_ID());
+			}
+			catch (Exception e)
+			{
+				if (log.isLoggable(Level.INFO))
+					log.info(e.toString());
+			}
 		}
 
-		document.endElement("", "", I_AD_Process_Para.Table_Name);
+		packOut.getCtx().ctx.put("Table_Name", I_AD_Process_Para.Table_Name);
+		try
+		{
+			ElementHandler handler = packOut.getHandler(I_AD_TableAttribute.Table_Name);
+			handler.packOut(packOut, document, null, m_Processpara.get_ID());
+		}
+		catch (Exception e)
+		{
+			if (log.isLoggable(Level.INFO))
+				log.info(e.toString());
+		}
+
+		if (createElement)
+			document.endElement("", "", I_AD_Process_Para.Table_Name);
 	}
 
 	private void createProcessParaBinding(PIPOContext ctx, TransformerHandler document,
