@@ -150,7 +150,11 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 				btnViewItem.setSclass("link");
 				btnViewItem.setLabel(name);
 
-				if (ThemeManager.isUseFontIconForImage()) 
+				if (image.indexOf("://") > 0)
+				{
+					btnViewItem.setImage(image);
+				}
+				else if (ThemeManager.isUseFontIconForImage()) 
 				{
 					if (image.endsWith("16.png"))
 						image = image.replace("16.png", "");
