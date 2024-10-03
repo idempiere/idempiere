@@ -29,3 +29,13 @@ UPDATE PA_DashboardContent SET Line=1, ColumnNo=0,Updated=TO_TIMESTAMP('2024-10-
 UPDATE PA_DashboardContent SET Line=0, ColumnNo=3,Updated=TO_TIMESTAMP('2024-10-03 15:34:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardContent_ID=50004
 ;
 
+-- Oct 3, 2024, 3:55:12 PM CEST
+UPDATE AD_StatusLine SET SQLStatement='SELECT
+    SUM(CASE WHEN EXTRACT(YEAR FROM Dateordered) = EXTRACT(YEAR FROM getdate()) THEN 1 ELSE 0 END) AS total_orders_current_year,
+    SUM(CASE WHEN EXTRACT(YEAR FROM Dateordered) = 2002 THEN 1 ELSE 0 END) AS total_orders_2002,
+    SUM(CASE WHEN EXTRACT(YEAR FROM Dateordered) = EXTRACT(YEAR FROM getdate()) THEN 1 ELSE 0 END) -
+    SUM(CASE WHEN EXTRACT(YEAR FROM Dateordered) = 2002 THEN 1 ELSE 0 END) AS difference
+FROM c_order
+WHERE issotrx=''Y'' AND ad_client_id= @#AD_Client_ID@',Updated=TO_TIMESTAMP('2024-10-03 15:55:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200024
+;
+
