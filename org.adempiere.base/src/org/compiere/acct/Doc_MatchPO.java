@@ -417,7 +417,8 @@ public class Doc_MatchPO extends Doc
 		String costingMethod = product.getCostingMethod(as);
 		//get standard cost and also make sure cost for other costing method is updated
 		BigDecimal costs = m_pc.getProductCosts(as, getAD_Org_ID(),
-			MAcctSchema.COSTINGMETHOD_StandardCosting, m_C_OrderLine_ID, false);	//	non-zero costs
+			MAcctSchema.COSTINGMETHOD_StandardCosting, m_C_OrderLine_ID, false, 
+			getDateAcct(), (MCostDetail) null, isBackDateProcess());	//	non-zero costs
 
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
@@ -641,7 +642,7 @@ public class Doc_MatchPO extends Doc
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 					m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
 					tAmt, tQty,			//	Delivered
-					m_oLine.getDescription(), getTrxName()))
+					m_oLine.getDescription(), getDateAcct(), getTrxName()))
 			{
 				return "SaveError";
 			}
@@ -678,7 +679,7 @@ public class Doc_MatchPO extends Doc
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 					m_oLine.getC_OrderLine_ID(), elementId,
 					amt, tQty,			//	Delivered
-					m_oLine.getDescription(), getTrxName()))
+					m_oLine.getDescription(), getDateAcct(), getTrxName()))
 			{
 				return "SaveError";
 			}

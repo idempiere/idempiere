@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.compiere.model.ICostInfo;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -35,7 +36,6 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
 import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -239,9 +239,11 @@ public class Doc_Inventory extends Doc
 				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
-				MCost cost = MCost.get(product, asiId, as, 
-						orgId, ce.getM_CostElement_ID(), getTrxName());					
-				DB.getDatabase().forUpdate(cost, 120);
+				MCostDetail cd = MCostDetail.get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+product.getM_Product_ID(), 
+						get_ID(), asiId, as.getC_AcctSchema_ID(), getTrxName());
+				ICostInfo cost = MCost.getCostInfo(product, asiId, as, 
+						orgId, ce.getM_CostElement_ID(), 
+						getDateAcct(), cd, getTrxName());
 				BigDecimal currentQty = cost.getCurrentQty();
 				adjustmentDiff = costs;
 				costs = costs.multiply(currentQty);
@@ -398,7 +400,7 @@ public class Doc_Inventory extends Doc
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										maCost, qty,
-										line.getDescription(), getTrxName()))
+										line.getDescription(), line.getDateAcct(), getTrxName()))
 								{
 									p_Error = "Failed to create cost detail record";
 									return null;
@@ -413,7 +415,7 @@ public class Doc_Inventory extends Doc
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), getTrxName()))
+								line.getDescription(), line.getDateAcct(), getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
@@ -428,7 +430,7 @@ public class Doc_Inventory extends Doc
 						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						line.get_ID(), 0,
 						amt, line.getQty(),
-						line.getDescription(), getTrxName()))
+						line.getDescription(), line.getDateAcct(), getTrxName()))
 					{
 						p_Error = "Failed to create cost detail record";
 						return null;
