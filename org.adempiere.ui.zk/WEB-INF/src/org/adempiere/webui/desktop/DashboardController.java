@@ -39,6 +39,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -337,7 +338,7 @@ public class DashboardController implements EventListener<Event> {
 							}
 						}
 					};	        		
-	        		Adempiere.getThreadPoolExecutor().submit(cr);
+	        		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(cr, parent.getDesktop()));
 	        	}
 	        }
             
@@ -647,7 +648,7 @@ public class DashboardController implements EventListener<Event> {
 							}
 						}
 					};	        		
-	        		Adempiere.getThreadPoolExecutor().submit(cr);					
+	        		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(cr, parent.getDesktop()));				
 	        	}
 	        }
             
