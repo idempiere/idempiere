@@ -1596,6 +1596,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							image.setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
 							image.setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
 						}
+						if (t.value == null)
+							LayoutUtils.addSclass("no-image", editor.getComponent());
 						return editor;
 					});
 				}
