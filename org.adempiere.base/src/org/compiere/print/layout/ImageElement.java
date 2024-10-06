@@ -55,6 +55,8 @@ public class ImageElement extends PrintElement
 	 */
 	public static ImageElement get (String imageURLString)
 	{
+		if (imageURLString == null)
+			return null;
 		Object key = imageURLString;
 		ImageElement image = (ImageElement)s_cache.get(key);
 		if (image == null)
@@ -216,6 +218,8 @@ public class ImageElement extends PrintElement
 	private URL getURL (String urlString)
 	{
 		URL url = null;
+		if (urlString == null)
+			return null;
 		//	not a URL - may be a resource
 		if (urlString.indexOf("://") == -1)
 		{
