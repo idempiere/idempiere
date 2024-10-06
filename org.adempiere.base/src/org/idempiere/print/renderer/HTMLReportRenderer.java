@@ -24,26 +24,37 @@ package org.idempiere.print.renderer;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.*;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
+import org.compiere.model.MImage;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
@@ -73,6 +84,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.osgi.service.component.annotations.Component;
 
+import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 
@@ -631,7 +643,11 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
 				suppressMap.remove(printColIndex);
 			
-			if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
+			if (item.isTypeImage())
+			{
+				printImageColumn(td, item, pde);
+			}
+			else if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 			{
 				boolean isZoom = false;
 				if (item.getColumnName().equals("Record_ID")) {
@@ -720,7 +736,9 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			}
 			if (cssPrefix != null)
 			{
-				if (DisplayType.isNumeric(pde.getDisplayType()))
+				if (item.isTypeImage())
+					td.setClass(cssPrefix + "-image");
+				else if (DisplayType.isNumeric(pde.getDisplayType()))
 					td.setClass(cssPrefix + "-number");
 				else if (DisplayType.isDate(pde.getDisplayType()))
 					td.setClass(cssPrefix + "-date");
@@ -734,6 +752,116 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		else
 			log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
+	}
+
+	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde) {
+		if (item.isImageField())
+		{
+			Object data = pde.getValue();
+			if (data != null)
+			{
+				if (pde.getDisplayType() == DisplayType.Image)
+				{
+					if (data instanceof Number number)
+					{
+						int id = number.intValue();
+						MImage image = MImage.get(id);
+						byte[] imageData = image.getBinaryData();
+						createDataURLImageElement(td, imageData, item);
+					}
+				}
+				else 
+				{
+					String url = data.toString();
+					// not a URL - may be a resource
+					if (url.indexOf("://") == -1)
+					{
+						ClassLoader cl = HTMLReportRenderer.class.getClassLoader();
+						URL resource = cl.getResource(url);
+						if (resource != null)
+							createDataURLImageElement(td, resource, item);
+						resource = Core.getResourceFinder().getResource(url);
+						if (resource != null)
+							createDataURLImageElement(td, resource, item);
+					}
+					else
+					{
+						img image = new img(url);
+						td.addElementToRegistry(image);
+						applyHeightAndWidth(item, image);
+					}
+				}
+			}
+		}
+		else if (item.isImageIsAttached())
+		{
+			MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, item.get_ID(), null, null);
+			if (attachment != null)
+			{
+				if (attachment.getEntryCount() != 1)
+				{
+					log.log(Level.WARNING, "Need just 1 Attachment Entry = " + attachment.getEntryCount());
+					return;
+				}
+				byte[] imageData = attachment.getEntryData(0);
+				createDataURLImageElement(td, imageData, item);
+			}
+		}
+		else if (!Util.isEmpty(item.getImageURL(), true))
+		{
+			img image = new img(item.getImageURL());
+			td.addElementToRegistry(image);
+			applyHeightAndWidth(item, image);
+		}
+	}
+
+	private static void applyHeightAndWidth(MPrintFormatItem item, img image) {
+		StringBuilder style = new StringBuilder();
+		if (item.getMaxHeight() > 0) 
+			style.append("height:").append(item.getMaxHeight()).append("px;");
+		if (item.getMaxWidth() > 0) 
+			style.append("width:").append(item.getMaxWidth()).append("px;");
+		if (style.length() > 0)
+			image.setStyle(style.toString());
+	}
+
+	private static void createDataURLImageElement(MultiPartElement td, URL url, MPrintFormatItem item) {
+		byte[] imageData = null;
+		try {
+			imageData = ByteStreams.toByteArray(url.openStream());
+			createDataURLImageElement(td, imageData, item);
+		} catch (IOException e) {
+			log.log(Level.WARNING, e.getLocalizedMessage(), e);
+		}		
+	}
+	
+	private static void createDataURLImageElement(MultiPartElement td, byte[] imageData, MPrintFormatItem item) {
+		String contentType = null;
+		Iterator<ImageReader> readers = null;
+		try {
+			readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(new ByteArrayInputStream(imageData)));
+		} catch (IOException e) {
+			log.log(Level.WARNING, e.getLocalizedMessage(), e);
+			return;
+		}
+		while(readers.hasNext()) {
+			ImageReader reader = readers.next();
+			try {
+				contentType = reader.getFormatName();
+				if (!Util.isEmpty(contentType))
+					break;
+			} catch (IOException e) {
+			}
+		}
+		if (contentType != null) {
+			StringBuilder builder = new StringBuilder("data:")
+					.append(contentType)
+					.append(";base64,");
+			builder.append(Base64.getEncoder().encodeToString(imageData));
+			img image = new img(builder.toString());
+			td.addElementToRegistry(image);
+			applyHeightAndWidth(item, image);
+		}
 	}
 
 	/**
