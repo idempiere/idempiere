@@ -15,6 +15,7 @@
 package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.panel.MenuTreePanel;
+import org.adempiere.webui.util.ZKUpdateUtil;
 
 /**
  * Dashboard gadget: Menu Tree
@@ -37,6 +38,7 @@ public class DPMenuTree extends DashboardPanel {
 		super();
 		
 		menuTreePanel = new MenuTreePanel(this);
+		ZKUpdateUtil.setHeight(this, "100%");
 	}
 	
 	/**
