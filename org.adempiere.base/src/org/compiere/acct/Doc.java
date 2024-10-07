@@ -665,7 +665,7 @@ public abstract class Doc
 			String AD_MessageValue = "PostingError-" + p_Status;
 			int AD_User_ID = p_po.getUpdatedBy();
 			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID,
-				getAD_Client_ID(), getAD_Org_ID(), p_po.get_TrxName());
+				getAD_Client_ID(), getAD_Org_ID(), null);
 			note.setRecord(p_po.get_Table_ID(), p_po.get_ID());
 			//  Reference
 			note.setReference(toString());	//	Document
