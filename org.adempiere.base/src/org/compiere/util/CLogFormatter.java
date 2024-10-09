@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import static org.compiere.model.MSysConfig.FULL_EXCEPTION_TRACE_IN_LOG;
-
 import java.awt.Toolkit;
 import java.rmi.ServerException;
 import java.sql.SQLException;
@@ -27,7 +25,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import org.compiere.model.MSysConfig;
 import org.compiere.model.SystemProperties;
 
 /**
