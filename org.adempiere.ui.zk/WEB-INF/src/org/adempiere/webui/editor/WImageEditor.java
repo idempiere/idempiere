@@ -22,7 +22,9 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WImageDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MImage;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.image.AImage;
@@ -158,6 +160,8 @@ public class WImageEditor extends WEditor
 			m_mImage = null;
 			AImage img = null;
 			getComponent().setContent(img);
+			getComponent().setWidth(null);
+			getComponent().setHeight(null);
 			return;
 		}
 		//  Get/Create Image
@@ -175,6 +179,18 @@ public class WImageEditor extends WEditor
 			}
 		}
 		getComponent().setContent(img);
+		if (img != null)
+		{
+			String width = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			String height = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			getComponent().setWidth(width);
+			getComponent().setHeight(height);
+		}
+		else
+		{
+			getComponent().setWidth(null);
+			getComponent().setHeight(null);
+		}
     }
     
     @Override
@@ -210,6 +226,7 @@ public class WImageEditor extends WEditor
 							newValue = Integer.valueOf(AD_Image_ID);
 						//
 						m_mImage = null;	//	force reload
+						CacheMgt.get().reset(MImage.Table_Name, AD_Image_ID);
 						setValue(newValue);	//	set explicitly
 						//
 						ValueChangeEvent vce = new ValueChangeEvent(WImageEditor.this, gridField.getColumnName(), oldValue, newValue);
