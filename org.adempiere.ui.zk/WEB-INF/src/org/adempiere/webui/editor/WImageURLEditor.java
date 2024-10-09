@@ -111,8 +111,6 @@ public class WImageURLEditor extends WEditor
     {
     	getComponent().setSrc(null);
         getComponent().setSclass("image-field image-fit-contain");
-        getComponent().setWidth("100px");
-        getComponent().setHeight("100px");
     }
 
      @Override
@@ -163,7 +161,16 @@ public class WImageURLEditor extends WEditor
 		{
 			oldValue = null;
 			getComponent().setSrc(null);
-			return;
+			getComponent().setWidth(null);
+			getComponent().setHeight(null);
+			return;			
+		}
+		else
+		{
+			String width = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			String height = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			getComponent().setWidth(width);
+			getComponent().setHeight(height);
 		}
 		//
 		if (log.isLoggable(Level.FINE)) log.fine(value.toString());
