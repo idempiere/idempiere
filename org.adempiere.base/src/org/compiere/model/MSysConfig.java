@@ -120,7 +120,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String FORM_SQL_QUERY_LOG_ISSUE = "FORM_SQL_QUERY_LOG_ISSUE";
     public static final String FORM_SQL_QUERY_MAX_RECORDS = "FORM_SQL_QUERY_MAX_RECORDS";
     public static final String FORM_SQL_QUERY_TIMEOUT_IN_SECONDS = "FORM_SQL_QUERY_TIMEOUT_IN_SECONDS";
-    public static final String FULL_EXCEPTION_TRACE_IN_LOG = "FULL_EXCEPTION_TRACE_IN_LOG";
 	public static final String GLOBAL_MAX_QUERY_RECORDS = "GLOBAL_MAX_QUERY_RECORDS";
 	public static final String GLOBAL_MAX_REPORT_RECORDS = "GLOBAL_MAX_REPORT_RECORDS";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
