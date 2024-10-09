@@ -128,9 +128,14 @@ public class Tab extends org.zkoss.zul.Tab
 						comp.setImageContent(image);
 				}
 			} else if (imageKey != null){
-				Image ico = ManageImageCache.instance().getImage(imageKey);
-				if (ico != null)
-					comp.setImageContent(ico);
+				if (ThemeManager.isUseFontIconForImage() && imageKey.indexOf("://") == -1) {
+					String iconClass = imageKey;
+					comp.setIconSclass("z-icon-" + iconClass);
+				} else {
+					Image ico = ManageImageCache.instance().getImage(imageKey);
+					if (ico != null)
+						comp.setImageContent(ico);
+				}
 			}
 		}
 		

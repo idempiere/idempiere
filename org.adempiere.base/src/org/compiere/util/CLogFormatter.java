@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import static org.compiere.model.MSysConfig.FULL_EXCEPTION_TRACE_IN_LOG;
+
 import java.awt.Toolkit;
 import java.rmi.ServerException;
 import java.sql.SQLException;
@@ -25,6 +27,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.compiere.model.MSysConfig;
 import org.compiere.model.SystemProperties;
 
 /**
@@ -293,15 +296,14 @@ public class CLogFormatter extends Formatter
 		int adempiereTraceNo = 0;
         for (int i=0; i < trace.length; i++)
         {
-        	adempiereTrace = trace[i].getClassName().startsWith("org.compiere.");
+        	adempiereTrace = trace[i].getClassName().startsWith("org.compiere.") || trace[i].getClassName().startsWith("org.adempiere.") || trace[i].getClassName().startsWith("org.idempiere.");
         	if (thrown instanceof ServerException	//	RMI
         		|| adempiereTrace)
         	{
         		if (adempiereTrace)
                 	sb.append("\tat ").append(trace[i]).append(NL);
         	}
-        	else if (i > 20
-        		|| (i > 10 && adempiereTraceNo > 8))
+        	else if (!MSysConfig.getBooleanValue(FULL_EXCEPTION_TRACE_IN_LOG, false) && (i > 20 || (i > 10 && adempiereTraceNo > 8)))
         		break;
         	else
         		sb.append("\tat ").append(trace[i]).append(NL);

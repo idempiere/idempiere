@@ -30,6 +30,7 @@ import org.adempiere.webui.editor.WFileDirectoryEditor;
 import org.adempiere.webui.editor.WFilenameEditor;
 import org.adempiere.webui.editor.WHtmlEditor;
 import org.adempiere.webui.editor.WImageEditor;
+import org.adempiere.webui.editor.WImageURLEditor;
 import org.adempiere.webui.editor.WJsonEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WLocatorEditor;
@@ -197,6 +198,10 @@ public class DefaultEditorFactory implements IEditorFactory {
         else if (displayType == DisplayType.Image)
         {
         	editor = new WImageEditor(gridField, tableEditor, editorConfiguration);
+        }
+        else if (displayType == DisplayType.ImageURL)
+        {
+        	editor = new WImageURLEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.Binary)
         {

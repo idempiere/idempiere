@@ -70,9 +70,14 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WInfoWindowListItemRenderer;
+import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
+import org.adempiere.webui.component.WTableColumn;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WImageEditor;
+import org.adempiere.webui.editor.WImageURLEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -142,8 +147,10 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Paging;
@@ -513,7 +520,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    				
    				// init button to show menu
    				btMenuProcess = confirmPanel.addButton("ProcessMenu", null);
-   				btMenuProcess.setPopup("ipMenu, before_start");   				
+   				btMenuProcess.addEventListener(Events.ON_CLICK, e -> {
+   					ipMenu.open(btMenuProcess, "before_start");
+   				});
    			}
    		}
 	}
@@ -584,7 +593,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void bindInfoProcessMenu (){
 		if (infoProcessMenuList == null || infoProcessMenuList == null)
 			return;
-		
+				
 		ipMenu.getChildren().clear();
 		for (MInfoProcess infoProcess : infoProcessMenuList){
 			if (!infoProcess.isDisplayed(infoContext, p_WindowNo)){
@@ -596,7 +605,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    	   		Menuitem ipMenuItem = new Menuitem();
    	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
    	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
-   	   			if (ThemeManager.isUseFontIconForImage())
+   	   			if (infoProcess.getImageURL().indexOf("://") > 0)
+   	   				ipMenuItem.setImage(infoProcess.getImageURL());
+   	   			else if (ThemeManager.isUseFontIconForImage())
    	   				ipMenuItem.setIconSclass(ThemeManager.getIconSclass(infoProcess.getImageURL()));
    	   			else
    	   				ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL()));
@@ -1221,7 +1232,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if (p_whereClause != null && p_whereClause.trim().length() > 0) {
 				builder.append(" AND ");
 			}
-			builder.append(tableInfos[0].getSynonym()).append(".IsActive='Y'");
+			String qualifiedTable = tableInfos[0].getSynonym();
+			if (Util.isEmpty(qualifiedTable))
+				qualifiedTable = tableInfos[0].getTableName();
+			builder.append(qualifiedTable).append(".IsActive='Y'");
 		}
 		int count = 0;
 		int idx = 0;
@@ -1540,11 +1554,56 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 
+	/** editor configuration for readonly field editor **/
+	private final static IEditorConfiguration readOnlyEditorConfiguration = new IEditorConfiguration() {
+		@Override
+		public Boolean getReadonly() {
+			return Boolean.TRUE;
+		}
+
+		@Override
+		public Boolean getMandatory() {
+			return Boolean.FALSE;
+		}
+	};
+	
 	@Override
 	protected void prepareTable(ColumnInfo[] layout, String from, String where,
 			String orderBy) {
 		super.prepareTable(layout, from, where, orderBy);
 
+		ListitemRenderer<?> renderer = contentPanel.getItemRenderer();
+		if (renderer instanceof WListItemRenderer lir) {
+			int columns = lir.getNoColumns();
+			for(int i = 0; i < columns; i++) {
+				WTableColumn column = lir.getColumn(i);
+				if (column.getAD_Reference_ID() == DisplayType.ImageURL) {
+					column.setEditorProvider(t -> {
+						GridField gridField = layout[t.columnIndex].getGridField();
+						WImageURLEditor editor = new WImageURLEditor(gridField, true, readOnlyEditorConfiguration);
+						editor.setValue(t.value);
+						return editor;
+					});
+				} else if (column.getAD_Reference_ID() == DisplayType.Image) {
+					column.setEditorProvider(t -> {
+						GridField gridField = layout[t.columnIndex].getGridField();
+						WImageEditor editor = new WImageEditor(gridField, true, readOnlyEditorConfiguration);
+						editor.setValue(t.value);
+						Image image = editor.getComponent();
+						if (image.getContent() != null) {
+							image.setWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
+							image.setHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
+							image.setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
+							image.setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
+						}
+						if (t.value == null)
+							LayoutUtils.addSclass("no-image", editor.getComponent());
+						return editor;
+					});
+				}
+			}
+		}
+		
 		addViewIDToQuery();
 		addKeyViewToQuery();
 

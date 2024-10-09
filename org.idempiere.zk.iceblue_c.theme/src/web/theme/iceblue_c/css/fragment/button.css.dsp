@@ -27,7 +27,7 @@
 	background-color: transparent;
 }
 
-.txt-btn img, .small-img-btn img {
+.txt-btn img, .small-img-btn img, .img-txt-btn img {
 	height: 16px;
 	width: 16px;
 	background-color: transparent;

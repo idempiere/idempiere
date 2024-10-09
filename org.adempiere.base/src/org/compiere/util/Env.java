@@ -631,7 +631,7 @@ public final class Env
 		if (s == null)
 		{
 			//	Explicit Base Values
-			if (context.startsWith("#") || context.startsWith("$") || context.startsWith("P|"))
+			if (Env.isGlobalVariable(context) || Env.isPreference(context))
 				return getContext(ctx, context);
 			if (onlyWindow)			//	no Default values
 				return "";
@@ -1048,6 +1048,8 @@ public final class Env
 			retValue = ctx.getProperty("#"+context);   				//	Login setting
 			if (retValue == null)
 				retValue = ctx.getProperty("$"+context);   			//	Accounting setting
+			if (retValue == null)
+				retValue = ctx.getProperty("+"+context);   			//	Injected Role Variable
 		}
 		//
 		return (retValue == null ? "" : retValue);
@@ -1534,7 +1536,7 @@ public final class Env
 			}
 
 			String ctxInfo = getContext(ctx, WindowNo, token, onlyWindow);	// get context
-			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
+			if (ctxInfo.length() == 0 && Env.isGlobalVariable(token))
 				ctxInfo = getContext(ctx, token);	// get global context
 
 			if (ctxInfo.length() == 0 && defaultV != null)
@@ -1619,7 +1621,7 @@ public final class Env
 				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
 			}
 
-			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
+			if (ctxInfo.length() == 0 && Env.isGlobalVariable(token))
 				ctxInfo = getContext(ctx, token);	// get global context
 
 			if (ctxInfo.length() == 0 && defaultV != null)
@@ -1735,7 +1737,7 @@ public final class Env
 			}
 
 			Properties ctx = po != null ? po.getCtx() : Env.getCtx();
-			if (token.startsWith("#") || token.startsWith("$")) {
+			if (Env.isGlobalVariable(token)) {
 				//take from context
 				String v = Env.getContext(ctx, token);
 				if (v != null && v.length() > 0) {
@@ -1824,7 +1826,7 @@ public final class Env
 			String token, String format, MColumn colToken, Object value, StringBuilder outStr) {
 		if (format != null && format.length() > 0) {
 			String foreignTable = colToken != null ? colToken.getReferenceTableName() : null;
-			if (value instanceof String && token.endsWith("_ID") && (token.startsWith("#") || token.startsWith("$"))) {
+			if (value instanceof String && token.endsWith("_ID") && Env.isGlobalVariable(token)) {
 				try {
 					int id = Integer.parseInt((String)value);
 					value = id;
@@ -2347,6 +2349,30 @@ public final class Env
 	 */
 	public static boolean isReadOnlySession() {
 		return "Y".equals(Env.getContext(Env.getCtx(), "IsReadOnlySession"));
+	}
+
+	/**
+	 * Verifies if a context variable name is global, this is, starting with:
+	 *   #  Login
+	 *   $  Accounting
+	 *   +  Role Injected
+	 * @param variable
+	 * @return
+	 */
+	public static boolean isGlobalVariable(String variable) {
+		return variable.startsWith("#")
+			|| variable.startsWith("$")
+			|| variable.startsWith("+");
+	}
+
+	/**
+	 * Verifies if a context variable name is a preference, this is, starting with:
+	 *   P| Preference
+	 * @param variable
+	 * @return
+	 */
+	public static boolean isPreference(String variable) {
+		return variable.startsWith("P|");
 	}
 
 }   //  Env

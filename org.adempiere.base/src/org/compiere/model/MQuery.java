@@ -1845,7 +1845,7 @@ class QueryEvaluatee implements Evaluatee {
 		}
 
 		String value = null;
-		if (variableName.startsWith("#") || variableName.startsWith("$")) {
+		if (Env.isGlobalVariable(variableName)) {
 			value = Env.getContext(ctx, variableName);
 		} else {
 			value = parameterMap.get(variableName);
@@ -1857,7 +1857,7 @@ class QueryEvaluatee implements Evaluatee {
 				id = Integer.parseInt(value);
 			} catch (Exception e){}
 			if (id > 0) {
-				if (variableName.startsWith("#") || variableName.startsWith("$")) {
+				if (Env.isGlobalVariable(variableName)) {
 					variableName = variableName.substring(1);
 				} else if (variableName.indexOf("|") > 0) {
 					variableName = variableName.substring(variableName.lastIndexOf("|")+1);

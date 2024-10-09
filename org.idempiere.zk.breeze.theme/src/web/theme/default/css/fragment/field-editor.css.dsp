@@ -232,3 +232,10 @@ span.grid-combobox-editor {
     cursor: pointer; 
     text-decoration: underline;
 }
+
+<%-- full size image hover --%>
+.fullsize-image {
+	padding: 5px;
+  	border: 1px solid #ccc;
+  	background: #e3f4f9;
+}
