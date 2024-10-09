@@ -303,7 +303,7 @@ public class CLogFormatter extends Formatter
         		if (adempiereTrace)
                 	sb.append("\tat ").append(trace[i]).append(NL);
         	}
-        	else if (!MSysConfig.getBooleanValue(FULL_EXCEPTION_TRACE_IN_LOG, false) && (i > 20 || (i > 10 && adempiereTraceNo > 8)))
+        	else if (!SystemProperties.isFullExceptionTraceInLog() && (i > 20 || (i > 10 && adempiereTraceNo > 8)))
         		break;
         	else
         		sb.append("\tat ").append(trace[i]).append(NL);
