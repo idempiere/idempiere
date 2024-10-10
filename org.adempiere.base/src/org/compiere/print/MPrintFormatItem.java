@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.GridField;
+import org.compiere.model.I_AD_PrintFormatItem;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
@@ -49,9 +50,9 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 2950704375830865408L;
+	private static final long serialVersionUID = -971583490682254014L;
 
-    /**
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_PrintFormatItem_UU  UUID key
@@ -179,20 +180,51 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 
 	private static CLogger		s_log = CLogger.getCLogger (MPrintFormatItem.class);
 
+	public String getPrintName (boolean useNameWhenEmpty) {
+		String printName = getPrintName();
+		if (Util.isEmpty(printName, true) && useNameWhenEmpty) {
+			return getName();
+		}
+		
+		return printName;
+	}
 	/**
-	 *	Get print name with language
+	 *	Get print name with language<br/>
+	 *	Order of alternative values when encountering empty value<br/>
+	 *  <ul>
+	 *		<li>print name with language</li>
+	 *		<li>print name</li>
+	 *		<li>name with language</li>
+	 *		<li>name</li>
+	 *  </ul>
 	 * 	@param language language - ignored if IsMultiLingualDocument not 'Y'
 	 * 	@return print name
 	 */
 	public String getPrintName (Language language)
 	{
 		if (language == null || Env.isBaseLanguage(language, "AD_PrintFormatItem"))
-			return getPrintName();
+			return getPrintName(true);
 		loadTranslations();
 		String retValue = (String)m_translationLabel.get(language.getAD_Language());
-		if (retValue == null || retValue.length() == 0)
-			return getPrintName();
-		return retValue;
+		String altValue = retValue;
+		
+		// try print name on base language
+		if (Util.isEmpty(altValue, true))
+			altValue = getPrintName();
+		
+		// try translate of name
+		if (Util.isEmpty(altValue, true))
+			altValue = get_Translation(I_AD_PrintFormatItem.COLUMNNAME_Name, language.getAD_Language());
+
+		// try name on base language
+		if (Util.isEmpty(altValue, true))
+			altValue = getName();
+		
+		// put value to cache
+		if (Util.isEmpty(retValue, true) && !Util.isEmpty(altValue, true))
+			m_translationLabel.put(language.getAD_Language(), altValue);
+
+		return altValue;
 	}	//	getPrintName
 
 	/**
