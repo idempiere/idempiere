@@ -72,6 +72,7 @@ import org.compiere.print.MPrintTableFormat;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
 import org.compiere.print.ReportEngine;
+import org.compiere.print.layout.ImageElement;
 import org.compiere.print.layout.InstanceAttributeColumn;
 import org.compiere.print.layout.InstanceAttributeData;
 import org.compiere.print.layout.LayoutEngine;
@@ -689,7 +690,12 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 		MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
 		Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 				: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-		if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
+		if (obj == null && ReportEngine.isDisplayPFItem(printData, item) && item.isTypeImage()
+				&& !item.isImageField() && !item.isImageIsAttached() && !Util.isEmpty(item.getImageURL(), true))
+		{
+			printImageColumn(td, item, null);
+		}
+		else if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
 			td.addElementToRegistry("&nbsp;");
 			if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 				preValues[printColIndex] = null;
@@ -847,9 +853,13 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				else 
 				{
 					String url = data.toString();
-					// not a URL - may be a resource
-					if (url.indexOf("://") == -1)
+					if (ImageElement.isAttachmentPath(url))
 					{
+						createImageElementFromAttachmentPath(td, item, url);
+					}
+					else if (url.indexOf("://") == -1)
+					{
+						// not a URL - may be a resource
 						ClassLoader cl = HTMLReportRenderer.class.getClassLoader();
 						URL resource = cl.getResource(url);
 						if (resource != null)
@@ -883,12 +893,31 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 		}
 		else if (!Util.isEmpty(item.getImageURL(), true))
 		{
-			img image = new img(item.getImageURL());
-			td.addElementToRegistry(image);
-			applyHeightAndWidth(item, image);
+			String url = item.getImageURL();			
+			if (ImageElement.isAttachmentPath(url))
+			{
+				createImageElementFromAttachmentPath(td, item, url);
+			}
+			else
+			{
+				img image = new img(url);
+				td.addElementToRegistry(image);
+				applyHeightAndWidth(item, image);
+			}
 		}
 	}
 
+	/**
+	 * Create image element from attachment path
+	 * @param td
+	 * @param item
+	 * @param path attachment path
+	 */
+	private static void createImageElementFromAttachmentPath(MultiPartElement td, MPrintFormatItem item, String path) {
+		byte[] imageData = ImageElement.getAttachmentDataFromPath(path);
+		if (imageData != null && imageData.length > 0)
+			createDataURLImageElement(td, imageData, item);
+	}
 	private static void applyHeightAndWidth(MPrintFormatItem item, img image) {
 		StringBuilder style = new StringBuilder();
 		if (item.getMaxHeight() > 0) 
