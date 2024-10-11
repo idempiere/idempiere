@@ -25,7 +25,6 @@ import java.io.File;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.print.ReportEngine;
 import org.compiere.tools.FileUtil;
