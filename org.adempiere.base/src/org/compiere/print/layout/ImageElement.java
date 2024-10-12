@@ -43,12 +43,14 @@ import org.compiere.util.Env;
  * 	@version 	$Id: ImageElement.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
 public class ImageElement extends PrintElement
-{
+{	
 	/**
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 905615948952506059L;
 
+	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
+	
 	/**
 	 *	Create Image element from URL
 	 *	@param imageURLString image url
@@ -415,7 +417,7 @@ public class ImageElement extends PrintElement
 	 * @return true if path is attachment path
 	 */
 	public static boolean isAttachmentPath(String path) {		
-		return path != null && path.startsWith("attachment/") && path.indexOf(",") > 0;
+		return path != null && path.startsWith(ATTACHMENT_URL_PREFIX) && path.indexOf(",") > 0;
 	}
 
 	/**
@@ -429,6 +431,8 @@ public class ImageElement extends PrintElement
 		{
 			try {
 				String expression = part[0];
+				//convert from attachment: url syntax to attachment/ path syntax
+				expression = expression.replaceFirst("[:]", "/");
 				Object key = part[1].length() == 36 ? part[1] : Integer.parseInt(part[1]);
 				byte[] imageData = MAttachment.getAttachmentData(expression, key);
 				return imageData;
