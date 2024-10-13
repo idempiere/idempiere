@@ -15,6 +15,7 @@
     border-bottom: 1px solid #e4e4e4;
 }
 .z-caption .z-caption-content {
+	margin-top: 2px;
 	padding: 0 0 0 8px;
 	cursor: move;
 }
