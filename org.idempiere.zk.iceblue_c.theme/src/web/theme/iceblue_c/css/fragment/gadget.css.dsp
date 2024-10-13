@@ -27,6 +27,9 @@
     border: 0px !important;
     border-radius: 0px !important;
 }
+.z-panel-icon:hover {
+    color: rgb(0 0 0 / 100%) !important;
+}
 
 <%-- dashboard widget --%>
 .dashboard-layout {
