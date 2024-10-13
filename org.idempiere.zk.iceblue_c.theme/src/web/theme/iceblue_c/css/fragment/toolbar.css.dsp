@@ -91,10 +91,19 @@
 }
 
 <%-- toolbar button with font icon --%>
-.font-icon-toolbar-button.toolbar-button [class^="z-icon-"] {
-	font-size: 18px;
-	color: inherit;
+@media screen and (max-width: 767px) {
+	.font-icon-toolbar-button.toolbar-button [class^="z-icon-"] {
+		font-size: 18px;
+		color: inherit;
+	}
 }
+@media screen and (min-width: 768px) {
+	.font-icon-toolbar-button.toolbar-button [class^="z-icon-"] {
+		font-size: 16px;
+		color: inherit;
+	}
+}
+
 .font-icon-toolbar-button.toolbar-button {
 	color :#333;
 }
