@@ -48,6 +48,10 @@
 .desktop-user-panel {
 	float: right;
 	height: 45px;
+	padding-right: 5px;
+}
+.desktop-user-panel tr {
+	vertical-align: middle;
 }
 .desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
 	font-weight: 600;
