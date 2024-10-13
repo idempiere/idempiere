@@ -73,5 +73,5 @@
 	vertical-align: top;
 }
 .z-bandbox-button [class*="z-icon-"], .z-combobox-button [class*="z-icon-"] {
-	font-size: 18px;
+	font-size: 16px;
 }
