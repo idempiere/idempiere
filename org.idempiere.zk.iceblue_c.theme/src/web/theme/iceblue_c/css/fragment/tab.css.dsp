@@ -5,6 +5,15 @@
 	padding-right:18px;
 }
 
+.z-tab-button {
+	width: 22px;
+}
+
+.z-tab-button [class*="z-icon-"] {
+	font-weight: 100;
+    font-size: 10px;
+}
+
 .z-tabbox-icon.z-tabbox-left-scroll, .z-tabbox-icon.z-tabbox-right-scroll {
 	padding: 0px;
     border-radius: 0px;
