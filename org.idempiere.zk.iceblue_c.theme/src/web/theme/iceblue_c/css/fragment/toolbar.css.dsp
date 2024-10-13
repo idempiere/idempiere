@@ -38,6 +38,10 @@
 	background-color: transparent;
 }
 
+.z-toolbar {
+	padding: 4px 13px 4px 4px;
+}
+
 .z-toolbar.z-toolbar-tabs {
 	padding-top: 0px;
 	padding-bottom: 0px;
