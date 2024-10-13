@@ -1,6 +1,7 @@
 <%-- header --%>
 .desktop-north {
 	background-color: #C7E8FF;
+	border-bottom: 1px solid #ADDDFF !important;
 }
 <%-- left panel for logo and global search --%>
 .desktop-header-left {
@@ -15,7 +16,6 @@
 	background-color: #C7E8FF;
 	width: 100%;
 	height: 46px;
-	border-bottom: 1px solid #ADDDFF !important;
 	padding-left: 4px;
 }
 .desktop-header.mobile {
