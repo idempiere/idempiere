@@ -11,7 +11,7 @@
 	border: none;
 }
 .z-panel-head .z-panel-header {
-	padding: 2px 5px;
+	padding: 0px 5px;
     border-bottom: 1px solid #e4e4e4;
 }
 .z-caption .z-caption-content {
