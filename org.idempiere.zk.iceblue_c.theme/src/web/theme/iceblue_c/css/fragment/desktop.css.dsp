@@ -232,7 +232,8 @@
 }
 .window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
 	padding: 3px 3px;
-	font-size: 18px;
+	font-size: 16px;
+	color: rgba(0, 0, 0, 0.57);
 }
 .window-container-toolbar > .z-toolbar-content,
 .window-container-toolbar-btn.z-toolbarbutton, 
