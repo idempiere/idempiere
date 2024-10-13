@@ -20,8 +20,8 @@
 	cursor: move;
 }
 .z-panel-icon {
-	font-size: 12px !important;
-    color: #ACACAC !important;
+	font-size: 10px !important;
+    color: rgb(0 0 0 / 57%) !important;
     margin: 4px 0 0 0 !important;
     line-height: 24px !important;
     border: 0px !important;
