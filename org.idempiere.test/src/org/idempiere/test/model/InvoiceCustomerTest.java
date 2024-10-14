@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
@@ -37,7 +38,9 @@ import java.util.logging.LogRecord;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
+import org.compiere.model.MInOutConfirm;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineConfirm;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MInvoiceTax;
@@ -50,6 +53,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.MTax;
+import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_Relation;
@@ -251,6 +255,127 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyInvoiced().intValue());
 	}
 
+	@Test
+	public void testGenerateInvoiceManualForPartialConfirm() {
+		MDocType shipmentDocType = MDocType.get(DictionaryIDs.C_DocType.MM_SHIPMENT.id);
+		MDocType docType = new MDocType(Env.getCtx(), 0, null);
+		PO.copyValues(shipmentDocType, docType);
+		docType.setName(shipmentDocType.getName() + " " + System.currentTimeMillis());		
+		docType.setIsShipConfirm(true);
+		docType.saveEx();
+		try {
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_Availability);
+			order.setInvoiceRule(MOrder.INVOICERULE_AfterDelivery);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+	
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+			BigDecimal orderQty = new BigDecimal("3");
+			orderLine.setQty(orderQty);
+			orderLine.setDatePromised(today);
+			orderLine.saveEx();
+	
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			orderLine.load(getTrxName());
+			assertEquals(orderQty.intValue(), orderLine.getQtyReserved().intValue());
+			assertEquals(0, orderLine.getQtyInvoiced().intValue());
+	
+			MInOut shipment = new MInOut(order, docType.get_ID(), today); // MM Shipment
+			shipment.saveEx();
+			
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setC_OrderLine_ID(orderLine.get_ID());
+			shipmentLine.setLine(orderLine.getLine());
+			shipmentLine.setProduct(orderLine.getProduct());
+			shipmentLine.setQty(orderLine.getQtyEntered());
+			MWarehouse wh = MWarehouse.get(Env.getCtx(), shipment.getM_Warehouse_ID());
+			int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+			shipmentLine.setM_Locator_ID(M_Locator_ID);
+			shipmentLine.saveEx();
+			
+			// status should be in progress due to pending confirmation 
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_InProgress, shipment.getDocStatus());
+			
+			// complete confirmation
+			MInOutConfirm[] confirmations = shipment.getConfirmations(true);
+			assertEquals(1, confirmations.length, "Unexpected number of shipment confirmation records");
+			MInOutLineConfirm[] confirmationLines =  confirmations[0].getLines(true);			
+			assertEquals(1, confirmationLines.length, "Unexpected number of shipment confirmation lines");
+			BigDecimal confirmedQty = new BigDecimal("1");
+			confirmationLines[0].setConfirmedQty(confirmedQty);
+			confirmationLines[0].saveEx();
+			assertEquals(2, confirmationLines[0].getDifferenceQty().intValue(), "Unexpected confirmation line difference quantity");
+			info = MWorkflow.runDocumentActionWorkflow(confirmations[0], DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			confirmations[0].load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, confirmations[0].getDocStatus());
+			
+			//complete shipment after confirmation
+			shipment.load(getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+			shipmentLine.load(getTrxName());
+			assertEquals(confirmedQty.intValue(), shipmentLine.getMovementQty().intValue(), "Unexpected shipment line movement quantity");
+			assertEquals(orderQty.intValue(), shipmentLine.getTargetQty().intValue(), "Unexpected shipment line target quantity");
+			assertEquals(orderQty.intValue(), shipmentLine.getQtyEntered().intValue(), "Unexpected shipment line entered quantity");
+			
+			// create invoice
+			int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL;
+			MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
+			instance.saveEx();
+			String insert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) Values (?, ?)";
+			DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order.getC_Order_ID()}, null);
+	
+			//call process
+			ProcessInfo pi = new ProcessInfo ("InvoiceGenerateManual", AD_Process_ID);
+			pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+	
+			//	Add Parameter - Selection=Y
+			MPInstancePara ip = new MPInstancePara(instance, 10);
+			ip.setParameter("Selection","Y");
+			ip.saveEx();
+			//Add Document action parameter
+			ip = new MPInstancePara(instance, 20);
+			ip.setParameter("DocAction", "CO");
+			ip.saveEx();
+	
+			ServerProcessCtl processCtl = new ServerProcessCtl(pi, getTrx());
+			processCtl.setManagedTrxForJavaProcess(false);
+			processCtl.run();
+	
+			assertFalse(pi.isError(), pi.getSummary());
+			orderLine.load(getTrxName());
+			assertEquals(1, orderLine.getQtyInvoiced().intValue());
+			
+			MInvoiceLine invoiceLine = MInvoiceLine.getOfInOutLine(shipmentLine);
+			assertTrue(invoiceLine != null && invoiceLine.get_ID() > 0, "No invoice line created for shipment line");
+			assertEquals(confirmedQty.intValue(), invoiceLine.getQtyEntered().intValue(), "Unexpected invoice line quantity entered");
+			assertEquals(confirmedQty.intValue(), invoiceLine.getQtyInvoiced().intValue(), "Unexpected invoice line quantity invoiced");
+			assertEquals(orderLine.getPriceActual().setScale(2, RoundingMode.HALF_UP), invoiceLine.getLineNetAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected invoice line total amount");
+		} finally {
+			rollback();
+			if (docType.get_ID() > 0)
+				docType.deleteEx(true);
+		}
+	}
+	
 	@Test
 	public void testInvoiceGenerateRMAManual() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
