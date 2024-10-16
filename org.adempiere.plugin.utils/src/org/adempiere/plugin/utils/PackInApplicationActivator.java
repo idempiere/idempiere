@@ -264,6 +264,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 				continue;
 			}
 			
+			logger.warning("Processing " + filePath);
 			processFilePath(toProcess);
 		}
 		
