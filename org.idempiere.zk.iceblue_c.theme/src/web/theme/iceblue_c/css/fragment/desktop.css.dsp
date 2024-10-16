@@ -1,6 +1,7 @@
 <%-- header --%>
 .desktop-north {
 	background-color: #C7E8FF;
+	border-bottom: 1px solid #ADDDFF !important;
 }
 <%-- left panel for logo and global search --%>
 .desktop-header-left {
@@ -15,7 +16,6 @@
 	background-color: #C7E8FF;
 	width: 100%;
 	height: 46px;
-	border-bottom: 1px solid #ADDDFF !important;
 	padding-left: 4px;
 }
 .desktop-header.mobile {
@@ -48,6 +48,10 @@
 .desktop-user-panel {
 	float: right;
 	height: 45px;
+	padding-right: 5px;
+}
+.desktop-user-panel tr {
+	vertical-align: middle;
 }
 .desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
 	font-weight: 600;
@@ -166,7 +170,7 @@
 	width: 200px;
 	border: none;
 	border-right: 1px solid #C5C5C5;
-	background-color: #e0f2ff;
+	background-color: #ffffff;
 	padding-top: 2px; 
 }
 .desktop-left-column + .z-west-splitter,  .desktop-left-column.z-west {
@@ -182,7 +186,7 @@
 	width: 200px;
 	border: none;
 	border-left: 1px solid #C5C5C5;
-	background-color: #e0f2ff;
+	background-color: #ffffff;
 	padding-top: 2px; 
 }
 .desktop-right-column + .z-east-splitter,  .desktop-right-column.z-east {
@@ -228,7 +232,8 @@
 }
 .window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
 	padding: 3px 3px;
-	font-size: 18px;
+	font-size: 16px;
+	color: rgba(0, 0, 0, 0.57);
 }
 .window-container-toolbar > .z-toolbar-content,
 .window-container-toolbar-btn.z-toolbarbutton, 

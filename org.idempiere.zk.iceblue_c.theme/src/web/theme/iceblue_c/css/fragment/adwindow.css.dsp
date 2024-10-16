@@ -34,6 +34,7 @@
 <%-- north status bar --%>
 .adwindow-status {
 	min-height: 22px;
+	padding-top: 3px;
 }
 
 <%-- record info text, east of status bar --%>
