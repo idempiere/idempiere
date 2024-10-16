@@ -93,6 +93,7 @@ import org.adempiere.webui.window.LabelAction;
 import org.adempiere.webui.window.WChat;
 import org.adempiere.webui.window.WPostIt;
 import org.adempiere.webui.window.WRecordAccessDialog;
+import org.adempiere.webui.window.WTableAttribute;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -1434,6 +1435,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		AEnv.showWindow(form);
 	} // onQuickForm
 
+	/**
+	 * Open Table Attribute Window
+	 */
+	public void onAttributeForm()
+	{
+		new WTableAttribute(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+		
+	}
+	
     /**
      * @param event
      * @see EventListener#onEvent(Event)
@@ -1759,6 +1769,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
 
 		toolbar.enableQuickForm(adTabbox.getSelectedTabpanel().isEnableQuickFormButton() && !adTabbox.getSelectedGridTab().isReadOnly());
+
+		toolbar.enableAttributeForm((MTable.get(Env.getCtx(), adTabbox.getSelectedGridTab().getAD_Table_ID()).getM_AttributeSet_ID() > 0));
 
 		boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
         
