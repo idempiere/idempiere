@@ -126,7 +126,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 				logger.warning("Wrong name, ignored " + fileName);
 				return false;
 			}
-			logger.warning(fileName);
+			if (logger.isLoggable(Level.INFO)) logger.info(fileName);
 			String clientValue = parts[1];
 			clientId = DB.getSQLValueEx(null, "SELECT AD_Client_ID FROM AD_Client WHERE Value=?", clientValue);
 			if (clientId < 0)
