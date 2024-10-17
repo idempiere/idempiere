@@ -24,14 +24,12 @@
  **********************************************************************/
 package org.adempiere.report.jasper;
 
-import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.adempiere.apps.graph.ChartBuilder;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttributeSetInstance;
@@ -43,14 +41,13 @@ import org.compiere.model.MLocator;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.JFreeChart;
 
 /**
  * @author hengsin
@@ -173,6 +170,9 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 				if (table != null) {
 					int recordId = (key instanceof Number) ? ((Number)key).intValue() : -1;
 					String recordUU = (key instanceof String) ? (String)key : null;
+					// check security
+					if (!MRole.getDefault().checkAccessSQL(table, recordId, recordUU, false))
+						return null;
 					MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);
 					if (attachment != null && attachment.get_ID() > 0) {
 						//first, check whether is via index
@@ -266,15 +266,8 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 	 */
 	private Object getChartImage(int id, int width, int height) {
 		MChart mc = new MChart(Env.getCtx(), id, null);
-		if (mc.get_ID() == id) {
-			ChartBuilder chartBuilder = new ChartBuilder(mc);
-			JFreeChart chart = chartBuilder.createChart();
-			chart.getPlot().setForegroundAlpha(0.8f);
-			ChartRenderingInfo info = new ChartRenderingInfo();
-			BufferedImage bi = chart.createBufferedImage(width, height,
-					BufferedImage.TRANSLUCENT, info);
-			return bi;
-		}
+		if (mc.get_ID() == id)
+			return mc.getChartImage(width, height);
 		return null;
 	}
 
