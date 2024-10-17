@@ -33,6 +33,7 @@ import org.compiere.model.MImage;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.PrintDataElement;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
@@ -42,12 +43,14 @@ import org.compiere.util.Env;
  * 	@version 	$Id: ImageElement.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
 public class ImageElement extends PrintElement
-{
+{	
 	/**
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 905615948952506059L;
 
+	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
+	
 	/**
 	 *	Create Image element from URL
 	 *	@param imageURLString image url
@@ -150,18 +153,27 @@ public class ImageElement extends PrintElement
 	 */
 	private ImageElement(String imageURLstring)
 	{
-		URL imageURL = getURL(imageURLstring);
-		if (imageURL != null)
+		if (isAttachmentPath(imageURLstring))
 		{
-			m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
-			if (m_image != null) {
-				if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
-			} else {
-				log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
-			}
+			byte[] imageData = getAttachmentDataFromPath(imageURLstring);
+			if (imageData != null)
+				m_image = Toolkit.getDefaultToolkit().createImage(imageData);
 		}
 		else
-			log.log(Level.WARNING, "Invalid URL=" + imageURLstring);
+		{
+			URL imageURL = getURL(imageURLstring);
+			if (imageURL != null)
+			{
+				m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
+				if (m_image != null) {
+					if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
+				} else {
+					log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
+				}
+			}
+			else
+				log.log(Level.WARNING, "Invalid URL=" + imageURLstring);
+		}
 	}	//	ImageElement
 
 	/**
@@ -399,4 +411,35 @@ public class ImageElement extends PrintElement
 		g2D.drawImage(m_image, transform, this);
 	}	//	paint
 
+	/**
+	 * attachment path syntax - attachment/table/indexOrFileName,IdOrUUId
+	 * @param path
+	 * @return true if path is attachment path
+	 */
+	public static boolean isAttachmentPath(String path) {		
+		return path != null && path.startsWith(ATTACHMENT_URL_PREFIX) && path.indexOf(",") > 0;
+	}
+
+	/**
+	 * Get attachment data from path expression
+	 * @param path attachment/table/indexOrFileName,IdOrUUId
+	 * @return attachment data or null
+	 */
+	public static byte[] getAttachmentDataFromPath(String path) {
+		String[] part = path.trim().split(",");
+		if (part.length == 2)
+		{
+			try {
+				String expression = part[0];
+				//convert from attachment: url syntax to attachment/ path syntax
+				expression = expression.replaceFirst("[:]", "/");
+				Object key = part[1].length() == 36 ? part[1] : Integer.parseInt(part[1]);
+				byte[] imageData = MAttachment.getAttachmentData(expression, key);
+				return imageData;
+			} catch (Exception e) {
+				CLogger.getCLogger(ImageElement.class).log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+		}
+		return null;
+	}
 }	//	ImageElement

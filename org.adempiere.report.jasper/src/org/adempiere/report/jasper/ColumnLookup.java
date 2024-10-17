@@ -28,8 +28,6 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.adempiere.apps.graph.ChartBuilder;
 import org.compiere.model.MAccount;
@@ -162,56 +160,7 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 	 * @return data of attachment item
 	 */
 	private Object getAttachmentData(String expression, Object key) {
-		String[] parts;
-		//record_id or record_uu
-		if ((key instanceof Number) || (key instanceof String)) {
-			parts = expression.split("[/]");
-			//expression syntax - attachment/table name/index or name
-			if (parts.length == 3) {
-				String tableName = parts[1];
-				MTable table = MTable.get(Env.getCtx(), tableName);
-				if (table != null) {
-					int recordId = (key instanceof Number) ? ((Number)key).intValue() : -1;
-					String recordUU = (key instanceof String) ? (String)key : null;
-					MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);
-					if (attachment != null && attachment.get_ID() > 0) {
-						//first, check whether is via index
-						int index = -1;
-						if (parts[2].trim().matches("[0-9]+")) {
-							try {
-								index = Integer.parseInt(parts[2]);
-							} catch (Exception e) {
-							}
-						}
-						if (index >= 0 && index < attachment.getEntryCount()) {
-							return attachment.getEntryData(index);
-						}
-						//try name
-						String toMatch = null;
-						if (parts[2].contains("*")) {
-							//wildcard match, for e.g a*.png
-							Pattern regex = Pattern.compile("[^*]+|(\\*)");
-							Matcher m = regex.matcher(parts[2]);
-							StringBuffer b= new StringBuffer();
-							while (m.find()) {
-							    if(m.group(1) != null) m.appendReplacement(b, ".*");
-							    else m.appendReplacement(b, "\\\\Q" + m.group(0) + "\\\\E");
-							}
-							m.appendTail(b);
-							toMatch = b.toString();
-						}
-						for(int i = 0; i < attachment.getEntryCount(); i++) {
-							if (toMatch != null && attachment.getEntryName(i) != null && attachment.getEntryName(i).matches(toMatch)) {
-								return attachment.getEntryData(i);
-							} else if (parts[2].equals(attachment.getEntryName(i))) {
-								return attachment.getEntryData(i);
-							}
-						}								
-					}							
-				}
-			}
-		}
-		return null;
+		return MAttachment.getAttachmentData(expression, key);		
 	}
 
 	/**
