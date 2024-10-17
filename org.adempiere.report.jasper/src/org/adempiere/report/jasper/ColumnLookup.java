@@ -43,7 +43,9 @@ import org.compiere.model.MLocator;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -173,6 +175,9 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 				if (table != null) {
 					int recordId = (key instanceof Number) ? ((Number)key).intValue() : -1;
 					String recordUU = (key instanceof String) ? (String)key : null;
+					// check security
+					if (!MRole.getDefault().checkAccessSQL(table, recordId, recordUU, false))
+						return null;
 					MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);
 					if (attachment != null && attachment.get_ID() > 0) {
 						//first, check whether is via index
