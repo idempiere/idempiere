@@ -64,6 +64,7 @@ import org.eevolution.model.I_HR_Process;
 import org.eevolution.model.I_PP_Cost_Collector;
 import org.eevolution.model.I_PP_Order;
 import org.osgi.service.event.Event;
+import org.compiere.model.MDepositBatch;
 
 /**
  *	Document Action Engine
@@ -1281,6 +1282,18 @@ public class DocumentEngine implements DocAction
 			if(docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
+			}
+		}
+		/********************
+		 *  Deposit Batch
+		 */
+		else if (AD_Table_ID == MDepositBatch.Table_ID)
+		{
+			//	Complete
+			if (docStatus.equals(DocumentEngine.STATUS_Completed)) 
+			{
+				options[index++] = DocumentEngine.ACTION_Void;
+				options[index++] = DocumentEngine.ACTION_ReActivate;
 			}
 		}
 
