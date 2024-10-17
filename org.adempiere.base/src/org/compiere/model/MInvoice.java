@@ -2545,12 +2545,22 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			else
 				return reverseCorrectIt();
 		}
+		
+		// update taxes
+		MInvoiceTax[] taxes = getTaxes(true);
+		for (MInvoiceTax tax : taxes )
+		{
+			if ( !(tax.calculateTaxFromLines() && tax.save()) )
+				return false;
+		}
 
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
 
+		setTotalLines(Env.ZERO);
+		setGrandTotal(Env.ZERO);
 		setProcessed(true);
 		setDocAction(DOCACTION_None);
 		return true;
