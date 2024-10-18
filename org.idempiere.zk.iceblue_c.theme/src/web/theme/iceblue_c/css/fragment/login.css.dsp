@@ -32,7 +32,7 @@
 	padding: 10px;
 	color: #484848 !important;
 	width: 100%;	
-	font-size: 2em !important;
+	font-size: 1.6em !important;
 }
 
 .login-box-header-logo {
@@ -82,11 +82,6 @@
 	background-color: #ffffff; 
 	position: relative;
 	border: none;
-}
-@media screen and (min-width: 700px) {
-	.login-box-header-txt {
-		display: none;
-	}
 }
 @media screen and (max-width: 659px) {
 	.login-box-body, .login-box-header, .login-box-footer {
