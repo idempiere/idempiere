@@ -170,7 +170,7 @@
 	width: 200px;
 	border: none;
 	border-right: 1px solid #C5C5C5;
-	background-color: #ffffff;
+	background-color: #f6fafe;
 	padding-top: 2px; 
 }
 .desktop-left-column + .z-west-splitter,  .desktop-left-column.z-west {
@@ -186,7 +186,7 @@
 	width: 200px;
 	border: none;
 	border-left: 1px solid #C5C5C5;
-	background-color: #ffffff;
+	background-color: #f6fafe;
 	padding-top: 2px; 
 }
 .desktop-right-column + .z-east-splitter,  .desktop-right-column.z-east {
