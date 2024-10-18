@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
@@ -300,6 +301,13 @@ public class MMovement extends X_M_Movement implements DocAction
 			m_processMsg = "@PeriodClosed@";
 			return DocAction.STATUS_Invalid;
 		}
+		
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getMovementDate()))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
+			return DocAction.STATUS_Invalid;
+		}
+		
 		MMovementLine[] lines = getLines(false);
 		if (lines.length == 0)
 		{
@@ -652,6 +660,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
+			MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
@@ -782,6 +791,15 @@ public class MMovement extends X_M_Movement implements DocAction
 				accrual = true;
 			}
 			
+			try
+			{
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+			}
+			catch (BackDateTrxNotAllowedException e)
+			{
+				accrual = true;
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -863,6 +881,11 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (!MPeriod.isOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID()))
 		{
 			m_processMsg = "@PeriodClosed@";
+			return null;
+		}
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), reversalDate))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
 			return null;
 		}
 

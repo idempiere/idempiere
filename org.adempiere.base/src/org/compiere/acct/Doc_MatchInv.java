@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.compiere.model.ICostInfo;
 import org.compiere.model.I_C_Order;
 import org.compiere.model.I_C_OrderLine;
 import org.compiere.model.MAccount;
@@ -460,9 +461,10 @@ public class Doc_MatchInv extends Doc
 			if(cd!=null){
 				qtyCost = cd.getCurrentQty();
 			}else{
-				MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
+				ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-					M_AttributeSetInstance_ID, getTrxName());
+					M_AttributeSetInstance_ID, 
+					getDateAcct(), null, getTrxName());
 				qtyCost = (c!=null? c.getCurrentQty():Env.ZERO);
 			}
 						
@@ -497,7 +499,7 @@ public class Doc_MatchInv extends Doc
 			if (!MCostDetail.createMatchInvoice(as, m_invoiceLine.getAD_Org_ID(),
 					m_invoiceLine.getM_Product_ID(), m_invoiceLine.getM_AttributeSetInstance_ID(),
 					matchInv.getM_MatchInv_ID(), 0,
-					isStockCoverage ? amtAsset: ipv, BigDecimal.ZERO, "Invoice Price Variance", getTrxName())) {
+					isStockCoverage ? amtAsset: ipv, BigDecimal.ZERO, "Invoice Price Variance", getDateAcct(), getTrxName())) {
 				throw new RuntimeException("Failed to create cost detail record.");
 			}				
 		} catch (SQLException e) {
@@ -694,7 +696,7 @@ public class Doc_MatchInv extends Doc
 			if (!MCostDetail.createInvoice(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					m_invoiceLine.getC_InvoiceLine_ID(), 0,		//	No cost element
-					tAmt, tQty,	getDescription(), getTrxName()))
+					tAmt, tQty,	getDescription(), getDateAcct(), getTrxName()))
 			{
 				return "Failed to create cost detail record";
 			}
@@ -747,7 +749,7 @@ public class Doc_MatchInv extends Doc
 				if (!MCostDetail.createShipment(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					m_receiptLine.getM_InOutLine_ID(), elementId,
-					amt, tQty,	getDescription(), false, getTrxName()))
+					amt, tQty,	getDescription(), false, getDateAcct(), getTrxName()))
 				{
 					return "Failed to create cost detail record";
 				}

@@ -37,6 +37,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
+import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MDocType;
@@ -177,12 +178,15 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		MTable table = MTable.get(Env.getCtx(), m_AD_Table_ID);
 		PO po = table.getPO(gridTab.getRecord_ID(), null);
 		boolean periodOpen = true;
-		if (po instanceof DocAction)
+		boolean isBackDateTrxAllowed = true;
+		if (po instanceof DocAction) {
 			periodOpen = MPeriod.isOpen(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), null);
+			isBackDateTrxAllowed = MAcctSchema.isBackDateTrxAllowed(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), null);
+		}
 
 		String[] docActionHolder = new String[]{DocAction};
 		index = DocumentEngine.getValidActions(DocStatus, Processing, OrderType, IsSOTrx,
-				m_AD_Table_ID, docActionHolder, options, periodOpen, po);
+				m_AD_Table_ID, docActionHolder, options, periodOpen, isBackDateTrxAllowed, po);
 
 		Integer doctypeId = (Integer)gridTab.getValue("C_DocTypeTarget_ID");
 		if(doctypeId==null || doctypeId.intValue()==0){
