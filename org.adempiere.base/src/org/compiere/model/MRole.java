@@ -3448,4 +3448,29 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Check record access through {@link #addAccessSQL(String, String, boolean, boolean)} using<br/>
+	 * either record id or record uuid
+	 * @param table
+	 * @param recordId ignore if uuid is use
+	 * @param uuid null to use recordId
+	 * @param rw true for writable, false for readonly
+	 * @return true if role has access to record
+	 */
+	public boolean checkAccessSQL(MTable table, int recordId, String uuid, boolean rw) {
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM ")
+				.append(table.getTableName())
+				.append(" WHERE ")
+				.append(table.getTableName())
+				.append(".");
+		if (!Util.isEmpty(uuid, true) ) {
+			sql.append(PO.getUUIDColumnName(table.getTableName()))
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), uuid) == 1;
+		} else {
+			sql.append(table.getKeyColumns()[0])
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
+		}
+	}
 }	//	MRole
