@@ -36,6 +36,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.Zip;
+import org.compiere.print.layout.ImageElement;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -61,6 +62,8 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private static final long serialVersionUID = 5615231734722570658L;
 
+	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
+	
 	/**
 	 * @param ctx
 	 * @param AD_Table_ID
@@ -756,7 +759,7 @@ public class MAttachment extends X_AD_Attachment
 	 * @param id record id or record uuid
 	 * @return data of attachment item
 	 */
-	public static byte[] getAttachmentData(String path, Object id) {
+	public static AttachmentData getAttachmentData(String path, Object id) {
 		String[] parts;
 		//record_id or record_uu
 		if ((id instanceof Number) || (id instanceof String)) {
@@ -782,7 +785,7 @@ public class MAttachment extends X_AD_Attachment
 							}
 						}
 						if (index >= 0 && index < attachment.getEntryCount()) {
-							return attachment.getEntryData(index);
+							return new AttachmentData(attachment.getEntryName(index), attachment.getEntryData(index));
 						}
 						//try name
 						String toMatch = null;
@@ -800,9 +803,9 @@ public class MAttachment extends X_AD_Attachment
 						}
 						for(int i = 0; i < attachment.getEntryCount(); i++) {
 							if (toMatch != null && attachment.getEntryName(i) != null && attachment.getEntryName(i).matches(toMatch)) {
-								return attachment.getEntryData(i);
+								return new AttachmentData(attachment.getEntryName(i), attachment.getEntryData(i));
 							} else if (parts[2].equals(attachment.getEntryName(i))) {
-								return attachment.getEntryData(i);
+								return new AttachmentData(attachment.getEntryName(i), attachment.getEntryData(i));
 							}
 						}								
 					}							
@@ -811,4 +814,59 @@ public class MAttachment extends X_AD_Attachment
 		}
 		return null;
 	}
+	
+	/**
+	 * Get web image attachment url from attachment: expression
+	 * @param contextPath web context path (not needed for zk component, pass null instead)
+	 * @param path attachment:{tableName}/{index or filename pattern},{record id or uuid}
+	 * @return image attachment url
+	 */
+	public static String getImageAttachmentURLFromPath(String contextPath, String path) {
+		String[] part = path.trim().split(",");
+		if (part.length == 2)
+		{
+			String expression = part[0];
+			//convert from attachment: url syntax to attachment/ path syntax
+			expression = expression.replaceFirst("[:]", "/");
+			StringBuilder url = new StringBuilder(contextPath != null ? contextPath : "")
+					.append("/aimages?path=")
+					.append(expression)
+					.append("&recordid=")
+					.append(part[1]);
+			return url.toString();
+		}
+		return null;
+	}
+	
+	/**
+	 * Is attachment URL path 
+	 * @param path attachment:table/{index or file name pattern},{record id or uuid}
+	 * @return true if path is attachment path
+	 */
+	public static boolean isAttachmentURLPath(String path) {		
+		return path != null && path.startsWith(ATTACHMENT_URL_PREFIX) && path.indexOf(",") > 0;
+	}
+	
+	/**
+	 * Get attachment data from attachment URL path
+	 * @param path attachment:table/{index or file name pattern},{record id or uuid}
+	 * @return attachment data or null
+	 */
+	public static AttachmentData getDataFromAttachmentURLPath(String path) {
+		String[] part = path.trim().split(",");
+		if (part.length == 2)
+		{
+			try {
+				String expression = part[0];
+				//convert from attachment: url syntax to attachment/ path syntax
+				expression = expression.replaceFirst("[:]", "/");
+				Object key = part[1].length() == 36 ? part[1] : Integer.parseInt(part[1]);
+				AttachmentData imageData = MAttachment.getAttachmentData(expression, key);
+				return imageData;
+			} catch (Exception e) {
+				CLogger.getCLogger(ImageElement.class).log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+		}
+		return null;
+	}		
 }	//	MAttachment

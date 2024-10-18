@@ -52,6 +52,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.*;
+import org.compiere.model.AttachmentData;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
 import org.compiere.model.MImage;
@@ -70,7 +71,6 @@ import org.compiere.print.MPrintTableFormat;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
 import org.compiere.print.ReportEngine;
-import org.compiere.print.layout.ImageElement;
 import org.compiere.print.layout.InstanceAttributeColumn;
 import org.compiere.print.layout.InstanceAttributeData;
 import org.compiere.print.layout.LayoutEngine;
@@ -132,7 +132,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 				fw = new OutputStreamWriter(new FileOutputStream(configuration.getOutputFile(), false), Ini.getCharset());
 			else 
 				fw = configuration.getOutputWriter();
-			createHTML (reportEngine, new BufferedWriter(fw), configuration.isOnlyTable(), lang, configuration.getExtension(), configuration.isExport());
+			createHTML (reportEngine, new BufferedWriter(fw), configuration.isOnlyTable(), lang, configuration.getExtension(), configuration.isExport(), configuration.getContextPath());
 		}
 		catch (FileNotFoundException fnfe)
 		{
@@ -158,8 +158,9 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 *  @param language optional language - if null numbers/dates are not formatted
 	 *  @param extension optional extension for html output
 	 *  @param isExport when isExport = true will don't embed resource dependent zk framework
+	 *  @param contextPath 
 	 */
-	private void createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
+	private void createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport, String contextPath)
 	{
 		MPrintFormat printFormat = reportEngine.getPrintFormat();
 		PrintData printData = reportEngine.getPrintData();
@@ -500,7 +501,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 							tr.addElement(td);
 							tdMap.put(printColIndex, td);
 							printColumn(reportEngine, language, extension, isExport, td, item, instanceAttributeColumn, row, printData,
-									colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
+									colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, contextPath);
 						}
 					}	//	printed
 				}	//	for all columns
@@ -551,7 +552,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 								div div = new div();
 								td.addElement(div);
 								printColumn(reportEngine, language, extension, isExport, div, item, instanceAttributeColumn, row, printData,
-										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
+										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, contextPath);
 								div.setClass("");
 							}
 						}
@@ -612,17 +613,18 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 * @param preValues
 	 * @param suppressMap
 	 * @param cssPrefix
+	 * @param contextPath 
 	 */
 	private static void printColumn(ReportEngine reportEngine, Language language, IHTMLExtension extension, boolean isExport, MultiPartElement td, 
 									   MPrintFormatItem item, InstanceAttributeColumn instanceAttributeColumn, int row, PrintData printData, 
-									   Boolean[] colSuppressRepeats, int printColIndex, Object[] preValues, HashMap<Integer, th> suppressMap, String cssPrefix) {
+									   Boolean[] colSuppressRepeats, int printColIndex, Object[] preValues, HashMap<Integer, th> suppressMap, String cssPrefix, String contextPath) {
 		MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
 		Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 				: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 		if (obj == null && ReportEngine.isDisplayPFItem(printData, item) && item.isTypeImage()
 			&& !item.isImageField() && !item.isImageIsAttached() && !Util.isEmpty(item.getImageURL(), true))
 		{
-			printImageColumn(td, item, null);
+			printImageColumn(td, item, null, isExport, contextPath);
 		}
 		else if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
 			td.addElementToRegistry("&nbsp;");
@@ -651,7 +653,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			
 			if (item.isTypeImage())
 			{
-				printImageColumn(td, item, pde);
+				printImageColumn(td, item, pde, isExport, contextPath);
 			}
 			else if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 			{
@@ -760,7 +762,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
 	}
 
-	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde) {
+	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde, boolean isExport, String contextPath) {
 		if (item.isImageField())
 		{
 			Object data = pde.getValue();
@@ -779,9 +781,9 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 				else 
 				{
 					String url = data.toString();
-					if (ImageElement.isAttachmentPath(url))
+					if (MAttachment.isAttachmentURLPath(url))
 					{
-						createImageElementFromAttachmentPath(td, item, url);
+						createImageElementFromAttachmentPath(td, item, url, isExport, contextPath);
 					}
 					else if (url.indexOf("://") == -1)
 					{
@@ -820,9 +822,9 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		else if (!Util.isEmpty(item.getImageURL(), true))
 		{
 			String url = item.getImageURL();			
-			if (ImageElement.isAttachmentPath(url))
+			if (MAttachment.isAttachmentURLPath(url))
 			{
-				createImageElementFromAttachmentPath(td, item, url);
+				createImageElementFromAttachmentPath(td, item, url, isExport, contextPath);
 			}
 			else 
 			{
@@ -838,11 +840,23 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 * @param td
 	 * @param item
 	 * @param path attachment path
+	 * @param isExport
+	 * @param contextPath 
 	 */
-	private static void createImageElementFromAttachmentPath(MultiPartElement td, MPrintFormatItem item, String path) {
-		byte[] imageData = ImageElement.getAttachmentDataFromPath(path);
-		if (imageData != null && imageData.length > 0)
-			createDataURLImageElement(td, imageData, item);
+	private static void createImageElementFromAttachmentPath(MultiPartElement td, MPrintFormatItem item, String path, boolean isExport, String contextPath) {
+		if (isExport) {
+			AttachmentData imageData = MAttachment.getDataFromAttachmentURLPath(path);
+			if (imageData != null && imageData.data() != null && imageData.data().length > 0)
+				createDataURLImageElement(td, imageData.data(), item);
+		} else {
+			String url = MAttachment.getImageAttachmentURLFromPath(contextPath, path);
+			if (url != null)
+			{
+				img image = new img(url);
+				td.addElementToRegistry(image);
+				applyHeightAndWidth(item, image);
+			}
+		}
 	}
 
 	private static void applyHeightAndWidth(MPrintFormatItem item, img image) {
@@ -865,14 +879,14 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}		
 	}
 	
-	private static void createDataURLImageElement(MultiPartElement td, byte[] imageData, MPrintFormatItem item) {
+	public static String createDataURLImage(byte[] imageData) {
 		String contentType = null;
 		Iterator<ImageReader> readers = null;
 		try {
 			readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(new ByteArrayInputStream(imageData)));
 		} catch (IOException e) {
 			log.log(Level.WARNING, e.getLocalizedMessage(), e);
-			return;
+			return null;
 		}
 		while(readers.hasNext()) {
 			ImageReader reader = readers.next();
@@ -888,7 +902,15 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					.append(contentType)
 					.append(";base64,");
 			builder.append(Base64.getEncoder().encodeToString(imageData));
-			img image = new img(builder.toString());
+			return builder.toString();
+		}
+		return null;
+	}
+	
+	private static void createDataURLImageElement(MultiPartElement td, byte[] imageData, MPrintFormatItem item) {
+		String dataUrl = createDataURLImage(imageData);
+		if (dataUrl != null) {
+			img image = new img(dataUrl);
 			td.addElementToRegistry(image);
 			applyHeightAndWidth(item, image);
 		}

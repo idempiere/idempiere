@@ -26,6 +26,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MAttachment;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -311,8 +312,14 @@ public final class ConfirmPanel extends Div
     	// replace default image with image set at info process
     	if (m_withImage && imgName != null && imgName.trim().length() > 0)
     	{
-    		if (imgName.indexOf("://") > 0)
+    		if (MAttachment.isAttachmentURLPath(imgName))
+    		{
+   				btProcess.setImage(MAttachment.getImageAttachmentURLFromPath(null, imgName));
+    		}
+    		else if (imgName.indexOf("://") > 0)
+    		{
     			btProcess.setImage(imgName);
+    		}
     		else if (ThemeManager.isUseFontIconForImage())
     			btProcess.setIconSclass(ThemeManager.getIconSclass(imgName));
     		else

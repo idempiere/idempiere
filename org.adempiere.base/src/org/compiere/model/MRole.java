@@ -3464,7 +3464,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				.append(table.getTableName())
 				.append(".");
 		if (!Util.isEmpty(uuid, true) ) {
-			sql.append(table.getUUIDColumnName())
+			sql.append(PO.getUUIDColumnName(table.getTableName()))
 				.append("=?");
 			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), uuid) == 1;
 		} else {

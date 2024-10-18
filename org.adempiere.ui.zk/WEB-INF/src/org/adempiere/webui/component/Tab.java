@@ -25,6 +25,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ManageImageCache;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MForm;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
@@ -128,7 +129,7 @@ public class Tab extends org.zkoss.zul.Tab
 						comp.setImageContent(image);
 				}
 			} else if (imageKey != null){
-				if (ThemeManager.isUseFontIconForImage() && imageKey.indexOf("://") == -1) {
+				if (ThemeManager.isUseFontIconForImage() && imageKey.indexOf("://") == -1 && !MAttachment.isAttachmentURLPath(imageKey)) {
 					String iconClass = imageKey;
 					comp.setIconSclass("z-icon-" + iconClass);
 				} else {

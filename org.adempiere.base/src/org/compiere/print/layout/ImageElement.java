@@ -28,12 +28,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.compiere.model.AttachmentData;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MImage;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.PrintDataElement;
 import org.compiere.util.CCache;
-import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
@@ -49,8 +49,6 @@ public class ImageElement extends PrintElement
 	 */
 	private static final long serialVersionUID = 905615948952506059L;
 
-	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
-	
 	/**
 	 *	Create Image element from URL
 	 *	@param imageURLString image url
@@ -153,11 +151,11 @@ public class ImageElement extends PrintElement
 	 */
 	private ImageElement(String imageURLstring)
 	{
-		if (isAttachmentPath(imageURLstring))
+		if (MAttachment.isAttachmentURLPath(imageURLstring))
 		{
-			byte[] imageData = getAttachmentDataFromPath(imageURLstring);
-			if (imageData != null)
-				m_image = Toolkit.getDefaultToolkit().createImage(imageData);
+			AttachmentData imageData = MAttachment.getDataFromAttachmentURLPath(imageURLstring);
+			if (imageData != null && imageData.data() != null)
+				m_image = Toolkit.getDefaultToolkit().createImage(imageData.data());
 		}
 		else
 		{
@@ -411,35 +409,4 @@ public class ImageElement extends PrintElement
 		g2D.drawImage(m_image, transform, this);
 	}	//	paint
 
-	/**
-	 * attachment path syntax - attachment/table/indexOrFileName,IdOrUUId
-	 * @param path
-	 * @return true if path is attachment path
-	 */
-	public static boolean isAttachmentPath(String path) {		
-		return path != null && path.startsWith(ATTACHMENT_URL_PREFIX) && path.indexOf(",") > 0;
-	}
-
-	/**
-	 * Get attachment data from path expression
-	 * @param path attachment/table/indexOrFileName,IdOrUUId
-	 * @return attachment data or null
-	 */
-	public static byte[] getAttachmentDataFromPath(String path) {
-		String[] part = path.trim().split(",");
-		if (part.length == 2)
-		{
-			try {
-				String expression = part[0];
-				//convert from attachment: url syntax to attachment/ path syntax
-				expression = expression.replaceFirst("[:]", "/");
-				Object key = part[1].length() == 36 ? part[1] : Integer.parseInt(part[1]);
-				byte[] imageData = MAttachment.getAttachmentData(expression, key);
-				return imageData;
-			} catch (Exception e) {
-				CLogger.getCLogger(ImageElement.class).log(Level.WARNING, e.getLocalizedMessage(), e);
-			}
-		}
-		return null;
-	}
 }	//	ImageElement
