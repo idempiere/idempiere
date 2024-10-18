@@ -52,6 +52,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.*;
+import org.compiere.model.AttachmentData;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
 import org.compiere.model.MImage;
@@ -131,7 +132,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 				fw = new OutputStreamWriter(new FileOutputStream(configuration.getOutputFile(), false), Ini.getCharset());
 			else 
 				fw = configuration.getOutputWriter();
-			createHTML (reportEngine, new BufferedWriter(fw), configuration.isOnlyTable(), lang, configuration.getExtension(), configuration.isExport());
+			createHTML (reportEngine, new BufferedWriter(fw), configuration.isOnlyTable(), lang, configuration.getExtension(), configuration.isExport(), configuration.getContextPath());
 		}
 		catch (FileNotFoundException fnfe)
 		{
@@ -157,8 +158,9 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 *  @param language optional language - if null numbers/dates are not formatted
 	 *  @param extension optional extension for html output
 	 *  @param isExport when isExport = true will don't embed resource dependent zk framework
+	 *  @param contextPath 
 	 */
-	private void createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
+	private void createHTML (ReportEngine reportEngine, Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport, String contextPath)
 	{
 		MPrintFormat printFormat = reportEngine.getPrintFormat();
 		PrintData printData = reportEngine.getPrintData();
@@ -499,7 +501,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 							tr.addElement(td);
 							tdMap.put(printColIndex, td);
 							printColumn(reportEngine, language, extension, isExport, td, item, instanceAttributeColumn, row, printData,
-									colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
+									colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, contextPath);
 						}
 					}	//	printed
 				}	//	for all columns
@@ -550,7 +552,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 								div div = new div();
 								td.addElement(div);
 								printColumn(reportEngine, language, extension, isExport, div, item, instanceAttributeColumn, row, printData,
-										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix);
+										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, contextPath);
 								div.setClass("");
 							}
 						}
@@ -611,14 +613,20 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 * @param preValues
 	 * @param suppressMap
 	 * @param cssPrefix
+	 * @param contextPath 
 	 */
 	private static void printColumn(ReportEngine reportEngine, Language language, IHTMLExtension extension, boolean isExport, MultiPartElement td, 
 									   MPrintFormatItem item, InstanceAttributeColumn instanceAttributeColumn, int row, PrintData printData, 
-									   Boolean[] colSuppressRepeats, int printColIndex, Object[] preValues, HashMap<Integer, th> suppressMap, String cssPrefix) {
+									   Boolean[] colSuppressRepeats, int printColIndex, Object[] preValues, HashMap<Integer, th> suppressMap, String cssPrefix, String contextPath) {
 		MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
 		Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 				: printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-		if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
+		if (obj == null && ReportEngine.isDisplayPFItem(printData, item) && item.isTypeImage()
+			&& !item.isImageField() && !item.isImageIsAttached() && !Util.isEmpty(item.getImageURL(), true))
+		{
+			printImageColumn(td, item, null, isExport, contextPath);
+		}
+		else if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
 			td.addElementToRegistry("&nbsp;");
 			if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 				preValues[printColIndex] = null;
@@ -645,7 +653,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			
 			if (item.isTypeImage())
 			{
-				printImageColumn(td, item, pde);
+				printImageColumn(td, item, pde, isExport, contextPath);
 			}
 			else if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 			{
@@ -754,7 +762,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
 	}
 
-	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde) {
+	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde, boolean isExport, String contextPath) {
 		if (item.isImageField())
 		{
 			Object data = pde.getValue();
@@ -773,9 +781,13 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 				else 
 				{
 					String url = data.toString();
-					// not a URL - may be a resource
-					if (url.indexOf("://") == -1)
+					if (MAttachment.isAttachmentURLPath(url))
 					{
+						createImageElementFromAttachmentPath(td, item, url, isExport, contextPath);
+					}
+					else if (url.indexOf("://") == -1)
+					{
+						// not a URL - may be a resource
 						ClassLoader cl = HTMLReportRenderer.class.getClassLoader();
 						URL resource = cl.getResource(url);
 						if (resource != null)
@@ -809,9 +821,41 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		else if (!Util.isEmpty(item.getImageURL(), true))
 		{
-			img image = new img(item.getImageURL());
-			td.addElementToRegistry(image);
-			applyHeightAndWidth(item, image);
+			String url = item.getImageURL();			
+			if (MAttachment.isAttachmentURLPath(url))
+			{
+				createImageElementFromAttachmentPath(td, item, url, isExport, contextPath);
+			}
+			else 
+			{
+				img image = new img(item.getImageURL());
+				td.addElementToRegistry(image);
+				applyHeightAndWidth(item, image);
+			}
+		}
+	}
+
+	/**
+	 * Create image element from attachment path
+	 * @param td
+	 * @param item
+	 * @param path attachment path
+	 * @param isExport
+	 * @param contextPath 
+	 */
+	private static void createImageElementFromAttachmentPath(MultiPartElement td, MPrintFormatItem item, String path, boolean isExport, String contextPath) {
+		if (isExport) {
+			AttachmentData imageData = MAttachment.getDataFromAttachmentURLPath(path);
+			if (imageData != null && imageData.data() != null && imageData.data().length > 0)
+				createDataURLImageElement(td, imageData.data(), item);
+		} else {
+			String url = MAttachment.getImageAttachmentURLFromPath(contextPath, path);
+			if (url != null)
+			{
+				img image = new img(url);
+				td.addElementToRegistry(image);
+				applyHeightAndWidth(item, image);
+			}
 		}
 	}
 
@@ -835,14 +879,14 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}		
 	}
 	
-	private static void createDataURLImageElement(MultiPartElement td, byte[] imageData, MPrintFormatItem item) {
+	public static String createDataURLImage(byte[] imageData) {
 		String contentType = null;
 		Iterator<ImageReader> readers = null;
 		try {
 			readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(new ByteArrayInputStream(imageData)));
 		} catch (IOException e) {
 			log.log(Level.WARNING, e.getLocalizedMessage(), e);
-			return;
+			return null;
 		}
 		while(readers.hasNext()) {
 			ImageReader reader = readers.next();
@@ -858,7 +902,15 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					.append(contentType)
 					.append(";base64,");
 			builder.append(Base64.getEncoder().encodeToString(imageData));
-			img image = new img(builder.toString());
+			return builder.toString();
+		}
+		return null;
+	}
+	
+	private static void createDataURLImageElement(MultiPartElement td, byte[] imageData, MPrintFormatItem item) {
+		String dataUrl = createDataURLImage(imageData);
+		if (dataUrl != null) {
+			img image = new img(dataUrl);
 			td.addElementToRegistry(image);
 			applyHeightAndWidth(item, image);
 		}

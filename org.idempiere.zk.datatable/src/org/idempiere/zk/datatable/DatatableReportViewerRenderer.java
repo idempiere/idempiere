@@ -91,7 +91,8 @@ public class DatatableReportViewerRenderer implements IReportViewerRenderer {
 					.setLanguage(reportEngine.getPrintFormat().getLanguage())
 					.setOutputFile(file)
 					.setExport(export)
-					.setExtension(new HTMLExtension(contextPath, "rp", viewer.getUuid()));
+					.setExtension(new HTMLExtension(contextPath, "rp", viewer.getUuid()))
+					.setContextPath(contextPath);
 			renderer.renderReport(reportEngine, config);
 			return new AMedia(file.getName(), getFileExtension(), getContentType(), file, false);
 		} catch (Exception e) {
