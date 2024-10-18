@@ -38,6 +38,10 @@
 	background-color: transparent;
 }
 
+.z-toolbar {
+	padding: 4px 13px 4px 4px;
+}
+
 .z-toolbar.z-toolbar-tabs {
 	padding-top: 0px;
 	padding-bottom: 0px;
@@ -83,18 +87,27 @@
 	justify-content: space-between;
 }
 .z-toolbarbutton-checked {
-    color: #FFFFFF !important;
-    background-color: #0093F9 !important;
+    color: #fff !important;
+    background-color: #7ac8ff !important;
 }
 .z-toolbarbutton[disabled], .z-toolbarbutton[disabled]:hover {
 	background-color: transparent;
 }
 
 <%-- toolbar button with font icon --%>
-.font-icon-toolbar-button.toolbar-button [class^="z-icon-"] {
-	font-size: 18px;
-	color: inherit;
+@media screen and (max-width: 767px) {
+	.font-icon-toolbar-button.toolbar-button [class^="z-icon-"] {
+		font-size: 18px;
+		color: inherit;
+	}
 }
+@media screen and (min-width: 768px) {
+	.font-icon-toolbar-button.toolbar-button [class^="z-icon-"] {
+		font-size: 16px;
+		color: inherit;
+	}
+}
+
 .font-icon-toolbar-button.toolbar-button {
 	color :#333;
 }

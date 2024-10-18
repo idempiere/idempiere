@@ -11,20 +11,24 @@
 	border: none;
 }
 .z-panel-head .z-panel-header {
-	padding: 2px 5px;
+	padding: 0px 5px;
     border-bottom: 1px solid #e4e4e4;
 }
 .z-caption .z-caption-content {
+	margin-top: 2px;
 	padding: 0 0 0 8px;
 	cursor: move;
 }
 .z-panel-icon {
-	font-size: 12px !important;
-    color: #ACACAC !important;
+	font-size: 10px !important;
+    color: rgb(0 0 0 / 57%) !important;
     margin: 4px 0 0 0 !important;
     line-height: 24px !important;
     border: 0px !important;
     border-radius: 0px !important;
+}
+.z-panel-icon:hover {
+    color: rgb(0 0 0 / 100%) !important;
 }
 
 <%-- dashboard widget --%>
@@ -43,8 +47,7 @@
 	flex-grow: 1;
 }
 .dashboard-widget.z-panel {
-	border: none;
-	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+	border: 1px solid rgba(0, 0, 0, 0.09);
 }
 .dashboard-widget {
 	margin-top: 1px; 
@@ -97,15 +100,24 @@
 	padding: 1px 0px 1px 0px;
 }
 
+.recentitems-box .z-panelchildren {
+	padding: 0px;
+}
+
+.recentitems-box .menu-href [class^="z-icon-"] {
+	font-size: 12px !important;
+	color: #333333;
+}
+
 .recentitems-box A {
 	display: block;
-	padding: 4px 14px;
-	line-height: 24px;
+	padding: 2px 14px 2px 18px;
+ 	line-height: 24px;
+	color: #333333 !important;
 }
 .recentitems-box A.menu-href:hover {
 	background: #e0f2ff;
 	text-decoration: none !important;
-	color: rgba(0,0,0,0.9) !important;
 }
 
 .recentitems-box .z-toolbar-start {
@@ -120,16 +132,9 @@
 	display: inline-flex;
 	align-items: center;
 }
-.recentitems-box .trash-toolbarbutton .z-toolbarbutton-content {
-	font-size: 16px;
-}
 .recentitems-box .trash-font-icon {
 	font-family: FontAwesome;
-	font-size: 20px;
-}
-.recentitems-box .z-toolbar, .favourites-box .z-toolbar {
-	margin-top: 5px;
-	margin-bottom: 5px;
+	font-size: 12px;
 }
 
 <%-- embedded report content --%>
@@ -306,9 +311,12 @@
 }
 
 <%-- User Favorite Dashboard Panel Start --%>
-.fav-tree-panel {
-  border-radius: 0px;
-  border: 1px solid #d8d8d8 !important;
+.fav-tree-panel .z-panelchildren {
+  padding: 0px;
+  color: #333333 !important;
+}
+.fav-tree-panel .z-treerow .z-treecell {
+  border-top: 0px;
 }
 .fav-toolbar-div {
   position: relative;
@@ -321,9 +329,6 @@
 }
 .fav-folder-textbox {
   width: 100%;
-}
-.fav-summary-folder .z-treecell-content {
-  font-weight: bold;
 }
 .fav-expand-mode {
   transform: rotate(180deg);
@@ -365,5 +370,13 @@
 	color: white;
 	border-radius: 5px;
 }
+.dashboard-widget .z-toolbar {
+    padding: 6px 13px 0px 13px;
+}
+.dashboard-widget .z-row-content {
+	padding: 1px 5px;
+}
 
-
+.dashboard-widget .z-row-inner {
+	border-top: none;
+}

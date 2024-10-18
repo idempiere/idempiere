@@ -108,6 +108,10 @@ input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus, sel
 	transform:translateY(-1px);
 }
 
+input[type="checkbox"]:checked {
+    background-color: #7ac8ff;
+}
+
 <%-- focus indicator for checkbox --%>
 input[type="checkbox"]:focus {
     border-color: #006AF9;

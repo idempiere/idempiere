@@ -90,16 +90,7 @@
 
 <%-- Splitter --%>
 .z-east-splitter-button, .z-west-splitter-button, .z-north-splitter-button, .z-south-splitter-button {
-    color: rgba(0,0,0,0.60);
-}
-
-.z-east-splitter:hover .z-east-splitter-button, .z-west-splitter:hover .z-east-splitter-button, .z-north-splitter:hover .z-east-splitter-button, 
-.z-south-splitter:hover .z-east-splitter-button, .z-east-splitter:hover .z-west-splitter-button, .z-west-splitter:hover .z-west-splitter-button, 
-.z-north-splitter:hover .z-west-splitter-button, .z-south-splitter:hover .z-west-splitter-button, .z-east-splitter:hover .z-north-splitter-button, 
-.z-west-splitter:hover .z-north-splitter-button, .z-north-splitter:hover .z-north-splitter-button, .z-south-splitter:hover .z-north-splitter-button, 
-.z-east-splitter:hover .z-south-splitter-button, .z-west-splitter:hover .z-south-splitter-button, .z-north-splitter:hover .z-south-splitter-button, 
-.z-south-splitter:hover .z-south-splitter-button {
-    color: rgba(0,0,0,0.80);
+    color: rgba(0,0,0,0.34);
 }
 
 .z-north-splitter, .z-south-splitter {
@@ -109,19 +100,19 @@
 }
 
 .z-east-icon, .z-west-icon, .z-north-icon, .z-south-icon {
-    font-size: 14px;
+    font-size: 10px;
 }
 
 .z-east-splitter, .z-west-splitter, .z-north-splitter, .z-south-splitter {
-	background-color: #e0f2ff;
+	background-color: #F9FCFF;
 }
 
 .z-south-icon, .z-north-icon, .z-north-icon.z-icon-ellipsis-h, .z-south-icon.z-icon-ellipsis-h {
-  top: -3px;
+  top: -2px;
   visibility: visible;
 }
 
 .z-west-icon.z-icon-ellipsis-v, .z-east-icon.z-icon-ellipsis-v {
-  left: -3px;
+  left: -2px;
   visibility: visible;
 }

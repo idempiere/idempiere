@@ -1,15 +1,15 @@
 .login-window {
-	background-color: #F0F4F9;
+	background-color: #c7e8ff;
 }
 
 .login-window .z-window-content {
-	background-color: #F0F4F9;
+	background-color: #c7e8ff;
 }
 
 .login-box-body {
 	width: 720px;
 	background-color: white;
-	padding: 0;
+	padding: 0px 5px 0px 0px;
 	margin: 0;
 	text-align: center;
 }
@@ -17,7 +17,7 @@
 .login-box-header {
 	background-color: white;
 	width: 720px;
-	border-radius: 20px 20px 0px 0px;
+	border-radius: 10px 10px 0px 0px;
 	padding-left: 30px;
 	padding-top: 30px;
 	padding-right: 30px;
@@ -32,7 +32,7 @@
 	padding: 10px;
 	color: #484848 !important;
 	width: 100%;	
-	font-size: 2em !important;
+	font-size: 1.6em !important;
 }
 
 .login-box-header-logo {
@@ -43,7 +43,7 @@
 	height: 130px;
 	width: 720px;
 	background-color: white;
-	border-radius: 0px 0px 20px 20px;
+	border-radius: 0px 0px 10px 10px;
 	padding-left: 30px;
   	padding-right: 30px;
   	box-sizing: border-box;
@@ -79,7 +79,7 @@
 
 .login-east-panel, .login-west-panel {
 	width: 350px;
-	background-color: #e0f2ff; 
+	background-color: #ffffff; 
 	position: relative;
 	border: none;
 }
@@ -93,8 +93,8 @@
         margin: 0px;
 	}
 	.login-box-footer {
-		padding-left: 0px;
-		padding-right: 0px;
+		padding-left: 10px;
+		padding-right: 10px;
     }
 	.login-box-header-txt {
 		display: none;
@@ -116,6 +116,6 @@
 }
 @media screen and (max-width: 359px) {
 	.login-window .z-center > .z-center-body .z-window.z-window-embedded > .z-window-content {
-		padding: 0px
+		padding: 5px
 	}
 }
