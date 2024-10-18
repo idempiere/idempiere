@@ -87,8 +87,8 @@
 	justify-content: space-between;
 }
 .z-toolbarbutton-checked {
-    color: #FFFFFF !important;
-    background-color: #0093F9 !important;
+    color: #fff !important;
+    background-color: #7ac8ff !important;
 }
 .z-toolbarbutton[disabled], .z-toolbarbutton[disabled]:hover {
 	background-color: transparent;

@@ -115,6 +115,10 @@ input[type="checkbox"] {
 	padding-left: 2px;
 }
 
+input[type="checkbox"]:checked {
+    background-color: #7ac8ff;
+}
+
 <%-- focus indicator for checkbox --%>
 input[type="checkbox"]:focus {
     border-color: #006AF9;
