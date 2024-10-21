@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
@@ -70,6 +70,7 @@ public class WebEditorFactory
      * Service.Ranking:[Service Id:Service Reference]
      */
     private static final CCache<Integer, ConcurrentHashMap<Long, IServiceReferenceHolder<IEditorFactory>>> s_editorFactoryCache = new CCache<>(null, "IEditorFactory", 10, 0, false, 0);
+    private static final Set<Integer> s_rankings = new ConcurrentSkipListSet<>(Comparator.reverseOrder());
     
     /**
      * 
@@ -94,11 +95,11 @@ public class WebEditorFactory
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
     	List<Long> visitedIds = new ArrayList<Long>();
-		if (!s_editorFactoryCache.isEmpty()) {
-			Set<Integer> rankings = new TreeSet<>(Comparator.reverseOrder());
-			rankings.addAll(s_editorFactoryCache.keySet());
-			for (Integer ranking : rankings) {
+		if (!s_editorFactoryCache.isEmpty()) {			
+			for (Integer ranking : s_rankings) {
 				ConcurrentHashMap<Long, IServiceReferenceHolder<IEditorFactory>> serviceIdMap = s_editorFactoryCache.get(ranking);
+				if (serviceIdMap == null)
+					continue;
 				Long[] keys = serviceIdMap.keySet().toArray(new Long[0]);
 				for(Long key : keys) {
 					IServiceReferenceHolder<IEditorFactory> serviceReference = serviceIdMap.get(key);
@@ -131,6 +132,8 @@ public class WebEditorFactory
         		Integer ranking = (Integer) reference.getProperty(Constants.SERVICE_RANKING);
         		if (ranking == null)
         			ranking = Integer.valueOf(0);
+        		if (!s_rankings.contains(ranking))
+        			s_rankings.add(ranking);
         		ConcurrentHashMap<Long, IServiceReferenceHolder<IEditorFactory>> serviceIdMap = s_editorFactoryCache.get(ranking);
         		if (serviceIdMap == null)
         		{
@@ -138,8 +141,9 @@ public class WebEditorFactory
         			s_editorFactoryCache.put(ranking, serviceIdMap);
         		}
         		serviceIdMap.put(serviceId, serviceReference);
-        		if (editor == null)
-        			editor = service.getEditor(gridTab, gridField, tableEditor, editorConfiguration);
+        		editor = service.getEditor(gridTab, gridField, tableEditor, editorConfiguration);
+        		if (editor != null)
+        			break;
         	}
         }
         return editor;
