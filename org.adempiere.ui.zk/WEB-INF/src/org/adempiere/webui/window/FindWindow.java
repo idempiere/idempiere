@@ -1424,7 +1424,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	     	{
 	     		GridField field = findFields[c];
 	            if (field == null || field.isVirtualUIColumn()
-	            	|| ! hasAccessSpecialFields(field))
+	            	|| ! hasAccessSpecialFields(field)
+	            	|| ! addSelectionColumn(field))
 	            	continue;
 
 				boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
