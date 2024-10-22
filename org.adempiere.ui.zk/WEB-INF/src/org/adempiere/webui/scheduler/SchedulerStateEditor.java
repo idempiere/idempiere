@@ -27,6 +27,7 @@ package org.adempiere.webui.scheduler;
 
 import org.adempiere.base.Core;
 import org.adempiere.util.Callback;
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.editor.IEditorConfiguration;
@@ -335,6 +336,25 @@ public class SchedulerStateEditor extends WEditor {
 	public String getDisplay() {
 		schedulerState=0;
 		MScheduler scheduler = new MScheduler(Env.getCtx(), getAD_Scheduler_ID(), null);
+		IServerManager serverMgr = getServerMgr();
+		schedulerState = serverMgr != null ? serverMgr.getServerStatus(scheduler.getServerID()) : -1;
+		String label = null;
+		if (schedulerState == IServerManager.SERVER_STATE_NOT_SCHEDULE)
+			label = Msg.getMsg(Env.getCtx(), "SchedulerNotSchedule");
+		else if (schedulerState == IServerManager.SERVER_STATE_STARTED)
+			label = Msg.getMsg(Env.getCtx(), "SchedulerStarted");
+		else if (schedulerState == IServerManager.SERVER_STATE_STOPPED)
+			label = Msg.getMsg(Env.getCtx(), "SchedulerStopped");
+		else
+			label = "-";
+		
+		return label;
+	}
+	
+	@Override
+	public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
+		schedulerState=0;
+		MScheduler scheduler = new MScheduler(Env.getCtx(), Integer.parseInt(value.toString()), null);
 		IServerManager serverMgr = getServerMgr();
 		schedulerState = serverMgr != null ? serverMgr.getServerStatus(scheduler.getServerID()) : -1;
 		String label = null;
