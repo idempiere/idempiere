@@ -353,19 +353,32 @@ public class SchedulerStateEditor extends WEditor {
 	
 	@Override
 	public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
+		
+		String label = "-";
+		
+		if(value == null)
+			return label;
+		
+		int AD_Scheduler_ID = 0;
+		try {
+			AD_Scheduler_ID = Integer.parseInt(value.toString());
+		}catch (Exception e) {
+			return label;
+		}
+		
+		if(AD_Scheduler_ID <= 0)
+			return label;
+		
 		schedulerState=0;
-		MScheduler scheduler = new MScheduler(Env.getCtx(), Integer.parseInt(value.toString()), null);
+		MScheduler scheduler = new MScheduler(Env.getCtx(), AD_Scheduler_ID, null);
 		IServerManager serverMgr = getServerMgr();
 		schedulerState = serverMgr != null ? serverMgr.getServerStatus(scheduler.getServerID()) : -1;
-		String label = null;
 		if (schedulerState == IServerManager.SERVER_STATE_NOT_SCHEDULE)
 			label = Msg.getMsg(Env.getCtx(), "SchedulerNotSchedule");
 		else if (schedulerState == IServerManager.SERVER_STATE_STARTED)
 			label = Msg.getMsg(Env.getCtx(), "SchedulerStarted");
 		else if (schedulerState == IServerManager.SERVER_STATE_STOPPED)
 			label = Msg.getMsg(Env.getCtx(), "SchedulerStopped");
-		else
-			label = "-";
 		
 		return label;
 	}
