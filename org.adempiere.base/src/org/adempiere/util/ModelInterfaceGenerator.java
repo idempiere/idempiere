@@ -909,6 +909,9 @@ public class ModelInterfaceGenerator
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			rs = pstmt.executeQuery();
+			if (!rs.isBeforeFirst())
+				System.out.println("No data found for the table with name " + tableName);
+
 			while (rs.next())
 			{
 				if (type.equals(GEN_SOURCE_INTERFACE))
