@@ -8,6 +8,7 @@ Author URI: http://www.bmlaurus.com
 body{
 	background-color:white;
 	font-family: verdana;
+	color:#333333;
 }
 a{ 
 	color: #336699;
@@ -15,7 +16,8 @@ a{
 }
 div.body{
 	margin-top: 25px;
-	width: 810px;
+	width: 100%;
+	max-width: 800px;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
@@ -47,15 +49,18 @@ div.body{
 	padding-top: 70px;
 }
 #main-background{
-	height: 520px;
+	height: 95%;
     position: absolute;
-    top: 1px;
-    width: 810px;
+    top: 0;
+    width: 100%;
     z-index: -1000;
+    filter:alpha(opacity=60);
+ 	opacity: 0.6;
 }
 #main-background img{
 	height: 520px;
 	width: 810px;
+	object-fit: cover;
 }
 .topBtnHeader{
 	overflow: hidden;
@@ -246,18 +251,22 @@ div.body{
 #credits{
 	font-size: 70%;	
 }
-.foot{
-	position: relative;
+
+#foot{
+    background-color: #000000;
+    height: 50px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+    margin-top: -28px;
+	padding: 10px;
 }
+
 #footercopyright{
-	bottom: 10px;
     font-size: 60%;
-    position: absolute;
-    right: 10px;
+	text-align: right;
 }
-#socialBar{
-	margin-left: 10px;
-}
+
 #socialBar img{
 	filter:alpha(opacity=80);
  	opacity: 0.8;
