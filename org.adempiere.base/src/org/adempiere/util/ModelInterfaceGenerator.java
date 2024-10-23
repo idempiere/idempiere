@@ -909,13 +909,19 @@ public class ModelInterfaceGenerator
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			rs = pstmt.executeQuery();
+
+			boolean isEmpty = true;
 			while (rs.next())
 			{
+				isEmpty = false;
 				if (type.equals(GEN_SOURCE_INTERFACE))
 					new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
 				else if (type.equals(GEN_SOURCE_CLASS))
 					new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
 			}
+			
+			if (isEmpty)
+				System.out.println("No data found for the table with name " + tableName);
 		}
 		catch (SQLException e)
 		{
