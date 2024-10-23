@@ -1426,7 +1426,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            if (field == null || field.isVirtualUIColumn()
 	            	|| ! hasAccessSpecialFields(field))
 	            	continue;
-		    WEditor editor = WebEditorFactory.getEditor(mField, true);
+		    WEditor editor = WebEditorFactory.getEditor(field, true);
         	    if (editor == null || !editor.isSearchable())
 			continue;
 
