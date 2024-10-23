@@ -2879,7 +2879,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
 				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
 						|| mLookup.getValidation().indexOf("@"+getTabNo()+"|"+columnName+"@") != -1
-						|| mLookup.getValidation().matches(".*[@]"+columnName+"[:].+[@].*$"))
+						|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*$"))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");
