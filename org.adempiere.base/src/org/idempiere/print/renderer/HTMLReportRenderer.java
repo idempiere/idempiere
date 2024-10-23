@@ -865,8 +865,10 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			style.append("height:").append(item.getMaxHeight()).append("px;");
 		if (item.getMaxWidth() > 0) 
 			style.append("width:").append(item.getMaxWidth()).append("px;");
-		if (style.length() > 0)
+		if (style.length() > 0) {
+			style.append("object-fit: scale-down;");
 			image.setStyle(style.toString());
+		}
 	}
 
 	private static void createDataURLImageElement(MultiPartElement td, URL url, MPrintFormatItem item) {

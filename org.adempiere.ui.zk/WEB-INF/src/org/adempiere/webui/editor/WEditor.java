@@ -747,8 +747,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		if (applyDictionaryStyle && gridField.getAD_FieldStyle_ID() > 0) 
 		{
 			style = buildStyle(gridField.getAD_FieldStyle_ID());
-		}
-		setFieldStyle(style);
+			setFieldStyle(style);
+		}		
 		setFieldMandatoryStyle(applyDictionaryStyle);
 	}
 	
