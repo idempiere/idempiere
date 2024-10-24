@@ -102,5 +102,11 @@ public class EnvTest extends AbstractTestCase {
 		expr = "@DocStatus<Name>@";
 		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
 		assertEquals(docStatusName, parsedText, "Unexpected parsed text for "+expr);
+
+		//test '@@' escape sequence
+		expr = "test@@mail.com";
+		parsedText = Env.parseVariable(expr, null, getTrxName(), true, true, true);
+		assertEquals("test@mail.com", parsedText, "Unexpected parsed text for " + expr);
+
 	}
 }
