@@ -150,8 +150,6 @@ window.idempiere.showFullSizeImage = function (event) {
 		event.target._fullsize.style.top = y + "px";
 	 }
   }
-  event.target._fullsize.style.display = "none";
-  jq(event.target._fullsize).fadeIn();	    
 }
 
 window.idempiere.hideFullSizeImage = function (event) {
