@@ -1426,6 +1426,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            if (field == null || field.isVirtualUIColumn()
 	            	|| ! hasAccessSpecialFields(field))
 	            	continue;
+		    WEditor editor = WebEditorFactory.getEditor(field, true);
+        	    if (editor == null || !editor.isSearchable())
+			continue;
 
 				boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
 												&& "Y".equals(Env.getContext(Env.getCtx(), m_targetWindowNo, m_targetTabNo, GridTab.CTX_IsLookupOnlySelection));
