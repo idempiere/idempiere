@@ -2549,10 +2549,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		// update taxes
 		MInvoiceTax[] taxes = getTaxes(true);
 		for (MInvoiceTax tax : taxes )
-		{
-			if ( !(tax.calculateTaxFromLines() && tax.save()) )
-				return false;
-		}
+			tax.deleteEx(false, get_TrxName());
 
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
