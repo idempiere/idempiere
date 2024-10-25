@@ -34,6 +34,8 @@
 <%-- north status bar --%>
 .adwindow-status {
 	min-height: 22px;
+	padding-top: 3px;
+	background-color: #f6fafe;
 }
 
 <%-- record info text, east of status bar --%>
@@ -240,6 +242,14 @@
 	height: 100%; 
 	position: absolute;
 }
+.adtab-form-borderlayout .z-center-body {
+	background-color: #f6fafe;
+}
+
+.adtab-form-borderlayout .z-grid-body {
+	background-color: #f6fafe;
+ }
+
 <%-- title text for collapsed detail panel --%>
 .adtab-form-borderlayout .z-south-collapsed:before { 
 	content: '${u:cleanAmp(u:getMsg(u:getCtx(), "Detail"))}';

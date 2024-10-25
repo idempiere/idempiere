@@ -17,6 +17,7 @@ package org.adempiere.webui.editor;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WImageDialog;
@@ -33,6 +34,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
@@ -104,7 +106,7 @@ public class WImageEditor extends WEditor
     {
     	AImage img = null;
         getComponent().setContent(img);
-        getComponent().setSclass("image-field image-fit-contain");        
+        getComponent().setSclass("image-field");        
     }
 
      @Override
@@ -160,8 +162,14 @@ public class WImageEditor extends WEditor
 			m_mImage = null;
 			AImage img = null;
 			getComponent().setContent(img);
-			getComponent().setWidth(null);
-			getComponent().setHeight(null);
+			ZkCssHelper.removeStyle(getComponent(), "width");
+			ZkCssHelper.removeStyle(getComponent(), "height");
+			LayoutUtils.removeSclass("thumbnail", getComponent());
+			LayoutUtils.removeSclass("image-fit", getComponent());
+			getComponent().setClientAttribute("onmouseenter", null);
+			getComponent().setClientAttribute("onmouseleave", null);
+			//invalidate necessary for setClientAttribute to work
+			getComponent().invalidate();
 			return;
 		}
 		//  Get/Create Image
@@ -183,13 +191,25 @@ public class WImageEditor extends WEditor
 		{
 			String width = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
 			String height = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
-			getComponent().setWidth(width);
-			getComponent().setHeight(height);
+			String style = "width:"+width+";height:"+height;
+			ZkCssHelper.appendStyle(getComponent(), style);
+			LayoutUtils.addSclass("thumbnail", getComponent());
+			LayoutUtils.addSclass("image-fit", getComponent());
+			getComponent().setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
+			getComponent().setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
+			//invalidate necessary for setClientAttribute to work
+			getComponent().invalidate();
 		}
 		else
 		{
-			getComponent().setWidth(null);
-			getComponent().setHeight(null);
+			ZkCssHelper.removeStyle(getComponent(), "width");
+			ZkCssHelper.removeStyle(getComponent(), "height");
+			LayoutUtils.removeSclass("thumbnail", getComponent());
+			LayoutUtils.removeSclass("image-fit", getComponent());
+			getComponent().setClientAttribute("onmouseenter", null);
+			getComponent().setClientAttribute("onmouseleave", null);
+			//invalidate necessary for setClientAttribute to work
+			getComponent().invalidate();
 		}
     }
     
@@ -211,6 +231,8 @@ public class WImageEditor extends WEditor
 	@Override
 	public void onEvent(Event event) throws Exception 
 	{
+		String script = "jq('#"+getComponent().getUuid()+"').trigger('mouseleave');";
+		Clients.evalJavaScript(script);
 		if (Events.ON_CLICK.equals(event.getName()) && readwrite)
 		{
 			final WImageDialog vid = new WImageDialog(m_mImage);
