@@ -122,6 +122,7 @@
 						declare on target platform, also maven local so default generated site-p2 
 						don't include that bundle. this configuration change default behavior -->
 					<includeAllDependencies>true</includeAllDependencies>
+					<includeAllSources>true</includeAllSources>
 					<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=512396 -->
 					<xzCompress>false</xzCompress>
 				</configuration>
