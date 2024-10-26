@@ -28,12 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.Zip;
+import org.compiere.print.layout.ImageElement;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -59,6 +62,8 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private static final long serialVersionUID = 5615231734722570658L;
 
+	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
+	
 	/**
 	 * @param ctx
 	 * @param AD_Table_ID
@@ -748,4 +753,120 @@ public class MAttachment extends X_AD_Attachment
 		setAD_StorageProvider_ID(p.getAD_StorageProvider_ID());
 	}
 
+	/**
+	 * Get attachment data from path expression and id
+	 * @param path attachment/tableName/index or filename
+	 * @param id record id or record uuid
+	 * @return data of attachment item
+	 */
+	public static AttachmentData getAttachmentData(String path, Object id) {
+		String[] parts;
+		//record_id or record_uu
+		if ((id instanceof Number) || (id instanceof String)) {
+			parts = path.split("[/]");
+			//expression syntax - attachment/table name/index or name
+			if (parts.length == 3) {
+				String tableName = parts[1];
+				MTable table = MTable.get(Env.getCtx(), tableName);
+				if (table != null) {
+					int recordId = (id instanceof Number) ? ((Number)id).intValue() : -1;
+					String recordUU = (id instanceof String) ? (String)id : null;
+					// check security
+					if (!MRole.getDefault().checkAccessSQL(table, recordId, recordUU, false))
+						return null;
+					MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);
+					if (attachment != null && attachment.get_ID() > 0) {
+						//first, check whether is via index
+						int index = -1;
+						if (parts[2].trim().matches("[0-9]+")) {
+							try {
+								index = Integer.parseInt(parts[2]);
+							} catch (Exception e) {
+							}
+						}
+						if (index >= 0 && index < attachment.getEntryCount()) {
+							return new AttachmentData(attachment.getEntryName(index), attachment.getEntryData(index));
+						}
+						//try name
+						String toMatch = null;
+						if (parts[2].contains("*")) {
+							//wildcard match, for e.g a*.png
+							Pattern regex = Pattern.compile("[^*]+|(\\*)");
+							Matcher m = regex.matcher(parts[2]);
+							StringBuffer b= new StringBuffer();
+							while (m.find()) {
+							    if(m.group(1) != null) m.appendReplacement(b, ".*");
+							    else m.appendReplacement(b, "\\\\Q" + m.group(0) + "\\\\E");
+							}
+							m.appendTail(b);
+							toMatch = b.toString();
+						}
+						for(int i = 0; i < attachment.getEntryCount(); i++) {
+							if (toMatch != null && attachment.getEntryName(i) != null && attachment.getEntryName(i).matches(toMatch)) {
+								return new AttachmentData(attachment.getEntryName(i), attachment.getEntryData(i));
+							} else if (parts[2].equals(attachment.getEntryName(i))) {
+								return new AttachmentData(attachment.getEntryName(i), attachment.getEntryData(i));
+							}
+						}								
+					}							
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Get web image attachment url from attachment: expression
+	 * @param contextPath web context path (not needed for zk component, pass null instead)
+	 * @param path attachment:{tableName}/{index or filename pattern},{record id or uuid}
+	 * @return image attachment url
+	 */
+	public static String getImageAttachmentURLFromPath(String contextPath, String path) {
+		String[] part = path.trim().split(",");
+		if (part.length == 2)
+		{
+			String expression = part[0];
+			//convert from attachment: url syntax to attachment/ path syntax
+			expression = expression.replaceFirst("[:]", "/");
+			StringBuilder url = new StringBuilder(contextPath != null ? contextPath : "")
+					.append("/aimages?path=")
+					.append(expression)
+					.append("&recordid=")
+					.append(part[1]);
+			return url.toString();
+		}
+		return null;
+	}
+	
+	/**
+	 * Is attachment URL path 
+	 * @param path attachment:table/{index or file name pattern},{record id or uuid}
+	 * @return true if path is attachment path
+	 */
+	public static boolean isAttachmentURLPath(String path) {		
+		return path != null && path.startsWith(ATTACHMENT_URL_PREFIX) && path.indexOf(",") > 0;
+	}
+	
+	/**
+	 * Get attachment data from attachment URL path
+	 * @param path attachment:table/{index or file name pattern},{record id or uuid}
+	 * @return attachment data or null
+	 */
+	public static AttachmentData getDataFromAttachmentURLPath(String path) {
+		String[] part = path.trim().split(",");
+		if (part.length == 2)
+		{
+			try {
+				String expression = part[0];
+				//convert from attachment: url syntax to attachment/ path syntax
+				expression = expression.replaceFirst("[:]", "/");
+				Object key = part[1].length() == 36 ? part[1] : Integer.parseInt(part[1]);
+				AttachmentData imageData = MAttachment.getAttachmentData(expression, key);
+				return imageData;
+			} catch (Exception e) {
+				CLogger.getCLogger(ImageElement.class).log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+		}
+		return null;
+	}		
 }	//	MAttachment

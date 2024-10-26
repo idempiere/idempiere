@@ -229,6 +229,15 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 				setIsToolbarButton(null);
 		}
 		
+		//If the column is a virtual search column - set displayed to false 
+		if (isDisplayed()) {
+			MColumn column = (MColumn) getAD_Column();
+			if (column.isVirtualSearchColumn()) {
+				setIsDisplayed(false);
+				setIsDisplayedGrid(false);
+			}
+		}
+		
 		// Validate read only, display and mandatory logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {

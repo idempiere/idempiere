@@ -36,7 +36,7 @@ import org.zkoss.zul.Toolbarbutton;
 
 /**
  * Menu tree panel. <br/>
- * Consist of Tree, expand toggle and {@link MenuTreeFilterPanel}.
+ * Composite component of Tree, expand toggle and {@link MenuTreeFilterPanel}.
  * @author Elaine
  * @date July 31, 2012
  */

@@ -40,7 +40,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
 /**
- * Launch report for table (immediate or through popup menu, depends on number of print format discover
+ * Launch report for table (immediate or through popup menu, depends on the number of print format discover
  * for AD_Table_ID and AD_Window_ID). 
  * @author Low Heng Sin
  *
@@ -119,7 +119,7 @@ public class WReport implements EventListener<Event> {
 	private String whereExtended;
 	
 	/**
-	 * 	Get Print Formats for table and window.
+	 * 	Get Print Formats for table and window.<br/>
 	 *  If there's only 1 print format found, call {@link #launchReport(KeyNamePair)}, otherwise call {@link #showPopup()}.
 	 * 	@param AD_Table_ID table
 	 *  @param AD_Window_ID

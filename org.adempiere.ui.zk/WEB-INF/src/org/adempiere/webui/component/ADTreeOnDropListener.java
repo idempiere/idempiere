@@ -70,10 +70,8 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		this.windowNo = windowNo;
 	}
 
-	/**
-	 * @param event
-	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event instanceof DropEvent) {
 			DropEvent de = (DropEvent) event;
@@ -241,7 +239,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			mnPO.saveEx(trxName);
 	}
 	
-	class MenuListener implements EventListener<Event> {
+	protected class MenuListener implements EventListener<Event> {
 		private DefaultTreeNode<Object> movingNode;
 		private DefaultTreeNode<Object> toNode;
 		MenuListener(DefaultTreeNode<Object> movingNode, DefaultTreeNode<Object> toNode) {

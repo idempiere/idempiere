@@ -59,7 +59,6 @@ import org.compiere.util.ValueNamePair;
  *  @author Niraj Sohun
  *  		July 27, 2007
  */
-
 public class WAcctViewerData
 {
 	/** Window              */
@@ -314,8 +313,7 @@ public class WAcctViewerData
 	 *  @param columnName column
 	 *  @param selectSQL sql
 	 *  @return Text on button
-	 */
-	
+	 */	
 	protected String getButtonText (String tableName, String columnName, String selectSQL)
 	{
 		//  SELECT (<embedded>) FROM tableName avd WHERE avd.<selectSQL>
@@ -353,8 +351,7 @@ public class WAcctViewerData
 	/**
 	 *  Create query and execute
 	 *  @return {@link RModel} query result
-	 */
-	
+	 */	
 	protected RModel query()
 	{
 		//  Set Where Clause

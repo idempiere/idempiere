@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-12" sequenceNumber="20240413">
+<target name="idempiere-12" sequenceNumber="20240715">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="zcommon" version="9.6.4"/>
-      <unit id="zel" version="9.6.4"/>
-      <unit id="zhtml" version="9.6.4"/>
-      <unit id="zjavassist" version="9.6.4"/>
-      <unit id="zk" version="9.6.4"/>
-      <unit id="zkbind" version="9.6.4"/>
-      <unit id="zkplus" version="9.6.4"/>
-      <unit id="zkwebfragment" version="9.6.4"/>
-      <unit id="zul" version="9.6.4"/>
-      <unit id="zweb" version="9.6.4"/>
-      <unit id="zweb-dsp" version="9.6.4"/>
-      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/9.6.4"/>
+      <unit id="zcommon" version="10.0.1"/>
+      <unit id="zel" version="10.0.1"/>
+      <unit id="zhtml" version="10.0.1"/>
+      <unit id="zk" version="10.0.1"/>
+      <unit id="zkbind" version="10.0.1"/>
+      <unit id="zkplus" version="10.0.1"/>
+      <unit id="zkwebfragment" version="10.0.1"/>
+      <unit id="zul" version="10.0.1"/>
+      <unit id="zweb" version="10.0.1"/>
+      <unit id="zweb-dsp" version="10.0.1"/>
+      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/10.0.1"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
       <unit id="org.atmosphere.runtime" version="2.7.2.v202109010034"/>
-      <unit id="com.google.guava" version="30.1.1.jre_v202109010034"/>
-      <unit id="com.google.http-client.google-http-client" version="1.39.2.sp_1_v202109010034"/>
+      <unit id="com.google.http-client.google-http-client" version="1.44.2"/>
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
       <unit id="org.apache.felix.webconsole" version="4.6.4.v202109010034"/>
-      <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
+      <unit id="com.google.oauth-client" version="1.36.0"/>
+      <unit id="org.eclipse.jetty.servlet-api.capability" version="4.0.6.v202407080243"/>
+      <unit id="org.apache.cxf.cxf-rt-databinding-xmlbeans" version="3.6.3"/>
+      <unit id="org.apache.cxf.cxf-rt-rs-extension-providers" version="3.6.3"/>
+      <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/12.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="org.eclipse.osgi" version="3.18.300.v20230220-1352"/>
+      <unit id="org.eclipse.osgi" version="3.18.500.v20230801-1826"/>
       <unit id="org.osgi.annotation.bundle" version="2.0.0.202202082230"/>
       <unit id="org.osgi.annotation.versioning" version="1.1.2.202109301733"/>
       <unit id="org.osgi.service.cm" version="1.6.1.202109301733"/>
@@ -57,93 +59,100 @@
       <unit id="org.apache.httpcomponents.client5.httpclient5" version="5.1.3.v20221013-1742"/>
       <unit id="org.apache.httpcomponents.core5.httpcore5" version="5.1.4.v20221013-1742"/>
       <unit id="org.apache.httpcomponents.core5.httpcore5-h2" version="5.1.4.v20221013-1742"/>
-      <unit id="org.eclipse.core.jobs" version="3.13.300.v20230111-0823"/>
-      <unit id="org.eclipse.ecf" version="3.10.0.v20210925-0032"/>
+      <unit id="org.eclipse.core.jobs" version="3.15.0.v20230808-1403"/>
+      <unit id="org.eclipse.ecf" version="3.11.0.v20230507-1923"/>
       <unit id="org.eclipse.ecf.filetransfer" version="5.1.102.v20210409-2301"/>
-      <unit id="org.eclipse.ecf.identity" version="3.9.402.v20210409-2301"/>
-      <unit id="org.eclipse.ecf.provider.filetransfer" version="3.2.800.v20220215-0126"/>
-      <unit id="org.eclipse.ecf.provider.filetransfer.httpclient5" version="1.0.401.v20221105-0315"/>
-      <unit id="org.eclipse.ecf.provider.filetransfer.ssl" version="1.0.201.v20210409-2301"/>
-      <unit id="org.eclipse.equinox.app" version="1.6.200.v20220720-2012"/>
-      <unit id="org.eclipse.equinox.common" version="3.17.100.v20230202-1341"/>
+      <unit id="org.eclipse.ecf.identity" version="3.10.0.v20230422-0242"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer" version="3.3.0.v20230422-0242"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer.httpclient5" version="1.1.0.v20230423-0417"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer.ssl" version="1.1.0.v20230422-0242"/>
+      <unit id="org.eclipse.equinox.app" version="1.6.300.v20230630-1303"/>
+      <unit id="org.eclipse.equinox.common" version="3.18.100.v20230730-1117"/>
       <unit id="org.eclipse.equinox.concurrent" version="1.2.100.v20211021-1418"/>
       <unit id="org.eclipse.equinox.console" version="1.4.500.v20211021-1418"/>
-      <unit id="org.eclipse.equinox.frameworkadmin" version="2.2.100.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.frameworkadmin.equinox" version="1.2.200.v20220315-2155"/>
-      <unit id="org.eclipse.equinox.launcher" version="1.6.400.v20210924-0641"/>
-      <unit id="org.eclipse.equinox.p2.artifact.repository" version="1.4.800.v20221205-1614"/>
-      <unit id="org.eclipse.equinox.p2.console" version="1.2.100.v20221111-1340"/>
-      <unit id="org.eclipse.equinox.p2.core" version="2.9.200.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.p2.director" version="2.5.400.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.p2.engine" version="2.7.500.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.p2.garbagecollector" version="1.2.100.v20221111-1340"/>
-      <unit id="org.eclipse.equinox.p2.jarprocessor" version="1.2.400.v20221201-0952"/>
-      <unit id="org.eclipse.equinox.p2.metadata" version="2.6.300.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.p2.metadata.repository" version="1.4.100.v20220329-1456"/>
-      <unit id="org.eclipse.equinox.p2.operations" version="2.6.100.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.p2.repository" version="2.6.300.v20221030-1923"/>
-      <unit id="org.eclipse.equinox.p2.touchpoint.eclipse" version="2.3.300.v20220817-1208"/>
-      <unit id="org.eclipse.equinox.p2.touchpoint.natives" version="1.4.400.v20220506-1821"/>
-      <unit id="org.eclipse.equinox.p2.transport.ecf" version="1.3.300.v20220512-1321"/>
-      <unit id="org.eclipse.equinox.preferences" version="3.10.200.v20230120-0604"/>
-      <unit id="org.eclipse.equinox.registry" version="3.11.200.v20220817-1601"/>
-      <unit id="org.eclipse.equinox.security" version="1.3.1000.v20220801-1135"/>
-      <unit id="org.eclipse.equinox.simpleconfigurator" version="1.4.200.v20221111-1340"/>
-      <unit id="org.eclipse.equinox.simpleconfigurator.manipulator" version="2.2.100.v20221117-1044"/>
-      <unit id="org.eclipse.osgi.services" version="3.11.100.v20221006-1531"/>
+      <unit id="org.eclipse.equinox.frameworkadmin" version="2.2.200.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.frameworkadmin.equinox" version="1.2.400.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.launcher" version="1.6.500.v20230717-2134"/>
+      <unit id="org.eclipse.equinox.p2.artifact.repository" version="1.5.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.console" version="1.3.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.core" version="2.10.100.v20230814-2013"/>
+      <unit id="org.eclipse.equinox.p2.director" version="2.6.100.v20230718-0609"/>
+      <unit id="org.eclipse.equinox.p2.engine" version="2.8.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.garbagecollector" version="1.3.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.jarprocessor" version="1.3.200.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.metadata" version="2.7.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.metadata.repository" version="1.5.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.operations" version="2.7.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.repository" version="2.7.100.v20230710-0621"/>
+      <unit id="org.eclipse.equinox.p2.touchpoint.eclipse" version="2.4.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.touchpoint.natives" version="1.5.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.transport.ecf" version="1.4.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.preferences" version="3.10.300.v20230630-1303"/>
+      <unit id="org.eclipse.equinox.registry" version="3.11.300.v20230801-1826"/>
+      <unit id="org.eclipse.equinox.security" version="1.4.0.v20230630-1303"/>
+      <unit id="org.eclipse.equinox.simpleconfigurator" version="1.4.300.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.simpleconfigurator.manipulator" version="2.2.200.v20230630-1506"/>
       <unit id="org.eclipse.osgi.util" version="3.7.200.v20230103-1101"/>
       <unit id="org.sat4j.core" version="2.3.6.v20201214"/>
       <unit id="org.sat4j.pb" version="2.3.6.v20201214"/>
       <unit id="org.tukaani.xz" version="1.9.0"/>
-      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.2000.v20221201-0912"/>
-      <unit id="org.eclipse.equinox.http.registry" version="1.3.200.v20220720-2012"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.2200.v20230717-2134"/>
+      <unit id="org.eclipse.equinox.http.registry" version="1.3.300.v20230630-1303"/>
       <unit id="org.eclipse.osgi.compatibility.state" version="1.2.800.v20221116-1440"/>
-      <unit id="org.eclipse.core.runtime" version="3.26.100.v20221021-0005"/>
+      <unit id="org.eclipse.core.runtime" version="3.29.0.v20230726-0617"/>
       <unit id="org.eclipse.equinox.http.servlet" version="1.7.400.v20221006-1531"/>
-      <unit id="org.eclipse.equinox.servletbridge" version="1.6.200.v20220710-1223"/>
-      <unit id="org.eclipse.equinox.p2.director.app" version="1.2.300.v20220911-2007"/>
+      <unit id="org.eclipse.equinox.servletbridge" version="1.6.300.v20230622-2056"/>
+      <unit id="org.eclipse.equinox.p2.director.app" version="1.3.100.v20230630-1506"/>
       <unit id="org.eclipse.equinox.cm" version="1.5.200.v20230120-0604"/>
       <unit id="org.eclipse.equinox.event" version="1.6.200.v20230120-0604"/>
       <unit id="org.eclipse.equinox.http.servletbridge" version="1.2.200.v20220710-1223"/>
       <unit id="org.eclipse.equinox.metatype" version="1.6.300.v20230120-0604"/>
-      <unit id="org.eclipse.ant.core" version="3.6.500.v20220718-1722"/>
-      <unit id="org.eclipse.core.commands" version="3.10.400.v20230220-0932"/>
-      <unit id="org.eclipse.core.contenttype" version="3.8.200.v20220817-1539"/>
-      <unit id="org.eclipse.core.expressions" version="3.8.200.v20220613-1047"/>
-      <unit id="org.eclipse.core.filesystem" version="1.9.500.v20220817-1539"/>
-      <unit id="org.eclipse.core.net" version="1.4.0.v20220813-1037"/>
-      <unit id="org.eclipse.core.resources" version="3.18.200.v20230209-0754"/>
-      <unit id="org.eclipse.core.variables" version="3.5.100.v20210721-1355"/>
-      <unit id="org.eclipse.jdt.core" version="3.33.0.v20230222-1748"/>
-      <unit id="org.eclipse.jdt.core.compiler.batch" version="3.33.0.v20230218-1114"/>
-      <unit id="org.eclipse.text" version="3.12.300.v20220921-1010"/>
-      <unit id="org.opentest4j" version="1.2.0"/>
+      <unit id="org.eclipse.ant.core" version="3.7.100.v20230731-0828"/>
+      <unit id="org.eclipse.core.commands" version="3.11.100.v20230708-0916"/>
+      <unit id="org.eclipse.core.contenttype" version="3.9.100.v20230630-1232"/>
+      <unit id="org.eclipse.core.expressions" version="3.9.100.v20230726-0617"/>
+      <unit id="org.eclipse.core.filesystem" version="1.10.100.v20230717-1727"/>
+      <unit id="org.eclipse.core.net" version="1.5.100.v20230630-1232"/>
+      <unit id="org.eclipse.core.resources" version="3.19.100.v20230814-1312"/>
+      <unit id="org.eclipse.core.variables" version="3.6.100.v20230726-0617"/>
+      <unit id="org.eclipse.jdt.core" version="3.35.0.v20230814-1356"/>
+      <unit id="org.eclipse.jdt.core.compiler.batch" version="3.35.0.v20230814-2020"/>
+      <unit id="org.eclipse.text" version="3.13.100.v20230801-1334"/>
+      <unit id="org.opentest4j" version="1.3.0"/>
       <unit id="org.apiguardian.api" version="1.1.2"/>
-      <unit id="org.junit" version="4.13.2.v20211018-1956"/>
-      <unit id="org.eclipse.pde.junit.runtime" version="3.6.200.v20220523-1051"/>
-      <unit id="org.eclipse.jdt.junit.runtime" version="3.7.100.v20230115-0919"/>
+      <unit id="org.junit" version="4.13.2.v20230809-1000"/>
+      <unit id="org.eclipse.pde.junit.runtime" version="3.7.100.v20230728-0611"/>
+      <unit id="org.eclipse.jdt.junit.runtime" version="3.7.200.v20230627-0107"/>
       <unit id="org.eclipse.jdt.junit5.runtime" version="1.1.100.v20220907-0450"/>
-      <repository id="eclipse-2023-03" location="https://download.eclipse.org/eclipse/updates/4.27"/>
+      <repository id="eclipse-2023-09" location="https://download.eclipse.org/eclipse/updates/4.29"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="org.apache.ant" version="1.10.10.v20210426-1926"/>
-      <unit id="org.apache.xml.resolver" version="1.2.0.v201005080400"/>
+      <unit id="org.apache.ant" version="1.10.12.v20211102-1452"/>
+      <unit id="org.apache.xml.resolver" version="1.2.0.v20220715-1206"/>
+      <unit id="org.hamcrest.core" version="1.3.0.v20230809-1000"/>
+      <unit id="org.apache.xml.serializer" version="2.7.2.v20220406-0601"/>
+      <unit id="org.apache.commons.discovery" version="0.5.0"/>
+      <repository id="orbit-2023-09" location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.w3c.css.sac" version="1.3.1.v200903091627"/>
       <unit id="org.w3c.dom.smil" version="1.0.1.v200903091627"/>
       <unit id="org.w3c.dom.svg" version="1.1.0.v201011041433"/>
       <unit id="org.w3c.dom.events" version="3.0.0.draft20060413_v201105210656"/>
-      <unit id="org.hamcrest.core" version="1.3.0.v20180420-1519"/>
       <unit id="javax.xml" version="1.3.4.v201005080400"/>
-      <unit id="org.apache.xalan" version="2.7.2.v20201124-1837"/>
-      <unit id="org.apache.xml.serializer" version="2.7.1.v201005080400"/>
-      <unit id="org.apache.commons.discovery" version="0.2.0.v201004190315"/>
-      <repository id="orbit-2021-06-R20210602031627" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository"/>
+      <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.krysalis.barcode4j" version="2.1.0"/>
       <repository id="jasperstudio" location="https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0"/>
     </location>
     <!-- com.google -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.2.1-jre</version>
+      <type>jar</type>
+    </location>
     <location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
@@ -208,12 +217,6 @@ Import-Package:        *;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-	  <groupId>com.google.oauth-client</groupId>
-	  <artifactId>google-oauth-client</artifactId>
-	  <version>1.31.5</version>
-	  <type>jar</type>
-	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.google.zxing</groupId>
 	  <artifactId>javase</artifactId>
@@ -231,61 +234,61 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-guava</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-joda</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-json-org</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-base</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-xml-provider</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jsonSchema</artifactId>
-      <version>2.15.3</version>
+      <version>2.15.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.2.6</version>
+      <version>6.7.0</version>
 	  <type>jar</type>
 	</location>	
 	<!-- dev.samstevens.totp -->
@@ -502,13 +505,13 @@ Export-Package:        *;-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk18on</artifactId>
-      <version>1.72.2</version>
+      <version>1.78.1</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk18on</artifactId>
-      <version>1.72</version>
+      <version>1.78.1</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -616,7 +619,7 @@ Export-Package:        *;-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
-      <version>5.16.3</version>
+      <version>5.16.7</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -629,7 +632,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-client</artifactId>
-      <version>5.16.3</version>
+      <version>5.16.7</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -660,13 +663,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="false" missingManifest="generate" type="Maven">
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>1.4.17</version>
+      <version>1.4.20</version>
 	  <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-jaas</artifactId>
-      <version>5.16.3</version>
+      <version>5.16.7</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -679,7 +682,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-openwire-legacy</artifactId>
-      <version>5.16.3</version>
+      <version>5.16.7</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -692,7 +695,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-kahadb-store</artifactId>
-      <version>5.16.3</version>
+      <version>5.16.7</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -719,15 +722,9 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.aries.spifly</groupId>
       <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
-      <version>1.3.3</version>
+      <version>1.3.7</version>
       <type>jar</type>
 	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.aries</groupId>
-      <artifactId>org.apache.aries.util</artifactId>
-      <version>1.1.3</version>
-	  <type>jar</type>
-	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bndlib</artifactId>
@@ -762,19 +759,31 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-configuration2</artifactId>
-      <version>2.7</version>
+      <version>2.10.1</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-fileupload2-core</artifactId>
+      <version>2.0.0-M2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-fileupload2-javax</artifactId>
+      <version>2.0.0-M2</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
+      <version>2.15.1</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -804,32 +813,32 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
-      <version>1.9</version>
+      <version>1.10.0</version>
       <type>jar</type>
 	</location>
 	<!-- org.apache.cxf -->
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-security</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -847,49 +856,55 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-core</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-soap</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-xml</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-simple</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-addr</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-wsdl</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.apache.ws.xmlschema</groupId>
+      <artifactId>xmlschema-core</artifactId>
+      <version>2.3.1</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.neethi</groupId>
       <artifactId>neethi</artifactId>
-      <version>3.1.1</version>
+      <version>3.2.0</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -928,13 +943,13 @@ Require-Capability:    osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-service-description</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-transfer</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -947,13 +962,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-local</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <version>3.4.4</version>
+      <version>3.6.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -967,11 +982,11 @@ Export-Package:        *;version="${version}";-noimport:=true
       <artifactId>stax2-api</artifactId>
       <version>4.2.1</version>
 	  <type>jar</type>
-	</location>
+	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.codehaus.jettison</groupId>
       <artifactId>jettison</artifactId>
-      <version>1.4.1</version>
+      <version>1.5.4</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1062,13 +1077,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-      <version>2.17.2</version>
+      <version>2.23.1</version>
       <type>jar</type>
     </location>
     <location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-to-slf4j</artifactId>
-      <version>2.17.2</version>
+      <version>2.23.1</version>
       <type>jar</type>
     </location>
     <location includeSource="true" missingManifest="generate" type="Maven">
@@ -1130,9 +1145,9 @@ Export-Package:        *;version="${version}";-noimport:=true
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.jaxen</artifactId>
-      <version>1.1.6_1</version>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>2.0.0</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1312,33 +1327,15 @@ Export-Package:        *;version="${version}";-noimport:=true
 	</location>
 	<!-- org.eclipse.jetty -->
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlets</artifactId>
-      <version>10.0.18</version>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>1.3.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-security</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>2.0.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>apache-jsp</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-      <version>10.0.18</version>
+      <groupId>jakarta.transaction</groupId>
+      <artifactId>jakarta.transaction-api</artifactId>
+      <version>1.3.3</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1348,160 +1345,357 @@ Export-Package:        *;version="${version}";-noimport:=true
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.mortbay.jasper</groupId>
-      <artifactId>apache-jsp</artifactId>
-      <version>9.0.52</version>
-      <type>jar</type>
-	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>apache-jstl</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.mortbay.jasper</groupId>
-      <artifactId>apache-el</artifactId>
-      <version>9.0.52</version>
-	  <type>jar</type>
-	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-client</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jmx</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-plus</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-deploy</artifactId>
-      <version>10.0.18</version>
+      <artifactId>jetty-ee</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
-      <version>10.0.18</version>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-osgi</artifactId>
+	  <version>12.0.11</version>
+	  <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-security</artifactId>
+	  <version>12.0.11</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-xml</artifactId>
+	  <version>12.0.11</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty.ee8</groupId>
+	  <artifactId>jetty-ee8-nested</artifactId>
+	  <version>12.0.11</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlet</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlets</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-webapp</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-annotations</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-security</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.12</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>2.0.12</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-apache-jsp</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.http</artifactId>
+      <version>1.2.2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.http.whiteboard</artifactId>
+      <version>1.1.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.osgi</groupId>
+      <artifactId>jetty-ee8-osgi-boot</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.osgi</groupId>
+      <artifactId>jetty-ee8-osgi-boot-jsp</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.mortbay.jasper</groupId>
+      <artifactId>apache-jsp</artifactId>
+      <version>9.0.90</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-glassfish-jstl</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>jakarta.servlet.jsp.jstl</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+      <version>1.2.7</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.glassfish.web</groupId>
+      <artifactId>javax.servlet.jsp.jstl</artifactId>
+      <version>1.2.5</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.mortbay.jasper</groupId>
+      <artifactId>apache-el</artifactId>
+      <version>9.0.90</version>
+	  <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-client</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jmx</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-plus</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-deploy</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>10.0.18</version>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jaas</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-jaspi</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>jakarta.security.auth.message</groupId>
+	  <artifactId>jakarta.security.auth.message-api</artifactId>
+	  <version>1.1.3</version>
+	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>10.0.18</version>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-jetty-server</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-jetty-api</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-jetty-common</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-server</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-server</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-client</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-common</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-servlet</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-session</artifactId>
+	  <version>12.0.11</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http-spi</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-slf4j-impl</artifactId>
-      <version>10.0.18</version>
+      <artifactId>jetty-keystore</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.osgi</groupId>
-      <artifactId>jetty-osgi-boot</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-jndi</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.osgi</groupId>
-      <artifactId>jetty-osgi-boot-jsp</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-proxy</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.osgi</groupId>
-      <artifactId>jetty-osgi-boot-warurl</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-proxy</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.osgi</groupId>
-      <artifactId>jetty-osgi-boot-warurl</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>jetty-websocket-core-client</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.osgi</groupId>
-      <artifactId>jetty-httpservice</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>jetty-websocket-core-common</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>jetty-websocket-core-server</artifactId>
+      <version>12.0.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-javax-websocket-api</artifactId>
+      <version>1.1.2</version>
+      <type>jar</type>
+	</location>	
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.http2</groupId>
+      <artifactId>jetty-http2-server</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.websocket</groupId>
-      <artifactId>websocket-jetty-server</artifactId>
-      <version>10.0.18</version>
+      <groupId>org.eclipse.jetty.http3</groupId>
+      <artifactId>jetty-http3-server</artifactId>
+      <version>12.0.11</version>
       <type>jar</type>
-	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.websocket</groupId>
-      <artifactId>websocket-javax-server</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.websocket</groupId>
-      <artifactId>websocket-javax-common</artifactId>
-      <version>10.0.18</version>
-      <type>jar</type>
-	</location>
+	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.osgi</groupId>
       <artifactId>org.osgi.util.tracker</artifactId>
       <version>1.5.4</version>
       <type>jar</type>
 	</location>
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.websocket</groupId>
-      <artifactId>websocket-core-server</artifactId>
-      <version>10.0.18</version>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.7</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-commons</artifactId>
+      <version>9.7</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>9.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.5</version>
+      <version>9.7</version>
       <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-analysis</artifactId>
-      <version>9.5</version>
-      <type>jar</type>
-	</location>	
-	<!-- org.slf4j -->
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.30</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
+      <version>9.7</version>
       <type>jar</type>
 	</location>	
 	<!-- org.apache.lucene -->
@@ -1639,7 +1833,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="error" type="Maven">
 	    <groupId>org.postgresql</groupId>
     	<artifactId>postgresql</artifactId>
-    	<version>42.7.1</version>
+    	<version>42.7.3</version>
     </location>
     <location includeSource="true" missingManifest="generate" type="Maven">
     	<groupId>com.oracle.database.jdbc</groupId>
@@ -1660,6 +1854,12 @@ Export-Package:        *;version="${version}";-noimport:=true
     	<groupId>com.github.ben-manes.caffeine</groupId>
     	<artifactId>caffeine</artifactId>
     	<version>3.1.8</version>
+    	<type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+    	<groupId>xalan</groupId>
+    	<artifactId>xalan</artifactId>
+    	<version>2.7.3</version>
     	<type>jar</type>
     </location>
   </locations>

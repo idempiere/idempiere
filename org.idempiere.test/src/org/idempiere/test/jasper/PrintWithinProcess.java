@@ -40,6 +40,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
@@ -56,6 +57,28 @@ public class PrintWithinProcess extends AbstractTestCase {
 	public PrintWithinProcess() {
 	}
 
+	private MProcess setupProcess (Properties ctx, String trxName, String jasperReport) {
+		MProcess process = new MProcess(ctx, 0, trxName);
+		process.set_ValueNoCheck("AD_Client_ID", 0);
+		process.setAD_Org_ID(0);
+		process.setJasperReport(jasperReport);
+		process.setName("Test Invoice Jasper");
+		process.setValue("Test_Invoice_Jasper");
+		process.saveCrossTenantSafeEx();
+		commit();
+		return process;
+	}
+	
+	private ProcessInfo setupProcessInfo(MProcess process) {
+		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
+		pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
+		pi.setAD_User_ID(getAD_User_ID());
+		pi.setAD_Client_ID(getAD_Client_ID());
+		pi.setPrintPreview(false);
+		pi.setIsBatch(true);
+		return pi;
+	}
+	
 	@Test
 	public void testPrintWithLocalFile() {
 		Properties ctx = Env.getCtx();
@@ -64,14 +87,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 		MProcess process = null;
 		try {
 			String fileName = putResourceInTempFolder("org/idempiere/test/jasper/AR_Invoice.jrxml");
-			process = new MProcess(ctx, 0, trxName);
-			process.set_ValueNoCheck("AD_Client_ID", 0);
-			process.setAD_Org_ID(0);
-			process.setJasperReport("file://" + fileName);
-			process.setName("Test Invoice Jasper");
-			process.setValue("Test_Invoice_Jasper");
-			process.saveCrossTenantSafeEx();
-			commit();
+			process = setupProcess(ctx, trxName, "file://" + fileName);
 
 			List<MInvoice> invoices = new Query(ctx, MInvoice.Table_Name, "C_Invoice_ID IN (?,?)", trxName)
 					.setClient_ID()
@@ -83,12 +99,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 				invoice.saveEx();
 			}
 
-			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
-			pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
-			pi.setAD_User_ID(getAD_User_ID());
-			pi.setAD_Client_ID(getAD_Client_ID());
-			pi.setPrintPreview(false);
-			pi.setIsBatch(true);
+			ProcessInfo pi = setupProcessInfo(process);
 			Trx trx = Trx.get(trxName, false);
 
 			List<File> pdfList = new ArrayList<File>();
@@ -144,7 +155,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 		}
 		throw new AdempiereException("Resource " + resource + " not found");
 	}
-
+	
 	@Test
 	public void testPrintWithBundleResource() {
 		Properties ctx = Env.getCtx();
@@ -152,14 +163,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 
 		MProcess process = null;
 		try {
-			process = new MProcess(ctx, 0, trxName);
-			process.set_ValueNoCheck("AD_Client_ID", 0);
-			process.setAD_Org_ID(0);
-			process.setJasperReport("bundle:org.idempiere.test:/AR_Invoice_Bundle.jrxml");
-			process.setName("Test Invoice Jasper");
-			process.setValue("Test_Invoice_Jasper");
-			process.saveCrossTenantSafeEx();
-			commit();
+			process = setupProcess(ctx, trxName, "bundle:org.idempiere.test:/AR_Invoice_Bundle.jrxml");
 
 			List<MInvoice> invoices = new Query(ctx, MInvoice.Table_Name, "C_Invoice_ID IN (?,?)", trxName)
 					.setClient_ID()
@@ -171,12 +175,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 				invoice.saveEx();
 			}
 
-			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
-			pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
-			pi.setAD_User_ID(getAD_User_ID());
-			pi.setAD_Client_ID(getAD_Client_ID());
-			pi.setPrintPreview(false);
-			pi.setIsBatch(true);
+			ProcessInfo pi = setupProcessInfo(process);
 			Trx trx = Trx.get(trxName, false);
 
 			List<File> pdfList = new ArrayList<File>();
@@ -212,14 +211,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 
 		MProcess process = null;
 		try {
-			process = new MProcess(ctx, 0, trxName);
-			process.set_ValueNoCheck("AD_Client_ID", 0);
-			process.setAD_Org_ID(0);
-			process.setJasperReport("resource:org.idempiere.test:org/idempiere/test/jasper/AR_Invoice.jrxml");
-			process.setName("Test Invoice Jasper");
-			process.setValue("Test_Invoice_Jasper");
-			process.saveCrossTenantSafeEx();
-			commit();
+			process = setupProcess(ctx, trxName, "resource:org.idempiere.test:org/idempiere/test/jasper/AR_Invoice.jrxml");
 
 			List<MInvoice> invoices = new Query(ctx, MInvoice.Table_Name, "C_Invoice_ID IN (?,?)", trxName)
 					.setClient_ID()
@@ -231,12 +223,7 @@ public class PrintWithinProcess extends AbstractTestCase {
 				invoice.saveEx();
 			}
 
-			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
-			pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
-			pi.setAD_User_ID(getAD_User_ID());
-			pi.setAD_Client_ID(getAD_Client_ID());
-			pi.setPrintPreview(false);
-			pi.setIsBatch(true);
+			ProcessInfo pi = setupProcessInfo(process);
 			Trx trx = Trx.get(trxName, false);
 
 			List<File> pdfList = new ArrayList<File>();
@@ -246,6 +233,60 @@ public class PrintWithinProcess extends AbstractTestCase {
 				assertFalse(pi.isError(), pi.getSummary());
 				assertFalse(pi.getPDFReport() == null);
 				pdfList.add(pi.getPDFReport());
+			}
+			assertFalse(pdfList.isEmpty());
+		} finally {
+			rollback();
+			if (process != null) {
+				int oldRole = Env.getAD_Role_ID(ctx);
+				try {
+					PO.setCrossTenantSafe();
+					Env.setContext(ctx, Env.AD_ROLE_ID, 0); // to allow deleting process
+					process.deleteEx(true);
+				} finally {
+					Env.setContext(ctx, Env.AD_ROLE_ID, oldRole);
+					PO.clearCrossTenantSafe();
+				}
+			}
+			commit();
+		}
+	}
+	
+	@Test
+	public void testEncryptReport() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MProcess process = null;
+		try {
+			process = setupProcess(ctx, trxName, "bundle:org.idempiere.test:/AR_Invoice_Bundle.jrxml");
+			List<MInvoice> invoices = new Query(ctx, MInvoice.Table_Name, "C_Invoice_ID IN (?,?)", trxName)
+					.setClient_ID()
+					.setOnlyActiveRecords(true)
+					.setParameters(103, 109)
+					.list();
+			for (MInvoice invoice : invoices) {
+				invoice.setDescription("Test Printing within a Process");
+				invoice.saveEx();
+			}
+
+			ProcessInfo pi = setupProcessInfo(process);
+			pi.setExport(true);
+			Trx trx = Trx.get(trxName, false);
+			ProcessInfoParameter [] parameter = new ProcessInfoParameter [] 
+					{new ProcessInfoParameter("isEncrypted", true, null, null, null),
+					new ProcessInfoParameter("readPassword", "readPassword", null, null, null),
+					new ProcessInfoParameter("createPassword", "createPassword", null, null, null)};
+			
+			pi.setParameter(parameter);
+			
+			List<File> pdfList = new ArrayList<File>();
+			for (MInvoice invoice : invoices) {
+				pi.setRecord_ID(invoice.getC_Invoice_ID());
+				ProcessUtil.startJavaProcess(Env.getCtx(), pi, trx, false);
+				assertFalse(pi.isError(), pi.getSummary());
+				assertFalse(pi.getExportFile() == null);
+				pdfList.add(pi.getExportFile());
 			}
 			assertFalse(pdfList.isEmpty());
 		} finally {

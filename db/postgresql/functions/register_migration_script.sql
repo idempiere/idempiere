@@ -41,13 +41,6 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-CREATE TABLE dual ( dummy char );
-
-INSERT INTO dual values ( 'X' );
-
-CREATE OR REPLACE RULE insert_dual AS ON INSERT TO dual DO INSTEAD NOTHING;
-
-CREATE OR REPLACE RULE update_dual AS ON UPDATE TO dual DO INSTEAD NOTHING;
-
-CREATE OR REPLACE RULE delete_dual AS ON DELETE TO dual DO INSTEAD NOTHING;
+CREATE VIEW dual AS SELECT 'X'::varchar AS dummy
+;
 

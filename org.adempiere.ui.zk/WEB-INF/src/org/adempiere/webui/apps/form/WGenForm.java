@@ -482,7 +482,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		}
 	}
 
-	/**************************************************************************
+	/**
 	 *  Lock User Interface.
 	 *  Called from the Worker before processing
 	 */

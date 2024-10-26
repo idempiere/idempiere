@@ -26,8 +26,8 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Comboitem;
 
 /**
- * 	Auto-complete with combobox.
- * 	Based on ZK's Auto-complete
+ * 	Auto-complete with combobox.<br/>
+ * 	Based on ZK's Auto-complete.
  * 
  * 	@author Niraj Sohun
  * 			Aug 20, 2007
@@ -59,16 +59,15 @@ public class AutoComplete extends Combobox
 
 	/**
 	 * Set items
-	 * 
 	 * @param vals	Menu labels
-	 */
-	
+	 */	
 	public void setDict(String[] vals)
 	{
 		setDict(vals, true);
 	}
 	
 	/**
+	 * Set items
 	 * @param vals values
 	 * @param sort true to sort in natural order
 	 */
@@ -86,8 +85,7 @@ public class AutoComplete extends Combobox
 	 * Set description of items
 	 * 
 	 * @param vals	Description of items
-	 */
-	
+	 */	
 	public void setDescription(String[] vals)
 	{
 		strDescription = vals;
@@ -97,8 +95,7 @@ public class AutoComplete extends Combobox
 	 * Set content of items
 	 * 
 	 * @param vals	Content of items
-	 */
-	
+	 */	
 	public void setContents(String[] vals)
 	{
 		contents = vals;
@@ -150,8 +147,8 @@ public class AutoComplete extends Combobox
 	}
 	
 	/**
-	 * Event handler responsible to reducing number of items.
-	 * Method is invoked each time something is typed in the combobox.
+	 * Event handler responsible to reducing number of items.<br/>
+	 * Method is invoked each time something is typed into the combobox.
 	 * 
 	 * @param evt Input event
 	 */	

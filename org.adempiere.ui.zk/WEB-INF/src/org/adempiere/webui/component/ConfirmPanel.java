@@ -14,10 +14,10 @@
  * Posterita Ltd., 3, Draper Avenue, Quatre Bornes, Mauritius                 *
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
-
 package org.adempiere.webui.component;
 
 import java.util.HashMap;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +26,16 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MAttachment;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Messagebox;
+
 /**
- * Confirm Panel for window, form and dialog
+ * Common command buttons panel for window, form and dialog
  * @author Sendy Yagambrum
  * @date July 25, 2007
  **/
@@ -117,7 +119,8 @@ public final class ConfirmPanel extends Div
     }
     
     /**
-     * @param name
+     * Creates a button of the specified id
+     * @param name button id
      * @param image
      * @param tooltip
      * @return Button
@@ -134,7 +137,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * create confirm panel with multiple options
+     * Create confirm panel with multiple options
      * @param withCancelButton       with cancel
      * @param withRefreshButton      with refresh
      * @param withResetButton        with reset
@@ -153,7 +156,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * create confirm panel with multiple options
+     * Create confirm panel with multiple options
      * @param withCancelButton       with cancel
      * @param withRefreshButton      with refresh
      * @param withResetButton        with reset
@@ -174,7 +177,7 @@ public final class ConfirmPanel extends Div
     }
     
     /**
-     * create confirm panel with multiple options
+     * Create confirm panel with multiple options
      * @param withCancelButton       with cancel
      * @param withRefreshButton      with refresh
      * @param withResetButton        with reset
@@ -235,7 +238,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * Create confirm panel with Ok and Cancel button
+     * Create confirm panel with Ok and Cancel button only
      * @param withCancel true to include cancel button, false otherwise
      *
      */
@@ -279,10 +282,10 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * add button to center area of panel
+     * Add button to center area of panel
      * @param btName
      * @param imgName
-     * @return
+     * @return added button
      */
     public Button addButton (String btName, String imgName){
     	 Button button = createButton(btName);
@@ -299,7 +302,7 @@ public final class ConfirmPanel extends Div
     }
     
     /**
-     * add process button to center area of panel
+     * Add process button to center area of panel
      * @param btName
      * @param imgName
      * @return Button
@@ -309,7 +312,15 @@ public final class ConfirmPanel extends Div
     	// replace default image with image set at info process
     	if (m_withImage && imgName != null && imgName.trim().length() > 0)
     	{
-    		if (ThemeManager.isUseFontIconForImage())
+    		if (MAttachment.isAttachmentURLPath(imgName))
+    		{
+   				btProcess.setImage(MAttachment.getImageAttachmentURLFromPath(null, imgName));
+    		}
+    		else if (imgName.indexOf("://") > 0)
+    		{
+    			btProcess.setImage(imgName);
+    		}
+    		else if (ThemeManager.isUseFontIconForImage())
     			btProcess.setIconSclass(ThemeManager.getIconSclass(imgName));
     		else
     			btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
@@ -319,7 +330,7 @@ public final class ConfirmPanel extends Div
    }
    
     /**
-     * add button to the left side of the confirm panel
+     * Add button to the left side of the confirm panel
      * @param button button
      */
     public void addComponentsLeft(Button button)
@@ -332,7 +343,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * add button to the right side of the confirm panel
+     * Add button to the right side of the confirm panel
      * @param button button
      */
     public void addComponentsRight(Button button)
@@ -345,7 +356,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * add button to the front of right area of the confirm panel
+     * Add button to the front of right area of the confirm panel
      * @param button button
      */
     public void addComponentsBeforeRight(Button button)
@@ -358,7 +369,7 @@ public final class ConfirmPanel extends Div
     }
     
     /**
-     * add button to the center area of the confirm panel
+     * Add button to the center area of the confirm panel
      * @param button button
      */
     public void addComponentsCenter(Button button)
@@ -388,7 +399,7 @@ public final class ConfirmPanel extends Div
     }    
     
     /**
-     * return button of the specified id
+     * Get button of the specified id
      * @param id button id
      * @return button or null if no button is found
      * <p> The button id can be any of the following
@@ -413,7 +424,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * sets the visibility of the specified button
+     * Sets the visibility of the specified button
      * @param id   button name
      * @param visible   visibility
      * <p> The button name can be any of the following
@@ -442,7 +453,7 @@ public final class ConfirmPanel extends Div
     }
     
     /**
-     * returns whether the specified button is visible or not
+     * Is the specified button visible
      * @param btnName
      * @return visibility of the button
      * <p> The button name can be any of the following
@@ -483,7 +494,7 @@ public final class ConfirmPanel extends Div
     }
     
     /**
-     * enable specific button
+     * Enable/disable specific button
      * @param id   button id
      * @param enabled   enabled
      *
@@ -513,7 +524,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * enable/disable all buttons
+     * Enable/disable all buttons
      * @param enabled true to enable, false otherwise
      */
     public void setEnabledAll(boolean enabled)
@@ -544,7 +555,7 @@ public final class ConfirmPanel extends Div
         }
     }
     /**
-     * add event listener on existing buttons
+     * Add event listener on existing buttons
      * @param event event name
      * @param listener EventListener
      */
@@ -580,7 +591,7 @@ public final class ConfirmPanel extends Div
     }
 
     /**
-     * add ON_CLICK listener for all buttons
+     * Add ON_CLICK listener for all buttons
      * @param listener EventListener
      */
 	public void addActionListener(EventListener<?> listener) {
@@ -588,7 +599,7 @@ public final class ConfirmPanel extends Div
 	}
 
 	/**
-	 * alias for addComponentsLeft for ease of porting swing form
+	 * Alias for addComponentsLeft, to ease of porting swing form
 	 * @param button
 	 */
 	public void addButton(Button button) {
@@ -596,7 +607,7 @@ public final class ConfirmPanel extends Div
 	}
 
 	/**
-	 * alias for getButton("Ok"), to ease porting of swing form
+	 * Alias for getButton("Ok"), to ease porting of swing form
 	 * @return Button
 	 */
 	public Button getOKButton() {
@@ -604,7 +615,7 @@ public final class ConfirmPanel extends Div
 	}
 
 	/**
-	 * Add cls to sclass property of all buttons.
+	 * Add cls to sclass property of all buttons.<br/>
 	 * Keep as {@link #extraButtonSClass} for new button created.
 	 * @param cls
 	 */

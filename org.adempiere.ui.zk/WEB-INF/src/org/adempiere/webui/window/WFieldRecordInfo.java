@@ -69,7 +69,7 @@ import org.zkoss.zul.South;
 public class WFieldRecordInfo extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8544547290283904702L;
 
@@ -80,6 +80,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	private Object value;
+	
 	/**
 	 *	Field Info
 	 *	@param title title

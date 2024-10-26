@@ -25,7 +25,6 @@ import org.compiere.model.GridField;
  * Extend {@link WStringEditor} and set {@link Textbox} to type="password".
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class WPasswordEditor extends WStringEditor
 {	

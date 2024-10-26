@@ -101,7 +101,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private int windowNo = 0;
 
 	/**
-	 *
 	 * @param data
 	 * @param windowNo
 	 */
@@ -110,7 +109,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 *
 	 * @param data
 	 * @param windowNo
 	 * @param processID
@@ -145,9 +143,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		table.setStyle("width: 100%;");
 		div.appendChild(table);
 
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
+		table.setClientAttribute("cellspacing", "0");
+		table.setClientAttribute("cellpadding", "0");
+		table.setClientAttribute("border", "0");
 
 		Tr tr = new Tr();
 		table.appendChild(tr);
@@ -165,23 +163,23 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Header text
+	 * Get header table component
 	 * @return {@link Table}
 	 */
 	private Table getHeader()
 	{
 		Table table = new Table();
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
+		table.setClientAttribute("cellspacing", "0");
+		table.setClientAttribute("cellpadding", "0");
+		table.setClientAttribute("border", "0");
 		table.setStyle("width: 100%;");
-		table.setWidgetAttribute("class","help-window-header");
+		table.setClientAttribute("class","help-window-header");
 
 		Tr tr = new Tr();
 		table.appendChild(tr);
 
 		Td td = new Td();
-		td.setWidgetAttribute("class","help-window-title");
+		td.setClientAttribute("class","help-window-title");
 		tr.appendChild(td);
 		// generate a unique win prefix id for this help window
 		Calendar cal = Calendar.getInstance();
@@ -189,7 +187,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		String dt = sdf.format(cal.getTime());
 		winpref = "Win"+dt;
 		A a = new A();
-		a.setWidgetAttribute("name", winpref);
+		a.setClientAttribute("name", winpref);
 		td.appendChild(a);
 		StringBuilder title = new StringBuilder(Msg.getMsg(Env.getCtx(), "DrillColumn")).append(": ").append(drillReportCtl.getTableName())
 				.append(" - ").append(!Util.isEmpty(drillReportCtl.getDisplayValue()) ? drillReportCtl.getDisplayValue() : drillReportCtl.getValue());
@@ -208,7 +206,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		table.appendChild(tr);
 
 		td = new Td();
-		tr.setWidgetAttribute("class","help-window-tabs");
+		tr.setClientAttribute("class","help-window-tabs");
 		tr.appendChild(td);
 
 		tr = new Tr();
@@ -221,7 +219,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Tabbox with Drill Rules and Related Tables tab.
+	 * Get Tabbox with Drill Rules and Related Tables tab.
 	 * @return {@link Tabbox}
 	 */
 	private Tabbox getContent()
@@ -259,7 +257,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Table with links for all process and nested table for print formats for each process.
+	 * Get Table with links for all process and nested table for print formats for each process.
 	 * @param tabIndex
 	 * @param drillTables [AD_Process_ID,Process Name]
 	 * @param drillPrintFormatMap AD_Process_ID:[AD_Process_DrillRule_ID,Name]
@@ -269,11 +267,11 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private Table getTabContent(int tabIndex, KeyNamePair[] drillTables, HashMap<Integer, KeyNamePair[]> drillPrintFormatMap, boolean isDrillProcessRule)
 	{
 		Table table = new Table();
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
+		table.setClientAttribute("cellspacing", "0");
+		table.setClientAttribute("cellpadding", "0");
+		table.setClientAttribute("border", "0");
 		table.setStyle("width: 100%;");
-		table.setWidgetAttribute("class","help-window-content-r");
+		table.setClientAttribute("class","help-window-content-r");
 
 
 		Tr tr = null;
@@ -301,7 +299,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 			td = new Td();
 			tr.appendChild(td);
 			A a = new A();
-			a.setWidgetAttribute("name",winpref+"Tables");
+			a.setClientAttribute("name",winpref+"Tables");
 			td.appendChild(a);
 			td.appendChild(getTablesBox(tabIndex, drillTables));
 			for (int i = 0; i < size; i++)
@@ -322,7 +320,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Table with process name and print formats
+	 * Get Table with process name and print formats
 	 * @param drillTable [AD_Process_ID,Process Name]
 	 * @param tabIndex
 	 * @param groupIndex
@@ -333,23 +331,23 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private Table getDrillTableBox(KeyNamePair drillTable, int tabIndex, int groupIndex, HashMap<Integer, KeyNamePair[]> drillPrintFormatMap, boolean isDrillProcessRule)
 	{
 		Table table = new Table();
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
+		table.setClientAttribute("cellspacing", "0");
+		table.setClientAttribute("cellpadding", "0");
+		table.setClientAttribute("border", "0");
 		table.setStyle("width: 100%; margin-top: 25px;");
-		table.setWidgetAttribute("class","drill-window-tab");
+		table.setClientAttribute("class","drill-window-tab");
 
 		Tr tr = new Tr();
-		tr.setWidgetAttribute("class", "help-window-tab-header");
+		tr.setClientAttribute("class", "help-window-tab-header");
 		table.appendChild(tr);
 
 		Td td = new Td();
-		td.setWidgetAttribute("class","help-window-tab-name");
+		td.setClientAttribute("class","help-window-tab-name");
 
 		td.setColspan(4);
 		tr.appendChild(td);
 		A a = new A();
-		a.setWidgetAttribute("name",winpref+"Rep" + tabIndex+"-"+groupIndex);
+		a.setClientAttribute("name",winpref+"Rep" + tabIndex+"-"+groupIndex);
 		td.appendChild(a);
 		Div header = new Div();
 		header.setStyle("padding: 10px 0px 10px 0px");
@@ -358,7 +356,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		td.appendChild(header);
 
 		a = new A();
-		a.setWidgetAttribute("title", "Up one level");
+		a.setClientAttribute("title", "Up one level");
 		a.setHref("#"+winpref);
 		a.appendChild(new Text(".."));
 		header.appendChild(a);
@@ -418,6 +416,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
+	 * Find print format via table id
 	 * @param drillTable KeyNamePair(AD_Process_ID,Process Name)
 	 * @return KeyNamePair(AD_PrintFormat_ID,Name)
 	 */
@@ -430,7 +429,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Link for process in drillTables
+	 * Get link for process in drillTables
 	 * @param tabIndex
 	 * @param drillTables [AD_Process_ID,Process Name]
 	 * @return {@link Table}
@@ -438,11 +437,11 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private Table getTablesBox(int tabIndex, KeyNamePair[] drillTables)
 	{
 		Table table = new Table();
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
+		table.setClientAttribute("cellspacing", "0");
+		table.setClientAttribute("cellpadding", "0");
+		table.setClientAttribute("border", "0");
 		table.setStyle("width: 100%;");
-		table.setWidgetAttribute("class","help-window-fields");
+		table.setClientAttribute("class","help-window-fields");
 
 		Tr tr = new Tr();
 		table.appendChild(tr);
@@ -451,7 +450,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		tr.appendChild(td);
 
 		tr = new Tr();
-		tr.setWidgetAttribute("class","help-window-Formats-link");
+		tr.setClientAttribute("class","help-window-Formats-link");
 		table.appendChild(tr);
 
 		td = new Td();
@@ -486,7 +485,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	}
 
 	/**
-	 * Link and description for print format. 
+	 * Get link and description for print format. 
 	 * @param drillPrintFormat KeyNamePair(AD_PrintFormat_ID,Name)
 	 * @param reportIndex
 	 * @param formatIndex
@@ -500,13 +499,13 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	{
 
 		Tr tr = new Tr();
-		tr.setWidgetAttribute("class", "drill-window-field-name");
+		tr.setClientAttribute("class", "drill-window-field-name");
 
 		Td td = new Td();
 		td.setStyle("width: 30%");
 		tr.appendChild(td);
 		A a = new A();
-		a.setWidgetAttribute("name",winpref+"Format" + reportIndex + "-" + formatIndex + "-" + groupIndex);
+		a.setClientAttribute("name",winpref+"Format" + reportIndex + "-" + formatIndex + "-" + groupIndex);
 		td.appendChild(a);
 		H4 h4 = new H4();
 		h4.appendChild(new Text(drillPrintFormat.getName()));
@@ -514,7 +513,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		td.appendChild(h4);
 		a = new A();
 		a.setHref("#"+winpref+"Rep"+reportIndex+"-"+groupIndex);
-		a.setWidgetAttribute("title", "Up one level");
+		a.setClientAttribute("title", "Up one level");
 		a.appendChild(new Text(".."));
 		td.appendChild(a);
 
@@ -523,7 +522,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		tr.appendChild(td);
 
 		a = new A();
-		a.setWidgetAttribute("title", "Run Report");
+		a.setClientAttribute("title", "Run Report");
 		a.setHref("#");
 		a.appendChild(new Text("[" + Msg.getMsg(Env.getCtx(), "Run") + "]"));
 		a.addEventListener(Events.ON_CLICK, this);

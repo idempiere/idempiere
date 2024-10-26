@@ -92,8 +92,8 @@ import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * Process Parameter Panel.
- * Embedded in {@link ProcessDialog} and {@link ProcessModalDialog}.
+ * Process Parameter Panel.<br/>
+ * Embedded in {@link ProcessDialog} and {@link ProcessModalDialog}.<br/>
  * Capture parameters input, validate and save to DB.
  * 
  * @author Low Heng Sin
@@ -140,7 +140,7 @@ public class ProcessParameterPanel extends Panel implements
 	} // ProcessParameterPanel
 	
 	/**
-	 * Layout UI
+	 * Layout panel
 	 */
 	private void initComponent() {
 		centerPanel = GridFactory.newGridLayout();
@@ -552,7 +552,7 @@ public class ProcessParameterPanel extends Panel implements
 	} // createField
 
 	/**
-	 * set place holder message
+	 * Set place holder message
 	 * @param editor
 	 * @param msg
 	 */
@@ -706,7 +706,7 @@ public class ProcessParameterPanel extends Panel implements
 	}
 
 	/** 
-	 * load parameters from saved instance
+	 * Load parameters from saved instance
 	 * @param instance
 	 */
 	public boolean loadParameters(MPInstance instance)
@@ -1045,6 +1045,7 @@ public class ProcessParameterPanel extends Panel implements
 	 * 
 	 * @param evt ValueChangeEvent
 	 */
+	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		String propName = evt.getPropertyName();
 		if (evt.getSource() instanceof WEditor) {
@@ -1327,13 +1328,16 @@ public class ProcessParameterPanel extends Panel implements
 		m_processInfo = processInfo;
 	}
 	
-	
+	/**
+	 * Get process info 
+	 * @return process info
+	 */
 	public ProcessInfo getProcessInfo() {
 		return m_processInfo;
 	}
 	
 	/**
-	 * focus to first visible field editor.
+	 * Focus to first visible field editor.
 	 * @return true if there is at least one visible field editor.
 	 */
 	public boolean focusToFirstEditor() {
@@ -1392,7 +1396,8 @@ public class ProcessParameterPanel extends Panel implements
 	}
 	
 	/**
-	 * @return true if editor is showing dialog awaiting user action (usually info window).
+	 * Is WSearchEditor showing dialog that is awaiting user action
+	 * @return true if WSearchEditor is showing dialog that is awaiting user action (usually info window).
 	 */
 	public boolean isWaitingForDialog() {
 		for (int i = 0; i < m_mFields.size(); i++) {

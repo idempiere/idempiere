@@ -125,7 +125,7 @@ public class ExportAction implements EventListener<Event>
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");
 			winExportFile.setSclass("popup-dialog");
-			winExportFile.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "exportAction");
+			winExportFile.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "exportAction");
 
 			cboType.setMold("select");
 

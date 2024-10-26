@@ -93,10 +93,9 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Image;
 
 /**
- *
+ * Login panel of {@link LoginWindow}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
@@ -253,7 +252,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "Login"));
+    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "LoginHeader"));
     	lblLogin.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(lblLogin);
     	form.appendChild(div);
@@ -555,7 +554,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
-    	lblLogin.setValue(Msg.getMsg(language, "Login"));
+    	lblLogin.setValue(Msg.getMsg(language, "LoginHeader"));
     	pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
     	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
     }

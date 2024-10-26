@@ -432,6 +432,8 @@ public final class Ini implements Serializable
 			s_prop = new Properties();
 		if (key.equals(P_WARNING) || key.equals(P_WARNING_de))
 			s_prop.setProperty(key, value);
+		else if (key.endsWith(".TraceLevel"))
+			s_prop.setProperty(key, value);
 		else if (!isClient())
 			s_prop.setProperty(key, SecureInterface.CLEARVALUE_START + value + SecureInterface.CLEARVALUE_END);
 		else

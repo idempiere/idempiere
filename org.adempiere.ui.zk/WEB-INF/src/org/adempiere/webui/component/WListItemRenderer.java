@@ -54,6 +54,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
@@ -209,7 +210,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		if (m_tableColumns.size() > columnIndex) {
 			column = getColumn(columnIndex);
 			if (column != null && column.getHeaderValue() != null) {
-				listcell.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, column.getHeaderValue().toString());
+				listcell.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, column.getHeaderValue().toString());
 			}
 		}
 		boolean isCellEditable = table != null ? table.isCellEditable(rowIndex, columnIndex) : false;
@@ -851,7 +852,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	}
 
 	/**
-	 * Reset the renderer.
+	 * Reset the renderer.<br/>
 	 * This should be called if the table using this renderer is cleared.
 	 */
 	public void clearColumns()
@@ -986,6 +987,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			if (listBox != null && Events.ON_DOUBLE_CLICK.equals(event.getName())) {
 				Event evt = new Event(Events.ON_DOUBLE_CLICK, listBox);
 				Events.sendEvent(listBox, evt);
+				Clients.evalJavaScript("jq('img.fullsize-image').remove();");
 			}
 		}
 

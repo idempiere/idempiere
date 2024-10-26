@@ -57,14 +57,6 @@ public final class LayoutUtils {
 	 */
 	@Deprecated(forRemoval = true, since = "11")
 	public static void sendDeferLayoutEvent(org.zkoss.zul.Borderlayout layout, int timeout) {
-		/* this is not required anymore */
-//		StringBuilder content = new StringBuilder();
-//		content.append("ad_deferRenderBorderLayout('")
-//			   .append(layout.getUuid())
-//			   .append("',").append(timeout).append(");");
-//
-//		AuScript as = new AuScript(null, content.toString());
-//		Clients.response("deferRenderBorderLayout", as);
 	}
 	
 	/**
@@ -79,7 +71,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * 
+	 * Is target's sclass property contains cls
 	 * @param cls
 	 * @param target
 	 * @return true if target's sclass property contain cls

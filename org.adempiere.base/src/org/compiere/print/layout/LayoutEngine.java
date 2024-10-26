@@ -1662,7 +1662,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				}
 				columnHeader[col] = new ValueNamePair(item.getColumnName(),
 					item.getPrintName(format.getLanguage()));
-				colPositions.put(item.getPrintName(), col);
+				colPositions.put(item.getPrintName(true), col);
 				columnMaxWidth[col] = item.getMaxWidth();
 				fixedWidth[col] = (columnMaxWidth[col] != 0 && item.isFixedWidth());
 				colSuppressRepeats[col] = item.isSuppressRepeats();

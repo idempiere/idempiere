@@ -51,7 +51,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Style;
 
 /**
- * Controller for multiple desktop windows. <br/>
+ * Controller for multiple desktop windows (tabs). <br/>
  * Implemented using {@link Tabbox}. 
  * @author Low Heng Sin
  */
@@ -258,6 +258,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
     /**
+     * Is show home button
      * @return true if home button should be visible
      */
 	private boolean isShowHomeButton() {
@@ -265,6 +266,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is show home button for desktop browser
 	 * @return true to show home button for desktop browser
 	 */
 	private boolean isDesktopShowHomeButton() {
@@ -272,6 +274,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is show drop down list for tabs
 	 * @return true to show tabs drop down list
 	 */
 	private boolean isShowTabList() {
@@ -279,6 +282,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is show drop down list for tabs for desktop browser
 	 * @return true to show tabs drop down list for desktop browser
 	 */
 	private boolean isDesktopShowTabList() {
@@ -286,6 +290,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is auto shrink tab title to fit in more tabs without scrolling
 	 * @return true to auto shrink title of tab to fit in more tabs without scrolling
 	 */
 	private boolean isDesktopAutoShrinkTabTitle() {
@@ -676,6 +681,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
     
 	/**
+	 * Get max length of tab title
 	 * @return max length of tab title
 	 */
     private int getMaxTitleLength() {
@@ -752,7 +758,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
     /**
-     * Set tab to visible, other tabs to invisible.
+     * Set tab to visible, other tabs to invisible (for mobile browser).
      * @param tab  new selected tab to be set as visible 
      */
 	private void updateMobileTabState(org.zkoss.zul.Tab tab) {
@@ -773,6 +779,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is client is mobile browser
 	 * @return true if browser client is visible
 	 */
     private boolean isMobile() {
@@ -802,6 +809,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
+     * Set title and tooltip of a tab
      * @param tabNo
      * @param title
      * @param tooltip 
@@ -821,6 +829,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
 	/**
+	 * Get root component
 	 * @return Tabbox
 	 */
 	public Tabbox getComponent() {
@@ -828,6 +837,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 	
 	/**
+	 * Get toolbar
 	 * @return toolbar
 	 */
 	public ToolBar getToobar() {

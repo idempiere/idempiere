@@ -239,6 +239,19 @@ public interface I_AD_PInstance
 	  */
 	public boolean isSummary();
 
+    /** Column name JsonData */
+    public static final String COLUMNNAME_JsonData = "JsonData";
+
+	/** Set JSON Data.
+	  * The json field stores json data.
+	  */
+	public void setJsonData (String JsonData);
+
+	/** Get JSON Data.
+	  * The json field stores json data.
+	  */
+	public String getJsonData();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

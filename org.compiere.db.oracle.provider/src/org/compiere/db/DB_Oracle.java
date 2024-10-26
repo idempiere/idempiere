@@ -1095,7 +1095,7 @@ public class DB_Oracle implements AdempiereDatabase
 		if (column.getAD_Reference_ID() == DisplayType.YesNo)
 			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
 		else if (column.getAD_Reference_ID() == DisplayType.JSON)
-			sql.append("CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
+			sql.append(" CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null
 		if (column.isMandatory())
@@ -1170,6 +1170,8 @@ public class DB_Oracle implements AdempiereDatabase
 		sql.append(sqlDefault);
 		
 		//	Constraint
+		if (column.getAD_Reference_ID() == DisplayType.JSON)
+			sql.append(" CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null Values
 		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)

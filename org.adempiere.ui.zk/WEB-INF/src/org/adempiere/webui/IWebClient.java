@@ -20,7 +20,7 @@ import org.zkforge.keylistener.Keylistener;
 /**
  * Interface for web client
  * @author hengsin
- *
+ * @see AdempiereWebUI
  */
 public interface IWebClient {
 

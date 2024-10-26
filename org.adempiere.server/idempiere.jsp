@@ -129,7 +129,8 @@ Author URI: http://www.bmlaurus.com
 				<%}%>
 			</div>
 			<div id="footercopyright">
-				&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved - <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="blank">iDempiere License is GPLv2</a>
+				<p>&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved</p>
+				<p><a href="http://www.gnu.org/licenses/gpl-2.0.html" target="blank">iDempiere License is GPLv2</a></p>
 				<%=Prop.getProperty(Prop.COPYRIGHT_TXT)%>
 			</div>
 		</div>

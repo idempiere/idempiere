@@ -174,8 +174,8 @@ span.grid-combobox-editor {
 	cursor: default;
 	border: none;
 }
-.image-fit-contain {
-	object-fit: contain;
+.image-fit {
+	object-fit: scale-down;
 }
 .z-cell.image-field-cell {
 	z-index: 1;
@@ -282,4 +282,11 @@ span.grid-combobox-editor {
 <%-- font icon for field button --%>
 .z-button [class^="z-icon-"], .z-button-os [class^="z-icon-"] {
 	color: #fff;
+}
+
+<%-- full size image hover --%>
+.fullsize-image {
+	padding: 5px;
+  	border: 1px solid #ccc;
+  	background: #e3f4f9;
 }

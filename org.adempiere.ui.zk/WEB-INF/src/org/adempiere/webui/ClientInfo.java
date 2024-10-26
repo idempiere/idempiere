@@ -96,6 +96,7 @@ public class ClientInfo implements Serializable {
 	}
 
 	/**
+	 * Is mobile browser client
 	 * @return true if mobile browser
 	 */
 	public static boolean isMobile() {
@@ -103,7 +104,7 @@ public class ClientInfo implements Serializable {
 	}
 
 	/**
-	 * 
+	 * Is firefox
 	 * @param version null to match all version
 	 * @return true if browser is firefox and match the pass in version parameter
 	 */
@@ -115,6 +116,7 @@ public class ClientInfo implements Serializable {
 	}
 	
 	/**
+	 * Get current client info instance
 	 * @return the current clientinfo instance
 	 */
 	public static ClientInfo get() {
@@ -122,7 +124,7 @@ public class ClientInfo implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * Get minimum width of desktop
 	 * @param minWidth
 	 * @return true if desktopWidth &gt;= minWidth
 	 */
@@ -131,7 +133,7 @@ public class ClientInfo implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * Get maximum width of desktop
 	 * @param maxWidth
 	 * @return true if desktopWidth &lt;= maxWidth
 	 */
@@ -140,7 +142,7 @@ public class ClientInfo implements Serializable {
 	}	
 	
 	/**
-	 * 
+	 * Get minimum height of desktop
 	 * @param minHeight
 	 * @return true if desktopHeight &gt;= minHeight
 	 */
@@ -149,7 +151,7 @@ public class ClientInfo implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * Get maximum height of desktop
 	 * @param maxHeight
 	 * @return true if desktopHeight &lt;= maxHeight
 	 */
@@ -174,6 +176,7 @@ public class ClientInfo implements Serializable {
 	}
 	
 	/**
+	 * Is screen orientation portrait
 	 * @return true if screen orientation is portrait, false otherwise
 	 */
 	public boolean isPortrait() {

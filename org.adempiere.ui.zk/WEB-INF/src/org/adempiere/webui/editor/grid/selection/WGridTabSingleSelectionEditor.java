@@ -38,7 +38,8 @@ import org.zkoss.zul.Menuitem;
 
 /**
  * Default editor for {@link DisplayType#SingleSelectionGrid}.
- * Implemented with {@link GridTabSelectionListView} component.
+ * Implemented with {@link GridTabSelectionListView} component.<br/>
+ * Show list view with contents from AD_Field.Included_Tab_ID and save selected row id as field value.
  * @author hengsin
  *
  */

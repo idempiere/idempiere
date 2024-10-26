@@ -93,7 +93,6 @@ import org.zkoss.zul.South;
  *	Send EMail Dialog
  *
  *  @author 	Jorg Janke
- *  @version 	$Id: EMailDialog.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *  
  *  globalqss: integrate phib fixing bug reported here
  *     https://sourceforge.net/p/adempiere/bugs/62/
@@ -996,8 +995,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * @param newUserCc
 	 */
 	public void setUserCc(int newUserCc) {
-		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCc.getValue(), newUserCc);
-		fUser.valueChange(vce);
+		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCcUser.getValue(), newUserCc);
+		fCcUser.valueChange(vce);
 	}
 
 	/**

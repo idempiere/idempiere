@@ -23,7 +23,6 @@ import org.compiere.model.GridField;
  * Simple text editor for unknown display type.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class WUnknownEditor extends WStringEditor
 {

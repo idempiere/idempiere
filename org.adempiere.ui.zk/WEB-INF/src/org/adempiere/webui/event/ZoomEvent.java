@@ -13,13 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.event;
 
+import org.compiere.model.MQuery;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 
 /**
- * 
+ * Event for zoom to AD window via query criteria
  * @author hengsin
- *
  */
 public class ZoomEvent extends Event {
 
@@ -31,7 +31,7 @@ public class ZoomEvent extends Event {
 
 	/**
 	 * @param target
-	 * @param data
+	 * @param data zoom criteria, typically instance of {@link MQuery}
 	 */
 	public ZoomEvent(Component target, Object data) {
 		super(EVENT_NAME, target, data);

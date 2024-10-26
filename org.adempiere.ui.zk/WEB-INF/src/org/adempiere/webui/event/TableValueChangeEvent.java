@@ -18,7 +18,7 @@
 package org.adempiere.webui.event;
 
 /**
- * An event encapsulating a change in a Table.
+ * An event encapsulating a value change in a Table.<br/>
  * The event details the object that changed, it's position in the table
  * and the changed value.
  * 

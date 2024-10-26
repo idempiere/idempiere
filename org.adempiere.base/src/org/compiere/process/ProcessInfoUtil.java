@@ -168,7 +168,7 @@ public class ProcessInfoUtil
 		{
 			MPInstanceLog il = new MPInstanceLog(pi.getAD_PInstance_ID(), logs[i].getLog_ID(), logs[i].getP_Date(),
 					logs[i].getP_ID(), logs[i].getP_Number(), logs[i].getP_Msg(),
-					logs[i].getAD_Table_ID(), logs[i].getRecord_ID(), 
+					logs[i].getAD_Table_ID(), logs[i].getRecord_ID(), logs[i].getJsonData(),
 					!Util.isEmpty(logs[i].getPInstanceLogType()) ? logs[i].getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
 			il.save();
 		}
@@ -181,21 +181,29 @@ public class ProcessInfoUtil
 	public static void setParameterFromDB (ProcessInfo pi)
 	{
 		ArrayList<ProcessInfoParameter> list = new ArrayList<ProcessInfoParameter>();
-		String sql = "SELECT p.ParameterName,"         			    	//  1
+		final String sql = "SELECT p.ParameterName,"					//  1
 			+ " p.P_String,p.P_String_To, p.P_Number,p.P_Number_To,"    //  2/3 4/5
 			+ " p.P_Date,p.P_Date_To, p.Info,p.Info_To, "               //  6/7 8/9
 			+ " i.AD_Client_ID, i.AD_Org_ID, i.AD_User_ID, "			//	10..12
-			+ " p.IsNotClause "											//  13
+			+ " p.IsNotClause, p.SeqNo "								//  13..14
 			+ "FROM AD_PInstance_Para p"
 			+ " INNER JOIN AD_PInstance i ON (p.AD_PInstance_ID=i.AD_PInstance_ID) "
 			+ "WHERE p.AD_PInstance_ID=? "
-			+ "ORDER BY p.SeqNo";
+			+ " UNION " /* Add as null the parameters that were not passed */
+			+ " SELECT pp.ColumnName, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, i.AD_Client_ID, i.AD_Org_ID, i.AD_User_ID, 'N', pp.SeqNo "
+			+ " FROM AD_PInstance i "
+			+ "  JOIN AD_Process_Para pp ON (pp.AD_Process_ID=i.AD_Process_ID AND pp.IsActive='Y') "
+			+ " WHERE i.AD_PInstance_ID=? "
+			+ "  AND pp.ColumnName NOT IN (SELECT ParameterName FROM AD_PInstance_Para p WHERE p.AD_PInstance_ID=?) "
+			+ "ORDER BY SeqNo";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, pi.getAD_PInstance_ID());
+			pstmt.setInt(2, pi.getAD_PInstance_ID());
+			pstmt.setInt(3, pi.getAD_PInstance_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{

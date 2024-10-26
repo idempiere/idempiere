@@ -132,7 +132,6 @@ public class ResultTableModel extends AbstractTableModel
 	 * Get the ArrayList of ArrayLists that contains the table's data values. <br/>
 	 * The outer array list is rows and the inner array list is the columns of a row.
 	 * @return the ArrayList of ArrayLists containing the tables data values
-	 * @author Teo Sarca [ 1734327 ]
 	 */
 	protected ArrayList<ArrayList<Object>> getDataList() {
 		return m_model.getRows();

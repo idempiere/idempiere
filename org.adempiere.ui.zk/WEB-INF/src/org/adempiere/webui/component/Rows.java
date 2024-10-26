@@ -21,7 +21,6 @@ package org.adempiere.webui.component;
  * Extend {@link org.zkoss.zul.Rows}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Rows extends org.zkoss.zul.Rows
 {

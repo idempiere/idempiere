@@ -249,7 +249,7 @@ public abstract class SvrProcess implements ProcessCall
 			@SuppressWarnings("unchecked")
 			List<String> errorsBP = (List<String>) eventBP.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
 			if (errorsBP != null && !errorsBP.isEmpty()) {
-				msg = "@Error@:" + errorsBP.get(0);
+				msg = "@Error@" + errorsBP.get(0);
 			} else {
 				msg = doIt();
 				if (msg != null && ! msg.startsWith("@Error@")) {
@@ -257,7 +257,7 @@ public abstract class SvrProcess implements ProcessCall
 					@SuppressWarnings("unchecked")
 					List<String> errorsAP = (List<String>) eventAP.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
 					if (errorsAP != null && !errorsAP.isEmpty()) {
-						msg = "@Error@:" + errorsAP.get(0);
+						msg = "@Error@" + errorsAP.get(0);
 					}
 				}
 			}
@@ -766,6 +766,7 @@ public abstract class SvrProcess implements ProcessCall
 				mpi.setIsProcessing(false);
 				mpi.setResult(!m_pi.isError());
 				mpi.setErrorMsg(m_pi.getSummary());
+				mpi.setJsonData(m_pi.getJsonData());
 				mpi.saveEx();
 				if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
 				
