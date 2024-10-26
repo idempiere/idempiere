@@ -1040,6 +1040,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	@Override
 	public void switchRowPresentation() {
 	}
+	
+	@Override
+	public void setupRowPresentation() {
+	}
 
 	@Override
 	public String get_ValueAsString(String variableName) {
