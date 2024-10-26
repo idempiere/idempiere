@@ -117,6 +117,11 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void switchRowPresentation();
 
 	/**
+	 * Setup Row presentation - switch to grid view if configured
+	 */
+	public void setupRowPresentation();
+
+	/**
 	 * Dynamic update of every field's UI properties ( visibility, filter and mandatory ).
 	 * @param col optional column name
 	 */
