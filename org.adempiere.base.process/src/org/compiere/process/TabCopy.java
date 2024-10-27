@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.compiere.model.MField;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
+import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 
@@ -113,6 +114,11 @@ public class TabCopy extends SvrProcess
 		int count = 0;
 		for (MField oldField : from.getFields(false, get_TrxName()))
 		{
+			// ignore it when newField already exists
+			if (new Query(getCtx(), MField.Table_Name, "AD_Tab_ID=? AND AD_Column_ID=?", get_TrxName())
+					.setParameters(to.getAD_Tab_ID(), oldField.getAD_Column_ID())
+					.match())
+				continue;
 			MField newField = new MField (to, oldField);
 			if (! oldField.isActive())
 				newField.setIsActive(false);
