@@ -314,6 +314,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			riDBremove(AD_RecentItem_ID);
 			bxRecentItems.removeChild(btn);
 			bxRecentItems.invalidate();
+			refresh();
 		}
 	}
 
