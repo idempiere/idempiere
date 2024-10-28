@@ -107,9 +107,21 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailText(boolean all, boolean parsed)
 	{
+		return getMailText(all, parsed, false);
+	}
+
+	/**
+	 * 	Get translated and parsed (if parsed argument is true) Mail Text
+	 *	@param all true to concatenate mailtext, mailtext2 and mailtext3
+	 *  @param parsed true to parsed variables in text
+	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+	 *	@return translated and parsed (if parsed argument is true) text
+	 */
+	public String getMailText(boolean all, boolean parsed, boolean keepEscapeSequence)
+	{
 		translate();
 		if (!all)
-			return parsed ? parse(m_MailText) : m_MailText;
+			return parsed ? parse(m_MailText, keepEscapeSequence) : m_MailText;
 		//
 		StringBuilder sb = new StringBuilder();
 		sb.append(m_MailText);
@@ -120,7 +132,7 @@ public class MMailText extends X_R_MailText
 		if (s != null && s.length() > 0)
 			sb.append("\n").append(s);
 		//
-		return parsed ? parse(sb.toString()) : sb.toString();
+		return parsed ? parse(sb.toString(), keepEscapeSequence) : sb.toString();
 	}	//	getMailText
 
 	/**
@@ -129,8 +141,7 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailText()
 	{
-		translate();
-		return parse (m_MailText);
+		return getMailText(false, true);
 	}	//	getMailText
 	
 	/**
@@ -170,9 +181,11 @@ public class MMailText extends X_R_MailText
 	public String getMailHeader(boolean parsed)
 	{
 		translate();
+		if (m_MailHeader == null)
+			return "";
 		return parsed ? parse(m_MailHeader) : m_MailHeader;
 	}	//	getMailHeader
-	
+
 	/**
 	 * 	Parse variables in text (@variable expression@)
 	 *	@param text text
@@ -180,14 +193,25 @@ public class MMailText extends X_R_MailText
 	 */
 	protected String parse (String text)
 	{
+		return parse(text, false);
+	}
+
+	/**
+	 * 	Parse variables in text (@variable expression@)
+	 *	@param text text
+	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+	 *	@return parsed text
+	 */
+	protected String parse (String text, boolean keepEscapeSequence)
+	{
 		if (Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
 		//	Parse User
-		text = parse (text, m_user, (m_bpartner != null || m_po != null));
+		text = parse (text, m_user, (keepEscapeSequence || (m_bpartner != null || m_po != null)));
 		//	Parse BP
-		text = parse (text, m_bpartner, m_po != null);
+		text = parse (text, m_bpartner, (keepEscapeSequence || m_po != null));
 		//	Parse PO
-		text = parse (text, m_po, false);
+		text = parse (text, m_po, keepEscapeSequence);
 		//
 		return text;
 	}	//	parse

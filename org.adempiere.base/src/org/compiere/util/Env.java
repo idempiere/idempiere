@@ -1504,7 +1504,7 @@ public final class Env
 	{
 		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false);
 	}
-	
+
 	/**
 	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
 	 *
@@ -1608,7 +1608,7 @@ public final class Env
 	{
 		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, ignoreUnparsable, false);
 	}
-	
+
 	/**
 	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
 	 *
@@ -1764,7 +1764,7 @@ public final class Env
 			boolean useMsgForBoolean, boolean keepUnparseable) {
 		return parseVariable(expression, po, trxName, useColumnDateFormat, useMsgForBoolean, keepUnparseable, false);
 	}
-	
+
 	/**
 	 * Parse expression, replaces global or PO properties @tag@ with actual value.
 	 * @param expression
@@ -1790,7 +1790,7 @@ public final class Env
 		{
 			outStr.append(inStr.substring(0, i));			// up to @
 			inStr = inStr.substring(i+1, inStr.length());	// from first @
-			
+
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
@@ -1809,7 +1809,7 @@ public final class Env
 				i = inStr.indexOf('@');
 				continue;
 			}
-			
+
 			token = inStr.substring(0, j);
 
 			String defaultValue = "";

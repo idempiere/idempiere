@@ -25,6 +25,7 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +38,8 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
@@ -112,7 +115,7 @@ public class EnvTest extends AbstractTestCase {
 		expr = "test@@mail.com";
 		parsedText = Env.parseVariable(expr, null, getTrxName(), true, true, true);
 		assertEquals("test@mail.com", parsedText, "Unexpected parsed text for " + expr);
-		
+
 		//test multiple call to parse
 		expr = "test@@mail.com";
 		expr = Env.parseVariable(expr, null, getTrxName(), true, true, true, true);
@@ -120,16 +123,16 @@ public class EnvTest extends AbstractTestCase {
 		parsedText = Env.parseVariable(expr, null, getTrxName(), true, true, true, false);		
 		assertEquals("test@mail.com", parsedText, "Unexpected parsed text for " + expr + " with keepEscapeSequence=false");
 	}
-	
+
 	@Test
 	public void testParseContext() {
 		//global
 		String parsedText = Env.parseContext(Env.getCtx(), 0, "@"+Env.AD_CLIENT_ID+"@", false);
 		assertEquals(Env.getContext(Env.getCtx(), Env.AD_CLIENT_ID), parsedText, "Unexpected parseContext value");
-		
-		int windowNo = 1;
-		int tabNo = 1;
-		
+
+		final int windowNo = 1;
+		final int tabNo = 1;
+
 		//window only
 		Env.setContext(Env.getCtx(), windowNo, "AnInt", 1);
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@AnInt@", true);
@@ -138,7 +141,7 @@ public class EnvTest extends AbstractTestCase {
 		assertTrue(Util.isEmpty(parsedText), "Unexpected parseContext value");		
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, "@AnInt@", false, true);
 		assertEquals("1", parsedText, "Unexpected parseContext value");
-		
+
 		//window and tab
 		Env.setContext(Env.getCtx(), windowNo, "AnInt", (String)null);
 		Env.setContext(Env.getCtx(), windowNo, tabNo, "AnInt", 1);
@@ -146,7 +149,7 @@ public class EnvTest extends AbstractTestCase {
 		assertTrue(Util.isEmpty(parsedText), "Unexpected parseContext value");
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, "@AnInt@", true, true);
 		assertEquals("1", parsedText, "Unexpected parseContext value");
-		
+
 		//test escape sequence
 		Env.setContext(Env.getCtx(), windowNo, "EMail", "test@idempiere.com");
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@EMail@='test@@idempiere.com'", true, true);
@@ -155,9 +158,20 @@ public class EnvTest extends AbstractTestCase {
 		assertEquals("test@idempiere.com='test@idempiere.com'", parsedText, "Unexpected parseContext value");
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@EMail@='test@@idempiere.com'", true, true, true);
 		assertEquals("test@idempiere.com='test@@idempiere.com'", parsedText, "Unexpected parseContext value");
+		
+		Evaluatee contextEvaluatee = v -> {
+			return Env.getContext(Env.getCtx(), windowNo, v);
+		};
+		
+		boolean evaluation = Evaluator.evaluateLogic(contextEvaluatee, "@EMail@='test@idempiere.com'");
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		evaluation = Evaluator.evaluateLogic(contextEvaluatee, "@EMail@=test@idempiere.com");
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		evaluation = Evaluator.evaluateLogic(contextEvaluatee, "@EMail@=test1@idempiere.com");
+		assertFalse(evaluation, "Unexpected logic evaluation result");
 	}
-	
-	@Test	
+
+	@Test
 	public void testParseMailText() {
 		String mailText = """
 				Hello @Name@
@@ -166,8 +180,7 @@ public class EnvTest extends AbstractTestCase {
 
 				Contact us at: test@@test.com
 
-				or to this another mail test2@@test.com
-		""";		
+				or to this another mail test2@@test.com""";
 		MMailText mMailText = new MMailText(Env.getCtx(), 0, getTrxName());
 		mMailText.setMailHeader("Mail Header");
 		mMailText.setMailText(mailText);
@@ -183,8 +196,8 @@ public class EnvTest extends AbstractTestCase {
 
 				Contact us at: test@test.com
 
-				or to this another mail test2@test.com
-		""".formatted(contacts[0].getName());
+				or to this another mail test2@test.com"""
+				.formatted(contacts[0].getName());
 		assertEquals(expectedText, parsedText, "Unexpected parsed mail text");
 	}
 }

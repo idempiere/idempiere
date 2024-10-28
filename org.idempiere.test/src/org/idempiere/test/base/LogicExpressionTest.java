@@ -651,6 +651,9 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 		Env.setContext(Env.getCtx(), "QtyReserved", "0.00");
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		expr = "1.50>1.00";
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 	
 	/**
