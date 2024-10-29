@@ -24,6 +24,7 @@ import org.adempiere.model.IInfoColumn;
 import org.compiere.db.Database;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -167,9 +168,10 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
 			return true;
 		
+		DefaultEvaluatee de = new DefaultEvaluatee(null, windowNo, -1, true);
 		Evaluatee evaluatee = new Evaluatee() {
 			public String get_ValueAsString(String variableName) {
-				return Env.getContext (ctx, windowNo, variableName, true);
+				return de.get_ValueAsString(ctx, variableName);
 			}
 		};
 		

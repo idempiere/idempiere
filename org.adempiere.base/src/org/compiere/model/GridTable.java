@@ -572,7 +572,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 *	Get GridField with ColumnName
 	 *  @param identifier column name
-	 *  @return GridField
+	 *  @return GridField or null
 	 */
 	protected GridField getField (String identifier)
 	{

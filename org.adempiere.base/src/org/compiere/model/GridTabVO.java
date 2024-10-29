@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Util;
@@ -687,7 +688,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	 */
 	public String get_ValueAsString (String variableName)
 	{
-		return Env.getContext (ctx, WindowNo, variableName, false);	// not just window
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, -1, false, false);
+		return evaluatee.get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 	/**

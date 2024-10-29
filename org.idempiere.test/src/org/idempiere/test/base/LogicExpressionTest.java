@@ -44,7 +44,6 @@ import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
-import org.compiere.util.Evaluatee;
 import org.compiere.util.LegacyLogicEvaluator;
 import org.compiere.util.TimeUtil;
 import org.idempiere.expression.logic.LogicEvaluator;
@@ -58,7 +57,7 @@ import org.junit.jupiter.api.Test;
  */
 public class LogicExpressionTest  extends AbstractTestCase {
 
-	private final static ContextEvaluatee evaluatee = new ContextEvaluatee();
+	private final static DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, -1, -1, false, false);
 	
 	public LogicExpressionTest() {
 	}
@@ -713,14 +712,5 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), 1, "Processed", "Y");
 		Env.setContext(Env.getCtx(), 1, "M_Product_ID", pchair);
 		assertTrue(LogicEvaluator.evaluateLogic(new DefaultEvaluatee(null, 1, 0), expr));
-	}
-	
-	private static class ContextEvaluatee implements Evaluatee {
-
-		@Override
-		public String get_ValueAsString(String variableName) {
-			return Env.getContext(Env.getCtx(), variableName);
-		}
-		
-	}
+	}	
 }

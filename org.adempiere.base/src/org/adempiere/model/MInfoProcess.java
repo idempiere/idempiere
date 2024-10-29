@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_InfoProcess;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -99,7 +100,8 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, Immut
 		
 		Evaluatee evaluatee = new Evaluatee() {
 			public String get_ValueAsString(String variableName) {
-				return Env.getContext (ctx, windowNo, variableName, true);
+				DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, windowNo, -1, true);
+				return evaluatee.get_ValueAsString(ctx, variableName);
 			}
 		};
 		

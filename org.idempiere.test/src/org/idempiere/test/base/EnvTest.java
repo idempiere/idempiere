@@ -36,6 +36,7 @@ import org.compiere.model.MMailText;
 import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -99,9 +100,21 @@ public class EnvTest extends AbstractTestCase {
 		expr = "@#AD_Client_ID<Name>@";
 		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
 		assertEquals(clientName, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@#AD_Client_ID.Name@";
+		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
+		assertEquals(clientName, parsedText, "Unexpected parsed text for "+expr);
 		
 		String bpartnerValue = MBPartner.get(Env.getCtx(), order.getC_BPartner_ID()).getValue();
 		expr = "@C_BPartner_ID<Value>@";
+		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID:0<Value>@";
+		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID.Value@";
+		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID:0.Value@";
 		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
 		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
 		
@@ -141,7 +154,7 @@ public class EnvTest extends AbstractTestCase {
 		assertTrue(Util.isEmpty(parsedText), "Unexpected parseContext value");		
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, "@AnInt@", false, true);
 		assertEquals("1", parsedText, "Unexpected parseContext value");
-
+		
 		//window and tab
 		Env.setContext(Env.getCtx(), windowNo, "AnInt", (String)null);
 		Env.setContext(Env.getCtx(), windowNo, tabNo, "AnInt", 1);
@@ -169,6 +182,75 @@ public class EnvTest extends AbstractTestCase {
 		assertTrue(evaluation, "Unexpected logic evaluation result");
 		evaluation = Evaluator.evaluateLogic(contextEvaluatee, "@EMail@=test1@idempiere.com");
 		assertFalse(evaluation, "Unexpected logic evaluation result");
+		
+		//column value
+		String clientName = MClient.get(getAD_Client_ID()).getName();
+		String expr = "@#AD_Client_ID<Name>@";
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, false);
+		assertEquals(clientName, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@#AD_Client_ID.Name@";
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, false);
+		assertEquals(clientName, parsedText, "Unexpected parsed text for "+expr);
+		//window only
+		String bpartnerValue = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id).getValue();
+		Env.setContext(Env.getCtx(), windowNo, "C_BPartner_ID", DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		expr = "@C_BPartner_ID<Value>@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID.Value@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID:0<Value>@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID:0.Value@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		//tab only
+		Env.setContext(Env.getCtx(), windowNo, "C_BPartner_ID", "");
+		Env.setContext(Env.getCtx(), windowNo, tabNo, "C_BPartner_ID", DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		expr = "@C_BPartner_ID<Value>@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID.Value@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID:0<Value>@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@C_BPartner_ID:0.Value@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, expr, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		//window only with tab prefix
+		expr = "@"+tabNo+"|C_BPartner_ID<Value>@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, -1, expr, false, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@"+tabNo+"|C_BPartner_ID.Value@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, -1, expr, false, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@"+tabNo+"|C_BPartner_ID:0<Value>@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, -1, expr, false, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		expr = "@"+tabNo+"|C_BPartner_ID:0.Value@";		
+		parsedText = Env.parseContext(Env.getCtx(), windowNo,  -1, expr, false, true);
+		assertEquals(bpartnerValue, parsedText, "Unexpected parsed text for "+expr);
+		//logic
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, windowNo, tabNo, true);
+		expr = "@C_BPartner_ID<Value>@='"+bpartnerValue+"'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		expr = "@C_BPartner_ID.Value@='"+bpartnerValue+"'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		//logic+formatting
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String created = sdf.format(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id).getCreated());
+		expr = "@C_BPartner_ID.Created<yyyy-MM-dd>@='"+created+"'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		expr = "@C_BPartner_ID:0.Created<yyyy-MM-dd>@='"+created+"'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertTrue(evaluation, "Unexpected logic evaluation result");
 	}
 
 	@Test

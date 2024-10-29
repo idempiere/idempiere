@@ -2763,7 +2763,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *  Get Field by DB column name
 	 *  @param columnName column name
-	 *  @return GridField
+	 *  @return GridField or null
 	 */
 	public GridField getField (String columnName)
 	{
