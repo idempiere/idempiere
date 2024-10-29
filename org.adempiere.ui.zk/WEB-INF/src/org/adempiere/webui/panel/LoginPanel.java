@@ -48,7 +48,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.Dialog;
+import org.adempiere.webui.window.LoginInfoWindow;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
@@ -66,7 +66,6 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.compiere.util.WebUtil;
 import org.zkoss.lang.Strings;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
@@ -252,7 +251,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "LoginHeader"));
+    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "Login"));
     	lblLogin.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(lblLogin);
     	form.appendChild(div);
@@ -448,7 +447,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_HELP))
         {
-            openLoginHelp();
+            openLoginInfo();
         }
         else if (event.getName().equals(Events.ON_SELECT))
         {
@@ -480,23 +479,11 @@ public class LoginPanel extends Window implements EventListener<Event>
         //
     }
 
-	private void openLoginHelp() {
+	private void openLoginInfo() {
 		String lang = (String) lstLanguage.getSelectedItem().getValue();
-		lang = lang.substring(0, 2);
-		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_HELP_URL, "https://wiki.idempiere.org/{lang}/Login_Help");
-		if (helpURL.contains("{lang}")) {
-			String rawURL = helpURL;
-			helpURL = Util.replace(rawURL, "{lang}", lang);
-			if (!"en".equals(lang) && !WebUtil.isUrlOk(helpURL))
-				helpURL = Util.replace(rawURL, "{lang}", "en"); // default to English
-		}
-		try {
-			Executions.getCurrent().sendRedirect(helpURL, "_blank");
-		}
-		catch (Exception e) {
-			String message = e.getMessage();
-			Dialog.warn(0, "URLnotValid", message, null);
-		}
+		LoginInfoWindow infoWindow = new LoginInfoWindow(lang);
+		infoWindow.setPage(this.getPage());
+		infoWindow.doHighlighted();
 	}
 
 	/**
@@ -554,7 +541,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
-    	lblLogin.setValue(Msg.getMsg(language, "LoginHeader"));
+    	lblLogin.setValue(Msg.getMsg(language, "Login"));
     	pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
     	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
     }
