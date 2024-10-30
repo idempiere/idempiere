@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk>
-<zscript>
-	import org.compiere.model.MSysConfig;
-import org.jfree.util.Log;
-	var config =  MSysConfig.getValue(MSysConfig.APPLICATION_LOGIN_LEFT_PANEL_SHOWN, "Y");
-	var isLefPanelShow = config == "Y" || config == "H";
-</zscript>
 <borderlayout id="layout" sclass="login-window">
 	<center border="none" autoscroll="true" style="background-color: transparent;">
 		<vbox pack="center" align="center" style="background-color: transparent;" hflex="1" vflex="1">
