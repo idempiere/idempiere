@@ -20,70 +20,46 @@ Copyright (C) 2009 Idalica Corporation
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 	}
-
-	.user-list {
-		text-align: center;
-		margin-top: 10px;
-		font-size: 9pt;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 20px;
-	}
-
-	.user-item {
-		margin-bottom: 20px;
-	}
-
-	.user-name {
-		font-weight: bold;
-		display: block;
-		margin-bottom: 5px;
-	}
-
-	.user-details {
-		display: block;
-	}
-
-	.user-details p {
-		margin: 3px;
-	}
 </style>
 <div class="loginInfoBox">
 <span class="section-head">Initially, you can log in with:
 </span>
-<div class="user-list">
-	<div class="user-item">
-		<span class="user-details">
-			<p>User: GardenAdmin</p>
-			<p>Email: admin@gardenworld.com</p>
-			<p>Password: GardenAdmin</p>
-		</span>
-	</div>
 
-	<div class="user-item">
-		<span class="user-details">
-			<p>User: GardenUser</p>
-			<p>Email: user@gardenworld.com</p>
-			<p>Password: GardenUser</p>
-		</span>
-	</div>
+<table cellpadding="5" cellspacing="0" style="text-align: center; margin-top: 10px; font-size: 9pt; background-color: transparent;">
 
-	<div class="user-item">
-		<span class="user-details">
-			<p>User: SuperUser</p>
-			<p>Email: superuser@idempiere.com</p>
-			<p>Password: System</p>
-		</span>
-	</div>
+<tbody>
+<tr valign="top">
+<th><b>User</b></th>
+<th><b>Email</b></th>
+<th><b>Password</b></th>
+</tr>
 
-	<div class="user-item">
-		<span class="user-details">
-			<p>User: System</p>
-			<p>Email: system@idempiere.com</p>
-			<p>Password: System</p>
-		</span>
-	</div>
-</div>
+<tr valign="top">
+<td>GardenAdmin</td>
+<td>admin @ gardenworld.com</td>
+<td>GardenAdmin</td>
+</tr>
+
+<tr valign="top">
+<td>GardenUser</td>
+<td>user @ gardenworld.com</td>
+<td>GardenUser</td>
+</tr>
+
+<tr valign="top">
+<td>SuperUser</td>
+<td>superuser @ idempiere.com</td>
+<td>System</td>
+</tr>
+
+<tr valign="top">
+<td>System</td>
+<td>system @ idempiere.com</td>
+<td>System</td>
+</tr>
+
+</tbody>
+</table>
 </div>
 ]]>
 </html>

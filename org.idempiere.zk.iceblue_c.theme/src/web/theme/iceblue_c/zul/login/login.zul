@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk>
+<zscript>
+	import org.compiere.model.MSysConfig;
+import org.jfree.util.Log;
+	var config =  MSysConfig.getValue(MSysConfig.APPLICATION_LOGIN_LEFT_PANEL_SHOWN, "Y");
+	var isLefPanelShow = config == "Y" || config == "H";
+</zscript>
 <borderlayout id="layout" sclass="login-window">
 	<center border="none" autoscroll="true" style="background-color: transparent;">
 		<vbox pack="center" align="center" style="background-color: transparent;" hflex="1" vflex="1">
@@ -10,6 +16,7 @@
 		<include src="~./theme/iceblue_c/zul/login/login-right.zul"/>
 	</east>
 	<west sclass="login-west-panel">
+		<include src="~./theme/iceblue_c/zul/login/login-left.zul"/>
 	</west>
 	<north sclass="login-north-panel">
 		<include src="~./theme/iceblue_c/zul/login/login-top.zul"/>
