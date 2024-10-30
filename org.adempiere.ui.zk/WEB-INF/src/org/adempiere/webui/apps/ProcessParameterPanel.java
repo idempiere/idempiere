@@ -1451,6 +1451,9 @@ public class ProcessParameterPanel extends Panel implements
 		return evaluatee.get_ValueAsString(variableName);				
 	}
 
+	/**
+	 * Data provider implementation backed by parameter field editors
+	 */
 	private class FieldEditorDataProvider implements DefaultEvaluatee.DataProvider {
 
 		@Override

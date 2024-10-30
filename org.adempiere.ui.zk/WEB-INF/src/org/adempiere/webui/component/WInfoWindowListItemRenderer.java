@@ -187,6 +187,9 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 		}
 	}
 	
+	/**
+	 * Data provider implementation for WListbox
+	 */
 	private class TableDataProvider implements DefaultEvaluatee.DataProvider {
 
 		private WListbox table;

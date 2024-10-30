@@ -57,7 +57,7 @@ import org.junit.jupiter.api.Test;
  */
 public class LogicExpressionTest  extends AbstractTestCase {
 
-	private final static DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, -1, -1, false, false);
+	private final static DefaultEvaluatee evaluatee = new DefaultEvaluatee();
 	
 	public LogicExpressionTest() {
 	}

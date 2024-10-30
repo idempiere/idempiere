@@ -59,6 +59,11 @@ public class DefaultEvaluatee implements Evaluatee {
 	/** Cache for {@link #getColumnValue(MTable, String, String, int, String)} */
 	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 1, 2000);
 	
+	/**
+	 * @param gridTab
+	 * @param windowNo
+	 * @param tabNo
+	 */
 	public DefaultEvaluatee(GridTab gridTab, int windowNo, int tabNo) {
 		this(gridTab, windowNo, tabNo, true);
 	}
@@ -91,6 +96,9 @@ public class DefaultEvaluatee implements Evaluatee {
 		this.m_onlyTab = Boolean.valueOf(onlyTab);
 	}
 	
+	/**
+	 * @param po
+	 */
 	public DefaultEvaluatee(PO po) {
 		this(new PODataProvider(po));
 	}
@@ -106,6 +114,9 @@ public class DefaultEvaluatee implements Evaluatee {
 		this.m_onlyTab = null;
 	}
 	
+	/**
+	 * Default constructor
+	 */
 	public DefaultEvaluatee() {
 		this.m_dataProvider = null;
 		this.m_windowNo = -1;
@@ -160,7 +171,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		// get value from global or window context
 		if (globalVariable)
 		{
-			value = Env.getContext(ctx, variableName);	// get global context
+			value = Env.getContext(ctx, variableName);	// get from global context
 		}
 		else if (m_windowNo >= 0)
 		{
@@ -190,12 +201,12 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 		
 		// po property operator
-		Object poValue = null;
+		Object dataValue = null;
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
 			if (variableName.startsWith(Evaluator.VARIABLE_PO_PROPERTY_OPERATOR)) {
 				variableName = variableName.substring(1);
-				poValue = m_dataProvider.getProperty(variableName);
-				value = poValue != null ? poValue.toString() : "";
+				dataValue = m_dataProvider.getProperty(variableName);
+				value = dataValue != null ? dataValue.toString() : "";
 			}
 		}
 		
@@ -208,20 +219,22 @@ public class DefaultEvaluatee implements Evaluatee {
 			variableName = variableName.substring(1);
 		}
 		
-		// get value from PO or GridTab
+		// get value from data provider(usually PO or GridTab)
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
-			poValue = m_dataProvider.getValue(variableName);
-			value = poValue != null ? poValue.toString() : "";
+			dataValue = m_dataProvider.getValue(variableName);
+			value = dataValue != null ? dataValue.toString() : "";
 		}
 		
-		if (!globalVariable && m_dataProvider == null && Util.isEmpty(value)) {
+		//try context if no data provider and not with window and tab no
+		if (!globalVariable && m_dataProvider == null && Util.isEmpty(value) && !m_onlyWindow && m_windowNo < 0 && m_tabNo < 0) {
 			value = Env.getContext(ctx, variableName);
 		}
 		
+		//fall back to default (if define)
 		if (Util.isEmpty(value) && defaultValue != null)
 			value = defaultValue;
 		
-		// get column from GridTab or PO
+		// get column from data provider (usually GridTab or PO)
 		MColumn column = null;		
 		if (!globalVariable) {
 			if (m_dataProvider != null) {
@@ -229,7 +242,7 @@ public class DefaultEvaluatee implements Evaluatee {
 			}
 		}
 		
-		// handle . operator
+		// handle reference(.) operator
 		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX)) {
 			int id = 0;
 			try {
@@ -252,13 +265,13 @@ public class DefaultEvaluatee implements Evaluatee {
 				if (!Util.isEmpty(foreignTable)) {
 					MTable table = MTable.get(Env.getCtx(), foreignTable);
 					if (table != null) {
-						poValue = getColumnValue(table, foreignTable, foreignColumn, id, defaultReferenceValue);
-						if (poValue == null)
+						dataValue = getColumnValue(table, foreignTable, foreignColumn, id, defaultReferenceValue);
+						if (dataValue == null)
 							value = "";
-						else if (poValue instanceof Boolean booleanValue)
+						else if (dataValue instanceof Boolean booleanValue)
 							value = booleanValue ? "Y" : "N";
 						else
-							value = poValue.toString();
+							value = dataValue.toString();
 					}
 				}				
 			}
@@ -307,20 +320,20 @@ public class DefaultEvaluatee implements Evaluatee {
 					value = MRefList.getListName(Env.getCtx(), refID, (String) value);
 				else if (format.equals("Description"))
 					value = MRefList.getListDescription(Env.getCtx(), DB.getSQLValueStringEx(null, "SELECT Name FROM AD_Reference WHERE AD_Reference_ID = ?", refID), value);
-			} else if (poValue != null && poValue instanceof Date dateValue) {
+			} else if (dataValue != null && dataValue instanceof Date dateValue) {
 				SimpleDateFormat df = new SimpleDateFormat(format);
 				value = df.format(dateValue);
-			} else if (poValue != null && poValue instanceof Number numberValue) {
+			} else if (dataValue != null && dataValue instanceof Number numberValue) {
 				DecimalFormat df = new DecimalFormat(format);
 				value = df.format(numberValue.doubleValue());
-			} else if (poValue != null) {
+			} else if (dataValue != null) {
 				MessageFormat mf = new MessageFormat(format);
-				value = mf.format(poValue);
+				value = mf.format(dataValue);
 			}			
 		} else if (column != null) {
 			if (column.isSecure()) {
 				value = "********";
-			} else if (column != null && column.getAD_Reference_ID() == DisplayType.YesNo && poValue != null && poValue instanceof Boolean booleanValue) {
+			} else if (column != null && column.getAD_Reference_ID() == DisplayType.YesNo && dataValue != null && dataValue instanceof Boolean booleanValue) {
 				if (m_useMsgForBoolean ) {
 					if (booleanValue.booleanValue())
 						value = Msg.getMsg(Env.getCtx(), "Yes");
@@ -329,18 +342,24 @@ public class DefaultEvaluatee implements Evaluatee {
 				} else {
 					value = booleanValue.booleanValue() ? "Y" : "N";
 				}
-			} else if (column != null && DisplayType.isDate(column.getAD_Reference_ID()) && poValue != null && poValue instanceof Date dateValue && m_useColumnDateFormat) {
+			} else if (column != null && DisplayType.isDate(column.getAD_Reference_ID()) && dataValue != null && dataValue instanceof Date dateValue && m_useColumnDateFormat) {
 				SimpleDateFormat sdf = DisplayType.getDateFormat(column.getAD_Reference_ID());
 				value = sdf.format (dateValue);
 			}				
-		} else if (poValue != null && poValue instanceof BigDecimal decimalValue) {
+		} else if (dataValue != null && dataValue instanceof BigDecimal decimalValue) {
 			int precision = MClient.get(Env.getCtx()).getAcctSchema().getStdPrecision();
 			value = decimalValue.setScale(precision, RoundingMode.HALF_UP).toPlainString();
 		}
 		
-		return value;
+		return value != null ? value : "";
 	}
 
+	/**
+	 * Get reference table name
+	 * @param variableName
+	 * @param column
+	 * @return null or reference table name
+	 */
 	private static String getForeignTableName(String variableName, MColumn column) {
 		String foreignTable = null;
 		if (column != null) {
@@ -415,28 +434,47 @@ public class DefaultEvaluatee implements Evaluatee {
 			remove(key);
 		}
 	}
-
+	
+	/**
+	 * Is using message translation for boolean data value
+	 * @return true if using message translation for boolean data value
+	 */
 	public boolean isUseMsgForBoolean() {
 		return m_useMsgForBoolean;
 	}
 
+	/**
+	 * Set the use of message translation for boolean data value
+	 * @param useMsgForBoolean
+	 */
 	public void setUseMsgForBoolean(boolean useMsgForBoolean) {
 		this.m_useMsgForBoolean = useMsgForBoolean;
 	}
 
+	/**
+	 * Is using column display format for date data value
+	 * @return true if using column display format for date data value
+	 */
 	public boolean isUseColumnDateFormat() {
 		return m_useColumnDateFormat;
 	}
 
+	/**
+	 * Set the use of column display format for date data value
+	 * @param useColumnDateFormat
+	 */
 	public void setUseColumnDateFormat(boolean useColumnDateFormat) {
 		this.m_useColumnDateFormat = useColumnDateFormat;
 	}
 	
+	/**
+	 * Data provider interface
+	 */
 	public static interface DataProvider {
 		/**
 		 * Get column value via column name
 		 * @param columnName
-		 * @return null or value for variableName
+		 * @return null or value for columnName
 		 */
 		Object getValue(String columnName);
 		
@@ -454,9 +492,16 @@ public class DefaultEvaluatee implements Evaluatee {
 		 */
 		MColumn getColumn(String columnName);
 		
+		/**
+		 * Get transaction name
+		 * @return null or transaction name
+		 */
 		String getTrxName();
 	}
 	
+	/**
+	 * Data provider implementation for PO
+	 */
 	public static class PODataProvider implements DataProvider {
 
 		private PO po;
@@ -507,6 +552,9 @@ public class DefaultEvaluatee implements Evaluatee {
 		
 	}
 	
+	/**
+	 * Data provider implementation for GridTab
+	 */
 	public static class GridTabDataProvider implements DataProvider {
 
 		private GridTab gridTab;

@@ -1642,7 +1642,7 @@ public final class Env
 			token = inStr.substring(0, j);
 
 			String ctxInfo = evaluatee.get_ValueAsString(token);			
-			if (ctxInfo.length() == 0)
+			if (Util.isEmpty(ctxInfo))
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
 				if (!ignoreUnparsable)

@@ -1376,6 +1376,9 @@ public class WPrintFormatEditor implements ValueChangeListener {
 		}
 	}
 	
+	/**
+	 * Data provider implementation for print format item
+	 */
 	private static class PFIDataProvider implements DefaultEvaluatee.DataProvider {
 
 		private MPrintFormatItem pfItem;
