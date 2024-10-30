@@ -102,7 +102,7 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 		}
 	    else
 	    {
-	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, windowNo, tabNo, false, true);
+	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(adTabpanel.getGridTab(), windowNo, tabNo, false, true);
 	    	return evaluatee.get_ValueAsString(variableName);
 	    }
 	}

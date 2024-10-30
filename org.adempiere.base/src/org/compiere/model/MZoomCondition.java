@@ -365,13 +365,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 		MZoomCondition[] conditions = MZoomCondition.getConditions(AD_Table_ID);
 		if (conditions.length > 0)
 		{
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, winNo, -1, false);
-					return evaluatee.get_ValueAsString(Env.getCtx(), variableName);							
-				}
-			};
-
+			Evaluatee evaluatee = new DefaultEvaluatee(null, winNo, -1, false);
 			String whereClause;
 			if (table.isUUIDKeyTable())
 				whereClause = PO.getUUIDColumnName(table.getTableName())+"="+DB.TO_STRING(recordUU);

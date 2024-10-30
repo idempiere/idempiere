@@ -98,11 +98,9 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, Immut
 		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
 			return true;
 		
-		Evaluatee evaluatee = new Evaluatee() {
-			public String get_ValueAsString(String variableName) {
-				DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, windowNo, -1, true);
-				return evaluatee.get_ValueAsString(ctx, variableName);
-			}
+		Evaluatee evaluatee = (variableName) -> {
+			DefaultEvaluatee de = new DefaultEvaluatee(null, windowNo, -1, true);
+			return de.get_ValueAsString(ctx, variableName);
 		};
 		
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());

@@ -156,7 +156,7 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		}
 	    else
 	    {
-	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, windowNo, tabNo, false, true);
+	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(adTabpanel.getGridTab(), windowNo, tabNo, false, true);
 	    	return evaluatee.get_ValueAsString(variableName);
 	    }
 	}

@@ -169,11 +169,7 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 			return true;
 		
 		DefaultEvaluatee de = new DefaultEvaluatee(null, windowNo, -1, true);
-		Evaluatee evaluatee = new Evaluatee() {
-			public String get_ValueAsString(String variableName) {
-				return de.get_ValueAsString(ctx, variableName);
-			}
-		};
+		Evaluatee evaluatee = (variableName) -> {return de.get_ValueAsString(ctx, variableName);};
 		
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
 		if (log.isLoggable(Level.FINEST)) log.finest(getName() 
