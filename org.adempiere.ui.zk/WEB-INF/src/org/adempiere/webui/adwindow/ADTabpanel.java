@@ -978,10 +978,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
     		}        	
         }
-        
-        if(!update)
-        	this.setupRowPresentation();
-        
     }
 
     /**
