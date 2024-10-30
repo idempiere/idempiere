@@ -1615,13 +1615,13 @@ public final class Env
 				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
 			}
 
-			if (ctxInfo.length() == 0 && Env.isGlobalVariable(token))
+			if (Util.isEmpty(ctxInfo) && Env.isGlobalVariable(token))
 				ctxInfo = getContext(ctx, token);	// get global context
 
-			if (ctxInfo.length() == 0 && defaultV != null)
+			if (Util.isEmpty(ctxInfo) && defaultV != null)
 				ctxInfo = defaultV;
 
-			if (ctxInfo.length() == 0)
+			if (Util.isEmpty(ctxInfo))
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
 				if (!ignoreUnparsable)
