@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Properties;
 
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 
@@ -288,12 +288,11 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
 			return true;
 		
-		Evaluatee evaluatee = new Evaluatee() {
-			public String get_ValueAsString(String variableName) {
-				return Env.getContext (ctx, windowNo, variableName, true);
-			}
+		Evaluatee evaluatee = (variableName) -> {
+			DefaultEvaluatee de = new DefaultEvaluatee(null, windowNo, -1, true);
+			return de.get_ValueAsString(ctx, variableName);
 		};
-		
+				
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
 		return retValue;
 	}

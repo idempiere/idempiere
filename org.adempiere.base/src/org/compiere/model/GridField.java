@@ -466,11 +466,7 @@ public class GridField
 				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, ctx, m_vo.WindowNo,
 						m_vo.TabNo, m_vo.ColumnName);
 			} else {
-				Evaluatee evaluatee = new Evaluatee() {
-					public String get_ValueAsString(String variableName) {
-						return GridField.this.get_ValueAsString(ctx, variableName);
-					}
-				};
+				Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 				isAlwaysUpdatable = Evaluator.evaluateLogic(evaluatee, m_vo.AlwaysUpdatableLogic);
 				if (log.isLoggable(Level.FINEST))
 					log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + isAlwaysUpdatable);
@@ -551,11 +547,7 @@ public class GridField
 			}
 			else
 			{
-				Evaluatee evaluatee = new Evaluatee() {
-					public String get_ValueAsString(String variableName) {
-						return GridField.this.get_ValueAsString(ctx, variableName);
-					}
-				};
+				Evaluatee evaluatee = variableName -> {return get_ValueAsString(ctx, variableName);};
 				boolean retValue = !Evaluator.evaluateLogic(evaluatee, m_vo.ReadOnlyLogic);
 				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 				if (!retValue)
@@ -1300,11 +1292,7 @@ public class GridField
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return GridField.this.get_ValueAsString(ctx, variableName);
-				}
-			};
+			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
@@ -1345,11 +1333,7 @@ public class GridField
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return GridField.this.get_ValueAsString(ctx, variableName);
-				}
-			};
+			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
@@ -1363,6 +1347,7 @@ public class GridField
 	 *	@param variableName name
 	 *	@return value
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
 		return get_ValueAsString(m_vo.ctx, variableName);
