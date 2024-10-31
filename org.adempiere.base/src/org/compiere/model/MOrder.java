@@ -1243,7 +1243,7 @@ public class MOrder extends X_C_Order implements DocAction
 					set_ValueNoCheck(COLUMNNAME_C_BPartner_Location_ID, null);
 				}
 			}
-			if (getAD_User_ID() > 0) {
+			if (getAD_User_ID() >= 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getAD_User_ID());
 				if (bpId != getC_BPartner_ID()) {
 					set_Value(COLUMNNAME_AD_User_ID, null);
@@ -1258,7 +1258,7 @@ public class MOrder extends X_C_Order implements DocAction
 					set_Value(COLUMNNAME_Bill_Location_ID, null);
 				}
 			}
-			if (getBill_User_ID() > 0) {
+			if (getBill_User_ID() >= 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getBill_User_ID());
 				if (bpId != getBill_BPartner_ID()) {
 					setBill_User_ID(-1);
