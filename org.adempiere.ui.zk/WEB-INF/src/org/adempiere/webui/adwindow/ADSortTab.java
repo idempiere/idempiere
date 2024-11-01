@@ -1042,7 +1042,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 	
 	@Override
-	public void setupRowPresentation() {
+	public void onAfterFind() {
 	}
 
 	@Override

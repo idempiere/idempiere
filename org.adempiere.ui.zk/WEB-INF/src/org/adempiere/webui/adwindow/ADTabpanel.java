@@ -978,6 +978,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
     		}        	
         }
+        
+        if (!update && !gridTab.isSingleRow() && !isGridView())
+        	switchRowPresentation(); 
+        
     }
 
     /**
@@ -1949,10 +1953,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
     
     /**
-     * Setup Row presentation - switch to grid view if configured
+     * After Find window closes switch to grid view if configured
      * @return void
      */
-    public void setupRowPresentation() {
+    public void onAfterFind() {
 
  		if(!isGridView()) {
  			

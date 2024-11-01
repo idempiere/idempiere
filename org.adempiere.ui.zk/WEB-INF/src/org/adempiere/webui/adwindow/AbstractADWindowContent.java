@@ -894,7 +894,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            	callback.onCallback(result);
 			            	EventListener<? extends Event> listener = findWindow.getEventListeners(DialogEvents.ON_WINDOW_CLOSE).iterator().next();
 			            	findWindow.removeEventListener(DialogEvents.ON_WINDOW_CLOSE, listener);
-			            	adTabbox.getSelectedTabpanel().setupRowPresentation();
+			            	adTabbox.getSelectedTabpanel().onAfterFind();
 			            }
 			            else
 			            {
@@ -2574,7 +2574,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				        	onNew();
 				        } else {
 				        	adTabbox.getSelectedGridTab().dataRefresh(false); // Elaine 2008/07/25
-		        			adTabbox.getSelectedTabpanel().setupRowPresentation();
+		        			adTabbox.getSelectedTabpanel().onAfterFind();
 				        }
 				        toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow().getAD_UserQuery_ID());
 				        focusToActivePanel();
