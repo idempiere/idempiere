@@ -78,7 +78,7 @@
                 walk through all available discovery strategies and detect the correct one for the
                 current runtime environment.
             -->
-            <auto-detection enabled="true"/>
+            <auto-detection enabled="false"/>
             <!-- Enables/disables the multicast discovery mechanism. The default value is disabled. -->
             <multicast enabled="false">
                 <!--
