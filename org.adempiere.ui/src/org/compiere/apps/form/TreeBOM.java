@@ -24,8 +24,10 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.eevolution.model.MPPProductBOM;
 
+/**
+ * Form to view BOM tree.
+ */
 public class TreeBOM {
-
 	
 	public static final CLogger log = CLogger.getCLogger(TreeBOM.class);
 	
@@ -34,10 +36,10 @@ public class TreeBOM {
 	}
 	
 	/**
-	 * get Product Summary
+	 * Get Product Summary
 	 * @param product Product
 	 * @param isLeaf is Leaf
-	 * @return String
+	 * @return Product Summary (Value_Name[UOM])
 	 */
 	public String productSummary(MProduct product, boolean isLeaf) {
 		MUOM uom = MUOM.get(getCtx(), product.getC_UOM_ID());
@@ -53,9 +55,9 @@ public class TreeBOM {
 	}
 	
 	/**
-	 * get Product Summary
+	 * Get BOM Summary
 	 * @param bom Product BOM
-	 * @return String 
+	 * @return BOM Summary (Value_Name) 
 	 */
 	public String productSummary(MPPProductBOM bom) {
 		String value = bom.getValue();

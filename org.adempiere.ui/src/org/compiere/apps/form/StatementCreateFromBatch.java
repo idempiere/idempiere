@@ -36,9 +36,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Form to create bank statement line ({@link MBankStatementLine}) from transactions (payment, receipt, etc).
  * @author Elaine
- *
  */
 public abstract class StatementCreateFromBatch extends CreateFromForm
 {
@@ -48,7 +47,6 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	@Override
 	protected boolean dynInit() throws Exception
 	{
-		log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "C_BankStatement_ID") + " .. " + Msg.getElement(Env.getCtx(), "X_CreateFromBatch"));
 		
 		return true;
@@ -63,7 +61,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Get where clause
 	 * @param BPartner
 	 * @param DocumentNo
 	 * @param DateFrom
@@ -130,7 +128,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Set prepared statement parameters
 	 * @param pstmt
 	 * @param BankAccount
 	 * @param BPartner
@@ -197,6 +195,11 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		}
 	}
 	
+	/**
+	 * Convert to upper case and append %
+	 * @param text
+	 * @return converted text
+	 */
 	private String getSQLText(String text)
 	{
 		String s = text.toUpperCase();
@@ -216,7 +219,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Get not processed deposit batch data
 	 * @param BankAccount
 	 * @param BPartner
 	 * @param DocumentNo
@@ -228,7 +231,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	 * @param TenderType
 	 * @param AuthCode
 	 * @param gridTab
-	 * @return list of bank account records
+	 * @return list of deposit batch records
+	 * @see #getOISColumnNames()
 	 */
 	protected Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
 			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode, 
@@ -288,7 +292,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Set column class type
 	 * @param miniTable
 	 */
 	protected void configureMiniTable (IMiniTable miniTable)
@@ -383,8 +387,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 
 	/**
-	 * 
-	 * @return column names
+	 * Get column names for {@link #getBankAccountData(Integer, Integer, String, Timestamp, Timestamp, BigDecimal, BigDecimal, Integer, String, String, GridTab)}
+	 * @return column names (Select, Date, Deposit Batch, Amount, Converted Amount and Bank Account)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{

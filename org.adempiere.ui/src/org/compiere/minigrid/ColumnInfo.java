@@ -19,7 +19,7 @@ package org.compiere.minigrid;
 import org.compiere.model.GridField;
 
 /**
- *  Info Column Details
+ *  Column details for list view of data
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ColumnInfo.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
@@ -27,7 +27,7 @@ import org.compiere.model.GridField;
 public class ColumnInfo
 {
 	/**
-	 *  Create Info Column (r/o and not color column)
+	 *  Create Column (r/o and not color column)
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -39,7 +39,7 @@ public class ColumnInfo
 	}   //  ColumnInfo
 
 	/**
-	 *  Create Info Column (r/o and not color column)
+	 *  Create Column (r/o and not color column)
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -52,7 +52,7 @@ public class ColumnInfo
 	}   //  ColumnInfo
 
 	/**
-	 *  Create Info Column (r/o and not color column)
+	 *  Create Column (r/o and not color column)
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -65,7 +65,7 @@ public class ColumnInfo
 	}   //  ColumnInfo
 
 	/**
-	 *  Create Info Column (r/o and not color column)
+	 *  Create Column (r/o and not color column)
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -79,7 +79,7 @@ public class ColumnInfo
 	}
 
 	/**
-	 *  Create Info Column (r/o and not color column)
+	 *  Create Column (r/o and not color column)
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -95,7 +95,7 @@ public class ColumnInfo
 	}   //  ColumnInfo
 
 	/**
-	 *  Create Info Column
+	 *  Create Column
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -111,7 +111,7 @@ public class ColumnInfo
 	}
 
 	/**
-	 *  Create Info Column
+	 *  Create Column
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -127,7 +127,7 @@ public class ColumnInfo
 	}
 
 	/**
-	 *  Create Info Column
+	 *  Create Column
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -154,7 +154,7 @@ public class ColumnInfo
 	}   //  ColumnInfo
 
 	/**
-	 *  Create Info Column
+	 *  Create Column
 	 *
 	 *  @param colHeader Column Header
 	 *  @param colSQL    SQL select code for column
@@ -183,21 +183,23 @@ public class ColumnInfo
 	private String selectClause;
 
 	/**
-	 * 	Get Col Class
+	 * 	Get Column Class
 	 *	@return class
 	 */
 	public Class<?> getColClass()
 	{
 		return m_colClass;
 	}
+	
 	/**
-	 * 	Get Col Header
+	 * 	Get Column Header
 	 *	@return header
 	 */
 	public String getColHeader()
 	{
 		return m_colHeader;
 	}
+	
 	/**
 	 * 	Get Column Name
 	 *	@return Column Name
@@ -206,32 +208,36 @@ public class ColumnInfo
 	{
 		return m_columnName;
 	}
+	
 	/**
-	 * 	Get Col SQL
+	 * 	Get Column SQL
 	 *	@return sql
 	 */
 	public String getColSQL()
 	{
 		return m_colSQL;
 	}
+	
 	/**
-	 * 	ReadOnly
+	 * 	Is Column ReadOnly
 	 *	@return r/o
 	 */
 	public boolean isReadOnly()
 	{
 		return m_readOnly;
 	}
+	
 	/**
-	 * 	Set ColClass
+	 * 	Set Column class
 	 *	@param colClass class
 	 */
 	public void setColClass(Class<?> colClass)
 	{
 		m_colClass = colClass;
 	}
+	
 	/**
-	 * 	Set Col Header
+	 * 	Set Column Header
 	 *	@param colHeader header
 	 */
 	public void setColHeader(String colHeader)
@@ -244,6 +250,7 @@ public class ColumnInfo
 				m_colHeader = colHeader.substring(0, index) + colHeader.substring(index+1); 
 		}
 	}
+	
 	/**
 	 * 	Set Column Name
 	 *	@param columnName Column Name
@@ -252,14 +259,16 @@ public class ColumnInfo
 	{
 		m_columnName = columnName;
 	}
+	
 	/**
-	 * 	Set Col SQL
+	 * 	Set Column SQL
 	 *	@param colSQL sql
 	 */
 	public void setColSQL(String colSQL)
 	{
 		m_colSQL = colSQL;
 	}
+	
 	/**
 	 * 	Set Read Only
 	 *	@param readOnly r/o
@@ -268,6 +277,7 @@ public class ColumnInfo
 	{
 		m_readOnly = readOnly;
 	}
+	
 	/**
 	 * 	Set Color Column
 	 *	@param colorColumn color
@@ -276,17 +286,19 @@ public class ColumnInfo
 	{
 		m_colorColumn = colorColumn;
 	}
+	
 	/**
-	 * 	ColorColumn
+	 * 	Is Column a ColorColumn
 	 *	@return true if color column
 	 */
 	public boolean isColorColumn()
 	{
 		return m_colorColumn;
 	}
+	
 	/**
-	 *  Add ID column SQL for the displayed column
-	 *  The Class for this should be KeyNamePair
+	 *  Add ID column SQL for the displayed column.<br/>
+	 *  The Class for this should be KeyNamePair.
 	 *  @param keyPairColSQL
 	 */
 	public void setKeyPairColSQL(String keyPairColSQL)
@@ -295,16 +307,18 @@ public class ColumnInfo
 		if (m_keyPairColSQL == null)
 			m_keyPairColSQL = "";
 	}
+	
 	/**
-	 * 	Get Key Pair Col SQL
+	 * 	Get Key Pair Column SQL
 	 *	@return sql
 	 */
 	public String getKeyPairColSQL()
 	{
 		return m_keyPairColSQL;
 	}
+	
 	/**
-	 * 	Key Pair Col
+	 * 	Is Column a Key Pair Column
 	 *	@return column
 	 */
 	public boolean isKeyPairCol()
@@ -322,10 +336,18 @@ public class ColumnInfo
 		return m_gridField;
 	}
 
+	/**
+	 * Get Column description
+	 * @return Column description
+	 */
 	public String getColDescription() {
 		return colDescription;
 	}
 
+	/**
+	 * Set Column description
+	 * @param colDescription
+	 */
 	public void setColDescription(String colDescription) {
 		this.colDescription = colDescription;
 	}

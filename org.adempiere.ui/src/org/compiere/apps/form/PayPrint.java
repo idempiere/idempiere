@@ -50,6 +50,9 @@ import org.compiere.util.ValueNamePair;
 
 import com.lowagie.text.pdf.PdfReader;
 
+/**
+ * Form to Print and Export payment.
+ */
 public class PayPrint {
 
 	/**	Window No			*/
@@ -74,7 +77,7 @@ public class PayPrint {
 	protected PaymentExport m_PaymentExport;
 	
 	/**
-	 *  load pay selection details (bank info, balance and payment export class)
+	 *  Load pay selection (C_PaySelection) details (bank info, balance and payment export class)
 	 *  @param C_PaySelection_ID
 	 */
 	public void loadPaySelectInfo(int C_PaySelection_ID)
@@ -126,7 +129,7 @@ public class PayPrint {
 	}   //  loadPaySelectInfo
 
 	/**
-	 *  load payment rules that's applicable to pay selection
+	 *  Get payment rules that's applicable to a pay selection record
 	 *  @param C_PaySelection_ID
 	 *  @return list of applicable payment rules
 	 */
@@ -179,8 +182,7 @@ public class PayPrint {
 	protected Integer printFormatId;
 
 	/**
-	 *  PaymentRule changed - load DocumentNo, NoPayments,
-	 *  enable/disable EFT, Print
+	 *  PaymentRule changed - get next DocumentNo, No of Payments and total pay amount
 	 *  @param C_PaySelection_ID
 	 *  @param PaymentRule
 	 *  @return error message (if any)
@@ -189,6 +191,7 @@ public class PayPrint {
 	{
 		String msg = null;
 		
+		// get number of payments and total payamt
 		String sql = "SELECT COUNT(*),SUM(payamt) "
 			+ "FROM C_PaySelectionCheck "
 			+ "WHERE C_PaySelection_ID=? AND PaymentRule=?";
@@ -221,7 +224,7 @@ public class PayPrint {
 		printFormatId = null;
 		documentNo = null;
 		
-		//  DocumentNo
+		// Next DocumentNo
 		sql = "SELECT CurrentNext, Check_PrintFormat_ID "
 			+ "FROM C_BankAccountDoc "
 			+ "WHERE C_BankAccount_ID=? AND PaymentRule=? AND IsActive='Y'";
@@ -259,7 +262,7 @@ public class PayPrint {
 	}   //  loadPaymentRuleInfo
 	
 	/**
-	 * 
+	 * Instantiate payment export service
 	 * @param err error message buffer
 	 * @return 0 if loaded fine, -1 if failed to load 
 	 */
@@ -302,7 +305,7 @@ public class PayPrint {
 	} // loadPaymentExportClass
 	
 	/**
-	 * Create PDF documents from pay selection check records
+	 * Create PDF documents (usually check) from pay selection check records
 	 * @param startDocumentNo
 	 * @param paymentRule
 	 * @return list of PDF documents
@@ -372,8 +375,7 @@ public class PayPrint {
 	 * @return list of Remittance documents
 	 */
 	protected List<File> createRemittanceDocuments()
-	{
-		
+	{		
 		List<File> pdfList = new ArrayList<File>();
 		for (int i = 0; i < m_checks.length; i++)
 		{
@@ -406,9 +408,13 @@ public class PayPrint {
 		}
 		return pdfList;
 	}
-	/**************************************************************************
+	
+	/**
 	 *  Get Checks
 	 *  @param PaymentRule Payment Rule
+	 *  @param startDocumentNo
+	 *  @param error
+	 *  @param trxName
 	 *  @return true if payments were created
 	 */
 	protected boolean getChecks(String PaymentRule, BigDecimal startDocumentNo, AtomicReference<ValueNamePair> error, String trxName)
