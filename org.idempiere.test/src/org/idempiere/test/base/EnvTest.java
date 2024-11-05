@@ -154,6 +154,10 @@ public class EnvTest extends AbstractTestCase {
 		assertTrue(Util.isEmpty(parsedText), "Unexpected parseContext value");		
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, "@AnInt@", false, true);
 		assertEquals("1", parsedText, "Unexpected parseContext value");
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@"+tabNo+"|AnInt@", true);
+		assertEquals("1", parsedText, "Unexpected parseContext value");
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, "@"+tabNo+"|AnInt@", true, true);
+		assertTrue(Util.isEmpty(parsedText), "Unexpected parseContext value");
 		
 		//window and tab
 		Env.setContext(Env.getCtx(), windowNo, "AnInt", (String)null);
@@ -161,7 +165,7 @@ public class EnvTest extends AbstractTestCase {
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@AnInt@", true);
 		assertTrue(Util.isEmpty(parsedText), "Unexpected parseContext value");
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, tabNo, "@AnInt@", true, true);
-		assertEquals("1", parsedText, "Unexpected parseContext value");
+		assertEquals("1", parsedText, "Unexpected parseContext value");		
 
 		//test escape sequence
 		Env.setContext(Env.getCtx(), windowNo, "EMail", "test@idempiere.com");

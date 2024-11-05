@@ -168,6 +168,7 @@ public class DefaultEvaluatee implements Evaluatee {
 					
 		String value = null;
 		boolean globalVariable = Env.isGlobalVariable(variableName);
+		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
 		// get value from global or window context
 		if (globalVariable)
 		{
@@ -183,19 +184,15 @@ public class DefaultEvaluatee implements Evaluatee {
 			}
 			else if (m_tabNo <= 0)
 			{
-				if (m_onlyTab == null)
+				if (!tabOnly)
 					value = Env.getContext (ctx, m_windowNo, variableName, m_onlyWindow);
 				else
 					value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, m_onlyTab.booleanValue(), m_onlyWindow);
 			}
 		    else
-		    {
-		    	boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
+		    {		    	
 		    	if (variableName.startsWith(Evaluator.VARIABLE_SELF_TAB_OPERATOR)) 
-		    	{
 		    		variableName = variableName.substring(1);
-		    		tabOnly = true;
-		    	}
 		    	value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, tabOnly, true);
 		    }
 		}
@@ -211,12 +208,20 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 		
 		//remove prefix from variable name
+		boolean withTabNo = false;
 		if (Env.isGlobalVariable(variableName)) {
 			variableName = variableName.substring(1);				
 		} else if (variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0) {
 			variableName = variableName.substring(variableName.lastIndexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR)+1);
+			withTabNo = true;
 		} else if (variableName.startsWith(Evaluator.VARIABLE_SELF_TAB_OPERATOR)) {
 			variableName = variableName.substring(1);
+			withTabNo = true;
+		}
+		
+		//try window context again after removal of tab no
+		if (!globalVariable && Util.isEmpty(value) && m_windowNo >= 0 && withTabNo && !tabOnly) {
+			value = Env.getContext(ctx, m_windowNo, variableName);
 		}
 		
 		// get value from data provider(usually PO or GridTab)
