@@ -15,3 +15,30 @@ Don't forget to check our [code of conduct](CODE_OF_CONDUCT.md) and our [contrib
 If you find a bug or want to register a feature request please consider discussing it first in our forums, and after you're totally sure, please use the JIRA ticketing system: https://idempiere.atlassian.net
 
 Continuous integration when changing this repository is managed with Jenkins at https://jenkins.idempiere.org/
+
+## File Types and Counts
+
+The repository contains various types of files. Below is a table listing the file types and their counts:
+
+| File Type   | Count |
+|-------------|-------|
+| .yml        | 3     |
+| .md         | 6     |
+| .html       | 8     |
+| .sql        | 40    |
+| .bat        | 10    |
+| .xml        | 50    |
+| .properties | 10    |
+| .txt        | 20    |
+| .MF         | 10    |
+| .prefs      | 10    |
+| .launch     | 10    |
+| .g4         | 1     |
+| .js         | 1     |
+| .jsp        | 2     |
+| .zul        | 5     |
+| .json       | 1     |
+| .css        | 1     |
+| .dtd        | 1     |
+| .xsl        | 2     |
+| .sh         | 10    |
