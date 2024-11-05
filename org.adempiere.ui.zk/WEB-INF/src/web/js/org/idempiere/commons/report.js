@@ -30,6 +30,11 @@ window.idempiere.drillDown = function(cmpid, column, value){
 };
 
 window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIcons, processID) {
+    const menus = doc.querySelectorAll('.menu-popup');
+    menus.forEach(menu => {
+        menu.style.display = 'none';
+    });
+
 	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"), e.target.getAttribute ("displayValue"), isUseFontIcons, processID);
 	
 	let posx = 0;
@@ -50,10 +55,9 @@ window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIco
 	d.style.left = posx;
 	d.style.display = "block";
 	
-	let f = function() {
-		doc.contextMenu.style.display='none'
-	};
-	setTimeout(f, 3000);
+	doc.contextMenuTimeout = setTimeout(function() {
+        doc.contextMenu.style.display = 'none';
+    }, 3000);
 };
 
 window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, displayValue, isUseFontIcons, processID){
@@ -61,6 +65,8 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 	if (componentId != null){	
 		//menu div
 		let menu = doc.createElement("div");
+		menu.id = componentId;
+		menu.className = "menu-popup";
 		menu.style.position = "absolute";
 		menu.style.display = "none";
 		menu.style.top = "0";
@@ -157,7 +163,6 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 		reportDrillHref.style.textDecorationColor = "inherit";
 		reportDrillHref.style.fontSize = "11px";
 		reportDrillHref.style.verticalAlign = "middle";
-		console.log(processID);
 		reportDrillHref.setAttribute("onclick", "parent.idempiere.drillAcross('" + componentId + "','" + foreignColumnName + "','" + value + "','" + displayValue + "','" + processID + "')");
 
 		let drillIco = doc.body.getAttribute ("drillAssistantIco");
