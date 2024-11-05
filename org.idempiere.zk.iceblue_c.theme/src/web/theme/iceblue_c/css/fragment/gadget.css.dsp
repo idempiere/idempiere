@@ -305,6 +305,9 @@
 	font-size: 12px;
 	font-weight: normal;
 }
+.help-content p {
+	margin-bottom: 7px;
+}
 .mobile .help-content
 {
 	font-size: 14px;
