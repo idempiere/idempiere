@@ -207,6 +207,7 @@
 	border-left: 5px dashed #696969;
 	border-right: 5px dashed transparent;
 	border-bottom: 5px solid transparent;
+	margin-top: 4px;
 }
 
 <%-- ad tab --%>

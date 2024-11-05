@@ -19,6 +19,7 @@
     border-radius: 0px;
     background-color: transparent;
     background: none;
+    margin-top: 7px;
 }
 
 .z-tabbox-icon.z-tabbox-left-scroll .z-icon-chevron-left, .z-tabbox-icon.z-tabbox-right-scroll .z-icon-chevron-right {
