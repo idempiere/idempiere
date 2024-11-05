@@ -466,6 +466,8 @@ ContextMenuListener, IZoomableEditor
             getComponent().setValue(null);
             getComponent().setSelectedItem(null);
             oldValue = value;
+            if (gridField!=null)
+        		gridField.setLockedRecord(false);
             
             if (getComponent() instanceof EditorAutoComplete && gridField!=null)	// IDEMPIERE-4442 Fix NPE, for Autocomplete in non Grid Usage.
             	updateStyle();
