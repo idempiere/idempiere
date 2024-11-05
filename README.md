@@ -42,3 +42,16 @@ The repository contains various types of files. Below is a table listing the fil
 | .dtd        | 1     |
 | .xsl        | 2     |
 | .sh         | 10    |
+
+## Running the explore_repository.sh Script
+
+To explore the repository to the lowest level and count file types, you can use the `explore_repository.sh` script located in the `utils_dev` directory. Follow the steps below to run the script:
+
+1. Open a terminal and navigate to the root directory of the repository.
+2. Run the following command to execute the script:
+
+```bash
+./utils_dev/explore_repository.sh
+```
+
+The script will generate a file named `file_summary.txt` in the root directory of the repository. This file contains a summary of file types and their counts for each directory.
