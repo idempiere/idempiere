@@ -95,7 +95,7 @@ public class BOMDrop {
 			+ "WHERE Processed='N' AND DocStatus='DR' "
 			+ "ORDER BY DocumentNo";
 	
-		return DB.getKeyNamePairs(trxName, MRole.getDefault().addAccessSQL(
+		return DB.getKeyNamePairsEx(trxName, MRole.getDefault().addAccessSQL(
 			sql, "C_Order", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO), true);
 	}
 	
@@ -111,7 +111,7 @@ public class BOMDrop {
 			+ " AND ProjectCategory<>'S' "
 			+ "ORDER BY Name";
 	
-		return DB.getKeyNamePairs(trxName, MRole.getDefault().addAccessSQL(
+		return DB.getKeyNamePairsEx(trxName, MRole.getDefault().addAccessSQL(
 			sql, "C_Project", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO), true);
 	}
 	
@@ -126,7 +126,7 @@ public class BOMDrop {
 			+ "WHERE Processed='N' AND DocStatus='DR' "
 			+ "ORDER BY DocumentNo";
 	
-		return DB.getKeyNamePairs(trxName, MRole.getDefault().addAccessSQL(
+		return DB.getKeyNamePairsEx(trxName, MRole.getDefault().addAccessSQL(
 			sql, "C_Invoice", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO), true);
 	}
 	

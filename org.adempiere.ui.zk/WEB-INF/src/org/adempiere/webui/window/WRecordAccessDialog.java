@@ -111,14 +111,11 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	private void dynInit()
 	{
 		//	Load Roles
-		String sql = MRole.getDefault().addAccessSQL(
-			"SELECT AD_Role_ID, Name FROM AD_Role WHERE AD_Client_ID=? ORDER BY 2", 
-			"AD_Role", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		roleField = new Listbox(DB.getKeyNamePairs(sql, false, Env.getAD_Client_ID(Env.getCtx())));
+		roleField = new Listbox(MRole.getRoleKeyNamePairs());
 		roleField.setMold("select");
 		
 		//	Load Record Access for all roles
-		sql = "SELECT * FROM AD_Record_Access "
+		String sql = "SELECT * FROM AD_Record_Access "
 			+ "WHERE AD_Table_ID=? AND Record_ID=? AND AD_Client_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

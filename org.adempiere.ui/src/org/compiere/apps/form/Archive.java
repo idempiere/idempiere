@@ -25,6 +25,8 @@ import java.util.logging.Level;
 import org.compiere.model.MArchive;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -98,19 +100,7 @@ public class Archive {
 	 */
 	public KeyNamePair[] getTableData()
 	{
-		//	Tables
-		final MRole role = MRole.getDefault(); // metas
-		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Table");
-		String lang = Env.getAD_Language(Env.getCtx());
-		String sql = "SELECT DISTINCT t.AD_Table_ID,"
-				+ (trl ? "trl.Name" : "t.Name")
-			+ " FROM AD_Table t INNER JOIN AD_Tab tab ON (tab.AD_Table_ID=t.AD_Table_ID)"
-			+ " INNER JOIN AD_Window_Access wa ON (tab.AD_Window_ID=wa.AD_Window_ID) "
-			+ (trl ? "LEFT JOIN AD_Table_Trl trl on (trl.AD_Table_ID=t.AD_Table_ID and trl.AD_Language=" + DB.TO_STRING(lang) + ")" : "") 
-			+ " WHERE "+role.getIncludedRolesWhereClause("wa.AD_Role_ID", null) 
-			+ " AND t.IsActive='Y' AND tab.IsActive='Y' "
-			+ "ORDER BY 2";
-		return DB.getKeyNamePairs(m_trxName, sql, true);
+		return MTable.getWithWindowAccessKeyNamePairs(true, m_trxName);
 	}
 		
 	/**
@@ -119,14 +109,7 @@ public class Archive {
 	 */
 	public KeyNamePair[] getUserData()
 	{
-		//	Internal Users
-		String sql = "SELECT AD_User_ID, Name "
-			+ "FROM AD_User u WHERE EXISTS "
-				+"(SELECT * FROM AD_User_Roles ur WHERE u.AD_User_ID=ur.AD_User_ID) "
-			+ "ORDER BY 2";
-		MRole role = MRole.getDefault();
-		sql = role.addAccessSQL(sql, "u", true, false);
-		return DB.getKeyNamePairs(m_trxName, sql, true);
+		return MUser.getWithRoleKeyNamePairs(true, m_trxName);
 	}
 	
 	/**
