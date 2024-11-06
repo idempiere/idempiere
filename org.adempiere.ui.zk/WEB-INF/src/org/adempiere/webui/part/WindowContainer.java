@@ -308,6 +308,11 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			Tab tab = (Tab) list.get(i);
 			Menuitem item = new Menuitem(tab.getLabel().endsWith("...") && !Util.isEmpty(tab.getTooltiptext(), true) ? tab.getTooltiptext() : tab.getLabel());
 			item.setValue(Integer.toString(i));
+			if (ThemeManager.isUseFontIconForImage())
+				item.setIconSclass(tab.getIconSclass());
+			else
+				item.setImage(tab.getImage());
+			
 			if (!Util.isEmpty(tab.getTooltiptext(), true) && !(item.getLabel().equals(tab.getTooltiptext())))
 				item.setTooltiptext(tab.getTooltiptext());
 			if (i == tabbox.getSelectedIndex())

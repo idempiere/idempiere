@@ -48,9 +48,8 @@ import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
 /**
- * 
+ * Form to create order, invoice or project lines from BOM.
  * @author hengsin
- *
  */
 public class BOMDrop {
 
@@ -61,9 +60,9 @@ public class BOMDrop {
 	}
 
 	/**
-	 * 
+	 * Get max BOM level for product
 	 * @param product
-	 * @return
+	 * @return max BOM level
 	 */
 	public int getMaxBOMDeep(MProduct product) {
 		return getBOMDeep(product, 0);
@@ -172,7 +171,7 @@ public class BOMDrop {
 	}
 	
 	/**
-	 * 
+	 * Add order lines for selected items
 	 * @param C_Order_ID
 	 * @param selectedItems
 	 * @param trxName
@@ -192,7 +191,7 @@ public class BOMDrop {
 	}
 	
 	/**
-	 * 
+	 * Add order line
 	 * @param order
 	 * @param M_Product_ID
 	 * @param qty
@@ -211,7 +210,7 @@ public class BOMDrop {
 	}
 	
 	/**
-	 * 
+	 * Add invoice lines for selected items
 	 * @param C_Invoice_ID
 	 * @param selectedItems
 	 * @param trxName
@@ -230,7 +229,7 @@ public class BOMDrop {
 	}
 	
 	/**
-	 * 
+	 * Add invoice line
 	 * @param invoice
 	 * @param M_Product_ID
 	 * @param qty
@@ -247,7 +246,7 @@ public class BOMDrop {
 	}
 	
 	/**
-	 * 
+	 * Add project lines for selected items
 	 * @param C_Project_ID
 	 * @param selectedItems
 	 * @param trxName
@@ -267,7 +266,7 @@ public class BOMDrop {
 	}
 	
 	/**
-	 * 
+	 * Add project line
 	 * @param project
 	 * @param M_Product_ID
 	 * @param qty
@@ -283,6 +282,7 @@ public class BOMDrop {
 	}
 	
 	/**
+	 * Invoke call back for each BOM line
 	 * @param product
 	 * @param qty
 	 * @param callback
@@ -291,12 +291,26 @@ public class BOMDrop {
 		addBOMLines(product, qty, callback, 0);
 	}
 	
+	/**
+	 * Invoke call back for each BOM line
+	 * @param product
+	 * @param qty
+	 * @param callback
+	 * @param bomLevel current bom level
+	 */
 	private void addBOMLines(MProduct product, BigDecimal qty, Callback<BOMLine> callback, int bomLevel) {
 		MPPProductBOMLine[] bomLines = getBOMLine(product);
 		for (int i = 0; i < bomLines.length; i++)
 			addBOMLines(bomLines[i], qty, callback, bomLevel);
 	}
 	
+	/**
+	 * Invoke call back for each BOM line
+	 * @param productBOMLine
+	 * @param qty
+	 * @param callback
+	 * @param bomLevel current bom level
+	 */
 	private void addBOMLines(MPPProductBOMLine productBOMLine, BigDecimal qty, Callback<BOMLine> callback, int bomLevel) {
 		MProduct product = productBOMLine.getProduct();
 		

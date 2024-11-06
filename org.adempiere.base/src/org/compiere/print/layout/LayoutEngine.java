@@ -1119,9 +1119,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				/** START DEVCOFFEE: Script print format type **/
 				else if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 				{
-					element = createStringElement (item.getName(),
-							item.getAD_PrintColor_ID (), item.getAD_PrintFont_ID (),
-							maxWidth, item.getMaxHeight (), item.isHeightOneLine (), alignment, true);
+					element = createFieldElement (item, maxWidth, alignment, m_format.isForm());
 				}
 				else	//	(item.isTypeText())		//**	Text
 				{
@@ -1393,7 +1391,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			content = data.getValue();
 			
 		//	Convert AmtInWords Content to alpha
-		if (item.getColumnName().equals("AmtInWords"))
+		if ("AmtInWords".equals(item.getColumnName()))
 		{
 			if (log.isLoggable(Level.FINE))
 				log.fine("AmtInWords: " + stringContent);

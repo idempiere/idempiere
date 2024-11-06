@@ -33,9 +33,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
 /**
- * 
+ * Payment form for credit card tender type
  * @author Elaine
- *
  */
 public abstract class PaymentFormCreditCard extends PaymentForm {
 	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
@@ -49,7 +48,6 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	protected String 				m_CCType = "";
 	
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 */
@@ -195,7 +193,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	protected ValueNamePair selectedCreditCard;
 	
 	/**
-	 * 
+	 * Get list of accepted credit card types
 	 * @return list of accepted credit card types
 	 */
 	public ValueNamePair[] getCreditCardList()
@@ -225,7 +223,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	protected String processMsg = null;
 	
 	/**
-	 * 
+	 * Save changes
 	 * @param CCType credit card type
 	 * @param CCNumber credit card number
 	 * @param CCExp credit card expire date
@@ -426,7 +424,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Online payment processing
 	 * @param CCType credit card type
 	 * @param CCNumber credit card number
 	 * @param CCVV credit card ccv
@@ -439,7 +437,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Online payment processing
 	 * @param CCType credit card type
 	 * @param CCNumber credit card number
 	 * @param CCVV credit card ccv
@@ -554,7 +552,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Is online payment processor have been configured for tender type credit card
 	 * @param CCType
 	 * @param PayAmt
 	 * @return true if online payment processor have been configured for tender type credit card
@@ -581,7 +579,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Perform credit card validation
 	 * @param CCType credit card type
 	 * @param CCNumber credit card number
 	 * @param CCVV credit card ccv
