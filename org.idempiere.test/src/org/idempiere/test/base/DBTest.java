@@ -24,7 +24,9 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -33,10 +35,14 @@ import java.util.regex.PatternSyntaxException;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.apps.form.TreeMaintenance;
+import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MOrder;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
@@ -46,6 +52,7 @@ import org.compiere.util.Language;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
+import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.LoginDetails;
@@ -480,6 +487,45 @@ public class DBTest extends AbstractTestCase
 		assertEquals(MTable.getUUIDIndexName("XYCUSTOM_ThisIsAVeryLongTableNameWith55CharactersOnName"      ), "XYCUSTOM_ThisIsAVeryLongTableNameWith55CharactersOnName_UU_idx" );
 		assertEquals(MTable.getUUIDIndexName("XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName"     ), "XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName_UU_idx");
 		assertEquals(MTable.getUUIDIndexName("XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName"    ), "XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName_uuidx");
+	}
+	
+	@Test
+	public void testGetKeyNamePairs() {
+		TreeMaintenance tm = new TreeMaintenance();
+		KeyNamePair[] treeKeyNamePairs = tm.getTreeData();
+		assertTrue(treeKeyNamePairs.length > 0, "Failed to retrieve tree records");
+		Optional<KeyNamePair> optional = Arrays.stream(treeKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_Tree.GARDENWORLD_ORGANIZATION.id).findFirst();
+		assertTrue(optional.isPresent(), "Failed to find Garden World Organization tree");
+		
+		KeyNamePair[] wfKeyNamePairs = MWorkflow.getWorkflowKeyNamePairs(false);
+		assertTrue(wfKeyNamePairs.length > 0, "Failed to retrieve workflow records");
+		optional = Arrays.stream(wfKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_Workflow.PROCESS_ORDER.id).findFirst();
+		assertTrue(optional.isPresent(), "Failed to find Process Order workflow");
+		
+		KeyNamePair[] asiKeyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id, false);
+		assertTrue(asiKeyNamePairs.length > 0, "Failed to retrieve Attribute Set Instance records");
+		optional = Arrays.stream(asiKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.M_AttributeSetInstance.MEDIUM.id).findFirst();
+		assertTrue(optional.isPresent(), "Failed to find Medium Patio Chair Attribute Set Instance record");
+		asiKeyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id, true);
+		assertTrue(asiKeyNamePairs.length > 0, "Failed to retrieve Attribute Set Instance records");
+		assertTrue(asiKeyNamePairs[0].getKey()==-1, "First element of return array is not en empty element as expected");
+		asiKeyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, false);
+		assertTrue(asiKeyNamePairs.length == 0, "Unexpected number of Attribute Set Instance records");
+		
+		KeyNamePair[] roleKeyNamePairs = MRole.getRoleKeyNamePairs();
+		assertTrue(roleKeyNamePairs.length > 0, "Failed to retrieve Role records");
+		optional = Arrays.stream(roleKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id).findFirst();
+		assertTrue(optional.isPresent(), "Failed to find Garden World User role record");
+		
+		KeyNamePair[] tableKeyNamePairs = MTable.getWithWindowAccessKeyNamePairs(false, null);
+		assertTrue(tableKeyNamePairs.length > 0, "Failed to retrieve Table records");
+		optional = Arrays.stream(tableKeyNamePairs).filter(e -> e.getKey() == MOrder.Table_ID).findFirst();
+		assertTrue(optional.isPresent(), "Failed to find C_Order table record");
+		
+		KeyNamePair[] userKeyNamePairs = MUser.getWithRoleKeyNamePairs(false, null);
+		assertTrue(userKeyNamePairs.length > 0, "Failed to retrieve User records");
+		optional = Arrays.stream(userKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_User.GARDEN_USER.id).findFirst();
+		assertTrue(optional.isPresent(), "Failed to find Garden_User user record");
 	}
 	
 }
