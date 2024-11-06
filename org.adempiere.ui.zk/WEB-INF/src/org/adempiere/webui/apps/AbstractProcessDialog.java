@@ -377,7 +377,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			content.setContent(contentMsg);
 		}
 		messageDiv.appendChild(content);
-		messageDiv.setSclass("message-paramenter");
+		messageDiv.setSclass("message-parameter");
 		messageParameterLayout.appendChild(messageDiv);
 		
 		return content;

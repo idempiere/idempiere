@@ -93,7 +93,7 @@
 }
 
 <%-- process help text --%>
-.message-paramenter{
+.message-parameter{
 	max-height: 300pt; 
 	overflow: auto; 
 	margin: 10px;
