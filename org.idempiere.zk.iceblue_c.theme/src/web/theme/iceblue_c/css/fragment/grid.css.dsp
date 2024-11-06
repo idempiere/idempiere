@@ -121,9 +121,6 @@ div.z-listbox-body .z-listcell {
 .z-listbox-autopaging .z-listcell-cnt {
 	height: 20px;
 }
-.z-listheader-content .z-label {
-	color: #FFF;
-}
 .z-row .z-cell, .z-listitem .z-listcell, .z-listitem.z-listitem-selected>.z-listcell {
 	border-left: 1px solid #cfcfcf;
 }
