@@ -847,7 +847,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 				"SELECT M_Product_Category_ID, Value || ' - ' || Name FROM M_Product_Category WHERE IsActive='Y'",
 					"M_Product_Category", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 				+ " ORDER BY Value";
-			for (KeyNamePair kn : DB.getKeyNamePairs(SQL, true)) {
+			for (KeyNamePair kn : DB.getKeyNamePairsEx(SQL, true)) {
 				pickProductCategory.addItem(kn);
 			}
 
@@ -856,7 +856,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 				"SELECT M_AttributeSet_ID, Name FROM M_AttributeSet WHERE IsActive='Y'",
 					"M_AttributeSet", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 				+ " ORDER BY Name";
-			for (KeyNamePair kn : DB.getKeyNamePairs(SQL, true)) {
+			for (KeyNamePair kn : DB.getKeyNamePairsEx(SQL, true)) {
 				pickAS.addItem(kn);
 			}
 		}
