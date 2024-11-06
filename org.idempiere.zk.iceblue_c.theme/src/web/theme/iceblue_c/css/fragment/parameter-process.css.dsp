@@ -100,6 +100,10 @@
 	line-height: normal;
 }
 
+.message-parameter p {
+	margin-bottom: 16px;
+}
+
 <%-- execution result panel --%>
 .result-parameter-layout {
 	overflow: auto;
