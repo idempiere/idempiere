@@ -35,6 +35,7 @@ import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WTask;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
 import org.compiere.model.SystemProperties;
@@ -79,7 +80,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			String title = pd.getTitle();
 			pd.setTitle(null);
 			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, title, true, null);
+			DecorateInfo decorateInfo = new DecorateInfo(MProcess.get(processId).isReport()?"Report":"Process");
+			windowContainer.addWindow(tabPanel, title, true, decorateInfo);
 			Events.postEvent(ProcessDialog.ON_INITIAL_FOCUS_EVENT, pd, null);
 		}
 		return pd;
@@ -140,7 +142,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
 		p.setParent(tabPanel);
 		preOpenNewTab();
-		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true, null);
+		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true, new DecorateInfo("Workflow"));
 	}
 	
 	/**
