@@ -26,9 +26,8 @@
 package org.compiere.minigrid;
 
 /**
- * 
+ * Table column model for {@link MiniTableImpl}
  * @author hengsin
- *
  */
 public class TableColumn
 {

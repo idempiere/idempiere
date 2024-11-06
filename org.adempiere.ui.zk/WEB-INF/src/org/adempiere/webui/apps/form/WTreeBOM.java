@@ -108,6 +108,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	/** List of BOM components. Child of {@link #dataPane} */
 	private WListbox tableBOM = ListboxFactory.newDataTable();
+	/** Child components of current selected product */
 	private Vector<Vector<Object>> dataBOM = new Vector<Vector<Object>>();
 	/** Layout of {@link #northPanel} */
 	private Hlayout northLayout = new Hlayout();

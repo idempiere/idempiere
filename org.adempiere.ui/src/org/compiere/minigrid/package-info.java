@@ -18,20 +18,9 @@
  * along with this program; if not, write to the Free Software         *
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
  * MA 02110-1301, USA.                                                 *
- *                                                                     *
- * Contributors:                                                       *
- * - Carlos Ruiz - globalqss - bxservice                               *
  **********************************************************************/
 
-package org.compiere.minigrid;
-
 /**
- * Interface for ID column that support selection
+ * Interface and model for list view 
  */
-public interface SelectableIDColumn {
-
-	public void setSelected(boolean selected);
-
-	public boolean isSelected();
-
-}
+package org.compiere.minigrid;

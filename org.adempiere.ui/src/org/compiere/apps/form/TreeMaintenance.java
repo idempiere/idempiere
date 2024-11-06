@@ -29,6 +29,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
+/**
+ * Tree maintenance form.
+ */
 public class TreeMaintenance {
 
 	/**	Window No				*/
@@ -38,6 +41,10 @@ public class TreeMaintenance {
 	/**	Logger			*/
 	public static final CLogger log = CLogger.getCLogger(TreeMaintenance.class);
 	
+	/**
+	 * Get tree (AD_Tree) records.
+	 * @return tree (AD_Tree) records.
+	 */
 	public KeyNamePair[] getTreeData()
 	{
 		return DB.getKeyNamePairs(MRole.getDefault().addAccessSQL(
@@ -45,6 +52,10 @@ public class TreeMaintenance {
 				"AD_Tree", MRole.SQL_NOTQUALIFIED, MRole.SQL_RW), false);
 	}
 	
+	/**
+	 * Get tree nodes
+	 * @return tree nodes
+	 */
 	public ArrayList<ListItem> getTreeItemData()
 	{
 		ArrayList<ListItem> data = new ArrayList<ListItem>();
@@ -72,11 +83,10 @@ public class TreeMaintenance {
 			.append("_ID,").append(fieldName).append(",").append(fieldDescription).append(",t.IsSummary,")
 			.append(actionColor)
 			.append(" FROM ").append(fromClause).append(join)
-		//	.append(" WHERE t.IsActive='Y'") // R/O
 			.append(" ORDER BY 2");
 		String sql = MRole.getDefault().addAccessSQL(sqlb.toString(),
 			"t", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
-		log.config(sql);
+		if (log.isLoggable(Level.CONFIG)) log.config(sql);
 		//	
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -171,8 +181,8 @@ public class TreeMaintenance {
 		}
 	}	//	action_treeDelete
 	
-	/**************************************************************************
-	 * 	Tree Maintenance List Item
+	/**
+	 * 	Tree List Item
 	 */
 	public static class ListItem
 	{
