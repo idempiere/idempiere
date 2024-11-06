@@ -22,7 +22,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .z-window-header {
-	padding: 4px;
+	padding: 4px 6px 4px 9px;
 }
 .z-window-embedded > .z-window-header {
 	border-radius: 0px;
