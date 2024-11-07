@@ -1730,16 +1730,29 @@ public final class Env
 	 */
 	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
 			boolean useMsgForBoolean, boolean keepUnparseable, boolean keepEscapeSequence) {
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(po);
+		evaluatee.setUseColumnDateFormat(useColumnDateFormat);
+		evaluatee.setUseMsgForBoolean(useMsgForBoolean);
+		evaluatee.setTrxName(trxName);
+		return parseVariable(expression, evaluatee, keepUnparseable, keepEscapeSequence);
+	}
+	
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param evaluatee
+	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
+	 * @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+	 * @return Parsed expression
+	 */
+	public static String parseVariable(String expression, DefaultEvaluatee evaluatee, boolean keepUnparseable, boolean keepEscapeSequence) {
 		if (expression == null || expression.length() == 0)
 			return "";
 
 		String token;
 		String inStr = new String(expression);
 		StringBuilder outStr = new StringBuilder();
-
-		DefaultEvaluatee evaluatee = new DefaultEvaluatee(po);
-		evaluatee.setUseColumnDateFormat(useColumnDateFormat);
-		evaluatee.setUseMsgForBoolean(useMsgForBoolean);
+		
 		int i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
 		while (i != -1)
 		{
@@ -1767,7 +1780,7 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
-			Properties ctx = po != null ? po.getCtx() : Env.getCtx();
+			Properties ctx = evaluatee.getPO() != null ? evaluatee.getPO().getCtx() : Env.getCtx();
 			String value = evaluatee.get_ValueAsString(ctx, token);
 			if (Util.isEmpty(value)) {
 				if (keepUnparseable) {
