@@ -1097,7 +1097,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					else if (item.isImageIsAttached())
 						element = ImageElement.get (item.get_ID());
 					else
-						element = ImageElement.get (item.getImageURL());
+					{
+						String url = item.getImageURL();
+						if (url.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0)
+						{
+							PrintDataEvaluatee.PrintDataDataProvider dp = new PrintDataEvaluatee.PrintDataDataProvider(null, m_data);
+							DefaultEvaluatee evaluatee = new DefaultEvaluatee(dp);
+							url = Env.parseVariable(url, evaluatee, true, false);
+						}
+						element = ImageElement.get (url);
+					}
 					if (element != null)
 						element.layout(maxWidth, item.getMaxHeight(), false, alignment);
 				}
