@@ -766,7 +766,7 @@ public class MAttachment extends X_AD_Attachment
 			parts = path.split("[/]");
 			//expression syntax - attachment/table name/index or name
 			if (parts.length == 3) {
-				String tableName = parts[1];
+				String tableName = parts[1].trim();
 				MTable table = MTable.get(Env.getCtx(), tableName);
 				if (table != null) {
 					int recordId = (id instanceof Number) ? ((Number)id).intValue() : -1;
@@ -778,7 +778,8 @@ public class MAttachment extends X_AD_Attachment
 					if (attachment != null && attachment.get_ID() > 0) {
 						//first, check whether is via index
 						int index = -1;
-						if (parts[2].trim().matches("[0-9]+")) {
+						parts[2] = parts[2].trim();
+						if (parts[2].matches("[0-9]+")) {
 							try {
 								index = Integer.parseInt(parts[2]);
 							} catch (Exception e) {
@@ -825,7 +826,8 @@ public class MAttachment extends X_AD_Attachment
 		String[] part = path.trim().split(",");
 		if (part.length == 2)
 		{
-			String expression = part[0];
+			part[1] = part[1].trim();
+			String expression = part[0].trim();
 			//convert from attachment: url syntax to attachment/ path syntax
 			expression = expression.replaceFirst("[:]", "/");
 			StringBuilder url = new StringBuilder(contextPath != null ? contextPath : "")
@@ -856,8 +858,9 @@ public class MAttachment extends X_AD_Attachment
 		String[] part = path.trim().split(",");
 		if (part.length == 2)
 		{
+			part[1] = part[1].trim();
 			try {
-				String expression = part[0];
+				String expression = part[0].trim();
 				//convert from attachment: url syntax to attachment/ path syntax
 				expression = expression.replaceFirst("[:]", "/");
 				Object key = part[1].length() == 36 ? part[1] : Integer.parseInt(part[1]);
