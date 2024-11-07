@@ -7,6 +7,10 @@
     border-bottom: 1px solid #ccc;
 }
 
+.z-grid-header {
+	background-color: #e0f2ff;
+}
+
 .z-grid tbody tr.grid-inactive-row td.z-cell {
 	background-image: none !important;
 }
