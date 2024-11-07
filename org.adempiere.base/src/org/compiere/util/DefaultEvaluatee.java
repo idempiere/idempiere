@@ -55,6 +55,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	private Boolean m_onlyTab;
 	private boolean m_useMsgForBoolean = false;
 	private boolean m_useColumnDateFormat = false;
+	private String m_trxName = null;
 
 	/** Cache for {@link #getColumnValue(MTable, String, String, int, String)} */
 	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 1, 2000);
@@ -125,6 +126,10 @@ public class DefaultEvaluatee implements Evaluatee {
 		this.m_onlyTab = null;
 	}
 		
+	public void setTrxName(String trxName) {
+		m_trxName = trxName;
+	}
+	
 	@Override
 	public String get_ValueAsString(String variableName) {
 		return get_ValueAsString(Env.getCtx(), variableName);
@@ -311,7 +316,7 @@ public class DefaultEvaluatee implements Evaluatee {
 								if (column.isSecure()) {
 									value = "********";
 								} else {
-									String trxName = m_dataProvider != null ? m_dataProvider.getTrxName() : null;
+									String trxName = m_trxName != null ? m_trxName : (m_dataProvider != null ? m_dataProvider.getTrxName() : null);
 									String keyCol = foreignTable + Evaluator.ID_COLUMN_SUFFIX;
 									value = DB.getSQLValueString(trxName,"SELECT " + format + " FROM " + foreignTable + " WHERE " + keyCol + "=?", id);
 								}
@@ -502,6 +507,17 @@ public class DefaultEvaluatee implements Evaluatee {
 		 * @return null or transaction name
 		 */
 		String getTrxName();
+	}
+	
+	/**
+	 * Get wrapped PO 
+	 * @return wrapped PO or null
+	 */
+	public PO getPO() {
+		if (m_dataProvider != null && m_dataProvider instanceof PODataProvider pdp) {
+			return pdp.po;
+		}
+		return null;
 	}
 	
 	/**

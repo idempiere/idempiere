@@ -76,6 +76,7 @@ import org.compiere.print.layout.InstanceAttributeData;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.util.CLogger;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
@@ -624,7 +625,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		if (obj == null && ReportEngine.isDisplayPFItem(printData, item) && item.isTypeImage()
 			&& !item.isImageField() && !item.isImageIsAttached() && !Util.isEmpty(item.getImageURL(), true))
 		{
-			printImageColumn(td, item, null, isExport, contextPath);
+			printImageColumn(td, item, null, isExport, contextPath, printData);
 		}
 		else if (obj == null || !ReportEngine.isDisplayPFItem(printData, item)){
 			td.addElementToRegistry("&nbsp;");
@@ -653,7 +654,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			
 			if (item.isTypeImage())
 			{
-				printImageColumn(td, item, pde, isExport, contextPath);
+				printImageColumn(td, item, pde, isExport, contextPath, printData);
 			}
 			else if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 			{
@@ -762,7 +763,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
 	}
 
-	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde, boolean isExport, String contextPath) {
+	private static void printImageColumn(MultiPartElement td, MPrintFormatItem item, PrintDataElement pde, boolean isExport, String contextPath, PrintData printData) {
 		if (item.isImageField())
 		{
 			Object data = pde.getValue();
@@ -783,7 +784,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 					String url = data.toString();
 					if (MAttachment.isAttachmentURLPath(url))
 					{
-						createImageElementFromAttachmentPath(td, item, url, isExport, contextPath);
+						createImageElementFromAttachmentPath(td, item, url, isExport, contextPath, printData);
 					}
 					else if (url.indexOf("://") == -1)
 					{
@@ -824,7 +825,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			String url = item.getImageURL();			
 			if (MAttachment.isAttachmentURLPath(url))
 			{
-				createImageElementFromAttachmentPath(td, item, url, isExport, contextPath);
+				createImageElementFromAttachmentPath(td, item, url, isExport, contextPath, printData);
 			}
 			else 
 			{
@@ -842,23 +843,48 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 	 * @param path attachment path
 	 * @param isExport
 	 * @param contextPath 
+	 * @param printData 
 	 */
-	private static void createImageElementFromAttachmentPath(MultiPartElement td, MPrintFormatItem item, String path, boolean isExport, String contextPath) {
-		if (isExport) {
-			AttachmentData imageData = MAttachment.getDataFromAttachmentURLPath(path);
-			if (imageData != null && imageData.data() != null && imageData.data().length > 0)
+	private static void createImageElementFromAttachmentPath(MultiPartElement td, MPrintFormatItem item, String path, boolean isExport, String contextPath, PrintData printData) {
+		if (path.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0) {
+			PrintDataEvaluatee.PrintDataDataProvider dp = new PrintDataEvaluatee.PrintDataDataProvider(null, printData);
+			DefaultEvaluatee evaluatee = new DefaultEvaluatee(dp);
+			path = Env.parseVariable(path, evaluatee, true, false);
+		}
+		
+		AttachmentData imageData = MAttachment.getDataFromAttachmentURLPath(path);
+		if (imageData != null && imageData.data() != null && imageData.data().length > 0) {
+			if (isExport) {						
 				createDataURLImageElement(td, imageData.data(), item);
-		} else {
-			String url = MAttachment.getImageAttachmentURLFromPath(contextPath, path);
-			if (url != null)
-			{
-				img image = new img(url);
-				td.addElementToRegistry(image);
-				applyHeightAndWidth(item, image);
+			} else {
+				String url = MAttachment.getImageAttachmentURLFromPath(contextPath, path);
+				if (url != null)
+				{
+					img image = new img(url);
+					td.addElementToRegistry(image);
+					applyHeightAndWidth(item, image);
+				}
 			}
+		} else {			
+			span sp = new span();
+			sp.setClass("no-image");
+			td.addElementToRegistry(sp);
+			applyHeightAndWidth(item, sp);
 		}
 	}
 
+	private static void applyHeightAndWidth(MPrintFormatItem item, span sp) {
+		StringBuilder style = new StringBuilder();
+		if (item.getMaxHeight() > 0) 
+			style.append("height:").append(item.getMaxHeight()).append("px;");
+		if (item.getMaxWidth() > 0) 
+			style.append("width:").append(item.getMaxWidth()).append("px;");
+		if (style.length() > 0) {
+			style.append("object-fit: scale-down;");
+			sp.setStyle(style.toString());
+		}
+	}
+	
 	private static void applyHeightAndWidth(MPrintFormatItem item, img image) {
 		StringBuilder style = new StringBuilder();
 		if (item.getMaxHeight() > 0) 

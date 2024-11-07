@@ -69,6 +69,7 @@ import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
@@ -1096,7 +1097,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					else if (item.isImageIsAttached())
 						element = ImageElement.get (item.get_ID());
 					else
-						element = ImageElement.get (item.getImageURL());
+					{
+						String url = item.getImageURL();
+						if (url.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0)
+						{
+							PrintDataEvaluatee.PrintDataDataProvider dp = new PrintDataEvaluatee.PrintDataDataProvider(null, m_data);
+							DefaultEvaluatee evaluatee = new DefaultEvaluatee(dp);
+							url = Env.parseVariable(url, evaluatee, true, false);
+						}
+						element = ImageElement.get (url);
+					}
 					if (element != null)
 						element.layout(maxWidth, item.getMaxHeight(), false, alignment);
 				}
@@ -1782,7 +1792,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						else if (item.isImageIsAttached())
 							columnElement = ImageElement.get (item.get_ID());
 						else
-							columnElement = ImageElement.get (item.getImageURL());
+						{
+							String url = item.getImageURL();
+							if (url.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0)
+							{
+								PrintDataEvaluatee.PrintDataDataProvider dp = new PrintDataEvaluatee.PrintDataDataProvider(null, printData);
+								DefaultEvaluatee evaluatee = new DefaultEvaluatee(dp);
+								url = Env.parseVariable(url, evaluatee, true, false);
+							}
+							columnElement = ImageElement.get (url);
+						}
 						if (columnElement != null)
 							((PrintElement)columnElement).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
 					}
