@@ -233,9 +233,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				m_Help = userDef.getHelp();
 		}
 
-		buildMsg.append("<b>");
+		buildMsg.append("<p><b>");
 		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
-		buildMsg.append("</b>");
+		buildMsg.append("</b></p>");
 
 		if (!Util.isEmpty(m_Help))
 			buildMsg.append("<p>").append(m_Help).append("</p>");
@@ -377,7 +377,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			content.setContent(contentMsg);
 		}
 		messageDiv.appendChild(content);
-		messageDiv.setSclass("message-paramenter");
+		messageDiv.setSclass("message-parameter");
 		messageParameterLayout.appendChild(messageDiv);
 		
 		return content;

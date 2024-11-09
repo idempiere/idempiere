@@ -60,7 +60,7 @@ when detect side effect, fix to only apply for parameter window*/
 	overflow: visible;
 }
 
-.message-paramenter{
+.message-parameter{
 	max-height: 300pt; 
 	overflow: auto; 
 	margin: 10px;
