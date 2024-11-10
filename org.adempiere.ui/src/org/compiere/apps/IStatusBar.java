@@ -34,33 +34,33 @@ import org.compiere.model.DataStatusEvent;
 public interface IStatusBar 
 {
 	/**
-	 * set text for db zone
+	 * Set text for db zone
 	 * @param text
 	 */
 	public void setStatusDB (String text);
 	
 	/**
-	 * set text for db zone
+	 * Set text for db zone
 	 * @param text
 	 * @param dse
 	 */
 	public void setStatusDB (String text, DataStatusEvent dse);
 	
 	/**
-	 * set text for text zone
+	 * Set text for line zone
 	 * @param text
 	 */
 	public void setStatusLine (String text);
 	
 	/**
-	 * set text for text zone
+	 * Set text for line zone
 	 * @param text
 	 * @param error
 	 */
 	public void setStatusLine (String text, boolean error);
 	
 	/**
-	 * set text for info zone
+	 * Set text for info zone
 	 * @param text
 	 */
 	public void setInfo (String text);

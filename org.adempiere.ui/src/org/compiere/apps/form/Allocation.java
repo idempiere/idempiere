@@ -39,9 +39,8 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
- * 
+ * Form to create allocation (C_AllocationHdr and C_AllocationLine).
  * @author hengsin
- *
  */
 public class Allocation
 {
@@ -89,8 +88,8 @@ public class Allocation
 	
 	/**
 	 *  Load Business Partner Info
-	 *  - Payments
-	 *  - Invoices
+	 *  <li>Payments</li>
+	 *  <li>Invoices</li>
 	 */
 	public void checkBPartner()
 	{		
@@ -128,7 +127,7 @@ public class Allocation
 	}
 	
 	/**
-	 * 
+	 * Get unallocated payment records
 	 * @param isMultiCurrency
 	 * @param date
 	 * @param trxName optional trx name
@@ -140,7 +139,7 @@ public class Allocation
 	}
 	
 	/**
-	 * 
+	 * Get column names for {@link #getPaymentData(boolean, Timestamp, String)}
 	 * @param isMultiCurrency
 	 * @return column name list for payment data
 	 */
@@ -164,7 +163,7 @@ public class Allocation
 	}
 	
 	/**
-	 * 
+	 * Set class/type of columns
 	 * @param paymentTable
 	 * @param isMultiCurrency
 	 */
@@ -203,7 +202,7 @@ public class Allocation
 	}
 	
 	/**
-	 * 
+	 * Get unpaid invoices
 	 * @param isMultiCurrency
 	 * @param date
 	 * @param trxName optional trx name
@@ -215,7 +214,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get column names for {@link #getInvoiceData(boolean, Timestamp, String)}
 	 * @param isMultiCurrency
 	 * @return list of column name/header
 	 */
@@ -242,7 +241,7 @@ public class Allocation
 	}
 	
 	/**
-	 * set class type for each column
+	 * Set class type for each column
 	 * @param invoiceTable
 	 * @param isMultiCurrency
 	 */
@@ -268,7 +267,7 @@ public class Allocation
 	}
 	
 	/**
-	 * set column index for single or multi currency
+	 * Set column index for single or multi currency table
 	 * @param isMultiCurrency
 	 */
 	protected void prepareForCalculate(boolean isMultiCurrency)
@@ -281,7 +280,7 @@ public class Allocation
 	}   //  loadBPartner
 	
 	/**
-	 * update payment or invoice applied and write off amount
+	 * Update payment or invoice applied and write off amount
 	 * @param row row to update
 	 * @param col change is trigger by selected or applied column
 	 * @param isInvoice update invoice or payment applied amount
@@ -394,8 +393,7 @@ public class Allocation
 					discount = open;
 				if ( writeOff.abs().compareTo(open.abs()) > 0)
 					writeOff = open;
-				
-				
+								
 				/*
 				 * Two rules to maintain:
 				 *
@@ -450,7 +448,7 @@ public class Allocation
 	}
 	
 	/**
-	 * perform allocation calculation
+	 * Perform allocation calculation
 	 * @param paymentTable
 	 * @param invoiceTable
 	 * @param isMultiCurrency
@@ -465,7 +463,7 @@ public class Allocation
 	}
 	
 	/**
-	 * Calculate selected payment total
+	 * Calculate total of selected payments 
 	 * @param payment
 	 * @param isMultiCurrency
 	 * @return payment summary
@@ -495,7 +493,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get summary info for payment selected and total applied
 	 * @return summary info for payment selected and total applied
 	 */
 	public String getPaymentInfoText() {
@@ -504,7 +502,7 @@ public class Allocation
 	}
 	
 	/**
-	 * calculate selected invoice total
+	 * Calculate total of selected invoices 
 	 * @param invoice
 	 * @param isMultiCurrency
 	 * @return invoice summary
@@ -533,7 +531,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get summary info for invoice selected and total applied
 	 * @return summary info for invoice selected and total applied
 	 */
 	public String getInvoiceInfoText() {
@@ -565,7 +563,6 @@ public class Allocation
 		//
 		if (AD_Org_ID == 0)
 		{
-			//ADialog.error(m_WindowNo, this, "Org0NotAllowed", null);
 			throw new AdempiereException("@Org0NotAllowed@");
 		}
 		//
@@ -627,8 +624,7 @@ public class Allocation
 					.subtract(AppliedAmt).subtract(DiscountAmt).subtract(WriteOffAmt);
 				
 				if (log.isLoggable(Level.CONFIG)) log.config("Invoice #" + i + " - AppliedAmt=" + AppliedAmt);// + " -> " + AppliedAbs);
-				//  loop through all payments until invoice applied
-				
+				//  loop through all payments until invoice applied				
 				for (int j = 0; j < paymentList.size() && AppliedAmt.signum() != 0; j++)
 				{
 					int C_Payment_ID = ((Integer)paymentList.get(j)).intValue();
@@ -699,7 +695,7 @@ public class Allocation
 		{
 			BigDecimal chargeAmt = totalDiff;
 	
-		//	Allocation Line
+			//	Allocation Line
 			MAllocationLine aLine = new MAllocationLine (alloc, chargeAmt.negate(), 
 				Env.ZERO, Env.ZERO, Env.ZERO);
 			aLine.setC_Charge_ID(m_C_Charge_ID);
@@ -761,7 +757,6 @@ public class Allocation
 	}   //  saveData
 
 	/**
-	 * 
 	 * @return C_BPartner_ID
 	 */
 	public int getC_BPartner_ID() {
@@ -769,7 +764,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @param C_BPartner_ID
 	 */
 	public void setC_BPartner_ID(int C_BPartner_ID) {
@@ -777,7 +771,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @return C_Currency_ID
 	 */
 	public int getC_Currency_ID() {
@@ -785,7 +778,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @param C_Currency_ID
 	 */
 	public void setC_Currency_ID(int C_Currency_ID) {
@@ -793,7 +785,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @return C_DocType_ID
 	 */
 	public int getC_DocType_ID() {
@@ -801,7 +792,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @param C_DocType_ID
 	 */
 	public void setC_DocType_ID(int C_DocType_ID) {
@@ -809,7 +799,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @return C_Charge_ID
 	 */
 	public int getC_Charge_ID() {
@@ -817,7 +806,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @param C_Charge_ID
 	 */
 	public void setC_Charge_ID(int C_Charge_ID) {
@@ -825,7 +813,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @return AD_Org_ID
 	 */
 	public int getAD_Org_ID() {
@@ -833,7 +820,6 @@ public class Allocation
 	}
 
 	/**
-	 * 
 	 * @param AD_Org_ID
 	 */
 	public void setAD_Org_ID(int AD_Org_ID) {
@@ -841,7 +827,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get number of selected invoice
 	 * @return number of selected invoice
 	 */
 	public int getSelectedInvoiceCount() {
@@ -849,7 +835,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get number of selected payment
 	 * @return number of selected payment
 	 */
 	public int getSelectedPaymentCount() {
@@ -857,7 +843,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get total of invoice applied amount
 	 * @return total of invoice applied amount
 	 */
 	public BigDecimal getInvoiceAppliedTotal() {
@@ -865,7 +851,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get total of payment applied amount
 	 * @return total of payment applied amount
 	 */
 	public BigDecimal getPaymentAppliedTotal() {
@@ -873,7 +859,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Is ok to perform allocation
 	 * @return true if all condition is meet to proceed with allocation
 	 */
 	public boolean isOkToAllocate() {
@@ -881,7 +867,7 @@ public class Allocation
 	}
 
 	/**
-	 * 
+	 * Get difference between invoice and payment applied amount
 	 * @return difference between invoice and payment applied amount
 	 */
 	public BigDecimal getTotalDifference() {
@@ -889,7 +875,7 @@ public class Allocation
 	}
 
 	/**
-	 * calculate difference between invoice and payment applied amount
+	 * Calculate difference between invoice and payment applied amount
 	 */
 	public void calculateDifference() {
 		totalDiff = totalPay.subtract(totalInv);

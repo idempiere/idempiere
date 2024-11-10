@@ -168,7 +168,9 @@ public class Tab extends org.zkoss.zul.Tab
 		 * @return DecorateInfo
 		 */
 		public static DecorateInfo get (ADWindow adWindow){
-			return adWindow == null?null:new DecorateInfo(adWindow.getMImage());
+			if(adWindow.getMImage()!=null)
+				return new DecorateInfo(adWindow.getMImage());
+			return new DecorateInfo("Window");
 		}
 		
 		/**

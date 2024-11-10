@@ -28,8 +28,8 @@ import org.netbeans.api.visual.widget.SeparatorWidget;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
+ * Widget for workflow node
  * @author hengsin
- *
  */
 public class WFNodeWidget extends Widget {
 
@@ -45,6 +45,7 @@ public class WFNodeWidget extends Widget {
 
 	/**
 	 * @param scene
+	 * @param node
 	 */
 	public WFNodeWidget(Scene scene, MWFNode node) {
 		super(scene);

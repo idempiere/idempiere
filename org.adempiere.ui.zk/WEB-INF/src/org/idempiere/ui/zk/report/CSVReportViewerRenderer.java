@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.print.ReportEngine;
 import org.compiere.tools.FileUtil;
@@ -90,7 +91,7 @@ public class CSVReportViewerRenderer implements IReportViewerRenderer {
 			File file = FileUtil.createTempFile(prefix, "."+getFileExtension(), new File(path));
 			IReportRenderer<IReportRendererConfiguration> renderer = Core.getReportRenderer(getId());
 			CSVReportRendererConfiguration config = new CSVReportRendererConfiguration()
-					.setLanguage(reportEngine.getPrintFormat().getLanguage())
+					.setLanguage(AEnv.getLanguage(Env.getCtx()))
 					.setOutputFile(file);
 			renderer.renderReport(reportEngine, config);
 			return new AMedia(file.getName(), getFileExtension(), getContentType(), file, false);

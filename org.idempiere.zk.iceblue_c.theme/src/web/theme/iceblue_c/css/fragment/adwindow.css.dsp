@@ -81,6 +81,9 @@
 	display: inline-block; 
 	text-align: right;
 }
+.adwindow-breadcrumb-toolbar .z-toolbarbutton {
+	margin-left: 2px;
+}
 .adwindow-breadcrumb-toolbar .z-toolbar {
 	background-image: none; 
 	background-color: transparent; 
@@ -172,11 +175,15 @@
 	padding: 0px !important;
 	height: 2em;
 	border: none;
-	background: #f2f3f2;
+	background: #ffffff;
 }
 .adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
 	height: 16px;
 	line-height: 16px;
+}
+.z-paging .z-paging-icon {
+    font-size: 12px;
+    font-weight: normal;
 }
 
 <%-- south region of AD tab for detail panel --%>
@@ -200,6 +207,7 @@
 	border-left: 5px dashed #696969;
 	border-right: 5px dashed transparent;
 	border-bottom: 5px solid transparent;
+	margin-top: 4px;
 }
 
 <%-- ad tab --%>

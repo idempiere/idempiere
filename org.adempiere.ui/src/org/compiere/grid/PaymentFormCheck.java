@@ -34,9 +34,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Payment for Check tender type
  * @author Elaine
- *
  */
 public abstract class PaymentFormCheck extends PaymentForm {
 	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
@@ -49,7 +48,6 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	protected int 					m_C_BankAccount_ID = 0;
 	
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 */
@@ -84,8 +82,8 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	protected KeyNamePair selectedBankAccount;
 	
 	/**
-	 * set default selected bank account and return list of active bank account records
-	 * @return list of active bank account
+	 * Set default selected bank account and return list of active bank account records
+	 * @return list of active bank account (C_BankAccount_ID, Name+AccountNo)
 	 */
 	public ArrayList<KeyNamePair> getBankAccountList() {
 		selectedBankAccount = null;
@@ -145,7 +143,7 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	protected String processMsg = null;
 	
 	/**
-	 * 
+	 * Save changes
 	 * @param C_BankAccount_ID
 	 * @param routing routing number
 	 * @param number account number
@@ -303,7 +301,7 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Is online payment processor have been configured for tender type check
 	 * @param C_Currency_ID
 	 * @param PayAmt
 	 * @return if online payment processor have been configured for tender type check

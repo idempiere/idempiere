@@ -55,7 +55,7 @@
 
 <%-- run history and action buttons --%>
 .bottom-parameter-layout{
-	padding: 4px 4px 0px 4px;
+	padding: 4px;
 	border-top: 1px solid rgba(0, 0, 0, 0.2);
 	overflow: visible;
 }
@@ -93,11 +93,15 @@
 }
 
 <%-- process help text --%>
-.message-paramenter{
+.message-parameter{
 	max-height: 300pt; 
 	overflow: auto; 
 	margin: 10px;
 	line-height: normal;
+}
+
+.message-parameter p {
+	margin-bottom: 10px;
 }
 
 <%-- execution result panel --%>
