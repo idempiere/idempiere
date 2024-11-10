@@ -436,15 +436,17 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 						if (item.isNextLine() && item.getBelowColumn() >= 1)
 							continue;
 						var printName = item.getPrintName(language);
+						
+						th th = new th();
+						th.addAttribute("data-dt-order", "disable");
+						tr.addElement(th);
+						input searchInput = new input();
+						
 						if (!Util.isEmpty(printName))
-						{
-							th th = new th();
-							th.addAttribute("data-dt-order", "disable");
-							tr.addElement(th);
-							input searchInput = new input();
-							searchInput.addAttribute("placeholder", "Search "+printName);								
-							th.addElement(searchInput);
-						}
+							searchInput.addAttribute("placeholder", "Search "+printName);
+
+						th.addElement(searchInput);
+						
 					}
 				}
 				thead.addElement(tr);
