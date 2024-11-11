@@ -356,7 +356,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
         if (!Util.isEmpty(m_sqlUserOrder)) {
         	dataSql = dataSql + m_sqlUserOrder;
         	if(!Util.isEmpty(orderByClause))
-        		dataSql = dataSql + orderByClause;
+        		dataSql = dataSql + ", " + orderByClause;
         }
         else if(!Util.isEmpty(orderByClause)) {
         	dataSql = dataSql + " ORDER BY " + orderByClause;
