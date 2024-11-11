@@ -29,7 +29,6 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.commonmark.Extension;
@@ -517,7 +516,6 @@ public class DocumentSearchController implements EventListener<Event>{
 
 		Div div = new Div();
 		div.setSclass("search-result-box");
-		ZkCssHelper.appendStyle(div, "cursor:pointer");
 		if (result != null) {
 			div.setAttribute(SEARCH_RESULT, result);
 			div.addEventListener(Events.ON_CLICK, this);
@@ -1133,8 +1131,12 @@ public class DocumentSearchController implements EventListener<Event>{
 	    public void setAttributes(Node node, String tagName, Map<String, String> attributes) {
 	        if (node instanceof Link) {
 	        	String href = attributes.get("href");
-	        	if (href != null && !href.startsWith("javascript:") && !attributes.containsKey("target"))
-	        		attributes.put("target", "_blank");
+	        	if (href != null && !href.startsWith("javascript:")) {
+	        		if (!attributes.containsKey("target"))
+	        			attributes.put("target", "_blank");
+	        		if (!attributes.containsKey("onclick"))
+	        			attributes.put("onclick", "event.stopPropagation()");
+	        	}
 	        }
 	    }
 	}
