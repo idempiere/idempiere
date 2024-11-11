@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.commonmark.Extension;
@@ -513,12 +514,13 @@ public class DocumentSearchController implements EventListener<Event>{
 	private void addHtmlResult(SearchResult result, String content) {
 		final Html resultHtml = new Html();
 		resultHtml.setContent(content);
+		ZkCssHelper.appendStyle(resultHtml, "display:inline-block");
 
 		Div div = new Div();
 		div.setSclass("search-result-box");
 		if (result != null) {
-			div.setAttribute(SEARCH_RESULT, result);
-			div.addEventListener(Events.ON_CLICK, this);
+			resultHtml.setAttribute(SEARCH_RESULT, result);
+			resultHtml.addEventListener(Events.ON_CLICK, this);			
 		}
 		// add @scope style
 		if (result != null && result.getAD_Style_ID() > 0) {
@@ -837,7 +839,7 @@ public class DocumentSearchController implements EventListener<Event>{
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (Events.ON_CLICK.equals(event.getName())) {
+		if (Events.ON_CLICK.equals(event.getName())) {			
         	if (event.getTarget().getAttribute(SEARCH_RESULT) != null && event.getTarget().getAttribute(SEARCH_RESULT) instanceof SearchResult result) {
     			doZoom(result);
     		}
