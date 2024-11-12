@@ -110,6 +110,7 @@ public final class Env
 	public static final String HAS_ALIAS = "$HasAlias";
 	public static final String IS_CAN_APPROVE_OWN_DOC = "#IsCanApproveOwnDoc";
 	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
+	public static final String IS_SSO_LOGIN = "#IsSSOLogin";
 	public static final String DEVELOPER_MODE = "#DeveloperMode";
 	/** Context Language identifier */
 	public static final String LANGUAGE = "#AD_Language";

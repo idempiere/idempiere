@@ -499,6 +499,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    boolean isAdminLogin = false;
 	    if (desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
 	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
+	    
+	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+	    String ssoLogoutURL = null;
+	    if (!isAdminLogin && isSSOLogin)
+	    {
+	    	ISSOPrincipalService service = SSOUtils.getSSOPrincipalService();
+	    	ssoLogoutURL = service.getLogoutURL();
+	    }
+	    
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -507,7 +516,21 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect(isAdminLogin ? "admin.zul" : "index.zul");       
+    	if (isAdminLogin) 
+    	{
+    		Executions.sendRedirect("admin.zul");
+    	}
+    	else
+    	{
+    		if (isSSOLogin && !Util.isEmpty(ssoLogoutURL, true))
+    		{
+    			Executions.sendRedirect(ssoLogoutURL);
+    		}
+    		else
+    		{
+    			Executions.sendRedirect("index.zul");
+    		}
+    	}
         
         try {
     		desktopCache.removeDesktop(desktop);
