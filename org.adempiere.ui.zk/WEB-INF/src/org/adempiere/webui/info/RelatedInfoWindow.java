@@ -423,7 +423,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, dataSql, e);
+			throw new AdempiereException(e);
 		}
 
 		finally
