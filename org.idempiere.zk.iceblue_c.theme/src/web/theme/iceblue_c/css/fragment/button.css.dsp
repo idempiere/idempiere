@@ -61,12 +61,6 @@
 .z-button.small-toolbarbutton [class^="z-icon-"] {
 	font-size: 12px;
 }
-.btn-ok, .btn-ok:focus {
-	background-color: green;
-}
-.btn-cancel, .btn-cancel:focus {
-	background-color: red;
-}
 .btn-ok.z-button [class^="z-icon-"]:before {
 	color: white;	
 }
@@ -79,5 +73,5 @@
 	vertical-align: top;
 }
 .z-bandbox-button [class*="z-icon-"], .z-combobox-button [class*="z-icon-"] {
-	font-size: 18px;
+	font-size: 16px;
 }

@@ -331,16 +331,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			cell.appendChild(cbNewEdit);
 			row.appendChild(cell);
 						
-			String sql = "SELECT M_AttributeSetInstance_ID, Description"
-				+ " FROM M_AttributeSetInstance"
-				+ " WHERE M_AttributeSet_ID = " + as.getM_AttributeSet_ID()
-				+ " AND EXISTS ("
-				+ " SELECT 1 FROM M_AttributeInstance INNER JOIN M_Attribute"
-				+ " ON (M_AttributeInstance.M_Attribute_ID = M_Attribute.M_Attribute_ID)"
-				+ " WHERE M_AttributeInstance.M_AttributeSetInstance_ID = M_AttributeSetInstance.M_AttributeSetInstance_ID"
-				+ " AND M_Attribute.IsInstanceAttribute = 'N')";
-			existingCombo.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			KeyNamePair[] keyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(as.getM_AttributeSet_ID(), true);
+			existingCombo.setMold("select");			
 			for (KeyNamePair pair : keyNamePairs) {
 				existingCombo.appendItem(pair.getName(), pair.getKey());
 			}
@@ -418,7 +410,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 					+ " AND p.M_Product_ID=l.M_Product_ID)";
 			fieldLot = new Listbox();
 			fieldLot.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			KeyNamePair[] keyNamePairs = DB.getKeyNamePairsEx(sql, true);
 			for (KeyNamePair pair : keyNamePairs) {
 				fieldLot.appendItem(pair.getName(), pair.getKey());
 			}

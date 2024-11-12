@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoRelated;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
@@ -220,11 +220,7 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		if (getDisplayLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			return Evaluator.parseSQLLogic(DisplayLogic, ctx, WindowNo, 0, infoRelated.toString());
 		}
-		Evaluatee evaluatee = new Evaluatee() {
-			public String get_ValueAsString(String variableName) {
-				return InfoRelatedVO.this.get_ValueAsString(ctx, variableName);
-			}
-		};
+		Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
 		if (log.isLoggable(Level.FINEST)) log.finest(infoRelated.toString()
 			+ " (" + getDisplayLogic() + ") => " + retValue);
@@ -234,19 +230,13 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		
 	/**
 	 * 	Get Variable Value (Evaluatee) as string
+	 *  @param ctx
 	 *	@param variableName name
 	 *	@return value as string
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
-		int f = variableName.indexOf('.');
-		if (f > 0) {
-			variableName = variableName.substring(0, f);
-		}
-		
-		String value = null;		
-	    value = Env.getContext (ctx, WindowNo, variableName, true);
-	   
-		return value;
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, -1, true);
+		return evaluatee.get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 }

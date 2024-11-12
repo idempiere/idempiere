@@ -1735,6 +1735,18 @@ public final class DB
 	 * Get Array of Key Name Pairs
 	 * @param sql select with id / name as first / second column
 	 * @param optional if true (-1,"") is added
+	 * @return array of {@link KeyNamePair}
+	 * @see #getKeyNamePairs(String, boolean, Object...)
+	 */
+	public static KeyNamePair[] getKeyNamePairsEx(String sql, boolean optional)
+	{
+		return getKeyNamePairsEx(sql, optional, (Object[])null);
+	}
+	
+	/**
+	 * Get Array of Key Name Pairs
+	 * @param sql select with id / name as first / second column
+	 * @param optional if true (-1,"") is added
 	 * @param params query parameters
 	 */
 	public static KeyNamePair[] getKeyNamePairs(String sql, boolean optional, Object ... params)
@@ -1742,6 +1754,17 @@ public final class DB
 		return getKeyNamePairs(null, sql, optional, params);
 	}
 
+	/**
+	 * Get Array of Key Name Pairs
+	 * @param sql select with id / name as first / second column
+	 * @param optional if true (-1,"") is added
+	 * @param params query parameters
+	 */
+	public static KeyNamePair[] getKeyNamePairsEx(String sql, boolean optional, Object ... params)
+	{
+		return getKeyNamePairsEx(null, sql, optional, params);
+	}
+	
 	/**
 	 * Get Array of Key Name Pairs
 	 * @param trxName
@@ -1752,8 +1775,32 @@ public final class DB
 	 */
 	public static KeyNamePair[] getKeyNamePairs(String trxName, String sql, boolean optional, Object ... params)
 	{
+		try 
+		{
+			return getKeyNamePairsEx(trxName, sql, optional, params);		
+		} 
+		catch (Exception e)
+        {
+            log.log(Level.SEVERE, sql, getSQLException(e));
+        }
+		return new KeyNamePair[0];
+	}
+	
+	/**
+	 * Get Array of Key Name Pairs
+	 * @param trxName
+	 * @param sql select with id / name as first / second column
+	 * @param optional if true (-1,"") is added
+	 * @param params query parameters
+	 * @return Array of Key Name Pairs
+	 */
+	public static KeyNamePair[] getKeyNamePairsEx(String trxName, String sql, boolean optional, Object ... params)
+	{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+        Connection conn = null; 
+    	if (trxName == null)
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
         ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
         if (optional)
         {
@@ -1761,7 +1808,15 @@ public final class DB
         }
         try
         {
-            pstmt = DB.prepareStatement(sql, trxName);
+        	if (conn != null)
+    		{
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
+    		}
+        	if (conn != null)
+        		pstmt = prepareStatement(conn, sql);
+        	else
+        		pstmt = DB.prepareStatement(sql, trxName);
             setParameters(pstmt, params);
             rs = pstmt.executeQuery();
             while (rs.next())
@@ -1769,15 +1824,27 @@ public final class DB
                 list.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
             }
         }
-        catch (Exception e)
+        catch (SQLException e)
         {
-            log.log(Level.SEVERE, sql, getSQLException(e));
+        	if (conn != null)
+    		{
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+    		}
+            throw new DBException(e.getMessage(), e);
         }
         finally
         {
             close(rs, pstmt);
             rs= null;
             pstmt = null;
+            if (conn != null)
+    		{
+    			closeAndResetReadonlyConnection(conn);
+    		}
         }
         KeyNamePair[] retValue = new KeyNamePair[list.size()];
         list.toArray(retValue);

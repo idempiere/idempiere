@@ -29,7 +29,6 @@ import org.compiere.wf.MWorkflow;
  * Model for Setup Wizard
  *
  * @author Carlos Ruiz
- *
  */
 public class SetupWizard
 {
@@ -39,6 +38,10 @@ public class SetupWizard
 
 	public MWFNode m_node; 
 
+	/**
+	 * Get workflow records with type=wizard
+	 * @return workflow records
+	 */
 	public List<MWorkflow> getWfWizards() {
 		MClient client = MClient.get(Env.getCtx());
 		String ASPFilter = "";
@@ -80,6 +83,13 @@ public class SetupWizard
 			.list();
 	}
 
+	/**
+	 * Update AD_WizardProcess
+	 * @param note
+	 * @param wizardStatus
+	 * @param userid
+	 * @return true if status of wizard process have been updated
+	 */
 	public boolean save(String note, String wizardStatus, int userid) {
 		MWizardProcess wp = MWizardProcess.get(Env.getCtx(), m_node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
 		if (note != null && note.length() == 0)

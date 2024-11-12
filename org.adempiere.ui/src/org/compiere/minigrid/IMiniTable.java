@@ -32,14 +32,14 @@ import java.sql.ResultSet;
 import org.compiere.model.PO;
 
 /**
- * 
+ * UI Table interface
  * @author hengsin
  *
  */
 public interface IMiniTable 
 {
 	/**
-	 * 
+	 * Is column editable 
 	 * @param row
 	 * @param column
 	 * @return true if column is editable
@@ -47,7 +47,7 @@ public interface IMiniTable
 	public boolean isCellEditable(int row, int column);
 	
 	/**
-	 * 
+	 * Get value at row and column
 	 * @param row
 	 * @param column
 	 * @return value at row and column
@@ -55,7 +55,7 @@ public interface IMiniTable
 	public Object getValueAt(int row, int column);
 	
 	/**
-	 * set value at row and column
+	 * Set value at row and column
 	 * @param value
 	 * @param row
 	 * @param column
@@ -63,21 +63,21 @@ public interface IMiniTable
 	public void setValueAt(Object value, int row, int column);
 	
 	/**
-	 * 
+	 * Convert view column index to model index
 	 * @param viewColumnIndex
 	 * @return corresponding index at underlying model
 	 */
 	public int convertColumnIndexToModel(int viewColumnIndex);
 	
 	/**
-	 * change readonly attribute of a column
+	 * Change readonly attribute of a column
 	 * @param index
 	 * @param readOnly
 	 */
 	public void setColumnReadOnly (int index, boolean readOnly);
 	
 	/**
-	 * Prepare Table and return SQL required to get resultset to populate table
+	 * Prepare Table and return SQL to get resultset to populate table
 	 * @param layout
 	 * @param from
 	 * @param where
@@ -94,7 +94,7 @@ public interface IMiniTable
 	public void addColumn (String header);
 	
 	/**
-	 * set column class type
+	 * Set column class type
 	 * @param index
 	 * @param classType
 	 * @param readOnly
@@ -103,7 +103,7 @@ public interface IMiniTable
 	public void setColumnClass (int index, Class<?> classType, boolean readOnly, String header);
 	
 	/**
-	 * set column class type
+	 * Set column class type
 	 * @param index
 	 * @param classType
 	 * @param readOnly
@@ -111,91 +111,91 @@ public interface IMiniTable
 	public void setColumnClass (int index, Class<?> classType, boolean readOnly);
 	
 	/**
-	 * populate table
+	 * Populate table from result set
 	 * @param rs
 	 */
 	public void loadTable(ResultSet rs);
 	
 	/**
-	 * populate table
+	 * Populate table from POs
 	 * @param pos
 	 */
 	public void loadTable(PO[] pos);
 	
 	/**
-	 * 
+	 * Get row key of selected row
 	 * @return row key
 	 */
 	public <T extends Serializable> T getSelectedRowKey();
 	
 	/**
-	 * 
+	 * Get selected row index
 	 * @return selected row index or -1 if no selected row
 	 */
 	public int getSelectedRow();
 	
 	/**
-	 * ensure table has >= rowCount rows.
+	 * Ensure table has >= rowCount rows.<br/>
 	 * i.e to grow a table by 1 row, call table.setRowCount(table.getRowCount()+1)
 	 * @param rowCount
 	 */
 	public void setRowCount (int rowCount);
 	
 	/**
-	 * get table layout
+	 * Get table column layout
 	 * @return array of {@link ColumnInfo}
 	 */
 	public ColumnInfo[] getLayoutInfo();
 
 	/**
-	 * 
+	 * Get number of columns
 	 * @return number of columns
 	 */
 	public int getColumnCount();
 	
 	/**
-	 * 
+	 * Get number of rows
 	 * @return number of rows
 	 */
 	public int getRowCount();
 	
 	/**
-	 * change multi selection attribute of table
+	 * Change multiple selection attribute of table
 	 * @param multiSelection
 	 */
 	public void setMultiSelection(boolean multiSelection);
 	
 	/**
-	 * 
+	 * Is multi selection turn on
 	 * @return true if multi selection is turn on
 	 */
 	public boolean isMultiSelection();
 	
 	/**
-	 * 
+	 * Get color code of row
 	 * @param row
 	 * @return color code
 	 */
 	public int getColorCode (int row);
 	
 	/**
-	 * 
+	 * Set comparison object for determination of row color code 
 	 * @param dataCompare
 	 */
 	public void setColorCompare (Object dataCompare);
 	
 	/**
-	 * redraw the whole table
+	 * Redraw the whole table
 	 */
 	public void repaint();
 	
 	/**
-	 * auto size column width
+	 * Auto size column width
 	 */
 	public void autoSize();
 	
 	/**
-	 * change show total attribute of table
+	 * Change show total attribute of table
 	 * @param show
 	 */
 	public void setShowTotals(boolean show);

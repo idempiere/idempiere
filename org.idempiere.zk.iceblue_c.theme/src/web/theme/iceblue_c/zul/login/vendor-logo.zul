@@ -8,13 +8,11 @@ Copyright (C) 2009 Idalica Corporation
 <div style="margin: 5px;"
 	if="${desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) or desktop.execution.serverName.startsWith(&quot;demo&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;)  or desktop.execution.serverName.startsWith(&quot;test-&quot;) or desktop.execution.serverName.startsWith(&quot;triage&quot;)}">
 	<hbox align="center">
-		<a href="http://www.idempiere.org" target="_blank"><image src="~./theme/iceblue_c/images/login-logo.png"/></a>
-		<label value="iDempiere 12 Development Build Online Demonstration"
-			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
+		<a href="http://www.idempiere.org" target="_blank"><image src="~./theme/iceblue_c/images/login-logo.png" style="height: 85px;"/></a>
+		<div style="margin-left: 15px; margin-right: 5px;">
+			<label multiline="true" value="iDempiere 12&#10;Development Build&#10;Online Demonstration"
+				style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; color:#578BB8; font-size:1.3em; font-weight: bold;" />
+		</div>	
 	</hbox>
 </div>
-<div style="height: 90px" if="${! desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) and ! desktop.execution.serverName.startsWith(&quot;demo&quot;) and ! desktop.execution.serverName.startsWith(&quot;test&quot;) and ! desktop.execution.serverName.startsWith(&quot;triage&quot;)}">
-	<space/>
-</div>
-
 </zk>

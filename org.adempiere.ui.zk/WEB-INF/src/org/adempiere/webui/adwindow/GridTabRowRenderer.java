@@ -345,12 +345,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				editor.setReadWrite(false);
 				editor.setValue(value);
 				Image image = editor.getComponent();
-				if (image.getContent() != null) {
-					image.setWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
-					image.setHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px");
-					image.setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
-					image.setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
-				}
 				component = image;
 			} else {
 				Span span = new Span();

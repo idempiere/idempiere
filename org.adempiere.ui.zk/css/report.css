@@ -1,3 +1,8 @@
+html,body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	font-size: 14px;
+}
+
 .rp-href {
 	color: #000000;
 }
@@ -77,6 +82,10 @@ div.rp-flex-container {
 
 #rp-para-table-wrap {
 	flex-grow: 0;
+}
+
+#rp-para-table-wrap summary {
+	font-weight: bold;
 }
 
 div.rp-table-wrap {

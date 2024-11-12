@@ -693,7 +693,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnSave.setId("btnSave");
         btnSave.setStyle("vertical-align: middle;");
         if (ThemeManager.isUseFontIconForImage())
-        	LayoutUtils.addSclass("large-toolbarbutton", btnSave);
+        	LayoutUtils.addSclass("medium-toolbarbutton", btnSave);
 
         btnShare = new ToolBarButton();
         btnShare.setAttribute("name","btnShareAdv");
@@ -706,7 +706,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnShare.setId("btnShare");
         btnShare.setStyle("vertical-align: middle;");
         if (ThemeManager.isUseFontIconForImage())
-        	LayoutUtils.addSclass("large-toolbarbutton", btnShare);
+        	LayoutUtils.addSclass("medium-toolbarbutton", btnShare);
 
         fQueryName = new Combobox();
         fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
@@ -1426,6 +1426,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            if (field == null || field.isVirtualUIColumn()
 	            	|| ! hasAccessSpecialFields(field))
 	            	continue;
+		    WEditor editor = WebEditorFactory.getEditor(field, true);
+        	    if (editor == null || !editor.isSearchable())
+			continue;
 
 				boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
 												&& "Y".equals(Env.getContext(Env.getCtx(), m_targetWindowNo, m_targetTabNo, GridTab.CTX_IsLookupOnlySelection));

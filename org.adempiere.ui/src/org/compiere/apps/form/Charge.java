@@ -66,7 +66,7 @@ public class Charge
 	}
 	
 	/**
-	 * set optional trx name
+	 * Set optional trx name
 	 * @param trxName
 	 */
 	public void setTrxName(String trxName)
@@ -75,6 +75,7 @@ public class Charge
 	}
 	
 	/**
+	 *  Get revenue and expense account elements
 	 *  @return list of account element(Boolean[Select],KeyNamePair[C_ElementValue_ID,Value],Name,Boolean[IsExpense]) records
 	 */
 	public Vector<Vector<Object>> getData()
@@ -122,7 +123,6 @@ public class Charge
 	
 	/**
      * Finds C_Element_ID of primary accounting schema
-     *
      */
     protected void findChargeElementID()
     {
@@ -156,7 +156,7 @@ public class Charge
     }
 	
     /**
-     * 
+     * Get column names for {@link #getData()}
      * @return column names
      */
 	public Vector<String> getColumnNames()
@@ -172,8 +172,10 @@ public class Charge
 	}
 	
 	/**
-	 * set class type of columns
+	 * Set class type of columns
 	 * @param dataTable
+	 * @see Charge#getColumnNames()
+	 * @see Charge#getData()
 	 */
 	public void setColumnClass(IMiniTable dataTable)
 	{
@@ -220,8 +222,8 @@ public class Charge
 		}
 	}   //  dynInit
 	
-	/**************************************************************************
-	 *  Create ElementValue for primary AcctSchema
+	/**
+	 *  Create ElementValue (C_ElementValue) for primary AcctSchema
 	 *  @param value value
 	 *  @param name name
 	 *  @param isExpenseType is expense
@@ -247,7 +249,7 @@ public class Charge
 	}   //  createElementValue
 
 	/**
-     *  Create Charge and account entries for primary Account Schema.
+     *  Create Charge and account element for primary Account Schema.
      *
      *  @param name             charge name
      *  @param elementValueId   element value identifier
@@ -293,7 +295,7 @@ public class Charge
     }   //  createCharge
     
     /**
-     * Updates the charge account details.
+     * Updates the charge account details (C_Charge_Acct).
      * @param charge    the charge
      * @param account   the account
      */
@@ -310,10 +312,9 @@ public class Charge
         return;
     }
 
-
     /**
-     * Queries whether the current account scheme is valid.
-     * @return false if the current account is <code>null</code> or
+     * Is the current account scheme instance variable ({@link #m_acctSchema}) valid.
+     * @return false if the current account schema instance variable is <code>null</code> or
      *         its identifier is 0 (zero).
      */
     private boolean isAccountSchemaValid()
@@ -330,9 +331,8 @@ public class Charge
         return true;
     }
 
-
     /**
-     * Creates the SQL statement for updating the account and charge.
+     * Creates SQL statement to update the expense account value of a charge record.
      *
      * @param charge    charge
      * @param account      account
@@ -348,10 +348,8 @@ public class Charge
         return sql;
     }
 
-
     /**
-     * Refreshes the current account schema.
-     *
+     * Load current account schema model (if not loaded yet).
      */
     private void refreshAccountSchema()
     {
@@ -364,12 +362,11 @@ public class Charge
         return;
     }
 
-
     /**
-     * Gets the account for the specified charge and element value.
-     * The account is created if it doesn't already exist.
-     * @param elementValueId    identifier for the element value
-     * @return the account
+     * Get the account (C_ValidCombination) record for the specified account element id.<br/>
+     * A new account (C_ValidCombination) record is created if it doesn't exist yet.
+     * @param elementValueId identifier for the element value
+     * @return the account record
      */
     private MAccount getAccount(int elementValueId)
     {
@@ -403,12 +400,11 @@ public class Charge
 	protected StringBuffer listRejected;
 
 	/**
-	 * create charge from selected account elements
+	 * Create charge from selected account elements
 	 * @param dataTable
 	 */
     public void createAccount(IMiniTable dataTable)
 	{
-		log.config("");
 		//
 		listCreated = new StringBuffer();
 		listRejected = new StringBuffer();
@@ -442,7 +438,7 @@ public class Charge
 	}   //  createAccount
     
     /**
-     * 
+     * Get account element names for charge created
      * @return comma separated list of account element names (where charge create success)
      */
     public String getCreatedAccountNames() {
@@ -450,7 +446,7 @@ public class Charge
     }
     
     /**
-     * 
+     * Get account element names for charge create failure
      * @return comma separated list of account element names (where charge create fail)
      */
     public String getRejectedAccountNames() {

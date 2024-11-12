@@ -20,6 +20,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MToolBarButton;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -150,9 +151,14 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	public String get_ValueAsString(String variableName) {
 		int tabNo = adTabpanel.getTabNo();
 		if( tabNo == 0)
+		{
 	    	return adTabpanel.get_ValueAsString(variableName);
+		}
 	    else
-	    	return Env.getContext (Env.getCtx(), windowNo, tabNo, variableName, false, true);
+	    {
+	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(adTabpanel.getGridTab(), windowNo, tabNo, false, true);
+	    	return evaluatee.get_ValueAsString(variableName);
+	    }
 	}
 
 	/**

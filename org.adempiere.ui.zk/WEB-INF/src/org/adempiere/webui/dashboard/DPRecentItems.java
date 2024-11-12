@@ -245,7 +245,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		}
 		if (comp instanceof Image || comp instanceof ToolBarButton) // Refresh button
 		{
-			refresh();
+			refresh(new ServerPushTemplate(bxRecentItems.getDesktop()));
 		}
 	}
 
@@ -314,6 +314,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			riDBremove(AD_RecentItem_ID);
 			bxRecentItems.removeChild(btn);
 			bxRecentItems.invalidate();
+			refresh(new ServerPushTemplate(bxRecentItems.getDesktop()));
 		}
 	}
 

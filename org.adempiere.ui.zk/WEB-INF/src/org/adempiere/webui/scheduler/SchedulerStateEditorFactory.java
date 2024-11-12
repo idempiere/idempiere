@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Component;
  * Field editor factory for {@link DisplayType#SchedulerState}
  * @author hengsin
  */
-@Component(name = "org.adempiere.webui.scheduler.SchedulerStateEditorFactory", service = {IEditorFactory.class}, 
+@Component(name = "org.adempiere.webui.scheduler.SchedulerStateEditorFactory", service = {IEditorFactory.class}, immediate = true,
 		   property = {"service.ranking:Integer=1"})
 public class SchedulerStateEditorFactory implements IEditorFactory {
 

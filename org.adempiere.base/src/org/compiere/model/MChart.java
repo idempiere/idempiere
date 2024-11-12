@@ -21,11 +21,15 @@
  **********************************************************************/
 package org.compiere.model;
 
+import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.apps.graph.ChartBuilder;
 import org.compiere.util.Env;
+import org.jfree.chart.ChartRenderingInfo;
+import org.jfree.chart.JFreeChart;
 
 /**
  * Extended model class for AD_Chart
@@ -34,8 +38,8 @@ public class MChart extends X_AD_Chart {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 5720760885280644477L;
-	
+	private static final long serialVersionUID = 6510636131425272970L;
+
 	private int windowNo=0;
 
     /**
@@ -90,4 +94,29 @@ public class MChart extends X_AD_Chart {
 	public int getWindowNo() {
 		return windowNo;
 	}
+
+	/**
+	 * Get chart image
+	 * @param id
+	 * @param width
+	 * @param height
+	 * @return chart image
+	 */
+	public BufferedImage getChartImage(int width, int height) {
+		if (width <= 0)
+			width = getWinHeight();
+		if (width <= 0)
+			width = 100; // default
+		if (height <= 0)
+			height = getWinHeight(); // default to make a square
+		if (height <= 0)
+			height = 100; // default to make a square of 100px
+		ChartBuilder chartBuilder = new ChartBuilder(this);
+		JFreeChart chart = chartBuilder.createChart();
+		chart.getPlot().setForegroundAlpha(0.8f);
+		ChartRenderingInfo info = new ChartRenderingInfo();
+		BufferedImage bi = chart.createBufferedImage(width, height, BufferedImage.TRANSLUCENT, info);
+		return bi;
+	}
+
 }

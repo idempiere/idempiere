@@ -111,6 +111,17 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getDefault
 	
 	/**
+	 * Get role records readable by current effective role
+	 * @return role records (AD_Role_ID, Name), order by Name
+	 */
+	public static KeyNamePair[] getRoleKeyNamePairs() {
+		String sql = MRole.getDefault().addAccessSQL(
+				"SELECT AD_Role_ID, Name FROM AD_Role WHERE AD_Client_ID=? AND IsActive='Y' ORDER BY 2", 
+				"AD_Role", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		return DB.getKeyNamePairsEx(sql, false, Env.getAD_Client_ID(Env.getCtx()));
+	}
+	
+	/**
 	 * Set role for current session/context
 	 * @param defaultRole
 	 */
@@ -3448,4 +3459,29 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Check record access through {@link #addAccessSQL(String, String, boolean, boolean)} using<br/>
+	 * either record id or record uuid
+	 * @param table
+	 * @param recordId ignore if uuid is use
+	 * @param uuid null to use recordId
+	 * @param rw true for writable, false for readonly
+	 * @return true if role has access to record
+	 */
+	public boolean checkAccessSQL(MTable table, int recordId, String uuid, boolean rw) {
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM ")
+				.append(table.getTableName())
+				.append(" WHERE ")
+				.append(table.getTableName())
+				.append(".");
+		if (!Util.isEmpty(uuid, true) ) {
+			sql.append(PO.getUUIDColumnName(table.getTableName()))
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), uuid) == 1;
+		} else {
+			sql.append(table.getKeyColumns()[0])
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
+		}
+	}
 }	//	MRole

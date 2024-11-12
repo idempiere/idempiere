@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -156,12 +157,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 		MZoomCondition[] conditions = MZoomCondition.getConditions(AD_Table_ID);
 		if (conditions.length > 0)
 		{
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return Env.getContext(Env.getCtx(), winNo, variableName);
-				}
-			};
-
+			DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, winNo, -1, false);
 			for (MZoomCondition condition : conditions)
 			{
 				if (! Util.isEmpty(condition.getZoomLogic())) {
@@ -369,12 +365,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 		MZoomCondition[] conditions = MZoomCondition.getConditions(AD_Table_ID);
 		if (conditions.length > 0)
 		{
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return Env.getContext(Env.getCtx(), winNo, variableName);
-				}
-			};
-
+			Evaluatee evaluatee = new DefaultEvaluatee(null, winNo, -1, false);
 			String whereClause;
 			if (table.isUUIDKeyTable())
 				whereClause = PO.getUUIDColumnName(table.getTableName())+"="+DB.TO_STRING(recordUU);

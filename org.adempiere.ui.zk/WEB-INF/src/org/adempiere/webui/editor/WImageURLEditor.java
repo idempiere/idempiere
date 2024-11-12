@@ -26,21 +26,26 @@ import java.util.logging.Level;
 
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WImageURLDialog;
 import org.compiere.model.GridField;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
@@ -60,6 +65,8 @@ public class WImageURLEditor extends WEditor
 	private boolean readwrite;
 
 	private String oldValue;
+	
+	private String contextPath = null;
 	
     /**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WImageEditor.class);
@@ -96,6 +103,10 @@ public class WImageURLEditor extends WEditor
 				}
 			}        	
         }, gridField, tableEditor, editorConfiguration);
+        getComponent().addCallback(AbstractComponent.AFTER_PAGE_ATTACHED, t -> {
+        	if (contextPath == null && Executions.getCurrent() != null)
+	        	contextPath = Executions.getCurrent().getContextPath();
+        });
         init();
     }
 
@@ -110,9 +121,9 @@ public class WImageURLEditor extends WEditor
     private void init()
     {
     	getComponent().setSrc(null);
-        getComponent().setSclass("image-field image-fit-contain");
-        getComponent().setWidth("100px");
-        getComponent().setHeight("100px");
+        getComponent().setSclass("image-field");
+        if (Executions.getCurrent() != null)
+        	contextPath = Executions.getCurrent().getContextPath();
     }
 
      @Override
@@ -163,11 +174,40 @@ public class WImageURLEditor extends WEditor
 		{
 			oldValue = null;
 			getComponent().setSrc(null);
-			return;
+			ZkCssHelper.removeStyle(getComponent(), "width");
+			ZkCssHelper.removeStyle(getComponent(), "height");
+			LayoutUtils.removeSclass("thumbnail", getComponent());
+			LayoutUtils.removeSclass("image-fit", getComponent());
+			getComponent().setClientAttribute("onmouseenter", null);
+			getComponent().setClientAttribute("onmouseleave", null);
+			//invalidate necessary for setClientAttribute to work
+			getComponent().invalidate();
+			return;			
+		}
+		else
+		{
+			String width = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			String height = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			String style = "width:"+width+";height:"+height;
+			ZkCssHelper.appendStyle(getComponent(), style);
+			LayoutUtils.addSclass("thumbnail", getComponent());
+			LayoutUtils.addSclass("image-fit", getComponent());
+			getComponent().setClientAttribute("onmouseenter", "idempiere.showFullSizeImage(event)");
+			getComponent().setClientAttribute("onmouseleave", "idempiere.hideFullSizeImage(event)");
+			//invalidate necessary for setClientAttribute to work
+			getComponent().invalidate();
 		}
 		//
 		if (log.isLoggable(Level.FINE)) log.fine(value.toString());
-		getComponent().setSrc(newValue);
+		if (MAttachment.isAttachmentURLPath(newValue))
+		{
+			String url = MAttachment.getImageAttachmentURLFromPath(null, newValue);
+			getComponent().setSrc(url);
+		}
+		else
+		{
+			getComponent().setSrc(newValue);
+		}
 		oldValue = newValue;
     }
     	
@@ -182,6 +222,8 @@ public class WImageURLEditor extends WEditor
 	{
 		if (Events.ON_CLICK.equals(event.getName()) && readwrite)
 		{
+			String script = "jq('#"+getComponent().getUuid()+"').trigger('mouseleave');";
+			Clients.evalJavaScript(script);
 			final WImageURLDialog dialog = new WImageURLDialog(this);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
@@ -224,10 +266,17 @@ public class WImageURLEditor extends WEditor
 		if (!Util.isEmpty(url, true)) {
 			String width = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
 			String height = MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx()))+"px";
+			if (MAttachment.isAttachmentURLPath(url))
+			{
+				if (contextPath == null && Executions.getCurrent() != null)
+		        	contextPath = Executions.getCurrent().getContextPath();
+				url = MAttachment.getImageAttachmentURLFromPath(contextPath, url);
+			}
 			StringBuilder builder = new StringBuilder("<img src='");
 			builder.append(url)
-				.append("' width='").append(width).append("' ")
-				.append("height='").append(height).append("' ")
+				.append("' style='width:").append(width).append(";")
+				.append("height:").append(height).append("' ")
+				.append("class='thumbnail image-fit' ")
 				.append("onmouseenter='idempiere.showFullSizeImage(event)' onmouseleave='idempiere.hideFullSizeImage(event)'/>");
 			return builder.toString();
 		} else {

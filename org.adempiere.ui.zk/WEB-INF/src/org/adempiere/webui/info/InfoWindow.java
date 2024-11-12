@@ -105,6 +105,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.InfoRelatedVO;
 import org.compiere.model.Lookup;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
@@ -482,7 +483,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    					item.setValue(process);
    					item.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
    					if (!Util.isEmpty(data.getImageURL(), true)) {
-   						if (ThemeManager.isUseFontIconForImage())
+   						if (MAttachment.isAttachmentURLPath(data.getImageURL()))
+   						{
+							item.setImage(MAttachment.getImageAttachmentURLFromPath(null, data.getImageURL()));
+   						}
+   						else if (data.getImageURL().indexOf("://") > 0)
+   						{
+   							item.setImage(data.getImageURL());
+   						}
+   						else if (ThemeManager.isUseFontIconForImage())
    		   	   				item.setIconSclass(ThemeManager.getIconSclass(data.getImageURL()));
    						else
    							item.setImage(ThemeManager.getThemeResource("images/" + data.getImageURL()));
@@ -606,7 +615,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
    	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
    	   			if (infoProcess.getImageURL().indexOf("://") > 0)
-   	   				ipMenuItem.setImage(infoProcess.getImageURL());
+   	   			{
+   	   				if (MAttachment.isAttachmentURLPath(infoProcess.getImageURL()))
+   	   					ipMenuItem.setImage(MAttachment.getImageAttachmentURLFromPath(null, infoProcess.getImageURL()));
+   	   				else
+   	   					ipMenuItem.setImage(infoProcess.getImageURL());
+   	   			}
    	   			else if (ThemeManager.isUseFontIconForImage())
    	   				ipMenuItem.setIconSclass(ThemeManager.getIconSclass(infoProcess.getImageURL()));
    	   			else

@@ -1574,6 +1574,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *	@param variableName name
 	 *	@return value as string 
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
 		return get_ValueAsString (m_vo.ctx, variableName);
@@ -2763,7 +2764,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *  Get Field by DB column name
 	 *  @param columnName column name
-	 *  @return GridField
+	 *  @return GridField or null
 	 */
 	public GridField getField (String columnName)
 	{
@@ -2878,7 +2879,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				MLookup mLookup = (MLookup)dependentField.getLookup();
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
 				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-						|| mLookup.getValidation().matches(".*[@]"+columnName+"[:].+[@].*$"))
+						|| mLookup.getValidation().matches(".*[@]"+getTabNo()+"[|]"+columnName+"([:].+)?[@].*")
+						|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");

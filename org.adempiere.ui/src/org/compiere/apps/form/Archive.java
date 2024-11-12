@@ -25,6 +25,8 @@ import java.util.logging.Level;
 import org.compiere.model.MArchive;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -32,6 +34,9 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
+/**
+ * Archive Viewer Form
+ */
 public class Archive {
 	
 	/**	Window No			*/
@@ -54,13 +59,13 @@ public class Archive {
 	private String m_trxName = null;
 	
 	/**
-	 * 
-	 * @return KeyNamePair array of AD_Process records
+	 * Get list of report process accessible to current role
+	 * @return KeyNamePair(AD_Process_ID, Translated Name) array of AD_Process records
 	 */
 	public KeyNamePair[] getProcessData()
 	{
 		// Processes
-		final MRole role = MRole.getDefault(); // metas
+		final MRole role = MRole.getDefault();
 		
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Process");
 		String lang = Env.getAD_Language(Env.getCtx());
@@ -90,44 +95,25 @@ public class Archive {
 	}
 	
 	/**
-	 * 
-	 * @return KeyNamePair array of AD_Table records
+	 * Get list of table accessible (via window access) to current role
+	 * @return KeyNamePair(AD_Table_ID, Translated Name) array of AD_Table records
 	 */
 	public KeyNamePair[] getTableData()
 	{
-		//	Tables
-		final MRole role = MRole.getDefault(); // metas
-		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Table");
-		String lang = Env.getAD_Language(Env.getCtx());
-		String sql = "SELECT DISTINCT t.AD_Table_ID,"
-				+ (trl ? "trl.Name" : "t.Name")
-			+ " FROM AD_Table t INNER JOIN AD_Tab tab ON (tab.AD_Table_ID=t.AD_Table_ID)"
-			+ " INNER JOIN AD_Window_Access wa ON (tab.AD_Window_ID=wa.AD_Window_ID) "
-			+ (trl ? "LEFT JOIN AD_Table_Trl trl on (trl.AD_Table_ID=t.AD_Table_ID and trl.AD_Language=" + DB.TO_STRING(lang) + ")" : "") 
-			+ " WHERE "+role.getIncludedRolesWhereClause("wa.AD_Role_ID", null) // metas
-			+ " AND t.IsActive='Y' AND tab.IsActive='Y' "
-			+ "ORDER BY 2";
-		return DB.getKeyNamePairs(m_trxName, sql, true);
+		return MTable.getWithWindowAccessKeyNamePairs(true, m_trxName);
 	}
 		
 	/**
-	 * 
-	 * @return KeyNamePair array of user records
+	 * Get users
+	 * @return KeyNamePair(AD_User_ID, Name) array of user records
 	 */
 	public KeyNamePair[] getUserData()
 	{
-		//	Internal Users
-		String sql = "SELECT AD_User_ID, Name "
-			+ "FROM AD_User u WHERE EXISTS "
-				+"(SELECT * FROM AD_User_Roles ur WHERE u.AD_User_ID=ur.AD_User_ID) "
-			+ "ORDER BY 2";
-		MRole role = MRole.getDefault();
-		sql = role.addAccessSQL(sql, "u", true, false);
-		return DB.getKeyNamePairs(m_trxName, sql, true);
-	}	//	dynInit
+		return MUser.getWithRoleKeyNamePairs(true, m_trxName);
+	}
 	
 	/**
-	 * 	Is it the same
+	 * 	Is the two string equals
 	 *	@param s1 s1
 	 *	@param s2 s1
 	 *	@return true if the same
@@ -138,7 +124,7 @@ public class Archive {
 	}	//	isSame
 	
 	/**
-	 * retrieve archive record
+	 * Retrieve archive (AD_Archive) records
 	 * @param reports IsReport filter
 	 * @param process AD_Process_ID filter
 	 * @param table AD_Table_ID filter
@@ -243,7 +229,6 @@ public class Archive {
 		
 		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		
-		//metas: Bugfix zu included_Role
 		//	Process Access
 		sql.append(" AND (AD_Process_ID IS NULL OR AD_Process_ID IN "
 			+ "(SELECT AD_Process_ID FROM AD_Process_Access WHERE AD_Role_ID=")
@@ -260,14 +245,13 @@ public class Archive {
 			.append(" OR ").append(role.getIncludedRolesWhereClause("wa.AD_Role_ID", null))
 			.append("))");
 		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
-		//metas: Bugfix zu included_Role ende
 		//
 		m_archives = MArchive.get(Env.getCtx(), sql.toString(), m_trxName);
 		if (log.isLoggable(Level.INFO)) log.info("Length=" + m_archives.length);
 	}	//	cmd_query
 
 	/**
-	 * 
+	 * Get archive records retrieve by {@link #cmd_query(boolean, KeyNamePair, KeyNamePair, Integer, String, String, String, KeyNamePair, Timestamp, Timestamp)}	 
 	 * @return array of archive records
 	 */
 	public MArchive[] getArchives() {
@@ -275,7 +259,7 @@ public class Archive {
 	}
 	
 	/**
-	 * set optional trx name
+	 * Set optional trx name
 	 * @param trxName
 	 */
 	public void setTrxName(String trxName) {
