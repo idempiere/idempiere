@@ -91,8 +91,8 @@ public class MarkdownRendererImpl implements IMarkdownRenderer {
 	    public void setAttributes(Node node, String tagName, Map<String, String> attributes) {
 	        if (node instanceof Link) {
 	        	String href = attributes.get("href");
-	        	if (href != null && !href.startsWith("javascript:")) {
-	        		if (!attributes.containsKey("target"))
+	        	if (href != null) {
+	        		if (!href.startsWith("javascript:") && !attributes.containsKey("target"))
 	        			attributes.put("target", "_blank");
 	        		if (!attributes.containsKey("onclick"))
 	        			attributes.put("onclick", "event.stopPropagation()");

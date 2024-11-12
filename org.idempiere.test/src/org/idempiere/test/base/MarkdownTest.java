@@ -77,5 +77,7 @@ public class MarkdownTest extends AbstractTestCase {
 		assertEquals("<div>Inside HTML **block**</div>", html.trim(), "Unexpected render to html output");
 		html = service.renderToHtml("<div>Inside HTML <#md>**block**</#md></div>");
 		assertEquals("<div>Inside HTML <strong>block</strong></div>", html.trim(), "Unexpected render to html output");
+		html = service.renderToHtml("Zoom [BP](javascript:directZoom(\"C_BPartner_ID\",100))");
+		assertEquals("Zoom <a href=\"javascript:directZoom(&quot;C_BPartner_ID&quot;,100)\" onclick=\"event.stopPropagation()\">BP</a>", html.trim(), "Unexpected render to html output");
 	}
 }
