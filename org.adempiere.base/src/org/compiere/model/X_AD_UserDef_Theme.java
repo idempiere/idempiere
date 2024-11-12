@@ -232,6 +232,22 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	/** Set Stylesheet.
+		@param Stylesheet CSS (Stylesheet) used
+	*/
+	public void setStylesheet (String Stylesheet)
+	{
+		set_Value (COLUMNNAME_Stylesheet, Stylesheet);
+	}
+
+	/** Get Stylesheet.
+		@return CSS (Stylesheet) used
+	  */
+	public String getStylesheet()
+	{
+		return (String)get_Value(COLUMNNAME_Stylesheet);
+	}
+
 	/** Set Theme.
 		@param Theme Theme name
 	*/

@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUserDefTheme;
 import org.compiere.model.MUserDefThemeDetail;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CCache;
@@ -83,7 +84,7 @@ public final class ThemeManager {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
 					// Verify the theme.css.dsp exists in the theme folder
-					String themeCSSURL = THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET;
+					String themeCSSURL = THEME_PATH_PREFIX + theme + ThemeManager.getStyleSheetName(theme);
 					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
 						// verify if is a v7 theme
 						themeCSSURL = ITheme.THEME_PATH_PREFIX_V7 + theme + ITheme.THEME_STYLESHEET;
@@ -110,7 +111,17 @@ public final class ThemeManager {
 	 * @return url of theme stylesheet
 	 */
 	public static String getStyleSheet() {
-		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET;
+		return THEME_PATH_PREFIX + getTheme() + getStyleSheetName(getTheme());
+	}
+
+	public static String getStyleSheetName(String theme) {
+
+		MUserDefTheme userDef = MUserDefTheme.getBestMatch(Env.getCtx(), theme);
+		if (userDef != null && !Util.isEmpty(userDef.getStylesheet())) {
+			return userDef.getStylesheet();
+		}
+
+		return ITheme.THEME_STYLESHEET;
 	}
 
 	/**

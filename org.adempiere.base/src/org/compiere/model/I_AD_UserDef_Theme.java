@@ -165,6 +165,19 @@ public interface I_AD_UserDef_Theme
 	  */
 	public String getName();
 
+    /** Column name Stylesheet */
+    public static final String COLUMNNAME_Stylesheet = "Stylesheet";
+
+	/** Set Stylesheet.
+	  * CSS (Stylesheet) used
+	  */
+	public void setStylesheet (String Stylesheet);
+
+	/** Get Stylesheet.
+	  * CSS (Stylesheet) used
+	  */
+	public String getStylesheet();
+
     /** Column name Theme */
     public static final String COLUMNNAME_Theme = "Theme";
 
