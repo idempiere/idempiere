@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUserDefThemeDetail;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -148,10 +149,16 @@ public final class ThemeManager {
 	
 	/**
 	 * Get theme resource URL
-	 * @param name relative resource name from theme root
+	 * @param name relative resource name from theme root (can be overwritten using Theme Variation, see https://idempiere.atlassian.net/browse/IDEMPIERE-6293)
 	 * @return full resource url
 	 */
 	public static String getThemeResource(String name) {
+
+		MUserDefThemeDetail userDef = MUserDefThemeDetail.get(Env.getCtx(), getTheme(), name);
+		if (userDef != null && !Util.isEmpty(userDef.getNewValue())) {
+			name = userDef.getNewValue();
+		}
+
 		StringBuilder builder = new StringBuilder(THEME_PATH_PREFIX);
 		builder.append(getTheme());
 		builder.append("/").append(name);
