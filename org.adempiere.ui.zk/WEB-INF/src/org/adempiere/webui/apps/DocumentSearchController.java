@@ -27,21 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.commonmark.Extension;
-import org.commonmark.ext.autolink.AutolinkExtension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.commonmark.node.Link;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.AttributeProvider;
-import org.commonmark.renderer.html.AttributeProviderContext;
-import org.commonmark.renderer.html.AttributeProviderFactory;
-import org.commonmark.renderer.html.HtmlRenderer;
 import org.compiere.model.I_AD_SearchDefinition;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -76,17 +67,21 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vlayout;
 
+import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_OPENING_TAG;
+import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_CLOSING_TAG;
+
 /**
  * @author hengsin
  */
 public class DocumentSearchController implements EventListener<Event>{
 	
+	private static final String WINDOW_NAME_CONTEXT_VARIABLE = "WindowName";
+	private static final String ROW_NO_CONTEXT_VARIABLE = "Row";
+	
 	private static final String HEADER_OPENING_TAG = "<#header>";
 	private static final String HEADER_CLOSING_TAG = "</#header>";
 	private static final String FOOTER_OPENING_TAG = "<#footer>";
-	private static final String FOOTER_CLOSING_TAG = "</#footer>";
-	private static final String MARKDOWN_OPENING_TAG = "<#md>";
-	private static final String MARKDOWN_CLOSING_TAG = "</#md>";
+	private static final String FOOTER_CLOSING_TAG = "</#footer>";	
 	
 	/** Style for transaction code guide or execution error */
 	private static final String MESSAGE_LABEL_STYLE = "color: rgba(0,0,0,0.34)";
@@ -300,7 +295,7 @@ public class DocumentSearchController implements EventListener<Event>{
 		
 		if (windowName == null || !windowName.equals(result.getWindowName())) {
 			windowName = result.getWindowName();
-			if (!msgText.toString().contains("@WindowName@")) {
+			if (!msgText.toString().contains(Evaluator.VARIABLE_START_END_MARKER+WINDOW_NAME_CONTEXT_VARIABLE+Evaluator.VARIABLE_START_END_MARKER)) {
 				Label label = new Label(windowName);
 				LayoutUtils.addSclass("window-name", label);
 				layout.appendChild(label);
@@ -428,7 +423,7 @@ public class DocumentSearchController implements EventListener<Event>{
 	}
 
 	private static class SearchResultDataProvider implements DefaultEvaluatee.DataProvider {
-
+		
 		private SearchResult searchResult;
 
 		private SearchResultDataProvider(SearchResult searchResult) {
@@ -437,9 +432,9 @@ public class DocumentSearchController implements EventListener<Event>{
 		
 		@Override
 		public Object getValue(String columnName) {
-			if ("Row".equals(columnName))
+			if (ROW_NO_CONTEXT_VARIABLE.equals(columnName))
 				return searchResult.row;
-			else if ("WindowName".equals(columnName))
+			else if (WINDOW_NAME_CONTEXT_VARIABLE.equals(columnName))
 				return searchResult.getWindowName();
 			else if (searchResult.getValueMap().containsKey(columnName))
 				return searchResult.getValueMap().get(columnName);
@@ -473,37 +468,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	 * @param content
 	 * @return parsed text
 	 */
-	private String parseMarkdownInHtmlBlock(String content) {
-		List<Extension> extensions = List.of(TablesExtension.create(), AutolinkExtension.create());
-		Parser parser = Parser.builder().extensions(extensions).build();
-		HtmlRenderer renderer = HtmlRenderer.builder()
-				.attributeProviderFactory(new AttributeProviderFactory() {
-		            public AttributeProvider create(AttributeProviderContext context) {
-		                return new LinkAttributeProvider();
-		            }
-		        })
-				.extensions(extensions)
-				.build();				
-		StringBuilder sb = new StringBuilder();
-		int start = content.indexOf(MARKDOWN_OPENING_TAG);
-		int end = start >= 0 ? content.indexOf(MARKDOWN_CLOSING_TAG, start) : 0;
-		while (start >= 0 && end > start) {
-			sb.append(content.substring(0, start));
-			String md = content.substring(start+MARKDOWN_OPENING_TAG.length(), end);
-			if (end+5 < content.length())
-				content = content.substring(end+MARKDOWN_CLOSING_TAG.length(), content.length());
-			else
-				content = "";
-			Node document = parser.parse(md);				
-			md = renderer.render(document);
-			sb.append(md);
-			start = content.indexOf(MARKDOWN_OPENING_TAG);
-			end = start >= 0 ? content.indexOf(MARKDOWN_CLOSING_TAG, start) : 0;
-		}
-		if (content.length() > 0)
-			sb.append(content);
-		content = sb.toString();
-		return content;
+	private String parseMarkdownInHtmlBlock(String content) {		
+		return Core.getMarkdownRenderer().renderToHtml(content);
 	}
 	
 	/**
@@ -554,18 +520,8 @@ public class DocumentSearchController implements EventListener<Event>{
 			bufferedContent.append(formattedContent);
 		}
 		if (isMarkdownMessage) {
-			List<Extension> extensions = List.of(TablesExtension.create(), AutolinkExtension.create());
-			Parser parser = Parser.builder().extensions(extensions).build();
-			HtmlRenderer renderer = HtmlRenderer.builder()
-					.attributeProviderFactory(new AttributeProviderFactory() {
-			            public AttributeProvider create(AttributeProviderContext context) {
-			                return new LinkAttributeProvider();
-			            }
-			        })
-					.extensions(extensions)
-					.build();
-			Node document = parser.parse(bufferedContent.toString());				
-			addBufferedHtmlResult(renderer.render(document), currentStyleId);
+			String html = Core.getMarkdownRenderer().renderToHtml(bufferedContent.toString());				
+			addBufferedHtmlResult(html, currentStyleId);
 		} else {
 			addBufferedHtmlResult(bufferedContent.toString(), currentStyleId);
 		}
@@ -1123,23 +1079,5 @@ public class DocumentSearchController implements EventListener<Event>{
 			return result;
 		}
 		return null;
-	}
-	
-	/**
-	 * Add target to link generated by markdown autolink extension
-	 */
-	private class LinkAttributeProvider implements AttributeProvider {
-	    @Override
-	    public void setAttributes(Node node, String tagName, Map<String, String> attributes) {
-	        if (node instanceof Link) {
-	        	String href = attributes.get("href");
-	        	if (href != null && !href.startsWith("javascript:")) {
-	        		if (!attributes.containsKey("target"))
-	        			attributes.put("target", "_blank");
-	        		if (!attributes.containsKey("onclick"))
-	        			attributes.put("onclick", "event.stopPropagation()");
-	        	}
-	        }
-	    }
-	}
+	}	
 }

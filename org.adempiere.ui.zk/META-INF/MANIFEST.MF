@@ -78,11 +78,7 @@ Bundle-ClassPath: .,
  lib/daisydiff.jar,
  lib/owasp-java-html-sanitizer.jar,
  lib/java10-shim.jar,
- lib/java8-shim.jar,
- lib/autolink.jar,
- lib/commonmark.jar,
- lib/commonmark-ext-autolink.jar,
- lib/commonmark-ext-gfm-tables.jar
+ lib/java8-shim.jar
 Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  metainfo.zk,
  org.adempiere.webui,
