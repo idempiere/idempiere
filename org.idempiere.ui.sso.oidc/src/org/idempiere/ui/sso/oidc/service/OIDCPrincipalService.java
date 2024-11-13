@@ -308,13 +308,16 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 	public String getLogoutURL() {
 		if (metaData != null) {
 			if (metaData.getEndSessionEndpointURI() != null) {
-				//redirect url: the oidc spec say post_logout_redirect_uri but amazon cognito is using redirect_uri
+				
 				StringBuilder url = new StringBuilder(metaData.getEndSessionEndpointURI().toString());			
 				url.append("?response_type=code")
 				   .append("&client_id=")
-				   .append(principalConfig.getSSO_ApplicationClientID())
-				   .append("&redirect_uri=").append(principalConfig.getSSO_ApplicationRedirectURIs())
-				   .append("&post_logout_redirect_uri=").append(principalConfig.getSSO_ApplicationRedirectURIs());			
+				   .append(principalConfig.getSSO_ApplicationClientID());
+				//redirect url: the oidc spec say post_logout_redirect_uri but amazon cognito is using redirect_uri
+				if (url.indexOf("amazonaws.com") >= 0 || url.indexOf("amazoncognito.com") >= 0)
+				   url.append("&redirect_uri=").append(principalConfig.getSSO_ApplicationRedirectURIs());
+				else
+				   url.append("&post_logout_redirect_uri=").append(principalConfig.getSSO_ApplicationRedirectURIs());			
 				return url.toString();
 			} else {
 				//For provider that doesn’t support end_session_endpoint (for e.g Google Identity), 
