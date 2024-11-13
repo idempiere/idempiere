@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import org.adempiere.base.Service;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
@@ -71,6 +72,7 @@ import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.ADForm;
@@ -877,9 +879,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCancelled = false;
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
-            FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
-                    mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
-                    where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this); // no query below 10
+            
+            IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
+            FindWindow findWindow = findWindowFactory.getInstance(curWindowNo, 0, title, mTab.getAD_Table_ID(), mTab.getTableName(), where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this);
+            
            	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow(findWindow);
             if (findWindow.initialize())
@@ -4508,10 +4511,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					Executions.schedule(old.getDesktop(), e -> old.detach(), new Event("onDetachOldFindWindow"));
 				}
 			}
-			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
+
+			IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
+			findWindow = findWindowFactory.getInstance(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
-
+			
 			setupEmbeddedFindwindow(findWindow);
 			if (!findWindow.initialize()) {
 				if (findWindow.getTotalRecords() == 0) {

@@ -39,6 +39,8 @@ import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.IServiceReferenceHolder;
+import org.adempiere.base.Service;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
@@ -68,6 +70,8 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.DrillEvent.DrillData;
+import org.adempiere.webui.factory.IEditorFactory;
+import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
@@ -241,7 +245,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
 	/** Row count label */
-	private Label rowCount;
+	private Label rowCount; 
 	
 	private final Map<ExportFormat, String> exportMap = new LinkedHashMap<>();
 	private final Map<String, IReportViewerRenderer> rendererMap = new TreeMap<>();
@@ -1725,8 +1729,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		{
 			if (find == null) 
 			{
-				find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-	            if (!find.initialize()) 
+				
+				IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
+				find = findWindowFactory.getInstance(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID, null);
+	            
+				if (!find.initialize()) 
 	            {
 	            	find = null;
 	            	return;
