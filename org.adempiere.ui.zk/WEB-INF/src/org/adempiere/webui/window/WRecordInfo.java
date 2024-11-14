@@ -27,11 +27,15 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
+import org.adempiere.webui.component.Tab;
+import org.adempiere.webui.component.Tabbox;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Tabpanels;
+import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -58,6 +62,7 @@ import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Pre;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -67,12 +72,9 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.North;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -171,6 +173,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	/** Number Format		*/
 	private DecimalFormat		m_intFormat = DisplayType.getNumberFormat
 		(DisplayType.Integer, Env.getLanguage(Env.getCtx()));
+	private Component tabPanels;
 
 	/**
 	 * 	Layout dialog
@@ -204,39 +207,16 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			north.appendChild(div);						
 			center.appendChild(table);
 			
-			Radiogroup group = new Radiogroup();
-			div.appendChild(group);
-			Hlayout hlayout = new Hlayout();
-			hlayout.setSclass("record-info-radiogroup");
-			Radio radio = new Radio(Msg.getElement(Env.getCtx(), "AD_ChangeLog_ID"));
-			radio.setRadiogroup(group);
-			hlayout.appendChild(radio);		
-			radio = new Radio(Msg.getMsg(Env.getCtx(), "TimeLine"));
-			radio.setRadiogroup(group);
-			hlayout.appendChild(radio);		
-			div.appendChild(hlayout);
-			group.setSelectedIndex(0);
-			
-			group.addEventListener(Events.ON_CHECK, evt -> {
-				int index = group.getSelectedIndex();
-				if (index == 0) {
-					if (table.getParent() == null && timeLinePanel.getParent() != null) {
-						timeLinePanel.detach();
-						center.appendChild(table);
-					}
-				} else if (index == 1) {
-					if (table.getParent() != null && timeLinePanel.getParent() == null) {
-						table.detach();
-						center.appendChild(timeLinePanel);
-					}
-				}
-			});
-			
-			if (ClientInfo.isMobile())
-			{
-				group.setSelectedIndex(1);
-				Events.sendEvent(Events.ON_CHECK, group, null);
-			}
+			Tabbox tabbox = new Tabbox();
+			ZKUpdateUtil.setVflex(tabbox, "1");
+			ZKUpdateUtil.setHflex(tabbox, "1");
+			Tabs tabs = new Tabs();
+			tabs.setParent(tabbox);
+			tabPanels = new Tabpanels();
+			tabPanels.setParent(tabbox);
+
+			initTabs(tabs);
+			center.appendChild(tabbox);
 		}
 		else
 		{
@@ -267,6 +247,38 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	}	//	init
 	
 	
+	private void initTabs(Tabs tabs) {
+		Tab tab = new Tab();
+		tab.setLabel(Msg.getMsg(Env.getCtx(), "TimeLine"));
+		tab.setParent(tabs);
+		Tabpanel tabPanel = createTimeline();
+		tabPanel.setParent(tabPanels);
+		
+		tab = new Tab();
+		tab.setLabel(Msg.getMsg(Env.getCtx(), "AD_ChangeLog_ID"));
+		tab.setParent(tabs);
+		tabPanel = createTable();
+		tabPanel.setParent(tabPanels);
+		
+
+	}
+
+
+	private Tabpanel createTable() {
+		Tabpanel tabPanel = new Tabpanel();
+		tabPanel.appendChild(table);
+		return tabPanel;
+	}
+
+
+	private Tabpanel createTimeline() {
+		Tabpanel tabPanel = new Tabpanel();
+		tabPanel.appendChild(timeLinePanel);
+		return tabPanel;
+	}
+
+
+
 	/**
 	 * 	Load change logs
 	 *  @param gridTab 
