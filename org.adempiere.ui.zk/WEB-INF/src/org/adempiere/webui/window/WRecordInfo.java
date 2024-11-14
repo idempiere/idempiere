@@ -248,19 +248,23 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	
 	
 	private void initTabs(Tabs tabs) {
+		String RECORD_INFO_DEFAULT_TAB = MSysConfig.getValue(MSysConfig.RECORD_INFO_DEFAULT_TAB, "C", Env.getAD_Client_ID(Env.getCtx()));
+		
+		
 		Tab tab = new Tab();
-		tab.setLabel(Msg.getMsg(Env.getCtx(), "TimeLine"));
+		tab.setLabel(Msg.getElement(Env.getCtx(), "AD_ChangeLog_ID"));
 		tab.setParent(tabs);
-		Tabpanel tabPanel = createTimeline();
+		Tabpanel tabPanel = createTable();
 		tabPanel.setParent(tabPanels);
 		
 		tab = new Tab();
-		tab.setLabel(Msg.getMsg(Env.getCtx(), "AD_ChangeLog_ID"));
+		tab.setLabel(Msg.getMsg(Env.getCtx(), "TimeLine"));
 		tab.setParent(tabs);
-		tabPanel = createTable();
+		tabPanel = createTimeline();
 		tabPanel.setParent(tabPanels);
 		
-
+		if(RECORD_INFO_DEFAULT_TAB.equals("T"))
+			tab.setSelected(true);
 	}
 
 

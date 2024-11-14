@@ -190,6 +190,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String REAL_TIME_POS = "REAL_TIME_POS";
     public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
+    public static final String RECORD_INFO_DEFAULT_TAB = "RECORD_INFO_DEFAULT_TAB";
 	public static final String REPORT_LOAD_TIMEOUT_IN_SECONDS = "REPORT_LOAD_TIMEOUT_IN_SECONDS";
     public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
     public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
