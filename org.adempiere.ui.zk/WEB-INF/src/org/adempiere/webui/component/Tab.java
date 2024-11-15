@@ -185,6 +185,8 @@ public class Tab extends org.zkoss.zul.Tab
 				MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), mInfo.getAD_InfoWindow_ID());
 				if (userDef != null && !Util.isEmpty(userDef.getImageURL()))
 					image = userDef.getImageURL();
+				else
+					image = "Info";
 
 				return new DecorateInfo(image);
 			}
