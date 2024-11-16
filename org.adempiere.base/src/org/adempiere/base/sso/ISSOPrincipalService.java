@@ -96,4 +96,12 @@ public interface ISSOPrincipalService
 	 * @throws ParseException
 	 */
 	public Language getLanguage(Object token) throws ParseException;
+	
+	/**
+	 * Get logout url
+	 * @return logout url or null
+	 */
+	default String getLogoutURL() {
+		return null;
+	}
 }
