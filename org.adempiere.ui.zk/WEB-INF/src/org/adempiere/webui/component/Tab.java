@@ -186,7 +186,7 @@ public class Tab extends org.zkoss.zul.Tab
 				if (userDef != null && !Util.isEmpty(userDef.getImageURL()))
 					image = userDef.getImageURL();
 
-				return new DecorateInfo(image);
+				return new DecorateInfo(!Util.isEmpty(image) ? image : "Info");
 			}
 			return null;
 		}
