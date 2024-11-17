@@ -1,9 +1,11 @@
 <%-- customization of buttons --%>
 .z-button, .z-button-os {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 4px 20px;
-  text-align: center;
+  justify-content: center;
   cursor: pointer;
+  gap: 5px;
 }
 .z-button-os {
 	border-radius: 4px;
@@ -12,6 +14,10 @@
     color: #FFFFFF;
     border-color: transparent;
     background-color: #7ac8ff;
+}
+
+.z-button:focus {
+    border-color: transparent;
 }
 
 .z-button.btn-small {
@@ -41,6 +47,22 @@
 	border: solid 1px #bbb;
 	text-shadow: 0px 1px 2px #888;
 }
+
+.btn-help {
+	background: #FFA516; 
+}
+
+.btn-help:hover {
+	background: #f9be61; 
+} 
+
+.btn-cancel {
+	background: #FB6161; 
+}
+
+.btn-cancel:hover {
+	background: #F99696; 
+} 
 
 .z-button [class^="z-icon-"][disabled],
 .z-button-os [class^="z-icon-"][disabled]{
