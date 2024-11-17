@@ -367,7 +367,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		LayoutUtils.addSclass("about-info-panel", div);
 		div.setParent(tabPanel);
 		ZKUpdateUtil.setHeight(div, "100%");
-		div.setStyle("overflow: auto;");
+		div.setStyle("overflow: auto; line-height: 1.3em;");
 		Pre pre = new Pre();
 		pre.setParent(div);
 		Text text = new Text(CLogMgt.getInfo(null).toString());
