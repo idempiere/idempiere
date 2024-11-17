@@ -39,6 +39,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
@@ -174,6 +175,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	private DecimalFormat		m_intFormat = DisplayType.getNumberFormat
 		(DisplayType.Integer, Env.getLanguage(Env.getCtx()));
 	private Component tabPanels;
+	private UserPreference userPreference;
+	private Tabbox tabbox;
 
 	/**
 	 * 	Layout dialog
@@ -207,13 +210,14 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			north.appendChild(div);						
 			center.appendChild(table);
 			
-			Tabbox tabbox = new Tabbox();
+			tabbox = new Tabbox();
 			ZKUpdateUtil.setVflex(tabbox, "1");
 			ZKUpdateUtil.setHflex(tabbox, "1");
 			Tabs tabs = new Tabs();
 			tabs.setParent(tabbox);
 			tabPanels = new Tabpanels();
 			tabPanels.setParent(tabbox);
+			tabbox.addEventListener(Events.ON_SELECT, this);
 
 			initTabs(tabs);
 			center.appendChild(tabbox);
@@ -248,22 +252,21 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	
 	
 	private void initTabs(Tabs tabs) {
-		String RECORD_INFO_DEFAULT_TAB = MSysConfig.getValue(MSysConfig.RECORD_INFO_DEFAULT_TAB, "C", Env.getAD_Client_ID(Env.getCtx()));
-		
-		
 		Tab tab = new Tab();
+		tab.setId("C");
 		tab.setLabel(Msg.getElement(Env.getCtx(), "AD_ChangeLog_ID"));
 		tab.setParent(tabs);
 		Tabpanel tabPanel = createTable();
 		tabPanel.setParent(tabPanels);
 		
 		tab = new Tab();
+		tab.setId("T");
 		tab.setLabel(Msg.getMsg(Env.getCtx(), "TimeLine"));
 		tab.setParent(tabs);
 		tabPanel = createTimeline();
 		tabPanel.setParent(tabPanels);
 		
-		if(RECORD_INFO_DEFAULT_TAB.equals("T"))
+		if(userPreference.getProperty(UserPreference.P_RECORD_INFO_DEFAULT_TAB).equals("T"))
 			tab.setSelected(true);
 	}
 
@@ -300,6 +303,10 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			.append(Msg.translate(Env.getCtx(), "CreatedBy"))
 			.append(": ").append(user.getName())
 			.append(" - ").append(m_dateTimeFormat.format(dse.Created)).append("\n");
+		
+		// get user preference
+		userPreference = new UserPreference();
+		userPreference.loadPreference(user.getAD_User_ID());
 		
 		if (!dse.Created.equals(dse.Updated) 
 			|| !dse.CreatedBy.equals(dse.UpdatedBy))
@@ -582,6 +589,12 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	
 	@Override
 	public void onEvent(Event event) throws Exception {
+		if(event.getName().equals(Events.ON_SELECT)) {
+			Tab selectedTab = (Tab) tabbox.getSelectedTab();
+			userPreference.setProperty(UserPreference.P_RECORD_INFO_DEFAULT_TAB, selectedTab.getId());
+			userPreference.savePreference();
+			return;
+		}
 		onCancel();
 	}
 
