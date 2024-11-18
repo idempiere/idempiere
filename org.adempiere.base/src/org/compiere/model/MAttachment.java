@@ -399,7 +399,7 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * 	Get Attachment Entry
-	 * 	@param index index of the item
+	 * 	@param index index of the item (zero base)
 	 * 	@return Entry or null
 	 */
 	public MAttachmentEntry getEntry (int index)
