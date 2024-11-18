@@ -25,14 +25,16 @@
 
 package org.adempiere.webui.factory;
 
+import org.osgi.service.component.annotations.Component;
+
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.window.FindWindow;
 import org.compiere.model.GridField;
 
 /**
  * Default implementation of {@link IFindWindowFactory}
- * @author Milos Rosic
  */
+@Component(immediate = true, service = IFindWindowFactory.class, property = {"service.ranking:Integer=0"})
 public class DefaultFindWindowFactory implements IFindWindowFactory
 {
 

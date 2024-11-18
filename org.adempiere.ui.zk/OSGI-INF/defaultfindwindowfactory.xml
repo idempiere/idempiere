@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.webui.factory.DefaultFindWindowFactory">
-   <implementation class="org.adempiere.webui.factory.DefaultFindWindowFactory"/>
-   <property name="service.ranking" type="Integer" value="1"/>
-   <service>
-      <provide interface="org.adempiere.webui.factory.IFindWindowFactory"/>
-   </service>
-</scr:component>
