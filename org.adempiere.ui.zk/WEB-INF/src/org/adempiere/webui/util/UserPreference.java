@@ -73,7 +73,7 @@ public final class UserPreference implements Serializable {
 	
 	/** Header Collapsed **/
 	public static final String P_RECORD_INFO_DEFAULT_TAB = "RecordInfoDefaultTab";
-	public static final String RECORD_INFO_DEFAULT_TAB = "C";
+	public static final String DEFAULT_RECORD_INFO_DEFAULT_TAB = "C";
 
 	/** Ini Properties */
 	private static final String[] PROPERTIES = new String[] {
@@ -96,7 +96,7 @@ public final class UserPreference implements Serializable {
 		DEFAULT_MENU_COLLAPSED,
 		DEFAULT_HELP_COLLAPSED,
 		DEFAULT_HEADER_COLLAPSED,
-		RECORD_INFO_DEFAULT_TAB};
+		DEFAULT_RECORD_INFO_DEFAULT_TAB};
 
 	/** Container for Properties */
 	private Properties props = new Properties();
