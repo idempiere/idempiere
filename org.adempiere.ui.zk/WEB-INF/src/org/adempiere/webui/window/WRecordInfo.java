@@ -266,7 +266,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		tabPanel = createTimeline();
 		tabPanel.setParent(tabPanels);
 		
-		if(userPreference.getProperty(UserPreference.P_RECORD_INFO_DEFAULT_TAB).equals("T"))
+		if("T".equals(userPreference.getProperty(UserPreference.P_RECORD_INFO_DEFAULT_TAB)))
 			tab.setSelected(true);
 	}
 
