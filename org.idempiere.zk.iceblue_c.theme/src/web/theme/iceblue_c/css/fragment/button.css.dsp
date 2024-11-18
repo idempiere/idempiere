@@ -48,21 +48,19 @@
 	text-shadow: 0px 1px 2px #888;
 }
 
-.btn-help {
-	background: #FFA516; 
+.btn-cancel, .btn-help {
+    background: #f1f1f1;
+    color: #111111;
 }
 
-.btn-help:hover {
-	background: #f9be61; 
-} 
-
-.btn-cancel {
-	background: #FB6161; 
+.btn-cancel:hover, .btn-help:hover {
+    background: #e5e5e5;
+    color: #1d1d1d;
 }
 
-.btn-cancel:hover {
-	background: #F99696; 
-} 
+.z-icon-Help, .z-icon-Cancel {
+    color: #111111 !important;
+}
 
 .z-button [class^="z-icon-"][disabled],
 .z-button-os [class^="z-icon-"][disabled]{
@@ -84,9 +82,6 @@
 	font-size: 12px;
 }
 .btn-ok.z-button [class^="z-icon-"]:before {
-	color: white;	
-}
-.btn-cancel.z-button [class^="z-icon-"]:before {
 	color: white;	
 }
 
