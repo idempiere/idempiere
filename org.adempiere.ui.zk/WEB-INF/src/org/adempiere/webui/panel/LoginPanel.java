@@ -362,12 +362,12 @@ public class LoginPanel extends Window implements EventListener<Event>
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
-		helpButton.setSclass(ITheme.LOGIN_BUTTON_CLASS);
+		helpButton.addSclass(ITheme.LOGIN_BUTTON_CLASS);
 		pnlButtons.addComponentsRight(helpButton);
         
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         ZKUpdateUtil.setWidth(pnlButtons, null);
-        pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_OK).addSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         form.appendChild(div);
         this.appendChild(form);
