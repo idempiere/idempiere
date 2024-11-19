@@ -82,9 +82,9 @@ import org.compiere.util.Util;
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
 {	
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -9119089506977887142L;
+	private static final long serialVersionUID = 7274149891086011624L;
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
 	
@@ -324,7 +324,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				+ WFState + ", Current=" + getWFState();
 			log.log(Level.SEVERE, msg);
 			Trace.printStack();
-			setTextMsg(msg);
+			setTextMsgBefore(msg);
 			saveEx();
 			// TODO: teo_sarca: throw exception ? please analyze the call hierarchy first
 		}
@@ -560,7 +560,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	isUserChoice
 
 	/**
-	 * 	Set Text Msg (add to existing)
+	 * 	Set Text Msg (add after existing)
 	 *	@param TextMsg
 	 */
 	public void setTextMsg (String TextMsg)
@@ -573,6 +573,21 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		else if (TextMsg != null && TextMsg.length() > 0)
 			super.setTextMsg (Util.trimSize(oldText + "\n - " + TextMsg,1000));
 	}	//	setTextMsg
+
+	/**
+	 * 	Set Text Msg (add before existing)
+	 *	@param TextMsg
+	 */
+	public void setTextMsgBefore (String TextMsg)
+	{
+		if (TextMsg == null || TextMsg.length() == 0)
+			return;
+		String oldText = getTextMsg();
+		if (oldText == null || oldText.length() == 0)
+			super.setTextMsg (Util.trimSize(TextMsg,1000));
+		else if (TextMsg != null && TextMsg.length() > 0)
+			super.setTextMsg (Util.trimSize(TextMsg + "\n - " + oldText,1000));
+	}	//	setTextMsgBefore
 
 	/**
 	 * 	Add to Text Msg
@@ -906,7 +921,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 			if (!m_state.isValidAction(StateEngine.ACTION_Start))
 			{
-				setTextMsg("State=" + getWFState() + " - cannot start");
+				setTextMsgBefore("State=" + getWFState() + " - cannot start");
 				addTextMsg(new Exception(""));
 				setWFState(StateEngine.STATE_Terminated);
 				return;
@@ -916,7 +931,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 			if (getNode().get_ID() == 0)
 			{
-				setTextMsg("Node not found - AD_WF_Node_ID=" + getAD_WF_Node_ID());
+				setTextMsgBefore("Node not found - AD_WF_Node_ID=" + getAD_WF_Node_ID());
 				setWFState(StateEngine.STATE_Aborted);
 				return;
 			}
@@ -966,7 +981,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			String processMsg = e.getLocalizedMessage();
 			if (processMsg == null || processMsg.length() == 0)
 				processMsg = e.getMessage();
-			setTextMsg(processMsg);
+			setTextMsgBefore(processMsg);
 			// addTextMsg(e); // do not add the exception text
 			boolean contextLost = false;
 			if (e instanceof AdempiereException && "Context lost".equals(e.getMessage()))
@@ -1092,8 +1107,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						m_process.setProcessMsg(e.getLocalizedMessage());
 					throw e;
 				}
-				if (m_process != null)
-					m_process.setProcessMsg(processMsg);
 			}
 			else
 				throw new IllegalStateException("Persistent Object not DocAction - "
@@ -1197,7 +1210,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				pi.setAD_Client_ID(getAD_Client_ID());
 				pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 				boolean success = process.processItWithoutTrxClose(pi, trx);
-				setTextMsg(pi.getSummary());
+				setTextMsgBefore(pi.getSummary());
 				return success;
 			}
 			finally {
@@ -1228,7 +1241,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			{
 				m_emails = new ArrayList<String>();
 				sendEMail();
-				setTextMsg(m_emails.toString());
+				setTextMsgBefore(m_emails.toString());
 			} else
 			{
 				MClient client = MClient.get(getCtx(), getAD_Client_ID());
@@ -1437,7 +1450,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		String msg = getNode().getAttributeName() + "=" + value;
 		if (textMsg != null && textMsg.length() > 0)
 			msg += " - " + textMsg;
-		setTextMsg (msg);
+		setTextMsgBefore (msg);
 		m_newValue = value;
 		return true;
 	}	//	setVariable
@@ -1473,7 +1486,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				{
 					newState = StateEngine.STATE_Aborted;
 					if (!(doc.processIt (DocAction.ACTION_Reject)))
-						setTextMsg ("Cannot Reject - Document Status: " + doc.getDocStatus());
+						setTextMsgBefore ("Cannot Reject - Document Status: " + doc.getDocStatus());
 				}
 				else
 				{
@@ -1490,7 +1503,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						if (nextAD_User_ID <= 0)
 						{
 							newState = StateEngine.STATE_Aborted;
-							setTextMsg (Msg.getMsg(getCtx(), "NoApprover"));
+							setTextMsgBefore (Msg.getMsg(getCtx(), "NoApprover"));
 							doc.processIt (DocAction.ACTION_Reject);
 						}
 						else if (startAD_User_ID != nextAD_User_ID)
@@ -1503,7 +1516,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 							if (!(doc.processIt (DocAction.ACTION_Approve)))
 							{
 								newState = StateEngine.STATE_Aborted;
-								setTextMsg ("Cannot Approve - Document Status: " + doc.getDocStatus());
+								setTextMsgBefore ("Cannot Approve - Document Status: " + doc.getDocStatus());
 							}
 						}
 					}
@@ -1511,7 +1524,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 					else if (!(doc.processIt (DocAction.ACTION_Approve)))
 					{
 						newState = StateEngine.STATE_Aborted;
-						setTextMsg ("Cannot Approve - Document Status: " + doc.getDocStatus());
+						setTextMsgBefore ("Cannot Approve - Document Status: " + doc.getDocStatus());
 					}
 				}
 				doc.saveEx();
@@ -1519,7 +1532,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			catch (Exception e)
 			{
 				newState = StateEngine.STATE_Terminated;
-				setTextMsg ("User Choice: " + e.toString());
+				setTextMsgBefore ("User Choice: " + e.toString());
 				addTextMsg(e);
 				log.log(Level.WARNING, "", e);
 			}
@@ -1610,7 +1623,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		setWFState (StateEngine.STATE_Running);
 		setAD_User_ID(AD_User_ID);
 		if (textMsg != null)
-			setTextMsg (textMsg);
+			setTextMsgBefore (textMsg);
 		setWFState (StateEngine.STATE_Completed);
 	}	//	setUserConfirmation
 
