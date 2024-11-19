@@ -79,7 +79,6 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
-import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.Utils;
@@ -145,8 +144,6 @@ public class WAttachment extends Window implements EventListener<Event>
 	private int maxPreviewSize;
 
 	private Component customPreviewComponent;
-	
-	private Progressmeter progress = new Progressmeter(0);
 
 	private static List<String> autoPreviewList;
 	
@@ -257,17 +254,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			toolBar.removeChild(bDelete);
 			confirmPanel.removeChild(bDeleteAll);
 			text.setReadonly(true);
-		} else {
-			String maxUploadSize = "";
-			int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
-			if (size > 0)
-				maxUploadSize = "" + size;
-
-			Clients.evalJavaScript("idempiere.dropToAttachFiles('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
-					+ this.getDesktop().getId() + "','" + progress.getUuid() + "','" + sizeLabel.getUuid() + "','"
-					+ maxUploadSize + "');");
 		}
-
 	} // WAttachment
 
 	/**
@@ -308,8 +295,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.appendChild(mainPanel);
 		ZKUpdateUtil.setHeight(mainPanel, "100%");
 		ZKUpdateUtil.setWidth(mainPanel, "100%");
-		mainPanel.addEventListener(Events.ON_UPLOAD, this);
-
 
 		North northPanel = new North();
 		northPanel.setCollapsible(false);
@@ -329,18 +314,15 @@ public class WAttachment extends Window implements EventListener<Event>
 		toolBar.appendChild(cbContent);
 		toolBar.appendChild(sizeLabel);
 
-		progress.setClass("drop-progress-meter");
-		progress.setVisible(false);
+		mainPanel.appendChild(northPanel);
 		
 		Vlayout div = new Vlayout();
 		div.appendChild(toolBar);
-		div.appendChild(progress);
 		text.setRows(3);
 		ZKUpdateUtil.setHflex(text, "1");
 		
 		div.appendChild(text);
 		northPanel.appendChild(div);
-		mainPanel.appendChild(northPanel);
 
 		bSave.setEnabled(false);
 		bSave.setSclass("img-btn");
@@ -382,7 +364,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		bEmail.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		previewPanel.setSclass("popup-content-background");
 		ZKUpdateUtil.setHeight(preview, "99%");
 		ZKUpdateUtil.setWidth(preview, "99%");
 		

@@ -52,6 +52,5 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript-module name="photobooth"	version="0.7-rsd3" />
 	<javascript-module name="chosenbox" version="202205100600"/>
 	<javascript-module name="zkforge.keylistener" version="202012120100"/>
-	<javascript-module name="dragdrop.attachment" version="202207280400"/>
 	<javascript-module name="pdf.js" version="4.0.379"/>	
 </language>
