@@ -25,6 +25,7 @@
 }
 .confirm-panel-right {
 	float: right;
+	padding: 1px;
 }
 .confirm-panel-left {
 	float: left;

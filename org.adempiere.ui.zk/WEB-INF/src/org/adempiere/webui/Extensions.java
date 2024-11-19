@@ -28,20 +28,24 @@ import java.util.stream.Collectors;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.factory.IADTabPanelFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
+import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.factory.IFormFactory;
 import org.adempiere.webui.factory.IMappedFormFactory;
 import org.adempiere.webui.factory.IQuickEntryFactory;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.window.FindWindow;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
 import org.compiere.grid.IPaymentForm;
 import org.compiere.grid.IPaymentFormFactory;
+import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDashboardContent;
 import org.compiere.util.CCache;
@@ -55,6 +59,9 @@ import org.zkoss.zk.ui.Component;
  * @author viola
  * @author hengsin
  *
+ */
+/**
+ * 
  */
 public class Extensions {
 
@@ -411,4 +418,28 @@ public class Extensions {
 		List<IServiceReferenceHolder<IReportViewerRenderer>> references = Service.locator().list(IReportViewerRenderer.class, null, null).getServiceReferences();
 		return references.stream().filter(e -> e.getService() != null).map(e -> e.getService()).collect(Collectors.toCollection(ArrayList::new));
 	}
+	
+	
+	/**
+	 * Get find window
+	 * @param targetWindowNo
+	 * @param targetTabNo
+	 * @param title
+	 * @param AD_Table_ID
+	 * @param tableName
+	 * @param whereExtended
+	 * @param findFields
+	 * @param minRecords
+	 * @param adTabId
+	 * @param windowPanel
+	 * @return {@link FindWindow} instance
+	 */
+	public static FindWindow getFindWindow(int targetWindowNo, int targetTabNo, String title, int AD_Table_ID, String tableName, String whereExtended, GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel) {
+		
+		IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
+	    return findWindowFactory.getInstance(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, whereExtended, findFields, minRecords, adTabId, windowPanel);
+		
+	}
+	
+	
 }

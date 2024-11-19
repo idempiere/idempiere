@@ -17,7 +17,7 @@
 package org.compiere.minigrid;
 
 /**
- *  ID Column for MiniGrid allows to select a column and maintains the record ID
+ *  ID Column for {@link IMiniTable}, allows to select a column and maintains the record ID
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: IDColumn.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
@@ -49,9 +49,8 @@ public class IDColumn implements SelectableIDColumn
 	/** The Record_ID               */
 	private Integer     m_record_ID;
 
-
 	/**
-	 *  Set Selection
+	 *  Set Selected
 	 *  @param selected
 	 */
 	public void setSelected(boolean selected)
@@ -75,6 +74,7 @@ public class IDColumn implements SelectableIDColumn
 	{
 		m_record_ID = record_ID;
 	}
+	
 	/**
 	 * Get Record ID
 	 * @return ID
@@ -88,6 +88,7 @@ public class IDColumn implements SelectableIDColumn
 	 *  To String
 	 *  @return String representation
 	 */
+	@Override
 	public String toString()
 	{
 		return "IDColumn - ID=" + m_record_ID + ", Selected=" + m_selected;

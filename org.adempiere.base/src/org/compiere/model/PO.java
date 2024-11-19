@@ -652,6 +652,7 @@ public abstract class PO
 	 * @param columnName
 	 * @return String value
 	 */
+	@Override
 	public String get_ValueAsString(String columnName)
 	{
 		int idx = get_ColumnIndex(columnName);

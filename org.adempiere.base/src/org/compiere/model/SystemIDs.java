@@ -136,6 +136,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_ID = 13;
 	public final static int REFERENCE_DATATYPE_UUID = 200231;
 	public final static int REFERENCE_DATATYPE_IMAGE = 32;
+	public final static int REFERENCE_DATATYPE_IMAGE_URL = 200271;
 	public final static int REFERENCE_DATATYPE_INTEGER = 11;
 	public final static int REFERENCE_DATATYPE_LIST = 17;
 	public final static int REFERENCE_DATATYPE_LOCATION = 21;

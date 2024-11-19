@@ -61,6 +61,7 @@ import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
@@ -71,6 +72,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -1445,44 +1447,71 @@ public class ProcessParameterPanel extends Panel implements
 
 	@Override
 	public String get_ValueAsString(String variableName) {
-		for(WEditor editor : m_wEditors) {
-			if (editor.getGridField().getColumnName().equals(variableName)) {
-				//base on code in GridField.updateContext() method
-				int displayType = editor.getGridField().getVO().displayType;	
-				if (displayType == DisplayType.Text 
-					|| displayType == DisplayType.Memo
-					|| displayType == DisplayType.TextLong
-					|| displayType == DisplayType.JSON
-					|| displayType == DisplayType.Binary
-					|| displayType == DisplayType.RowID
-					|| editor.getGridField().isEncrypted())
-					return ""; //	ignore
-				
-				Object value = editor.getValue();
-				if (value == null)
-					return "";
-				else if (value instanceof Boolean)
-				{
-					return (((Boolean)value) ? "Y" : "N");
-				}
-				else if (value instanceof Timestamp)
-				{
-					String stringValue = null;
-					if (value != null && !value.toString().equals("")) {
-						Calendar c1 = Calendar.getInstance();
-						c1.setTime((Date) value);
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						stringValue = sdf.format(c1.getTime());
-					}
-					return stringValue;
-				}
-				else
-				{
-					return value.toString();
-				}
-			}
-		}
-		return null;
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(new FieldEditorDataProvider());
+		return evaluatee.get_ValueAsString(variableName);				
 	}
 
+	/**
+	 * Data provider implementation backed by parameter field editors
+	 */
+	private class FieldEditorDataProvider implements DefaultEvaluatee.DataProvider {
+
+		@Override
+		public Object getValue(String columnName) {
+			for(WEditor editor : m_wEditors) {
+				if (editor.getGridField().getColumnName().equals(columnName)) {
+					//base on code in GridField.updateContext() method
+					int displayType = editor.getGridField().getVO().displayType;	
+					if (displayType == DisplayType.Text 
+						|| displayType == DisplayType.Memo
+						|| displayType == DisplayType.TextLong
+						|| displayType == DisplayType.JSON
+						|| displayType == DisplayType.Binary
+						|| displayType == DisplayType.RowID
+						|| editor.getGridField().isEncrypted())
+						return ""; //	ignore
+					
+					Object value = editor.getValue();
+					if (value == null)
+						return "";
+					else if (value instanceof Boolean)
+					{
+						return (((Boolean)value) ? "Y" : "N");
+					}
+					else if (value instanceof Timestamp)
+					{
+						String stringValue = null;
+						if (value != null && !value.toString().equals("")) {
+							Calendar c1 = Calendar.getInstance();
+							c1.setTime((Date) value);
+							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							stringValue = sdf.format(c1.getTime());
+						}
+						return stringValue;
+					}
+					else
+					{
+						return value.toString();
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Object getProperty(String propertyName) {
+			return null;
+		}
+
+		@Override
+		public MColumn getColumn(String columnName) {
+			return null;
+		}
+
+		@Override
+		public String getTrxName() {
+			return null;
+		}
+		
+	}
 } // ProcessParameterPanel

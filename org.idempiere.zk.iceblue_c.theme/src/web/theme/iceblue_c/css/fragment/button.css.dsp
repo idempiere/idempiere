@@ -1,9 +1,11 @@
 <%-- customization of buttons --%>
 .z-button, .z-button-os {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 4px 20px;
-  text-align: center;
+  justify-content: center;
   cursor: pointer;
+  gap: 5px;
 }
 .z-button-os {
 	border-radius: 4px;
@@ -12,6 +14,10 @@
     color: #FFFFFF;
     border-color: transparent;
     background-color: #7ac8ff;
+}
+
+.z-button:focus {
+    border-color: transparent;
 }
 
 .z-button.btn-small {
@@ -27,7 +33,7 @@
 	background-color: transparent;
 }
 
-.txt-btn img, .small-img-btn img {
+.txt-btn img, .small-img-btn img, .img-txt-btn img {
 	height: 16px;
 	width: 16px;
 	background-color: transparent;
@@ -40,6 +46,20 @@
 	color: #555;
 	border: solid 1px #bbb;
 	text-shadow: 0px 1px 2px #888;
+}
+
+.btn-cancel, .btn-help {
+    background: #f1f1f1;
+    color: #111111;
+}
+
+.btn-cancel:hover, .btn-help:hover {
+    background: #e5e5e5;
+    color: #1d1d1d;
+}
+
+.z-icon-Help, .z-icon-Cancel {
+    color: #111111 !important;
 }
 
 .z-button [class^="z-icon-"][disabled],
@@ -61,16 +81,7 @@
 .z-button.small-toolbarbutton [class^="z-icon-"] {
 	font-size: 12px;
 }
-.btn-ok, .btn-ok:focus {
-	background-color: green;
-}
-.btn-cancel, .btn-cancel:focus {
-	background-color: red;
-}
 .btn-ok.z-button [class^="z-icon-"]:before {
-	color: white;	
-}
-.btn-cancel.z-button [class^="z-icon-"]:before {
 	color: white;	
 }
 
@@ -79,5 +90,5 @@
 	vertical-align: top;
 }
 .z-bandbox-button [class*="z-icon-"], .z-combobox-button [class*="z-icon-"] {
-	font-size: 18px;
+	font-size: 16px;
 }

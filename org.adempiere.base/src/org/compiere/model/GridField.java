@@ -466,11 +466,7 @@ public class GridField
 				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, ctx, m_vo.WindowNo,
 						m_vo.TabNo, m_vo.ColumnName);
 			} else {
-				Evaluatee evaluatee = new Evaluatee() {
-					public String get_ValueAsString(String variableName) {
-						return GridField.this.get_ValueAsString(ctx, variableName);
-					}
-				};
+				Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 				isAlwaysUpdatable = Evaluator.evaluateLogic(evaluatee, m_vo.AlwaysUpdatableLogic);
 				if (log.isLoggable(Level.FINEST))
 					log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + isAlwaysUpdatable);
@@ -551,11 +547,7 @@ public class GridField
 			}
 			else
 			{
-				Evaluatee evaluatee = new Evaluatee() {
-					public String get_ValueAsString(String variableName) {
-						return GridField.this.get_ValueAsString(ctx, variableName);
-					}
-				};
+				Evaluatee evaluatee = variableName -> {return get_ValueAsString(ctx, variableName);};
 				boolean retValue = !Evaluator.evaluateLogic(evaluatee, m_vo.ReadOnlyLogic);
 				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 				if (!retValue)
@@ -881,6 +873,7 @@ public class GridField
 		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			String defStr = "";		//	problem is with texts like 'sss;sss'
+			String defStrMultipleSelect = "";
 			//	It is one or more variables/constants
 			StringTokenizer st = new StringTokenizer(m_vo.DefaultValue, ",;", false);
 			while (st.hasMoreTokens())
@@ -892,7 +885,16 @@ public class GridField
 					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, defStr.trim(), false, false);
 				else if (defStr.indexOf("'") != -1)			//	it is a 'String'
 					defStr = defStr.replace('\'', ' ').trim();
-
+				
+				if (DisplayType.isChosenMultipleSelection(m_vo.displayType)) {
+					defStrMultipleSelect += defStr + ",";
+					if (!st.hasMoreTokens()) {
+						defStr = defStrMultipleSelect.substring(0, defStrMultipleSelect.length() - 1);
+					} else {
+						continue;
+					}
+				}
+				
 				if (!defStr.equals(""))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("[DefaultValue] " + m_vo.ColumnName + "=" + defStr);
@@ -1300,11 +1302,7 @@ public class GridField
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return GridField.this.get_ValueAsString(ctx, variableName);
-				}
-			};
+			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
@@ -1345,11 +1343,7 @@ public class GridField
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return GridField.this.get_ValueAsString(ctx, variableName);
-				}
-			};
+			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
@@ -1363,6 +1357,7 @@ public class GridField
 	 *	@param variableName name
 	 *	@return value
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
 		return get_ValueAsString(m_vo.ctx, variableName);

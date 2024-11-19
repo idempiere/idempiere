@@ -117,6 +117,12 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void switchRowPresentation();
 
 	/**
+     * After Find window closes switch to grid view if configured
+     * @return void
+     */
+	public void onAfterFind();
+
+	/**
 	 * Dynamic update of every field's UI properties ( visibility, filter and mandatory ).
 	 * @param col optional column name
 	 */

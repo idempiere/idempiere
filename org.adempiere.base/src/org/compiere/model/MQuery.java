@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -1836,53 +1837,35 @@ class QueryEvaluatee implements Evaluatee {
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
-		//ref column
-		String foreignColumn = "";
-		int f = variableName.indexOf('.');
-		if (f > 0) {
-			foreignColumn = variableName.substring(f+1, variableName.length());
-			variableName = variableName.substring(0, f);
-		}
-
-		String value = null;
-		if (Env.isGlobalVariable(variableName)) {
-			value = Env.getContext(ctx, variableName);
-		} else {
-			value = parameterMap.get(variableName);
-		}
-		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
-			String refValue = "";
-			int id = 0;
-			try {
-				id = Integer.parseInt(value);
-			} catch (Exception e){}
-			if (id > 0) {
-				if (Env.isGlobalVariable(variableName)) {
-					variableName = variableName.substring(1);
-				} else if (variableName.indexOf("|") > 0) {
-					variableName = variableName.substring(variableName.lastIndexOf("|")+1);
-				}
-				String foreignTable = null;
-				if (foreignColumn.indexOf(".") > 0) {
-					foreignTable = foreignColumn.substring(0, foreignColumn.indexOf("."));
-				} else {
-					foreignTable = variableName.substring(0, variableName.length()-3);
-				}
-				MTable t = MTable.get(Env.getCtx(), foreignTable);
-				if (t != null) {
-					refValue = DB.getSQLValueString(null,
-							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE "
-							+ foreignTable + "_ID = ?", id);
-				}
-			}
-			return refValue;
-		}
-		return value;
-	}	//	get_ValueAsString
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(new ParameterDataProvider());
+		return evaluatee.get_ValueAsString(ctx, variableName);
+	}
 
 	@Override
 	public String get_ValueAsString(String variableName) {
 		return get_ValueAsString(Env.getCtx(), variableName);
 	}
 
+	private class ParameterDataProvider implements DefaultEvaluatee.DataProvider {
+
+		@Override
+		public Object getValue(String columnName) {
+			return parameterMap.get(columnName);
+		}
+
+		@Override
+		public Object getProperty(String propertyName) {
+			return null;
+		}
+
+		@Override
+		public MColumn getColumn(String columnName) {
+			return null;
+		}
+
+		@Override
+		public String getTrxName() {
+			return null;
+		}		
+	}
 }

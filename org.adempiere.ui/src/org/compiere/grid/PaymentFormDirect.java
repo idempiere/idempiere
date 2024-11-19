@@ -34,9 +34,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Payment for direct debit and direct deposit
  * @author Elaine
- *
  */
 public abstract class PaymentFormDirect extends PaymentForm {
 	private String PAYMENTRULE;
@@ -47,7 +46,6 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	protected MPayment 			m_mPaymentOriginal = null;
 	
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 * @param isDebit
@@ -79,8 +77,8 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	}
 	
 	/**
-	 * 
-	 * @return List of active bank accounts
+	 * Get bank account list
+	 * @return List of active bank accounts (C_BankAccount_ID, Name+AccountNo)
 	 */
 	public ArrayList<KeyNamePair> getBankAccountList() {
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
@@ -135,7 +133,7 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	protected String processMsg;
 	
 	/**
-	 * 
+	 * Save changes
 	 * @param C_BankAccount_ID
 	 * @param routing routing number
 	 * @param number account number
@@ -290,7 +288,7 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Is online payment processor have been configured for direct* tender type
 	 * @return true if online payment processor have been configured for direct* tender type
 	 */
 	public boolean isBankAccountProcessorExist()

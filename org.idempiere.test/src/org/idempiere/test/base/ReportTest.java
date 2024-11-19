@@ -25,17 +25,33 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.adempiere.util.Callback;
+import org.adempiere.webui.apps.BackgroundJob;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MNote;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MUser;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -71,5 +87,56 @@ public class ReportTest extends AbstractTestCase {
 
 		assertEquals(file.getName(), fileName);
 
+	}
+	
+	@Test
+	public void testBackgroundJob() {
+		//Storage Detail report
+		MProcess process = MProcess.get(236);
+		ProcessInfo pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
+		pi.setReportType("PDF");
+		pi.setAD_Client_ID(getAD_Client_ID());
+		pi.setAD_User_ID(getAD_User_ID());
+		
+		Callback<Integer> createParaCallback = id -> {
+			if (id > 0) {
+				MPInstancePara para = new MPInstancePara(Env.getCtx(), id, 10);
+				para.setParameter("M_Product_Category_ID", ""+DictionaryIDs.M_Product_Category.PATIO.id);
+				para.saveEx();
+			}
+		};
+		
+		ScheduledFuture<ProcessInfo> future = BackgroundJob.create(pi)
+			.withNotificationType(MUser.NOTIFICATIONTYPE_Notice)
+			.withInitialDelay(10)
+			.run(createParaCallback);
+		
+		assertNotNull(future, "Failed to schedule background job");
+		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {}
+		
+		assertTrue(pi.getAD_PInstance_ID() > 0, "Failed to create background process instance");
+		assertFalse(pi.isError(), "Error creating background job: " + pi.getSummary());
+		MPInstance pinstance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
+		assertEquals(pi.getAD_PInstance_ID(), pinstance.get_ID(), "Failed to retrive background process instance");
+		try {
+			pi = future.get(3000, TimeUnit.MILLISECONDS);
+		} catch (ExecutionException | TimeoutException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		assertFalse(pi.isError(), "Error running background job: " + pi.getSummary());
+		pinstance.load((String)null);
+		assertFalse(pinstance.isProcessing(), "Timeout waiting for background job to complete");
+		
+		Query query = new Query(Env.getCtx(), MNote.Table_Name, "AD_Table_ID=? AND Record_ID=?", null);
+		MNote note = query.setParameters(MPInstance.Table_ID, pinstance.getAD_PInstance_ID()).first();
+		assertNotNull(note, "Failed to retrieve notice");
+		MAttachment attachment = note.getAttachment();
+		assertEquals(1, attachment.getEntryCount(), "Unexpected number of notice attachment");
+		MAttachmentEntry entry = attachment.getEntry(0);
+		assertNotNull(entry, "Failed to retrieve attachment entry");
+		assertTrue(entry.getName() != null && entry.getName().toUpperCase().contains(".PDF"), "No PDF report attach to notice");
 	}
 }

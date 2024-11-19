@@ -34,6 +34,8 @@
 <%-- north status bar --%>
 .adwindow-status {
 	min-height: 22px;
+	padding-top: 3px;
+	background-color: #f6fafe;
 }
 
 <%-- record info text, east of status bar --%>
@@ -78,6 +80,9 @@
 .adwindow-breadcrumb-toolbar {
 	display: inline-block; 
 	text-align: right;
+}
+.adwindow-breadcrumb-toolbar .z-toolbarbutton {
+	margin-left: 2px;
 }
 .adwindow-breadcrumb-toolbar .z-toolbar {
 	background-image: none; 
@@ -170,11 +175,15 @@
 	padding: 0px !important;
 	height: 2em;
 	border: none;
-	background: #f2f3f2;
+	background: #ffffff;
 }
 .adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
 	height: 16px;
 	line-height: 16px;
+}
+.z-paging .z-paging-icon {
+    font-size: 12px;
+    font-weight: normal;
 }
 
 <%-- south region of AD tab for detail panel --%>
@@ -198,6 +207,7 @@
 	border-left: 5px dashed #696969;
 	border-right: 5px dashed transparent;
 	border-bottom: 5px solid transparent;
+	margin-top: 4px;
 }
 
 <%-- ad tab --%>
@@ -240,6 +250,14 @@
 	height: 100%; 
 	position: absolute;
 }
+.adtab-form-borderlayout .z-center-body {
+	background-color: #f6fafe;
+}
+
+.adtab-form-borderlayout .z-grid-body {
+	background-color: #f6fafe;
+ }
+
 <%-- title text for collapsed detail panel --%>
 .adtab-form-borderlayout .z-south-collapsed:before { 
 	content: '${u:cleanAmp(u:getMsg(u:getCtx(), "Detail"))}';

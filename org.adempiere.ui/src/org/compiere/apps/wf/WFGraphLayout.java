@@ -11,8 +11,8 @@ import org.netbeans.api.visual.graph.layout.GraphLayout;
 import org.netbeans.api.visual.graph.layout.UniversalGraph;
 
 /**
+ * Layout for workflow graph
  * @author hengsin
- *
  */
 public class WFGraphLayout extends GraphLayout<Integer, MWFNodeNext> {
 
