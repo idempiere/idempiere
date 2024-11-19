@@ -21,10 +21,12 @@ import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -51,7 +53,7 @@ import org.compiere.util.Util;
  */
 public class MCostDetail extends X_M_CostDetail
 {
-	private static final long serialVersionUID = -7547258144913818160L;
+	private static final long serialVersionUID = 1609911372993105047L;
 	
 	protected static final String INOUTLINE_DOCBASETYPE_SQL =
 		    "SELECT c.DocBaseType From M_InOut io " +
@@ -83,7 +85,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		return createOrder (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_OrderLine_ID, M_CostElement_ID, 
-				Amt, Qty, Description, null, trxName);
+				Amt, Qty, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -99,6 +101,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param Description optional description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if created
 	 */
@@ -106,17 +109,18 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_OrderLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
-		String Description, Timestamp DateAcct, String trxName)
+		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getOrder (as, M_Product_ID, M_AttributeSetInstance_ID, C_OrderLine_ID, M_CostElement_ID, DateAcct, trxName);
+		if (cd != null && !cd.isDelta() && Ref_CostDetail_ID > 0)
+			cd.setIsBackDate(true);
 		//
 		if (cd == null)		//	createNew 
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setC_OrderLine_ID (C_OrderLine_ID);
 		}
 		else
@@ -176,7 +180,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		return createInvoice (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_InvoiceLine_ID, M_CostElement_ID, 
-				Amt, Qty, Description, null, trxName);
+				Amt, Qty, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -192,6 +196,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param Description optional description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if created
 	 */
@@ -199,17 +204,18 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_InvoiceLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
-		String Description, Timestamp DateAcct, String trxName)
+		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
-			C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getInvoice (as, M_Product_ID, M_AttributeSetInstance_ID, C_InvoiceLine_ID, M_CostElement_ID, DateAcct, trxName);
+		if (cd != null && !cd.isDelta() && Ref_CostDetail_ID > 0)
+			cd.setIsBackDate(true);
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setC_InvoiceLine_ID (C_InvoiceLine_ID);
 		}
 		else
@@ -270,7 +276,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, boolean IsSOTrx, String trxName)
 	{
 		return createShipment (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_InOutLine_ID, M_CostElement_ID, 
-				Amt, Qty, Description, IsSOTrx, null, trxName);
+				Amt, Qty, Description, IsSOTrx, null, 0, trxName);
 	}
 	
 	/**
@@ -287,6 +293,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Description optional description
 	 *	@param IsSOTrx sales order
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -294,17 +301,16 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InOutLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
-		String Description, boolean IsSOTrx, Timestamp DateAcct, String trxName)
+		String Description, boolean IsSOTrx, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "M_InOutLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-			M_InOutLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getShipment (as, M_Product_ID, M_AttributeSetInstance_ID, M_InOutLine_ID, M_CostElement_ID, trxName);
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setM_InOutLine_ID(M_InOutLine_ID);
 			cd.setIsSOTrx(IsSOTrx);
 		}
@@ -365,7 +371,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		return createInventory (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_InventoryLine_ID, M_CostElement_ID, 
-				Amt, Qty, Description, null, trxName);
+				Amt, Qty, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -381,6 +387,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param Description optional description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -388,17 +395,16 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InventoryLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
-		String Description, Timestamp DateAcct, String trxName)
+		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-			M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getInventory (as, M_Product_ID, M_AttributeSetInstance_ID, M_InventoryLine_ID, M_CostElement_ID, trxName);
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setM_InventoryLine_ID(M_InventoryLine_ID);
 		}
 		else
@@ -459,7 +465,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		return createMovement (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_MovementLine_ID, M_CostElement_ID, 
-				Amt, Qty, from, Description, null, trxName);
+				Amt, Qty, from, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -476,6 +482,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param from if true the from (reduction)
 	 *	@param Description optional description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -483,19 +490,17 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_MovementLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty, boolean from,
-		String Description, Timestamp DateAcct, String trxName)
+		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
-				.append((from ? "'Y'" : "'N'")).append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
-		MCostDetail cd = get (as.getCtx(),msget.toString(), 
-			M_MovementLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getMovement (as, M_Product_ID, M_AttributeSetInstance_ID, M_MovementLine_ID, M_CostElement_ID, from, trxName);
+
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setM_MovementLine_ID (M_MovementLine_ID);
 			cd.setIsSOTrx(from);
 		}
@@ -556,7 +561,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		return createProduction (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_ProductionLine_ID, M_CostElement_ID,
-				Amt, Qty, Description, null, trxName);
+				Amt, Qty, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -572,6 +577,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param Description optional description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -579,17 +585,16 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_ProductionLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
-		String Description, Timestamp DateAcct, String trxName)
+		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "M_ProductionLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-			M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getProduction (as, M_Product_ID, M_AttributeSetInstance_ID, M_ProductionLine_ID, M_CostElement_ID, trxName);
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setM_ProductionLine_ID(M_ProductionLine_ID);
 		}
 		else
@@ -648,7 +653,7 @@ public class MCostDetail extends X_M_CostDetail
 			String Description, String trxName)
 	{
 		return createMatchInvoice (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_MatchInv_ID, M_CostElement_ID,
-				Amt, Qty, Description, null, trxName);
+				Amt, Qty, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -663,6 +668,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty
 	 *	@param Description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName
 	 *	@return true if no error
 	 */
@@ -670,17 +676,17 @@ public class MCostDetail extends X_M_CostDetail
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MatchInv_ID, int M_CostElement_ID, 
 			BigDecimal Amt, BigDecimal Qty,
-			String Description, Timestamp DateAcct, String trxName)
+			String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getMatchInvoice (as, M_Product_ID, M_AttributeSetInstance_ID, M_MatchInv_ID, M_CostElement_ID, trxName);
+
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setM_MatchInv_ID(M_MatchInv_ID);
 		}
 		else
@@ -739,7 +745,7 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		return createProjectIssue (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_ProjectIssue_ID, M_CostElement_ID,
-				Amt, Qty, Description, null, trxName);
+				Amt, Qty, Description, null, 0, trxName);
 	}
 	
 	/**
@@ -755,6 +761,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Qty qty
 	 *	@param Description optional description
 	 *	@param DateAcct account date
+	 *	@param Ref_CostDetail_ID reference cost detail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
@@ -762,17 +769,16 @@ public class MCostDetail extends X_M_CostDetail
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_ProjectIssue_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
-		String Description, Timestamp DateAcct, String trxName)
+		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "C_ProjectIssue_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-				C_ProjectIssue_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		MCostDetail cd = getProjectIssue (as, M_Product_ID, M_AttributeSetInstance_ID, C_ProjectIssue_ID, M_CostElement_ID, trxName);
 		//
 		if (cd == null)		//	createNew
 		{
 			cd = new MCostDetail (as, AD_Org_ID, 
 				M_Product_ID, M_AttributeSetInstance_ID, 
 				M_CostElement_ID, 
-				Amt, Qty, Description, DateAcct, trxName);
+				Amt, Qty, Description, DateAcct, Ref_CostDetail_ID, trxName);
 			cd.setC_ProjectIssue_ID(C_ProjectIssue_ID);
 		}
 		else
@@ -806,6 +812,79 @@ public class MCostDetail extends X_M_CostDetail
 		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createProjectIssue
+	
+	public static MCostDetail getOrder (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int C_OrderLine_ID, int M_CostElement_ID, Timestamp DateAcct, String trxName) {
+		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID
+				+" AND TRUNC(DateAcct)="+DB.TO_DATE(DateAcct, true), 
+			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		if (cd == null) {
+			cd = get (as.getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID,
+					C_OrderLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+			if (cd != null && !cd.isDelta())
+				cd = null;
+		}
+		return cd;
+	}
+	
+	public static MCostDetail getInvoice (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int C_InvoiceLine_ID, int M_CostElement_ID, Timestamp DateAcct, String trxName) {
+		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID
+				+" AND TRUNC(DateAcct)="+DB.TO_DATE(DateAcct, true), 
+				C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		if (cd == null) {
+			cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
+					C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+			if (cd != null && !cd.isDelta())
+				cd = null;
+		}
+		return cd;
+	}
+	
+	public static MCostDetail getShipment (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_InOutLine_ID, int M_CostElement_ID, String trxName) {
+		return get (as.getCtx(), "M_InOutLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+				M_InOutLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
+	public static MCostDetail getInventory (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_InventoryLine_ID, int M_CostElement_ID, String trxName) {
+		return get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
+				M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
+	public static MCostDetail getMovement (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_MovementLine_ID, int M_CostElement_ID, boolean from, String trxName) {
+		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
+				.append((from ? "'Y'" : "'N'")).append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
+		return get (as.getCtx(),msget.toString(), 
+			M_MovementLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
+	public static MCostDetail getProduction (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_ProductionLine_ID, String trxName) {
+		return get (as.getCtx(), "M_ProductionLine_ID=?", 
+				M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
+	public static MCostDetail getProduction (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_ProductionLine_ID, int M_CostElement_ID, String trxName) {
+		return get (as.getCtx(), "M_ProductionLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+				M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
+	public static MCostDetail getMatchInvoice (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_MatchInv_ID, int M_CostElement_ID, String trxName) {
+		return get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
+	public static MCostDetail getProjectIssue (MAcctSchema as, int M_Product_ID, int M_AttributeSetInstance_ID,
+			int C_ProjectIssue_ID, int M_CostElement_ID, String trxName) {
+		return get (as.getCtx(), "C_ProjectIssue_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+				C_ProjectIssue_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+	}
+	
 	
 	/**
 	 * 	Get Cost Detail
@@ -909,13 +988,16 @@ public class MCostDetail extends X_M_CostDetail
 	 */
 	public static boolean processProduct (MProduct product, String trxName)
 	{
-		final String whereClause = I_M_CostDetail.COLUMNNAME_M_Product_ID+"=?"
-			+ " AND "+I_M_CostDetail.COLUMNNAME_Processed+"=?";
+		final String whereClause = I_M_CostDetail.Table_Name + "." + I_M_CostDetail.COLUMNNAME_M_Product_ID + "=?"
+			+ " AND " + I_M_CostDetail.Table_Name + "." + I_M_CostDetail.COLUMNNAME_Processed + "=?";
 		int counterOK = 0;
 		int counterError = 0;
 		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
+		.addJoinClause(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=M_CostDetail.Ref_CostDetail_ID) ")
 		.setParameters(product.getM_Product_ID(),false)
-		.setOrderBy("C_AcctSchema_ID, M_CostElement_ID, AD_Org_ID, M_AttributeSetInstance_ID, DateAcct, M_CostDetail_ID")
+		.setOrderBy("M_CostDetail.C_AcctSchema_ID, M_CostDetail.M_CostElement_ID, M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
+				+ "CASE WHEN COALESCE(refcd.DateAcct,M_CostDetail.DateAcct) = M_CostDetail.DateAcct THEN COALESCE(M_CostDetail.Ref_CostDetail_ID,M_CostDetail.M_CostDetail_ID) ELSE M_CostDetail.M_CostDetail_ID END, "
+				+ "M_CostDetail.M_CostDetail_ID")
 		.list();
 		for (MCostDetail cd : list) {
 			if (cd.process())	//	saves
@@ -940,15 +1022,18 @@ public class MCostDetail extends X_M_CostDetail
 		if (dateAcct == null)
 			dateAcct = TimeUtil.getDay(System.currentTimeMillis());
 		
-		final String whereClause = I_M_CostDetail.COLUMNNAME_C_AcctSchema_ID + "=?"
-				+ " AND " + I_M_CostDetail.COLUMNNAME_M_Product_ID + "=?"
-				+ " AND " + I_M_CostDetail.COLUMNNAME_DateAcct + "<=?"
-				+ " AND " + I_M_CostDetail.COLUMNNAME_Processed + "=?";
+		final String whereClause = I_M_CostDetail.Table_Name + "." + I_M_CostDetail.COLUMNNAME_C_AcctSchema_ID + "=?"
+				+ " AND " + I_M_CostDetail.Table_Name + "." + I_M_CostDetail.COLUMNNAME_M_Product_ID + "=?"
+				+ " AND " + I_M_CostDetail.Table_Name + "." + I_M_CostDetail.COLUMNNAME_DateAcct + "<=?"
+				+ " AND " + I_M_CostDetail.Table_Name + "." + I_M_CostDetail.COLUMNNAME_Processed + "=?";
 		int counterOK = 0;
 		int counterError = 0;
 		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
+		.addJoinClause(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=M_CostDetail.Ref_CostDetail_ID) ")
 		.setParameters(as.getC_AcctSchema_ID(), product.getM_Product_ID(), dateAcct, false)
-		.setOrderBy("M_CostElement_ID, AD_Org_ID, M_AttributeSetInstance_ID, DateAcct, M_CostDetail_ID")
+		.setOrderBy("M_CostDetail.M_CostElement_ID, M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
+				+ "CASE WHEN COALESCE(refcd.DateAcct,M_CostDetail.DateAcct) = M_CostDetail.DateAcct THEN COALESCE(M_CostDetail.Ref_CostDetail_ID,M_CostDetail.M_CostDetail_ID) ELSE M_CostDetail.M_CostDetail_ID END, "
+				+ "M_CostDetail.M_CostDetail_ID")
 		.list();
 		for (MCostDetail cd : list) {
 			if (cd.process())	//	saves
@@ -1031,7 +1116,7 @@ public class MCostDetail extends X_M_CostDetail
 		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
 		String description, String trxName)
 	{
-		this (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_CostElement_ID, amt, qty, description, null, trxName);
+		this (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, M_CostElement_ID, amt, qty, description, null, 0, trxName);
 	}
 	
 	/**
@@ -1045,12 +1130,13 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param qty Quantity
 	 *	@param description optional description
 	 *	@param dateAcct account date
+	 *	@param Ref_CostDetail_ID referenced cost detail
 	 *	@param trxName transaction
 	 */
 	public MCostDetail (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
-		String description, Timestamp dateAcct, String trxName)
+		String description, Timestamp dateAcct, int Ref_CostDetail_ID, String trxName)
 	{
 		this (as.getCtx(), 0, trxName);
 		setClientOrg(as.getAD_Client_ID(), AD_Org_ID);
@@ -1063,7 +1149,9 @@ public class MCostDetail extends X_M_CostDetail
 		setQty (qty);
 		setDescription(description);
 		
-		setDateAcct(dateAcct);
+		setDateAcct(dateAcct);		
+		if (Ref_CostDetail_ID > 0)
+			setRef_CostDetail_ID(Ref_CostDetail_ID);
 	}	//	MCostDetail
 	
 	/**
@@ -1160,12 +1248,21 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else
 			{
-				final String sql = "SELECT MAX(DateAcct) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y'";
-				Timestamp MaxDateAcct = DB.getSQLValueTS(get_TrxName(), sql, getM_Product_ID());
-				if (MaxDateAcct != null && MaxDateAcct.after(today))
-					today = MaxDateAcct;
-				setDateAcct(dateAcct);
-				setIsBackDate(dateAcct.before(today));
+				int Ref_CostDetail_ID = getRef_CostDetail_ID();
+				if (Ref_CostDetail_ID > 0)
+				{
+					setDateAcct(dateAcct);
+					setIsBackDate(true);
+				}
+				else
+				{
+					final String sql = "SELECT MAX(DateAcct) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y'";
+					Timestamp MaxDateAcct = DB.getSQLValueTS(get_TrxName(), sql, getM_Product_ID());
+					if (MaxDateAcct != null && MaxDateAcct.after(today))
+						today = MaxDateAcct;
+					setDateAcct(dateAcct);
+					setIsBackDate(dateAcct.before(today));
+				}
 			}
 		} else {
 			if (is_ValueChanged(COLUMNNAME_DateAcct))
@@ -1725,4 +1822,158 @@ public class MCostDetail extends X_M_CostDetail
 		
 		return cost.save();
 	}	//	process
+	
+	public static void periodClosedCheckForDocsAfterBackDateTrx(int AD_Client_ID, int C_AcctSchema_ID, int M_Product_ID, 
+			int M_CostDetail_ID, Timestamp DateAcct, String trxName) {
+		List<String> repostedRecordIds = new ArrayList<String>();
+		
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("SELECT mpo.M_MatchPO_ID, il.C_Invoice_ID, iol.M_InOut_ID, mi.M_MatchInv_ID, invl.M_Inventory_ID, ");
+		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID ");
+		selectSql.append("FROM M_CostDetail cd ");
+		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID) ");
+		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
+		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
+		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");
+		selectSql.append("LEFT JOIN M_InventoryLine invl ON (invl.M_InventoryLine_ID = cd.M_InventoryLine_ID) ");
+		selectSql.append("LEFT JOIN M_MovementLine ml ON (ml.M_MovementLine_ID = cd.M_MovementLine_ID) ");
+		selectSql.append("LEFT JOIN M_ProductionLine pl ON (pl.M_ProductionLine_ID = cd.M_ProductionLine_ID) ");
+		selectSql.append("LEFT JOIN C_ProjectIssue pi ON (pi.C_ProjectIssue_ID = cd.C_ProjectIssue_ID) ");
+		selectSql.append("WHERE cd.AD_Client_ID=? ");
+		selectSql.append("AND cd.C_AcctSchema_ID=? ");
+		selectSql.append("AND cd.M_Product_ID=? ");
+		selectSql.append("AND (cd.DateAcct, COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID), cd.M_CostDetail_ID) > ("); 
+		selectSql.append(" SELECT cd.DateAcct, ");
+		selectSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct ");
+		selectSql.append(" THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
+		selectSql.append(" cd.M_CostDetail_ID ");
+		selectSql.append(" FROM M_CostDetail cd ");
+		selectSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+		selectSql.append(" WHERE cd.M_CostDetail_ID=? ");
+		selectSql.append(") ");
+		selectSql.append("AND cd.DateAcct >= ? "); 
+		selectSql.append("AND cd.Processed='Y' ");
+		selectSql.append("ORDER BY cd.DateAcct, ");
+		selectSql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct ");
+		selectSql.append("THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
+		selectSql.append("cd.M_CostDetail_ID ");
+		
+		List<List<Object>> data = DB.getSQLArrayObjectsEx(trxName, selectSql.toString(), 
+				new Object[] {AD_Client_ID, C_AcctSchema_ID, M_Product_ID, M_CostDetail_ID, DateAcct});
+		if (data != null) {
+			for (List<Object> row : data) {
+				Number M_MatchPO_ID = (Number) row.get(0);
+				Number C_Invoice_ID = (Number) row.get(1);
+				Number M_InOut_ID = (Number) row.get(2);
+				Number M_MatchInv_ID = (Number) row.get(3);
+				Number M_Inventory_ID = (Number) row.get(4);
+				Number M_Movement_ID = (Number) row.get(5);
+				Number M_Production_ID = (Number) row.get(6);
+				Number C_ProjectIssue_ID = (Number) row.get(7);
+				
+				int tableID = 0;
+				int recordID = 0;
+				if (M_MatchPO_ID != null) {
+					tableID = MMatchPO.Table_ID;
+					recordID = M_MatchPO_ID.intValue();
+				} else if (C_Invoice_ID != null) {
+					tableID = MInvoice.Table_ID;
+					recordID = C_Invoice_ID.intValue();
+				} else if (M_InOut_ID != null) {
+					tableID = MInOut.Table_ID;
+					recordID = M_InOut_ID.intValue();
+				} else if (M_MatchInv_ID != null) {
+					tableID = MMatchInv.Table_ID;
+					recordID = M_MatchInv_ID.intValue();
+				} else if (M_Inventory_ID != null) {
+					tableID = MInventory.Table_ID;
+					recordID = M_Inventory_ID.intValue();
+				} else if (M_Movement_ID != null) {
+					tableID = MMovement.Table_ID;
+					recordID = M_Movement_ID.intValue();
+				} else if (M_Production_ID != null) {
+					tableID = MProduction.Table_ID;
+					recordID = M_Production_ID.intValue();
+				} else if (C_ProjectIssue_ID != null) {
+					tableID = MProjectIssue.Table_ID;
+					recordID = C_ProjectIssue_ID.intValue();
+				} else
+					continue;
+				
+				MTable table = MTable.get(Env.getCtx(), tableID);
+				PO po = table.getPO(recordID, trxName);
+					
+				// obtain DateAcct
+				int index = -1;
+				if (tableID == MInventory.Table_ID
+						|| tableID == MMovement.Table_ID
+						|| tableID == MProduction.Table_ID
+						|| tableID == MProjectIssue.Table_ID) {
+					index = po.get_ColumnIndex("MovementDate");
+				} else if (tableID == MOrder.Table_ID
+						|| tableID == MMatchPO.Table_ID
+						|| tableID == MInvoice.Table_ID
+						|| tableID == MInOut.Table_ID
+						|| tableID == MMatchInv.Table_ID) {
+					index = po.get_ColumnIndex("DateAcct");
+				}
+				if (index < 0)
+					continue;
+				Timestamp dateAcct = null;
+				Object objts = po.get_Value(index);
+				if (objts != null && objts instanceof Timestamp) {
+					dateAcct = (Timestamp) objts;
+				}
+				
+				index = po.get_ColumnIndex("C_DocType_ID");
+				String docBaseType = null;
+				if (index < 0) {
+					if (tableID == MMatchInv.Table_ID) {
+						docBaseType = MDocType.DOCBASETYPE_MatchInvoice;
+					} else if (tableID == MMatchPO.Table_ID) {
+						docBaseType = MDocType.DOCBASETYPE_MatchPO;
+					} else if (tableID == MProjectIssue.Table_ID) {
+						docBaseType = MDocType.DOCBASETYPE_ProjectIssue;
+					} else {
+						continue;
+					}
+				} else {
+					int C_DocType_ID = 0;
+					objts = po.get_Value(index);
+					if (objts != null && objts instanceof Number) {
+						C_DocType_ID = ((Number) objts).intValue();
+					}
+					MDocType dt = MDocType.get(Env.getCtx(), C_DocType_ID);
+					docBaseType = dt.getDocBaseType();
+				}
+				if (docBaseType == null)
+					continue;
+				
+				String repostedRecordId = tableID + "_" + recordID;
+				if (repostedRecordIds.contains(repostedRecordId))
+					continue;
+				repostedRecordIds.add(repostedRecordId);
+				if (!MPeriod.isOpen(Env.getCtx(), dateAcct, docBaseType, po.getAD_Org_ID(), true)) {
+					throw new PeriodClosedException(dateAcct, docBaseType);
+				}
+				
+				if (tableID == MInvoice.Table_ID) {
+					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
+					for (MMatchInv mi : miList) {
+						repostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
+						if (repostedRecordIds.contains(repostedRecordId))
+							continue;
+						repostedRecordIds.add(repostedRecordId);
+						
+						dateAcct = mi.getDateAcct();
+						docBaseType = MDocType.DOCBASETYPE_MatchInvoice;
+						if (!MPeriod.isOpen(Env.getCtx(), dateAcct, docBaseType, mi.getAD_Org_ID(), true)) {
+							throw new PeriodClosedException(dateAcct, docBaseType);
+						}
+					}
+				}
+			}
+		}
+	}
 }	//	MCostDetail

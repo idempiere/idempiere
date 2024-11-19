@@ -231,7 +231,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			if (this.getProcessedOn().signum() == 0) {
 				setMovementDate(TimeUtil.getDay(0));
 				MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
-				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -600,7 +600,7 @@ public class MProduction extends X_M_Production implements DocAction {
 
 		//	Std Period open?
 		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
-		MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 
 		if ( getIsCreated().equals("N") )
 		{
@@ -787,7 +787,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			
 			try
 			{
-				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -869,7 +869,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			setC_OrderLine_ID(0);
 
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
-		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate);
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
 		MProduction reversal = null;
 		reversal = copyFrom (reversalDate);
 

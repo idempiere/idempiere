@@ -239,8 +239,7 @@ public class Doc_Inventory extends Doc
 				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
-				MCostDetail cd = MCostDetail.get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+ce.getM_CostElement_ID()+" AND M_Product_ID="+product.getM_Product_ID(), 
-						get_ID(), asiId, as.getC_AcctSchema_ID(), getTrxName());
+				MCostDetail cd = MCostDetail.getInventory(as, product.getM_Product_ID(), asiId, get_ID(), ce.getM_CostElement_ID(), getTrxName());
 				ICostInfo cost = MCost.getCostInfo(product, asiId, as, 
 						orgId, ce.getM_CostElement_ID(), 
 						getDateAcct(), cd, getTrxName());
@@ -396,11 +395,19 @@ public class Doc_Inventory extends Doc
 									qty = qty.negate();
 								if (maCost.signum() != costDetailAmt.signum())
 									maCost = maCost.negate();
+								int Ref_CostDetail_ID = 0;
+								if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+								{
+									MCostDetail cd = MCostDetail.getInventory(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+											line.getReversalLine_ID(), 0, getTrxName());
+									if (cd != null)
+										Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								}
 								if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										maCost, qty,
-										line.getDescription(), line.getDateAcct(), getTrxName()))
+										line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 								{
 									p_Error = "Failed to create cost detail record";
 									return null;
@@ -411,11 +418,19 @@ public class Doc_Inventory extends Doc
 					else
 					{
 						BigDecimal amt = costDetailAmt;
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MCostDetail cd = MCostDetail.getInventory(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+									line.getReversalLine_ID(), 0, getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), line.getDateAcct(), getTrxName()))
+								line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
@@ -426,11 +441,19 @@ public class Doc_Inventory extends Doc
 				{
 					//	Cost Detail
 					BigDecimal amt = costDetailAmt;
+					int Ref_CostDetail_ID = 0;
+					if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+					{
+						MCostDetail cd = MCostDetail.getInventory(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+								line.getReversalLine_ID(), 0, getTrxName());
+						if (cd != null)
+							Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+					}
 					if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						line.get_ID(), 0,
 						amt, line.getQty(),
-						line.getDescription(), line.getDateAcct(), getTrxName()))
+						line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 					{
 						p_Error = "Failed to create cost detail record";
 						return null;

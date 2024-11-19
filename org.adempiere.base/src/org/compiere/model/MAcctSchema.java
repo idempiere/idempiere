@@ -774,12 +774,13 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 * Convenient method for testing if a back-date transaction is allowed in primary accounting schema
 	 * @param ctx
 	 * @param dateAcct
+	 * @param trxName
 	 * @throws BackDateTrxNotAllowedException
 	 */
-	public static void testBackDateTrxAllowed(Properties ctx, Timestamp dateAcct)
+	public static void testBackDateTrxAllowed(Properties ctx, Timestamp dateAcct, String trxName)
 	throws BackDateTrxNotAllowedException
 	{
-		if (!MAcctSchema.isBackDateTrxAllowed(ctx, dateAcct)) {
+		if (!MAcctSchema.isBackDateTrxAllowed(ctx, dateAcct, trxName)) {
 			throw new BackDateTrxNotAllowedException(dateAcct);
 		}
 	}
@@ -822,20 +823,22 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			return true;
 		}
 		
-		return isBackDateTrxAllowed(ctx, dateAcct);
+		return isBackDateTrxAllowed(ctx, dateAcct, trxName);
 	}
 	
 	/**
 	 * Is Back-Date transaction allowed in primary accounting schema?
 	 * @param ctx context
 	 * @param dateAcct account date
+	 * @param trxName
 	 * @return true if back-date transaction is allowed
 	 */
-	public static boolean isBackDateTrxAllowed(Properties ctx, Timestamp dateAcct)
+	public static boolean isBackDateTrxAllowed(Properties ctx, Timestamp dateAcct, String trxName)
 	{
 		if (dateAcct == null)
 			return true;
-		MAcctSchema as = MClient.get(ctx, Env.getAD_Client_ID(ctx)).getAcctSchema();
+		MClientInfo info = MClientInfo.get(ctx, Env.getAD_Client_ID(ctx), trxName); 
+		MAcctSchema as = info.getMAcctSchema1();
 		return as.isBackDateTrxAllowed(dateAcct);
 	}
 

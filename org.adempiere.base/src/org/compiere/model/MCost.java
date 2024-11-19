@@ -150,9 +150,18 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (costDetail != null) // get the latest cost history record of the cost detail
 			history = MCostHistory.get(product.getCtx(), AD_Org_ID, 
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, costDetail, trxName);
-		if (history == null && dateAcct != null) // get cost history record based on the account date
+		if (history == null && dateAcct != null) {	// get cost history record based on the account date
 			history = MCostHistory.get(product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(),
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
+			if (history != null) {
+				if (history.getDateAcct().after(dateAcct)) {
+					history.setNewCAmt(history.getOldCAmt());
+					history.setNewCQty(history.getOldCQty());
+					history.setNewCostPrice(history.getOldCostPrice());
+					history.setNewQty(history.getOldQty());
+				}
+			}
+		}
 
 		return getCost (
 			product, M_AttributeSetInstance_ID,
@@ -1548,11 +1557,20 @@ public class MCost extends X_M_Cost implements ICostInfo
 		String costingMethod = ce.getCostingMethod();
 		MCostHistory history = null;
 		if (costDetail != null) // get the latest cost history record of the cost detail
-			history = MCostHistory.get(ctx, AD_Org_ID, 
+ 			history = MCostHistory.get(ctx, AD_Org_ID, 
 					M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID, M_AttributeSetInstance_ID, costDetail, trxName);
-		if (history == null && dateAcct != null) // get cost history record based on the account date
+		if (history == null && dateAcct != null) {	// get cost history record based on the account date
 			history = MCostHistory.get(ctx, AD_Client_ID, AD_Org_ID, M_Product_ID, M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID,
 					M_AttributeSetInstance_ID, dateAcct, trxName);
+			if (history != null) {
+				if (history.getDateAcct().after(dateAcct)) {
+					history.setNewCAmt(history.getOldCAmt());
+					history.setNewCQty(history.getOldCQty());
+					history.setNewCostPrice(history.getOldCostPrice());
+					history.setNewQty(history.getOldQty());
+				}
+			}
+		}
 		
 		if (history != null)
 			return history;

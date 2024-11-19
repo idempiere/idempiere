@@ -495,6 +495,15 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getQty();
 
+    /** Column name Ref_CostDetail_ID */
+    public static final String COLUMNNAME_Ref_CostDetail_ID = "Ref_CostDetail_ID";
+
+	/** Set Referenced Cost Detail	  */
+	public void setRef_CostDetail_ID (int Ref_CostDetail_ID);
+
+	/** Get Referenced Cost Detail	  */
+	public int getRef_CostDetail_ID();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

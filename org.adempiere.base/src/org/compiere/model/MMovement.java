@@ -56,7 +56,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 5415969431202357692L;
+	private static final long serialVersionUID = 7719628612559214932L;
 
     /**
      * UUID based Constructor
@@ -302,7 +302,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
-		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getMovementDate()))
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName()))
 		{
 			m_processMsg = "@BackDateTrxNotAllowed@";
 			return DocAction.STATUS_Invalid;
@@ -433,6 +433,16 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (!isApproved())
 			approveIt();
 		if (log.isLoggable(Level.INFO)) log.info(toString());
+		
+		if (!isReversal())
+		{
+			try {
+				periodClosedCheckForBackDateTrx(null);
+			} catch (PeriodClosedException e) {
+				m_processMsg = e.getLocalizedMessage();
+				return DocAction.STATUS_Invalid;
+			}
+		}
 		
 		StringBuilder errors = new StringBuilder();
 		//
@@ -660,7 +670,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
-			MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+			MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
@@ -793,7 +803,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			
 			try
 			{
-				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -883,9 +893,16 @@ public class MMovement extends X_M_Movement implements DocAction
 			m_processMsg = "@PeriodClosed@";
 			return null;
 		}
-		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), reversalDate))
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName()))
 		{
 			m_processMsg = "@BackDateTrxNotAllowed@";
+			return null;
+		}
+		
+		try {
+			periodClosedCheckForBackDateTrx(reversalDate);
+		} catch (PeriodClosedException e) {
+			m_processMsg = e.getLocalizedMessage();
 			return null;
 		}
 
@@ -1097,5 +1114,73 @@ public class MMovement extends X_M_Movement implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 	
+	/**
+	 * Period Closed Check for Back-Date Transaction
+	 * @param reversalDate reversal date - null when it is not a reversal
+	 * @return false when failed the period closed check
+	 */
+	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
+	{
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MAcctSchema as = info.getMAcctSchema1();
+		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
+				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+			return true;
+		
+		if (as.getBackDateDay() == 0)
+			return true;
+		
+		Timestamp dateAcct = reversalDate != null ? reversalDate : getMovementDate();
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(*) FROM M_CostDetail ");
+		sql.append("WHERE M_Product_ID IN (SELECT M_Product_ID FROM M_MovementLine WHERE M_Movement_ID=?) ");
+		sql.append("AND Processed='Y' ");
+		sql.append(reversalDate != null ? "AND DateAcct>=? " : "AND DateAcct>? ");
+		int no = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ID(), dateAcct);
+		if (no <= 0)
+			return true;
+		
+		MMovementLine[] mLines = getLines(false);
+		for (MMovementLine mLine : mLines) {
+			String costingLevel = mLine.getProduct().getCostingLevel(as);
+			if (!MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+				continue;
+			
+			int AD_Org_ID = mLine.getAD_Org_ID();
+			int M_AttributeSetInstance_ID = mLine.getM_AttributeSetInstance_ID();
+			
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+			
+			int M_CostDetail_ID = 0;
+			int M_MovementLine_ID = mLine.getM_MovementLine_ID();
+			if (mLine.getReversalLine_ID() > 0 && mLine.get_ID() > mLine.getReversalLine_ID())
+				M_MovementLine_ID = mLine.getReversalLine_ID();
+			MCostDetail cd = MCostDetail.getMovement(as, mLine.getM_Product_ID(), M_AttributeSetInstance_ID, 
+					M_MovementLine_ID, 0, false, get_TrxName());
+			if (cd != null)
+				M_CostDetail_ID = cd.getM_CostDetail_ID();
+			else {
+				MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, mLine.getM_Product_ID(), 
+						as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+						M_AttributeSetInstance_ID, dateAcct, get_TrxName());
+				if (history != null) {
+					if (history.getDateAcct().after(dateAcct)) {
+						history.setNewCAmt(history.getOldCAmt());
+						history.setNewCQty(history.getOldCQty());
+						history.setNewCostPrice(history.getOldCostPrice());
+						history.setNewQty(history.getOldQty());
+					}
+					M_CostDetail_ID = history.getM_CostDetail_ID();
+				}
+			} 
+			
+			if (M_CostDetail_ID > 0) {
+				MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+						mLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
+			}
+		}
+		return true;
+	}
 }	//	MMovement
 

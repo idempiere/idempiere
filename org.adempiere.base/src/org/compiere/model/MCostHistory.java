@@ -121,6 +121,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		sql.append("SELECT c.* ");
 		sql.append("FROM M_CostHistory c ");
 		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed=?) ");
+		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
 		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
 		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
 		sql.append(" AND c.M_Product_ID=? ");
@@ -129,8 +130,11 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
 		if (M_CostElement_ID > 0)
 			sql.append(" AND c.M_CostElement_ID=? ");
-		sql.append(" AND c.M_CostDetail_ID=? ");
-		sql.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC ");
+		sql.append(" AND c.M_CostDetail_ID IN (?,?) ");
+		sql.append(" AND c.DateAcct=? ");
+		sql.append("ORDER BY c.DateAcct DESC, ");
+		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
+		sql.append("c.M_CostHistory_ID DESC ");
 		if (DB.isOracle())
 			sql.append("ROWNUM=1");
 		else if (DB.isPostgreSQL())
@@ -148,6 +152,8 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (M_CostElement_ID > 0)
 			params.add(M_CostElement_ID);
 		params.add(cd.getM_CostDetail_ID());
+ 		params.add(cd.getRef_CostDetail_ID());
+ 		params.add(cd.getDateAcct());
 		
 		MCostHistory costHistory = null;
 		PreparedStatement pstmt = null;
@@ -199,9 +205,12 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 			return null;
 		
 		StringBuilder sql = new StringBuilder();
+		sql.append("(");
+		
 		sql.append("SELECT c.* ");
 		sql.append("FROM M_CostHistory c ");
 		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
+		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
 		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
 		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
 		sql.append(" AND c.M_Product_ID=? ");
@@ -211,11 +220,37 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (M_CostElement_ID > 0)
 			sql.append(" AND c.M_CostElement_ID=? ");
 		sql.append(" AND c.DateAcct<=? ");
-		sql.append("ORDER BY c.DateAcct DESC, c.M_CostDetail_ID DESC, c.M_CostHistory_ID DESC ");
+		sql.append("ORDER BY c.DateAcct DESC, ");
+		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
+		sql.append("c.M_CostHistory_ID DESC ");
 		if (DB.isOracle())
 			sql.append("ROWNUM=1");
 		else if (DB.isPostgreSQL())
 			sql.append("LIMIT 1");
+		
+		sql.append(") UNION ALL (");
+		
+		sql.append("SELECT c.* "); // get first record
+		sql.append("FROM M_CostHistory c ");
+		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
+		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
+		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
+		sql.append(" AND c.M_Product_ID=? ");
+		sql.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
+		sql.append(" AND c.M_CostType_ID=? AND cd.C_AcctSchema_ID=? ");
+		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
+		if (M_CostElement_ID > 0)
+			sql.append(" AND c.M_CostElement_ID=? ");
+		sql.append("ORDER BY c.DateAcct ASC, ");
+		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END ASC, ");
+		sql.append("c.M_CostHistory_ID DESC ");
+		if (DB.isOracle())
+			sql.append("ROWNUM=1");
+		else if (DB.isPostgreSQL())
+			sql.append("LIMIT 1");
+		
+		sql.append(")");
 		
 		List<Object> params = new ArrayList<Object>();
 		params.add(AD_Client_ID);
@@ -228,6 +263,15 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (M_CostElement_ID > 0)
 			params.add(M_CostElement_ID);
 		params.add(dateAcct);
+		params.add(AD_Client_ID);
+		params.add(AD_Org_ID);
+		params.add(M_Product_ID);
+		params.add(M_AttributeSetInstance_ID);
+		params.add(M_CostType_ID);
+		params.add(C_AcctSchema_ID);
+		params.add(costingMethod);
+		if (M_CostElement_ID > 0)
+			params.add(M_CostElement_ID);
 		
 		MCostHistory costHistory = null;
 		PreparedStatement pstmt = null;
@@ -238,7 +282,9 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
     		DB.setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
     		if (rs.next())
+    		{
     			costHistory = new MCostHistory(ctx, rs, trxName);
+    		}
     	}
     	catch (SQLException e)
 		{
@@ -248,7 +294,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		{
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
-		}		
+		}
 		return costHistory;
 	}
 

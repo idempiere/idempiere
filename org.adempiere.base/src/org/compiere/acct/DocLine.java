@@ -775,9 +775,9 @@ public class DocLine
 				BigDecimal amt = cd.getAmt();
 				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK, cd);
 				if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
-					return pcost;
+					return amt.signum() > 0 ? pcost.negate() : pcost;
 				else
-					return pcost.negate();
+					return pcost;
 			}
 		}
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK);
