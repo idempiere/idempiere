@@ -2633,7 +2633,9 @@ public abstract class PO
 			if (err != null) {
 				if (val != null) {
 					msg.append(val);
-					if (! val.endsWith(": "))
+					if (val.endsWith(":"))
+						msg.append(" ");
+					else if (! val.endsWith(": "))
 						msg.append(": ");
 				}
 				msg.append(err.getName());
