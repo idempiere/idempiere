@@ -39,8 +39,6 @@ import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.Core;
-import org.adempiere.base.IServiceReferenceHolder;
-import org.adempiere.base.Service;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
@@ -70,8 +68,6 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.DrillEvent.DrillData;
-import org.adempiere.webui.factory.IEditorFactory;
-import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
