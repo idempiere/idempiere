@@ -471,7 +471,8 @@ ContextMenuListener, IZoomableEditor
             
             if (getComponent() instanceof EditorAutoComplete && gridField!=null)	// IDEMPIERE-4442 Fix NPE, for Autocomplete in non Grid Usage.
             	updateStyle();
-        }                                
+        }       
+		popupMenu.showDrillAssistant(value != null);                         
     }
     
     @Override
