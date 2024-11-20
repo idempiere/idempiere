@@ -2090,6 +2090,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         editors2.add(editor2);
         if (infoColumn.isQueryAfterChange()) {
         	queryAfterChangeEditors.add(editor);
+        	if (editor2 != null)
+        		queryAfterChangeEditors.add(editor2);
         }
         
         editor.showMenu();
