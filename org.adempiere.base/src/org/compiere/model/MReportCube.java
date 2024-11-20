@@ -81,20 +81,7 @@ public class MReportCube extends X_PA_ReportCube {
 			StringBuilder periodList = new StringBuilder();
 			StringBuilder periodNames = new StringBuilder();
 
-			String sql = "SELECT DISTINCT p.C_Period_ID, p.Name FROM C_Period p " +
-			 "INNER JOIN C_Year y ON (y.C_Year_ID=p.C_Year_ID) " +
-			 "INNER JOIN PA_ReportCube c ON (c.C_Calendar_ID = y.C_Calendar_ID) " +
-			 "INNER JOIN Fact_Acct fact ON (fact.dateacct between p.startdate and p.enddate " +
-             "                      and fact.ad_client_id = c.ad_client_id) " +
-			 "WHERE c.PA_ReportCube_ID = ? " +
-			 "AND fact.updated > c.LastRecalculated";
-
-			if (log.isLoggable(Level.FINE)) log.log (Level.FINE, sql);
-
-			start = System.currentTimeMillis();
-			KeyNamePair[] changedPeriods = DB.getKeyNamePairs(sql, false, getPA_ReportCube_ID());
-			elapsed = (System.currentTimeMillis() - start)/1000;
-			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Selecting changed periods took:" + elapsed + "s");
+			KeyNamePair[] changedPeriods = getChangedPeriodKeyNamePairs();
 
 			if (changedPeriods != null && changedPeriods.length > 0 )
 			{
@@ -242,5 +229,29 @@ public class MReportCube extends X_PA_ReportCube {
 			DB.executeUpdateEx(unlockSQL, parameters, get_TrxName());
 		}
 		return result;
+	}
+
+	/**
+	 * Get periods where there are fact_acct changes since last re-calculation of cube
+	 * @return changed periods (C_Period_ID, Name)
+	 */
+	public KeyNamePair[] getChangedPeriodKeyNamePairs() {
+		long start;
+		long elapsed;
+		String sql = "SELECT DISTINCT p.C_Period_ID, p.Name FROM C_Period p " +
+		 "INNER JOIN C_Year y ON (y.C_Year_ID=p.C_Year_ID) " +
+		 "INNER JOIN PA_ReportCube c ON (c.C_Calendar_ID = y.C_Calendar_ID) " +
+		 "INNER JOIN Fact_Acct fact ON (fact.dateacct between p.startdate and p.enddate " +
+		 "                      and fact.ad_client_id = c.ad_client_id) " +
+		 "WHERE c.PA_ReportCube_ID = ? " +
+		 "AND fact.updated > c.LastRecalculated";
+
+		if (log.isLoggable(Level.FINE)) log.log (Level.FINE, sql);
+
+		start = System.currentTimeMillis();
+		KeyNamePair[] changedPeriods = DB.getKeyNamePairsEx(sql, false, getPA_ReportCube_ID());
+		elapsed = (System.currentTimeMillis() - start)/1000;
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Selecting changed periods took:" + elapsed + "s");
+		return changedPeriods;
 	}
 }

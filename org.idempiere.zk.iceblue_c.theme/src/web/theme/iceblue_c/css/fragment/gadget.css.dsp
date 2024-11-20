@@ -11,13 +11,13 @@
 	border: none;
 }
 .z-panel-head .z-panel-header {
-	padding: 0px 5px;
+	margin-top: 2px;
+	padding: 1px 5px 1px 10px;
     border-bottom: 1px solid #e4e4e4;
 }
 .z-caption .z-caption-content {
-	margin-top: 2px;
-	padding: 0 0 0 8px;
 	cursor: move;
+	padding: 0px;
 }
 .z-panel-icon {
 	font-size: 10px !important;
@@ -304,6 +304,9 @@
 	padding: 5px;
 	font-size: 12px;
 	font-weight: normal;
+}
+.help-content p {
+	margin-bottom: 7px;
 }
 .mobile .help-content
 {

@@ -873,6 +873,7 @@ public class GridField
 		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			String defStr = "";		//	problem is with texts like 'sss;sss'
+			String defStrMultipleSelect = "";
 			//	It is one or more variables/constants
 			StringTokenizer st = new StringTokenizer(m_vo.DefaultValue, ",;", false);
 			while (st.hasMoreTokens())
@@ -884,7 +885,16 @@ public class GridField
 					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, defStr.trim(), false, false);
 				else if (defStr.indexOf("'") != -1)			//	it is a 'String'
 					defStr = defStr.replace('\'', ' ').trim();
-
+				
+				if (DisplayType.isChosenMultipleSelection(m_vo.displayType)) {
+					defStrMultipleSelect += defStr + ",";
+					if (!st.hasMoreTokens()) {
+						defStr = defStrMultipleSelect.substring(0, defStrMultipleSelect.length() - 1);
+					} else {
+						continue;
+					}
+				}
+				
 				if (!defStr.equals(""))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("[DefaultValue] " + m_vo.ColumnName + "=" + defStr);

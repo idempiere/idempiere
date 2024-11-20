@@ -204,6 +204,28 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return MTable.get(ctx, AD_Table_ID).getTableName();
 	}	//	getTableName
 
+	/**
+	 * Get table accessible by current effective role (via window access).<br/>
+	 * @param withEmptyElement if true, first element of the return array is an empty element with (-1,"")
+	 * @param trxName optional transaction name
+	 * @return table records (AD_Table_ID, translated Name), order by translated name
+	 */
+	public static KeyNamePair[] getWithWindowAccessKeyNamePairs(boolean withEmptyElement, String trxName)
+	{
+		final MRole role = MRole.getDefault(); 
+		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Table");
+		String lang = Env.getAD_Language(Env.getCtx());
+		String sql = "SELECT DISTINCT t.AD_Table_ID,"
+				+ (trl ? "trl.Name" : "t.Name")
+			+ " FROM AD_Table t INNER JOIN AD_Tab tab ON (tab.AD_Table_ID=t.AD_Table_ID)"
+			+ " INNER JOIN AD_Window_Access wa ON (tab.AD_Window_ID=wa.AD_Window_ID) "
+			+ (trl ? "LEFT JOIN AD_Table_Trl trl on (trl.AD_Table_ID=t.AD_Table_ID and trl.AD_Language=" + DB.TO_STRING(lang) + ")" : "") 
+			+ " WHERE "+role.getIncludedRolesWhereClause("wa.AD_Role_ID", null) 
+			+ " AND t.IsActive='Y' AND tab.IsActive='Y' "
+			+ "ORDER BY 2";
+		return DB.getKeyNamePairsEx(trxName, sql, withEmptyElement);			
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, Table_Name, 20, 0, false, 0);
 

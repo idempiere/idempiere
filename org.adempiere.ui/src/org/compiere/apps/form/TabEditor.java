@@ -35,7 +35,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *
+ * AD_Tab editor form
  * @author Juan David Arboleda
  * @author Carlos Ruiz
  *

@@ -7,6 +7,10 @@
     border-bottom: 1px solid #ccc;
 }
 
+.z-grid-header {
+	background-color: #e0f2ff;
+}
+
 .z-grid tbody tr.grid-inactive-row td.z-cell {
 	background-image: none !important;
 }
@@ -120,9 +124,6 @@ div.z-listbox-body .z-listcell {
 }
 .z-listbox-autopaging .z-listcell-cnt {
 	height: 20px;
-}
-.z-listheader-content .z-label {
-	color: #FFF;
 }
 .z-row .z-cell, .z-listitem .z-listcell, .z-listitem.z-listitem-selected>.z-listcell {
 	border-left: 1px solid #cfcfcf;

@@ -34,6 +34,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MMenu;
 import org.compiere.model.MProduct;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -46,6 +47,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
@@ -167,6 +169,26 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		MWorkflow[] retValue = (MWorkflow[])cachedMap.get(AD_Table_ID);
 		return retValue != null ? Arrays.stream(retValue).map(e -> {return new MWorkflow(ctx, e, trxName);}).toArray(MWorkflow[]::new) : null;
 	}	//	getDocValue
+	
+	/**
+	 * Get workflow records accessible to current effective role.<br/>
+	 * @param withEmptyElement if true, first element of the return array is an empty element with (-1,"")
+	 * @return workflow records (AD_Workflow_ID, translated name), order by name
+	 */
+	public static KeyNamePair[] getWorkflowKeyNamePairs(boolean withEmptyElement) {
+		String sql;
+		boolean isBaseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Workflow");
+		if (isBaseLanguage)
+			sql = MRole.getDefault().addAccessSQL(
+				"SELECT AD_Workflow_ID, Name FROM AD_Workflow WHERE IsActive='Y' ORDER BY 2",
+				"AD_Workflow", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
+		else
+			sql = MRole.getDefault().addAccessSQL(
+					"SELECT AD_Workflow.AD_Workflow_ID, AD_Workflow_Trl.Name FROM AD_Workflow INNER JOIN AD_Workflow_Trl ON (AD_Workflow.AD_Workflow_ID=AD_Workflow_Trl.AD_Workflow_ID) "
+					+ " WHERE AD_Workflow.IsActive='Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
+		KeyNamePair[] pp = DB.getKeyNamePairsEx(sql, withEmptyElement);
+		return pp;
+	}
 	
 	/**	Single Cache					*/
 	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name, 20, 0, false, 0);

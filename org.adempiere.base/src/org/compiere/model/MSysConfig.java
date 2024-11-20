@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2729894615883031395L;
+	private static final long serialVersionUID = 8636352432923806208L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -920,6 +920,14 @@ public class MSysConfig extends X_AD_SysConfig
 			// the reset cache is being called on PO when a record is changed or deleted, but not on new
 			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache holds a
 			//   String type, and CCache.reset(int) just call reset when the key is not an Integer
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+		}
+		return success;
+	}
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success && ! getName().endsWith("_NOCACHE")) {
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
 		}
 		return success;

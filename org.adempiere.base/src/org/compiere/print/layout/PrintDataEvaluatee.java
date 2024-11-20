@@ -42,7 +42,7 @@ public class PrintDataEvaluatee implements Evaluatee {
 
 	@Override
 	public String get_ValueAsString(String variableName) {
-		DefaultEvaluatee evaluatee = new DefaultEvaluatee(new PrintDataDataProvider());
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(new PrintDataDataProvider(m_page, m_data));
 		return evaluatee.get_ValueAsString(variableName);
 	}
 	
@@ -57,8 +57,16 @@ public class PrintDataEvaluatee implements Evaluatee {
 		return displayLogic.contains("@*Page");
 	}
 	
-	private class PrintDataDataProvider implements DefaultEvaluatee.DataProvider {
+	public static class PrintDataDataProvider implements DefaultEvaluatee.DataProvider {
 
+		private Page m_page;
+		private PrintData m_data;
+
+		public PrintDataDataProvider(Page page, PrintData data) {
+			this.m_page = page;
+			this.m_data = data;
+		}
+		
 		@Override
 		public Object getValue(String columnName) {
 			if (Page.CONTEXT_PAGE.equals(columnName)) {

@@ -144,9 +144,9 @@ public class HelpController
         htmlToolTip.setWidgetOverride("onFieldTooltip", "function(origin,opts,header,description,help,entityType)" +
         		"{let s='<html><body><div class=\"help-content\">';" +
         		"if (typeof header == 'undefined') {s=s+'<i>'+this.defaultMessage+'</i>';} " +
-        		"else {s=s+'<b>'+header+'</b>';" +
-        		"if (typeof description=='string' && description.length > 0) {s=s+'<br><br><i>'+description+'</i>';}" +
-        		"if (typeof help=='string' && help.length > 0) {s=s+'<br><br>'+help;}" +
+        		"else {s=s+'<p><strong>'+header+'</strong></p>';" +
+        		"if (typeof description=='string' && description.length > 0) {s=s+'<p><em>'+description+'</em></p>';}" +
+        		"if (typeof help=='string' && help.length > 0) {s=s+'<p>'+help+'</p>';}" +
         		"if (typeof entityType=='string' && entityType.length > 0) {s=s+'<p class=\"help-entitytype\">[ '+entityType+' ]</p>';}}" +
         		"s=s+'</div></body></html>';this.setContent(s);}");
         setupFieldTooltip();
@@ -235,24 +235,24 @@ public class HelpController
     			otherContent = Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField");
     		}
     		
-			sb.append("<i>(");
+			sb.append("<p><em>(");
 			sb.append (otherContent);
-			sb.append (")</i>");
+			sb.append (")</em></p>");
     	}else{
-    		sb.append("<b>");
+    		sb.append("<p><strong>");
     		sb.append(hdr);
-    		sb.append("</b>");
+    		sb.append("</strong></p>");
     		
     		if (desc != null && desc.trim().length() > 0){
-    			sb.append("<br><br>\n<i>");
+    			sb.append("<p><i>");
     			sb.append(desc);
-    			sb.append("</i>");
+    			sb.append("</i></p>");
     		}
     		
     		if (help != null && help.trim().length() > 0){
-    			sb.append("<br><br>\n");
+    			sb.append("<p>");
     			sb.append(help);
-    		}
+    			sb.append("</p>");   		}
     		
     		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
     		{
@@ -336,9 +336,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, tab.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 
 				}
@@ -358,9 +355,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, tab.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -388,9 +382,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, process.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 
 				} 
@@ -410,9 +401,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, process.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -440,9 +428,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, form.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				} 
 
@@ -461,9 +446,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, form.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -502,9 +484,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, info.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				}
         		
@@ -535,9 +514,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, info.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -564,9 +540,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, workflow.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				}
         		
@@ -585,9 +558,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, workflow.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -616,9 +586,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, task.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}					
 				} 
 	
@@ -637,9 +604,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, task.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -667,9 +631,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, node.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				}
 	    		
@@ -688,9 +649,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, node.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());

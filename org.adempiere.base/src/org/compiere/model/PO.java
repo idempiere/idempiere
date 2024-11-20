@@ -2627,15 +2627,23 @@ public abstract class PO
 	public void saveEx() throws AdempiereException
 	{
 		if (!save()) {
-			String msg = null;
+			StringBuilder msg = new StringBuilder();
 			ValueNamePair err = CLogger.retrieveError();
 			String val = err != null ? Msg.translate(getCtx(), err.getValue()) : "";
-			if (err != null)
-				msg = (val != null ? val + ": " : "") + err.getName();
-			if (msg == null || msg.length() == 0)
-				msg = "SaveError";
+			if (err != null) {
+				if (val != null) {
+					msg.append(val);
+					if (val.endsWith(":"))
+						msg.append(" ");
+					else if (! val.endsWith(": "))
+						msg.append(": ");
+				}
+				msg.append(err.getName());
+			}
+			if (msg.length() == 0)
+				msg.append("SaveError");
 			Exception ex = CLogger.retrieveException();
-			throw new AdempiereException(msg, ex);
+			throw new AdempiereException(msg.toString(), ex);
 		}
 	}
 

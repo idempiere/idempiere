@@ -30,6 +30,7 @@ window.idempiere.drillDown = function(cmpid, column, value){
 };
 
 window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIcons, processID) {
+    clearTimeout(doc.contextMenuTimeout);
     const menus = doc.querySelectorAll('.menu-popup');
     menus.forEach(menu => {
         menu.style.display = 'none';

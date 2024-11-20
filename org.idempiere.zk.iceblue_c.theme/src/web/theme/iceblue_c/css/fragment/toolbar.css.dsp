@@ -72,6 +72,7 @@
 	align-items: center;
 	color: #333;
 	flex-shrink: 0;
+	padding: 2px 4px;
 }
 .z-toolbarbutton .z-toolbarbutton-content {
 	display: inline-flex;

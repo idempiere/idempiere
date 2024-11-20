@@ -363,7 +363,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 		if (logger.isLoggable(Level.FINE))
 			logger.fine("building private ctx instance containing the PO's String and int values");
-
+		
 		final Properties privateCtx = new Properties();
 		privateCtx.putAll(po.getCtx());
 		for (int i = 0; i < po.get_ColumnCount(); i++) {
@@ -377,10 +377,14 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 				Env.setContext(privateCtx, "#" + po.get_ColumnName(i),
 						(Integer) val);
+				Env.setContext(privateCtx, po.get_ColumnName(i),
+						(Integer) val);
 
 			} else if (val instanceof String) {
 
 				Env.setContext(privateCtx, "#" + po.get_ColumnName(i),
+						(String) val);
+				Env.setContext(privateCtx, po.get_ColumnName(i),
 						(String) val);
 			}
 		}
