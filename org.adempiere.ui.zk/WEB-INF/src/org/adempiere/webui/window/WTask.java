@@ -123,10 +123,12 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 						Executions.activate(desktop, 500);
 						try {
 							StringBuilder sb = new StringBuilder();
-							sb.append(osTask.getOut())
+							sb.append("<pre>")
+							.append(osTask.getOut())
 							.append("<br>-----------<br>")
 							.append(osTask.getErr())
-							.append("<br>-----------");
+							.append("<br>-----------<br>")
+							.append("</pre>");
 
 							info.setContent(sb.toString().replace("\n", "<br>"));
 							if (!osTask.isAlive())
