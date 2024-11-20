@@ -53,10 +53,12 @@ import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * @author Diego Ruiz - BX Service GmbH
  */
+@Isolated
 public class ReportTest extends AbstractTestCase {
 
 	public ReportTest() {
@@ -122,7 +124,7 @@ public class ReportTest extends AbstractTestCase {
 		MPInstance pinstance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
 		assertEquals(pi.getAD_PInstance_ID(), pinstance.get_ID(), "Failed to retrive background process instance");
 		try {
-			pi = future.get(3000, TimeUnit.MILLISECONDS);
+			pi = future.get(10000, TimeUnit.MILLISECONDS);
 		} catch (ExecutionException | TimeoutException | InterruptedException e) {
 			e.printStackTrace();
 		}
