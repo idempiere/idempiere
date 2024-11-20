@@ -241,7 +241,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
 	/** Row count label */
-	private Label rowCount;
+	private Label rowCount; 
 	
 	private final Map<ExportFormat, String> exportMap = new LinkedHashMap<>();
 	private final Map<String, IReportViewerRenderer> rendererMap = new TreeMap<>();
@@ -1724,8 +1724,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		{
 			if (find == null) 
 			{
-				find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-	            if (!find.initialize()) 
+
+				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID, null);
+	            
+				if (!find.initialize()) 
 	            {
 	            	find = null;
 	            	return;
