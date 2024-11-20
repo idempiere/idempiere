@@ -235,8 +235,8 @@ public class DefaultEvaluatee implements Evaluatee {
 			value = dataValue != null ? dataValue.toString() : "";
 		}
 		
-		//try context if no data provider and not with window and tab no
-		if (!globalVariable && m_dataProvider == null && Util.isEmpty(value) && !m_onlyWindow && m_windowNo < 0 && m_tabNo < 0) {
+		//try context if no data provider and not only window and not only tab
+		if (!globalVariable && m_dataProvider == null && Util.isEmpty(value) && !m_onlyWindow && (m_onlyTab == null || !m_onlyTab.booleanValue())) {
 			value = Env.getContext(ctx, variableName);
 		}
 		
