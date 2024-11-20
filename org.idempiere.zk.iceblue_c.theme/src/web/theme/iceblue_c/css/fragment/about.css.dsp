@@ -1,6 +1,9 @@
 .about-trace-panel {
 }
 .about-info-panel {
+    overflow: auto;
+    line-height: 1.5em;
+    font-size: 12px !important;
 }
 .about-credit-panel {
 }
