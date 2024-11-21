@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Responsible
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Responsible")
 public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241121L;
 
     /** Standard Constructor */
     public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName)
@@ -272,6 +272,33 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	public org.compiere.model.I_AD_WF_Responsible getOverride() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getOverride_ID(), get_TrxName());
+	}
+
+	/** Set Overridden WF Responsible.
+		@param Override_ID Overridden WF Responsible
+	*/
+	public void setOverride_ID (int Override_ID)
+	{
+		if (Override_ID < 1)
+			set_Value (COLUMNNAME_Override_ID, null);
+		else
+			set_Value (COLUMNNAME_Override_ID, Integer.valueOf(Override_ID));
+	}
+
+	/** Get Overridden WF Responsible.
+		@return Overridden WF Responsible	  */
+	public int getOverride_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Override_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** ResponsibleType AD_Reference_ID=304 */
 	public static final int RESPONSIBLETYPE_AD_Reference_ID=304;

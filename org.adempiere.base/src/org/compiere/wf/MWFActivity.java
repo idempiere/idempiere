@@ -316,7 +316,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (m_process == null)
 				m_process = new MWFProcess (getCtx(), getAD_WF_Process_ID(),
 					this.get_TrxName());
-			m_process.checkActivities(this.get_TrxName(), m_po);
+			try{
+				m_process.checkActivities(this.get_TrxName(), m_po);
+			}catch (Exception e) {
+				setWFState(WFSTATE_Terminated); 
+				m_process.setWFState(MWFProcess.WFSTATE_Terminated);
+				 m_docStatus = DocAction.STATUS_Invalid;
+				 m_process.setProcessMsg(e.getLocalizedMessage());;
+				 log.log(Level.SEVERE, e.getLocalizedMessage());
+			}
 		}
 		else
 		{

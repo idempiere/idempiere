@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_Responsible
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_WF_Responsible 
 {
@@ -183,6 +183,17 @@ public interface I_AD_WF_Responsible
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Override_ID */
+    public static final String COLUMNNAME_Override_ID = "Override_ID";
+
+	/** Set Overridden WF Responsible	  */
+	public void setOverride_ID (int Override_ID);
+
+	/** Get Overridden WF Responsible	  */
+	public int getOverride_ID();
+
+	public org.compiere.model.I_AD_WF_Responsible getOverride() throws RuntimeException;
 
     /** Column name ResponsibleType */
     public static final String COLUMNNAME_ResponsibleType = "ResponsibleType";
