@@ -514,6 +514,10 @@ public class DrillReportCtl {
 			MProcessDrillRulePara sPara = sParams[p];
 			if(processPara.getColumnName().equals(m_ColumnName))
 			{
+				if(m_Value == null) {
+					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
+					continue;
+				}
 				iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? new BigDecimal(String.valueOf(m_Value)) : String.valueOf(m_Value));
 				iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : String.valueOf(m_Value));
 				iParams.add(iPara);
