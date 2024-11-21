@@ -290,3 +290,7 @@ UPDATE AD_Column SET IsActive='N',Updated=TO_TIMESTAMP('2024-05-20 11:18:48','YY
 -- May 20, 2024, 11:18:58 AM IST
 UPDATE AD_Process SET IsActive='N',Updated=TO_TIMESTAMP('2024-05-20 11:18:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200031
 ;
+
+-- Nov 21, 2024, 9:34:08 PM IST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Deposit Batch is Processed: ',0,0,'Y',TO_TIMESTAMP('2024-11-21 21:34:07','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-11-21 21:34:07','YYYY-MM-DD HH24:MI:SS'),100,200913,'DepositBatchProcessed','D','eba95ca0-4549-4094-8297-262c591bcdce')
+;

@@ -208,7 +208,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	 */
 	protected void zkInit() throws Exception
 	{
-		window.setWidth("1100px");
+    	ZKUpdateUtil.setWindowWidthX(window, 1100);
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
     	authorizationLabel.setText(Msg.translate(Env.getCtx(), "R_AuthCode"));
     	

@@ -26,7 +26,6 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
-import org.compiere.model.MDepositBatch;
 import org.compiere.model.MDepositBatchLine;
 import org.compiere.model.MPayment;
 import org.compiere.util.Env;
@@ -215,12 +214,11 @@ public class Doc_BankStatement extends Doc
 				if (statementLine.getC_DepositBatch_ID() != 0) {
 
 					// All Deposit Line
-					MDepositBatchLine[] depositBatchLines = ((MDepositBatch) statementLine.getC_DepositBatch()).getLines();
+					MDepositBatchLine[] depositBatchLines = statementLine.getC_DepositBatch().getLines();
 
 					for (MDepositBatchLine depositLine : depositBatchLines) {
 
-						//
-						MPayment payment = (MPayment) depositLine.getC_Payment();
+						MPayment payment = depositLine.getC_Payment();
 						DocLine_DepositBatch docDepositLine = new DocLine_DepositBatch(payment, this,
 								statementLine.isReversal());
 

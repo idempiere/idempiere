@@ -2,7 +2,6 @@ package org.compiere.acct;
 
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MPayment;
-import org.compiere.model.MTable;
 import org.compiere.util.DB;
 
 /**
@@ -15,9 +14,7 @@ public class DocLine_DepositBatch extends DocLine {
 	public DocLine_DepositBatch(MPayment line, Doc_BankStatement doc, Boolean isReversal) {
 		super(line, doc);
 		
-		MPayment payment = (MPayment) MTable
-				.get(line.getCtx(), MPayment.Table_ID)
-				.getPO(line.getC_Payment_ID(), line.get_TrxName());
+		MPayment payment = new MPayment(line.getCtx(), line.getC_Payment_ID(), line.get_TrxName());
 		
 		m_C_Payment_ID = line.getC_Payment_ID();
 		m_IsReversal = isReversal;

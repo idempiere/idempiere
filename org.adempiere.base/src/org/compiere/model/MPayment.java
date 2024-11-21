@@ -2560,7 +2560,7 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());		
 		
 		if (getC_DepositBatch_ID() > 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = "Deposit Batch is Processed: " + getC_DepositBatch();
+			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
 			return false;
 		}
 		
@@ -2661,7 +2661,7 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
 		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = "Deposit Batch is Processed: " + getC_DepositBatch();
+			m_processMsg = Msg.translate(getCtx(), "Deposit Batch is Processed: " + getC_DepositBatch());
 			return false;
 		}
 		
@@ -2713,7 +2713,10 @@ public class MPayment extends X_C_Payment
 			MDepositBatchLine batchLine = new Query(getCtx(),
 					MDepositBatchLine.Table_Name, "C_Payment_ID = ? AND C_DepositBatch_ID = ?", get_TrxName())
 							.setParameters(getC_Payment_ID(), getC_DepositBatch_ID()).first();
-			batchLine.delete(false, get_TrxName());
+			
+			if (batchLine != null) {
+				batchLine.deleteEx(false, get_TrxName());
+			}
 		}
 		
 		//	Create Reversal

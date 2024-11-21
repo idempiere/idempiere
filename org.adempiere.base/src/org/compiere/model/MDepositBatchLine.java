@@ -164,14 +164,18 @@ import org.compiere.util.Util;
 				MPayment payment = new Query(getCtx(),
 						MPayment.Table_Name, "C_Payment_ID = ? AND C_DepositBatch_ID = ?", get_TrxName())
 								.setParameters(get_ValueOldAsInt(COLUMNNAME_C_Payment_ID), getC_DepositBatch_ID()).first();
-				payment.setC_DepositBatch_ID(0);
-				payment.setIsReconciled(false);
-				payment.save(get_TableName());
+				
+				if (payment != null) {
+					payment.setC_DepositBatch_ID(0);
+					payment.setIsReconciled(false);
+					payment.saveEx(get_TrxName());
+				}
+				
 			}
 			
             MPayment payment = new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
 			payment.setC_DepositBatch_ID(getC_DepositBatch_ID());
-			payment.save(get_TrxName());
+			payment.saveEx(get_TrxName());
 
 			setPayment(payment); // set payment amount
 		}
@@ -215,5 +219,10 @@ import org.compiere.util.Util;
 				+ "WHERE C_DepositBatch_ID=?";
 		DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID()}, get_TrxName());
 	}	//	updateHeader
+	
+	@Override
+	public MPayment getC_Payment() throws RuntimeException {
+		return new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+	}
 	
  }	//	MDepositBatchLine

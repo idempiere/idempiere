@@ -39,7 +39,7 @@ public class CalloutBankStatement extends CalloutEngine
 	 * 	Bank Account Changed.
 	 * 	Update Beginning Balance
 	 *	@param ctx context
-	 *	@param WindowNo window no
+	 *	@param WindowNo window no	
 	 *	@param mTab tab
 	 *	@param mField field
 	 *	@param value value
@@ -174,7 +174,7 @@ public class CalloutBankStatement extends CalloutEngine
 		if (stmt == null)
 			stmt = Env.ZERO;
 
-		BigDecimal depositAmt = DB.getSQLValueBD(null, "SELECT DepositAmt FROM C_DepositBatch WHERE C_DepositBatch_ID=?",
+		BigDecimal depositAmt = DB.getSQLValueBDEx(null, "SELECT DepositAmt FROM C_DepositBatch WHERE C_DepositBatch_ID=?",
 				C_DepositBatch_ID.intValue());
 		mTab.setValue("TrxAmt", depositAmt);
 		if (stmt.compareTo(Env.ZERO) == 0)
