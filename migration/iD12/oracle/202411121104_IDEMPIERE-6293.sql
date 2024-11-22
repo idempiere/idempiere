@@ -433,14 +433,6 @@ UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2024-11-12 11:10:31','YYYY-MM-
 ;
 
 -- Nov 12, 2024, 11:11:25 AM CET
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=14,Updated=TO_TIMESTAMP('2024-11-12 11:11:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=1000000
-;
-
--- Nov 12, 2024, 11:11:25 AM CET
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=15,Updated=TO_TIMESTAMP('2024-11-12 11:11:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=1000001
-;
-
--- Nov 12, 2024, 11:11:25 AM CET
 UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=10,Updated=TO_TIMESTAMP('2024-11-12 11:11:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200230
 ;
 
@@ -570,5 +562,177 @@ UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=41,Updated=TO_TIMESTAMP('2024-11-1
 
 -- Nov 12, 2024, 11:11:25 AM CET
 UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=42,Updated=TO_TIMESTAMP('2024-11-12 11:11:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=50001
+;
+
+-- Nov 12, 2024, 12:26:43 PM CET
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (216921,0,'Stylesheet','CSS (Stylesheet) used','Base Stylesheet (.css file) to use - if empty, the default (standard.css) is used. The Style sheet can be a URL.',200421,'Stylesheet',60,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_TIMESTAMP('2024-11-12 12:26:43','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2024-11-12 12:26:43','YYYY-MM-DD HH24:MI:SS'),10,3036,'Y','N','D','N','N','N','Y','93a0ecf3-afdd-4cd3-8226-8edceef393f2','Y',0,'N','N','N','N')
+;
+
+-- Nov 12, 2024, 12:26:44 PM CET
+ALTER TABLE AD_UserDef_Theme ADD Stylesheet VARCHAR2(60 CHAR) DEFAULT NULL 
+;
+
+-- Nov 12, 2024, 12:27:09 PM CET
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208544,'Stylesheet','CSS (Stylesheet) used','Base Stylesheet (.css file) to use - if empty, the default (standard.css) is used. The Style sheet can be a URL.',200386,216921,'Y',60,90,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2024-11-12 12:27:09','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2024-11-12 12:27:09','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','U','57a0e641-eb4c-4976-bb5e-19882f0965f0','Y',80,5)
+;
+
+-- Nov 12, 2024, 12:27:25 PM CET
+UPDATE AD_Field SET EntityType='D',Updated=TO_TIMESTAMP('2024-11-12 12:27:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=208544
+;
+
+-- Nov 12, 2024, 12:27:49 PM CET
+UPDATE AD_Field SET SeqNo=90, ColumnSpan=2,Updated=TO_TIMESTAMP('2024-11-12 12:27:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=208544
+;
+
+-- Nov 22, 2024, 1:44:20 PM CET
+UPDATE AD_Window SET Name='Theme Customization',Updated=TO_TIMESTAMP('2024-11-22 13:44:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Window_ID=200151
+;
+
+-- Nov 22, 2024, 1:44:20 PM CET
+UPDATE AD_Menu SET Name='Theme Customization', Description=NULL, IsActive='Y',Updated=TO_TIMESTAMP('2024-11-22 13:44:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Menu_ID=200238
+;
+
+-- Nov 22, 2024, 1:44:26 PM CET
+UPDATE AD_Tab SET Name='Theme Customization',Updated=TO_TIMESTAMP('2024-11-22 13:44:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tab_ID=200386
+;
+
+-- Nov 22, 2024, 1:44:29 PM CET
+UPDATE AD_Tab SET Name='Theme Customization Detail',Updated=TO_TIMESTAMP('2024-11-22 13:44:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tab_ID=200387
+;
+
+-- Nov 22, 2024, 1:44:44 PM CET
+UPDATE AD_Element SET Name='Theme Customization Detail', PrintName='Theme Customization Detail',Updated=TO_TIMESTAMP('2024-11-22 13:44:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Element_ID=203961
+;
+
+-- Nov 22, 2024, 1:44:44 PM CET
+UPDATE AD_Column SET ColumnName='AD_UserDef_Theme_Detail_ID', Name='Theme Customization Detail', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203961
+;
+
+-- Nov 22, 2024, 1:44:45 PM CET
+UPDATE AD_Process_Para SET ColumnName='AD_UserDef_Theme_Detail_ID', Name='Theme Customization Detail', Description=NULL, Help=NULL, AD_Element_ID=203961 WHERE UPPER(ColumnName)='AD_USERDEF_THEME_DETAIL_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Nov 22, 2024, 1:44:45 PM CET
+UPDATE AD_Process_Para SET ColumnName='AD_UserDef_Theme_Detail_ID', Name='Theme Customization Detail', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203961 AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 22, 2024, 1:44:45 PM CET
+UPDATE AD_InfoColumn SET ColumnName='AD_UserDef_Theme_Detail_ID', Name='Theme Customization Detail', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203961 AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 22, 2024, 1:44:45 PM CET
+UPDATE AD_Field SET Name='Theme Customization Detail', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=203961) AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 22, 2024, 1:44:45 PM CET
+UPDATE AD_PrintFormatItem SET PrintName='Theme Customization Detail', Name='Theme Customization Detail' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=203961)
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_Element SET Name='Theme Customization', PrintName='Theme Customization',Updated=TO_TIMESTAMP('2024-11-22 13:44:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Element_ID=203959
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_Column SET ColumnName='AD_UserDef_Theme_ID', Name='Theme Customization', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203959
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_Process_Para SET ColumnName='AD_UserDef_Theme_ID', Name='Theme Customization', Description=NULL, Help=NULL, AD_Element_ID=203959 WHERE UPPER(ColumnName)='AD_USERDEF_THEME_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_Process_Para SET ColumnName='AD_UserDef_Theme_ID', Name='Theme Customization', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203959 AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_InfoColumn SET ColumnName='AD_UserDef_Theme_ID', Name='Theme Customization', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203959 AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_Field SET Name='Theme Customization', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=203959) AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 22, 2024, 1:44:54 PM CET
+UPDATE AD_PrintFormatItem SET PrintName='Theme Customization', Name='Theme Customization' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=203959)
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=30,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200238
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=31,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=53089
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=32,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=53090
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=33,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200038
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=34,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200143
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=35,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200141
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=36,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200198
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=37,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200206
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=38,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200207
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=39,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200208
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=40,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200227
+;
+
+-- Nov 22, 2024, 1:45:19 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=41,Updated=TO_TIMESTAMP('2024-11-22 13:45:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200228
+;
+
+-- Nov 22, 2024, 1:45:44 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2024-11-22 13:45:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=216920
+;
+
+-- Nov 22, 2024, 1:45:46 PM CET
+ALTER TABLE AD_UserDef_Theme_Detail MODIFY NewValue VARCHAR2(255 CHAR)
+;
+
+-- Nov 22, 2024, 1:45:46 PM CET
+ALTER TABLE AD_UserDef_Theme_Detail MODIFY NewValue NOT NULL
+;
+
+-- Nov 22, 2024, 1:46:04 PM CET
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2024-11-22 13:46:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tab_ID=200387
+;
+
+-- Nov 22, 2024, 1:46:17 PM CET
+UPDATE AD_Column SET DefaultValue='NULL',Updated=TO_TIMESTAMP('2024-11-22 13:46:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=216905
+;
+
+-- Nov 22, 2024, 1:46:19 PM CET
+ALTER TABLE AD_UserDef_Theme MODIFY AD_Role_ID NUMBER(10) DEFAULT NULL
+;
+
+-- Nov 22, 2024, 1:46:24 PM CET
+UPDATE AD_Column SET DefaultValue='NULL',Updated=TO_TIMESTAMP('2024-11-22 13:46:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=216906
+;
+
+-- Nov 22, 2024, 1:46:25 PM CET
+ALTER TABLE AD_UserDef_Theme MODIFY AD_User_ID NUMBER(10) DEFAULT NULL
 ;
 
