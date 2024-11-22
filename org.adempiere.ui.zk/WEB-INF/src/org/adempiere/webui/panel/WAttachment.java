@@ -71,6 +71,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -345,6 +346,13 @@ public class WAttachment extends Window implements EventListener<Event>
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.setUpload("multiple=true," + AdempiereWebUI.getUploadSetting());
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
+
+		bLoad.addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, (data) -> {
+			Button bt = (Button)data;
+			this.setWidgetOverride("uploadID", "'" + bt.getUuid() + "'");
+		});
+		//this.setWidgetOverride("uploadID", "'" + bLoad.getUuid() + "'");
+		this.setWidgetOverride("isFileDragDropArea", "true");
 
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
