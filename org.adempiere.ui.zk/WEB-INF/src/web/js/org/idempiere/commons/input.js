@@ -45,6 +45,46 @@ zk.afterLoad(function() {
     });
 });
 
+zk.afterLoad('zk', function() {
+	// https://www.zkoss.org/wiki/ZK_Client-side_Reference/General_Control/Widget_Customization#Override_a_Default_Widget_Method_in_JavaScript_File
+	var exWidget = {};
+	// https://www.zkoss.org/javadoc/latest/jsdoc/functions/zk.html#override
+	zk.override(zk.Widget.prototype, exWidget, {
+		bind_: function(dt, skipper, after){
+			exWidget.bind_.apply(this, arguments);
+			if (this.isFileDragDropArea){
+				jq(this).on("drop", this.onFileDrop.bind(this));
+				jq(this).on("dragover", this.onFileDragOver.bind(this));
+				jq(this).on("dragenter", this.onFileDragEnter.bind(this));
+				jq(this).on("dragleave", this.onDragLeave.bind(this));
+				//this.listen({ondrop: this.onFileDrop, ondragover:this.onFileDragOver});
+			}
+		},
+		onFileDrop: function(ev){
+			ev.preventDefault();
+			zk.Widget.$(this.id)
+			wgUploadBt = zk.Widget.$(this.uploadID);
+			ref = wgUploadBt.$n();
+			outer = ref.nextSibling;
+			inp = outer.firstChild.firstChild;
+			inp.files = ev.originalEvent.dataTransfer.files;
+			jq(inp).trigger("change");
+			return false;
+		},
+		onFileDragOver: function(ev){
+			ev.preventDefault();
+			return false;
+		},
+		onFileDragEnter:function(ev) {
+			return false;			
+		},
+		onDragLeave: function (ev){
+			return false;
+		},
+		cssDragEnter:" attachment-drag-entered",
+	});
+});
+
 zk.afterLoad('zul.inp', function() {
 
     // should filter out for only component inside standard window or component wish fire this event,
