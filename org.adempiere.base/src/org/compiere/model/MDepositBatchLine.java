@@ -222,7 +222,7 @@ import org.compiere.util.Util;
 	
 	@Override
 	public MPayment getC_Payment() throws RuntimeException {
-		return new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+		return getC_Payment_ID() > 0 ? new MPayment(getCtx(), getC_Payment_ID(), get_TrxName()) : null;
 	}
 	
  }	//	MDepositBatchLine

@@ -328,7 +328,7 @@ import org.compiere.util.Util;
 	
 	@Override
 	public MDepositBatch getC_DepositBatch() throws RuntimeException {
-		return new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+		return getC_DepositBatch_ID() > 0 ? new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName()) : null;
 	}
 	
  }	//	MBankStatementLine
