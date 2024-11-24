@@ -30,6 +30,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import org.adempiere.base.event.IEventManager;
+import org.adempiere.base.markdown.IMarkdownRenderer;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
@@ -1141,5 +1142,14 @@ public class Core {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Get markdown renderer service
+	 * @return markdown renderer service
+	 */
+	public static IMarkdownRenderer getMarkdownRenderer() {
+		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
+		return holder != null ? holder.getService() : null; 
 	}
 }
