@@ -350,10 +350,10 @@ public class WAttachment extends Window implements EventListener<Event>
 		// in case get uuid before component attach to page, it's temp value, isn't value set to id of dom element
 		bLoad.addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, (data) -> {
 			Button bt = (Button)data;
-			this.setWidgetOverride("uploadID", "'" + bt.getUuid() + "'");
+			this.setWidgetOverride("_id_uploadButtonId", "'" + bt.getUuid() + "'");
 		});
 		// set to whole attachment dialog become drop area
-		this.setWidgetOverride("isFileDragDropArea", "true");
+		this.setWidgetOverride("_id_isFileDragDropArea", "true");
 
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
