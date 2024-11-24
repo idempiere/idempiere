@@ -733,3 +733,10 @@ UPDATE AD_Column SET DefaultValue='NULL',Updated=TO_TIMESTAMP('2024-11-22 13:46:
 INSERT INTO t_alter_column values('ad_userdef_theme','AD_User_ID','NUMERIC(10)',null,'NULL')
 ;
 
+-- Nov 24, 2024, 5:21:00 PM CET
+UPDATE AD_Column SET DefaultValue='@SQL=SELECT get_sysconfig(''ZK_THEME'',null,0,0) FROM Dual',Updated=TO_TIMESTAMP('2024-11-24 17:21:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=216908
+;
+
+-- Nov 24, 2024, 5:27:29 PM CET
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2024-11-24 17:27:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200386
+;
