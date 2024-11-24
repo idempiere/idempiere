@@ -663,8 +663,8 @@ public class MAttachment extends X_AD_Attachment
  	 * @deprecated Use {@link MAttachment#getID(int, int, String)} instead
 	 */
 	public static int getID(int Table_ID, int Record_ID) {
-		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
-		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_ID);
+		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_ID=?";
+		int attachid = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_ID);
 		return attachid;
 	}
 
@@ -679,8 +679,8 @@ public class MAttachment extends X_AD_Attachment
 	public static int getID(int Table_ID, int Record_ID, String Record_UU) {
 		if (Util.isEmpty(Record_UU))
 			return getID(Table_ID, Record_ID);
-		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_UU=?";
-		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_UU);
+		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_UU=?";
+		int attachid = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_UU);
 		return attachid;
 	}
 

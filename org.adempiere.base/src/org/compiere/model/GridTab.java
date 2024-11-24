@@ -2119,6 +2119,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean canHaveAttachment()
 	{
+		Object clientId = getValue("AD_Client_ID");
+		if (clientId == null || ! (clientId instanceof Integer))
+			return false;
+		if ( (Integer)clientId != Env.getAD_Client_ID(Env.getCtx()))
+			return false;
+
 		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU"))
 			return true;
 		return false;

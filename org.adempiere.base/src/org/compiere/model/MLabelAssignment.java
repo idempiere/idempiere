@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -79,8 +80,8 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
  	 * @deprecated Use {@link MLabelAssignment#hasAnyAssignment(int, int, String)} instead
 	 */
 	public static boolean hasAnyAssignment(int Table_ID, int Record_ID) {
-		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_ID=?";
-		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
+		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_ID=?";
+		int counter = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_ID);
 		return counter > 0;
 	}
 
@@ -94,8 +95,8 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	public static boolean hasAnyAssignment(int Table_ID, int Record_ID, String Record_UU) {
 		if (Util.isEmpty(Record_UU))
 			return hasAnyAssignment(Table_ID, Record_ID);
-		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_UU=?";
-		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
+		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_UU=?";
+		int counter = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_UU);
 		return counter > 0;
 	}
 
