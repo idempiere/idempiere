@@ -52,23 +52,30 @@ zk.afterLoad('zk', function() {
 	zk.override(zk.Widget.prototype, exWidget, {
 		bind_: function(dt, skipper, after){
 			exWidget.bind_.apply(this, arguments);
+			// Override the widget so that all components can act as drop areas
 			if (this.isFileDragDropArea){
 				jq(this).on("drop", this.onFileDrop.bind(this));
 				jq(this).on("dragover", this.onFileDragOver.bind(this));
 				jq(this).on("dragenter", this.onFileDragEnter.bind(this));
 				jq(this).on("dragleave", this.onDragLeave.bind(this));
-				//this.listen({ondrop: this.onFileDrop, ondragover:this.onFileDragOver});
 			}
 		},
 		onFileDrop: function(ev){
 			ev.preventDefault();
-			zk.Widget.$(this.id)
-			wgUploadBt = zk.Widget.$(this.uploadID);
-			ref = wgUploadBt.$n();
-			outer = ref.nextSibling;
-			inp = outer.firstChild.firstChild;
-			inp.files = ev.originalEvent.dataTransfer.files;
-			jq(inp).trigger("change");
+			// clean border to indicate the drop area
+			jq(this).removeClass(this.cssDragEnter);
+			var dt = ev.originalEvent.dataTransfer;
+			if (dt.files && dt.files.length > 0){
+				// get upload component widget (component setup follow https://www.zkoss.org/wiki/ZK_Developer's_Reference/UI_Patterns/File_Upload_and_Download)
+				wgUploadBt = zk.Widget.$(this.uploadID);
+				// get reference to file input
+				var inp = wgUploadBt._uplder._inp;
+				// set FileList from drop to file input
+				inp.files = ev.originalEvent.dataTransfer.files;
+				// fire up change event to do upload
+				jq(inp).trigger("change");
+			}
+			
 			return false;
 		},
 		onFileDragOver: function(ev){
@@ -76,12 +83,20 @@ zk.afterLoad('zk', function() {
 			return false;
 		},
 		onFileDragEnter:function(ev) {
-			return false;			
-		},
-		onDragLeave: function (ev){
+			ev.preventDefault();
+			// highlight border to indicate the drop area
+			jq(this).addClass(this.cssDragEnter);
 			return false;
 		},
-		cssDragEnter:" attachment-drag-entered",
+		onDragLeave: function (ev){
+			ev.preventDefault();
+			if (ev.delegateTarget == ev.target){
+				// clean border to indicate the drop area
+				jq(this).removeClass(this.cssDragEnter);
+			}
+			return false;
+		},
+		cssDragEnter:"attachment-drag-entered",
 	});
 });
 
