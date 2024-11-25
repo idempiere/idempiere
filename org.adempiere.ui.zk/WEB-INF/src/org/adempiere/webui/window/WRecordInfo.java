@@ -481,7 +481,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		Vector<String> line = new Vector<String>();
 		//	Column
 		MColumn column = MColumn.get (Env.getCtx(), AD_Column_ID);
-		line.add(Msg.translate(Env.getCtx(), column.getColumnName()));
+		line.add(Msg.getElement(Env.getCtx(), column.getColumnName()));
 		//
 		if (OldValue != null && OldValue.equals(MChangeLog.NULL))
 			OldValue = null;
