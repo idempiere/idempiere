@@ -382,6 +382,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		style.setContent(cssContent.toString());
 		appendChild(style);
 		
+		//add user defined style
+		String userStyleURL = ThemeManager.getUserDefineStyleSheet();
+		if (!Util.isEmpty(userStyleURL, true)) {
+			Style userStyle = new Style();
+			userStyle.setSrc(userStyleURL);
+			appendChild(userStyle);
+		}
+		
 		//init favorite
 		FavouriteController.getInstance(currSess);
 		
