@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
@@ -133,8 +132,8 @@ public class MPostIt extends X_AD_PostIt
 	 */
 	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
-		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_ID=?";
-		int postItID = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_ID);
+		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_ID=?";
+		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
 		return postItID;
 	}
 
@@ -147,8 +146,8 @@ public class MPostIt extends X_AD_PostIt
 	public static int getID(int Table_ID, int Record_ID, String Record_UU) {
 		if (Util.isEmpty(Record_UU))
 			return getID(Table_ID, Record_ID);
-		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_UU=?";
-		int postItID = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_UU);
+		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_UU=?";
+		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
 		return postItID;
 	}
 

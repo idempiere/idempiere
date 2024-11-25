@@ -27,7 +27,6 @@ import org.apache.ecs.xhtml.hr;
 import org.apache.ecs.xhtml.p;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -231,8 +230,8 @@ public class MChat extends X_CM_Chat
  	 * @deprecated Use {@link MChat#getID(int, int, String)} instead
 	 */
 	public static int getID(int Table_ID, int Record_ID) {
-		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_ID=?";
-		int chatID = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_ID);
+		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_ID=?";
+		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
 		return chatID;
 	}
 
@@ -246,8 +245,8 @@ public class MChat extends X_CM_Chat
 	public static int getID(int Table_ID, int Record_ID, String Record_UU) {
 		if (Util.isEmpty(Record_UU))
 			return getID(Table_ID, Record_ID);
-		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Client_ID=? AND AD_Table_ID=? AND Record_UU=?";
-		int chatID = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(Env.getCtx()), Table_ID, Record_UU);
+		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_UU=?";
+		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
 		return chatID;
 	}
 

@@ -2118,7 +2118,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        SessionManager.getAppDesktop().updateHelpQuickInfo(gt);
         }
 
-	    //  Check Attachment, Chat and PostIt
+	    //  Check Attachment
         boolean canHaveAttachment = adTabbox.getSelectedGridTab().canHaveAttachment();       //  not single _ID column
         //
         if (canHaveAttachment && e.isLoading() &&
@@ -2134,6 +2134,25 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             toolbar.enableAttachment(true);
             toolbar.setPressed("Attachment",adTabbox.getSelectedGridTab().hasAttachment());
+        }
+        else
+        {
+            toolbar.enableAttachment(false);
+        }
+
+        // Check Chat and PostIt
+        boolean canHaveChat = true;
+        if (e.isLoading() &&
+                adTabbox.getSelectedGridTab().getCurrentRow() > e.getLoadedRows())
+        {
+            canHaveChat = false;
+        }
+        if (canHaveChat && adTabbox.getSelectedGridTab().getRecord_ID() == -1 && Util.isEmpty(adTabbox.getSelectedGridTab().getRecord_UU()))    //   No Key
+        {
+            canHaveChat = false;
+        }
+        if (canHaveChat)
+        {
             toolbar.enableChat(true);
             toolbar.setPressed("Chat",adTabbox.getSelectedGridTab().hasChat());
             toolbar.enablePostIt(true);
@@ -2143,7 +2162,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
         else
         {
-            toolbar.enableAttachment(false);
         	toolbar.enableChat(false);
         	toolbar.enablePostIt(false);
         	toolbar.enableLabel(false);
