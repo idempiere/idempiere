@@ -22,60 +22,31 @@
 package org.idempiere.ui.zk.servlet;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
 
 import org.compiere.model.AttachmentData;
-import org.compiere.util.Util;
 
-@WebServlet(urlPatterns = "/aimages")
-public class AttachmentImageServlet extends AttachmentDataServlet {
+@WebServlet(urlPatterns = "/astyles")
+public class AttachmentStyleSheetServlet extends AttachmentDataServlet {
 
 	private static final long serialVersionUID = 4371449567871658562L;
 
-	public AttachmentImageServlet() {
+	public AttachmentStyleSheetServlet() {
 	}
 
 	@Override
-	protected void writeAttachmentData(HttpServletResponse resp, AttachmentData imageData) throws IOException {
-		String contentType = null;
-		Iterator<ImageReader> readers = null;
+	protected void writeAttachmentData(HttpServletResponse resp, AttachmentData attachmentData) throws IOException {
+		String contentType = "text/css";
+		resp.setContentType(contentType);
+		BufferedOutputStream bos = new BufferedOutputStream(resp.getOutputStream());
 		try {
-			readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(new ByteArrayInputStream(imageData.data())));
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		while(readers.hasNext()) {
-			ImageReader reader = readers.next();
-			try {
-				contentType = reader.getFormatName();
-				if (!Util.isEmpty(contentType))
-					break;
-			} catch (IOException e) {
-			}
-		}
-		//imageio not workings for svg
-		if (contentType == null) {
-			if (imageData.name() != null && imageData.name().toLowerCase().endsWith(".svg")) {
-				contentType = "image/svg+xml";
-			}
-		}
-		if (contentType != null) {
-			resp.setContentType(contentType);
-			BufferedOutputStream bos = new BufferedOutputStream(resp.getOutputStream());
-			try {
-				bos.write(imageData.data());
-				bos.flush();
-			} finally {
-				bos.close();
-			}
+			bos.write(attachmentData.data());
+			bos.flush();
+		} finally {
+			bos.close();
 		}
 	}
 }

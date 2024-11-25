@@ -740,3 +740,16 @@ UPDATE AD_Column SET DefaultValue='@SQL=SELECT get_sysconfig(''ZK_THEME'',null,0
 -- Nov 24, 2024, 5:27:29 PM CET
 UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2024-11-24 17:27:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200386
 ;
+
+-- Nov 25, 2024, 5:17:16 PM MYT
+UPDATE AD_Column SET FieldLength=512,Updated=TO_TIMESTAMP('2024-11-25 17:17:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=216921
+;
+
+-- Nov 25, 2024, 5:17:29 PM MYT
+INSERT INTO t_alter_column values('ad_userdef_theme','Stylesheet','VARCHAR(512)',null,'NULL')
+;
+
+-- Nov 25, 2024, 5:18:14 PM MYT
+UPDATE AD_Field SET ColumnSpan=5,Updated=TO_TIMESTAMP('2024-11-25 17:18:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208544
+;
+

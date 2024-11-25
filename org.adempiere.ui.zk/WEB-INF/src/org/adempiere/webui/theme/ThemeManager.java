@@ -16,6 +16,7 @@ package org.adempiere.webui.theme;
 import java.io.IOException;
 
 import org.adempiere.webui.apps.AEnv;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
@@ -84,7 +85,7 @@ public final class ThemeManager {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
 					// Verify the theme.css.dsp exists in the theme folder
-					String themeCSSURL = THEME_PATH_PREFIX + theme + ThemeManager.getStyleSheetName(theme);
+					String themeCSSURL = getStyleSheet();
 					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
 						// verify if is a v7 theme
 						themeCSSURL = ITheme.THEME_PATH_PREFIX_V7 + theme + ITheme.THEME_STYLESHEET;
@@ -111,17 +112,27 @@ public final class ThemeManager {
 	 * @return url of theme stylesheet
 	 */
 	public static String getStyleSheet() {
-		return THEME_PATH_PREFIX + getTheme() + getStyleSheetName(getTheme());
+		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET;
 	}
 
-	public static String getStyleSheetName(String theme) {
-
-		MUserDefTheme userDef = MUserDefTheme.getBestMatch(Env.getCtx(), theme);
+	/**
+	 * Get user define style sheet
+	 * @return user define style sheet
+	 */
+	public static String getUserDefineStyleSheet() {
+		MUserDefTheme userDef = MUserDefTheme.getBestMatch(Env.getCtx(), getTheme());
 		if (userDef != null && !Util.isEmpty(userDef.getStylesheet())) {
-			return userDef.getStylesheet();
+			String styleSheet = userDef.getStylesheet();
+			if (styleSheet.toLowerCase().startsWith("https://")) {
+				return styleSheet;
+			} else if (MAttachment.isAttachmentURLPath(styleSheet)) {
+				return MAttachment.getStyleSheetAttachmentURLFromPath(null, styleSheet);
+			} else {
+				return THEME_PATH_PREFIX + getTheme() + styleSheet;
+			}
 		}
 
-		return ITheme.THEME_STYLESHEET;
+		return null;
 	}
 
 	/**
@@ -168,6 +179,11 @@ public final class ThemeManager {
 		MUserDefThemeDetail userDef = MUserDefThemeDetail.get(Env.getCtx(), getTheme(), name);
 		if (userDef != null && !Util.isEmpty(userDef.getNewValue())) {
 			name = userDef.getNewValue();
+			if (name.startsWith("https://")) {
+				return name;
+			} else if (MAttachment.isAttachmentURLPath(name)) {
+				return MAttachment.getImageAttachmentURLFromPath(null, name);
+			}
 		}
 
 		StringBuilder builder = new StringBuilder(THEME_PATH_PREFIX);
