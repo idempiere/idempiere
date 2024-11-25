@@ -139,17 +139,30 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	}
 	
 	/**
-	 * Build CSS style text from lines
+	 * Build inline CSS style text from lines
 	 * @param defaultTheme
-	 * @param evaluatee evaluatee for display logic
+	 * @param evaluatee
 	 * @return CSS style text
 	 */
 	public String buildStyle(String defaultTheme, Evaluatee evaluatee) {
+		return buildStyle(defaultTheme, evaluatee, true);
+	}
+	
+	/**
+	 * Build CSS style text from lines
+	 * @param defaultTheme
+	 * @param evaluatee evaluatee for display logic
+	 * @param inline true for inline (for style="..." use), false for css (for class="..." use) 
+	 * @return CSS style text
+	 */
+	public String buildStyle(String defaultTheme, Evaluatee evaluatee, boolean inline) {
 		X_AD_StyleLine[] lines = getStyleLines();
 		StringBuilder styleBuilder = new StringBuilder();
 		for (X_AD_StyleLine line : lines) 
 		{
-			String inlineStyle = line.getInlineStyle().trim();
+			String styleText = line.getInlineStyle().trim();
+			if (!checkStyleType(styleText, inline))
+				continue;
 			String displayLogic = line.getDisplayLogic();
 			String theme = line.getTheme();
 			if (!Util.isEmpty(theme)) {
@@ -161,11 +174,26 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 				if (!Evaluator.evaluateLogic(evaluatee, displayLogic)) 
 					continue;
 			}
-			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-				styleBuilder.append("; ");
-			styleBuilder.append(inlineStyle);
+			if (inline) {
+				if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+					styleBuilder.append("; ");
+			} else if (styleBuilder.length() > 0) {
+				styleBuilder.append("\n");
+			}
+			styleBuilder.append(styleText);
 		}
 		return styleBuilder.toString();
+	}
+
+	/**
+	 * Check whether the style text is consistent with the inline usage flag
+	 * @param styleText
+	 * @param inline true for inline (for style="..." use), false for css (for class="..." use)
+	 * @return true if style text and inline usage flag agree
+	 */
+	private boolean checkStyleType(String styleText, boolean inline) {
+		boolean cssType = styleText.indexOf("{") > 0 && styleText.endsWith("}");		
+		return (inline && !cssType) || (!inline && cssType);
 	}
 
 	@Override
