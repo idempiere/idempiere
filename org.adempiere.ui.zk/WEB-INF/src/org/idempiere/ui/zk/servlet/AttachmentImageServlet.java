@@ -25,26 +25,17 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Properties;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.adempiere.util.ServerContext;
-import org.adempiere.webui.session.SessionContextListener;
 import org.compiere.model.AttachmentData;
-import org.compiere.model.MAttachment;
-import org.compiere.model.MRole;
 import org.compiere.util.Util;
 
 @WebServlet(urlPatterns = "/aimages")
-public class AttachmentImageServlet extends HttpServlet {
+public class AttachmentImageServlet extends AttachmentDataServlet {
 
 	private static final long serialVersionUID = 4371449567871658562L;
 
@@ -52,59 +43,39 @@ public class AttachmentImageServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		HttpSession session = req.getSession();
-		Properties ctx = null;
-		if (session != null) {			
+	protected void writeAttachmentData(HttpServletResponse resp, AttachmentData imageData) throws IOException {
+		String contentType = null;
+		Iterator<ImageReader> readers = null;
+		try {
+			readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(new ByteArrayInputStream(imageData.data())));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		while(readers.hasNext()) {
+			ImageReader reader = readers.next();
 			try {
-				ctx = (Properties)session.getAttribute(SessionContextListener.SESSION_CTX);
-			} catch (IllegalStateException e) {
+				contentType = reader.getFormatName();
+				if (!Util.isEmpty(contentType))
+					break;
+			} catch (IOException e) {
 			}
 		}
-		
-		if (ctx == null || ctx.isEmpty())
-			return;
-		
-		try {
-			ServerContext.setCurrentInstance(ctx);
-			if (MRole.getDefault() == null)
-				return;
-			
-			//attachment/tableName/index or filename pattern
-			String path = req.getParameter("path");
-			//id or uuid
-			String id = req.getParameter("recordid").trim();
-			Object key = id.length() == 36 ? id : Integer.parseInt(id);
-			AttachmentData imageData = MAttachment.getAttachmentData(path, key);
-			String contentType = null;
-			Iterator<ImageReader> readers = null;
+		//imageio not workings for svg
+		if (contentType == null) {
+			if (imageData.name() != null && imageData.name().toLowerCase().endsWith(".svg")) {
+				contentType = "image/svg+xml";
+			}
+		}
+		if (contentType != null) {
+			resp.setContentType(contentType);
+			BufferedOutputStream bos = new BufferedOutputStream(resp.getOutputStream());
 			try {
-				readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(new ByteArrayInputStream(imageData.data())));
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
+				bos.write(imageData.data());
+				bos.flush();
+			} finally {
+				bos.close();
 			}
-			while(readers.hasNext()) {
-				ImageReader reader = readers.next();
-				try {
-					contentType = reader.getFormatName();
-					if (!Util.isEmpty(contentType))
-						break;
-				} catch (IOException e) {
-				}
-			}
-			if (contentType != null) {
-				resp.setContentType(contentType);
-				BufferedOutputStream bos = new BufferedOutputStream(resp.getOutputStream());
-				try {
-					bos.write(imageData.data());
-					bos.flush();
-				} finally {
-					bos.close();
-				}
-			}
-		} finally {
-			ServerContext.dispose();
 		}
 	}
 }

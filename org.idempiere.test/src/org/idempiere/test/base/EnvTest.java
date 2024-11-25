@@ -29,9 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.SimpleDateFormat;
+import java.util.Properties;
 
+import org.adempiere.model.MRelationType;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
+import org.compiere.model.MInOut;
 import org.compiere.model.MMailText;
 import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
@@ -255,6 +258,23 @@ public class EnvTest extends AbstractTestCase {
 		expr = "@C_BPartner_ID:0.Created<yyyy-MM-dd>@='"+created+"'";
 		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
 		assertTrue(evaluation, "Unexpected logic evaluation result");
+		
+		//custom context
+		Properties ctx = new Properties();
+		ctx.putAll(Env.getCtx());
+		String customValue = "MyCustomValue";
+		String customVariable = "CustomVariable"; 
+		Env.setContext(ctx, customVariable, customValue);
+		parsedText = Env.parseContext(ctx, -1, "@"+customVariable+"@", false, false);
+		assertEquals(customValue, parsedText, "Failed to get value from custom context");
+		
+		expr = "C_BPartner.C_BPartner_ID=@C_BPartner_ID@";
+		MInOut inout = new MInOut(Env.getCtx(), 100, null);
+		parsedText = MRelationType.parseWhereClause(inout, expr);
+		assertEquals("C_BPartner.C_BPartner_ID="+inout.getC_BPartner_ID(), parsedText, "Failed to get value from custom context");
+		expr = "C_BPartner.C_BPartner_ID=@#C_BPartner_ID@";
+		parsedText = MRelationType.parseWhereClause(inout, expr);
+		assertEquals("C_BPartner.C_BPartner_ID="+inout.getC_BPartner_ID(), parsedText, "Failed to get value from custom context");
 	}
 
 	@Test

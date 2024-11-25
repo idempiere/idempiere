@@ -399,7 +399,7 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * 	Get Attachment Entry
-	 * 	@param index index of the item
+	 * 	@param index index of the item (zero base)
 	 * 	@return Entry or null
 	 */
 	public MAttachmentEntry getEntry (int index)
@@ -832,6 +832,30 @@ public class MAttachment extends X_AD_Attachment
 			expression = expression.replaceFirst("[:]", "/");
 			StringBuilder url = new StringBuilder(contextPath != null ? contextPath : "")
 					.append("/aimages?path=")
+					.append(expression)
+					.append("&recordid=")
+					.append(part[1]);
+			return url.toString();
+		}
+		return null;
+	}
+	
+	/**
+	 * Get web style sheet attachment url from attachment: expression
+	 * @param contextPath web context path (not needed for zk component, pass null instead)
+	 * @param path attachment:{tableName}/{index or filename pattern},{record id or uuid}
+	 * @return image attachment url
+	 */
+	public static String getStyleSheetAttachmentURLFromPath(String contextPath, String path) {
+		String[] part = path.trim().split(",");
+		if (part.length == 2)
+		{
+			part[1] = part[1].trim();
+			String expression = part[0].trim();
+			//convert from attachment: url syntax to attachment/ path syntax
+			expression = expression.replaceFirst("[:]", "/");
+			StringBuilder url = new StringBuilder(contextPath != null ? contextPath : "")
+					.append("/astyles?path=")
 					.append(expression)
 					.append("&recordid=")
 					.append(part[1]);

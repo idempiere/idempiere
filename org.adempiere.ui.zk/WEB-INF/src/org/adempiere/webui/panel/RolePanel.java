@@ -321,13 +321,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
-		helpButton.setSclass(ITheme.LOGIN_BUTTON_CLASS);
+		helpButton.addSclass(ITheme.LOGIN_BUTTON_CLASS);
 		pnlButtons.addComponentsRight(helpButton);
 
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         ZKUpdateUtil.setWidth(pnlButtons, null);
-        pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
-        pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_OK).addSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_CANCEL).addSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
         

@@ -584,21 +584,29 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					}
 
 					//execute query for each parent tab
+					GridTab pTab = null;
 					for (Map.Entry<Integer, MQuery> entry : queryMap.entrySet())
 					{
-						GridTab pTab = gridWindow.getTab(entry.getKey());
+						pTab = gridWindow.getTab(entry.getKey());
 						IADTabpanel tp = adTabbox.findADTabpanel(pTab);
         				tp.createUI();
         				if (tp.getTabLevel() == 0)
         				{
         					pTab.setQuery(entry.getValue());
         					tp.query();
+        					//update context
+        					if (pTab.getRowCount() > 0)
+        						pTab.setCurrentRow(0, false);
         				}
         				else 
-        				{
+        				{        		        					
         					tp.query();
         					pTab.setQuery(entry.getValue());
         					tp.query();
+        					//update context
+        					if (pTab.getRowCount() > 0) {
+        						pTab.setCurrentRow(0, false);
+        					}
         				}
 					}
 
@@ -649,7 +657,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     					}
     					if (id != null && id.equals(query.getZoomValue()))
     					{
+    						//make sure last parent tab will update window context
+    						boolean pTabUpdateWindowContext = pTab != null ? pTab.isUpdateWindowContext(): false ;
+    						if (pTab != null && !pTabUpdateWindowContext)
+    							pTab.setUpdateWindowContext(true);
     						setActiveTab(gridWindow.getTabIndex(gTab), null);
+    						if (pTab != null && !pTabUpdateWindowContext)
+    							pTab.setUpdateWindowContext(false);
     						gTab.navigate(i);
     						return true;
     					}
@@ -877,9 +891,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCancelled = false;
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
-            FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
-                    mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
-                    where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this); // no query below 10
+            
+            FindWindow findWindow = Extensions.getFindWindow(curWindowNo, 0, title, mTab.getAD_Table_ID(), mTab.getTableName(), where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this);
+            
            	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow(findWindow);
             if (findWindow.initialize())
@@ -4508,10 +4522,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					Executions.schedule(old.getDesktop(), e -> old.detach(), new Event("onDetachOldFindWindow"));
 				}
 			}
-			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
+
+			findWindow = Extensions.getFindWindow(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
-
+			
 			setupEmbeddedFindwindow(findWindow);
 			if (!findWindow.initialize()) {
 				if (findWindow.getTotalRecords() == 0) {
