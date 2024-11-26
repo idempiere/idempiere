@@ -926,4 +926,4 @@ public class MSysConfig extends X_AD_SysConfig
 		return success;
 	}
 
-	}	//	MSysConfig;
+}	//	MSysConfig;
