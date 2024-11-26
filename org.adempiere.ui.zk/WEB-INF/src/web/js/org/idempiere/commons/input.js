@@ -67,7 +67,7 @@ zk.afterLoad('zk', function() {
 			let dt = ev.originalEvent.dataTransfer;
 			if (dt.files && dt.files.length > 0){
 				// get upload component widget (component setup follow https://www.zkoss.org/wiki/ZK_Developer's_Reference/UI_Patterns/File_Upload_and_Download)
-				wgUploadBt = zk.Widget.$(this._id_uploadButtonId);
+				let wgUploadBt = zk.Widget.$(this._id_uploadButtonId);
 				// get reference to file input
 				let inp = wgUploadBt._uplder._inp;
 				// set FileList from drop to file input
