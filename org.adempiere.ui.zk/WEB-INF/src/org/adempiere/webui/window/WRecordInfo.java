@@ -177,6 +177,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	private Component tabPanels;
 	private UserPreference userPreference;
 	private Tabbox tabbox;
+	private int windowNo;
 
 	/**
 	 * 	Layout dialog
@@ -327,19 +328,25 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		if (gridTab != null)
 		{
 			gridTable = gridTab.getTableModel();
+			windowNo = gridTab.getWindowNo();
 		}
 		else if (dse.getSource() instanceof GridTab) 
 		{
 			gridTab = (GridTab) dse.getSource();
 			gridTable = gridTab.getTableModel();			
 			tabName = gridTab.getName();
+			windowNo = gridTab.getWindowNo();
 		}
 		else if (dse.getSource() instanceof GridTable)
 		{
 			gridTable = (GridTable) dse.getSource();
 			GridField firstField = gridTable.getField(0);
-			if (firstField != null && firstField.getGridTab() != null)
-				tabName = firstField.getGridTab().getName();
+			if (firstField != null) {
+				windowNo = firstField.getWindowNo();
+				if (firstField.getGridTab() != null) {
+					tabName = firstField.getGridTab().getName();
+				}
+			}
 		}
 
 		int Record_ID = -1;
@@ -481,7 +488,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		Vector<String> line = new Vector<String>();
 		//	Column
 		MColumn column = MColumn.get (Env.getCtx(), AD_Column_ID);
-		line.add(Msg.getElement(Env.getCtx(), column.getColumnName()));
+		line.add(Msg.getElement(Env.getCtx(), column.getColumnName(), Env.isSOTrx(Env.getCtx(), windowNo)));
 		//
 		if (OldValue != null && OldValue.equals(MChangeLog.NULL))
 			OldValue = null;
