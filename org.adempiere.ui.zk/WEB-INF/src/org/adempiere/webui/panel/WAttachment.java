@@ -93,9 +93,9 @@ import org.zkoss.zul.impl.XulElement;
 public class WAttachment extends Window implements EventListener<Event>
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -8534334828539841412L;
+	private static final long serialVersionUID = 1041937899860394478L;
 
 	private static final CLogger log = CLogger.getCLogger(WAttachment.class);
 
@@ -252,14 +252,21 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 		}
 
-		String maxUploadSize = "";
-		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
-		if (size > 0)
-			maxUploadSize = "" + size;
+		if (m_attachment.isReadOnly()) {
+			toolBar.removeChild(bLoad);
+			toolBar.removeChild(bDelete);
+			confirmPanel.removeChild(bDeleteAll);
+			text.setReadonly(true);
+		} else {
+			String maxUploadSize = "";
+			int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+			if (size > 0)
+				maxUploadSize = "" + size;
 
-		Clients.evalJavaScript("idempiere.dropToAttachFiles('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
-				+ this.getDesktop().getId() + "','" + progress.getUuid() + "','" + sizeLabel.getUuid() + "','"
-				+ maxUploadSize + "');");
+			Clients.evalJavaScript("idempiere.dropToAttachFiles('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
+					+ this.getDesktop().getId() + "','" + progress.getUuid() + "','" + sizeLabel.getUuid() + "','"
+					+ maxUploadSize + "');");
+		}
 
 	} // WAttachment
 
@@ -702,10 +709,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 				if (newText.length() > 0 || m_attachment.getEntryCount() > 0) {
 					if (m_change) {
-						m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
-						m_attachment.setTextMsg(text.getText());
-						m_attachment.saveEx();
-						m_change = false;
+						saveAttachment();
 					}
 				} else {
 					m_attachment.delete(true);
@@ -729,16 +733,26 @@ public class WAttachment extends Window implements EventListener<Event>
 			autoPreview (cbContent.getSelectedIndex(), false);
 		} else if (e.getTarget() == bSave) {
 			//	Open Attachment
-			saveAttachmentToFile();
+			exportAttachmentToFile();
 		} else if (e.getTarget() == bPreview) {
 			displayData(cbContent.getSelectedIndex(), true);
 		} else if (e.getTarget() == bSaveAllAsZip) {
-			saveAllAsZip();
+			exportAllAsZip();
 		} else if(e.getTarget()==bEmail){
 			sendMail();
 		}
 
 	}	//	onEvent
+
+	/**
+	 * Save the attachment to database
+	 */
+	private void saveAttachment() {
+		m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
+		m_attachment.setTextMsg(text.getText());
+		m_attachment.saveEx();
+		m_change = false;
+	}
 
 	/**
 	 * Handle onCancel event
@@ -875,21 +889,22 @@ public class WAttachment extends Window implements EventListener<Event>
 				if (result)
 				{
 					if (m_attachment.deleteEntry(index)) {
+						// must save the attachment immediately, on external storage providers the file doesn't exist at this point
+						saveAttachment();
 						cbContent.removeItemAt(index);
 						clearPreview();
 						autoPreview (cbContent.getSelectedIndex(), true);
 					}
 
-					m_change = true;
 				}				
 			}
 		});		
 	}	//	deleteAttachment
 
 	/**
-	 * Save current Attachment entry to File
+	 * Export current Attachment entry to File
 	 */
-	private void saveAttachmentToFile()
+	private void exportAttachmentToFile()
 	{
 		int index = cbContent.getSelectedIndex();
 		if (log.isLoggable(Level.INFO))
@@ -930,9 +945,9 @@ public class WAttachment extends Window implements EventListener<Event>
 	}	
 
 	/**
-	 * Save all attachment items as zip file
+	 * Export all attachment items as zip file
 	 */
-	private void saveAllAsZip() {
+	private void exportAllAsZip() {
 		File zipFile = m_attachment.saveAsZip();
 		
 		if (zipFile != null) {
