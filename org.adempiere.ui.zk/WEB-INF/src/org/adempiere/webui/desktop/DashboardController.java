@@ -442,6 +442,9 @@ public class DashboardController implements EventListener<Event> {
 			icon.setIconSclass("z-icon-Help");
 		else
 			icon.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		icon.addEventListener(Events.ON_CLICK, this);
+		icon.setAttribute("title", caption.getLabel());
+		icon.setAttribute("description", text);
 		caption.appendChild(icon);
 		Div popup = new Div();
 		Text t = new Text(text);
@@ -1160,6 +1163,9 @@ public class DashboardController implements EventListener<Event> {
             		if (processId > 0)
             			openReportInViewer(processId, printFormatId, parameters);
             	}
+            }else if(comp instanceof A)
+            {
+            	SessionManager.getAppDesktop().updateHelpTooltip(comp.getAttribute("title").toString(),comp.getAttribute("description").toString(),null,null,null);
             }
         }
 		else if (eventName.equals(Events.ON_DROP))
