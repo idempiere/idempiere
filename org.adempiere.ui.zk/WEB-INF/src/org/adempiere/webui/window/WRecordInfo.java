@@ -300,7 +300,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		//  Info
 		MUser user = MUser.get(Env.getCtx(), dse.CreatedBy.intValue());
 		m_info.append(" ")
-			.append(Msg.translate(Env.getCtx(), "CreatedBy"))
+			.append(Msg.getElement(Env.getCtx(), "CreatedBy"))
 			.append(": ").append(user.getName())
 			.append(" - ").append(m_dateTimeFormat.format(dse.Created)).append("\n");
 		
@@ -314,7 +314,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			if (!dse.CreatedBy.equals(dse.UpdatedBy))
 				user = MUser.get(Env.getCtx(), dse.UpdatedBy.intValue());
 			m_info.append(" ")
-				.append(Msg.translate(Env.getCtx(), "UpdatedBy"))
+				.append(Msg.getElement(Env.getCtx(), "UpdatedBy"))
 				.append(": ").append(user.getName())
 				.append(" - ").append(m_dateTimeFormat.format(dse.Updated)).append("\n");
 		}
@@ -443,12 +443,12 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		//
 		ArrayList<String> columnNames = new ArrayList<String>();
-		columnNames.add(Msg.translate(Env.getCtx(), "Name"));
-		columnNames.add(Msg.translate(Env.getCtx(), "NewValue"));
-		columnNames.add(Msg.translate(Env.getCtx(), "OldValue"));
-		columnNames.add(Msg.translate(Env.getCtx(), "UpdatedBy"));
-		columnNames.add(Msg.translate(Env.getCtx(), "Updated"));
-		columnNames.add(Msg.translate(Env.getCtx(), "AD_Column_ID"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "Name"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "NewValue"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "OldValue"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "UpdatedBy"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "Updated"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "AD_Column_ID"));
 		
 		Listhead listhead = new Listhead();
 		listhead.setSizable(true);
