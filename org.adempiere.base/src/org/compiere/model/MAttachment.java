@@ -225,8 +225,17 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public boolean isReadOnly() {
 		if (isReadOnly == null) {
-			PO po = MTable.get(getAD_Table_ID()).getPO(getRecord_ID(), get_TrxName());
-			isReadOnly = (po == null || (po.getAD_Client_ID() != Env.getAD_Client_ID(getCtx())));
+			isReadOnly = true;
+			MTable table = MTable.get(getAD_Table_ID());
+			if (table != null) {
+				PO po = null;
+				if (table.isUUIDKeyTable())
+					po = table.getPOByUU(getRecord_UU(), get_TrxName());
+				else
+					po = table.getPO(getRecord_ID(), get_TrxName());
+				if (po != null && ! po.is_new() && po.getAD_Client_ID() == Env.getAD_Client_ID(getCtx()))
+					isReadOnly = false;
+			}
 		}
 		return isReadOnly;
 	}
