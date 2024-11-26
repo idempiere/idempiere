@@ -71,7 +71,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
-import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -255,6 +254,12 @@ public class WAttachment extends Window implements EventListener<Event>
 			toolBar.removeChild(bDelete);
 			confirmPanel.removeChild(bDeleteAll);
 			text.setReadonly(true);
+		}else {
+			// If getUuid is called before the component is attached to page, it's considered a temporary value
+			// when component attach to page uuid is re-generate and use as id of DOM element on client
+			this.setWidgetOverride("_id_uploadButtonId", "'" + bLoad.getUuid() + "'");
+			// set to whole attachment dialog become drop area
+			this.setWidgetOverride("_id_isFileDragDropArea", "true");
 		}
 	} // WAttachment
 
@@ -352,14 +357,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.setUpload("multiple=true," + AdempiereWebUI.getUploadSetting());
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
-
-		// in case get uuid before component attach to page, it's temp value, isn't value set to id of dom element
-		bLoad.addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, (data) -> {
-			Button bt = (Button)data;
-			this.setWidgetOverride("_id_uploadButtonId", "'" + bt.getUuid() + "'");
-		});
-		// set to whole attachment dialog become drop area
-		this.setWidgetOverride("_id_isFileDragDropArea", "true");
 
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
