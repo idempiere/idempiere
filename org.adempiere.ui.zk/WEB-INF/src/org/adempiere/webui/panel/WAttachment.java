@@ -243,6 +243,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 			AEnv.showWindow(this);
+			preview.setVisible(false);
 			autoPreview(0, true);
 		}
 		catch (Exception e)
