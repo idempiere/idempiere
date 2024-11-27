@@ -413,8 +413,9 @@ public class DashboardController implements EventListener<Event> {
 		panel.setMaximizable(dc.isMaximizable());
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
-		if(!Util.isEmpty(description, true) && !description.equalsIgnoreCase(dcName)) {
-			renderHelpButton(caption, description);
+		String help = dc.get_Translation(MDashboardContent.COLUMNNAME_Help);
+		if(!Util.isEmpty(description, true) || !Util.isEmpty(help, true) ) {
+			renderHelpButton(caption, description, help);
 		}
 		
 		panel.setCollapsible(dc.isCollapsible());
@@ -435,7 +436,7 @@ public class DashboardController implements EventListener<Event> {
 	 * @param caption
 	 * @param text
 	 */
-	private void renderHelpButton(Caption caption, String text) {
+	private void renderHelpButton(Caption caption, String text, String help) {
 		A icon = new A();
 		icon.setSclass("dashboard-content-help-icon");
 		if (ThemeManager.isUseFontIconForImage())
@@ -445,6 +446,7 @@ public class DashboardController implements EventListener<Event> {
 		icon.addEventListener(Events.ON_CLICK, this);
 		icon.setAttribute("title", caption.getLabel());
 		icon.setAttribute("description", text);
+		icon.setAttribute("help", help);
 		caption.appendChild(icon);
 		Div popup = new Div();
 		Text t = new Text(text);
@@ -1164,8 +1166,11 @@ public class DashboardController implements EventListener<Event> {
             			openReportInViewer(processId, printFormatId, parameters);
             	}
             }else if(comp instanceof A)
-            {
-            	SessionManager.getAppDesktop().updateHelpTooltip(comp.getAttribute("title").toString(),comp.getAttribute("description").toString(),null,null,null);
+            {	
+				String name = comp.getAttribute("title").toString();
+				String description = comp.getAttribute("description")!=null ? comp.getAttribute("description").toString() : null;
+				String help = comp.getAttribute("help")!=null ? comp.getAttribute("help").toString() : null;
+            	SessionManager.getAppDesktop().updateHelpTooltip(name, description, help, null, null);
             }
         }
 		else if (eventName.equals(Events.ON_DROP))
