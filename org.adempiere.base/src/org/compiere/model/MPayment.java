@@ -2661,7 +2661,7 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
 		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "Deposit Batch is Processed: " + getC_DepositBatch());
+			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed" )+ getC_DepositBatch();
 			return false;
 		}
 		
@@ -2844,7 +2844,7 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
 		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = "Deposit Batch is Processed: " + getC_DepositBatch();
+			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
 			return false;
 		}
 		
