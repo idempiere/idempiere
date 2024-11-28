@@ -1958,12 +1958,11 @@ public abstract class PO
 	 */
 	private void setKeyInfo()
 	{
+		m_KeyColumns = null;
 		//	Search for Primary Key
 		for (int i = 0; i < p_info.getColumnCount(); i++)
 		{
-			if (   p_info.isKey(i)
-				|| (   !p_info.hasKeyColumn()
-					&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName()))))
+			if (p_info.isKey(i))
 			{
 				String ColumnName = p_info.getColumnName(i);
 				m_KeyColumns = new String[] {ColumnName};
@@ -2338,7 +2337,7 @@ public abstract class PO
 		//
 		for (int i = 0; i < m_IDs.length; i++)
 		{
-			if (m_IDs[i] == null || m_IDs[i].equals(I_ZERO) || m_IDs[i] == Null.NULL)
+			if (m_IDs[i].equals(I_ZERO) || m_IDs[i] == Null.NULL)
 				continue;
 			return false;	//	one value is non-zero
 		}
