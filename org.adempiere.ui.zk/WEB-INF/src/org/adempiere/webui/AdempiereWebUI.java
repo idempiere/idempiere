@@ -360,6 +360,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		BrowserToken.save(mSession, user);
 		
 		Env.setContext(ctx, Env.UI_CLIENT, "zk");
+		Env.setContext(ctx, Env.THEME, ThemeManager.getTheme());
 		Env.setContext(ctx, Env.DB_TYPE, DB.getDatabase().getName());
 		StringBuilder localHttpAddr = new StringBuilder(Executions.getCurrent().getScheme());
 		localHttpAddr.append("://").append(Executions.getCurrent().getLocalAddr());

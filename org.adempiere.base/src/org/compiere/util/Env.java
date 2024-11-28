@@ -134,6 +134,7 @@ public final class Env
 	public static final String STANDARD_PRECISION = "#StdPrecision";
 	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "#STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
 	public static final String SYSTEM_NAME = "#System_Name";
+	public static final String THEME = "#Theme";
 	public static final String UI_CLIENT = "#UIClient";
 	public static final String USER_LEVEL = "#User_Level";
 

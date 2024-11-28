@@ -83,6 +83,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MStatusLine;
+import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.print.MPrintFormat;
@@ -92,12 +93,14 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.json.JSONArray;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zhtml.Style;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -972,6 +975,15 @@ public class DashboardController implements EventListener<Event> {
     		final Html statusLineHtml = new Html();
     		statusLineHtml.setContent(sl.parseLine(0));
     		Div div = new Div();
+    		if (sl.getAD_Style_ID() > 0) {
+	    		MStyle style = MStyle.get(sl.getAD_Style_ID());
+				String css = style.buildStyle(ThemeManager.getTheme(), new DefaultEvaluatee(), false);				
+				if (!Util.isEmpty(css, true)) {
+					Style htmlStyle = new Style();
+					htmlStyle.setContent("@scope {\n"+css+"\n}\n");
+					div.appendChild(htmlStyle);
+				}			
+    		}
     		div.appendChild(statusLineHtml);
     		div.setSclass("statusline-gadget");
     		components.add(div);
