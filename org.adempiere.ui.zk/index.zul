@@ -28,7 +28,6 @@ Copyright (C) 2007 Ashley G Ramdass.
   zk.load("org.idempiere.commons");
   zk.load("jquery.maskedinput");
   zk.load("photobooth");
-  zk.load("dragdrop.attachment");
 
   zk.afterLoad(function() {
     zk._Erbx.push = function(msg) {

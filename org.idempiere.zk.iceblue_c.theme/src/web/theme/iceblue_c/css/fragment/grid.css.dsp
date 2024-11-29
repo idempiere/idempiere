@@ -116,6 +116,11 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 }
 
 <%-- z-listbox customization --%>
+.z-listbox-header {
+	background-color: #e0f2ff;
+	border-left: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
 tbody.z-listbox-empty-body td {
 	text-align: left;
 }

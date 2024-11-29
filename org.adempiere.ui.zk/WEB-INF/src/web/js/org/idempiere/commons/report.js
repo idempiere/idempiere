@@ -1,6 +1,12 @@
 if (typeof window.idempiere === 'undefined')
 	window.idempiere = {};
 	
+window.idempiere.directZoom = function(column, value){
+	zAu.cmd0.showBusy(null);
+	let event = new zk.Event(null, 'onZoom', {data: [column, value]}, {toServer: true});
+	zAu.send(event);
+}
+	
 window.idempiere.zoom = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
 	let widget = zk.Widget.$(cmpid);

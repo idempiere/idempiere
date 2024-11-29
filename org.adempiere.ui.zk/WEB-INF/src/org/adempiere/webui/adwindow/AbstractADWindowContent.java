@@ -584,21 +584,29 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					}
 
 					//execute query for each parent tab
+					GridTab pTab = null;
 					for (Map.Entry<Integer, MQuery> entry : queryMap.entrySet())
 					{
-						GridTab pTab = gridWindow.getTab(entry.getKey());
+						pTab = gridWindow.getTab(entry.getKey());
 						IADTabpanel tp = adTabbox.findADTabpanel(pTab);
         				tp.createUI();
         				if (tp.getTabLevel() == 0)
         				{
         					pTab.setQuery(entry.getValue());
         					tp.query();
+        					//update context
+        					if (pTab.getRowCount() > 0)
+        						pTab.setCurrentRow(0, false);
         				}
         				else 
-        				{
+        				{        		        					
         					tp.query();
         					pTab.setQuery(entry.getValue());
         					tp.query();
+        					//update context
+        					if (pTab.getRowCount() > 0) {
+        						pTab.setCurrentRow(0, false);
+        					}
         				}
 					}
 
@@ -649,7 +657,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     					}
     					if (id != null && id.equals(query.getZoomValue()))
     					{
+    						//make sure last parent tab will update window context
+    						boolean pTabUpdateWindowContext = pTab != null ? pTab.isUpdateWindowContext(): false ;
+    						if (pTab != null && !pTabUpdateWindowContext)
+    							pTab.setUpdateWindowContext(true);
     						setActiveTab(gridWindow.getTabIndex(gTab), null);
+    						if (pTab != null && !pTabUpdateWindowContext)
+    							pTab.setUpdateWindowContext(false);
     						gTab.navigate(i);
     						return true;
     					}
