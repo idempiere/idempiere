@@ -28,12 +28,14 @@ BEGIN
       ins :=
             'INSERT INTO '
          || t.tablename
-         || '_TRL ('
+         || '_Trl ('
          || 'ad_language,ad_client_id,ad_org_id,created,createdby,updated,updatedby,isactive,istranslated,'
+         || t.tablename
+         || '_Trl_UU,'
          || t.tablename
          || suffix;
       sel :=
-            'SELECT l.ad_language,t.ad_client_id,t.ad_org_id,t.created,t.createdby,t.updated,t.updatedby,t.isactive,''N'' as istranslated,'
+            'SELECT l.ad_language,t.ad_client_id,t.ad_org_id,statement_timestamp(),10,statement_timestamp(),10,t.isactive,''N'' as istranslated,generate_uuid(),'
          || t.tablename
          || suffix;
 
