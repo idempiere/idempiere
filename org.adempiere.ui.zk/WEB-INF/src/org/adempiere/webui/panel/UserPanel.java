@@ -127,10 +127,12 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	
     	feedbackMenu = new Menupopup();
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
+		mi.setIconSclass("z-icon-comment");
     	mi.setId("CreateRequest");
     	feedbackMenu.appendChild(mi);
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
+    	mi.setIconSclass("z-icon-envelope");
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);

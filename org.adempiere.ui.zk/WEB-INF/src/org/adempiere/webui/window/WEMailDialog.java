@@ -176,11 +176,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		this.setSizable(true);
 		        
 		fMessage = new CKeditor();
-		if (ClientInfo.isMobile())
-			fMessage.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
-		else
-			fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
-		fMessage.setToolbar("MyToolbar");
+		fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
 		Map<String,Object> lang = new HashMap<String,Object>();
 		lang.put("language", Language.getLoginLanguage().getAD_Language());
 		fMessage.setConfig(lang);
@@ -303,6 +299,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lSubject.setValue(Msg.getMsg(Env.getCtx(), "Subject") + ":");
 		lAttachment.setValue(Msg.getMsg(Env.getCtx(), "Attachment") + ":");
 		fFrom.setReadonly(true);
+		
 		isAcknowledgmentReceipt.setLabel(Msg.getMsg(Env.getCtx(), "RequestReadReceipt"));
 		//				
 		Grid grid = new Grid();
@@ -413,8 +410,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
 		confirmPanel.addComponentsLeft(btn);
-		if (ThemeManager.isUseFontIconForImage())
-			LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		bAddDefaultMailText = new Button();
 		if(ThemeManager.isUseFontIconForImage())
