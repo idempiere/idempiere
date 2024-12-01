@@ -176,7 +176,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		this.setSizable(true);
 		        
 		fMessage = new CKeditor();
-		fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
+		if (ClientInfo.isMobile())
+			fMessage.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
+		else
+			fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
 		Map<String,Object> lang = new HashMap<String,Object>();
 		lang.put("language", Language.getLoginLanguage().getAD_Language());
 		fMessage.setConfig(lang);
