@@ -4,7 +4,8 @@ CREATE OR REPLACE FUNCTION      ProductAttribute
 (
     p_M_AttributeSetInstance_ID     NUMERIC
 )
-RETURNS VARCHAR AS $body$
+RETURNS VARCHAR AS
+$BODY$
 
 /*************************************************************************
  * The contents of this file are subject to the Compiere License.  You may
@@ -87,6 +88,7 @@ BEGIN
     END IF;
     RETURN v_Name;
 END;
-
-$body$ LANGUAGE plpgsql STABLE;
+$BODY$
+LANGUAGE 'plpgsql' STABLE
+;
 
