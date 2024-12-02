@@ -1521,7 +1521,7 @@ public final class Env
 		String inStr = new String(value);
 		StringBuilder outStr = new StringBuilder();
 
-		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, 0, true);
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, 0, onlyWindow);
 		int i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
 		while (i != -1)
 		{
@@ -1551,7 +1551,7 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
-			String ctxInfo = evaluatee.get_ValueAsString(token);
+			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);
 			if (ctxInfo.length() == 0)
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
@@ -1642,7 +1642,7 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
-			String ctxInfo = evaluatee.get_ValueAsString(token);			
+			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);			
 			if (Util.isEmpty(ctxInfo))
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);

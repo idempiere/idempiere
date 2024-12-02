@@ -136,6 +136,8 @@ public class Tab extends org.zkoss.zul.Tab
 					Image ico = ManageImageCache.instance().getImage(imageKey);
 					if (ico != null)
 						comp.setImageContent(ico);
+					else
+						comp.setImage(ThemeManager.getThemeResource("images/m"+imageKey+".png"));
 				}
 			}
 		}
@@ -192,8 +194,9 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 
 		public static DecorateInfo get(MForm form){
-			if (form != null && !Util.isEmpty(form.getImageURL(), true))
-				return new DecorateInfo(form.getImageURL());
+			if (form != null){
+				return new DecorateInfo(!Util.isEmpty(form.getImageURL()) ? form.getImageURL() : "Form");
+			}
 			return null;
 		}
 	}

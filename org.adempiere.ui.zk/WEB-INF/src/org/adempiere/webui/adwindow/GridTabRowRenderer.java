@@ -434,8 +434,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			display = text.substring(0, MAX_TEXT_LENGTH - 3) + "...";
 		label.setValue(display);
-		if (text != null && text.length() > MAX_TEXT_LENGTH)
+		if (text != null && text.length() > MAX_TEXT_LENGTH) {
+			text = Util.maskHTML(text);
 			label.setTooltiptext(text);
+		}
 	}
 
 	/**

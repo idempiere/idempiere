@@ -407,10 +407,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				+ "FROM M_Lot l "
 				+ "WHERE EXISTS (SELECT M_Product_ID FROM M_Product p "
 					+ "WHERE p.M_AttributeSet_ID=" + m_masi.getM_AttributeSet_ID()
-					+ " AND p.M_Product_ID=l.M_Product_ID)";
+					+ " AND p.M_Product_ID=l.M_Product_ID) "
+					+ " AND l.M_Product_ID = ? ";
 			fieldLot = new Listbox();
 			fieldLot.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairsEx(sql, true);
+			KeyNamePair[] keyNamePairs = DB.getKeyNamePairsEx(sql, true, m_M_Product_ID);
 			for (KeyNamePair pair : keyNamePairs) {
 				fieldLot.appendItem(pair.getName(), pair.getKey());
 			}

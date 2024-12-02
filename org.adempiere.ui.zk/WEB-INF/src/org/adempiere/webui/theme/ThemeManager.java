@@ -16,9 +16,12 @@ package org.adempiere.webui.theme;
 import java.io.IOException;
 
 import org.adempiere.webui.apps.AEnv;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUserDefTheme;
+import org.compiere.model.MUserDefThemeDetail;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -82,7 +85,7 @@ public final class ThemeManager {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
 					// Verify the theme.css.dsp exists in the theme folder
-					String themeCSSURL = THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET;
+					String themeCSSURL = getStyleSheet();
 					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
 						// verify if is a v7 theme
 						themeCSSURL = ITheme.THEME_PATH_PREFIX_V7 + theme + ITheme.THEME_STYLESHEET;
@@ -110,6 +113,26 @@ public final class ThemeManager {
 	 */
 	public static String getStyleSheet() {
 		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET;
+	}
+
+	/**
+	 * Get user define style sheet
+	 * @return user define style sheet
+	 */
+	public static String getUserDefineStyleSheet() {
+		MUserDefTheme userDef = MUserDefTheme.getBestMatch(Env.getCtx(), getTheme());
+		if (userDef != null && !Util.isEmpty(userDef.getStylesheet())) {
+			String styleSheet = userDef.getStylesheet();
+			if (styleSheet.toLowerCase().startsWith("https://")) {
+				return styleSheet;
+			} else if (MAttachment.isAttachmentURLPath(styleSheet)) {
+				return MAttachment.getStyleSheetAttachmentURLFromPath(null, styleSheet);
+			} else {
+				return THEME_PATH_PREFIX + getTheme() + styleSheet;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -148,10 +171,21 @@ public final class ThemeManager {
 	
 	/**
 	 * Get theme resource URL
-	 * @param name relative resource name from theme root
+	 * @param name relative resource name from theme root (can be overwritten using Theme Variation, see https://idempiere.atlassian.net/browse/IDEMPIERE-6293)
 	 * @return full resource url
 	 */
 	public static String getThemeResource(String name) {
+
+		MUserDefThemeDetail userDef = MUserDefThemeDetail.get(Env.getCtx(), getTheme(), name);
+		if (userDef != null && !Util.isEmpty(userDef.getNewValue())) {
+			name = userDef.getNewValue();
+			if (name.startsWith("https://")) {
+				return name;
+			} else if (MAttachment.isAttachmentURLPath(name)) {
+				return MAttachment.getImageAttachmentURLFromPath(null, name);
+			}
+		}
+
 		StringBuilder builder = new StringBuilder(THEME_PATH_PREFIX);
 		builder.append(getTheme());
 		builder.append("/").append(name);

@@ -310,8 +310,12 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			item.setValue(Integer.toString(i));
 			if (ThemeManager.isUseFontIconForImage())
 				item.setIconSclass(tab.getIconSclass());
-			else
+			else if(tab.getImageContent()!=null)
+				item.setImageContent(tab.getImageContent());
+			else if(tab.getImage()!=null)
 				item.setImage(tab.getImage());
+			else
+				item.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 			
 			if (!Util.isEmpty(tab.getTooltiptext(), true) && !(item.getLabel().equals(tab.getTooltiptext())))
 				item.setTooltiptext(tab.getTooltiptext());
