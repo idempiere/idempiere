@@ -1958,6 +1958,7 @@ public abstract class PO
 	 */
 	private void setKeyInfo()
 	{
+		m_KeyColumns = null;
 		//	Search for Primary Key
 		for (int i = 0; i < p_info.getColumnCount(); i++)
 		{

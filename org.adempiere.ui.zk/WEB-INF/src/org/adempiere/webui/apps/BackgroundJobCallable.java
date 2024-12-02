@@ -84,6 +84,7 @@ public class BackgroundJobCallable implements Callable<ProcessInfo>
 		Env.setContext(m_ctx, Env.LANGUAGE, ctx.getProperty(Env.LANGUAGE));
 		Env.setContext(m_ctx, Env.AD_USER_ID, ctx.getProperty(Env.AD_USER_ID));
 		Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
+		Env.setContext(m_ctx, Env.AD_SESSION_ID, ctx.getProperty(Env.AD_SESSION_ID));
 	}
 	
 	@Override

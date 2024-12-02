@@ -30,6 +30,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -876,13 +877,13 @@ public class MSysConfig extends X_AD_SysConfig
 				if (getAD_Org_ID() != 0 && 
 						(configLevel.equals(MSysConfig.CONFIGURATIONLEVEL_System) || 
 						 configLevel.equals(MSysConfig.CONFIGURATIONLEVEL_Client))) {
-					log.saveError( "Can't Save Org Level", "This is a system or tenant parameter, you can't save it as organization parameter" );
+					log.saveError( "Can't Save Org Level",Msg.getMsg(p_ctx, "ThisIsSystemOrTenantParameter"));
 					return false;
 				}
 
 				// Disallow saving client parameter if the system parameter is marked as 'S'
 				if (getAD_Client_ID() != 0 && configLevel.equals(MSysConfig.CONFIGURATIONLEVEL_System)) {
-					log.saveError( "Can't Save Tenant Level", "This is a system parameter, you can't save it as tenant parameter" );
+					log.saveError( "Can't Save Tenant Level",Msg.getMsg(p_ctx, "ThisIsSystemParameter"));
 					return false;
 				}
 

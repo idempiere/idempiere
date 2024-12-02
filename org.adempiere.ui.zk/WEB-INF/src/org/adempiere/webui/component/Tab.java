@@ -136,6 +136,8 @@ public class Tab extends org.zkoss.zul.Tab
 					Image ico = ManageImageCache.instance().getImage(imageKey);
 					if (ico != null)
 						comp.setImageContent(ico);
+					else
+						comp.setImage(ThemeManager.getThemeResource("images/m"+imageKey+".png"));
 				}
 			}
 		}
