@@ -69,6 +69,7 @@ import org.compiere.util.Trace;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 
 /**
  *	Extended Workflow Activity Model for AD_WF_Activity. <br/>
@@ -1105,6 +1106,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				success = false;
 				m_docStatus = null;
 				processMsg = "SaveError";
+				ValueNamePair ppE = CLogger.retrieveError();
+				if (ppE != null)
+					processMsg = ppE.getName();
 			}
 			if (!success)
 			{
