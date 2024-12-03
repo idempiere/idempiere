@@ -18,7 +18,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.FeedbackRequestWindow;
-import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.window.WEMailDialog;
@@ -34,7 +33,6 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Window.Mode;
 
 /**
  * Default implementation of {@link IFeedbackService}

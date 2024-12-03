@@ -37,7 +37,6 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.ReportSendEMailEventData;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -189,6 +188,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		clearEMailContext(m_WindowNo);
 		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, m_Record_UU, null, "");
 		setValuesFromContext(m_WindowNo);
+		
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxWidth(ClientInfo.SMALL_HEIGHT)) {
+			this.setMaximized(true);
+		}
 	}
 
 	/**
