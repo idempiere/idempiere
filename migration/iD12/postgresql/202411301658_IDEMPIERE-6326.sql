@@ -2,7 +2,7 @@
 SELECT register_migration_script('202411301658_IDEMPIERE-6326.sql') FROM dual;
 
 -- Nov 30, 2024, 5:03:05 PM MYT
-UPDATE AD_Element SET Description='Automatically save changes to the current record upon user navigation.', Help='Automatically save changes to the current record when the user navigates to another record, switches to a detail tab, or performs an action (e.g., running a process) that requires saving the current changes.',Updated=TO_TIMESTAMP('2024-11-30 17:03:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=202879
+UPDATE AD_Element SET Name='Save on Navigate', PrintName='Save on Navigate', Description='Automatically save changes to the current record upon user navigation.', Help='Automatically save changes to the current record when the user navigates to another record, switches to a detail tab, or performs an action (e.g., running a process) that requires saving the current changes.',Updated=TO_TIMESTAMP('2024-11-30 17:03:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=202879
 ;
 
 -- Nov 30, 2024, 5:03:05 PM MYT
