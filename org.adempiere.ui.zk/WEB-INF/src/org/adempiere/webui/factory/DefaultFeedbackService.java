@@ -126,8 +126,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 				MUser.get(Env.getCtx()),
 				"",			//	to
 				getFeedbackSubject(),
-				"", ds);
-			dialog.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);			
+				"", ds);		
 			
 			MSystem system = MSystem.get(Env.getCtx());
 
