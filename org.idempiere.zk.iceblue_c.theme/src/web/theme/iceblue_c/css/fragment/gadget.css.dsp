@@ -304,6 +304,7 @@
 	padding: 5px;
 	font-size: 12px;
 	font-weight: normal;
+	line-height: 1.3em;
 }
 .help-content p {
 	margin-bottom: 7px;
