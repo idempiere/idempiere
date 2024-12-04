@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="html2canvas" language="xul/html">
-	<script src="html2canvas.js" />
+	<script src="html2canvas.min.js" />
 </package>

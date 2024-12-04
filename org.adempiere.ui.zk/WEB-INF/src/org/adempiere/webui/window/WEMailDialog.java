@@ -191,6 +191,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxWidth(ClientInfo.SMALL_HEIGHT)) {
 			this.setMaximized(true);
+			this.setSizable(false);
+			this.setMaximizable(false);
 		}
 	}
 
