@@ -78,12 +78,48 @@ public class DefaultFeedbackService implements IFeedbackService {
 			SessionManager.getAppDesktop().getComponent().addEventListener("onEmailSupport", this);
 			
 			//client side script to capture screenshot and send onEmailSupport event to server
-			String script = "html2canvas(document.body).then(canvas => " +
-					"{ const dataUrl = canvas.toDataURL();" +
-					"  let widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
-		    		"  let event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event);" +
-		    		"});";
+			String script = """
+				if (navigator.mediaDevices?.getDisplayMedia) {
+				  const promise = navigator.mediaDevices.getDisplayMedia({ preferCurrentTab: true, displaySurface: 'browser' });
+				  const canvas = document.createElement("canvas");
+				  const video = document.createElement("video");
+				  promise.then((stream) => {
+				    video.srcObject = stream;
+				    video.onloadedmetadata = () => {
+				      video.play();\
+				      // Draw one video frame to canvas.
+				      canvas.width = video.videoWidth;
+				      canvas.height = video.videoHeight;
+				      canvas.getContext("2d").drawImage(video, 0, 0);
+				      const dataUrl = canvas.toDataURL();
+				      // stop capture
+				      let tracks = video.srcObject.getTracks();
+				      tracks.forEach((track) => track.stop());
+				      video.srcObject = null;
+				      //clean up
+				      canvas.remove();
+				      video.remove();
+				      let widget = zk.Widget.$('#%s');
+				      let event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});
+				      zAu.send(event);
+				     };
+				  })
+				  .catch((err) => {
+				     console.log(err);
+				     //clean up
+				     canvas.remove();
+				     video.remove();
+				  });
+				} else {
+				  html2canvas(document.body).then(canvas =>\s
+				  { const dataUrl = canvas.toDataURL();
+				    let widget = zk.Widget.$('#%s');
+				    let event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});
+				    zAu.send(event);
+				  });
+				}""";
+			String uuid = SessionManager.getAppDesktop().getComponent().getUuid();
+			script = script.formatted(uuid, uuid);
 			Clients.response(new AuScript(script));
 		}
 		
