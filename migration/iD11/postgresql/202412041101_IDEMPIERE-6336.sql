@@ -1,0 +1,7 @@
+-- IDEMPIERE-6336
+SELECT register_migration_script('202412041101_IDEMPIERE-6336.sql') FROM dual;
+
+-- Dec 4, 2024, 11:01:40 AM BRT
+UPDATE AD_Ref_List SET IsActive='N',Updated=TO_TIMESTAMP('2024-12-04 11:01:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Ref_List_ID=154
+;
+

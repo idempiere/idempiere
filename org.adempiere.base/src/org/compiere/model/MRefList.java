@@ -303,7 +303,8 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 			.append("FROM AD_Ref_List INNER JOIN AD_Ref_List_Trl trl ")
 			.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 			.append(language).append("')");
-		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID);
+		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID)
+			.append(" AND AD_Ref_List.IsActive='Y'");
 
 		if (!Util.isEmpty(additionalWhereClause, true))
 			sql.append(" AND (").append(additionalWhereClause).append(")");
