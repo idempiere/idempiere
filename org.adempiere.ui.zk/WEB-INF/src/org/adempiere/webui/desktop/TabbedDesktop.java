@@ -30,6 +30,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WTask;
@@ -80,7 +81,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			String title = pd.getTitle();
 			pd.setTitle(null);
 			preOpenNewTab();
-			DecorateInfo decorateInfo = new DecorateInfo(MProcess.get(processId).isReport()?"Report":"Process");
+			DecorateInfo decorateInfo = new DecorateInfo(MProcess.get(processId).isReport()?Icon.REPORT:Icon.PROCESS);
 			windowContainer.addWindow(tabPanel, title, true, decorateInfo);
 			Events.postEvent(ProcessDialog.ON_INITIAL_FOCUS_EVENT, pd, null);
 		}
@@ -142,7 +143,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
 		p.setParent(tabPanel);
 		preOpenNewTab();
-		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true, new DecorateInfo("Workflow"));
+		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true, new DecorateInfo(Icon.WORKFLOW));
 	}
 	
 	/**
@@ -288,6 +289,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	window.setTitle(null);
     	preOpenNewTab();
     	DecorateInfo decorateInfo = (DecorateInfo) window.getAttribute(Window.DECORATE_INFO);
+    	if(decorateInfo==null)
+    		decorateInfo = new DecorateInfo(Icon.TAB);
     	if (Window.INSERT_NEXT.equals(window.getAttribute(Window.INSERT_POSITION_KEY))) {
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, decorateInfo);
 		}
