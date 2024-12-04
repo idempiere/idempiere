@@ -25,7 +25,7 @@ AS
 	CURSOR CUR_BOM IS
 		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
-		WHERE b.M_ProductBOM_ID=p.M_Product_ID
+		WHERE b.M_Product_ID=p.M_Product_ID
 		  AND b.M_Product_ID=Product_ID
 		  AND b.M_ProductBOM_ID != Product_ID
 		  AND p.IsBOM='Y'

@@ -24,7 +24,7 @@ AS
 	CURSOR CUR_BOM IS
 		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
-		WHERE b.M_ProductBOM_ID=p.M_Product_ID
+		WHERE b.M_Product_ID=p.M_Product_ID
 		  AND b.M_Product_ID=Product_ID
 		  AND b.M_ProductBOM_ID != Product_ID
 		  AND p.IsVerified='Y'
@@ -35,7 +35,7 @@ BEGIN
 	SELECT	COALESCE (SUM(PriceList), 0)
 	INTO	v_Price
    	FROM	M_PRODUCTPRICE
-	WHERE M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
+	WHERE   IsActive='Y' AND M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
 --	DBMS_OUTPUT.PUT_LINE('Price=' || Price);
 
 	--	No Price - Check if BOM
