@@ -358,6 +358,9 @@
 .z-icon-StepForward:before {
 	content: "\f04e";
 }
+.z-icon-Tab::before {
+	content: "\f24d";
+}
 .z-icon-Task:before {
 	content: "\f0ae";
 	font-weight: 900;

@@ -24,6 +24,7 @@ import java.util.Set;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ManageImageCache;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MForm;
@@ -172,7 +173,7 @@ public class Tab extends org.zkoss.zul.Tab
 		public static DecorateInfo get (ADWindow adWindow){
 			if(adWindow.getMImage()!=null)
 				return new DecorateInfo(adWindow.getMImage());
-			return new DecorateInfo("Window");
+			return new DecorateInfo(Icon.WINDOW);
 		}
 		
 		/**
@@ -188,14 +189,14 @@ public class Tab extends org.zkoss.zul.Tab
 				if (userDef != null && !Util.isEmpty(userDef.getImageURL()))
 					image = userDef.getImageURL();
 
-				return new DecorateInfo(!Util.isEmpty(image) ? image : "Info");
+				return new DecorateInfo(!Util.isEmpty(image) ? image : Icon.INFO);
 			}
 			return null;
 		}
 
 		public static DecorateInfo get(MForm form){
 			if (form != null){
-				return new DecorateInfo(!Util.isEmpty(form.getImageURL()) ? form.getImageURL() : "Form");
+				return new DecorateInfo(!Util.isEmpty(form.getImageURL()) ? form.getImageURL() : Icon.FORM);
 			}
 			return null;
 		}
