@@ -12,14 +12,7 @@
  *****************************************************************************/
 package org.adempiere.webui.util;
 
-import java.io.Serializable;
-
-public class Icon implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6685710658084051856L;
+public final class Icon {
 
 	public static final String 	WINDOW = 		"Window";
 	public static final String 	REPORT = 		"Report";
@@ -28,4 +21,6 @@ public class Icon implements Serializable {
 	public static final String 	INFO = 			"Info";
 	public static final String 	WORKFLOW = 		"Workflow";
 	public static final String 	TAB = 			"Tab";
+	
+	private Icon() {}
 }
