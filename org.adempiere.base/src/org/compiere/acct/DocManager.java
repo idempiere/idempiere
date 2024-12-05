@@ -18,6 +18,7 @@ package org.compiere.acct;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
@@ -34,13 +35,9 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MInOut;
-import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
-import org.compiere.model.MMovement;
-import org.compiere.model.MProduction;
-import org.compiere.model.MProjectIssue;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
@@ -299,17 +296,17 @@ public class DocManager {
 	
 	/**
 	 * Post Document 
-	 * @param ass 				Accounting schema
-	 * @param AD_Table_ID		Transaction table
-	 * @param Record_ID			Record ID of this document
-	 * @param force 			Force posting
-	 * @param repost			Repost document
-	 * @param isBackDateProcess	Back-date process
-	 * @param trxName			Transaction name
+	 * @param ass 							Accounting schema
+	 * @param AD_Table_ID					Transaction table
+	 * @param Record_ID						Record ID of this document
+	 * @param force 						Force posting
+	 * @param repost						Repost document
+	 * @param isInBackDatePostingProcess	In a back-date posting process
+	 * @param trxName						Transaction name
 	 * @return null if the document was posted or error message
 	 */
 	protected static String postDocument(MAcctSchema[] ass,
-		int AD_Table_ID, int Record_ID, boolean force, boolean repost, boolean isBackDateProcess, String trxName) {
+		int AD_Table_ID, int Record_ID, boolean force, boolean repost, boolean isInBackDatePostingProcess, String trxName) {
 
 		String tableName = null;
 		for (int i = 0; i < getDocumentsTableID().length; i++)
@@ -339,7 +336,7 @@ public class DocManager {
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
-				return postDocument(ass, AD_Table_ID, rs, force, repost, isBackDateProcess, trxName);
+				return postDocument(ass, AD_Table_ID, rs, force, repost, isInBackDatePostingProcess, trxName);
 			}
 			else
 			{
@@ -379,17 +376,17 @@ public class DocManager {
 	
 	/**
 	 * Post Document
-	 * @param ass				Accounting schema	
-	 * @param AD_Table_ID		Transaction table
-	 * @param rs				Result set
-	 * @param force				Force posting
-	 * @param repost			Repost document
-	 * @param isBackDateProcess	Back-date process
-	 * @param trxName			Transaction name
+	 * @param ass							Accounting schema	
+	 * @param AD_Table_ID					Transaction table
+	 * @param rs							Result set
+	 * @param force							Force posting
+	 * @param repost						Repost document
+	 * @param isInBackDatePostingProcess	In a back-date posting process
+	 * @param trxName						Transaction name
 	 * @return null if the document was posted or error message
 	 */
 	private static String postDocument(MAcctSchema[] ass,
-			int AD_Table_ID, ResultSet rs, boolean force, boolean repost, boolean isBackDateProcess, String trxName) {
+			int AD_Table_ID, ResultSet rs, boolean force, boolean repost, boolean isInBackDatePostingProcess, String trxName) {
 		String localTrxName = null;
 		if (trxName == null)
 		{
@@ -411,7 +408,7 @@ public class DocManager {
 				Doc doc = Doc.get (as, AD_Table_ID, rs, trxName);
 				if (doc != null)
 				{
-					error = doc.post (force, repost, isBackDateProcess);	//	repost
+					error = doc.post (force, repost, isInBackDatePostingProcess);	//	repost
 					status = doc.getPostStatus();
 					if (error != null && error.trim().length() > 0)
 					{
@@ -464,6 +461,8 @@ public class DocManager {
 				else
 					error = "SaveError";
 			}
+			if (error == null && !isInBackDatePostingProcess) // skip if is in a back-date posting process
+				error = startBackDateProcess(ass, AD_Table_ID, Record_ID, trxName);
 			if (savepoint != null)
 			{
 				try
@@ -477,8 +476,7 @@ public class DocManager {
 					trx.commit();
 				}
 			}
-			if (error == null && !isBackDateProcess) // skip if it is part of the back-date process
-				startBackDateProcess(ass, AD_Table_ID, Record_ID, trxName);
+			
 		}
 		catch (Exception e)
 		{
@@ -537,37 +535,34 @@ public class DocManager {
 			return null;
 		
 		// get the cost detail records of the back-date transaction
-		Timestamp dateAcct = null;
-		StringBuilder conditionSql = new StringBuilder();
-		if (AD_Table_ID == MMatchPO.Table_ID) {
-			conditionSql.append("C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
-			dateAcct = new MMatchPO(Env.getCtx(), Record_ID, trxName).getDateAcct();
-		} else if (AD_Table_ID == MInvoice.Table_ID) {
-			conditionSql.append("C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM C_InvoiceLine WHERE C_Invoice_ID=?)");
-			dateAcct = new MInvoice(Env.getCtx(), Record_ID, trxName).getDateAcct();
-		} else if (AD_Table_ID == MInOut.Table_ID) {
-			conditionSql.append("(M_InOutLine_ID IN (SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=?)) OR ");
-			conditionSql.append("(C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
-				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
-			dateAcct = new MInOut(Env.getCtx(), Record_ID, trxName).getDateAcct();
-		} else if (AD_Table_ID == MMatchInv.Table_ID) {
-			conditionSql.append("(M_MatchInv_ID=?) OR ");
-			conditionSql.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
-			dateAcct = new MMatchInv(Env.getCtx(), Record_ID, trxName).getDateAcct();
-		} else if (AD_Table_ID == MInventory.Table_ID) {
-			conditionSql.append("M_InventoryLine_ID IN (SELECT M_InventoryLine_ID FROM M_InventoryLine WHERE M_Inventory_ID=?)");
-			dateAcct = new MInventory(Env.getCtx(), Record_ID, trxName).getMovementDate();
-		} else if (AD_Table_ID == MMovement.Table_ID) {
-			conditionSql.append("M_MovementLine_ID IN (SELECT M_MovementLine_ID FROM M_MovementLine WHERE M_Movement_ID=?)");
-			dateAcct = new MMovement(Env.getCtx(), Record_ID, trxName).getMovementDate();
-		} else if (AD_Table_ID == MProduction.Table_ID) {
-			conditionSql.append("M_ProductionLine_ID IN (SELECT M_ProductionLine_ID FROM M_Production WHERE M_Production_ID=?)");
-			dateAcct = new MProduction(Env.getCtx(), Record_ID, trxName).getMovementDate();
-		} else if (AD_Table_ID == MProjectIssue.Table_ID) {
-			conditionSql.append("C_ProjectIssue_ID=?");
-			dateAcct = new MProjectIssue(Env.getCtx(), Record_ID, trxName).getMovementDate();
-		} else
+		Timestamp dateAcct = MCostDetail.getDateAcct(AD_Table_ID, Record_ID, trxName);
+		if (dateAcct == null)
 			return null;
+		
+		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+		StringBuilder conditionClause = new StringBuilder();
+		if (table.getAD_Table_ID() == MMatchPO.Table_ID)
+			conditionClause.append("C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
+		else if (table.getAD_Table_ID() == MInOut.Table_ID) {
+			conditionClause.append("(M_InOutLine_ID IN (SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=?)) OR ");
+			conditionClause.append("(C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
+				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
+		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
+			conditionClause.append("(M_MatchInv_ID=?) OR ");
+			conditionClause.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
+		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
+			conditionClause.append("(M_MatchInv_ID=?) OR ");
+			conditionClause.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
+		} else {
+			MTable childTable = MTable.get(Env.getCtx(), table.getTableName() + "Line");
+			if (childTable != null) {
+				conditionClause.append(childTable.getTableName()).append("_ID IN (");
+				conditionClause.append("SELECT ").append(childTable.getTableName()).append("_ID FROM ").append(childTable.getTableName());
+				conditionClause.append(" WHERE ").append(table.getTableName()).append("_ID=?)");
+			} else {
+				conditionClause.append(table.getTableName()).append("_ID=?");
+			}
+		}
 		
 		StringBuilder whereClause = new StringBuilder();
 		whereClause.append("AD_Client_ID=? ");
@@ -576,14 +571,14 @@ public class DocManager {
 		for (int x = 0; x < ass.length; x++)
 			whereClause.append((x > 0) ? "," : "").append(ass[x].getC_AcctSchema_ID());	
 		whereClause.append(") ");
-		whereClause.append("AND (").append(conditionSql).append(") ");
+		whereClause.append("AND (").append(conditionClause).append(") ");
 		whereClause.append("AND TRUNC(DateAcct)=? ");
 		whereClause.append("AND Processed='Y' ");
 		
 		List<MCostDetail> bdcds = new Query(Env.getCtx(), MCostDetail.Table_Name, whereClause.toString(), trxName)
-			.setParameters(Env.getAD_Client_ID(Env.getCtx()), Record_ID, dateAcct)
-			.setOrderBy("M_CostDetail_ID")
-			.list();		
+				.setParameters(Env.getAD_Client_ID(Env.getCtx()), Record_ID, dateAcct)
+				.setOrderBy("M_CostDetail_ID")
+				.list();
 		if (bdcds.isEmpty())
 			return null;
 		
@@ -612,7 +607,7 @@ public class DocManager {
 			updateSql.append(" SELECT cd.DateAcct, ");
 			updateSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
 			updateSql.append(" cd.M_CostDetail_ID ");
-			updateSql.append(" FROM M_CostDetail cd ");
+			updateSql.append(" FROM M_CostDetail cd "); 
 			updateSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
 			updateSql.append(" WHERE cd.M_CostDetail_ID=? ");
 			updateSql.append(") "); 
@@ -658,51 +653,38 @@ public class DocManager {
 		selectSql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
 		selectSql.append("cd.M_CostDetail_ID ");
 		
-		List<List<Object>> data = DB.getSQLArrayObjectsEx(trxName, selectSql.toString(), new Object[] {cd.getAD_Client_ID(), cd.getDateAcct()});
-		if (data != null) {
-			for (List<Object> row : data) {
-				Number M_MatchPO_ID = (Number) row.get(0);
-				Number C_Invoice_ID = (Number) row.get(1);
-				Number M_InOut_ID = (Number) row.get(2);
-				Number M_MatchInv_ID = (Number) row.get(3);
-				Number M_Inventory_ID = (Number) row.get(4);
-				Number M_Movement_ID = (Number) row.get(5);
-				Number M_Production_ID = (Number) row.get(6);
-				Number C_ProjectIssue_ID = (Number) row.get(7);
-				Number M_CostDetail_ID = (Number) row.get(8);
-				String IsBackDate = (String) row.get(9);
-				
+		PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	try
+    	{
+    		pstmt = DB.prepareStatement(selectSql.toString(), trxName);
+    		DB.setParameters(pstmt, new Object[] {cd.getAD_Client_ID(), cd.getDateAcct()});
+    		rs = pstmt.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+    		while (rs.next()) {				
 				int tableID = 0;
 				int recordID = 0;
-				if (M_MatchPO_ID != null) {
-					tableID = MMatchPO.Table_ID;
-					recordID = M_MatchPO_ID.intValue();
-				} else if (C_Invoice_ID != null) {
-					tableID = MInvoice.Table_ID;
-					recordID = C_Invoice_ID.intValue();
-				} else if (M_InOut_ID != null) {
-					tableID = MInOut.Table_ID;
-					recordID = M_InOut_ID.intValue();
-				} else if (M_MatchInv_ID != null) {
-					tableID = MMatchInv.Table_ID;
-					recordID = M_MatchInv_ID.intValue();
-				} else if (M_Inventory_ID != null) {
-					tableID = MInventory.Table_ID;
-					recordID = M_Inventory_ID.intValue();
-				} else if (M_Movement_ID != null) {
-					tableID = MMovement.Table_ID;
-					recordID = M_Movement_ID.intValue();
-				} else if (M_Production_ID != null) {
-					tableID = MProduction.Table_ID;
-					recordID = M_Production_ID.intValue();
-				} else if (C_ProjectIssue_ID != null) {
-					tableID = MProjectIssue.Table_ID;
-					recordID = C_ProjectIssue_ID.intValue();
-				} else
-					continue;
-				
-				if (IsBackDate.equals("Y"))
-					bdcds.add(new MCostDetail(Env.getCtx(), M_CostDetail_ID.intValue(), trxName));
+    			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+    				String key = rsmd.getColumnName(i);
+    				if (key.equalsIgnoreCase("M_CostDetail_ID") || key.equalsIgnoreCase("IsBackDate"))
+						continue;
+    				Object value = rs.getObject(i);
+					if (value == null || !(value instanceof Number))
+						continue;
+					MTable docTable = MTable.get(Env.getCtx(), key.substring(0, key.length()-3));
+					if (docTable == null)
+						continue;
+					tableID = docTable.getAD_Table_ID();
+					recordID = ((Number) value).intValue();
+					break;
+    			}
+    			if (tableID == 0 || recordID == 0)
+    				continue;
+    			
+    			int M_CostDetail_ID = rs.getInt("M_CostDetail_ID");
+				String IsBackDate = rs.getString("IsBackDate");
+    			if (IsBackDate.equals("Y"))
+					bdcds.add(new MCostDetail(Env.getCtx(), M_CostDetail_ID, trxName));
 				 
 				String repostedRecordId = tableID + "_" + recordID;
 				if (repostedRecordIds.contains(repostedRecordId))
@@ -724,8 +706,17 @@ public class DocManager {
 							return error;
 					}
 				}
-			}
-		}
+    		}
+    	}
+    	catch (SQLException e)
+    	{
+    		throw new DBException(e, selectSql.toString());
+    	}
+    	finally
+    	{
+    		DB.close(rs, pstmt);
+    		rs = null; pstmt = null;
+    	}
 		
 		// set the back-date processed on
 		Timestamp now = new Timestamp(System.currentTimeMillis());

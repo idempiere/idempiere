@@ -3374,7 +3374,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (as.getBackDateDay() == 0)
 			return true;
 		
-		if (reversalDate != null) {
+		String MovementType = getMovementType();
+		if (reversalDate != null && MovementType.equals(MOVEMENTTYPE_VendorReceipts)) {
 			final StringBuilder whereClause = new StringBuilder();
 			whereClause.append("AD_Client_ID=? ");
 			whereClause.append("AND C_AcctSchema_ID=? ");
@@ -3423,7 +3424,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					}
 				}
 			}
-		} else {
+		} else if (reversalDate == null && MovementType.equals(MOVEMENTTYPE_CustomerShipment)) {
  			MInOutLine[] sLines = getLines(false);
 			for (MInOutLine sLine : sLines) {
 				int AD_Org_ID = sLine.getAD_Org_ID();
@@ -3441,7 +3442,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
 				
-				String MovementType = getMovementType();
 				BigDecimal qty = sLine.getMovementQty();
 				if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
 					qty = qty.negate();
@@ -3525,15 +3525,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(), 
 							as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
-					if (history != null) {
-						if (history.getDateAcct().after(dateAcct)) {
-							history.setNewCAmt(history.getOldCAmt());
-							history.setNewCQty(history.getOldCQty());
-							history.setNewCostPrice(history.getOldCostPrice());
-							history.setNewQty(history.getOldQty());
-						}
+					if (history != null)
 						M_CostDetail_ID = history.getM_CostDetail_ID();
-					}
 				}
 				
 				if (M_CostDetail_ID > 0) {
@@ -3552,15 +3545,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(), 
 							as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
-					if (history != null) {
-						if (history.getDateAcct().after(dateAcct)) {
-							history.setNewCAmt(history.getOldCAmt());
-							history.setNewCQty(history.getOldCQty());
-							history.setNewCostPrice(history.getOldCostPrice());
-							history.setNewQty(history.getOldQty());
-						}
+					if (history != null)
 						M_CostDetail_ID = history.getM_CostDetail_ID();
-					}
 				}
 				
 				if (M_CostDetail_ID > 0) {

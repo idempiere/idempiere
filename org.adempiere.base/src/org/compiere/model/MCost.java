@@ -110,7 +110,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @param zeroCostsOK zero/no costs are OK
 	 * @param dateAcct account date
 	 * @param costDetail optional cost detail - use to retrieve the cost history
-	 * @param isBackDateProcess back-date process
+	 * @param isInBackDatePostingProcess in a back-date posting process
 	 * @param trxName trx
 	 * @return cost price or null
 	 */
@@ -119,7 +119,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			MAcctSchema as, int AD_Org_ID, String costingMethod,
 			BigDecimal qty, int C_OrderLine_ID,
 			boolean zeroCostsOK, 
-			Timestamp dateAcct, MCostDetail costDetail, boolean isBackDateProcess,
+			Timestamp dateAcct, MCostDetail costDetail, boolean isInBackDatePostingProcess,
 			String trxName)
 	{
 		String CostingLevel = product.getCostingLevel(as);
@@ -143,7 +143,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		}
 
 		//	Create/Update Costs
-		if (!isBackDateProcess) // skip if it is a post process
+		if (!isInBackDatePostingProcess) // skip if is in a back-date posting process
 			MCostDetail.processProduct (as, product, dateAcct, trxName);
 		 
 		MCostHistory history = null;
@@ -153,14 +153,6 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (history == null && dateAcct != null) {	// get cost history record based on the account date
 			history = MCostHistory.get(product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(),
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
-			if (history != null) {
-				if (history.getDateAcct().after(dateAcct)) {
-					history.setNewCAmt(history.getOldCAmt());
-					history.setNewCQty(history.getOldCQty());
-					history.setNewCostPrice(history.getOldCostPrice());
-					history.setNewQty(history.getOldQty());
-				}
-			}
 		}
 
 		return getCost (
@@ -258,16 +250,15 @@ public class MCost extends X_M_Cost implements ICostInfo
 					+ ", CurrentCostPriceLL=" + currentCostPriceLL
 					+ ", CostElementType=" + costElementType
 					+ ", CostingMethod=" + cm
-					+ ", Percent=" + percent);
-				
-				// use the cost price from the cost history record
-				if (historyCostPrice != null && historyCostPrice.compareTo(currentCostPrice) != 0)
-					currentCostPrice = historyCostPrice;
+					+ ", Percent=" + percent);				
 				
 				if (currentCostPrice != null && currentCostPrice.signum() != 0)
 				{
 					if (cm != null)
 					{
+						// use the cost price from the cost history record
+						if (historyCostPrice != null && historyCostPrice.compareTo(currentCostPrice) != 0)
+							currentCostPrice = historyCostPrice;
 						materialCostEach = materialCostEach.add(currentCostPrice);
 					}
 					else
@@ -1562,14 +1553,6 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (history == null && dateAcct != null) {	// get cost history record based on the account date
 			history = MCostHistory.get(ctx, AD_Client_ID, AD_Org_ID, M_Product_ID, M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID,
 					M_AttributeSetInstance_ID, dateAcct, trxName);
-			if (history != null) {
-				if (history.getDateAcct().after(dateAcct)) {
-					history.setNewCAmt(history.getOldCAmt());
-					history.setNewCQty(history.getOldCQty());
-					history.setNewCostPrice(history.getOldCostPrice());
-					history.setNewQty(history.getOldQty());
-				}
-			}
 		}
 		
 		if (history != null)

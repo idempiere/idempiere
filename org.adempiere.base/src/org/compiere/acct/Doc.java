@@ -525,12 +525,12 @@ public abstract class Doc
 	 * Post Document
 	 * @param force	if true ignore that locked
 	 * @param repost if true ignore that already posted
-	 * @param isBackDateProcess back-date process
+	 * @param isInBackDatePostingProcess if true is in a back-date posting process
 	 * @return error message or null
 	 */
-	public final String post (boolean force, boolean repost, boolean isBackDateProcess)
+	public final String post (boolean force, boolean repost, boolean isInBackDatePostingProcess)
 	{
-		this.isBackDateProcess = isBackDateProcess;
+		this.isInBackDatePostingProcess = isInBackDatePostingProcess;
 		
 		if (m_DocStatus == null)
 			;	//	return "No DocStatus for DocumentNo=" + getDocumentNo();
@@ -2370,14 +2370,14 @@ public abstract class Doc
 		return false;
 	}
 	
-	/** Back-Date Process **/
-	private boolean isBackDateProcess;
+	/** In a Back-Date Posting Process **/
+	private boolean isInBackDatePostingProcess;
 	
 	/**
-	 * Is posting of document a back-date process
-	 * @return true if posting of document is a back-date process
+	 * Is in a back-date posting process?
+	 * @return true if is in a back-date posting process
 	 */
-	public boolean isBackDateProcess() {
-		return isBackDateProcess;
+	public boolean isInBackDatePostingProcess() {
+		return isInBackDatePostingProcess;
 	}
 }   //  Doc

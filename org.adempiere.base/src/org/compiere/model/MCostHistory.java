@@ -40,7 +40,7 @@ import org.compiere.util.DB;
  * Cost History Model
  */
 public class MCostHistory extends X_M_CostHistory implements ICostInfo {
-
+	
 	private static final long serialVersionUID = -5916746920051232413L;
 
 	/**
@@ -179,7 +179,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	}
 	
 	/**
-	 * Get Cost History Record by Account Date
+	 * Get Cost History Record by Account Date - if no record found, get the first cost history record 
 	 * @param ctx context
 	 * @param AD_Client_ID client
 	 * @param AD_Org_ID org
@@ -230,7 +230,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		
 		sql.append(") UNION ALL (");
 		
-		sql.append("SELECT c.* "); // get first record
+		sql.append("SELECT c.* "); // get the first cost history record
 		sql.append("FROM M_CostHistory c ");
 		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
 		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
@@ -284,6 +284,15 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
     		if (rs.next())
     		{
     			costHistory = new MCostHistory(ctx, rs, trxName);
+    			
+    			// it is the first cost history record 
+    			// if the account date of the cost history record is after the account date parameter
+    			if (costHistory.getDateAcct().after(dateAcct)) {
+    				costHistory.setNewCAmt(costHistory.getOldCAmt());
+    				costHistory.setNewCQty(costHistory.getOldCQty());
+    				costHistory.setNewCostPrice(costHistory.getOldCostPrice());
+    				costHistory.setNewQty(costHistory.getOldQty());
+    			}
     		}
     	}
     	catch (SQLException e)

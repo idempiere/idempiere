@@ -20,12 +20,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
@@ -52,8 +55,8 @@ import org.compiere.util.Util;
  *  
  */
 public class MCostDetail extends X_M_CostDetail
-{
-	private static final long serialVersionUID = 1609911372993105047L;
+{	
+	private static final long serialVersionUID = -7909571771846993407L;
 	
 	protected static final String INOUTLINE_DOCBASETYPE_SQL =
 		    "SELECT c.DocBaseType From M_InOut io " +
@@ -1823,6 +1826,15 @@ public class MCostDetail extends X_M_CostDetail
 		return cost.save();
 	}	//	process
 	
+	/**
+	 * Period Closed Check for Documents after the Back-Date Transaction
+	 * @param AD_Client_ID		Client of the back-date transaction
+	 * @param C_AcctSchema_ID	Accounting schema of the back-date transaction
+	 * @param M_Product_ID		Product of the back-date transaction
+	 * @param M_CostDetail_ID	Cost detail of the back-date transaction
+	 * @param DateAcct			Account date of the back-date transaction
+	 * @param trxName			Transaction name
+	 */
 	public static void periodClosedCheckForDocsAfterBackDateTrx(int AD_Client_ID, int C_AcctSchema_ID, int M_Product_ID, 
 			int M_CostDetail_ID, Timestamp DateAcct, String trxName) {
 		List<String> repostedRecordIds = new ArrayList<String>();
@@ -1859,74 +1871,39 @@ public class MCostDetail extends X_M_CostDetail
 		selectSql.append("THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
 		selectSql.append("cd.M_CostDetail_ID ");
 		
-		List<List<Object>> data = DB.getSQLArrayObjectsEx(trxName, selectSql.toString(), 
-				new Object[] {AD_Client_ID, C_AcctSchema_ID, M_Product_ID, M_CostDetail_ID, DateAcct});
-		if (data != null) {
-			for (List<Object> row : data) {
-				Number M_MatchPO_ID = (Number) row.get(0);
-				Number C_Invoice_ID = (Number) row.get(1);
-				Number M_InOut_ID = (Number) row.get(2);
-				Number M_MatchInv_ID = (Number) row.get(3);
-				Number M_Inventory_ID = (Number) row.get(4);
-				Number M_Movement_ID = (Number) row.get(5);
-				Number M_Production_ID = (Number) row.get(6);
-				Number C_ProjectIssue_ID = (Number) row.get(7);
-				
+		PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	try
+    	{
+    		pstmt = DB.prepareStatement(selectSql.toString(), trxName);
+    		DB.setParameters(pstmt, new Object[] {AD_Client_ID, C_AcctSchema_ID, M_Product_ID, M_CostDetail_ID, DateAcct});
+    		rs = pstmt.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+    		while (rs.next()) {
 				int tableID = 0;
 				int recordID = 0;
-				if (M_MatchPO_ID != null) {
-					tableID = MMatchPO.Table_ID;
-					recordID = M_MatchPO_ID.intValue();
-				} else if (C_Invoice_ID != null) {
-					tableID = MInvoice.Table_ID;
-					recordID = C_Invoice_ID.intValue();
-				} else if (M_InOut_ID != null) {
-					tableID = MInOut.Table_ID;
-					recordID = M_InOut_ID.intValue();
-				} else if (M_MatchInv_ID != null) {
-					tableID = MMatchInv.Table_ID;
-					recordID = M_MatchInv_ID.intValue();
-				} else if (M_Inventory_ID != null) {
-					tableID = MInventory.Table_ID;
-					recordID = M_Inventory_ID.intValue();
-				} else if (M_Movement_ID != null) {
-					tableID = MMovement.Table_ID;
-					recordID = M_Movement_ID.intValue();
-				} else if (M_Production_ID != null) {
-					tableID = MProduction.Table_ID;
-					recordID = M_Production_ID.intValue();
-				} else if (C_ProjectIssue_ID != null) {
-					tableID = MProjectIssue.Table_ID;
-					recordID = C_ProjectIssue_ID.intValue();
-				} else
+    			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+    				String key = rsmd.getColumnName(i);
+    				Object value = rs.getObject(i);
+					if (value == null || !(value instanceof Number))
+						continue;
+					MTable docTable = MTable.get(Env.getCtx(), key.substring(0, key.length()-3));
+					if (docTable == null)
+						continue;
+					tableID = docTable.getAD_Table_ID();
+					recordID = ((Number) value).intValue();
+					break;
+    			}
+    			if (tableID == 0 || recordID == 0)
+    				continue;
+    			
+    			Timestamp dateAcct = MCostDetail.getDateAcct(tableID, recordID, trxName);
+				if (dateAcct == null)
 					continue;
 				
 				MTable table = MTable.get(Env.getCtx(), tableID);
 				PO po = table.getPO(recordID, trxName);
-					
-				// obtain DateAcct
-				int index = -1;
-				if (tableID == MInventory.Table_ID
-						|| tableID == MMovement.Table_ID
-						|| tableID == MProduction.Table_ID
-						|| tableID == MProjectIssue.Table_ID) {
-					index = po.get_ColumnIndex("MovementDate");
-				} else if (tableID == MOrder.Table_ID
-						|| tableID == MMatchPO.Table_ID
-						|| tableID == MInvoice.Table_ID
-						|| tableID == MInOut.Table_ID
-						|| tableID == MMatchInv.Table_ID) {
-					index = po.get_ColumnIndex("DateAcct");
-				}
-				if (index < 0)
-					continue;
-				Timestamp dateAcct = null;
-				Object objts = po.get_Value(index);
-				if (objts != null && objts instanceof Timestamp) {
-					dateAcct = (Timestamp) objts;
-				}
-				
-				index = po.get_ColumnIndex("C_DocType_ID");
+				int index = po.get_ColumnIndex("C_DocType_ID");
 				String docBaseType = null;
 				if (index < 0) {
 					if (tableID == MMatchInv.Table_ID) {
@@ -1940,7 +1917,7 @@ public class MCostDetail extends X_M_CostDetail
 					}
 				} else {
 					int C_DocType_ID = 0;
-					objts = po.get_Value(index);
+					Object objts = po.get_Value(index);
 					if (objts != null && objts instanceof Number) {
 						C_DocType_ID = ((Number) objts).intValue();
 					}
@@ -1973,7 +1950,50 @@ public class MCostDetail extends X_M_CostDetail
 						}
 					}
 				}
-			}
+    		}
+    	}
+    	catch (SQLException e)
+    	{
+    		throw new DBException(e, selectSql.toString());
+    	}
+    	finally
+    	{
+    		DB.close(rs, pstmt);
+    		rs = null; pstmt = null;
+    	}
+	}
+	
+	/**
+	 * Get Account Date
+	 * @param tableID	Transaction table
+	 * @param recordID	Record ID of this document
+	 * @param trxName	Transaction name
+	 * @return accounting date
+	 */
+	public static Timestamp getDateAcct(int tableID, int recordID, String trxName) {
+		MTable table = MTable.get(Env.getCtx(), tableID);
+		PO po = table.getPO(recordID, trxName);
+		
+		int index = -1;
+		if (tableID == MInventory.Table_ID
+				|| tableID == MMovement.Table_ID
+				|| tableID == MProduction.Table_ID
+				|| tableID == MProjectIssue.Table_ID) {
+			index = po.get_ColumnIndex("MovementDate");
+		} else if (tableID == MMatchPO.Table_ID
+				|| tableID == MInvoice.Table_ID
+				|| tableID == MInOut.Table_ID
+				|| tableID == MMatchInv.Table_ID) {
+			index = po.get_ColumnIndex("DateAcct");
 		}
+		if (index < 0)
+			return null;
+		Timestamp dateAcct = null;
+		Object objts = po.get_Value(index);
+		if (objts != null && objts instanceof Timestamp) {
+			dateAcct = (Timestamp) objts;
+		}
+		
+		return dateAcct;
 	}
 }	//	MCostDetail

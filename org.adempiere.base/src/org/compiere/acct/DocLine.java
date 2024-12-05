@@ -811,7 +811,7 @@ public class DocLine
 		String costingMethod = null;
 		BigDecimal costs = pc.getProductCosts(as, AD_Org_ID, costingMethod, 
 			C_OrderLine_ID, zeroCostsOK, 
-			getDateAcct(), costDetail, m_doc.isBackDateProcess());
+			getDateAcct(), costDetail, m_doc.isInBackDatePostingProcess());
 		if (costs != null)
 			return costs;
 		return Env.ZERO;

@@ -321,12 +321,12 @@ public class ProductCost
 	 * @param zeroCostsOK zero/no costs are OK
 	 * @param dateAcct account date
 	 * @param costDetail optional cost detail - use to retrieve the cost history
-	 * @param isBackDateProcess back-date process
+	 * @param isInBackDatePostingProcess in a back-date posting process
 	 * @return cost or null, if qty or costs cannot be determined
 	 */
 	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, 
 		String costingMethod, int C_OrderLine_ID, boolean zeroCostsOK, 
-		Timestamp dateAcct, MCostDetail costDetail, boolean isBackDateProcess)
+		Timestamp dateAcct, MCostDetail costDetail, boolean isInBackDatePostingProcess)
 	{
 		if (m_qty == null)
 		{
@@ -342,7 +342,7 @@ public class ProductCost
 		}
 		//
 		BigDecimal cost = MCost.getCost (m_product, m_M_AttributeSetInstance_ID, 
-			as, AD_Org_ID, costingMethod, m_qty, C_OrderLine_ID, zeroCostsOK, dateAcct, costDetail, isBackDateProcess, m_trxName);
+			as, AD_Org_ID, costingMethod, m_qty, C_OrderLine_ID, zeroCostsOK, dateAcct, costDetail, isInBackDatePostingProcess, m_trxName);
 		if (cost == null)
 		{
 			log.fine("No Costs");

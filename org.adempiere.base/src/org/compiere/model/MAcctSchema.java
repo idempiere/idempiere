@@ -795,34 +795,9 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 */
 	public static boolean isBackDateTrxAllowed(Properties ctx, int tableID, int recordID, String trxName)
 	{
-		MTable table = MTable.get(ctx, tableID);
-		PO po = table.getPO(recordID, trxName);
-			
-		// obtain DateAcct
-		int index = -1;
-		if (tableID == MInventory.Table_ID
-				|| tableID == MMovement.Table_ID
-				|| tableID == MProduction.Table_ID
-				|| tableID == MProjectIssue.Table_ID) {
-			index = po.get_ColumnIndex("MovementDate");
-		} else if (tableID == MOrder.Table_ID
-				|| tableID == MMatchPO.Table_ID
-				|| tableID == MInvoice.Table_ID
-				|| tableID == MInOut.Table_ID
-				|| tableID == MMatchInv.Table_ID) {
-			index = po.get_ColumnIndex("DateAcct");
-		}
-		if (index < 0)
+		Timestamp dateAcct = MCostDetail.getDateAcct(tableID, recordID, trxName);;
+		if (dateAcct == null)
 			return true;
-		
-		Timestamp dateAcct = null;
-		Object objts = po.get_Value(index);
-		if (objts != null && objts instanceof Timestamp) {
-			dateAcct = (Timestamp) objts;
-		} else {
-			return true;
-		}
-		
 		return isBackDateTrxAllowed(ctx, dateAcct, trxName);
 	}
 	

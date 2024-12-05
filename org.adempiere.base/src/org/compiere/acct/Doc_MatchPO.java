@@ -418,7 +418,7 @@ public class Doc_MatchPO extends Doc
 		//get standard cost and also make sure cost for other costing method is updated
 		BigDecimal costs = m_pc.getProductCosts(as, getAD_Org_ID(),
 			MAcctSchema.COSTINGMETHOD_StandardCosting, m_C_OrderLine_ID, false, 
-			getDateAcct(), (MCostDetail) null, isBackDateProcess());	//	non-zero costs
+			getDateAcct(), (MCostDetail) null, isInBackDatePostingProcess());	//	non-zero costs
 
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{

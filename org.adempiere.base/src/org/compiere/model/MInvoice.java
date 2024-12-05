@@ -3513,15 +3513,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 						MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(), 
 								as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 								M_AttributeSetInstance_ID, dateAcct, get_TrxName());
-						if (history != null) {
-							if (history.getDateAcct().after(dateAcct)) {
-								history.setNewCAmt(history.getOldCAmt());
-								history.setNewCQty(history.getOldCQty());
-								history.setNewCostPrice(history.getOldCostPrice());
-								history.setNewQty(history.getOldQty());
-							}
+						if (history != null)
 							M_CostDetail_ID = history.getM_CostDetail_ID();
-						}
 					}
 					if (M_CostDetail_ID > 0) {
 						MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
@@ -3537,15 +3530,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, iLine.getM_Product_ID(), 
 							as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
-					if (history != null) {
-						if (history.getDateAcct().after(dateAcct)) {
-							history.setNewCAmt(history.getOldCAmt());
-							history.setNewCQty(history.getOldCQty());
-							history.setNewCostPrice(history.getOldCostPrice());
-							history.setNewQty(history.getOldQty());
-						}
+					if (history != null)
 						M_CostDetail_ID = history.getM_CostDetail_ID();
-					}
 				}
 				if (M_CostDetail_ID > 0) {
 					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
