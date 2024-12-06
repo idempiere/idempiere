@@ -126,11 +126,14 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	logout.addEventListener(Events.ON_CLICK, this);
     	
     	feedbackMenu = new Menupopup();
+		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
+		mi.setIconSclass("z-icon-comment");
     	mi.setId("CreateRequest");
     	feedbackMenu.appendChild(mi);
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
+    	mi.setIconSclass("z-icon-envelope");
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);
@@ -265,7 +268,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 		else if (feedback == event.getTarget())
 		{
-			if (feedbackMenu.getPage() == null)
+			if (isMobile() && userPanelLinksContainer != null)
+			{
+				userPanelLinksContainer.appendChild(feedbackMenu);
+			}
+			else if (feedbackMenu.getPage() == null)
 			{
 				component.appendChild(feedbackMenu);
 			}
