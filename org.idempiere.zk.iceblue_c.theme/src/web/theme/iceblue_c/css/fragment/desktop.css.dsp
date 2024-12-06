@@ -145,7 +145,6 @@
 .desktop-tabbox.z-tabbox  > .z-tabs > .z-tabs-content .z-tab-image {
 	width: 16px;
 	height: 16px;
-	padding-bottom: 4px;
 }
 
 .desktop-tabpanel {

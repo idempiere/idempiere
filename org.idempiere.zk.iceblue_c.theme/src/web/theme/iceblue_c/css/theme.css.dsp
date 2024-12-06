@@ -59,6 +59,11 @@ table.z-vbox > tbody > tr > td > table {
 	width: 100%;	
 }
 
+<%-- decorate file drop area --%>
+.attachment-drag-entered {
+    border: 5px dashed #3fb900 !important;
+}
+
 <c:include page="fragment/login.css.dsp" />
 
 <c:include page="fragment/desktop.css.dsp" />
@@ -114,8 +119,6 @@ table.z-vbox > tbody > tr > td > table {
 <c:include page="fragment/window-size.css.dsp" />
 
 <c:include page="fragment/font-icons.css.dsp" />
-
-<c:include page="fragment/drag-drop-attachment.css.dsp" />
 
 <c:include page="fragment/keikai.css.dsp" />
 
