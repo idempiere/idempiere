@@ -52,14 +52,6 @@ public abstract class CreateFromBatch extends CreateFrom
 				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode, 0, 0);
 	}
 	
-	@Deprecated
-	public String getSQLWhere(Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
-			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, Object Currency)
-	{
-		return getSQLWhere((Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
-				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode, (Integer)Currency, 0);
-	}
-	
 	/**
 	 * 
 	 * @param BPartner
