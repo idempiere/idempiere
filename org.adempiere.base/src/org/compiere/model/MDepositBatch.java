@@ -560,7 +560,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 
 		MDepositBatchLine[] depositbatchLines = getLines();
 
-		// Close lines
+		// Reactivate lines
 		for (int line = 0; line < depositbatchLines.length; line++) {
 			
 			// Throw idempiere exception for payment already reconciled
