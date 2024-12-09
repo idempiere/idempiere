@@ -23,13 +23,11 @@ AS
 	v_StdPrecision		NUMBER;
 	--	Get BOM Product info
 	CURSOR CUR_BOM IS
-		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType
+		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType, p.IsVerified
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
-		WHERE b.M_Product_ID=p.M_Product_ID
+		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=p_Product_ID
 		  AND b.M_ProductBOM_ID != p_Product_ID
-		  AND p.IsBOM='Y'
-		  AND p.IsVerified='Y'
 		  AND b.IsActive='Y';
 	--
 BEGIN
@@ -91,19 +89,14 @@ BEGIN
 			  AND M_Warehouse_ID=v_Warehouse_ID
 			  AND IsSOTrx='Y'
 			  AND IsActive='Y';
-			--	Get Rounding Precision
-			SELECT 	NVL(MAX(u.StdPrecision), 0)
-			  INTO	v_StdPrecision
-			FROM 	C_UOM u, M_PRODUCT p
-			WHERE 	u.C_UOM_ID=p.C_UOM_ID AND p.M_Product_ID=bom.M_ProductBOM_ID;
 			--	How much can we make with this product
-			v_ProductQty := ROUND (v_ProductQty/bom.BOMQty, v_StdPrecision);
+			v_ProductQty := v_ProductQty/bom.BOMQty;
 			--	How much can we make overall
 			IF (v_ProductQty < v_Quantity) THEN
 				v_Quantity := v_ProductQty;
 			END IF;
 		--	Another BOM
-		ELSIF (bom.IsBOM = 'Y') THEN
+		ELSIF (bom.IsBOM = 'Y' AND BOM.IsVerified = 'Y') THEN
 			v_ProductQty := Bomqtyreserved (bom.M_ProductBOM_ID, v_Warehouse_ID, p_Locator_ID);
 			--	How much can we make overall
 			IF (v_ProductQty < v_Quantity) THEN
@@ -124,7 +117,7 @@ BEGIN
 		FROM 	C_UOM u, M_PRODUCT p
 		WHERE 	u.C_UOM_ID=p.C_UOM_ID AND p.M_Product_ID=p_Product_ID;
 		--
-		RETURN ROUND (v_Quantity, v_StdPrecision);
+		RETURN TRUNC(v_Quantity, v_StdPrecision); -- RoundDown
 	END IF;
 	RETURN 0;
 END Bomqtyreserved;

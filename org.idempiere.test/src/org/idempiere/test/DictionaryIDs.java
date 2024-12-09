@@ -522,7 +522,18 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum M_PriceList_Version {
+		STANDARD_2003(104),
+		IMPORT_2003(200000);
+
+		public final int id;
+
+		private M_PriceList_Version(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum M_Product {
 		STANDARD(122,"c713192a-9ed3-4740-ad32-9583c30d0206"),
 		OAK(123,"220b7a9a-4917-4bb2-b431-1426afacd7b8"),
@@ -584,7 +595,19 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum M_ProductPrice {
+		PATIOSET_STANDARD_2003(200084),
+		PATIOCHAIR_STANDARD_2003(200033),
+		PATIOCHAIR_IMPORT_2003(200095);
+
+		public final int id;
+
+		private M_ProductPrice(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum M_RMAType {
 		DAMAGE_ON_ARRIVAL(100);
 		
