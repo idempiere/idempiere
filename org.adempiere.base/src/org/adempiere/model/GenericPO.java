@@ -27,10 +27,12 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContextPropertiesWrapper;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.process.DocAction;
+import org.compiere.util.Msg;
 
 /**
  * Generic PO implementation, this can be use together with ModelValidator as alternative to the classic 
@@ -42,10 +44,10 @@ import org.compiere.process.DocAction;
  */
 public class GenericPO extends PO implements DocAction {	
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3180937588404433030L;
-	
+	private static final long serialVersionUID = 2762732123767902924L;
+
 	private DocActionDelegate<GenericPO> docActionDelegate = new DocActionDelegate<>(this);
 	
 	/**
@@ -336,6 +338,20 @@ public class GenericPO extends PO implements DocAction {
 	@Override
 	public BigDecimal getApprovalAmt() {
 		return docActionDelegate.getApprovalAmt();
+	}
+
+	@Override
+	protected boolean afterSave (boolean newRecord, boolean success) {
+		if (!success)
+			return success;
+		if (getAD_Client_ID() > 0 && "AD_Message_Trl".equals(get_TableName())) {
+			boolean tlm = MSysConfig.getBooleanValue(MSysConfig.MESSAGES_AT_TENANT_LEVEL, false, getAD_Client_ID());
+			if (!tlm) {
+				// show warning about MESSAGES_AT_TENANT_LEVEL not working if SysConfig not enabled
+				log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnTenantLevelMessages"));
+			}
+		}
+		return true;
 	}
 
 } // GenericPO
