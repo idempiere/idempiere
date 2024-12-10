@@ -135,10 +135,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		sql.append("ORDER BY c.DateAcct DESC, ");
 		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
 		sql.append("c.M_CostHistory_ID DESC ");
-		if (DB.isOracle())
-			sql.append("ROWNUM=1");
-		else if (DB.isPostgreSQL())
-			sql.append("LIMIT 1");
+		String sqlStr = DB.getDatabase().addPagingSQL(sql.toString(), 1, 1);
 		 
 		List<Object> params = new ArrayList<Object>();
 		params.add(cd.isDelta() ? "N" : "Y"); // cost detail is set to processed=N when it is a delta record
@@ -160,11 +157,13 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
     	ResultSet rs = null;
     	try
     	{
-    		pstmt = DB.prepareStatement(sql.toString(), trxName);
+    		pstmt = DB.prepareStatement(sqlStr, trxName);
     		DB.setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
-    		if (rs.next())
+    		if (rs.next()) {
     			costHistory = new MCostHistory(ctx, rs, trxName);
+    			costHistory.makeImmutable();
+    		}
     	}
     	catch (SQLException e)
 		{
@@ -179,7 +178,8 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	}
 	
 	/**
-	 * Get Cost History Record by Account Date - if no record found, get the first cost history record 
+	 * Get Cost History Record by Account Date
+	 * If no cost history record <= account date, simulate using the first cost history record after account date
 	 * @param ctx context
 	 * @param AD_Client_ID client
 	 * @param AD_Org_ID org
@@ -223,10 +223,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		sql.append("ORDER BY c.DateAcct DESC, ");
 		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
 		sql.append("c.M_CostHistory_ID DESC ");
-		if (DB.isOracle())
-			sql.append("ROWNUM=1");
-		else if (DB.isPostgreSQL())
-			sql.append("LIMIT 1");
+		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
 		
 		sql.append(") UNION ALL (");
 		
@@ -245,10 +242,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		sql.append("ORDER BY c.DateAcct ASC, ");
 		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END ASC, ");
 		sql.append("c.M_CostHistory_ID DESC ");
-		if (DB.isOracle())
-			sql.append("ROWNUM=1");
-		else if (DB.isPostgreSQL())
-			sql.append("LIMIT 1");
+		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
 		
 		sql.append(")");
 		
@@ -293,6 +287,8 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
     				costHistory.setNewCostPrice(costHistory.getOldCostPrice());
     				costHistory.setNewQty(costHistory.getOldQty());
     			}
+    			
+    			costHistory.makeImmutable();
     		}
     	}
     	catch (SQLException e)
