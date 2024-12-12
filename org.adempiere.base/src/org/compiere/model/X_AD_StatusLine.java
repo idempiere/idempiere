@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StatusLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_StatusLine")
 public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241128L;
 
     /** Standard Constructor */
     public X_AD_StatusLine (Properties ctx, int AD_StatusLine_ID, String trxName)
@@ -183,6 +183,34 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	public String getAD_StatusLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StatusLine_UU);
+	}
+
+	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_Style_ID(), get_TrxName());
+	}
+
+	/** Set Style.
+		@param AD_Style_ID CSS style for field and label
+	*/
+	public void setAD_Style_ID (int AD_Style_ID)
+	{
+		if (AD_Style_ID < 1)
+			set_Value (COLUMNNAME_AD_Style_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Style_ID, Integer.valueOf(AD_Style_ID));
+	}
+
+	/** Get Style.
+		@return CSS style for field and label
+	  */
+	public int getAD_Style_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Style_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** EntityType AD_Reference_ID=389 */
