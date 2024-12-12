@@ -27,16 +27,18 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -2722869411041069805L;
+	private static final long serialVersionUID = 3760461444953943829L;
 
     /**
      * UUID based Constructor
@@ -108,7 +110,9 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	}
 	
 	/**	Reference Cache				*/
-	private static ImmutableIntPOCache<Integer,MReference>	s_cache = new ImmutableIntPOCache<Integer,MReference>(Table_Name, 20, 0, false, 0);
+	private static ImmutableIntPOCache<Integer,MReference> s_cache = new ImmutableIntPOCache<Integer,MReference>(Table_Name, 20, 0, false, 0);
+	/**	Cache UUID						*/
+	private static ImmutablePOCache<String,MReference>	s_cacheUU	= new ImmutablePOCache<String,MReference>(Table_Name, Table_Name+"|AD_Reference_UU", 20);
 
 	/**
 	 * 	Get from Cache (immutable)
@@ -171,4 +175,28 @@ public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 		return !Util.isEmpty(getShowInactive()) && MReference.SHOWINACTIVE_Yes.equalsIgnoreCase(getShowInactive());
 	}
 	
+	/**
+	 * 	Get MReference from Cache based on UUID (immutable)
+	 *	@param ctx context
+	 *	@param AD_Reference_UU UUID
+	 *	@return MReference
+	 */
+	public static MReference get (Properties ctx, String AD_Reference_UU)
+	{
+		MReference retValue = s_cacheUU.get(ctx, AD_Reference_UU, e -> new MReference(ctx, e));
+		if (retValue != null)
+			return retValue;
+		int id = DB.getSQLValueEx(null, "SELECT AD_Reference_ID FROM AD_Reference WHERE AD_Reference_UU = ? ", AD_Reference_UU);
+		if (id > 0)
+		{
+			retValue = new MReference (ctx, id, (String)null);
+			if (retValue.get_ID() == id && !Util.isEmpty(retValue.getAD_Reference_UU())) 
+			{
+				s_cacheUU.put (retValue.getAD_Reference_UU(), retValue, e -> new MReference(Env.getCtx(), e));
+				return retValue;
+			}
+		}
+		return null;
+	}	//	get
+
 }	//	MReference
