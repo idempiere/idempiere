@@ -16,11 +16,15 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_CLOSING_TAG;
+import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_OPENING_TAG;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -205,7 +209,13 @@ public class MMailText extends X_R_MailText
 	protected String parse (String text, boolean keepEscapeSequence)
 	{
 		if (Util.isEmpty(text) || text.indexOf('@') == -1)
+		{
+			if (isHtml() && hasMarkdownText(text)) 
+			{
+				text = Core.getMarkdownRenderer().renderToHtml(text);
+			}
 			return text;
+		}
 		//	Parse User
 		text = parse (text, m_user, (keepEscapeSequence || (m_bpartner != null || m_po != null)));
 		//	Parse BP
@@ -213,8 +223,21 @@ public class MMailText extends X_R_MailText
 		//	Parse PO
 		text = parse (text, m_po, keepEscapeSequence);
 		//
+		if (isHtml() && hasMarkdownText(text)) 
+		{
+			text = Core.getMarkdownRenderer().renderToHtml(text);
+		}
 		return text;
 	}	//	parse
+	
+	/**
+	 * Is text contains markdown
+	 * @param text
+	 * @return true if text contains markdown
+	 */
+	private boolean hasMarkdownText(String text) {
+		return !Util.isEmpty(text) && text.indexOf(MARKDOWN_OPENING_TAG) >= 0 && text.indexOf(MARKDOWN_CLOSING_TAG) > 0;
+	}
 	
 	/**
 	 * 	Parse variables in text (@variable expression@)
