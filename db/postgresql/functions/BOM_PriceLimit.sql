@@ -17,10 +17,10 @@ BEGIN
 		FOR bom IN  
 			SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM
 			FROM M_Product_BOM b, M_Product p
-			WHERE b.M_Product_ID=p.M_Product_ID
+			WHERE b.M_ProductBOM_ID=p.M_Product_ID
 			AND b.M_Product_ID=Product_ID
 			AND b.M_ProductBOM_ID != Product_ID
-			AND p.IsVerified='Y'
+			AND (p.IsBOM='N' OR p.IsVerified='Y')
 			AND b.IsActive='Y'
 		LOOP
 			v_ProductPrice := bomPriceLimit (bom.M_ProductBOM_ID, PriceList_Version_ID);

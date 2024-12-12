@@ -56,13 +56,11 @@ BEGIN
 
 	--	Go through BOM
 	FOR bom IN 	--	Get BOM Product info
-		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType
+		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType, p.IsVerified
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
-		WHERE b.M_Product_ID=p.M_Product_ID
+		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=product_ID
 		  AND b.M_ProductBOM_ID != Product_ID
-		  AND p.IsBOM='Y'
-		  AND p.IsVerified='Y'
 		  AND b.IsActive='Y'
 	LOOP
 		--	Stocked Items "leaf node"
@@ -75,19 +73,14 @@ BEGIN
 		  	  LEFT JOIN M_LocatorType lt ON (l.M_LocatorType_ID=lt.M_LocatorType_ID)
 			WHERE s.M_Product_ID=bom.M_ProductBOM_ID AND l.M_Warehouse_ID=myWarehouse_ID
 		  	  AND COALESCE(lt.IsAvailableForReservation,'Y')='Y';
-			--	Get Rounding Precision
-			SELECT 	COALESCE(MAX(u.StdPrecision), 0)
-			  INTO	v_StdPrecision
-			FROM 	C_UOM u, M_PRODUCT p
-			WHERE u.C_UOM_ID=p.C_UOM_ID AND p.M_Product_ID=bom.M_ProductBOM_ID;
 			--	How much can we make with this product
-			v_ProductQty := ROUND (v_ProductQty/bom.BOMQty, v_StdPrecision);
+			v_ProductQty := v_ProductQty/bom.BOMQty;
 			--	How much can we make overall
 			IF (v_ProductQty < v_Quantity) THEN
 				v_Quantity := v_ProductQty;
 			END IF;
 		--	Another BOM
-		ELSIF (bom.IsBOM = 'Y') THEN
+		ELSIF (bom.IsBOM = 'Y' AND bom.IsVerified = 'Y') THEN
 			v_ProductQty := BOMQtyOnHandForReservation (bom.M_ProductBOM_ID, myWarehouse_ID, Locator_ID);
 			--	How much can we make overall
 			IF (v_ProductQty < v_Quantity) THEN
@@ -103,7 +96,7 @@ BEGIN
 		FROM 	C_UOM u, M_PRODUCT p
 		WHERE u.C_UOM_ID=p.C_UOM_ID AND p.M_Product_ID=Product_ID;
 		--
-		RETURN ROUND (v_Quantity, v_StdPrecision);
+		RETURN TRUNC(v_Quantity, v_StdPrecision); -- RoundDown
 	END IF;
 	RETURN 0;
 END;
