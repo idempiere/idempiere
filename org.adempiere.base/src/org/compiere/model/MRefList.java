@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -129,9 +131,9 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 
 		boolean isBaseLanguage = Env.isBaseLanguage(AD_Language, "AD_Ref_List");
 		String sql = isBaseLanguage ?
-			"SELECT Name FROM AD_Ref_List "
+			"SELECT Name, IsActive FROM AD_Ref_List "
 			+ "WHERE AD_Reference_ID=? AND Value=?" :
-			"SELECT t.Name FROM AD_Ref_List_Trl t"
+			"SELECT t.Name, r.IsActive FROM AD_Ref_List_Trl t"
 			+ " INNER JOIN AD_Ref_List r ON (r.AD_Ref_List_ID=t.AD_Ref_List_ID) "
 			+ "WHERE r.AD_Reference_ID=? AND r.Value=? AND t.AD_Language=?";
 		PreparedStatement pstmt = null;
@@ -144,8 +146,12 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 			if (!isBaseLanguage)
 				pstmt.setString(3, AD_Language);
 			rs = pstmt.executeQuery ();
-			if (rs.next ())
+			if (rs.next ()) {
 				retValue = rs.getString(1);
+				String isActive = rs.getString(2);
+				if (!"Y".equals(isActive))
+					retValue = MLookup.INACTIVE_S + retValue + MLookup.INACTIVE_E;
+			}
 		}
 		catch (SQLException ex)
 		{
@@ -276,6 +282,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 
 		String language = Env.getAD_Language(ctx);
 		boolean orderByValue = MReference.get(AD_Reference_ID).isOrderByValue();
+		boolean isShowInactive = MReference.get(AD_Reference_ID).isShowInactiveRecords();
 		if (Util.isEmpty(orderBy) || "N".equals(orderBy))
 			orderByValue = false;
 		else if ("V".equals(orderBy))
@@ -304,6 +311,9 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 			.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 			.append(language).append("')");
 		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID);
+		
+		if(!isShowInactive)
+			sql.append(" AND AD_Ref_List.IsActive='Y'");
 
 		if (!Util.isEmpty(additionalWhereClause, true))
 			sql.append(" AND (").append(additionalWhereClause).append(")");
@@ -314,7 +324,19 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 		else
 			sql.append(" ORDER BY 2");
 
-		return DB.getValueNamePairs(sql.toString(), optional, null);
+		ArrayList<ValueNamePair> list = new ArrayList<ValueNamePair>();
+        if (optional)
+            list.add (ValueNamePair.EMPTY);
+        for (List<Object> row : DB.getSQLArrayObjectsEx(null, sql.toString())) {
+        	String value = row.get(0).toString();
+        	StringBuilder name = new StringBuilder(row.get(1).toString());
+        	String isActive = row.get(2).toString();
+        	if (! "Y".equals(isActive))
+        		name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
+        	list.add(new ValueNamePair(value, name.toString()));
+        }
+
+		return list.toArray(new ValueNamePair[list.size()]);
 	}	//	getList
 
 	/**	Logger							*/
