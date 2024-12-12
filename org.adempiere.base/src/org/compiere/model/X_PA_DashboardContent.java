@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_DashboardContent
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent")
 public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241128L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -424,6 +424,22 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return (String)get_Value(COLUMNNAME_HTML);
 	}
 
+	/** Set Comment/Help.
+		@param Help Comment or Hint
+	*/
+	public void setHelp (String Help)
+	{
+		set_Value (COLUMNNAME_Help, Help);
+	}
+
+	/** Get Comment/Help.
+		@return Comment or Hint
+	  */
+	public String getHelp()
+	{
+		return (String)get_Value(COLUMNNAME_Help);
+	}
+
 	/** Set Collapsed By Default.
 		@param IsCollapsedByDefault Flag to set the initial state of collapsible field group.
 	*/
@@ -538,28 +554,6 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
-	/** Set Show on Login.
-		@param IsShowinLogin Show on Login
-	*/
-	public void setIsShowinLogin (boolean IsShowinLogin)
-	{
-		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
-	}
-
-	/** Get Show on Login.
-		@return Show on Login	  */
-	public boolean isShowinLogin()
-	{
-		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Show Title.
 		@param IsShowTitle Show Title
 	*/
@@ -573,6 +567,28 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public boolean isShowTitle()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowTitle);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show on Login.
+		@param IsShowinLogin Show on Login
+	*/
+	public void setIsShowinLogin (boolean IsShowinLogin)
+	{
+		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
+	}
+
+	/** Get Show on Login.
+		@return Show on Login	  */
+	public boolean isShowinLogin()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

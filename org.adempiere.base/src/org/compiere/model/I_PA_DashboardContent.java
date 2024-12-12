@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_PA_DashboardContent 
 {
@@ -223,6 +223,19 @@ public interface I_PA_DashboardContent
 	/** Get HTML	  */
 	public String getHTML();
 
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -297,15 +310,6 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isShowInDashboard();
 
-    /** Column name IsShowinLogin */
-    public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
-
-	/** Set Show on Login	  */
-	public void setIsShowinLogin (boolean IsShowinLogin);
-
-	/** Get Show on Login	  */
-	public boolean isShowinLogin();
-
     /** Column name IsShowTitle */
     public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
 
@@ -314,6 +318,15 @@ public interface I_PA_DashboardContent
 
 	/** Get Show Title	  */
 	public boolean isShowTitle();
+
+    /** Column name IsShowinLogin */
+    public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
+
+	/** Set Show on Login	  */
+	public void setIsShowinLogin (boolean IsShowinLogin);
+
+	/** Get Show on Login	  */
+	public boolean isShowinLogin();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
