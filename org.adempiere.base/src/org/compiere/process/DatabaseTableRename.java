@@ -28,14 +28,19 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
+import org.compiere.model.MField;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
+import org.compiere.model.MWindow;
 import org.compiere.model.M_Element;
 import org.compiere.model.Query;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -131,13 +136,11 @@ public class DatabaseTableRename extends SvrProcess {
 		}
 		
 		// Rename table in sequences
-		String whereSeq = "(Name=? AND Description=? AND IsTableID='Y') OR (Name=? AND Description=? AND IsTableID='N')";
+		String whereSeq = "(Name=? AND IsTableID='Y') OR (Name=? AND IsTableID='N')";
 		List<MSequence> seqs = new Query(getCtx(), MSequence.Table_Name, whereSeq, get_TrxName())
 				.setParameters(
 						oldTableName,
-						"Table "+oldTableName,
-						"DocumentNo_"+oldTableName,
-						"DocumentNo/Value for Table "+oldTableName
+						"DocumentNo_"+oldTableName
 				)
 				.list();
 		for (MSequence seq : seqs) {
@@ -178,7 +181,12 @@ public class DatabaseTableRename extends SvrProcess {
 
 		table.setTableName(p_NewTableName);
 		table.saveEx();
-		
+
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MColumn.Table_Name));
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MWindow.Table_Name));
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MTab.Table_Name));
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MField.Table_Name));
+
 		return "@OK@";
 	}
 } // DatabaseTableRename
