@@ -3,7 +3,7 @@ Version: 12
 Section: web
 Priority: extra
 Architecture: all
-Pre-Depends: openjdk-17-jdk-headless, postgresql-16|postgresql-15|postgresql-14|postgresql-13|postgresql-12, adduser, net-tools, coreutils
+Pre-Depends: openjdk-17-jdk-headless, postgresql-17|postgresql-16|postgresql-15|postgresql-14|postgresql-13|postgresql-12, adduser, net-tools, coreutils
 Suggests: firefox
 Installed-Size: 968668
 Maintainer: Carlos Ruiz  <carg67@gmail.com>
