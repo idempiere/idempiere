@@ -163,7 +163,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 		this.setBorder("normal");
 
-		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxWidth(ClientInfo.SMALL_HEIGHT)) {
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
 			this.setMaximized(true);
 			this.setSizable(false);
 			this.setMaximizable(false);
@@ -329,7 +329,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setHflex(hbox, "1");
 		ZKUpdateUtil.setVflex(hbox, "0");
 		vbox.appendChild(hbox);
-		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxWidth(ClientInfo.SMALL_HEIGHT)) {
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
 			btnDownload.setLabel("");
 			btnErrorEmail.setLabel("");
 			btnViewLog.setLabel("");
