@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
+import org.adempiere.webui.apps.MenuItem;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
@@ -32,6 +33,7 @@ import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MSysConfig;
@@ -329,6 +331,13 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 				setSelectedTab(tabbox.getTabpanel(ti.intValue()).getLinkedTab());				
 			});
 		}
+		Menuitem item = new Menuitem();
+		item.setIconSclass(Icon.getIcon(Icon.CLOSE));
+		item.setLabel(Msg.getMsg(Env.getCtx(), OPTION_CLOSE_ALL_WINDOWS));
+		item.addEventListener(Events.ON_CLICK, evt -> {
+			closeAllTabs();
+		});
+		popup.appendChild(item);
 		popup.setPage(tabbox.getPage());
 		popup.open(tabListBtn, "after_start");
 	}
@@ -583,8 +592,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         popupClose.appendChild(mi);
         mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
         	public void onEvent(Event event) throws Exception {
-        		int focusTabIndex = 0;
-        		closeTabs(tab, 1, -1, focusTabIndex);
+        		closeAllTabs();
         	}
         });
 
@@ -596,6 +604,13 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         	updateTabListButton();
         
         return tab;
+    }
+
+    /**
+     * Close all tabs
+     */
+    protected void closeAllTabs() {
+    	closeTabs(null, 1, -1, 0);
     }
 
     /**

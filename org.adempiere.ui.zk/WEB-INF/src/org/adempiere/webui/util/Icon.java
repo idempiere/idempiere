@@ -21,6 +21,11 @@ public final class Icon {
 	public static final String 	INFO = 			"Info";
 	public static final String 	WORKFLOW = 		"Workflow";
 	public static final String 	TAB = 			"Tab";
+	public static final String 	CLOSE = 			"times";
 	
 	private Icon() {}
+
+	public static String getIcon(String icon) {
+		return "z-icon-" + icon;
+	}
 }
