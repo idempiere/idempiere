@@ -25,6 +25,11 @@ public final class Icon {
 	
 	private Icon() {}
 
+	/**
+	 * Get Icon class name
+	 * @param icon
+	 * @return
+	 */
 	public static String getIcon(String icon) {
 		return "z-icon-" + icon;
 	}

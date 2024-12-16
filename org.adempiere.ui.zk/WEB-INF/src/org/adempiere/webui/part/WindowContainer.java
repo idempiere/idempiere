@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
-import org.adempiere.webui.apps.MenuItem;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
