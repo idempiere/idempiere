@@ -73,6 +73,10 @@
 	padding: 2px !important;
 }
 
+.login-field input:not([type="checkbox"]) {
+	width: 220px !important;
+}
+
 .login-btn {
 	padding: 4px 20px !important;
 }
@@ -112,6 +116,16 @@
 	}
 	.login-box-header {
 		height: 0px;
+	}
+}
+@media screen and (max-device-width: 500px) {
+	.login-field input:not([type="checkbox"]) {
+		width: 100% !important;
+	}
+}
+@media screen and (max-device-width: 380px) {
+	.login-west-panel {
+		width: 350px;
 	}
 }
 @media screen and (max-width: 359px) {

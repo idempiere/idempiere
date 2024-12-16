@@ -47,11 +47,11 @@ html,body {
 }
 <%-- default font size for mobile --%>
 .mobile [class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
-    font-size: 16px;
+    font-size: 12px;
 }
 <%-- the not=xyz is needed to get this selected over standard zk rule --%>
 .mobile [class*="z-icon-"]:not([class*="xyz"]), .mobile [class*="z-group-icon-"] {
-    font-size: 16px;
+    font-size: 12px;
 }
 
 <%-- vbox fix for firefox and ie --%>

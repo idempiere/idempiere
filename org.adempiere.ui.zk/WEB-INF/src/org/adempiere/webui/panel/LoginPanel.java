@@ -394,14 +394,12 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
-        ZKUpdateUtil.setWidth(txtUserId, "220px");
         txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
         txtPassword.setCols(25);
-        ZKUpdateUtil.setWidth(txtPassword, "220px");
         if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
         	txtPassword.setClientAttribute("autocomplete", "current-password");
 
@@ -410,7 +408,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
         // Update Language List
         lstLanguage.getItems().clear();
