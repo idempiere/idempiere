@@ -43,7 +43,6 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Msg;
@@ -215,6 +214,11 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 				return false;
 			}
 		
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_BankStatementLine WHERE C_DepositBatch_ID = ?", getC_DepositBatch_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "DepositBatchVoidFailedBankStatementLine");
+			return false;
+		}
+		
 		MDepositBatchLine[] lines = getLines();			
 		for (int i = 0; i < lines.length; i++)
 		{
@@ -225,6 +229,11 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 				if (line.getC_Payment_ID() != 0) 
 				{
 					MPayment payment= new MPayment(getCtx(),line.getC_Payment_ID(),get_TrxName());
+					if (payment.isReconciled()) {
+						m_processMsg = Msg.getMsg(getCtx(), "PaymentIsAlreadyReconciled") + payment;
+						return false;
+					}
+					
 					payment.setC_DepositBatch_ID(0);
 					payment.saveEx(get_TrxName());
 				}
@@ -558,14 +567,19 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 		
 		if (log.isLoggable(Level.INFO)) log.info("ReactivateIt - " + toString());
 
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_BankStatementLine WHERE C_DepositBatch_ID = ?", getC_DepositBatch_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "DepositBatchReactivationFailedBankStatementLine");
+			return false;
+		}
+		
 		MDepositBatchLine[] depositbatchLines = getLines();
 
 		// Reactivate lines
 		for (int line = 0; line < depositbatchLines.length; line++) {
 			
-			// Throw idempiere exception for payment already reconciled
 			if(depositbatchLines[line].getC_Payment().isReconciled()) {
-				throw new AdempiereException(Msg.getMsg(getCtx(), "NotAllowReActivationOfReconciledPaymentsIntoBatch"));
+				m_processMsg = Msg.getMsg(getCtx(), "NotAllowReActivationOfReconciledPaymentsIntoBatch") + depositbatchLines[line].getC_Payment();
+				return false;
 			}
 			
 			depositbatchLines[line].setProcessed(false);

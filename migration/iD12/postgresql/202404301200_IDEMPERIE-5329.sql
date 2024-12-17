@@ -291,3 +291,19 @@ UPDATE AD_Process SET IsActive='N',Updated=TO_TIMESTAMP('2024-05-20 11:18:58','Y
 -- Nov 21, 2024, 9:34:08 PM IST
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Deposit Batch is Processed: ',0,0,'Y',TO_TIMESTAMP('2024-11-21 21:34:07','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-11-21 21:34:07','YYYY-MM-DD HH24:MI:SS'),100,200913,'DepositBatchProcessed','D','eba95ca0-4549-4094-8297-262c591bcdce')
 ;
+
+-- Dec 16, 2024, 2:16:35 PM IST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('M','Create Line Per Payment',0,0,'Y',TO_TIMESTAMP('2024-12-16 14:16:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-16 14:16:34','YYYY-MM-DD HH24:MI:SS'),100,200919,'CreateLinePerPayment','D','f0a3b8c0-f6d6-4900-a952-576a9da068cc')
+;
+
+-- Dec 16, 2024, 2:16:36 PM IST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Could not reactivate deposit batch: deposit batch is used on a bank statement line',0,0,'Y',TO_TIMESTAMP('2024-12-16 14:16:35','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-16 14:16:35','YYYY-MM-DD HH24:MI:SS'),100,200920,'DepositBatchReactivationFailedBankStatementLine','D','ad7c18ca-4354-49de-a9f7-ea55ce4e970c')
+;
+
+-- Dec 16, 2024, 2:16:36 PM IST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Could not void deposit batch: deposit batch is used on a bank statement line',0,0,'Y',TO_TIMESTAMP('2024-12-16 14:16:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-16 14:16:36','YYYY-MM-DD HH24:MI:SS'),100,200921,'DepositBatchVoidFailedBankStatementLine','D','2cd760c5-5ce1-47d0-8c51-387eebe0b953')
+;
+
+-- Dec 16, 2024, 2:16:57 PM IST
+UPDATE AD_Val_Rule SET Code='NOT EXISTS (SELECT * FROM C_BankStatementLine bsl INNER JOIN C_BankStatement bs ON (bsl.C_BankStatement_ID = bs.C_BankStatement_ID) WHERE bsl.C_DepositBatch_ID = C_DepositBatch.C_DepositBatch_ID AND bs.docstatus <>''VO'') AND NOT EXISTS (SELECT * FROM C_DepositBatchLine dbl INNER JOIN C_BankStatementLine bsl ON (dbl.C_Payment_ID = bsl.C_Payment_ID) INNER JOIN C_BankStatement bs ON (bsl.C_BankStatement_ID = bs.C_BankStatement_ID) WHERE dbl.C_DepositBatch_ID = C_DepositBatch.C_DepositBatch_ID AND bs.docstatus <> ''VO'') AND C_DepositBatch.processed = ''Y'' AND C_DepositBatch.docstatus IN (''CO'',''CL'') AND (C_DepositBatch.AD_Org_ID, C_DepositBatch.C_BankAccount_ID) = (SELECT AD_Org_ID, C_BankAccount_ID FROM C_BankStatement WHERE C_BankStatement_ID = @C_BankStatement_ID@)',Updated=TO_TIMESTAMP('2024-12-17 12:37:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200161
+;

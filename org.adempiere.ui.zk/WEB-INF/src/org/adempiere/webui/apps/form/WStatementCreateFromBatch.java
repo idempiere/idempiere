@@ -15,6 +15,7 @@ package org.adempiere.webui.apps.form;
 
 import static org.compiere.model.SystemIDs.COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -22,6 +23,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -43,6 +45,8 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.StatementCreateFromBatch;
+import org.compiere.minigrid.IMiniTable;
+import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MColumn;
@@ -52,11 +56,13 @@ import org.compiere.model.MPayment;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Space;
 
 /**
  * Form to create bank statement line ({@link MBankStatementLine}) from transactions (payment, receipt, etc).
@@ -141,6 +147,9 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	/** Date to parameter */
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 	
+	/** True to create statement line per payment */
+	protected Checkbox createLinePerPayment = new Checkbox();
+	
 	/** Layout of parameter panel */
 	protected Grid parameterBankLayout;
 
@@ -190,6 +199,9 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		
 		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
 		dateToField.setValue(date);
+		
+		createLinePerPayment.setSelected(false);
+		createLinePerPayment.addActionListener(this);
 		
 		form.postQueryEvent();
 		
@@ -242,6 +254,9 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
     	amtFromField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtFrom"));
     	amtToField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtTo"));
     	
+    	createLinePerPayment.setText(Msg.getMsg(Env.getCtx(), "CreateLinePerPayment", true));
+    	createLinePerPayment.setTooltiptext(Msg.getMsg(Env.getCtx(), "CreateLinePerPayment", false));
+    	
     	Panel parameterPanel = form.getParameterPanel();
 		
 		parameterBankLayout = GridFactory.newGridLayout();
@@ -284,6 +299,10 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		hbox.appendChild(dateToLabel.rightAlign());
 		hbox.appendChild(dateToField.getComponent());
 		row.appendChild(hbox);
+		
+		row = rows.newRow();
+		row.appendChild(new Space());
+		row.appendChild(createLinePerPayment);
 		
 		if (ClientInfo.isMobile()) {
 			if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH))
@@ -366,8 +385,47 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	}
 	
 	@Override
-	public ADForm getForm() 
-	{
+	public boolean save(IMiniTable miniTable, String trxName, GridTab gridTab) {
+
+		if (createLinePerPayment.isSelected()) {
+			return super.save(miniTable, trxName, gridTab);
+		} else {
+			int C_BankStatement_ID = ((Integer) gridTab.getValue("C_BankStatement_ID")).intValue();
+			MBankStatement bs = new MBankStatement(Env.getCtx(), C_BankStatement_ID, trxName);
+
+			int C_Currency_ID = bs.getBankAccount().getC_Currency_ID();
+
+			// Lines
+			for (int i = 0; i < miniTable.getRowCount(); i++) {
+				if (((Boolean) miniTable.getValueAt(i, 0)).booleanValue()) {
+
+					Timestamp DateTrx = (Timestamp) miniTable.getValueAt(i, 1); // 1-DateTrx
+
+					KeyNamePair pp = (KeyNamePair) miniTable.getValueAt(i, 2); // 2-C_DepositBatch_ID
+					int C_DepositBatch_ID = pp.getKey();
+
+					BigDecimal TrxAmt = (BigDecimal) miniTable.getValueAt(i, 4); // 1-ConvAmount
+
+					if (log.isLoggable(Level.FINE))
+						log.fine("Line Date=" + DateTrx + ", DepositBatch=" + C_DepositBatch_ID + ", Currency="
+								+ C_Currency_ID + ", Amt=" + TrxAmt);
+
+					MBankStatementLine bsl = new MBankStatementLine(bs);
+					bsl.setStatementLineDate(DateTrx);
+					bsl.setC_DepositBatch_ID(C_DepositBatch_ID);
+					bsl.setTrxAmt(TrxAmt);
+					bsl.setStmtAmt(TrxAmt);
+					bsl.setC_Currency_ID(C_Currency_ID);
+					if (!bsl.save())
+						log.log(Level.SEVERE, "Line not created # " + i);
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public ADForm getForm() {
 		return form;
 	}
 }

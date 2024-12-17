@@ -156,7 +156,10 @@ import org.compiere.util.Util;
 		
 		//	Set DepositBatch_ID into C_Payment table
 		if (getC_Payment_ID() != 0 && (getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_Drafted))
-				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_InProgress))
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_InProgress)
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_Invalid)
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_Approved)
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_NotApproved))
 		{
 			//if payment is changed then clear reference of deposit batch from old payment and mark reconciled flag as N
 			if (!newRecord && is_ValueChanged(COLUMNNAME_C_Payment_ID))
