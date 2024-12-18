@@ -460,7 +460,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			@Override
 			public void onEvent(SwipeEvent event) throws Exception {
 				Tab tab = (Tab) event.getTarget();
-				if (tab.isClosable() 
+				if (ClientInfo.isMobile() && tab.isClosable() 
 					&& ("right".equals(event.getSwipeDirection()) || "left".equals(event.getSwipeDirection()))) {
 					tab.onClose();
 				}
