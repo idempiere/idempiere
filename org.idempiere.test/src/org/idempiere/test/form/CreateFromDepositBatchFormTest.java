@@ -37,6 +37,7 @@ import org.compiere.grid.CreateFromDepositBatch;
 import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
+import org.compiere.model.MBankAccount;
 import org.compiere.model.MDepositBatch;
 import org.compiere.model.MDepositBatchLine;
 import org.compiere.model.MPayment;
@@ -72,9 +73,11 @@ public class CreateFromDepositBatchFormTest extends AbstractTestCase {
 		int C_BankAccount_ID = DB.getSQLValueEx(getTrxName(), "SELECT C_BankAccount_ID FROM C_BankAccount WHERE IsActive='Y' AND AD_Client_ID=? "
 				+ "AND IsDefault='Y' ORDER BY C_BankAccount_ID", getAD_Client_ID());
 		payment.setC_BankAccount_ID(C_BankAccount_ID);
-		payment.setC_Currency_ID(Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID));
+		int C_Currency_ID = Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID);
+		payment.setC_Currency_ID(C_Currency_ID);
 		payment.setPayAmt(new BigDecimal("10.00"));
 		payment.saveEx();
+		MBankAccount  bankAccount = MBankAccount.get(C_BankAccount_ID);
 
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
 		assertFalse(pi.isError(), pi.getSummary());
@@ -89,6 +92,7 @@ public class CreateFromDepositBatchFormTest extends AbstractTestCase {
 		batch.setDateDeposit(today);
 		batch.setDateAcct(today);
 		batch.setDateDoc(today);
+		batch.setC_Currency_ID(bankAccount.getC_Currency_ID());
 		batch.saveEx();
 		
 		GridWindow gridWindow = GridWindow.get(Env.getCtx(), 1, SystemIDs.WINDOW_PAYMENTS_INTO_BATCH);
@@ -108,7 +112,7 @@ public class CreateFromDepositBatchFormTest extends AbstractTestCase {
 		form.setTrxName(getTrxName());
 		Timestamp dateFrom = TimeUtil.addDays(today, -1);
 		Timestamp dateTo = TimeUtil.addDays(today, 1);
-		form.loadPayments(C_BankAccount_ID, null, null, dateFrom, dateTo, null, null, payment.getC_DocType_ID(), null, null);
+		form.loadPayments(C_BankAccount_ID, null, null, dateFrom, dateTo, null, null, payment.getC_DocType_ID(), null, null, C_Currency_ID);
 		assertTrue(form.minitable.getRowCount() > 0, "Failed to load data from DB");
 		
 		form.minitable.setSelectedRow(-1);
@@ -163,9 +167,9 @@ public class CreateFromDepositBatchFormTest extends AbstractTestCase {
 
 		public void loadPayments(Integer BankAccount, Integer BPartner, String DocumentNo,
 				Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType,
-				String TenderType, String AuthCode) {
+				String TenderType, String AuthCode, Integer C_Currency_ID) {
 			Vector<Vector<Object>> datas = super.getBankAccountData(BankAccount, BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType,
-					TenderType, AuthCode);
+					TenderType, AuthCode, C_Currency_ID);
 			
 			for(int i = 0; i < datas.size(); i++) {
 				minitable.setRowCount(i+1);
