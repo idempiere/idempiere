@@ -390,6 +390,9 @@
 	content: "\f074";
 	font-weight: 900;
 }
+.z-icon-File:before {
+	content: "\f15b";
+}
 .z-icon-VPreference:before {
 	content: "\f039";
 	font-weight: 900;
