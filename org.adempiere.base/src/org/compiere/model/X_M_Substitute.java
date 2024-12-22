@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_Substitute
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Substitute")
 public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Substitute (Properties ctx, int M_Substitute_ID, String trxName)

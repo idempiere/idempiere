@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Ratio
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PA_Ratio")
 public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_PA_Ratio (Properties ctx, int PA_Ratio_ID, String trxName)

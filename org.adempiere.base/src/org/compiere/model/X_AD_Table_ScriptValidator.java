@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table_ScriptValidator
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_ScriptValidator")
 public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptValidator, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Table_ScriptValidator (Properties ctx, int AD_Table_ScriptValidator_ID, String trxName)

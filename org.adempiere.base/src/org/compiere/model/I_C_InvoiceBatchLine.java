@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_InvoiceBatchLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_InvoiceBatchLine 
 {
@@ -49,19 +49,6 @@ public interface I_C_InvoiceBatchLine
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -74,6 +61,19 @@ public interface I_C_InvoiceBatchLine
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -165,21 +165,6 @@ public interface I_C_InvoiceBatchLine
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
-    /** Column name C_InvoiceBatch_ID */
-    public static final String COLUMNNAME_C_InvoiceBatch_ID = "C_InvoiceBatch_ID";
-
-	/** Set Invoice Batch.
-	  * Expense Invoice Batch Header
-	  */
-	public void setC_InvoiceBatch_ID (int C_InvoiceBatch_ID);
-
-	/** Get Invoice Batch.
-	  * Expense Invoice Batch Header
-	  */
-	public int getC_InvoiceBatch_ID();
-
-	public org.compiere.model.I_C_InvoiceBatch getC_InvoiceBatch() throws RuntimeException;
-
     /** Column name C_InvoiceBatchLine_ID */
     public static final String COLUMNNAME_C_InvoiceBatchLine_ID = "C_InvoiceBatchLine_ID";
 
@@ -202,20 +187,20 @@ public interface I_C_InvoiceBatchLine
 	/** Get C_InvoiceBatchLine_UU	  */
 	public String getC_InvoiceBatchLine_UU();
 
-    /** Column name C_Invoice_ID */
-    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
+    /** Column name C_InvoiceBatch_ID */
+    public static final String COLUMNNAME_C_InvoiceBatch_ID = "C_InvoiceBatch_ID";
 
-	/** Set Invoice.
-	  * Invoice Identifier
+	/** Set Invoice Batch.
+	  * Expense Invoice Batch Header
 	  */
-	public void setC_Invoice_ID (int C_Invoice_ID);
+	public void setC_InvoiceBatch_ID (int C_InvoiceBatch_ID);
 
-	/** Get Invoice.
-	  * Invoice Identifier
+	/** Get Invoice Batch.
+	  * Expense Invoice Batch Header
 	  */
-	public int getC_Invoice_ID();
+	public int getC_InvoiceBatch_ID();
 
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
+	public org.compiere.model.I_C_InvoiceBatch getC_InvoiceBatch() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
     public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
@@ -232,6 +217,21 @@ public interface I_C_InvoiceBatchLine
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
+    /** Column name C_Invoice_ID */
+    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
+
+	/** Set Invoice.
+	  * Invoice Identifier
+	  */
+	public void setC_Invoice_ID (int C_Invoice_ID);
+
+	/** Get Invoice.
+	  * Invoice Identifier
+	  */
+	public int getC_Invoice_ID();
+
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
+
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
 
@@ -246,6 +246,21 @@ public interface I_C_InvoiceBatchLine
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name C_Tax_ID */
+    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
+
+	/** Set Tax.
+	  * Tax identifier
+	  */
+	public void setC_Tax_ID (int C_Tax_ID);
+
+	/** Get Tax.
+	  * Tax identifier
+	  */
+	public int getC_Tax_ID();
+
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -262,21 +277,6 @@ public interface I_C_InvoiceBatchLine
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_Tax_ID */
-    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
-
-	/** Set Tax.
-	  * Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID);
-
-	/** Get Tax.
-	  * Tax identifier
-	  */
-	public int getC_Tax_ID();
-
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";

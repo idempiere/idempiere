@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Registration
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Registration")
 public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)

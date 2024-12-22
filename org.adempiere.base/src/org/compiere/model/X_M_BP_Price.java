@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BP_Price
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_BP_Price")
 public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_BP_Price (Properties ctx, int M_BP_Price_ID, String trxName)

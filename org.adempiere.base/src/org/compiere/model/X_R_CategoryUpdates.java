@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_CategoryUpdates
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_CategoryUpdates")
 public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_CategoryUpdates (Properties ctx, int R_CategoryUpdates_ID, String trxName)
@@ -159,6 +159,21 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 		return false;
 	}
 
+	/** Set R_CategoryUpdates_UU.
+		@param R_CategoryUpdates_UU R_CategoryUpdates_UU
+	*/
+	public void setR_CategoryUpdates_UU (String R_CategoryUpdates_UU)
+	{
+		set_Value (COLUMNNAME_R_CategoryUpdates_UU, R_CategoryUpdates_UU);
+	}
+
+	/** Get R_CategoryUpdates_UU.
+		@return R_CategoryUpdates_UU	  */
+	public String getR_CategoryUpdates_UU()
+	{
+		return (String)get_Value(COLUMNNAME_R_CategoryUpdates_UU);
+	}
+
 	public org.compiere.model.I_R_Category getR_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Category)MTable.get(getCtx(), org.compiere.model.I_R_Category.Table_ID)
@@ -185,20 +200,5 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set R_CategoryUpdates_UU.
-		@param R_CategoryUpdates_UU R_CategoryUpdates_UU
-	*/
-	public void setR_CategoryUpdates_UU (String R_CategoryUpdates_UU)
-	{
-		set_Value (COLUMNNAME_R_CategoryUpdates_UU, R_CategoryUpdates_UU);
-	}
-
-	/** Get R_CategoryUpdates_UU.
-		@return R_CategoryUpdates_UU	  */
-	public String getR_CategoryUpdates_UU()
-	{
-		return (String)get_Value(COLUMNNAME_R_CategoryUpdates_UU);
 	}
 }

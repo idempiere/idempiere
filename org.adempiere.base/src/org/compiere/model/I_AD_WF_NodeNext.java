@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_NodeNext
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_WF_NodeNext 
 {
@@ -77,21 +77,6 @@ public interface I_AD_WF_NodeNext
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Next() throws RuntimeException;
 
-    /** Column name AD_WF_Node_ID */
-    public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
-
-	/** Set Node.
-	  * Workflow Node (activity), step or process
-	  */
-	public void setAD_WF_Node_ID (int AD_WF_Node_ID);
-
-	/** Get Node.
-	  * Workflow Node (activity), step or process
-	  */
-	public int getAD_WF_Node_ID();
-
-	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
-
     /** Column name AD_WF_NodeNext_ID */
     public static final String COLUMNNAME_AD_WF_NodeNext_ID = "AD_WF_NodeNext_ID";
 
@@ -113,6 +98,21 @@ public interface I_AD_WF_NodeNext
 
 	/** Get AD_WF_NodeNext_UU	  */
 	public String getAD_WF_NodeNext_UU();
+
+    /** Column name AD_WF_Node_ID */
+    public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
+
+	/** Set Node.
+	  * Workflow Node (activity), step or process
+	  */
+	public void setAD_WF_Node_ID (int AD_WF_Node_ID);
+
+	/** Get Node.
+	  * Workflow Node (activity), step or process
+	  */
+	public int getAD_WF_Node_ID();
+
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

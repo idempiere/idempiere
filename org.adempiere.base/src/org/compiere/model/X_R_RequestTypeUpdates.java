@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestTypeUpdates
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestTypeUpdates")
 public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)
@@ -159,6 +159,21 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 		return false;
 	}
 
+	/** Set R_RequestTypeUpdates_UU.
+		@param R_RequestTypeUpdates_UU R_RequestTypeUpdates_UU
+	*/
+	public void setR_RequestTypeUpdates_UU (String R_RequestTypeUpdates_UU)
+	{
+		set_Value (COLUMNNAME_R_RequestTypeUpdates_UU, R_RequestTypeUpdates_UU);
+	}
+
+	/** Get R_RequestTypeUpdates_UU.
+		@return R_RequestTypeUpdates_UU	  */
+	public String getR_RequestTypeUpdates_UU()
+	{
+		return (String)get_Value(COLUMNNAME_R_RequestTypeUpdates_UU);
+	}
+
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_ID)
@@ -185,20 +200,5 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set R_RequestTypeUpdates_UU.
-		@param R_RequestTypeUpdates_UU R_RequestTypeUpdates_UU
-	*/
-	public void setR_RequestTypeUpdates_UU (String R_RequestTypeUpdates_UU)
-	{
-		set_Value (COLUMNNAME_R_RequestTypeUpdates_UU, R_RequestTypeUpdates_UU);
-	}
-
-	/** Get R_RequestTypeUpdates_UU.
-		@return R_RequestTypeUpdates_UU	  */
-	public String getR_RequestTypeUpdates_UU()
-	{
-		return (String)get_Value(COLUMNNAME_R_RequestTypeUpdates_UU);
 	}
 }

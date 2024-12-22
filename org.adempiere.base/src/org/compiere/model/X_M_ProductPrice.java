@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPrice
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductPrice")
 public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
@@ -146,34 +146,6 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
-			.getPO(getM_Product_ID(), get_TrxName());
-	}
-
-	/** Set Product.
-		@param M_Product_ID Product, Service, Item
-	*/
-	public void setM_Product_ID (int M_Product_ID)
-	{
-		if (M_Product_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
-	}
-
-	/** Get Product.
-		@return Product, Service, Item
-	  */
-	public int getM_Product_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Product Price.
 		@param M_ProductPrice_ID Intersection between a Product and a Price List Version
 	*/
@@ -209,6 +181,34 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 	public String getM_ProductPrice_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ProductPrice_UU);
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
+
+	/** Set Product.
+		@param M_Product_ID Product, Service, Item
+	*/
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Limit Price.

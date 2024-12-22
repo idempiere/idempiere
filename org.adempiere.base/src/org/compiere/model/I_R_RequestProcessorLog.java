@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_R_RequestProcessorLog 
 {
@@ -130,34 +130,6 @@ public interface I_R_RequestProcessorLog
 	  */
 	public boolean isError();
 
-    /** Column name Reference */
-    public static final String COLUMNNAME_Reference = "Reference";
-
-	/** Set Reference.
-	  * Reference for this record
-	  */
-	public void setReference (String Reference);
-
-	/** Get Reference.
-	  * Reference for this record
-	  */
-	public String getReference();
-
-    /** Column name R_RequestProcessor_ID */
-    public static final String COLUMNNAME_R_RequestProcessor_ID = "R_RequestProcessor_ID";
-
-	/** Set Request Processor.
-	  * Processor for Requests
-	  */
-	public void setR_RequestProcessor_ID (int R_RequestProcessor_ID);
-
-	/** Get Request Processor.
-	  * Processor for Requests
-	  */
-	public int getR_RequestProcessor_ID();
-
-	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException;
-
     /** Column name R_RequestProcessorLog_ID */
     public static final String COLUMNNAME_R_RequestProcessorLog_ID = "R_RequestProcessorLog_ID";
 
@@ -179,6 +151,34 @@ public interface I_R_RequestProcessorLog
 
 	/** Get R_RequestProcessorLog_UU	  */
 	public String getR_RequestProcessorLog_UU();
+
+    /** Column name R_RequestProcessor_ID */
+    public static final String COLUMNNAME_R_RequestProcessor_ID = "R_RequestProcessor_ID";
+
+	/** Set Request Processor.
+	  * Processor for Requests
+	  */
+	public void setR_RequestProcessor_ID (int R_RequestProcessor_ID);
+
+	/** Get Request Processor.
+	  * Processor for Requests
+	  */
+	public int getR_RequestProcessor_ID();
+
+	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException;
+
+    /** Column name Reference */
+    public static final String COLUMNNAME_Reference = "Reference";
+
+	/** Set Reference.
+	  * Reference for this record
+	  */
+	public void setReference (String Reference);
+
+	/** Get Reference.
+	  * Reference for this record
+	  */
+	public String getReference();
 
     /** Column name Summary */
     public static final String COLUMNNAME_Summary = "Summary";

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_RMA
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_RMA 
 {
@@ -135,22 +135,6 @@ public interface I_M_RMA
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name CreateFrom */
     public static final String COLUMNNAME_CreateFrom = "CreateFrom";
 
@@ -176,6 +160,22 @@ public interface I_M_RMA
 	  * Process which will generate a new document lines based on an existing document
 	  */
 	public String getCreateLinesFrom();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -309,19 +309,6 @@ public interface I_M_RMA
 	  */
 	public boolean isSOTrx();
 
-    /** Column name M_RMA_ID */
-    public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
-
-	/** Set RMA.
-	  * Return Material Authorization
-	  */
-	public void setM_RMA_ID (int M_RMA_ID);
-
-	/** Get RMA.
-	  * Return Material Authorization
-	  */
-	public int getM_RMA_ID();
-
     /** Column name M_RMAType_ID */
     public static final String COLUMNNAME_M_RMAType_ID = "M_RMAType_ID";
 
@@ -336,6 +323,19 @@ public interface I_M_RMA
 	public int getM_RMAType_ID();
 
 	public org.compiere.model.I_M_RMAType getM_RMAType() throws RuntimeException;
+
+    /** Column name M_RMA_ID */
+    public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
+
+	/** Set RMA.
+	  * Return Material Authorization
+	  */
+	public void setM_RMA_ID (int M_RMA_ID);
+
+	/** Get RMA.
+	  * Return Material Authorization
+	  */
+	public int getM_RMA_ID();
 
     /** Column name M_RMA_UU */
     public static final String COLUMNNAME_M_RMA_UU = "M_RMA_UU";

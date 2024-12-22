@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for PA_DocumentStatus
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PA_DocumentStatus")
 public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)

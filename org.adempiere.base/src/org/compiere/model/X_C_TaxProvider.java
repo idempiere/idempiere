@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_TaxProvider
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxProvider")
 public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_TaxProvider (Properties ctx, int C_TaxProvider_ID, String trxName)
@@ -131,21 +131,6 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 		return (String)get_Value(COLUMNNAME_Account);
 	}
 
-	/** Set Company Code.
-		@param CompanyCode Company Code
-	*/
-	public void setCompanyCode (String CompanyCode)
-	{
-		set_Value (COLUMNNAME_CompanyCode, CompanyCode);
-	}
-
-	/** Get Company Code.
-		@return Company Code	  */
-	public String getCompanyCode()
-	{
-		return (String)get_Value(COLUMNNAME_CompanyCode);
-	}
-
 	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxProviderCfg)MTable.get(getCtx(), org.compiere.model.I_C_TaxProviderCfg.Table_ID)
@@ -207,6 +192,21 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 	public String getC_TaxProvider_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxProvider_UU);
+	}
+
+	/** Set Company Code.
+		@param CompanyCode Company Code
+	*/
+	public void setCompanyCode (String CompanyCode)
+	{
+		set_Value (COLUMNNAME_CompanyCode, CompanyCode);
+	}
+
+	/** Get Company Code.
+		@return Company Code	  */
+	public String getCompanyCode()
+	{
+		return (String)get_Value(COLUMNNAME_CompanyCode);
 	}
 
 	/** Set License.

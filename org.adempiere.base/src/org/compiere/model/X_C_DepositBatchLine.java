@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatchLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatchLine")
 public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
       super (ctx, C_DepositBatchLine_ID, trxName);
       /** if (C_DepositBatchLine_ID == 0)
         {
-			setC_DepositBatch_ID (0);
 			setC_DepositBatchLine_ID (0);
+			setC_DepositBatch_ID (0);
 			setC_Payment_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
@@ -58,8 +58,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
       super (ctx, C_DepositBatchLine_ID, trxName, virtualColumns);
       /** if (C_DepositBatchLine_ID == 0)
         {
-			setC_DepositBatch_ID (0);
 			setC_DepositBatchLine_ID (0);
+			setC_DepositBatch_ID (0);
 			setC_Payment_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
@@ -75,8 +75,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
       super (ctx, C_DepositBatchLine_UU, trxName);
       /** if (C_DepositBatchLine_UU == null)
         {
-			setC_DepositBatch_ID (0);
 			setC_DepositBatchLine_ID (0);
+			setC_DepositBatch_ID (0);
 			setC_Payment_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
@@ -92,8 +92,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
       super (ctx, C_DepositBatchLine_UU, trxName, virtualColumns);
       /** if (C_DepositBatchLine_UU == null)
         {
-			setC_DepositBatch_ID (0);
 			setC_DepositBatchLine_ID (0);
+			setC_DepositBatch_ID (0);
 			setC_Payment_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
@@ -131,41 +131,6 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
       return sb.toString();
     }
 
-	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_ID)
-			.getPO(getC_DepositBatch_ID(), get_TrxName());
-	}
-
-	/** Set Deposit Batch.
-		@param C_DepositBatch_ID Deposit Batch
-	*/
-	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
-	{
-		if (C_DepositBatch_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
-	}
-
-	/** Get Deposit Batch.
-		@return Deposit Batch	  */
-	public int getC_DepositBatch_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_DepositBatch_ID()));
-    }
-
 	/** Set Deposit Batch Line.
 		@param C_DepositBatchLine_ID Deposit Batch Line
 	*/
@@ -201,6 +166,41 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	{
 		return (String)get_Value(COLUMNNAME_C_DepositBatchLine_UU);
 	}
+
+	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_ID)
+			.getPO(getC_DepositBatch_ID(), get_TrxName());
+	}
+
+	/** Set Deposit Batch.
+		@param C_DepositBatch_ID Deposit Batch
+	*/
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
+	{
+		if (C_DepositBatch_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
+	}
+
+	/** Get Deposit Batch.
+		@return Deposit Batch	  */
+	public int getC_DepositBatch_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_DepositBatch_ID()));
+    }
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
 	{

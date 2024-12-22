@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_FreightCategory
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_FreightCategory")
 public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_FreightCategory (Properties ctx, int M_FreightCategory_ID, String trxName)

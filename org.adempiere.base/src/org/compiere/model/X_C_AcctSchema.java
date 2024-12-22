@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema")
 public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
@@ -311,6 +311,34 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
+
+	/** Set Period.
+		@param C_Period_ID Period of the Calendar
+	*/
+	public void setC_Period_ID (int C_Period_ID)
+	{
+		if (C_Period_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
+	}
+
+	/** Get Period.
+		@return Period of the Calendar
+	  */
+	public int getC_Period_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** CommitmentType AD_Reference_ID=359 */
 	public static final int COMMITMENTTYPE_AD_Reference_ID=359;
 	/** PO/SO Commitment &amp; Reservation = A */
@@ -373,18 +401,18 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public static final String COSTINGMETHOD_AveragePO = "A";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last Invoice = i */
-	public static final String COSTINGMETHOD_LastInvoice = "i";
 	/** Average Invoice = I */
 	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Lifo = L */
 	public static final String COSTINGMETHOD_Lifo = "L";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** Standard Costing = S */
 	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
+	/** Last Invoice = i */
+	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** _ = x */
 	public static final String COSTINGMETHOD__ = "x";
 	/** Set Costing Method.
@@ -402,34 +430,6 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public String getCostingMethod()
 	{
 		return (String)get_Value(COLUMNNAME_CostingMethod);
-	}
-
-	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
-			.getPO(getC_Period_ID(), get_TrxName());
-	}
-
-	/** Set Period.
-		@param C_Period_ID Period of the Calendar
-	*/
-	public void setC_Period_ID (int C_Period_ID)
-	{
-		if (C_Period_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
-	}
-
-	/** Get Period.
-		@return Period of the Calendar
-	  */
-	public int getC_Period_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Description.

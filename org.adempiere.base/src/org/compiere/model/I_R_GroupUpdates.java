@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_GroupUpdates
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_R_GroupUpdates 
 {
@@ -119,6 +119,15 @@ public interface I_R_GroupUpdates
 	  */
 	public boolean isSelfService();
 
+    /** Column name R_GroupUpdates_UU */
+    public static final String COLUMNNAME_R_GroupUpdates_UU = "R_GroupUpdates_UU";
+
+	/** Set R_GroupUpdates_UU	  */
+	public void setR_GroupUpdates_UU (String R_GroupUpdates_UU);
+
+	/** Get R_GroupUpdates_UU	  */
+	public String getR_GroupUpdates_UU();
+
     /** Column name R_Group_ID */
     public static final String COLUMNNAME_R_Group_ID = "R_Group_ID";
 
@@ -133,15 +142,6 @@ public interface I_R_GroupUpdates
 	public int getR_Group_ID();
 
 	public org.compiere.model.I_R_Group getR_Group() throws RuntimeException;
-
-    /** Column name R_GroupUpdates_UU */
-    public static final String COLUMNNAME_R_GroupUpdates_UU = "R_GroupUpdates_UU";
-
-	/** Set R_GroupUpdates_UU	  */
-	public void setR_GroupUpdates_UU (String R_GroupUpdates_UU);
-
-	/** Get R_GroupUpdates_UU	  */
-	public String getR_GroupUpdates_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

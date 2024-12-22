@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobRemuneration
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_JobRemuneration")
 public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_JobRemuneration (Properties ctx, int C_JobRemuneration_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
       super (ctx, C_JobRemuneration_ID, trxName);
       /** if (C_JobRemuneration_ID == 0)
         {
-			setC_Job_ID (0);
 			setC_JobRemuneration_ID (0);
+			setC_Job_ID (0);
 			setC_Remuneration_ID (0);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
         } */
@@ -53,8 +53,8 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
       super (ctx, C_JobRemuneration_ID, trxName, virtualColumns);
       /** if (C_JobRemuneration_ID == 0)
         {
-			setC_Job_ID (0);
 			setC_JobRemuneration_ID (0);
+			setC_Job_ID (0);
 			setC_Remuneration_ID (0);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
         } */
@@ -66,8 +66,8 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
       super (ctx, C_JobRemuneration_UU, trxName);
       /** if (C_JobRemuneration_UU == null)
         {
-			setC_Job_ID (0);
 			setC_JobRemuneration_ID (0);
+			setC_Job_ID (0);
 			setC_Remuneration_ID (0);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
         } */
@@ -79,8 +79,8 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
       super (ctx, C_JobRemuneration_UU, trxName, virtualColumns);
       /** if (C_JobRemuneration_UU == null)
         {
-			setC_Job_ID (0);
 			setC_JobRemuneration_ID (0);
+			setC_Job_ID (0);
 			setC_Remuneration_ID (0);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
         } */
@@ -112,42 +112,6 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
       StringBuilder sb = new StringBuilder ("X_C_JobRemuneration[")
         .append(get_ID()).append("]");
       return sb.toString();
-    }
-
-	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
-			.getPO(getC_Job_ID(), get_TrxName());
-	}
-
-	/** Set Position.
-		@param C_Job_ID Job Position
-	*/
-	public void setC_Job_ID (int C_Job_ID)
-	{
-		if (C_Job_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Job_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Job_ID, Integer.valueOf(C_Job_ID));
-	}
-
-	/** Get Position.
-		@return Job Position
-	  */
-	public int getC_Job_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Job_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_Job_ID()));
     }
 
 	/** Set Position Remuneration.
@@ -186,6 +150,42 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
 	{
 		return (String)get_Value(COLUMNNAME_C_JobRemuneration_UU);
 	}
+
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
+			.getPO(getC_Job_ID(), get_TrxName());
+	}
+
+	/** Set Position.
+		@param C_Job_ID Job Position
+	*/
+	public void setC_Job_ID (int C_Job_ID)
+	{
+		if (C_Job_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Job_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Job_ID, Integer.valueOf(C_Job_ID));
+	}
+
+	/** Get Position.
+		@return Job Position
+	  */
+	public int getC_Job_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Job_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_Job_ID()));
+    }
 
 	public org.compiere.model.I_C_Remuneration getC_Remuneration() throws RuntimeException
 	{

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_LabelCategory
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelCategory")
 public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_LabelCategory (Properties ctx, int AD_LabelCategory_ID, String trxName)

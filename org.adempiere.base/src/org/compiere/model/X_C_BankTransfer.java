@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankTransfer
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BankTransfer")
 public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
@@ -51,8 +51,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setDocumentNo (null);
 			setFrom_AD_Org_ID (0);
 			setFrom_Amt (Env.ZERO);
-			setFrom_C_BankAccount_ID (0);
 			setFrom_C_BPartner_ID (0);
+			setFrom_C_BankAccount_ID (0);
 			setFrom_C_Charge_ID (0);
 			setFrom_C_Currency_ID (0);
 			setFrom_TenderType (null);
@@ -65,8 +65,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setRate (Env.ZERO);
 			setTo_AD_Org_ID (0);
 			setTo_Amt (Env.ZERO);
-			setTo_C_BankAccount_ID (0);
 			setTo_C_BPartner_ID (0);
+			setTo_C_BankAccount_ID (0);
 			setTo_C_Charge_ID (0);
 			setTo_C_Currency_ID (0);
 			setTo_TenderType (null);
@@ -90,8 +90,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setDocumentNo (null);
 			setFrom_AD_Org_ID (0);
 			setFrom_Amt (Env.ZERO);
-			setFrom_C_BankAccount_ID (0);
 			setFrom_C_BPartner_ID (0);
+			setFrom_C_BankAccount_ID (0);
 			setFrom_C_Charge_ID (0);
 			setFrom_C_Currency_ID (0);
 			setFrom_TenderType (null);
@@ -104,8 +104,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setRate (Env.ZERO);
 			setTo_AD_Org_ID (0);
 			setTo_Amt (Env.ZERO);
-			setTo_C_BankAccount_ID (0);
 			setTo_C_BPartner_ID (0);
+			setTo_C_BankAccount_ID (0);
 			setTo_C_Charge_ID (0);
 			setTo_C_Currency_ID (0);
 			setTo_TenderType (null);
@@ -129,8 +129,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setDocumentNo (null);
 			setFrom_AD_Org_ID (0);
 			setFrom_Amt (Env.ZERO);
-			setFrom_C_BankAccount_ID (0);
 			setFrom_C_BPartner_ID (0);
+			setFrom_C_BankAccount_ID (0);
 			setFrom_C_Charge_ID (0);
 			setFrom_C_Currency_ID (0);
 			setFrom_TenderType (null);
@@ -143,8 +143,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setRate (Env.ZERO);
 			setTo_AD_Org_ID (0);
 			setTo_Amt (Env.ZERO);
-			setTo_C_BankAccount_ID (0);
 			setTo_C_BPartner_ID (0);
+			setTo_C_BankAccount_ID (0);
 			setTo_C_Charge_ID (0);
 			setTo_C_Currency_ID (0);
 			setTo_TenderType (null);
@@ -168,8 +168,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setDocumentNo (null);
 			setFrom_AD_Org_ID (0);
 			setFrom_Amt (Env.ZERO);
-			setFrom_C_BankAccount_ID (0);
 			setFrom_C_BPartner_ID (0);
+			setFrom_C_BankAccount_ID (0);
 			setFrom_C_Charge_ID (0);
 			setFrom_C_Currency_ID (0);
 			setFrom_TenderType (null);
@@ -182,8 +182,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setRate (Env.ZERO);
 			setTo_AD_Org_ID (0);
 			setTo_Amt (Env.ZERO);
-			setTo_C_BankAccount_ID (0);
 			setTo_C_BPartner_ID (0);
+			setTo_C_BankAccount_ID (0);
 			setTo_C_Charge_ID (0);
 			setTo_C_Currency_ID (0);
 			setTo_TenderType (null);
@@ -461,33 +461,6 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 		return bd;
 	}
 
-	public org.compiere.model.I_C_BankAccount getFrom_C_BankAccount() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
-			.getPO(getFrom_C_BankAccount_ID(), get_TrxName());
-	}
-
-	/** Set From Bank Account.
-		@param From_C_BankAccount_ID From Bank Account
-	*/
-	public void setFrom_C_BankAccount_ID (int From_C_BankAccount_ID)
-	{
-		if (From_C_BankAccount_ID < 1)
-			set_Value (COLUMNNAME_From_C_BankAccount_ID, null);
-		else
-			set_Value (COLUMNNAME_From_C_BankAccount_ID, Integer.valueOf(From_C_BankAccount_ID));
-	}
-
-	/** Get From Bank Account.
-		@return From Bank Account	  */
-	public int getFrom_C_BankAccount_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_From_C_BankAccount_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_BPartner getFrom_C_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -511,6 +484,33 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public int getFrom_C_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_From_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BankAccount getFrom_C_BankAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getFrom_C_BankAccount_ID(), get_TrxName());
+	}
+
+	/** Set From Bank Account.
+		@param From_C_BankAccount_ID From Bank Account
+	*/
+	public void setFrom_C_BankAccount_ID (int From_C_BankAccount_ID)
+	{
+		if (From_C_BankAccount_ID < 1)
+			set_Value (COLUMNNAME_From_C_BankAccount_ID, null);
+		else
+			set_Value (COLUMNNAME_From_C_BankAccount_ID, Integer.valueOf(From_C_BankAccount_ID));
+	}
+
+	/** Get From Bank Account.
+		@return From Bank Account	  */
+	public int getFrom_C_BankAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_From_C_BankAccount_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -742,33 +742,6 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 		return bd;
 	}
 
-	public org.compiere.model.I_C_BankAccount getTo_C_BankAccount() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
-			.getPO(getTo_C_BankAccount_ID(), get_TrxName());
-	}
-
-	/** Set To Bank Account.
-		@param To_C_BankAccount_ID To Bank Account
-	*/
-	public void setTo_C_BankAccount_ID (int To_C_BankAccount_ID)
-	{
-		if (To_C_BankAccount_ID < 1)
-			set_Value (COLUMNNAME_To_C_BankAccount_ID, null);
-		else
-			set_Value (COLUMNNAME_To_C_BankAccount_ID, Integer.valueOf(To_C_BankAccount_ID));
-	}
-
-	/** Get To Bank Account.
-		@return To Bank Account	  */
-	public int getTo_C_BankAccount_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_To_C_BankAccount_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_BPartner getTo_C_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -792,6 +765,33 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public int getTo_C_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_To_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BankAccount getTo_C_BankAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getTo_C_BankAccount_ID(), get_TrxName());
+	}
+
+	/** Set To Bank Account.
+		@param To_C_BankAccount_ID To Bank Account
+	*/
+	public void setTo_C_BankAccount_ID (int To_C_BankAccount_ID)
+	{
+		if (To_C_BankAccount_ID < 1)
+			set_Value (COLUMNNAME_To_C_BankAccount_ID, null);
+		else
+			set_Value (COLUMNNAME_To_C_BankAccount_ID, Integer.valueOf(To_C_BankAccount_ID));
+	}
+
+	/** Get To Bank Account.
+		@return To Bank Account	  */
+	public int getTo_C_BankAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_To_C_BankAccount_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

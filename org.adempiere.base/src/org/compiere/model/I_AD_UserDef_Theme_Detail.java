@@ -65,10 +65,10 @@ public interface I_AD_UserDef_Theme_Detail
     /** Column name AD_UserDef_Theme_Detail_ID */
     public static final String COLUMNNAME_AD_UserDef_Theme_Detail_ID = "AD_UserDef_Theme_Detail_ID";
 
-	/** Set User defined Theme Detail	  */
+	/** Set Theme Customization Detail	  */
 	public void setAD_UserDef_Theme_Detail_ID (int AD_UserDef_Theme_Detail_ID);
 
-	/** Get User defined Theme Detail	  */
+	/** Get Theme Customization Detail	  */
 	public int getAD_UserDef_Theme_Detail_ID();
 
     /** Column name AD_UserDef_Theme_Detail_UU */
@@ -83,13 +83,13 @@ public interface I_AD_UserDef_Theme_Detail
     /** Column name AD_UserDef_Theme_ID */
     public static final String COLUMNNAME_AD_UserDef_Theme_ID = "AD_UserDef_Theme_ID";
 
-	/** Set User defined Theme	  */
+	/** Set Theme Customization	  */
 	public void setAD_UserDef_Theme_ID (int AD_UserDef_Theme_ID);
 
-	/** Get User defined Theme	  */
+	/** Get Theme Customization	  */
 	public int getAD_UserDef_Theme_ID();
 
-	public I_AD_UserDef_Theme getAD_UserDef_Theme() throws RuntimeException;
+	public org.compiere.model.I_AD_UserDef_Theme getAD_UserDef_Theme() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

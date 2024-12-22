@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PackageLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_PackageLine 
 {
@@ -119,21 +119,6 @@ public interface I_M_PackageLine
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
-    /** Column name M_Package_ID */
-    public static final String COLUMNNAME_M_Package_ID = "M_Package_ID";
-
-	/** Set Package.
-	  * Shipment Package
-	  */
-	public void setM_Package_ID (int M_Package_ID);
-
-	/** Get Package.
-	  * Shipment Package
-	  */
-	public int getM_Package_ID();
-
-	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException;
-
     /** Column name M_PackageLine_ID */
     public static final String COLUMNNAME_M_PackageLine_ID = "M_PackageLine_ID";
 
@@ -166,6 +151,21 @@ public interface I_M_PackageLine
 	public int getM_PackageMPS_ID();
 
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException;
+
+    /** Column name M_Package_ID */
+    public static final String COLUMNNAME_M_Package_ID = "M_Package_ID";
+
+	/** Set Package.
+	  * Shipment Package
+	  */
+	public void setM_Package_ID (int M_Package_ID);
+
+	/** Get Package.
+	  * Shipment Package
+	  */
+	public int getM_Package_ID();
+
+	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Recurring
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_Recurring 
 {
@@ -122,22 +122,6 @@ public interface I_C_Recurring
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_RecurringGroup_ID */
     public static final String COLUMNNAME_C_RecurringGroup_ID = "C_RecurringGroup_ID";
 
@@ -170,6 +154,22 @@ public interface I_C_Recurring
 
 	/** Get C_Recurring_UU	  */
 	public String getC_Recurring_UU();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name DateLastRun */
     public static final String COLUMNNAME_DateLastRun = "DateLastRun";

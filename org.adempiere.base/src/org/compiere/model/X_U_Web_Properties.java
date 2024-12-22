@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for U_Web_Properties
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="U_Web_Properties")
 public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_U_Web_Properties (Properties ctx, int U_Web_Properties_ID, String trxName)

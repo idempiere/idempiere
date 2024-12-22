@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ProductOperation
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_ProductOperation 
 {
@@ -117,21 +117,6 @@ public interface I_M_ProductOperation
 	  */
 	public boolean isActive();
 
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
-
     /** Column name M_ProductOperation_ID */
     public static final String COLUMNNAME_M_ProductOperation_ID = "M_ProductOperation_ID";
 
@@ -153,6 +138,21 @@ public interface I_M_ProductOperation
 
 	/** Get M_ProductOperation_UU	  */
 	public String getM_ProductOperation_UU();
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

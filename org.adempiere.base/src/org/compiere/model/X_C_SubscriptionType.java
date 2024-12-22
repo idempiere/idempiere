@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_SubscriptionType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_SubscriptionType")
 public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_SubscriptionType (Properties ctx, int C_SubscriptionType_ID, String trxName)

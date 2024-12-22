@@ -31,7 +31,7 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241128L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_StatusLine (Properties ctx, int AD_StatusLine_ID, String trxName)

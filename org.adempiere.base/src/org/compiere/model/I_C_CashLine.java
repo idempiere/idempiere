@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_CashLine 
 {
@@ -75,19 +75,6 @@ public interface I_C_CashLine
 	  */
 	public BigDecimal getAmount();
 
-    /** Column name CashType */
-    public static final String COLUMNNAME_CashType = "CashType";
-
-	/** Set Cash Type.
-	  * Source of Cash
-	  */
-	public void setCashType (String CashType);
-
-	/** Get Cash Type.
-	  * Source of Cash
-	  */
-	public String getCashType();
-
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
 
@@ -102,21 +89,6 @@ public interface I_C_CashLine
 	public int getC_BankAccount_ID();
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
-
-    /** Column name C_Cash_ID */
-    public static final String COLUMNNAME_C_Cash_ID = "C_Cash_ID";
-
-	/** Set Cash Journal.
-	  * Cash Journal
-	  */
-	public void setC_Cash_ID (int C_Cash_ID);
-
-	/** Get Cash Journal.
-	  * Cash Journal
-	  */
-	public int getC_Cash_ID();
-
-	public org.compiere.model.I_C_Cash getC_Cash() throws RuntimeException;
 
     /** Column name C_CashLine_ID */
     public static final String COLUMNNAME_C_CashLine_ID = "C_CashLine_ID";
@@ -139,6 +111,21 @@ public interface I_C_CashLine
 
 	/** Get C_CashLine_UU	  */
 	public String getC_CashLine_UU();
+
+    /** Column name C_Cash_ID */
+    public static final String COLUMNNAME_C_Cash_ID = "C_Cash_ID";
+
+	/** Set Cash Journal.
+	  * Cash Journal
+	  */
+	public void setC_Cash_ID (int C_Cash_ID);
+
+	/** Get Cash Journal.
+	  * Cash Journal
+	  */
+	public int getC_Cash_ID();
+
+	public org.compiere.model.I_C_Cash getC_Cash() throws RuntimeException;
 
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
@@ -199,6 +186,19 @@ public interface I_C_CashLine
 	public int getC_Payment_ID();
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
+
+    /** Column name CashType */
+    public static final String COLUMNNAME_CashType = "CashType";
+
+	/** Set Cash Type.
+	  * Source of Cash
+	  */
+	public void setCashType (String CashType);
+
+	/** Get Cash Type.
+	  * Source of Cash
+	  */
+	public String getCashType();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

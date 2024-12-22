@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_RMALine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_RMALine")
 public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_RMALine (Properties ctx, int M_RMALine_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
       /** if (M_RMALine_ID == 0)
         {
 			setC_Tax_ID (0);
-			setM_RMA_ID (0);
 			setM_RMALine_ID (0);
+			setM_RMA_ID (0);
 			setProcessed (false);
 			setQty (Env.ZERO);
         } */
@@ -56,8 +56,8 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
       /** if (M_RMALine_ID == 0)
         {
 			setC_Tax_ID (0);
-			setM_RMA_ID (0);
 			setM_RMALine_ID (0);
+			setM_RMA_ID (0);
 			setProcessed (false);
 			setQty (Env.ZERO);
         } */
@@ -70,8 +70,8 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
       /** if (M_RMALine_UU == null)
         {
 			setC_Tax_ID (0);
-			setM_RMA_ID (0);
 			setM_RMALine_ID (0);
+			setM_RMA_ID (0);
 			setProcessed (false);
 			setQty (Env.ZERO);
         } */
@@ -84,8 +84,8 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
       /** if (M_RMALine_UU == null)
         {
 			setC_Tax_ID (0);
-			setM_RMA_ID (0);
 			setM_RMALine_ID (0);
+			setM_RMA_ID (0);
 			setProcessed (false);
 			setQty (Env.ZERO);
         } */
@@ -304,42 +304,6 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_RMA)MTable.get(getCtx(), org.compiere.model.I_M_RMA.Table_ID)
-			.getPO(getM_RMA_ID(), get_TrxName());
-	}
-
-	/** Set RMA.
-		@param M_RMA_ID Return Material Authorization
-	*/
-	public void setM_RMA_ID (int M_RMA_ID)
-	{
-		if (M_RMA_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_RMA_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_RMA_ID, Integer.valueOf(M_RMA_ID));
-	}
-
-	/** Get RMA.
-		@return Return Material Authorization
-	  */
-	public int getM_RMA_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_RMA_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_RMA_ID()));
-    }
-
 	/** Set RMA Line.
 		@param M_RMALine_ID Return Material Authorization Line
 	*/
@@ -376,6 +340,42 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_M_RMALine_UU);
 	}
+
+	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_RMA)MTable.get(getCtx(), org.compiere.model.I_M_RMA.Table_ID)
+			.getPO(getM_RMA_ID(), get_TrxName());
+	}
+
+	/** Set RMA.
+		@param M_RMA_ID Return Material Authorization
+	*/
+	public void setM_RMA_ID (int M_RMA_ID)
+	{
+		if (M_RMA_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_RMA_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_RMA_ID, Integer.valueOf(M_RMA_ID));
+	}
+
+	/** Get RMA.
+		@return Return Material Authorization
+	  */
+	public int getM_RMA_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_RMA_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getM_RMA_ID()));
+    }
 
 	/** Set Processed.
 		@param Processed The document has been processed

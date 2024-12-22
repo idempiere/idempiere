@@ -110,6 +110,24 @@ public interface I_AD_ImportTemplate
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
+    /** Column name CSVAliasHeader */
+    public static final String COLUMNNAME_CSVAliasHeader = "CSVAliasHeader";
+
+	/** Set CSV Alias Header	  */
+	public void setCSVAliasHeader (String CSVAliasHeader);
+
+	/** Get CSV Alias Header	  */
+	public String getCSVAliasHeader();
+
+    /** Column name CSVHeader */
+    public static final String COLUMNNAME_CSVHeader = "CSVHeader";
+
+	/** Set CSV Header	  */
+	public void setCSVHeader (String CSVHeader);
+
+	/** Get CSV Header	  */
+	public String getCSVHeader();
+
     /** Column name CharacterSet */
     public static final String COLUMNNAME_CharacterSet = "CharacterSet";
 
@@ -134,24 +152,6 @@ public interface I_AD_ImportTemplate
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name CSVAliasHeader */
-    public static final String COLUMNNAME_CSVAliasHeader = "CSVAliasHeader";
-
-	/** Set CSV Alias Header	  */
-	public void setCSVAliasHeader (String CSVAliasHeader);
-
-	/** Get CSV Alias Header	  */
-	public String getCSVAliasHeader();
-
-    /** Column name CSVHeader */
-    public static final String COLUMNNAME_CSVHeader = "CSVHeader";
-
-	/** Set CSV Header	  */
-	public void setCSVHeader (String CSVHeader);
-
-	/** Get CSV Header	  */
-	public String getCSVHeader();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

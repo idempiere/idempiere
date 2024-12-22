@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebService_Para
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 @SuppressWarnings("all")
 public interface I_WS_WebService_Para 
@@ -140,6 +140,17 @@ public interface I_WS_WebService_Para
 	  */
 	public int getUpdatedBy();
 
+    /** Column name WS_WebServiceType_ID */
+    public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
+
+	/** Set Web Service Type	  */
+	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID);
+
+	/** Get Web Service Type	  */
+	public int getWS_WebServiceType_ID();
+
+	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
+
     /** Column name WS_WebService_Para_ID */
     public static final String COLUMNNAME_WS_WebService_Para_ID = "WS_WebService_Para_ID";
 
@@ -157,15 +168,4 @@ public interface I_WS_WebService_Para
 
 	/** Get WS_WebService_Para_UU	  */
 	public String getWS_WebService_Para_UU();
-
-    /** Column name WS_WebServiceType_ID */
-    public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
-
-	/** Set Web Service Type	  */
-	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID);
-
-	/** Get Web Service Type	  */
-	public int getWS_WebServiceType_ID();
-
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

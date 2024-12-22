@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQ_Topic
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_RfQ_Topic 
 {
@@ -77,22 +77,6 @@ public interface I_C_RfQ_Topic
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_RfQ_Topic_ID */
     public static final String COLUMNNAME_C_RfQ_Topic_ID = "C_RfQ_Topic_ID";
 
@@ -114,6 +98,22 @@ public interface I_C_RfQ_Topic
 
 	/** Get C_RfQ_Topic_UU	  */
 	public String getC_RfQ_Topic_UU();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
