@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatch
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatch")
 public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241206L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
@@ -43,6 +43,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
       /** if (C_DepositBatch_ID == 0)
         {
 			setC_BankAccount_ID (0);
+			setC_Currency_ID (0);
 			setC_DepositBatch_ID (0);
 			setC_DocType_ID (0);
 			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
@@ -64,6 +65,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
       /** if (C_DepositBatch_ID == 0)
         {
 			setC_BankAccount_ID (0);
+			setC_Currency_ID (0);
 			setC_DepositBatch_ID (0);
 			setC_DocType_ID (0);
 			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
@@ -85,6 +87,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
       /** if (C_DepositBatch_UU == null)
         {
 			setC_BankAccount_ID (0);
+			setC_Currency_ID (0);
 			setC_DepositBatch_ID (0);
 			setC_DocType_ID (0);
 			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
@@ -106,6 +109,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
       /** if (C_DepositBatch_UU == null)
         {
 			setC_BankAccount_ID (0);
+			setC_Currency_ID (0);
 			setC_DepositBatch_ID (0);
 			setC_DocType_ID (0);
 			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
@@ -171,6 +175,34 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
+
+	/** Set Currency.
+		@param C_Currency_ID The Currency for this record
+	*/
+	public void setC_Currency_ID (int C_Currency_ID)
+	{
+		if (C_Currency_ID < 1)
+			set_Value (COLUMNNAME_C_Currency_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
+	}
+
+	/** Get Currency.
+		@return The Currency for this record
+	  */
+	public int getC_Currency_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -321,6 +353,53 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** DocAction AD_Reference_ID=135 */
+	public static final int DOCACTION_AD_Reference_ID=135;
+	/** &lt;None&gt; = -- */
+	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
+	/** Prepare = PR */
+	public static final String DOCACTION_Prepare = "PR";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
+	/** Wait Complete = WC */
+	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
+	/** Set Document Action.
+		@param DocAction The targeted status of the document
+	*/
+	public void setDocAction (String DocAction)
+	{
+
+		set_Value (COLUMNNAME_DocAction, DocAction);
+	}
+
+	/** Get Document Action.
+		@return The targeted status of the document
+	  */
+	public String getDocAction()
+	{
+		return (String)get_Value(COLUMNNAME_DocAction);
+	}
+
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
 	/** Unknown = ?? */
@@ -402,28 +481,6 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Process Now.
-		@param Processing Process Now
-	*/
-	public void setProcessing (boolean Processing)
-	{
-		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
-	}
-
-	/** Get Process Now.
-		@return Process Now	  */
-	public boolean isProcessing()
-	{
-		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

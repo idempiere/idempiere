@@ -3,7 +3,7 @@
 .about-info-panel {
     overflow: auto;
     line-height: 1.5em;
-    font-size: 12px !important;
+    font-size: 1em !important;
 }
 .about-credit-panel {
 }
