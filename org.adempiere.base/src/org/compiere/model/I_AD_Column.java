@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Column 
 {
@@ -328,19 +328,6 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  */
 	public String getEntityType();
 
-    /** Column name FieldLength */
-    public static final String COLUMNNAME_FieldLength = "FieldLength";
-
-	/** Set Length.
-	  * Length of the column in the database
-	  */
-	public void setFieldLength (int FieldLength);
-
-	/** Get Length.
-	  * Length of the column in the database
-	  */
-	public int getFieldLength();
-
     /** Column name FKConstraintMsg_ID */
     public static final String COLUMNNAME_FKConstraintMsg_ID = "FKConstraintMsg_ID";
 
@@ -369,6 +356,19 @@ s active status or processed status. This logic Applicable only if Always Updata
 
 	/** Get Constraint Type	  */
 	public String getFKConstraintType();
+
+    /** Column name FieldLength */
+    public static final String COLUMNNAME_FieldLength = "FieldLength";
+
+	/** Set Length.
+	  * Length of the column in the database
+	  */
+	public void setFieldLength (int FieldLength);
+
+	/** Get Length.
+	  * Length of the column in the database
+	  */
+	public int getFieldLength();
 
     /** Column name FormatPattern */
     public static final String COLUMNNAME_FormatPattern = "FormatPattern";
@@ -768,6 +768,25 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  */
 	public int getUpdatedBy();
 
+    /** Column name VFormat */
+    public static final String COLUMNNAME_VFormat = "VFormat";
+
+	/** Set Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+, or ~regex
+	  */
+	public void setVFormat (String VFormat);
+
+	/** Get Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+, or ~regex
+	  */
+	public String getVFormat();
+
     /** Column name ValueMax */
     public static final String COLUMNNAME_ValueMax = "ValueMax";
 
@@ -806,23 +825,4 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  * Version of the table definition
 	  */
 	public BigDecimal getVersion();
-
-    /** Column name VFormat */
-    public static final String COLUMNNAME_VFormat = "VFormat";
-
-	/** Set Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: &quot;
-_lLoOaAcCa09&quot;
-
-	  */
-	public void setVFormat (String VFormat);
-
-	/** Get Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: &quot;
-_lLoOaAcCa09&quot;
-
-	  */
-	public String getVFormat();
 }

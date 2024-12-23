@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema_Default
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_AcctSchema_Default 
 {
@@ -77,6 +77,21 @@ public interface I_C_AcctSchema_Default
 
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException;
 
+    /** Column name B_InTransit_Acct */
+    public static final String COLUMNNAME_B_InTransit_Acct = "B_InTransit_Acct";
+
+	/** Set Bank In Transit.
+	  * Bank In Transit Account
+	  */
+	public void setB_InTransit_Acct (int B_InTransit_Acct);
+
+	/** Get Bank In Transit.
+	  * Bank In Transit Account
+	  */
+	public int getB_InTransit_Acct();
+
+	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
+
     /** Column name B_InterestExp_Acct */
     public static final String COLUMNNAME_B_InterestExp_Acct = "B_InterestExp_Acct";
 
@@ -107,21 +122,6 @@ public interface I_C_AcctSchema_Default
 
 	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException;
 
-    /** Column name B_InTransit_Acct */
-    public static final String COLUMNNAME_B_InTransit_Acct = "B_InTransit_Acct";
-
-	/** Set Bank In Transit.
-	  * Bank In Transit Account
-	  */
-	public void setB_InTransit_Acct (int B_InTransit_Acct);
-
-	/** Get Bank In Transit.
-	  * Bank In Transit Account
-	  */
-	public int getB_InTransit_Acct();
-
-	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
-
     /** Column name B_PaymentSelect_Acct */
     public static final String COLUMNNAME_B_PaymentSelect_Acct = "B_PaymentSelect_Acct";
 
@@ -151,30 +151,6 @@ public interface I_C_AcctSchema_Default
 	public int getB_UnallocatedCash_Acct();
 
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
-
-    /** Column name C_AcctSchema_Default_UU */
-    public static final String COLUMNNAME_C_AcctSchema_Default_UU = "C_AcctSchema_Default_UU";
-
-	/** Set C_AcctSchema_Default_UU	  */
-	public void setC_AcctSchema_Default_UU (String C_AcctSchema_Default_UU);
-
-	/** Get C_AcctSchema_Default_UU	  */
-	public String getC_AcctSchema_Default_UU();
-
-    /** Column name C_AcctSchema_ID */
-    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
-
-	/** Set Accounting Schema.
-	  * Rules for accounting
-	  */
-	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
-
-	/** Get Accounting Schema.
-	  * Rules for accounting
-	  */
-	public int getC_AcctSchema_ID();
-
-	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CB_Asset_Acct */
     public static final String COLUMNNAME_CB_Asset_Acct = "CB_Asset_Acct";
@@ -251,20 +227,29 @@ public interface I_C_AcctSchema_Default
 
 	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException;
 
-    /** Column name Ch_Expense_Acct */
-    public static final String COLUMNNAME_Ch_Expense_Acct = "Ch_Expense_Acct";
+    /** Column name C_AcctSchema_Default_UU */
+    public static final String COLUMNNAME_C_AcctSchema_Default_UU = "C_AcctSchema_Default_UU";
 
-	/** Set Charge Account.
-	  * Charge Account
+	/** Set C_AcctSchema_Default_UU	  */
+	public void setC_AcctSchema_Default_UU (String C_AcctSchema_Default_UU);
+
+	/** Get C_AcctSchema_Default_UU	  */
+	public String getC_AcctSchema_Default_UU();
+
+    /** Column name C_AcctSchema_ID */
+    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
+
+	/** Set Accounting Schema.
+	  * Rules for accounting
 	  */
-	public void setCh_Expense_Acct (int Ch_Expense_Acct);
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
 
-	/** Get Charge Account.
-	  * Charge Account
+	/** Get Accounting Schema.
+	  * Rules for accounting
 	  */
-	public int getCh_Expense_Acct();
+	public int getC_AcctSchema_ID();
 
-	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
     public static final String COLUMNNAME_C_Prepayment_Acct = "C_Prepayment_Acct";
@@ -280,22 +265,6 @@ public interface I_C_AcctSchema_Default
 	public int getC_Prepayment_Acct();
 
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException;
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
 
     /** Column name C_Receivable_Acct */
     public static final String COLUMNNAME_C_Receivable_Acct = "C_Receivable_Acct";
@@ -327,6 +296,37 @@ public interface I_C_AcctSchema_Default
 
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
+    /** Column name Ch_Expense_Acct */
+    public static final String COLUMNNAME_Ch_Expense_Acct = "Ch_Expense_Acct";
+
+	/** Set Charge Account.
+	  * Charge Account
+	  */
+	public void setCh_Expense_Acct (int Ch_Expense_Acct);
+
+	/** Get Charge Account.
+	  * Charge Account
+	  */
+	public int getCh_Expense_Acct();
+
+	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -354,6 +354,36 @@ public interface I_C_AcctSchema_Default
 	public int getNotInvoicedReceipts_Acct();
 
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException;
+
+    /** Column name PJ_Asset_Acct */
+    public static final String COLUMNNAME_PJ_Asset_Acct = "PJ_Asset_Acct";
+
+	/** Set Project Asset.
+	  * Project Asset Account
+	  */
+	public void setPJ_Asset_Acct (int PJ_Asset_Acct);
+
+	/** Get Project Asset.
+	  * Project Asset Account
+	  */
+	public int getPJ_Asset_Acct();
+
+	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException;
+
+    /** Column name PJ_WIP_Acct */
+    public static final String COLUMNNAME_PJ_WIP_Acct = "PJ_WIP_Acct";
+
+	/** Set Work In Progress.
+	  * Account for Work in Progress
+	  */
+	public void setPJ_WIP_Acct (int PJ_WIP_Acct);
+
+	/** Get Work In Progress.
+	  * Account for Work in Progress
+	  */
+	public int getPJ_WIP_Acct();
+
+	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException;
 
     /** Column name P_Asset_Acct */
     public static final String COLUMNNAME_P_Asset_Acct = "P_Asset_Acct";
@@ -384,36 +414,6 @@ public interface I_C_AcctSchema_Default
 	public int getP_AverageCostVariance_Acct();
 
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException;
-
-    /** Column name PayDiscount_Exp_Acct */
-    public static final String COLUMNNAME_PayDiscount_Exp_Acct = "PayDiscount_Exp_Acct";
-
-	/** Set Payment Discount Expense.
-	  * Payment Discount Expense Account
-	  */
-	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct);
-
-	/** Get Payment Discount Expense.
-	  * Payment Discount Expense Account
-	  */
-	public int getPayDiscount_Exp_Acct();
-
-	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException;
-
-    /** Column name PayDiscount_Rev_Acct */
-    public static final String COLUMNNAME_PayDiscount_Rev_Acct = "PayDiscount_Rev_Acct";
-
-	/** Set Payment Discount Revenue.
-	  * Payment Discount Revenue Account
-	  */
-	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct);
-
-	/** Get Payment Discount Revenue.
-	  * Payment Discount Revenue Account
-	  */
-	public int getPayDiscount_Rev_Acct();
-
-	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException;
 
     /** Column name P_COGS_Acct */
     public static final String COLUMNNAME_P_COGS_Acct = "P_COGS_Acct";
@@ -490,36 +490,6 @@ public interface I_C_AcctSchema_Default
 
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
 
-    /** Column name PJ_Asset_Acct */
-    public static final String COLUMNNAME_PJ_Asset_Acct = "PJ_Asset_Acct";
-
-	/** Set Project Asset.
-	  * Project Asset Account
-	  */
-	public void setPJ_Asset_Acct (int PJ_Asset_Acct);
-
-	/** Get Project Asset.
-	  * Project Asset Account
-	  */
-	public int getPJ_Asset_Acct();
-
-	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException;
-
-    /** Column name PJ_WIP_Acct */
-    public static final String COLUMNNAME_PJ_WIP_Acct = "PJ_WIP_Acct";
-
-	/** Set Work In Progress.
-	  * Account for Work in Progress
-	  */
-	public void setPJ_WIP_Acct (int PJ_WIP_Acct);
-
-	/** Get Work In Progress.
-	  * Account for Work in Progress
-	  */
-	public int getPJ_WIP_Acct();
-
-	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException;
-
     /** Column name P_LandedCostClearing_Acct */
     public static final String COLUMNNAME_P_LandedCostClearing_Acct = "P_LandedCostClearing_Acct";
 
@@ -580,15 +550,6 @@ public interface I_C_AcctSchema_Default
 
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException;
 
-    /** Column name Processing */
-    public static final String COLUMNNAME_Processing = "Processing";
-
-	/** Set Process Now	  */
-	public void setProcessing (boolean Processing);
-
-	/** Get Process Now	  */
-	public boolean isProcessing();
-
     /** Column name P_TradeDiscountGrant_Acct */
     public static final String COLUMNNAME_P_TradeDiscountGrant_Acct = "P_TradeDiscountGrant_Acct";
 
@@ -618,6 +579,45 @@ public interface I_C_AcctSchema_Default
 	public int getP_TradeDiscountRec_Acct();
 
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException;
+
+    /** Column name PayDiscount_Exp_Acct */
+    public static final String COLUMNNAME_PayDiscount_Exp_Acct = "PayDiscount_Exp_Acct";
+
+	/** Set Payment Discount Expense.
+	  * Payment Discount Expense Account
+	  */
+	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct);
+
+	/** Get Payment Discount Expense.
+	  * Payment Discount Expense Account
+	  */
+	public int getPayDiscount_Exp_Acct();
+
+	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException;
+
+    /** Column name PayDiscount_Rev_Acct */
+    public static final String COLUMNNAME_PayDiscount_Rev_Acct = "PayDiscount_Rev_Acct";
+
+	/** Set Payment Discount Revenue.
+	  * Payment Discount Revenue Account
+	  */
+	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct);
+
+	/** Get Payment Discount Revenue.
+	  * Payment Discount Revenue Account
+	  */
+	public int getPayDiscount_Rev_Acct();
+
+	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException;
+
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
 
     /** Column name RealizedGain_Acct */
     public static final String COLUMNNAME_RealizedGain_Acct = "RealizedGain_Acct";

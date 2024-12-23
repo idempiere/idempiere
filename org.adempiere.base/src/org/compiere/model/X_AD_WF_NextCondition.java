@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NextCondition
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_NextCondition")
 public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
@@ -290,12 +290,12 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	public static final String OPERATION_GtEq = ">=";
 	/** &gt; = &gt;&gt; */
 	public static final String OPERATION_Gt = ">>";
-	/**  ~ = ~~ */
-	public static final String OPERATION_Like = "~~";
 	/** |&lt;x&gt;| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
+	/**  ~ = ~~ */
+	public static final String OPERATION_Like = "~~";
 	/** Set Operation.
 		@param Operation Compare Operation
 	*/
@@ -311,6 +311,21 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	public String getOperation()
 	{
 		return (String)get_Value(COLUMNNAME_Operation);
+	}
+
+	/** Set SQL Expression/Statement.
+		@param SQLStatement SQL Expression/Statement
+	*/
+	public void setSQLStatement (String SQLStatement)
+	{
+		set_Value (COLUMNNAME_SQLStatement, SQLStatement);
+	}
+
+	/** Get SQL Expression/Statement.
+		@return SQL Expression/Statement	  */
+	public String getSQLStatement()
+	{
+		return (String)get_Value(COLUMNNAME_SQLStatement);
 	}
 
 	/** Set Sequence.
@@ -330,21 +345,6 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set SQL Expression/Statement.
-		@param SQLStatement SQL Expression/Statement
-	*/
-	public void setSQLStatement (String SQLStatement)
-	{
-		set_Value (COLUMNNAME_SQLStatement, SQLStatement);
-	}
-
-	/** Get SQL Expression/Statement.
-		@return SQL Expression/Statement	  */
-	public String getSQLStatement()
-	{
-		return (String)get_Value(COLUMNNAME_SQLStatement);
 	}
 
 	/** Set Search Key.

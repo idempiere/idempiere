@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TreeNodePR
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_TreeNodePR")
 public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_TreeNodePR (Properties ctx, int AD_TreeNodePR_ID, String trxName)
@@ -104,6 +104,21 @@ public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
       return sb.toString();
     }
 
+	/** Set AD_TreeNodePR_UU.
+		@param AD_TreeNodePR_UU AD_TreeNodePR_UU
+	*/
+	public void setAD_TreeNodePR_UU (String AD_TreeNodePR_UU)
+	{
+		set_Value (COLUMNNAME_AD_TreeNodePR_UU, AD_TreeNodePR_UU);
+	}
+
+	/** Get AD_TreeNodePR_UU.
+		@return AD_TreeNodePR_UU	  */
+	public String getAD_TreeNodePR_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_TreeNodePR_UU);
+	}
+
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)
@@ -130,21 +145,6 @@ public class X_AD_TreeNodePR extends PO implements I_AD_TreeNodePR, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set AD_TreeNodePR_UU.
-		@param AD_TreeNodePR_UU AD_TreeNodePR_UU
-	*/
-	public void setAD_TreeNodePR_UU (String AD_TreeNodePR_UU)
-	{
-		set_Value (COLUMNNAME_AD_TreeNodePR_UU, AD_TreeNodePR_UU);
-	}
-
-	/** Get AD_TreeNodePR_UU.
-		@return AD_TreeNodePR_UU	  */
-	public String getAD_TreeNodePR_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_TreeNodePR_UU);
 	}
 
 	/** Set Node.

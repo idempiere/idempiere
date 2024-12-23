@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectIssueMA
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_ProjectIssueMA 
 {
@@ -62,6 +62,15 @@ public interface I_C_ProjectIssueMA
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_ProjectIssueMA_UU */
+    public static final String COLUMNNAME_C_ProjectIssueMA_UU = "C_ProjectIssueMA_UU";
+
+	/** Set C_ProjectIssueMA_UU	  */
+	public void setC_ProjectIssueMA_UU (String C_ProjectIssueMA_UU);
+
+	/** Get C_ProjectIssueMA_UU	  */
+	public String getC_ProjectIssueMA_UU();
+
     /** Column name C_ProjectIssue_ID */
     public static final String COLUMNNAME_C_ProjectIssue_ID = "C_ProjectIssue_ID";
 
@@ -76,15 +85,6 @@ public interface I_C_ProjectIssueMA
 	public int getC_ProjectIssue_ID();
 
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
-
-    /** Column name C_ProjectIssueMA_UU */
-    public static final String COLUMNNAME_C_ProjectIssueMA_UU = "C_ProjectIssueMA_UU";
-
-	/** Set C_ProjectIssueMA_UU	  */
-	public void setC_ProjectIssueMA_UU (String C_ProjectIssueMA_UU);
-
-	/** Get C_ProjectIssueMA_UU	  */
-	public String getC_ProjectIssueMA_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

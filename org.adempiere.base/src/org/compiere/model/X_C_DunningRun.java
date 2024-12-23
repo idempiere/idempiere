@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRun
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DunningRun")
 public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_DunningRun (Properties ctx, int C_DunningRun_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
       super (ctx, C_DunningRun_ID, trxName);
       /** if (C_DunningRun_ID == 0)
         {
-			setC_Dunning_ID (0);
 			setC_DunningRun_ID (0);
+			setC_Dunning_ID (0);
 			setDunningDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -54,8 +54,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
       super (ctx, C_DunningRun_ID, trxName, virtualColumns);
       /** if (C_DunningRun_ID == 0)
         {
-			setC_Dunning_ID (0);
 			setC_DunningRun_ID (0);
+			setC_Dunning_ID (0);
 			setDunningDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -68,8 +68,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
       super (ctx, C_DunningRun_UU, trxName);
       /** if (C_DunningRun_UU == null)
         {
-			setC_Dunning_ID (0);
 			setC_DunningRun_ID (0);
+			setC_Dunning_ID (0);
 			setDunningDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -82,8 +82,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
       super (ctx, C_DunningRun_UU, trxName, virtualColumns);
       /** if (C_DunningRun_UU == null)
         {
-			setC_Dunning_ID (0);
 			setC_DunningRun_ID (0);
+			setC_Dunning_ID (0);
 			setDunningDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -117,34 +117,6 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
-			.getPO(getC_Dunning_ID(), get_TrxName());
-	}
-
-	/** Set Dunning.
-		@param C_Dunning_ID Dunning Rules for overdue invoices
-	*/
-	public void setC_Dunning_ID (int C_Dunning_ID)
-	{
-		if (C_Dunning_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
-	}
-
-	/** Get Dunning.
-		@return Dunning Rules for overdue invoices
-	  */
-	public int getC_Dunning_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException
 	{
@@ -208,6 +180,34 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	public String getC_DunningRun_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DunningRun_UU);
+	}
+
+	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
+			.getPO(getC_Dunning_ID(), get_TrxName());
+	}
+
+	/** Set Dunning.
+		@param C_Dunning_ID Dunning Rules for overdue invoices
+	*/
+	public void setC_Dunning_ID (int C_Dunning_ID)
+	{
+		if (C_Dunning_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
+	}
+
+	/** Get Dunning.
+		@return Dunning Rules for overdue invoices
+	  */
+	public int getC_Dunning_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

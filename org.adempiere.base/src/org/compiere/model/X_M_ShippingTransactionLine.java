@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShippingTransactionLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingTransactionLine")
 public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTransactionLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_ShippingTransactionLine (Properties ctx, int M_ShippingTransactionLine_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
       super (ctx, M_ShippingTransactionLine_ID, trxName);
       /** if (M_ShippingTransactionLine_ID == 0)
         {
-			setM_ShippingTransaction_ID (0);
 			setM_ShippingTransactionLine_ID (0);
+			setM_ShippingTransaction_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -54,8 +54,8 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
       super (ctx, M_ShippingTransactionLine_ID, trxName, virtualColumns);
       /** if (M_ShippingTransactionLine_ID == 0)
         {
-			setM_ShippingTransaction_ID (0);
 			setM_ShippingTransactionLine_ID (0);
+			setM_ShippingTransaction_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -67,8 +67,8 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
       super (ctx, M_ShippingTransactionLine_UU, trxName);
       /** if (M_ShippingTransactionLine_UU == null)
         {
-			setM_ShippingTransaction_ID (0);
 			setM_ShippingTransactionLine_ID (0);
+			setM_ShippingTransaction_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -80,8 +80,8 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
       super (ctx, M_ShippingTransactionLine_UU, trxName, virtualColumns);
       /** if (M_ShippingTransactionLine_UU == null)
         {
-			setM_ShippingTransaction_ID (0);
 			setM_ShippingTransactionLine_ID (0);
+			setM_ShippingTransaction_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -223,21 +223,6 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 		return bd;
 	}
 
-	/** Set Master Tracking No.
-		@param MasterTrackingNo Master Tracking No
-	*/
-	public void setMasterTrackingNo (String MasterTrackingNo)
-	{
-		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
-	}
-
-	/** Get Master Tracking No.
-		@return Master Tracking No	  */
-	public String getMasterTrackingNo()
-	{
-		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
-	}
-
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PackageMPS)MTable.get(getCtx(), org.compiere.model.I_M_PackageMPS.Table_ID)
@@ -263,6 +248,42 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Shipping Transaction Line.
+		@param M_ShippingTransactionLine_ID Shipping Transaction Line
+	*/
+	public void setM_ShippingTransactionLine_ID (int M_ShippingTransactionLine_ID)
+	{
+		if (M_ShippingTransactionLine_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_ShippingTransactionLine_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_ShippingTransactionLine_ID, Integer.valueOf(M_ShippingTransactionLine_ID));
+	}
+
+	/** Get Shipping Transaction Line.
+		@return Shipping Transaction Line	  */
+	public int getM_ShippingTransactionLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingTransactionLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_ShippingTransactionLine_UU.
+		@param M_ShippingTransactionLine_UU M_ShippingTransactionLine_UU
+	*/
+	public void setM_ShippingTransactionLine_UU (String M_ShippingTransactionLine_UU)
+	{
+		set_Value (COLUMNNAME_M_ShippingTransactionLine_UU, M_ShippingTransactionLine_UU);
+	}
+
+	/** Get M_ShippingTransactionLine_UU.
+		@return M_ShippingTransactionLine_UU	  */
+	public String getM_ShippingTransactionLine_UU()
+	{
+		return (String)get_Value(COLUMNNAME_M_ShippingTransactionLine_UU);
 	}
 
 	public org.compiere.model.I_M_ShippingTransaction getM_ShippingTransaction() throws RuntimeException
@@ -300,40 +321,19 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
         return new KeyNamePair(get_ID(), String.valueOf(getM_ShippingTransaction_ID()));
     }
 
-	/** Set Shipping Transaction Line.
-		@param M_ShippingTransactionLine_ID Shipping Transaction Line
+	/** Set Master Tracking No.
+		@param MasterTrackingNo Master Tracking No
 	*/
-	public void setM_ShippingTransactionLine_ID (int M_ShippingTransactionLine_ID)
+	public void setMasterTrackingNo (String MasterTrackingNo)
 	{
-		if (M_ShippingTransactionLine_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_ShippingTransactionLine_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_ShippingTransactionLine_ID, Integer.valueOf(M_ShippingTransactionLine_ID));
+		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
 	}
 
-	/** Get Shipping Transaction Line.
-		@return Shipping Transaction Line	  */
-	public int getM_ShippingTransactionLine_ID()
+	/** Get Master Tracking No.
+		@return Master Tracking No	  */
+	public String getMasterTrackingNo()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingTransactionLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set M_ShippingTransactionLine_UU.
-		@param M_ShippingTransactionLine_UU M_ShippingTransactionLine_UU
-	*/
-	public void setM_ShippingTransactionLine_UU (String M_ShippingTransactionLine_UU)
-	{
-		set_Value (COLUMNNAME_M_ShippingTransactionLine_UU, M_ShippingTransactionLine_UU);
-	}
-
-	/** Get M_ShippingTransactionLine_UU.
-		@return M_ShippingTransactionLine_UU	  */
-	public String getM_ShippingTransactionLine_UU()
-	{
-		return (String)get_Value(COLUMNNAME_M_ShippingTransactionLine_UU);
+		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
 	}
 
 	/** Set Price.

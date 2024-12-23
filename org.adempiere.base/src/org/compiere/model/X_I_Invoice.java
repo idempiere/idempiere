@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Invoice
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="I_Invoice")
 public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_I_Invoice (Properties ctx, int I_Invoice_ID, String trxName)
@@ -107,54 +107,6 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
       return sb.toString();
     }
 
-	/** Set Activity Key.
-		@param ActivityValue Text key for Activity
-	*/
-	public void setActivityValue (String ActivityValue)
-	{
-		set_Value (COLUMNNAME_ActivityValue, ActivityValue);
-	}
-
-	/** Get Activity Key.
-		@return Text key for Activity
-	  */
-	public String getActivityValue()
-	{
-		return (String)get_Value(COLUMNNAME_ActivityValue);
-	}
-
-	/** Set Address 1.
-		@param Address1 Address line 1 for this location
-	*/
-	public void setAddress1 (String Address1)
-	{
-		set_Value (COLUMNNAME_Address1, Address1);
-	}
-
-	/** Get Address 1.
-		@return Address line 1 for this location
-	  */
-	public String getAddress1()
-	{
-		return (String)get_Value(COLUMNNAME_Address1);
-	}
-
-	/** Set Address 2.
-		@param Address2 Address line 2 for this location
-	*/
-	public void setAddress2 (String Address2)
-	{
-		set_Value (COLUMNNAME_Address2, Address2);
-	}
-
-	/** Get Address 2.
-		@return Address line 2 for this location
-	  */
-	public String getAddress2()
-	{
-		return (String)get_Value(COLUMNNAME_Address2);
-	}
-
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID Performing or initiating organization
 	*/
@@ -203,6 +155,54 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Activity Key.
+		@param ActivityValue Text key for Activity
+	*/
+	public void setActivityValue (String ActivityValue)
+	{
+		set_Value (COLUMNNAME_ActivityValue, ActivityValue);
+	}
+
+	/** Get Activity Key.
+		@return Text key for Activity
+	  */
+	public String getActivityValue()
+	{
+		return (String)get_Value(COLUMNNAME_ActivityValue);
+	}
+
+	/** Set Address 1.
+		@param Address1 Address line 1 for this location
+	*/
+	public void setAddress1 (String Address1)
+	{
+		set_Value (COLUMNNAME_Address1, Address1);
+	}
+
+	/** Get Address 1.
+		@return Address line 1 for this location
+	  */
+	public String getAddress1()
+	{
+		return (String)get_Value(COLUMNNAME_Address1);
+	}
+
+	/** Set Address 2.
+		@param Address2 Address line 2 for this location
+	*/
+	public void setAddress2 (String Address2)
+	{
+		set_Value (COLUMNNAME_Address2, Address2);
+	}
+
+	/** Get Address 2.
+		@return Address line 2 for this location
+	  */
+	public String getAddress2()
+	{
+		return (String)get_Value(COLUMNNAME_Address2);
 	}
 
 	/** Set Business Partner Key.
@@ -487,20 +487,32 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Charge Name.
-		@param ChargeName Name of the Charge
-	*/
-	public void setChargeName (String ChargeName)
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
-		set_Value (COLUMNNAME_ChargeName, ChargeName);
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
 	}
 
-	/** Get Charge Name.
-		@return Name of the Charge
-	  */
-	public String getChargeName()
+	/** Set Invoice Line.
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
+	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		return (String)get_Value(COLUMNNAME_ChargeName);
+		if (C_InvoiceLine_ID < 1)
+			set_Value (COLUMNNAME_C_InvoiceLine_ID, null);
+		else
+			set_Value (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
+	}
+
+	/** Get Invoice Line.
+		@return Invoice Detail Line
+	  */
+	public int getC_InvoiceLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
@@ -531,50 +543,6 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());
-	}
-
-	/** Set Invoice Line.
-		@param C_InvoiceLine_ID Invoice Detail Line
-	*/
-	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
-	{
-		if (C_InvoiceLine_ID < 1)
-			set_Value (COLUMNNAME_C_InvoiceLine_ID, null);
-		else
-			set_Value (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
-	}
-
-	/** Get Invoice Line.
-		@return Invoice Detail Line
-	  */
-	public int getC_InvoiceLine_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set City.
-		@param City Identifies a City
-	*/
-	public void setCity (String City)
-	{
-		set_Value (COLUMNNAME_City, City);
-	}
-
-	/** Get City.
-		@return Identifies a City
-	  */
-	public String getCity()
-	{
-		return (String)get_Value(COLUMNNAME_City);
-	}
-
 	public org.compiere.model.I_C_Location getC_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
@@ -601,45 +569,6 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Contact Name.
-		@param ContactName Business Partner Contact Name
-	*/
-	public void setContactName (String ContactName)
-	{
-		set_Value (COLUMNNAME_ContactName, ContactName);
-	}
-
-	/** Get Contact Name.
-		@return Business Partner Contact Name
-	  */
-	public String getContactName()
-	{
-		return (String)get_Value(COLUMNNAME_ContactName);
-	}
-
-	/** Set ISO Country Code.
-		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-	*/
-	public void setCountryCode (boolean CountryCode)
-	{
-		set_Value (COLUMNNAME_CountryCode, Boolean.valueOf(CountryCode));
-	}
-
-	/** Get ISO Country Code.
-		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-	  */
-	public boolean isCountryCode()
-	{
-		Object oo = get_Value(COLUMNNAME_CountryCode);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
@@ -752,6 +681,77 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Charge Name.
+		@param ChargeName Name of the Charge
+	*/
+	public void setChargeName (String ChargeName)
+	{
+		set_Value (COLUMNNAME_ChargeName, ChargeName);
+	}
+
+	/** Get Charge Name.
+		@return Name of the Charge
+	  */
+	public String getChargeName()
+	{
+		return (String)get_Value(COLUMNNAME_ChargeName);
+	}
+
+	/** Set City.
+		@param City Identifies a City
+	*/
+	public void setCity (String City)
+	{
+		set_Value (COLUMNNAME_City, City);
+	}
+
+	/** Get City.
+		@return Identifies a City
+	  */
+	public String getCity()
+	{
+		return (String)get_Value(COLUMNNAME_City);
+	}
+
+	/** Set Contact Name.
+		@param ContactName Business Partner Contact Name
+	*/
+	public void setContactName (String ContactName)
+	{
+		set_Value (COLUMNNAME_ContactName, ContactName);
+	}
+
+	/** Get Contact Name.
+		@return Business Partner Contact Name
+	  */
+	public String getContactName()
+	{
+		return (String)get_Value(COLUMNNAME_ContactName);
+	}
+
+	/** Set ISO Country Code.
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	*/
+	public void setCountryCode (boolean CountryCode)
+	{
+		set_Value (COLUMNNAME_CountryCode, Boolean.valueOf(CountryCode));
+	}
+
+	/** Get ISO Country Code.
+		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  */
+	public boolean isCountryCode()
+	{
+		Object oo = get_Value(COLUMNNAME_CountryCode);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Account Date.
@@ -1216,6 +1216,22 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_RegionName);
 	}
 
+	/** Set SKU.
+		@param SKU Stock Keeping Unit
+	*/
+	public void setSKU (String SKU)
+	{
+		set_Value (COLUMNNAME_SKU, SKU);
+	}
+
+	/** Get SKU.
+		@return Stock Keeping Unit
+	  */
+	public String getSKU()
+	{
+		return (String)get_Value(COLUMNNAME_SKU);
+	}
+
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -1242,22 +1258,6 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set SKU.
-		@param SKU Stock Keeping Unit
-	*/
-	public void setSKU (String SKU)
-	{
-		set_Value (COLUMNNAME_SKU, SKU);
-	}
-
-	/** Get SKU.
-		@return Stock Keeping Unit
-	  */
-	public String getSKU()
-	{
-		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
 	/** Set Tax Amount.

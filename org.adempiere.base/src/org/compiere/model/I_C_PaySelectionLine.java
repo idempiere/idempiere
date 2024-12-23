@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaySelectionLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_PaySelectionLine 
 {
@@ -92,21 +92,6 @@ public interface I_C_PaySelectionLine
 
 	public org.compiere.model.I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException;
 
-    /** Column name C_PaySelection_ID */
-    public static final String COLUMNNAME_C_PaySelection_ID = "C_PaySelection_ID";
-
-	/** Set Payment Selection.
-	  * Payment Selection
-	  */
-	public void setC_PaySelection_ID (int C_PaySelection_ID);
-
-	/** Get Payment Selection.
-	  * Payment Selection
-	  */
-	public int getC_PaySelection_ID();
-
-	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException;
-
     /** Column name C_PaySelectionLine_ID */
     public static final String COLUMNNAME_C_PaySelectionLine_ID = "C_PaySelectionLine_ID";
 
@@ -128,6 +113,21 @@ public interface I_C_PaySelectionLine
 
 	/** Get C_PaySelectionLine_UU	  */
 	public String getC_PaySelectionLine_UU();
+
+    /** Column name C_PaySelection_ID */
+    public static final String COLUMNNAME_C_PaySelection_ID = "C_PaySelection_ID";
+
+	/** Set Payment Selection.
+	  * Payment Selection
+	  */
+	public void setC_PaySelection_ID (int C_PaySelection_ID);
+
+	/** Get Payment Selection.
+	  * Payment Selection
+	  */
+	public int getC_PaySelection_ID();
+
+	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

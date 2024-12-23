@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageOnHand
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageOnHand")
 public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)

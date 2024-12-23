@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for A_RegistrationValue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationValue")
 public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_A_RegistrationValue (Properties ctx, int A_RegistrationValue_ID, String trxName)
@@ -145,6 +145,21 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
         return new ValueNamePair(get_UUID(), String.valueOf(getA_RegistrationAttribute_ID()));
     }
 
+	/** Set A_RegistrationValue_UU.
+		@param A_RegistrationValue_UU A_RegistrationValue_UU
+	*/
+	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU)
+	{
+		set_Value (COLUMNNAME_A_RegistrationValue_UU, A_RegistrationValue_UU);
+	}
+
+	/** Get A_RegistrationValue_UU.
+		@return A_RegistrationValue_UU	  */
+	public String getA_RegistrationValue_UU()
+	{
+		return (String)get_Value(COLUMNNAME_A_RegistrationValue_UU);
+	}
+
 	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Registration)MTable.get(getCtx(), org.compiere.model.I_A_Registration.Table_ID)
@@ -171,21 +186,6 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set A_RegistrationValue_UU.
-		@param A_RegistrationValue_UU A_RegistrationValue_UU
-	*/
-	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU)
-	{
-		set_Value (COLUMNNAME_A_RegistrationValue_UU, A_RegistrationValue_UU);
-	}
-
-	/** Get A_RegistrationValue_UU.
-		@return A_RegistrationValue_UU	  */
-	public String getA_RegistrationValue_UU()
-	{
-		return (String)get_Value(COLUMNNAME_A_RegistrationValue_UU);
 	}
 
 	/** Set Description.

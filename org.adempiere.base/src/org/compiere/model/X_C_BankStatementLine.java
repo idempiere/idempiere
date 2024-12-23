@@ -34,7 +34,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241206L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BankStatementLine (Properties ctx, int C_BankStatementLine_ID, String trxName)

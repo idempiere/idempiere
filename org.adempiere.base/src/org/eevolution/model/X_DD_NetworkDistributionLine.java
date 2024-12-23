@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for DD_NetworkDistributionLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="DD_NetworkDistributionLine")
 public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDistributionLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName)
@@ -42,12 +42,12 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
       super (ctx, DD_NetworkDistributionLine_ID, trxName);
       /** if (DD_NetworkDistributionLine_ID == 0)
         {
-			setDD_NetworkDistribution_ID (0);
 			setDD_NetworkDistributionLine_ID (0);
+			setDD_NetworkDistribution_ID (0);
 			setM_Shipper_ID (0);
+			setM_WarehouseSource_ID (0);
 			setM_Warehouse_ID (0);
 // @M_Warehouse_ID@
-			setM_WarehouseSource_ID (0);
         } */
     }
 
@@ -57,12 +57,12 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
       super (ctx, DD_NetworkDistributionLine_ID, trxName, virtualColumns);
       /** if (DD_NetworkDistributionLine_ID == 0)
         {
-			setDD_NetworkDistribution_ID (0);
 			setDD_NetworkDistributionLine_ID (0);
+			setDD_NetworkDistribution_ID (0);
 			setM_Shipper_ID (0);
+			setM_WarehouseSource_ID (0);
 			setM_Warehouse_ID (0);
 // @M_Warehouse_ID@
-			setM_WarehouseSource_ID (0);
         } */
     }
 
@@ -72,12 +72,12 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
       super (ctx, DD_NetworkDistributionLine_UU, trxName);
       /** if (DD_NetworkDistributionLine_UU == null)
         {
-			setDD_NetworkDistribution_ID (0);
 			setDD_NetworkDistributionLine_ID (0);
+			setDD_NetworkDistribution_ID (0);
 			setM_Shipper_ID (0);
+			setM_WarehouseSource_ID (0);
 			setM_Warehouse_ID (0);
 // @M_Warehouse_ID@
-			setM_WarehouseSource_ID (0);
         } */
     }
 
@@ -87,12 +87,12 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
       super (ctx, DD_NetworkDistributionLine_UU, trxName, virtualColumns);
       /** if (DD_NetworkDistributionLine_UU == null)
         {
-			setDD_NetworkDistribution_ID (0);
 			setDD_NetworkDistributionLine_ID (0);
+			setDD_NetworkDistribution_ID (0);
 			setM_Shipper_ID (0);
+			setM_WarehouseSource_ID (0);
 			setM_Warehouse_ID (0);
 // @M_Warehouse_ID@
-			setM_WarehouseSource_ID (0);
         } */
     }
 
@@ -123,33 +123,6 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException
-	{
-		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_ID)
-			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());
-	}
-
-	/** Set Network Distribution.
-		@param DD_NetworkDistribution_ID Network Distribution
-	*/
-	public void setDD_NetworkDistribution_ID (int DD_NetworkDistribution_ID)
-	{
-		if (DD_NetworkDistribution_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_DD_NetworkDistribution_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_DD_NetworkDistribution_ID, Integer.valueOf(DD_NetworkDistribution_ID));
-	}
-
-	/** Get Network Distribution.
-		@return Network Distribution	  */
-	public int getDD_NetworkDistribution_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_DD_NetworkDistribution_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Network Distribution Line.
 		@param DD_NetworkDistributionLine_ID Network Distribution Line
@@ -187,6 +160,33 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 		return (String)get_Value(COLUMNNAME_DD_NetworkDistributionLine_UU);
 	}
 
+	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException
+	{
+		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_ID)
+			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());
+	}
+
+	/** Set Network Distribution.
+		@param DD_NetworkDistribution_ID Network Distribution
+	*/
+	public void setDD_NetworkDistribution_ID (int DD_NetworkDistribution_ID)
+	{
+		if (DD_NetworkDistribution_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_DD_NetworkDistribution_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_DD_NetworkDistribution_ID, Integer.valueOf(DD_NetworkDistribution_ID));
+	}
+
+	/** Get Network Distribution.
+		@return Network Distribution	  */
+	public int getDD_NetworkDistribution_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_DD_NetworkDistribution_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
@@ -215,34 +215,6 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
-			.getPO(getM_Warehouse_ID(), get_TrxName());
-	}
-
-	/** Set Warehouse.
-		@param M_Warehouse_ID Storage Warehouse and Service Point
-	*/
-	public void setM_Warehouse_ID (int M_Warehouse_ID)
-	{
-		if (M_Warehouse_ID < 1)
-			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
-	}
-
-	/** Get Warehouse.
-		@return Storage Warehouse and Service Point
-	  */
-	public int getM_Warehouse_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -266,6 +238,34 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	public int getM_WarehouseSource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_WarehouseSource_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
+	{
+		if (M_Warehouse_ID < 1)
+			set_Value (COLUMNNAME_M_Warehouse_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
+	}
+
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

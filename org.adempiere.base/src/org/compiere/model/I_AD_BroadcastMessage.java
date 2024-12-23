@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_BroadcastMessage 
 {
@@ -182,15 +182,6 @@ public interface I_AD_BroadcastMessage
 	  */
 	public Timestamp getExpiration();
 
-    /** Column name Expired */
-    public static final String COLUMNNAME_Expired = "Expired";
-
-	/** Set Expired	  */
-	public void setExpired (boolean Expired);
-
-	/** Get Expired	  */
-	public boolean isExpired();
-
     /** Column name ExpireNow */
     public static final String COLUMNNAME_ExpireNow = "ExpireNow";
 
@@ -203,6 +194,15 @@ public interface I_AD_BroadcastMessage
 	  * Expire the broadcast message
 	  */
 	public String getExpireNow();
+
+    /** Column name Expired */
+    public static final String COLUMNNAME_Expired = "Expired";
+
+	/** Set Expired	  */
+	public void setExpired (boolean Expired);
+
+	/** Get Expired	  */
+	public boolean isExpired();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

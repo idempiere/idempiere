@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_UOM
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_UOM 
 {
@@ -62,6 +62,28 @@ public interface I_C_UOM
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_UOM_ID */
+    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
+
+	/** Set UOM.
+	  * Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID);
+
+	/** Get UOM.
+	  * Unit of Measure
+	  */
+	public int getC_UOM_ID();
+
+    /** Column name C_UOM_UU */
+    public static final String COLUMNNAME_C_UOM_UU = "C_UOM_UU";
+
+	/** Set C_UOM_UU	  */
+	public void setC_UOM_UU (String C_UOM_UU);
+
+	/** Get C_UOM_UU	  */
+	public String getC_UOM_UU();
+
     /** Column name CostingPrecision */
     public static final String COLUMNNAME_CostingPrecision = "CostingPrecision";
 
@@ -90,28 +112,6 @@ public interface I_C_UOM
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_UOM_ID */
-    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
-
-	/** Set UOM.
-	  * Unit of Measure
-	  */
-	public void setC_UOM_ID (int C_UOM_ID);
-
-	/** Get UOM.
-	  * Unit of Measure
-	  */
-	public int getC_UOM_ID();
-
-    /** Column name C_UOM_UU */
-    public static final String COLUMNNAME_C_UOM_UU = "C_UOM_UU";
-
-	/** Set C_UOM_UU	  */
-	public void setC_UOM_UU (String C_UOM_UU);
-
-	/** Get C_UOM_UU	  */
-	public String getC_UOM_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Production
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Production")
 public class X_M_Production extends PO implements I_M_Production, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Production (Properties ctx, int M_Production_ID, String trxName)
@@ -48,9 +48,9 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 // N
 			setIsUseProductionPlan (false);
 // N
+			setM_Production_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
-			setM_Production_ID (0);
 			setPosted (false);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
@@ -70,9 +70,9 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 // N
 			setIsUseProductionPlan (false);
 // N
+			setM_Production_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
-			setM_Production_ID (0);
 			setPosted (false);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
@@ -92,9 +92,9 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 // N
 			setIsUseProductionPlan (false);
 // N
+			setM_Production_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
-			setM_Production_ID (0);
 			setPosted (false);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
@@ -114,9 +114,9 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 // N
 			setIsUseProductionPlan (false);
 // N
+			setM_Production_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
-			setM_Production_ID (0);
 			setPosted (false);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
@@ -314,34 +314,6 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
-			.getPO(getC_Project_ID(), get_TrxName());
-	}
-
-	/** Set Project.
-		@param C_Project_ID Financial Project
-	*/
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1)
-			set_Value (COLUMNNAME_C_Project_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
@@ -393,6 +365,34 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public int getC_ProjectTask_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectTask_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
+
+	/** Set Project.
+		@param C_Project_ID Financial Project
+	*/
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1)
+			set_Value (COLUMNNAME_C_Project_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -683,22 +683,6 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Movement Date.
-		@param MovementDate Date a product was moved in or out of inventory
-	*/
-	public void setMovementDate (Timestamp MovementDate)
-	{
-		set_Value (COLUMNNAME_MovementDate, MovementDate);
-	}
-
-	/** Get Movement Date.
-		@return Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
-	}
-
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -764,6 +748,22 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Production_UU);
 	}
 
+	/** Set Movement Date.
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
+	public void setMovementDate (Timestamp MovementDate)
+	{
+		set_Value (COLUMNNAME_MovementDate, MovementDate);
+	}
+
+	/** Get Movement Date.
+		@return Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -778,29 +778,6 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
-	}
-
-	/** Set Posted.
-		@param Posted Posting status
-	*/
-	public void setPosted (boolean Posted)
-	{
-		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
-	}
-
-	/** Get Posted.
-		@return Posting status
-	  */
-	public boolean isPosted()
-	{
-		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
@@ -829,6 +806,29 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Posted.
+		@param Posted Posting status
+	*/
+	public void setPosted (boolean Posted)
+	{
+		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
+	}
+
+	/** Get Posted.
+		@return Posting status
+	  */
+	public boolean isPosted()
+	{
+		Object oo = get_Value(COLUMNNAME_Posted);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Processed.

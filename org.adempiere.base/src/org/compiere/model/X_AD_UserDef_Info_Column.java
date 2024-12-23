@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Column
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Column")
 public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Column, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -594,10 +594,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** &gt;= = &gt;= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** Like = Like */
-	public static final String QUERYOPERATOR_Like = "Like";
 	/** Full Like = LIKE */
 	public static final String QUERYOPERATOR_FullLike = "LIKE";
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
 	/** Set Query Operator.
 		@param QueryOperator Operator for database query
 	*/

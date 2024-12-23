@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceUnAvailable
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceUnAvailable")
 public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailable, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
       /** if (S_ResourceUnAvailable_ID == 0)
         {
 			setDateFrom (new Timestamp( System.currentTimeMillis() ));
-			setS_Resource_ID (0);
 			setS_ResourceUnAvailable_ID (0);
+			setS_Resource_ID (0);
         } */
     }
 
@@ -53,8 +53,8 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
       /** if (S_ResourceUnAvailable_ID == 0)
         {
 			setDateFrom (new Timestamp( System.currentTimeMillis() ));
-			setS_Resource_ID (0);
 			setS_ResourceUnAvailable_ID (0);
+			setS_Resource_ID (0);
         } */
     }
 
@@ -65,8 +65,8 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
       /** if (S_ResourceUnAvailable_UU == null)
         {
 			setDateFrom (new Timestamp( System.currentTimeMillis() ));
-			setS_Resource_ID (0);
 			setS_ResourceUnAvailable_ID (0);
+			setS_Resource_ID (0);
         } */
     }
 
@@ -77,8 +77,8 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
       /** if (S_ResourceUnAvailable_UU == null)
         {
 			setDateFrom (new Timestamp( System.currentTimeMillis() ));
-			setS_Resource_ID (0);
 			setS_ResourceUnAvailable_ID (0);
+			setS_Resource_ID (0);
         } */
     }
 
@@ -158,42 +158,6 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-	{
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
-			.getPO(getS_Resource_ID(), get_TrxName());
-	}
-
-	/** Set Resource.
-		@param S_Resource_ID Resource
-	*/
-	public void setS_Resource_ID (int S_Resource_ID)
-	{
-		if (S_Resource_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
-	}
-
-	/** Get Resource.
-		@return Resource
-	  */
-	public int getS_Resource_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getS_Resource_ID()));
-    }
-
 	/** Set Resource Unavailability.
 		@param S_ResourceUnAvailable_ID Resource Unavailability
 	*/
@@ -229,4 +193,40 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 	{
 		return (String)get_Value(COLUMNNAME_S_ResourceUnAvailable_UU);
 	}
+
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
+
+	/** Set Resource.
+		@param S_Resource_ID Resource
+	*/
+	public void setS_Resource_ID (int S_Resource_ID)
+	{
+		if (S_Resource_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
+	}
+
+	/** Get Resource.
+		@return Resource
+	  */
+	public int getS_Resource_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getS_Resource_ID()));
+    }
 }

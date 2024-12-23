@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Wlistbox_Customization
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Wlistbox_Customization")
 public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Customization, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Wlistbox_Customization (Properties ctx, int AD_Wlistbox_Customization_ID, String trxName)

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Goal
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PA_SLA_Goal")
 public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_PA_SLA_Goal (Properties ctx, int PA_SLA_Goal_ID, String trxName)

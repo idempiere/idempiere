@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_NodeNext
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_NodeNext 
@@ -190,21 +190,6 @@ public interface I_PP_Order_NodeNext
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Next() throws RuntimeException;
 
-    /** Column name PP_Order_Node_ID */
-    public static final String COLUMNNAME_PP_Order_Node_ID = "PP_Order_Node_ID";
-
-	/** Set Manufacturing Order Activity.
-	  * Workflow Node (activity), step or process
-	  */
-	public void setPP_Order_Node_ID (int PP_Order_Node_ID);
-
-	/** Get Manufacturing Order Activity.
-	  * Workflow Node (activity), step or process
-	  */
-	public int getPP_Order_Node_ID();
-
-	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException;
-
     /** Column name PP_Order_NodeNext_ID */
     public static final String COLUMNNAME_PP_Order_NodeNext_ID = "PP_Order_NodeNext_ID";
 
@@ -222,6 +207,21 @@ public interface I_PP_Order_NodeNext
 
 	/** Get PP_Order_NodeNext_UU	  */
 	public String getPP_Order_NodeNext_UU();
+
+    /** Column name PP_Order_Node_ID */
+    public static final String COLUMNNAME_PP_Order_Node_ID = "PP_Order_Node_ID";
+
+	/** Set Manufacturing Order Activity.
+	  * Workflow Node (activity), step or process
+	  */
+	public void setPP_Order_Node_ID (int PP_Order_Node_ID);
+
+	/** Get Manufacturing Order Activity.
+	  * Workflow Node (activity), step or process
+	  */
+	public int getPP_Order_Node_ID();
+
+	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

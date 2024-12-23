@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Label
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Label 
 {
@@ -64,19 +64,6 @@ public interface I_AD_Label
 
 	public org.compiere.model.I_AD_LabelCategory getAD_LabelCategory() throws RuntimeException;
 
-    /** Column name AD_Label_ID */
-    public static final String COLUMNNAME_AD_Label_ID = "AD_Label_ID";
-
-	/** Set Label.
-	  * Record Label
-	  */
-	public void setAD_Label_ID (int AD_Label_ID);
-
-	/** Get Label.
-	  * Record Label
-	  */
-	public int getAD_Label_ID();
-
     /** Column name AD_LabelStyle_ID */
     public static final String COLUMNNAME_AD_LabelStyle_ID = "AD_LabelStyle_ID";
 
@@ -91,6 +78,19 @@ public interface I_AD_Label
 	public int getAD_LabelStyle_ID();
 
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException;
+
+    /** Column name AD_Label_ID */
+    public static final String COLUMNNAME_AD_Label_ID = "AD_Label_ID";
+
+	/** Set Label.
+	  * Record Label
+	  */
+	public void setAD_Label_ID (int AD_Label_ID);
+
+	/** Get Label.
+	  * Record Label
+	  */
+	public int getAD_Label_ID();
 
     /** Column name AD_Label_UU */
     public static final String COLUMNNAME_AD_Label_UU = "AD_Label_UU";

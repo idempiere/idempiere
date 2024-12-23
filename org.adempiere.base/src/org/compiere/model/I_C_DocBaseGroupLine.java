@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocBaseGroupLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_DocBaseGroupLine 
 {
@@ -62,21 +62,6 @@ public interface I_C_DocBaseGroupLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_DocBaseGroup_ID */
-    public static final String COLUMNNAME_C_DocBaseGroup_ID = "C_DocBaseGroup_ID";
-
-	/** Set Document Base Type Group.
-	  * Group of Document Base Type for Period Control
-	  */
-	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID);
-
-	/** Get Document Base Type Group.
-	  * Group of Document Base Type for Period Control
-	  */
-	public int getC_DocBaseGroup_ID();
-
-	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException;
-
     /** Column name C_DocBaseGroupLine_ID */
     public static final String COLUMNNAME_C_DocBaseGroupLine_ID = "C_DocBaseGroupLine_ID";
 
@@ -98,6 +83,21 @@ public interface I_C_DocBaseGroupLine
 
 	/** Get C_DocBaseGroupLine_UU	  */
 	public String getC_DocBaseGroupLine_UU();
+
+    /** Column name C_DocBaseGroup_ID */
+    public static final String COLUMNNAME_C_DocBaseGroup_ID = "C_DocBaseGroup_ID";
+
+	/** Set Document Base Type Group.
+	  * Group of Document Base Type for Period Control
+	  */
+	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID);
+
+	/** Get Document Base Type Group.
+	  * Group of Document Base Type for Period Control
+	  */
+	public int getC_DocBaseGroup_ID();
+
+	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

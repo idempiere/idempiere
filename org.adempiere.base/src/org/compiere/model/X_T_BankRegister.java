@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BankRegister
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_BankRegister")
 public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_BankRegister (Properties ctx, String T_BankRegister_UU, String trxName)
@@ -83,21 +83,6 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
       return sb.toString();
     }
 
-	/** Set Account.
-		@param Account Account
-	*/
-	public void setAccount (String Account)
-	{
-		set_Value (COLUMNNAME_Account, Account);
-	}
-
-	/** Get Account.
-		@return Account	  */
-	public String getAccount()
-	{
-		return (String)get_Value(COLUMNNAME_Account);
-	}
-
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -124,6 +109,21 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Account.
+		@param Account Account
+	*/
+	public void setAccount (String Account)
+	{
+		set_Value (COLUMNNAME_Account, Account);
+	}
+
+	/** Get Account.
+		@return Account	  */
+	public String getAccount()
+	{
+		return (String)get_Value(COLUMNNAME_Account);
 	}
 
 	/** Set Accounted Credit.
@@ -164,6 +164,21 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 		return bd;
 	}
 
+	/** Set Business Partner.
+		@param BPartner Business Partner
+	*/
+	public void setBPartner (String BPartner)
+	{
+		set_Value (COLUMNNAME_BPartner, BPartner);
+	}
+
+	/** Get Business Partner.
+		@return Business Partner	  */
+	public String getBPartner()
+	{
+		return (String)get_Value(COLUMNNAME_BPartner);
+	}
+
 	/** Set Balance.
 		@param Balance Balance
 	*/
@@ -197,19 +212,32 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 		return (String)get_Value(COLUMNNAME_BankName);
 	}
 
-	/** Set Business Partner.
-		@param BPartner Business Partner
-	*/
-	public void setBPartner (String BPartner)
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
-		set_Value (COLUMNNAME_BPartner, BPartner);
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
 	/** Get Business Partner.
-		@return Business Partner	  */
-	public String getBPartner()
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
 	{
-		return (String)get_Value(COLUMNNAME_BPartner);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
@@ -235,34 +263,6 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	public int getC_Bank_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Bank_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

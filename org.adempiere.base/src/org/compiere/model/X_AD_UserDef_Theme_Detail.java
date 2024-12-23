@@ -30,7 +30,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241112L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Theme_Detail (Properties ctx, int AD_UserDef_Theme_Detail_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 			setAD_UserDef_Theme_Detail_ID (0);
 			setAD_UserDef_Theme_ID (0);
 			setCurrentValue (null);
+			setNewValue (null);
         } */
     }
 
@@ -53,6 +54,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 			setAD_UserDef_Theme_Detail_ID (0);
 			setAD_UserDef_Theme_ID (0);
 			setCurrentValue (null);
+			setNewValue (null);
         } */
     }
 
@@ -65,6 +67,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 			setAD_UserDef_Theme_Detail_ID (0);
 			setAD_UserDef_Theme_ID (0);
 			setCurrentValue (null);
+			setNewValue (null);
         } */
     }
 
@@ -77,6 +80,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 			setAD_UserDef_Theme_Detail_ID (0);
 			setAD_UserDef_Theme_ID (0);
 			setCurrentValue (null);
+			setNewValue (null);
         } */
     }
 
@@ -108,8 +112,8 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
       return sb.toString();
     }
 
-	/** Set User defined Theme Detail.
-		@param AD_UserDef_Theme_Detail_ID User defined Theme Detail
+	/** Set Theme Customization Detail.
+		@param AD_UserDef_Theme_Detail_ID Theme Customization Detail
 	*/
 	public void setAD_UserDef_Theme_Detail_ID (int AD_UserDef_Theme_Detail_ID)
 	{
@@ -119,8 +123,8 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Theme_Detail_ID, Integer.valueOf(AD_UserDef_Theme_Detail_ID));
 	}
 
-	/** Get User defined Theme Detail.
-		@return User defined Theme Detail	  */
+	/** Get Theme Customization Detail.
+		@return Theme Customization Detail	  */
 	public int getAD_UserDef_Theme_Detail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Theme_Detail_ID);
@@ -144,14 +148,14 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Theme_Detail_UU);
 	}
 
-	public I_AD_UserDef_Theme getAD_UserDef_Theme() throws RuntimeException
+	public org.compiere.model.I_AD_UserDef_Theme getAD_UserDef_Theme() throws RuntimeException
 	{
-		return (I_AD_UserDef_Theme)MTable.get(getCtx(), I_AD_UserDef_Theme.Table_ID)
+		return (org.compiere.model.I_AD_UserDef_Theme)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Theme.Table_ID)
 			.getPO(getAD_UserDef_Theme_ID(), get_TrxName());
 	}
 
-	/** Set User defined Theme.
-		@param AD_UserDef_Theme_ID User defined Theme
+	/** Set Theme Customization.
+		@param AD_UserDef_Theme_ID Theme Customization
 	*/
 	public void setAD_UserDef_Theme_ID (int AD_UserDef_Theme_ID)
 	{
@@ -161,8 +165,8 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Theme_ID, Integer.valueOf(AD_UserDef_Theme_ID));
 	}
 
-	/** Get User defined Theme.
-		@return User defined Theme	  */
+	/** Get Theme Customization.
+		@return Theme Customization	  */
 	public int getAD_UserDef_Theme_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Theme_ID);

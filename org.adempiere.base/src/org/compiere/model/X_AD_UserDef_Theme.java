@@ -30,7 +30,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241112L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Theme (Properties ctx, int AD_UserDef_Theme_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 			setAD_UserDef_Theme_ID (0);
 			setName (null);
 			setTheme (null);
+// @SQL=SELECT get_sysconfig('ZK_THEME',null,0,0) FROM Dual
         } */
     }
 
@@ -53,6 +54,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 			setAD_UserDef_Theme_ID (0);
 			setName (null);
 			setTheme (null);
+// @SQL=SELECT get_sysconfig('ZK_THEME',null,0,0) FROM Dual
         } */
     }
 
@@ -65,6 +67,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 			setAD_UserDef_Theme_ID (0);
 			setName (null);
 			setTheme (null);
+// @SQL=SELECT get_sysconfig('ZK_THEME',null,0,0) FROM Dual
         } */
     }
 
@@ -77,6 +80,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 			setAD_UserDef_Theme_ID (0);
 			setName (null);
 			setTheme (null);
+// @SQL=SELECT get_sysconfig('ZK_THEME',null,0,0) FROM Dual
         } */
     }
 
@@ -136,8 +140,8 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 		return ii.intValue();
 	}
 
-	/** Set User defined Theme.
-		@param AD_UserDef_Theme_ID User defined Theme
+	/** Set Theme Customization.
+		@param AD_UserDef_Theme_ID Theme Customization
 	*/
 	public void setAD_UserDef_Theme_ID (int AD_UserDef_Theme_ID)
 	{
@@ -147,8 +151,8 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Theme_ID, Integer.valueOf(AD_UserDef_Theme_ID));
 	}
 
-	/** Get User defined Theme.
-		@return User defined Theme	  */
+	/** Get Theme Customization.
+		@return Theme Customization	  */
 	public int getAD_UserDef_Theme_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Theme_ID);

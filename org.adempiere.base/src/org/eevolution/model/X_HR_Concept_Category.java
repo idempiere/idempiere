@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept_Category
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept_Category")
 public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName)

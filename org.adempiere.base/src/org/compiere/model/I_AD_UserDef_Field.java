@@ -600,7 +600,7 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public void setVFormat (String VFormat);
 
@@ -608,7 +608,7 @@ _lLoOaAcCa09&quot;
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public String getVFormat();
 

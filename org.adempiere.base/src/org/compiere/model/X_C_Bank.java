@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Bank
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_Bank")
 public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_Bank (Properties ctx, int C_Bank_ID, String trxName)

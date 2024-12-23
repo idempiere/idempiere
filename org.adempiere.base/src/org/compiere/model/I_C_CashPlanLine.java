@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashPlanLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_CashPlanLine 
 {
@@ -49,19 +49,6 @@ public interface I_C_CashPlanLine
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -74,6 +61,19 @@ public interface I_C_CashPlanLine
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -120,17 +120,6 @@ public interface I_C_CashPlanLine
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
-    /** Column name C_CashPlan_ID */
-    public static final String COLUMNNAME_C_CashPlan_ID = "C_CashPlan_ID";
-
-	/** Set Cash Plan	  */
-	public void setC_CashPlan_ID (int C_CashPlan_ID);
-
-	/** Get Cash Plan	  */
-	public int getC_CashPlan_ID();
-
-	public org.compiere.model.I_C_CashPlan getC_CashPlan() throws RuntimeException;
-
     /** Column name C_CashPlanLine_ID */
     public static final String COLUMNNAME_C_CashPlanLine_ID = "C_CashPlanLine_ID";
 
@@ -149,6 +138,17 @@ public interface I_C_CashPlanLine
 	/** Get C_CashPlanLine_UU	  */
 	public String getC_CashPlanLine_UU();
 
+    /** Column name C_CashPlan_ID */
+    public static final String COLUMNNAME_C_CashPlan_ID = "C_CashPlan_ID";
+
+	/** Set Cash Plan	  */
+	public void setC_CashPlan_ID (int C_CashPlan_ID);
+
+	/** Get Cash Plan	  */
+	public int getC_CashPlan_ID();
+
+	public org.compiere.model.I_C_CashPlan getC_CashPlan() throws RuntimeException;
+
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
 
@@ -163,21 +163,6 @@ public interface I_C_CashPlanLine
 	public int getC_Charge_ID();
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
-
-    /** Column name C_Project_ID */
-    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
-
-	/** Set Project.
-	  * Financial Project
-	  */
-	public void setC_Project_ID (int C_Project_ID);
-
-	/** Get Project.
-	  * Financial Project
-	  */
-	public int getC_Project_ID();
-
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_ProjectPhase_ID */
     public static final String COLUMNNAME_C_ProjectPhase_ID = "C_ProjectPhase_ID";
@@ -208,6 +193,21 @@ public interface I_C_CashPlanLine
 	public int getC_ProjectTask_ID();
 
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
+
+    /** Column name C_Project_ID */
+    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
+
+	/** Set Project.
+	  * Financial Project
+	  */
+	public void setC_Project_ID (int C_Project_ID);
+
+	/** Get Project.
+	  * Financial Project
+	  */
+	public int getC_Project_ID();
+
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoColumn
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoColumn")
 public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -855,10 +855,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** &gt;= = &gt;= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** Like = Like */
-	public static final String QUERYOPERATOR_Like = "Like";
 	/** Full Like = LIKE */
 	public static final String QUERYOPERATOR_FullLike = "LIKE";
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
 	/** Set Query Operator.
 		@param QueryOperator Operator for database query
 	*/

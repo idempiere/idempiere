@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PriceList_Version
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_PriceList_Version 
 {
@@ -134,21 +134,6 @@ public interface I_M_PriceList_Version
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
-    /** Column name M_Pricelist_Version_Base_ID */
-    public static final String COLUMNNAME_M_Pricelist_Version_Base_ID = "M_Pricelist_Version_Base_ID";
-
-	/** Set Base Price List.
-	  * Source for Price list calculations
-	  */
-	public void setM_Pricelist_Version_Base_ID (int M_Pricelist_Version_Base_ID);
-
-	/** Get Base Price List.
-	  * Source for Price list calculations
-	  */
-	public int getM_Pricelist_Version_Base_ID();
-
-	public org.compiere.model.I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException;
-
     /** Column name M_PriceList_Version_ID */
     public static final String COLUMNNAME_M_PriceList_Version_ID = "M_PriceList_Version_ID";
 
@@ -170,6 +155,21 @@ public interface I_M_PriceList_Version
 
 	/** Get M_PriceList_Version_UU	  */
 	public String getM_PriceList_Version_UU();
+
+    /** Column name M_Pricelist_Version_Base_ID */
+    public static final String COLUMNNAME_M_Pricelist_Version_Base_ID = "M_Pricelist_Version_Base_ID";
+
+	/** Set Base Price List.
+	  * Source for Price list calculations
+	  */
+	public void setM_Pricelist_Version_Base_ID (int M_Pricelist_Version_Base_ID);
+
+	/** Get Base Price List.
+	  * Source for Price list calculations
+	  */
+	public int getM_Pricelist_Version_Base_ID();
+
+	public org.compiere.model.I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
