@@ -58,8 +58,8 @@ div.body{
  	opacity: 0.6;
 }
 #main-background img{
-	height: 520px;
-	width: 810px;
+	height: 100%;
+	width: 100%;
 	object-fit: cover;
 }
 .topBtnHeader{
