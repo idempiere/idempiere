@@ -58,8 +58,8 @@ div.body{
  	opacity: 0.6;
 }
 #main-background img{
-	height: 520px;
-	width: 810px;
+	height: 100%;
+	width: 100%;
 	object-fit: cover;
 }
 .topBtnHeader{
@@ -253,7 +253,7 @@ div.body{
 }
 
 #foot{
-    background-color: #000000;
+    background-color: white;
     height: 50px;
 	display: flex;
 	justify-content: space-between;
