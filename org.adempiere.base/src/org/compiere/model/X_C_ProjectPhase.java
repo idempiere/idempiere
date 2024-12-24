@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectPhase
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectPhase")
 public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_ProjectPhase (Properties ctx, int C_ProjectPhase_ID, String trxName)
@@ -42,9 +42,9 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
       super (ctx, C_ProjectPhase_ID, trxName);
       /** if (C_ProjectPhase_ID == 0)
         {
-			setCommittedAmt (Env.ZERO);
-			setC_Project_ID (0);
 			setC_ProjectPhase_ID (0);
+			setC_Project_ID (0);
+			setCommittedAmt (Env.ZERO);
 			setIsCommitCeiling (false);
 			setIsComplete (false);
 			setName (null);
@@ -62,9 +62,9 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
       super (ctx, C_ProjectPhase_ID, trxName, virtualColumns);
       /** if (C_ProjectPhase_ID == 0)
         {
-			setCommittedAmt (Env.ZERO);
-			setC_Project_ID (0);
 			setC_ProjectPhase_ID (0);
+			setC_Project_ID (0);
+			setCommittedAmt (Env.ZERO);
 			setIsCommitCeiling (false);
 			setIsComplete (false);
 			setName (null);
@@ -82,9 +82,9 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
       super (ctx, C_ProjectPhase_UU, trxName);
       /** if (C_ProjectPhase_UU == null)
         {
-			setCommittedAmt (Env.ZERO);
-			setC_Project_ID (0);
 			setC_ProjectPhase_ID (0);
+			setC_Project_ID (0);
+			setCommittedAmt (Env.ZERO);
 			setIsCommitCeiling (false);
 			setIsComplete (false);
 			setName (null);
@@ -102,9 +102,9 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
       super (ctx, C_ProjectPhase_UU, trxName, virtualColumns);
       /** if (C_ProjectPhase_UU == null)
         {
-			setCommittedAmt (Env.ZERO);
-			setC_Project_ID (0);
 			setC_ProjectPhase_ID (0);
+			setC_Project_ID (0);
+			setCommittedAmt (Env.ZERO);
 			setIsCommitCeiling (false);
 			setIsComplete (false);
 			setName (null);
@@ -143,25 +143,6 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	/** Set Committed Amount.
-		@param CommittedAmt The (legal) commitment amount
-	*/
-	public void setCommittedAmt (BigDecimal CommittedAmt)
-	{
-		set_Value (COLUMNNAME_CommittedAmt, CommittedAmt);
-	}
-
-	/** Get Committed Amount.
-		@return The (legal) commitment amount
-	  */
-	public BigDecimal getCommittedAmt()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CommittedAmt);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
@@ -219,34 +200,6 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
-			.getPO(getC_Project_ID(), get_TrxName());
-	}
-
-	/** Set Project.
-		@param C_Project_ID Financial Project
-	*/
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Project Phase.
 		@param C_ProjectPhase_ID Phase of a Project
 	*/
@@ -282,6 +235,53 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 	public String getC_ProjectPhase_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ProjectPhase_UU);
+	}
+
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
+
+	/** Set Project.
+		@param C_Project_ID Financial Project
+	*/
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Committed Amount.
+		@param CommittedAmt The (legal) commitment amount
+	*/
+	public void setCommittedAmt (BigDecimal CommittedAmt)
+	{
+		set_Value (COLUMNNAME_CommittedAmt, CommittedAmt);
+	}
+
+	/** Get Committed Amount.
+		@return The (legal) commitment amount
+	  */
+	public BigDecimal getCommittedAmt()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CommittedAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Description.
@@ -480,14 +480,14 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 	public static final int PROJINVOICERULE_AD_Reference_ID=383;
 	/** None = - */
 	public static final String PROJINVOICERULE_None = "-";
-	/** Time&amp;Material max Committed = c */
-	public static final String PROJINVOICERULE_TimeMaterialMaxCommitted = "c";
 	/** Committed Amount = C */
 	public static final String PROJINVOICERULE_CommittedAmount = "C";
 	/** Product  Quantity = P */
 	public static final String PROJINVOICERULE_ProductQuantity = "P";
 	/** Time&amp;Material = T */
 	public static final String PROJINVOICERULE_TimeMaterial = "T";
+	/** Time&amp;Material max Committed = c */
+	public static final String PROJINVOICERULE_TimeMaterialMaxCommitted = "c";
 	/** Set Invoice Rule.
 		@param ProjInvoiceRule Invoice Rule for the project
 	*/

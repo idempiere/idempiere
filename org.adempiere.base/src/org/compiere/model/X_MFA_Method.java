@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Method
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Method")
 public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
       super (ctx, MFA_Method_ID, trxName);
       /** if (MFA_Method_ID == 0)
         {
-			setMethod (null);
 			setMFA_Method_ID (0);
+			setMethod (null);
 			setName (null);
         } */
     }
@@ -51,8 +51,8 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
       super (ctx, MFA_Method_ID, trxName, virtualColumns);
       /** if (MFA_Method_ID == 0)
         {
-			setMethod (null);
 			setMFA_Method_ID (0);
+			setMethod (null);
 			setName (null);
         } */
     }
@@ -63,8 +63,8 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
       super (ctx, MFA_Method_UU, trxName);
       /** if (MFA_Method_UU == null)
         {
-			setMethod (null);
 			setMFA_Method_ID (0);
+			setMethod (null);
 			setName (null);
         } */
     }
@@ -75,8 +75,8 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
       super (ctx, MFA_Method_UU, trxName, virtualColumns);
       /** if (MFA_Method_UU == null)
         {
-			setMethod (null);
 			setMFA_Method_ID (0);
+			setMethod (null);
 			setName (null);
         } */
     }
@@ -159,28 +159,6 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	/** Method AD_Reference_ID=200187 */
-	public static final int METHOD_AD_Reference_ID=200187;
-	/** EMail = EMail */
-	public static final String METHOD_EMail = "EMail";
-	/** Time-Based One-Time Password = TOTP */
-	public static final String METHOD_Time_BasedOne_TimePassword = "TOTP";
-	/** Set Method.
-		@param Method Method
-	*/
-	public void setMethod (String Method)
-	{
-
-		set_Value (COLUMNNAME_Method, Method);
-	}
-
-	/** Get Method.
-		@return Method	  */
-	public String getMethod()
-	{
-		return (String)get_Value(COLUMNNAME_Method);
-	}
-
 	/** Set Allowed Time Period Discrepancy.
 		@param MFAAllowedTimeDiscrepancy Allowed Time Period Discrepancy
 	*/
@@ -199,33 +177,6 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
-			.getPO(getMFA_ElementPrm_ID(), get_TrxName());
-	}
-
-	/** Set Parameter Element.
-		@param MFA_ElementPrm_ID Parameter Element
-	*/
-	public void setMFA_ElementPrm_ID (int MFA_ElementPrm_ID)
-	{
-		if (MFA_ElementPrm_ID < 1)
-			set_Value (COLUMNNAME_MFA_ElementPrm_ID, null);
-		else
-			set_Value (COLUMNNAME_MFA_ElementPrm_ID, Integer.valueOf(MFA_ElementPrm_ID));
-	}
-
-	/** Get Parameter Element.
-		@return Parameter Element	  */
-	public int getMFA_ElementPrm_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_ElementPrm_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Issuer.
 		@param MFAIssuer Issuer
 	*/
@@ -239,43 +190,6 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	public String getMFAIssuer()
 	{
 		return (String)get_Value(COLUMNNAME_MFAIssuer);
-	}
-
-	/** Set MFA Method.
-		@param MFA_Method_ID Multi-factor Authentication Method
-	*/
-	public void setMFA_Method_ID (int MFA_Method_ID)
-	{
-		if (MFA_Method_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_MFA_Method_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_MFA_Method_ID, Integer.valueOf(MFA_Method_ID));
-	}
-
-	/** Get MFA Method.
-		@return Multi-factor Authentication Method
-	  */
-	public int getMFA_Method_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_Method_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set MFA_Method_UU.
-		@param MFA_Method_UU MFA_Method_UU
-	*/
-	public void setMFA_Method_UU (String MFA_Method_UU)
-	{
-		set_Value (COLUMNNAME_MFA_Method_UU, MFA_Method_UU);
-	}
-
-	/** Get MFA_Method_UU.
-		@return MFA_Method_UU	  */
-	public String getMFA_Method_UU()
-	{
-		return (String)get_Value(COLUMNNAME_MFA_Method_UU);
 	}
 
 	/** MFATimeProvider AD_Reference_ID=200189 */
@@ -340,6 +254,92 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	public String getMFAType()
 	{
 		return (String)get_Value(COLUMNNAME_MFAType);
+	}
+
+	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getMFA_ElementPrm_ID(), get_TrxName());
+	}
+
+	/** Set Parameter Element.
+		@param MFA_ElementPrm_ID Parameter Element
+	*/
+	public void setMFA_ElementPrm_ID (int MFA_ElementPrm_ID)
+	{
+		if (MFA_ElementPrm_ID < 1)
+			set_Value (COLUMNNAME_MFA_ElementPrm_ID, null);
+		else
+			set_Value (COLUMNNAME_MFA_ElementPrm_ID, Integer.valueOf(MFA_ElementPrm_ID));
+	}
+
+	/** Get Parameter Element.
+		@return Parameter Element	  */
+	public int getMFA_ElementPrm_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_ElementPrm_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set MFA Method.
+		@param MFA_Method_ID Multi-factor Authentication Method
+	*/
+	public void setMFA_Method_ID (int MFA_Method_ID)
+	{
+		if (MFA_Method_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_MFA_Method_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_MFA_Method_ID, Integer.valueOf(MFA_Method_ID));
+	}
+
+	/** Get MFA Method.
+		@return Multi-factor Authentication Method
+	  */
+	public int getMFA_Method_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_Method_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set MFA_Method_UU.
+		@param MFA_Method_UU MFA_Method_UU
+	*/
+	public void setMFA_Method_UU (String MFA_Method_UU)
+	{
+		set_Value (COLUMNNAME_MFA_Method_UU, MFA_Method_UU);
+	}
+
+	/** Get MFA_Method_UU.
+		@return MFA_Method_UU	  */
+	public String getMFA_Method_UU()
+	{
+		return (String)get_Value(COLUMNNAME_MFA_Method_UU);
+	}
+
+	/** Method AD_Reference_ID=200187 */
+	public static final int METHOD_AD_Reference_ID=200187;
+	/** EMail = EMail */
+	public static final String METHOD_EMail = "EMail";
+	/** Time-Based One-Time Password = TOTP */
+	public static final String METHOD_Time_BasedOne_TimePassword = "TOTP";
+	/** Set Method.
+		@param Method Method
+	*/
+	public void setMethod (String Method)
+	{
+
+		set_Value (COLUMNNAME_Method, Method);
+	}
+
+	/** Get Method.
+		@return Method	  */
+	public String getMethod()
+	{
+		return (String)get_Value(COLUMNNAME_Method);
 	}
 
 	/** Set Name.

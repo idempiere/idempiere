@@ -37,7 +37,6 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.ReportSendEMailEventData;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -180,7 +179,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			fMessage.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
 		else
 			fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
-		fMessage.setToolbar("MyToolbar");
 		Map<String,Object> lang = new HashMap<String,Object>();
 		lang.put("language", Language.getLoginLanguage().getAD_Language());
 		fMessage.setConfig(lang);
@@ -190,6 +188,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		clearEMailContext(m_WindowNo);
 		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, m_Record_UU, null, "");
 		setValuesFromContext(m_WindowNo);
+		
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
+			this.setMaximized(true);
+			this.setSizable(false);
+			this.setMaximizable(false);
+		}
 	}
 
 	/**
@@ -303,6 +307,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lSubject.setValue(Msg.getMsg(Env.getCtx(), "Subject") + ":");
 		lAttachment.setValue(Msg.getMsg(Env.getCtx(), "Attachment") + ":");
 		fFrom.setReadonly(true);
+		
 		isAcknowledgmentReceipt.setLabel(Msg.getMsg(Env.getCtx(), "RequestReadReceipt"));
 		//				
 		Grid grid = new Grid();
@@ -413,8 +418,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
 		confirmPanel.addComponentsLeft(btn);
-		if (ThemeManager.isUseFontIconForImage())
-			LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		bAddDefaultMailText = new Button();
 		if(ThemeManager.isUseFontIconForImage())

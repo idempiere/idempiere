@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for RV_BPartner
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="RV_BPartner")
 public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
@@ -41,9 +41,9 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
       super (ctx, RV_BPartner_ID, trxName);
       /** if (RV_BPartner_ID == 0)
         {
+			setC_BP_Group_ID (0);
 			setC_BPartner_ID (0);
 			setC_BPartner_Location_ID (0);
-			setC_BP_Group_ID (0);
 			setC_Country_ID (0);
 			setContactName (null);
 			setCountryName (null);
@@ -68,9 +68,9 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
       super (ctx, RV_BPartner_ID, trxName, virtualColumns);
       /** if (RV_BPartner_ID == 0)
         {
+			setC_BP_Group_ID (0);
 			setC_BPartner_ID (0);
 			setC_BPartner_Location_ID (0);
-			setC_BP_Group_ID (0);
 			setC_Country_ID (0);
 			setContactName (null);
 			setCountryName (null);
@@ -95,9 +95,9 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
       super (ctx, RV_BPartner_UU, trxName);
       /** if (RV_BPartner_UU == null)
         {
+			setC_BP_Group_ID (0);
 			setC_BPartner_ID (0);
 			setC_BPartner_Location_ID (0);
-			setC_BP_Group_ID (0);
 			setC_Country_ID (0);
 			setContactName (null);
 			setCountryName (null);
@@ -122,9 +122,9 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
       super (ctx, RV_BPartner_UU, trxName, virtualColumns);
       /** if (RV_BPartner_UU == null)
         {
+			setC_BP_Group_ID (0);
 			setC_BPartner_ID (0);
 			setC_BPartner_Location_ID (0);
-			setC_BP_Group_ID (0);
 			setC_Country_ID (0);
 			setContactName (null);
 			setCountryName (null);
@@ -170,108 +170,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	/** Set Acquisition Cost.
-		@param AcqusitionCost The cost of gaining the prospect as a customer
-	*/
-	public void setAcqusitionCost (BigDecimal AcqusitionCost)
-	{
-		set_ValueNoCheck (COLUMNNAME_AcqusitionCost, AcqusitionCost);
-	}
-
-	/** Get Acquisition Cost.
-		@return The cost of gaining the prospect as a customer
-	  */
-	public BigDecimal getAcqusitionCost()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AcqusitionCost);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Actual Life Time Value.
-		@param ActualLifeTimeValue Actual Life Time Revenue
-	*/
-	public void setActualLifeTimeValue (BigDecimal ActualLifeTimeValue)
-	{
-		set_ValueNoCheck (COLUMNNAME_ActualLifeTimeValue, ActualLifeTimeValue);
-	}
-
-	/** Get Actual Life Time Value.
-		@return Actual Life Time Revenue
-	  */
-	public BigDecimal getActualLifeTimeValue()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualLifeTimeValue);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Address 1.
-		@param Address1 Address line 1 for this location
-	*/
-	public void setAddress1 (String Address1)
-	{
-		set_ValueNoCheck (COLUMNNAME_Address1, Address1);
-	}
-
-	/** Get Address 1.
-		@return Address line 1 for this location
-	  */
-	public String getAddress1()
-	{
-		return (String)get_Value(COLUMNNAME_Address1);
-	}
-
-	/** Set Address 2.
-		@param Address2 Address line 2 for this location
-	*/
-	public void setAddress2 (String Address2)
-	{
-		set_ValueNoCheck (COLUMNNAME_Address2, Address2);
-	}
-
-	/** Get Address 2.
-		@return Address line 2 for this location
-	  */
-	public String getAddress2()
-	{
-		return (String)get_Value(COLUMNNAME_Address2);
-	}
-
-	/** Set Address 3.
-		@param Address3 Address Line 3 for the location
-	*/
-	public void setAddress3 (String Address3)
-	{
-		set_ValueNoCheck (COLUMNNAME_Address3, Address3);
-	}
-
-	/** Get Address 3.
-		@return Address Line 3 for the location
-	  */
-	public String getAddress3()
-	{
-		return (String)get_Value(COLUMNNAME_Address3);
-	}
-
-	/** Set Address 4.
-		@param Address4 Address Line 4 for the location
-	*/
-	public void setAddress4 (String Address4)
-	{
-		set_ValueNoCheck (COLUMNNAME_Address4, Address4);
-	}
-
-	/** Get Address 4.
-		@return Address Line 4 for the location
-	  */
-	public String getAddress4()
-	{
-		return (String)get_Value(COLUMNNAME_Address4);
-	}
 
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
@@ -411,21 +309,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set ad_user_created.
-		@param ad_user_created ad_user_created
-	*/
-	public void setad_user_created (Timestamp ad_user_created)
-	{
-		set_ValueNoCheck (COLUMNNAME_ad_user_created, ad_user_created);
-	}
-
-	/** Get ad_user_created.
-		@return ad_user_created	  */
-	public Timestamp getad_user_created()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_ad_user_created);
-	}
-
 	public org.compiere.model.I_AD_User getAD_User_Create() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -478,43 +361,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set ad_user_isactive.
-		@param ad_user_isactive ad_user_isactive
-	*/
-	public void setad_user_isactive (boolean ad_user_isactive)
-	{
-		set_ValueNoCheck (COLUMNNAME_ad_user_isactive, Boolean.valueOf(ad_user_isactive));
-	}
-
-	/** Get ad_user_isactive.
-		@return ad_user_isactive	  */
-	public boolean isad_user_isactive()
-	{
-		Object oo = get_Value(COLUMNNAME_ad_user_isactive);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set ad_user_updated.
-		@param ad_user_updated ad_user_updated
-	*/
-	public void setad_user_updated (Timestamp ad_user_updated)
-	{
-		set_ValueNoCheck (COLUMNNAME_ad_user_updated, ad_user_updated);
-	}
-
-	/** Get ad_user_updated.
-		@return ad_user_updated	  */
-	public Timestamp getad_user_updated()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_ad_user_updated);
-	}
-
 	public org.compiere.model.I_AD_User getAD_User_Update() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -539,35 +385,131 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set ad_user_value.
-		@param ad_user_value ad_user_value
+	/** Set Acquisition Cost.
+		@param AcqusitionCost The cost of gaining the prospect as a customer
 	*/
-	public void setad_user_value (String ad_user_value)
+	public void setAcqusitionCost (BigDecimal AcqusitionCost)
 	{
-		set_ValueNoCheck (COLUMNNAME_ad_user_value, ad_user_value);
+		set_ValueNoCheck (COLUMNNAME_AcqusitionCost, AcqusitionCost);
 	}
 
-	/** Get ad_user_value.
-		@return ad_user_value	  */
-	public String getad_user_value()
-	{
-		return (String)get_Value(COLUMNNAME_ad_user_value);
-	}
-
-	/** Set Birthday.
-		@param Birthday Birthday or Anniversary day
-	*/
-	public void setBirthday (Timestamp Birthday)
-	{
-		set_ValueNoCheck (COLUMNNAME_Birthday, Birthday);
-	}
-
-	/** Get Birthday.
-		@return Birthday or Anniversary day
+	/** Get Acquisition Cost.
+		@return The cost of gaining the prospect as a customer
 	  */
-	public Timestamp getBirthday()
+	public BigDecimal getAcqusitionCost()
 	{
-		return (Timestamp)get_Value(COLUMNNAME_Birthday);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AcqusitionCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Actual Life Time Value.
+		@param ActualLifeTimeValue Actual Life Time Revenue
+	*/
+	public void setActualLifeTimeValue (BigDecimal ActualLifeTimeValue)
+	{
+		set_ValueNoCheck (COLUMNNAME_ActualLifeTimeValue, ActualLifeTimeValue);
+	}
+
+	/** Get Actual Life Time Value.
+		@return Actual Life Time Revenue
+	  */
+	public BigDecimal getActualLifeTimeValue()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualLifeTimeValue);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Address 1.
+		@param Address1 Address line 1 for this location
+	*/
+	public void setAddress1 (String Address1)
+	{
+		set_ValueNoCheck (COLUMNNAME_Address1, Address1);
+	}
+
+	/** Get Address 1.
+		@return Address line 1 for this location
+	  */
+	public String getAddress1()
+	{
+		return (String)get_Value(COLUMNNAME_Address1);
+	}
+
+	/** Set Address 2.
+		@param Address2 Address line 2 for this location
+	*/
+	public void setAddress2 (String Address2)
+	{
+		set_ValueNoCheck (COLUMNNAME_Address2, Address2);
+	}
+
+	/** Get Address 2.
+		@return Address line 2 for this location
+	  */
+	public String getAddress2()
+	{
+		return (String)get_Value(COLUMNNAME_Address2);
+	}
+
+	/** Set Address 3.
+		@param Address3 Address Line 3 for the location
+	*/
+	public void setAddress3 (String Address3)
+	{
+		set_ValueNoCheck (COLUMNNAME_Address3, Address3);
+	}
+
+	/** Get Address 3.
+		@return Address Line 3 for the location
+	  */
+	public String getAddress3()
+	{
+		return (String)get_Value(COLUMNNAME_Address3);
+	}
+
+	/** Set Address 4.
+		@param Address4 Address Line 4 for the location
+	*/
+	public void setAddress4 (String Address4)
+	{
+		set_ValueNoCheck (COLUMNNAME_Address4, Address4);
+	}
+
+	/** Get Address 4.
+		@return Address Line 4 for the location
+	  */
+	public String getAddress4()
+	{
+		return (String)get_Value(COLUMNNAME_Address4);
+	}
+
+	public org.compiere.model.I_C_Greeting getBPContactGreet() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_ID)
+			.getPO(getBPContactGreeting(), get_TrxName());
+	}
+
+	/** Set BP Contact Greeting.
+		@param BPContactGreeting Greeting for Business Partner Contact
+	*/
+	public void setBPContactGreeting (int BPContactGreeting)
+	{
+		set_ValueNoCheck (COLUMNNAME_BPContactGreeting, Integer.valueOf(BPContactGreeting));
+	}
+
+	/** Get BP Contact Greeting.
+		@return Greeting for Business Partner Contact
+	  */
+	public int getBPContactGreeting()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPContactGreeting);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_BPartner getBPartner_Parent() throws RuntimeException
@@ -598,79 +540,20 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Greeting getBPContactGreet() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_ID)
-			.getPO(getBPContactGreeting(), get_TrxName());
-	}
-
-	/** Set BP Contact Greeting.
-		@param BPContactGreeting Greeting for Business Partner Contact
+	/** Set Birthday.
+		@param Birthday Birthday or Anniversary day
 	*/
-	public void setBPContactGreeting (int BPContactGreeting)
+	public void setBirthday (Timestamp Birthday)
 	{
-		set_ValueNoCheck (COLUMNNAME_BPContactGreeting, Integer.valueOf(BPContactGreeting));
+		set_ValueNoCheck (COLUMNNAME_Birthday, Birthday);
 	}
 
-	/** Get BP Contact Greeting.
-		@return Greeting for Business Partner Contact
+	/** Get Birthday.
+		@return Birthday or Anniversary day
 	  */
-	public int getBPContactGreeting()
+	public Timestamp getBirthday()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPContactGreeting);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());
-	}
-
-	/** Set Partner Location.
-		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
-	*/
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
-	{
-		if (C_BPartner_Location_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_Location_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
-	}
-
-	/** Get Partner Location.
-		@return Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
 
 	public org.eevolution.model.I_C_TaxGroup getC_BP_C_TaxGroup() throws RuntimeException
@@ -700,21 +583,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set c_bp_dunninggrace.
-		@param c_bp_dunninggrace c_bp_dunninggrace
-	*/
-	public void setc_bp_dunninggrace (Timestamp c_bp_dunninggrace)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_dunninggrace, c_bp_dunninggrace);
-	}
-
-	/** Get c_bp_dunninggrace.
-		@return c_bp_dunninggrace	  */
-	public Timestamp getc_bp_dunninggrace()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_c_bp_dunninggrace);
-	}
-
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -741,50 +609,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set c_bp_ismanufacturer.
-		@param c_bp_ismanufacturer c_bp_ismanufacturer
-	*/
-	public void setc_bp_ismanufacturer (boolean c_bp_ismanufacturer)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_ismanufacturer, Boolean.valueOf(c_bp_ismanufacturer));
-	}
-
-	/** Get c_bp_ismanufacturer.
-		@return c_bp_ismanufacturer	  */
-	public boolean isc_bp_ismanufacturer()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_ismanufacturer);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_bp_ispotaxexempt.
-		@param c_bp_ispotaxexempt c_bp_ispotaxexempt
-	*/
-	public void setc_bp_ispotaxexempt (boolean c_bp_ispotaxexempt)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_ispotaxexempt, Boolean.valueOf(c_bp_ispotaxexempt));
-	}
-
-	/** Get c_bp_ispotaxexempt.
-		@return c_bp_ispotaxexempt	  */
-	public boolean isc_bp_ispotaxexempt()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_ispotaxexempt);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set c_bp_location_ad_org_id.
@@ -862,21 +686,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set c_bp_location_created.
-		@param c_bp_location_created c_bp_location_created
-	*/
-	public void setc_bp_location_created (Timestamp c_bp_location_created)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_created, c_bp_location_created);
-	}
-
-	/** Get c_bp_location_created.
-		@return c_bp_location_created	  */
-	public Timestamp getc_bp_location_created()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_c_bp_location_created);
-	}
-
 	public org.compiere.model.I_AD_User getC_BP_Location_Create() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -899,191 +708,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set c_bp_location_fax.
-		@param c_bp_location_fax c_bp_location_fax
-	*/
-	public void setc_bp_location_fax (String c_bp_location_fax)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_fax, c_bp_location_fax);
-	}
-
-	/** Get c_bp_location_fax.
-		@return c_bp_location_fax	  */
-	public String getc_bp_location_fax()
-	{
-		return (String)get_Value(COLUMNNAME_c_bp_location_fax);
-	}
-
-	/** Set c_bp_location_isactive.
-		@param c_bp_location_isactive c_bp_location_isactive
-	*/
-	public void setc_bp_location_isactive (boolean c_bp_location_isactive)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_isactive, Boolean.valueOf(c_bp_location_isactive));
-	}
-
-	/** Get c_bp_location_isactive.
-		@return c_bp_location_isactive	  */
-	public boolean isc_bp_location_isactive()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_location_isactive);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_bp_location_isbillto.
-		@param c_bp_location_isbillto c_bp_location_isbillto
-	*/
-	public void setc_bp_location_isbillto (boolean c_bp_location_isbillto)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_isbillto, Boolean.valueOf(c_bp_location_isbillto));
-	}
-
-	/** Get c_bp_location_isbillto.
-		@return c_bp_location_isbillto	  */
-	public boolean isc_bp_location_isbillto()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_location_isbillto);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_bp_location_isdn.
-		@param c_bp_location_isdn c_bp_location_isdn
-	*/
-	public void setc_bp_location_isdn (String c_bp_location_isdn)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_isdn, c_bp_location_isdn);
-	}
-
-	/** Get c_bp_location_isdn.
-		@return c_bp_location_isdn	  */
-	public String getc_bp_location_isdn()
-	{
-		return (String)get_Value(COLUMNNAME_c_bp_location_isdn);
-	}
-
-	/** Set c_bp_location_ispayfrom.
-		@param c_bp_location_ispayfrom c_bp_location_ispayfrom
-	*/
-	public void setc_bp_location_ispayfrom (boolean c_bp_location_ispayfrom)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_ispayfrom, Boolean.valueOf(c_bp_location_ispayfrom));
-	}
-
-	/** Get c_bp_location_ispayfrom.
-		@return c_bp_location_ispayfrom	  */
-	public boolean isc_bp_location_ispayfrom()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_location_ispayfrom);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_bp_location_isremitto.
-		@param c_bp_location_isremitto c_bp_location_isremitto
-	*/
-	public void setc_bp_location_isremitto (boolean c_bp_location_isremitto)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_isremitto, Boolean.valueOf(c_bp_location_isremitto));
-	}
-
-	/** Get c_bp_location_isremitto.
-		@return c_bp_location_isremitto	  */
-	public boolean isc_bp_location_isremitto()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_location_isremitto);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_bp_location_isshipto.
-		@param c_bp_location_isshipto c_bp_location_isshipto
-	*/
-	public void setc_bp_location_isshipto (boolean c_bp_location_isshipto)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_isshipto, Boolean.valueOf(c_bp_location_isshipto));
-	}
-
-	/** Get c_bp_location_isshipto.
-		@return c_bp_location_isshipto	  */
-	public boolean isc_bp_location_isshipto()
-	{
-		Object oo = get_Value(COLUMNNAME_c_bp_location_isshipto);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_bp_location_name.
-		@param c_bp_location_name c_bp_location_name
-	*/
-	public void setc_bp_location_name (String c_bp_location_name)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_name, c_bp_location_name);
-	}
-
-	/** Get c_bp_location_name.
-		@return c_bp_location_name	  */
-	public String getc_bp_location_name()
-	{
-		return (String)get_Value(COLUMNNAME_c_bp_location_name);
-	}
-
-	/** Set c_bp_location_phone.
-		@param c_bp_location_phone c_bp_location_phone
-	*/
-	public void setc_bp_location_phone (String c_bp_location_phone)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_phone, c_bp_location_phone);
-	}
-
-	/** Get c_bp_location_phone.
-		@return c_bp_location_phone	  */
-	public String getc_bp_location_phone()
-	{
-		return (String)get_Value(COLUMNNAME_c_bp_location_phone);
-	}
-
-	/** Set c_bp_location_phone2.
-		@param c_bp_location_phone2 c_bp_location_phone2
-	*/
-	public void setc_bp_location_phone2 (String c_bp_location_phone2)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_phone2, c_bp_location_phone2);
-	}
-
-	/** Get c_bp_location_phone2.
-		@return c_bp_location_phone2	  */
-	public String getc_bp_location_phone2()
-	{
-		return (String)get_Value(COLUMNNAME_c_bp_location_phone2);
 	}
 
 	public org.compiere.model.I_C_SalesRegion getC_BP_Location_SalesRegion() throws RuntimeException
@@ -1111,21 +735,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set c_bp_location_updated.
-		@param c_bp_location_updated c_bp_location_updated
-	*/
-	public void setc_bp_location_updated (Timestamp c_bp_location_updated)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_bp_location_updated, c_bp_location_updated);
-	}
-
-	/** Get c_bp_location_updated.
-		@return c_bp_location_updated	  */
-	public Timestamp getc_bp_location_updated()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_c_bp_location_updated);
 	}
 
 	public org.compiere.model.I_AD_User getC_BP_Location_Update() throws RuntimeException
@@ -1173,6 +782,56 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
+
+	/** Set Partner Location.
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
+	{
+		if (C_BPartner_Location_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_Location_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
+	}
+
+	/** Get Partner Location.
+		@return Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_ID)
@@ -1199,21 +858,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set c_country_ad_language.
-		@param c_country_ad_language c_country_ad_language
-	*/
-	public void setc_country_ad_language (String c_country_ad_language)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_country_ad_language, c_country_ad_language);
-	}
-
-	/** Get c_country_ad_language.
-		@return c_country_ad_language	  */
-	public String getc_country_ad_language()
-	{
-		return (String)get_Value(COLUMNNAME_c_country_ad_language);
 	}
 
 	public org.compiere.model.I_C_Currency getC_Country_C_Currency() throws RuntimeException
@@ -1243,21 +887,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set c_country_description.
-		@param c_country_description c_country_description
-	*/
-	public void setc_country_description (String c_country_description)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_country_description, c_country_description);
-	}
-
-	/** Get c_country_description.
-		@return c_country_description	  */
-	public String getc_country_description()
-	{
-		return (String)get_Value(COLUMNNAME_c_country_description);
-	}
-
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
@@ -1284,28 +913,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set c_country_isactive.
-		@param c_country_isactive c_country_isactive
-	*/
-	public void setc_country_isactive (boolean c_country_isactive)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_country_isactive, Boolean.valueOf(c_country_isactive));
-	}
-
-	/** Get c_country_isactive.
-		@return c_country_isactive	  */
-	public boolean isc_country_isactive()
-	{
-		Object oo = get_Value(COLUMNNAME_c_country_isactive);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
@@ -1392,22 +999,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set City.
-		@param City Identifies a City
-	*/
-	public void setCity (String City)
-	{
-		set_ValueNoCheck (COLUMNNAME_City, City);
-	}
-
-	/** Get City.
-		@return Identifies a City
-	  */
-	public String getCity()
-	{
-		return (String)get_Value(COLUMNNAME_City);
-	}
-
 	/** Set c_location_ad_org_id.
 		@param C_Location_AD_Org_ID c_location_ad_org_id
 	*/
@@ -1427,21 +1018,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set c_location_created.
-		@param c_location_created c_location_created
-	*/
-	public void setc_location_created (Timestamp c_location_created)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_location_created, c_location_created);
-	}
-
-	/** Get c_location_created.
-		@return c_location_created	  */
-	public Timestamp getc_location_created()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_c_location_created);
 	}
 
 	public org.compiere.model.I_AD_User getC_Location_Create() throws RuntimeException
@@ -1496,43 +1072,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set c_location_isactive.
-		@param c_location_isactive c_location_isactive
-	*/
-	public void setc_location_isactive (boolean c_location_isactive)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_location_isactive, Boolean.valueOf(c_location_isactive));
-	}
-
-	/** Get c_location_isactive.
-		@return c_location_isactive	  */
-	public boolean isc_location_isactive()
-	{
-		Object oo = get_Value(COLUMNNAME_c_location_isactive);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set c_location_updated.
-		@param c_location_updated c_location_updated
-	*/
-	public void setc_location_updated (Timestamp c_location_updated)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_location_updated, c_location_updated);
-	}
-
-	/** Get c_location_updated.
-		@return c_location_updated	  */
-	public Timestamp getc_location_updated()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_c_location_updated);
-	}
-
 	public org.compiere.model.I_AD_User getC_Location_Update() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -1555,6 +1094,120 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
+
+	/** Set Payment Term.
+		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	*/
+	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
+	{
+		if (C_PaymentTerm_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_PaymentTerm_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
+	}
+
+	/** Get Payment Term.
+		@return The terms of Payment (timing, discount)
+	  */
+	public int getC_PaymentTerm_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_region_ad_org_id.
+		@param C_Region_AD_Org_ID c_region_ad_org_id
+	*/
+	public void setC_Region_AD_Org_ID (int C_Region_AD_Org_ID)
+	{
+		if (C_Region_AD_Org_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Region_AD_Org_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Region_AD_Org_ID, Integer.valueOf(C_Region_AD_Org_ID));
+	}
+
+	/** Get c_region_ad_org_id.
+		@return c_region_ad_org_id	  */
+	public int getC_Region_AD_Org_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_AD_Org_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_region_c_country_id.
+		@param C_Region_C_Country_ID c_region_c_country_id
+	*/
+	public void setC_Region_C_Country_ID (int C_Region_C_Country_ID)
+	{
+		if (C_Region_C_Country_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Region_C_Country_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Region_C_Country_ID, Integer.valueOf(C_Region_C_Country_ID));
+	}
+
+	/** Get c_region_c_country_id.
+		@return c_region_c_country_id	  */
+	public int getC_Region_C_Country_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_C_Country_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getC_Region_ID(), get_TrxName());
+	}
+
+	/** Set Region.
+		@param C_Region_ID Identifies a geographical Region
+	*/
+	public void setC_Region_ID (int C_Region_ID)
+	{
+		if (C_Region_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Region_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
+	}
+
+	/** Get Region.
+		@return Identifies a geographical Region
+	  */
+	public int getC_Region_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set City.
+		@param City Identifies a City
+	*/
+	public void setCity (String City)
+	{
+		set_ValueNoCheck (COLUMNNAME_City, City);
+	}
+
+	/** Get City.
+		@return Identifies a City
+	  */
+	public String getCity()
+	{
+		return (String)get_Value(COLUMNNAME_City);
 	}
 
 	/** Set Comments.
@@ -1637,139 +1290,20 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_CountryName);
 	}
 
-	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());
-	}
-
-	/** Set Payment Term.
-		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	/** Set D-U-N-S.
+		@param DUNS Dun &amp; Bradstreet Number
 	*/
-	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
+	public void setDUNS (String DUNS)
 	{
-		if (C_PaymentTerm_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_PaymentTerm_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
+		set_ValueNoCheck (COLUMNNAME_DUNS, DUNS);
 	}
 
-	/** Get Payment Term.
-		@return The terms of Payment (timing, discount)
+	/** Get D-U-N-S.
+		@return Dun &amp; Bradstreet Number
 	  */
-	public int getC_PaymentTerm_ID()
+	public String getDUNS()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set c_region_ad_org_id.
-		@param C_Region_AD_Org_ID c_region_ad_org_id
-	*/
-	public void setC_Region_AD_Org_ID (int C_Region_AD_Org_ID)
-	{
-		if (C_Region_AD_Org_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Region_AD_Org_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Region_AD_Org_ID, Integer.valueOf(C_Region_AD_Org_ID));
-	}
-
-	/** Get c_region_ad_org_id.
-		@return c_region_ad_org_id	  */
-	public int getC_Region_AD_Org_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_AD_Org_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set c_region_c_country_id.
-		@param C_Region_C_Country_ID c_region_c_country_id
-	*/
-	public void setC_Region_C_Country_ID (int C_Region_C_Country_ID)
-	{
-		if (C_Region_C_Country_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Region_C_Country_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Region_C_Country_ID, Integer.valueOf(C_Region_C_Country_ID));
-	}
-
-	/** Get c_region_c_country_id.
-		@return c_region_c_country_id	  */
-	public int getC_Region_C_Country_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_C_Country_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set c_region_description.
-		@param c_region_description c_region_description
-	*/
-	public void setc_region_description (String c_region_description)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_region_description, c_region_description);
-	}
-
-	/** Get c_region_description.
-		@return c_region_description	  */
-	public String getc_region_description()
-	{
-		return (String)get_Value(COLUMNNAME_c_region_description);
-	}
-
-	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
-			.getPO(getC_Region_ID(), get_TrxName());
-	}
-
-	/** Set Region.
-		@param C_Region_ID Identifies a geographical Region
-	*/
-	public void setC_Region_ID (int C_Region_ID)
-	{
-		if (C_Region_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Region_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
-	}
-
-	/** Get Region.
-		@return Identifies a geographical Region
-	  */
-	public int getC_Region_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set c_region_isactive.
-		@param c_region_isactive c_region_isactive
-	*/
-	public void setc_region_isactive (boolean c_region_isactive)
-	{
-		set_ValueNoCheck (COLUMNNAME_c_region_isactive, Boolean.valueOf(c_region_isactive));
-	}
-
-	/** Get c_region_isactive.
-		@return c_region_isactive	  */
-	public boolean isc_region_isactive()
-	{
-		Object oo = get_Value(COLUMNNAME_c_region_isactive);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_DUNS);
 	}
 
 	/** DeliveryRule AD_Reference_ID=151 */
@@ -1861,22 +1395,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set D-U-N-S.
-		@param DUNS Dun &amp; Bradstreet Number
-	*/
-	public void setDUNS (String DUNS)
-	{
-		set_ValueNoCheck (COLUMNNAME_DUNS, DUNS);
-	}
-
-	/** Get D-U-N-S.
-		@return Dun &amp; Bradstreet Number
-	  */
-	public String getDUNS()
-	{
-		return (String)get_Value(COLUMNNAME_DUNS);
 	}
 
 	/** Set EMail Address.
@@ -2023,6 +1541,33 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_FreightCostRule);
 	}
 
+	/** InvoiceRule AD_Reference_ID=150 */
+	public static final int INVOICERULE_AD_Reference_ID=150;
+	/** After Delivery = D */
+	public static final String INVOICERULE_AfterDelivery = "D";
+	/** Immediate = I */
+	public static final String INVOICERULE_Immediate = "I";
+	/** After Order delivered = O */
+	public static final String INVOICERULE_AfterOrderDelivered = "O";
+	/** Customer Schedule after Delivery = S */
+	public static final String INVOICERULE_CustomerScheduleAfterDelivery = "S";
+	/** Set Invoice Rule.
+		@param InvoiceRule Frequency and method of invoicing 
+	*/
+	public void setInvoiceRule (String InvoiceRule)
+	{
+
+		set_ValueNoCheck (COLUMNNAME_InvoiceRule, InvoiceRule);
+	}
+
+	/** Get Invoice Rule.
+		@return Frequency and method of invoicing 
+	  */
+	public String getInvoiceRule()
+	{
+		return (String)get_Value(COLUMNNAME_InvoiceRule);
+	}
+
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -2049,33 +1594,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** InvoiceRule AD_Reference_ID=150 */
-	public static final int INVOICERULE_AD_Reference_ID=150;
-	/** After Delivery = D */
-	public static final String INVOICERULE_AfterDelivery = "D";
-	/** Immediate = I */
-	public static final String INVOICERULE_Immediate = "I";
-	/** After Order delivered = O */
-	public static final String INVOICERULE_AfterOrderDelivered = "O";
-	/** Customer Schedule after Delivery = S */
-	public static final String INVOICERULE_CustomerScheduleAfterDelivery = "S";
-	/** Set Invoice Rule.
-		@param InvoiceRule Frequency and method of invoicing 
-	*/
-	public void setInvoiceRule (String InvoiceRule)
-	{
-
-		set_ValueNoCheck (COLUMNNAME_InvoiceRule, InvoiceRule);
-	}
-
-	/** Get Invoice Rule.
-		@return Frequency and method of invoicing 
-	  */
-	public String getInvoiceRule()
-	{
-		return (String)get_Value(COLUMNNAME_InvoiceRule);
 	}
 
 	/** Set Customer.
@@ -2307,6 +1825,29 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return false;
 	}
 
+	/** Set LDAP User Name.
+		@param LDAPUser User Name used for authorization via LDAP (directory) services
+	*/
+	public void setLDAPUser (boolean LDAPUser)
+	{
+		set_ValueNoCheck (COLUMNNAME_LDAPUser, Boolean.valueOf(LDAPUser));
+	}
+
+	/** Get LDAP User Name.
+		@return User Name used for authorization via LDAP (directory) services
+	  */
+	public boolean isLDAPUser()
+	{
+		Object oo = get_Value(COLUMNNAME_LDAPUser);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Last Contact.
 		@param LastContact Date this individual was last contacted
 	*/
@@ -2337,29 +1878,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public String getLastResult()
 	{
 		return (String)get_Value(COLUMNNAME_LastResult);
-	}
-
-	/** Set LDAP User Name.
-		@param LDAPUser User Name used for authorization via LDAP (directory) services
-	*/
-	public void setLDAPUser (boolean LDAPUser)
-	{
-		set_ValueNoCheck (COLUMNNAME_LDAPUser, Boolean.valueOf(LDAPUser));
-	}
-
-	/** Get LDAP User Name.
-		@return User Name used for authorization via LDAP (directory) services
-	  */
-	public boolean isLDAPUser()
-	{
-		Object oo = get_Value(COLUMNNAME_LDAPUser);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
@@ -2512,6 +2030,106 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Order Reference.
+		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	*/
+	public void setPOReference (String POReference)
+	{
+		set_ValueNoCheck (COLUMNNAME_POReference, POReference);
+	}
+
+	/** Get Order Reference.
+		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	  */
+	public String getPOReference()
+	{
+		return (String)get_Value(COLUMNNAME_POReference);
+	}
+
+	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
+			.getPO(getPO_DiscountSchema_ID(), get_TrxName());
+	}
+
+	/** Set PO Discount Schema.
+		@param PO_DiscountSchema_ID Schema to calculate the purchase trade discount percentage
+	*/
+	public void setPO_DiscountSchema_ID (int PO_DiscountSchema_ID)
+	{
+		if (PO_DiscountSchema_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PO_DiscountSchema_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PO_DiscountSchema_ID, Integer.valueOf(PO_DiscountSchema_ID));
+	}
+
+	/** Get PO Discount Schema.
+		@return Schema to calculate the purchase trade discount percentage
+	  */
+	public int getPO_DiscountSchema_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PO_DiscountSchema_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_PaymentTerm getPO_PaymentTerm() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getPO_PaymentTerm_ID(), get_TrxName());
+	}
+
+	/** Set PO Payment Term.
+		@param PO_PaymentTerm_ID Payment rules for a purchase order
+	*/
+	public void setPO_PaymentTerm_ID (int PO_PaymentTerm_ID)
+	{
+		if (PO_PaymentTerm_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PO_PaymentTerm_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PO_PaymentTerm_ID, Integer.valueOf(PO_PaymentTerm_ID));
+	}
+
+	/** Get PO Payment Term.
+		@return Payment rules for a purchase order
+	  */
+	public int getPO_PaymentTerm_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PO_PaymentTerm_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getPO_PriceList_ID(), get_TrxName());
+	}
+
+	/** Set Purchase Price List.
+		@param PO_PriceList_ID Price List used by this Business Partner
+	*/
+	public void setPO_PriceList_ID (int PO_PriceList_ID)
+	{
+		if (PO_PriceList_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PO_PriceList_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PO_PriceList_ID, Integer.valueOf(PO_PriceList_ID));
+	}
+
+	/** Get Purchase Price List.
+		@return Price List used by this Business Partner
+	  */
+	public int getPO_PriceList_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PO_PriceList_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** PaymentRule AD_Reference_ID=195 */
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
@@ -2608,106 +2226,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public String getPhone2()
 	{
 		return (String)get_Value(COLUMNNAME_Phone2);
-	}
-
-	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
-			.getPO(getPO_DiscountSchema_ID(), get_TrxName());
-	}
-
-	/** Set PO Discount Schema.
-		@param PO_DiscountSchema_ID Schema to calculate the purchase trade discount percentage
-	*/
-	public void setPO_DiscountSchema_ID (int PO_DiscountSchema_ID)
-	{
-		if (PO_DiscountSchema_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PO_DiscountSchema_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PO_DiscountSchema_ID, Integer.valueOf(PO_DiscountSchema_ID));
-	}
-
-	/** Get PO Discount Schema.
-		@return Schema to calculate the purchase trade discount percentage
-	  */
-	public int getPO_DiscountSchema_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PO_DiscountSchema_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_PaymentTerm getPO_PaymentTerm() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
-			.getPO(getPO_PaymentTerm_ID(), get_TrxName());
-	}
-
-	/** Set PO Payment Term.
-		@param PO_PaymentTerm_ID Payment rules for a purchase order
-	*/
-	public void setPO_PaymentTerm_ID (int PO_PaymentTerm_ID)
-	{
-		if (PO_PaymentTerm_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PO_PaymentTerm_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PO_PaymentTerm_ID, Integer.valueOf(PO_PaymentTerm_ID));
-	}
-
-	/** Get PO Payment Term.
-		@return Payment rules for a purchase order
-	  */
-	public int getPO_PaymentTerm_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PO_PaymentTerm_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
-			.getPO(getPO_PriceList_ID(), get_TrxName());
-	}
-
-	/** Set Purchase Price List.
-		@param PO_PriceList_ID Price List used by this Business Partner
-	*/
-	public void setPO_PriceList_ID (int PO_PriceList_ID)
-	{
-		if (PO_PriceList_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PO_PriceList_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PO_PriceList_ID, Integer.valueOf(PO_PriceList_ID));
-	}
-
-	/** Get Purchase Price List.
-		@return Price List used by this Business Partner
-	  */
-	public int getPO_PriceList_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PO_PriceList_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Order Reference.
-		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	*/
-	public void setPOReference (String POReference)
-	{
-		set_ValueNoCheck (COLUMNNAME_POReference, POReference);
-	}
-
-	/** Get Order Reference.
-		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	  */
-	public String getPOReference()
-	{
-		return (String)get_Value(COLUMNNAME_POReference);
 	}
 
 	/** Set ZIP.
@@ -2807,6 +2325,108 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public String getRegionName()
 	{
 		return (String)get_Value(COLUMNNAME_RegionName);
+	}
+
+	/** SOCreditStatus AD_Reference_ID=289 */
+	public static final int SOCREDITSTATUS_AD_Reference_ID=289;
+	/** Credit Hold = H */
+	public static final String SOCREDITSTATUS_CreditHold = "H";
+	/** Credit OK = O */
+	public static final String SOCREDITSTATUS_CreditOK = "O";
+	/** Credit Stop = S */
+	public static final String SOCREDITSTATUS_CreditStop = "S";
+	/** Credit Watch = W */
+	public static final String SOCREDITSTATUS_CreditWatch = "W";
+	/** No Credit Check = X */
+	public static final String SOCREDITSTATUS_NoCreditCheck = "X";
+	/** Set Credit Status.
+		@param SOCreditStatus Business Partner Credit Status
+	*/
+	public void setSOCreditStatus (String SOCreditStatus)
+	{
+
+		set_ValueNoCheck (COLUMNNAME_SOCreditStatus, SOCreditStatus);
+	}
+
+	/** Get Credit Status.
+		@return Business Partner Credit Status
+	  */
+	public String getSOCreditStatus()
+	{
+		return (String)get_Value(COLUMNNAME_SOCreditStatus);
+	}
+
+	/** Set Credit Available.
+		@param SO_CreditAvailable Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
+	*/
+	public void setSO_CreditAvailable (BigDecimal SO_CreditAvailable)
+	{
+		set_ValueNoCheck (COLUMNNAME_SO_CreditAvailable, SO_CreditAvailable);
+	}
+
+	/** Get Credit Available.
+		@return Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
+	  */
+	public BigDecimal getSO_CreditAvailable()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditAvailable);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Credit Limit.
+		@param SO_CreditLimit Total outstanding invoice amounts allowed
+	*/
+	public void setSO_CreditLimit (BigDecimal SO_CreditLimit)
+	{
+		set_ValueNoCheck (COLUMNNAME_SO_CreditLimit, SO_CreditLimit);
+	}
+
+	/** Get Credit Limit.
+		@return Total outstanding invoice amounts allowed
+	  */
+	public BigDecimal getSO_CreditLimit()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditLimit);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Credit Used.
+		@param SO_CreditUsed Current open balance
+	*/
+	public void setSO_CreditUsed (BigDecimal SO_CreditUsed)
+	{
+		set_ValueNoCheck (COLUMNNAME_SO_CreditUsed, SO_CreditUsed);
+	}
+
+	/** Get Credit Used.
+		@return Current open balance
+	  */
+	public BigDecimal getSO_CreditUsed()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditUsed);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Order Description.
+		@param SO_Description Description to be used on orders
+	*/
+	public void setSO_Description (String SO_Description)
+	{
+		set_ValueNoCheck (COLUMNNAME_SO_Description, SO_Description);
+	}
+
+	/** Get Order Description.
+		@return Description to be used on orders
+	  */
+	public String getSO_Description()
+	{
+		return (String)get_Value(COLUMNNAME_SO_Description);
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
@@ -2915,108 +2535,6 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Credit Available.
-		@param SO_CreditAvailable Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
-	*/
-	public void setSO_CreditAvailable (BigDecimal SO_CreditAvailable)
-	{
-		set_ValueNoCheck (COLUMNNAME_SO_CreditAvailable, SO_CreditAvailable);
-	}
-
-	/** Get Credit Available.
-		@return Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
-	  */
-	public BigDecimal getSO_CreditAvailable()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditAvailable);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Credit Limit.
-		@param SO_CreditLimit Total outstanding invoice amounts allowed
-	*/
-	public void setSO_CreditLimit (BigDecimal SO_CreditLimit)
-	{
-		set_ValueNoCheck (COLUMNNAME_SO_CreditLimit, SO_CreditLimit);
-	}
-
-	/** Get Credit Limit.
-		@return Total outstanding invoice amounts allowed
-	  */
-	public BigDecimal getSO_CreditLimit()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditLimit);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** SOCreditStatus AD_Reference_ID=289 */
-	public static final int SOCREDITSTATUS_AD_Reference_ID=289;
-	/** Credit Hold = H */
-	public static final String SOCREDITSTATUS_CreditHold = "H";
-	/** Credit OK = O */
-	public static final String SOCREDITSTATUS_CreditOK = "O";
-	/** Credit Stop = S */
-	public static final String SOCREDITSTATUS_CreditStop = "S";
-	/** Credit Watch = W */
-	public static final String SOCREDITSTATUS_CreditWatch = "W";
-	/** No Credit Check = X */
-	public static final String SOCREDITSTATUS_NoCreditCheck = "X";
-	/** Set Credit Status.
-		@param SOCreditStatus Business Partner Credit Status
-	*/
-	public void setSOCreditStatus (String SOCreditStatus)
-	{
-
-		set_ValueNoCheck (COLUMNNAME_SOCreditStatus, SOCreditStatus);
-	}
-
-	/** Get Credit Status.
-		@return Business Partner Credit Status
-	  */
-	public String getSOCreditStatus()
-	{
-		return (String)get_Value(COLUMNNAME_SOCreditStatus);
-	}
-
-	/** Set Credit Used.
-		@param SO_CreditUsed Current open balance
-	*/
-	public void setSO_CreditUsed (BigDecimal SO_CreditUsed)
-	{
-		set_ValueNoCheck (COLUMNNAME_SO_CreditUsed, SO_CreditUsed);
-	}
-
-	/** Get Credit Used.
-		@return Current open balance
-	  */
-	public BigDecimal getSO_CreditUsed()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditUsed);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Order Description.
-		@param SO_Description Description to be used on orders
-	*/
-	public void setSO_Description (String SO_Description)
-	{
-		set_ValueNoCheck (COLUMNNAME_SO_Description, SO_Description);
-	}
-
-	/** Get Order Description.
-		@return Description to be used on orders
-	  */
-	public String getSO_Description()
-	{
-		return (String)get_Value(COLUMNNAME_SO_Description);
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
@@ -3128,5 +2646,487 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
+	}
+
+	/** Set ad_user_created.
+		@param ad_user_created ad_user_created
+	*/
+	public void setad_user_created (Timestamp ad_user_created)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_created, ad_user_created);
+	}
+
+	/** Get ad_user_created.
+		@return ad_user_created	  */
+	public Timestamp getad_user_created()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ad_user_created);
+	}
+
+	/** Set ad_user_isactive.
+		@param ad_user_isactive ad_user_isactive
+	*/
+	public void setad_user_isactive (boolean ad_user_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_isactive, Boolean.valueOf(ad_user_isactive));
+	}
+
+	/** Get ad_user_isactive.
+		@return ad_user_isactive	  */
+	public boolean isad_user_isactive()
+	{
+		Object oo = get_Value(COLUMNNAME_ad_user_isactive);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set ad_user_updated.
+		@param ad_user_updated ad_user_updated
+	*/
+	public void setad_user_updated (Timestamp ad_user_updated)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_updated, ad_user_updated);
+	}
+
+	/** Get ad_user_updated.
+		@return ad_user_updated	  */
+	public Timestamp getad_user_updated()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ad_user_updated);
+	}
+
+	/** Set ad_user_value.
+		@param ad_user_value ad_user_value
+	*/
+	public void setad_user_value (String ad_user_value)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_value, ad_user_value);
+	}
+
+	/** Get ad_user_value.
+		@return ad_user_value	  */
+	public String getad_user_value()
+	{
+		return (String)get_Value(COLUMNNAME_ad_user_value);
+	}
+
+	/** Set c_bp_dunninggrace.
+		@param c_bp_dunninggrace c_bp_dunninggrace
+	*/
+	public void setc_bp_dunninggrace (Timestamp c_bp_dunninggrace)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_dunninggrace, c_bp_dunninggrace);
+	}
+
+	/** Get c_bp_dunninggrace.
+		@return c_bp_dunninggrace	  */
+	public Timestamp getc_bp_dunninggrace()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_bp_dunninggrace);
+	}
+
+	/** Set c_bp_ismanufacturer.
+		@param c_bp_ismanufacturer c_bp_ismanufacturer
+	*/
+	public void setc_bp_ismanufacturer (boolean c_bp_ismanufacturer)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_ismanufacturer, Boolean.valueOf(c_bp_ismanufacturer));
+	}
+
+	/** Get c_bp_ismanufacturer.
+		@return c_bp_ismanufacturer	  */
+	public boolean isc_bp_ismanufacturer()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_ismanufacturer);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_ispotaxexempt.
+		@param c_bp_ispotaxexempt c_bp_ispotaxexempt
+	*/
+	public void setc_bp_ispotaxexempt (boolean c_bp_ispotaxexempt)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_ispotaxexempt, Boolean.valueOf(c_bp_ispotaxexempt));
+	}
+
+	/** Get c_bp_ispotaxexempt.
+		@return c_bp_ispotaxexempt	  */
+	public boolean isc_bp_ispotaxexempt()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_ispotaxexempt);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_created.
+		@param c_bp_location_created c_bp_location_created
+	*/
+	public void setc_bp_location_created (Timestamp c_bp_location_created)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_created, c_bp_location_created);
+	}
+
+	/** Get c_bp_location_created.
+		@return c_bp_location_created	  */
+	public Timestamp getc_bp_location_created()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_bp_location_created);
+	}
+
+	/** Set c_bp_location_fax.
+		@param c_bp_location_fax c_bp_location_fax
+	*/
+	public void setc_bp_location_fax (String c_bp_location_fax)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_fax, c_bp_location_fax);
+	}
+
+	/** Get c_bp_location_fax.
+		@return c_bp_location_fax	  */
+	public String getc_bp_location_fax()
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_fax);
+	}
+
+	/** Set c_bp_location_isactive.
+		@param c_bp_location_isactive c_bp_location_isactive
+	*/
+	public void setc_bp_location_isactive (boolean c_bp_location_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isactive, Boolean.valueOf(c_bp_location_isactive));
+	}
+
+	/** Get c_bp_location_isactive.
+		@return c_bp_location_isactive	  */
+	public boolean isc_bp_location_isactive()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isactive);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isbillto.
+		@param c_bp_location_isbillto c_bp_location_isbillto
+	*/
+	public void setc_bp_location_isbillto (boolean c_bp_location_isbillto)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isbillto, Boolean.valueOf(c_bp_location_isbillto));
+	}
+
+	/** Get c_bp_location_isbillto.
+		@return c_bp_location_isbillto	  */
+	public boolean isc_bp_location_isbillto()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isbillto);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isdn.
+		@param c_bp_location_isdn c_bp_location_isdn
+	*/
+	public void setc_bp_location_isdn (String c_bp_location_isdn)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isdn, c_bp_location_isdn);
+	}
+
+	/** Get c_bp_location_isdn.
+		@return c_bp_location_isdn	  */
+	public String getc_bp_location_isdn()
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_isdn);
+	}
+
+	/** Set c_bp_location_ispayfrom.
+		@param c_bp_location_ispayfrom c_bp_location_ispayfrom
+	*/
+	public void setc_bp_location_ispayfrom (boolean c_bp_location_ispayfrom)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_ispayfrom, Boolean.valueOf(c_bp_location_ispayfrom));
+	}
+
+	/** Get c_bp_location_ispayfrom.
+		@return c_bp_location_ispayfrom	  */
+	public boolean isc_bp_location_ispayfrom()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_ispayfrom);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isremitto.
+		@param c_bp_location_isremitto c_bp_location_isremitto
+	*/
+	public void setc_bp_location_isremitto (boolean c_bp_location_isremitto)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isremitto, Boolean.valueOf(c_bp_location_isremitto));
+	}
+
+	/** Get c_bp_location_isremitto.
+		@return c_bp_location_isremitto	  */
+	public boolean isc_bp_location_isremitto()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isremitto);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isshipto.
+		@param c_bp_location_isshipto c_bp_location_isshipto
+	*/
+	public void setc_bp_location_isshipto (boolean c_bp_location_isshipto)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isshipto, Boolean.valueOf(c_bp_location_isshipto));
+	}
+
+	/** Get c_bp_location_isshipto.
+		@return c_bp_location_isshipto	  */
+	public boolean isc_bp_location_isshipto()
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isshipto);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_name.
+		@param c_bp_location_name c_bp_location_name
+	*/
+	public void setc_bp_location_name (String c_bp_location_name)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_name, c_bp_location_name);
+	}
+
+	/** Get c_bp_location_name.
+		@return c_bp_location_name	  */
+	public String getc_bp_location_name()
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_name);
+	}
+
+	/** Set c_bp_location_phone.
+		@param c_bp_location_phone c_bp_location_phone
+	*/
+	public void setc_bp_location_phone (String c_bp_location_phone)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_phone, c_bp_location_phone);
+	}
+
+	/** Get c_bp_location_phone.
+		@return c_bp_location_phone	  */
+	public String getc_bp_location_phone()
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_phone);
+	}
+
+	/** Set c_bp_location_phone2.
+		@param c_bp_location_phone2 c_bp_location_phone2
+	*/
+	public void setc_bp_location_phone2 (String c_bp_location_phone2)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_phone2, c_bp_location_phone2);
+	}
+
+	/** Get c_bp_location_phone2.
+		@return c_bp_location_phone2	  */
+	public String getc_bp_location_phone2()
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_phone2);
+	}
+
+	/** Set c_bp_location_updated.
+		@param c_bp_location_updated c_bp_location_updated
+	*/
+	public void setc_bp_location_updated (Timestamp c_bp_location_updated)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_updated, c_bp_location_updated);
+	}
+
+	/** Get c_bp_location_updated.
+		@return c_bp_location_updated	  */
+	public Timestamp getc_bp_location_updated()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_bp_location_updated);
+	}
+
+	/** Set c_country_ad_language.
+		@param c_country_ad_language c_country_ad_language
+	*/
+	public void setc_country_ad_language (String c_country_ad_language)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_country_ad_language, c_country_ad_language);
+	}
+
+	/** Get c_country_ad_language.
+		@return c_country_ad_language	  */
+	public String getc_country_ad_language()
+	{
+		return (String)get_Value(COLUMNNAME_c_country_ad_language);
+	}
+
+	/** Set c_country_description.
+		@param c_country_description c_country_description
+	*/
+	public void setc_country_description (String c_country_description)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_country_description, c_country_description);
+	}
+
+	/** Get c_country_description.
+		@return c_country_description	  */
+	public String getc_country_description()
+	{
+		return (String)get_Value(COLUMNNAME_c_country_description);
+	}
+
+	/** Set c_country_isactive.
+		@param c_country_isactive c_country_isactive
+	*/
+	public void setc_country_isactive (boolean c_country_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_country_isactive, Boolean.valueOf(c_country_isactive));
+	}
+
+	/** Get c_country_isactive.
+		@return c_country_isactive	  */
+	public boolean isc_country_isactive()
+	{
+		Object oo = get_Value(COLUMNNAME_c_country_isactive);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_location_created.
+		@param c_location_created c_location_created
+	*/
+	public void setc_location_created (Timestamp c_location_created)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_location_created, c_location_created);
+	}
+
+	/** Get c_location_created.
+		@return c_location_created	  */
+	public Timestamp getc_location_created()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_location_created);
+	}
+
+	/** Set c_location_isactive.
+		@param c_location_isactive c_location_isactive
+	*/
+	public void setc_location_isactive (boolean c_location_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_location_isactive, Boolean.valueOf(c_location_isactive));
+	}
+
+	/** Get c_location_isactive.
+		@return c_location_isactive	  */
+	public boolean isc_location_isactive()
+	{
+		Object oo = get_Value(COLUMNNAME_c_location_isactive);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_location_updated.
+		@param c_location_updated c_location_updated
+	*/
+	public void setc_location_updated (Timestamp c_location_updated)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_location_updated, c_location_updated);
+	}
+
+	/** Get c_location_updated.
+		@return c_location_updated	  */
+	public Timestamp getc_location_updated()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_location_updated);
+	}
+
+	/** Set c_region_description.
+		@param c_region_description c_region_description
+	*/
+	public void setc_region_description (String c_region_description)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_region_description, c_region_description);
+	}
+
+	/** Get c_region_description.
+		@return c_region_description	  */
+	public String getc_region_description()
+	{
+		return (String)get_Value(COLUMNNAME_c_region_description);
+	}
+
+	/** Set c_region_isactive.
+		@param c_region_isactive c_region_isactive
+	*/
+	public void setc_region_isactive (boolean c_region_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_region_isactive, Boolean.valueOf(c_region_isactive));
+	}
+
+	/** Get c_region_isactive.
+		@return c_region_isactive	  */
+	public boolean isc_region_isactive()
+	{
+		Object oo = get_Value(COLUMNNAME_c_region_isactive);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

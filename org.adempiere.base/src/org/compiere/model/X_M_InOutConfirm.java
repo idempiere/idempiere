@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOutConfirm
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_InOutConfirm")
 public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_InOutConfirm (Properties ctx, int M_InOutConfirm_ID, String trxName)
@@ -198,22 +198,6 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set Confirmation No.
-		@param ConfirmationNo Confirmation Number
-	*/
-	public void setConfirmationNo (String ConfirmationNo)
-	{
-		set_Value (COLUMNNAME_ConfirmationNo, ConfirmationNo);
-	}
-
-	/** Get Confirmation No.
-		@return Confirmation Number
-	  */
-	public String getConfirmationNo()
-	{
-		return (String)get_Value(COLUMNNAME_ConfirmationNo);
-	}
-
 	/** ConfirmType AD_Reference_ID=320 */
 	public static final int CONFIRMTYPE_AD_Reference_ID=320;
 	/** Drop Ship Confirm = DS */
@@ -241,6 +225,22 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public String getConfirmType()
 	{
 		return (String)get_Value(COLUMNNAME_ConfirmType);
+	}
+
+	/** Set Confirmation No.
+		@param ConfirmationNo Confirmation Number
+	*/
+	public void setConfirmationNo (String ConfirmationNo)
+	{
+		set_Value (COLUMNNAME_ConfirmationNo, ConfirmationNo);
+	}
+
+	/** Get Confirmation No.
+		@return Confirmation Number
+	  */
+	public String getConfirmationNo()
+	{
+		return (String)get_Value(COLUMNNAME_ConfirmationNo);
 	}
 
 	/** Set Create Package.

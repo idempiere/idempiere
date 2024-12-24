@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Transfer
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_A_Asset_Transfer 
 {
@@ -40,6 +40,27 @@ public interface I_A_Asset_Transfer
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name A_Accumdepreciation_Acct */
     public static final String COLUMNNAME_A_Accumdepreciation_Acct = "A_Accumdepreciation_Acct";
@@ -163,14 +184,6 @@ public interface I_A_Asset_Transfer
 	/** Get Capital/Expense	  */
 	public String getA_CapvsExp();
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Depreciation_Acct */
     public static final String COLUMNNAME_A_Depreciation_Acct = "A_Depreciation_Acct";
 
@@ -281,19 +294,6 @@ public interface I_A_Asset_Transfer
 
 	/** Get Disposal Revenue Str	  */
 	public String getA_Disposal_Revenue_Str();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
 
     /** Column name A_Period_End */
     public static final String COLUMNNAME_A_Period_End = "A_Period_End";

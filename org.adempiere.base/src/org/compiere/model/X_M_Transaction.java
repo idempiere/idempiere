@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Transaction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Transaction")
 public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Transaction (Properties ctx, int M_Transaction_ID, String trxName)
@@ -44,11 +44,11 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
         {
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 			setMovementQty (Env.ZERO);
 			setMovementType (null);
-			setM_Product_ID (0);
-			setM_Transaction_ID (0);
         } */
     }
 
@@ -60,11 +60,11 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
         {
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 			setMovementQty (Env.ZERO);
 			setMovementType (null);
-			setM_Product_ID (0);
-			setM_Transaction_ID (0);
         } */
     }
 
@@ -76,11 +76,11 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
         {
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 			setMovementQty (Env.ZERO);
 			setMovementType (null);
-			setM_Product_ID (0);
-			setM_Transaction_ID (0);
         } */
     }
 
@@ -92,11 +92,11 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
         {
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 			setMovementQty (Env.ZERO);
 			setMovementType (null);
-			setM_Product_ID (0);
-			setM_Transaction_ID (0);
         } */
     }
 
@@ -296,92 +296,6 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Movement Date.
-		@param MovementDate Date a product was moved in or out of inventory
-	*/
-	public void setMovementDate (Timestamp MovementDate)
-	{
-		set_ValueNoCheck (COLUMNNAME_MovementDate, MovementDate);
-	}
-
-	/** Get Movement Date.
-		@return Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getMovementDate()));
-    }
-
-	/** Set Movement Quantity.
-		@param MovementQty Quantity of a product moved.
-	*/
-	public void setMovementQty (BigDecimal MovementQty)
-	{
-		set_ValueNoCheck (COLUMNNAME_MovementQty, MovementQty);
-	}
-
-	/** Get Movement Quantity.
-		@return Quantity of a product moved.
-	  */
-	public BigDecimal getMovementQty()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** MovementType AD_Reference_ID=189 */
-	public static final int MOVEMENTTYPE_AD_Reference_ID=189;
-	/** Customer Returns = C+ */
-	public static final String MOVEMENTTYPE_CustomerReturns = "C+";
-	/** Customer Shipment = C- */
-	public static final String MOVEMENTTYPE_CustomerShipment = "C-";
-	/** Inventory In = I+ */
-	public static final String MOVEMENTTYPE_InventoryIn = "I+";
-	/** Inventory Out = I- */
-	public static final String MOVEMENTTYPE_InventoryOut = "I-";
-	/** Movement To = M+ */
-	public static final String MOVEMENTTYPE_MovementTo = "M+";
-	/** Movement From = M- */
-	public static final String MOVEMENTTYPE_MovementFrom = "M-";
-	/** Production + = P+ */
-	public static final String MOVEMENTTYPE_ProductionPlus = "P+";
-	/** Production - = P- */
-	public static final String MOVEMENTTYPE_Production_ = "P-";
-	/** Vendor Receipts = V+ */
-	public static final String MOVEMENTTYPE_VendorReceipts = "V+";
-	/** Vendor Returns = V- */
-	public static final String MOVEMENTTYPE_VendorReturns = "V-";
-	/** Work Order + = W+ */
-	public static final String MOVEMENTTYPE_WorkOrderPlus = "W+";
-	/** Work Order - = W- */
-	public static final String MOVEMENTTYPE_WorkOrder_ = "W-";
-	/** Set Movement Type.
-		@param MovementType Method of moving the inventory
-	*/
-	public void setMovementType (String MovementType)
-	{
-
-		set_ValueNoCheck (COLUMNNAME_MovementType, MovementType);
-	}
-
-	/** Get Movement Type.
-		@return Method of moving the inventory
-	  */
-	public String getMovementType()
-	{
-		return (String)get_Value(COLUMNNAME_MovementType);
-	}
-
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -472,6 +386,92 @@ public class X_M_Transaction extends PO implements I_M_Transaction, I_Persistent
 	public String getM_Transaction_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Transaction_UU);
+	}
+
+	/** Set Movement Date.
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
+	public void setMovementDate (Timestamp MovementDate)
+	{
+		set_ValueNoCheck (COLUMNNAME_MovementDate, MovementDate);
+	}
+
+	/** Get Movement Date.
+		@return Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getMovementDate()));
+    }
+
+	/** Set Movement Quantity.
+		@param MovementQty Quantity of a product moved.
+	*/
+	public void setMovementQty (BigDecimal MovementQty)
+	{
+		set_ValueNoCheck (COLUMNNAME_MovementQty, MovementQty);
+	}
+
+	/** Get Movement Quantity.
+		@return Quantity of a product moved.
+	  */
+	public BigDecimal getMovementQty()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** MovementType AD_Reference_ID=189 */
+	public static final int MOVEMENTTYPE_AD_Reference_ID=189;
+	/** Customer Returns = C+ */
+	public static final String MOVEMENTTYPE_CustomerReturns = "C+";
+	/** Customer Shipment = C- */
+	public static final String MOVEMENTTYPE_CustomerShipment = "C-";
+	/** Inventory In = I+ */
+	public static final String MOVEMENTTYPE_InventoryIn = "I+";
+	/** Inventory Out = I- */
+	public static final String MOVEMENTTYPE_InventoryOut = "I-";
+	/** Movement To = M+ */
+	public static final String MOVEMENTTYPE_MovementTo = "M+";
+	/** Movement From = M- */
+	public static final String MOVEMENTTYPE_MovementFrom = "M-";
+	/** Production + = P+ */
+	public static final String MOVEMENTTYPE_ProductionPlus = "P+";
+	/** Production - = P- */
+	public static final String MOVEMENTTYPE_Production_ = "P-";
+	/** Vendor Receipts = V+ */
+	public static final String MOVEMENTTYPE_VendorReceipts = "V+";
+	/** Vendor Returns = V- */
+	public static final String MOVEMENTTYPE_VendorReturns = "V-";
+	/** Work Order + = W+ */
+	public static final String MOVEMENTTYPE_WorkOrderPlus = "W+";
+	/** Work Order - = W- */
+	public static final String MOVEMENTTYPE_WorkOrder_ = "W-";
+	/** Set Movement Type.
+		@param MovementType Method of moving the inventory
+	*/
+	public void setMovementType (String MovementType)
+	{
+
+		set_ValueNoCheck (COLUMNNAME_MovementType, MovementType);
+	}
+
+	/** Get Movement Type.
+		@return Method of moving the inventory
+	  */
+	public String getMovementType()
+	{
+		return (String)get_Value(COLUMNNAME_MovementType);
 	}
 
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException

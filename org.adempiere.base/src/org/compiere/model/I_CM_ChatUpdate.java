@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_ChatUpdate
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_CM_ChatUpdate 
 {
@@ -77,6 +77,15 @@ public interface I_CM_ChatUpdate
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
+    /** Column name CM_ChatUpdate_UU */
+    public static final String COLUMNNAME_CM_ChatUpdate_UU = "CM_ChatUpdate_UU";
+
+	/** Set CM_ChatUpdate_UU	  */
+	public void setCM_ChatUpdate_UU (String CM_ChatUpdate_UU);
+
+	/** Get CM_ChatUpdate_UU	  */
+	public String getCM_ChatUpdate_UU();
+
     /** Column name CM_Chat_ID */
     public static final String COLUMNNAME_CM_Chat_ID = "CM_Chat_ID";
 
@@ -91,15 +100,6 @@ public interface I_CM_ChatUpdate
 	public int getCM_Chat_ID();
 
 	public org.compiere.model.I_CM_Chat getCM_Chat() throws RuntimeException;
-
-    /** Column name CM_ChatUpdate_UU */
-    public static final String COLUMNNAME_CM_ChatUpdate_UU = "CM_ChatUpdate_UU";
-
-	/** Set CM_ChatUpdate_UU	  */
-	public void setCM_ChatUpdate_UU (String CM_ChatUpdate_UU);
-
-	/** Get CM_ChatUpdate_UU	  */
-	public String getCM_ChatUpdate_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

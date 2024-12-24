@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_AuthorizationAccount 
 {
@@ -40,24 +40,6 @@ public interface I_AD_AuthorizationAccount
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
-
-    /** Column name AccessToken */
-    public static final String COLUMNNAME_AccessToken = "AccessToken";
-
-	/** Set Access Token	  */
-	public void setAccessToken (String AccessToken);
-
-	/** Get Access Token	  */
-	public String getAccessToken();
-
-    /** Column name AccessTokenTimestamp */
-    public static final String COLUMNNAME_AccessTokenTimestamp = "AccessTokenTimestamp";
-
-	/** Set Access Token Timestamp	  */
-	public void setAccessTokenTimestamp (Timestamp AccessTokenTimestamp);
-
-	/** Get Access Token Timestamp	  */
-	public Timestamp getAccessTokenTimestamp();
 
     /** Column name AD_AuthorizationAccount_ID */
     public static final String COLUMNNAME_AD_AuthorizationAccount_ID = "AD_AuthorizationAccount_ID";
@@ -132,6 +114,24 @@ public interface I_AD_AuthorizationAccount
 	public int getAD_User_ID();
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
+    /** Column name AccessToken */
+    public static final String COLUMNNAME_AccessToken = "AccessToken";
+
+	/** Set Access Token	  */
+	public void setAccessToken (String AccessToken);
+
+	/** Get Access Token	  */
+	public String getAccessToken();
+
+    /** Column name AccessTokenTimestamp */
+    public static final String COLUMNNAME_AccessTokenTimestamp = "AccessTokenTimestamp";
+
+	/** Set Access Token Timestamp	  */
+	public void setAccessTokenTimestamp (Timestamp AccessTokenTimestamp);
+
+	/** Get Access Token Timestamp	  */
+	public Timestamp getAccessTokenTimestamp();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

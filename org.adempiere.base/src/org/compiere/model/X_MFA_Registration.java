@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Registration
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Registration")
 public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)
@@ -302,6 +302,52 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 		return (String)get_Value(COLUMNNAME_MFALastSecret);
 	}
 
+	/** Set MFA Secret.
+		@param MFASecret Multi-factor Authentication Secret
+	*/
+	public void setMFASecret (String MFASecret)
+	{
+		set_Value (COLUMNNAME_MFASecret, MFASecret);
+	}
+
+	/** Get MFA Secret.
+		@return Multi-factor Authentication Secret
+	  */
+	public String getMFASecret()
+	{
+		return (String)get_Value(COLUMNNAME_MFASecret);
+	}
+
+	/** Set Unregistered at.
+		@param MFAUnregisteredAt Unregistered at
+	*/
+	public void setMFAUnregisteredAt (Timestamp MFAUnregisteredAt)
+	{
+		set_Value (COLUMNNAME_MFAUnregisteredAt, MFAUnregisteredAt);
+	}
+
+	/** Get Unregistered at.
+		@return Unregistered at	  */
+	public Timestamp getMFAUnregisteredAt()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_MFAUnregisteredAt);
+	}
+
+	/** Set Validated at.
+		@param MFAValidatedAt Validated at
+	*/
+	public void setMFAValidatedAt (Timestamp MFAValidatedAt)
+	{
+		set_Value (COLUMNNAME_MFAValidatedAt, MFAValidatedAt);
+	}
+
+	/** Get Validated at.
+		@return Validated at	  */
+	public Timestamp getMFAValidatedAt()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_MFAValidatedAt);
+	}
+
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
 	{
 		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)
@@ -364,52 +410,6 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	public String getMFA_Registration_UU()
 	{
 		return (String)get_Value(COLUMNNAME_MFA_Registration_UU);
-	}
-
-	/** Set MFA Secret.
-		@param MFASecret Multi-factor Authentication Secret
-	*/
-	public void setMFASecret (String MFASecret)
-	{
-		set_Value (COLUMNNAME_MFASecret, MFASecret);
-	}
-
-	/** Get MFA Secret.
-		@return Multi-factor Authentication Secret
-	  */
-	public String getMFASecret()
-	{
-		return (String)get_Value(COLUMNNAME_MFASecret);
-	}
-
-	/** Set Unregistered at.
-		@param MFAUnregisteredAt Unregistered at
-	*/
-	public void setMFAUnregisteredAt (Timestamp MFAUnregisteredAt)
-	{
-		set_Value (COLUMNNAME_MFAUnregisteredAt, MFAUnregisteredAt);
-	}
-
-	/** Get Unregistered at.
-		@return Unregistered at	  */
-	public Timestamp getMFAUnregisteredAt()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_MFAUnregisteredAt);
-	}
-
-	/** Set Validated at.
-		@param MFAValidatedAt Validated at
-	*/
-	public void setMFAValidatedAt (Timestamp MFAValidatedAt)
-	{
-		set_Value (COLUMNNAME_MFAValidatedAt, MFAValidatedAt);
-	}
-
-	/** Get Validated at.
-		@return Validated at	  */
-	public Timestamp getMFAValidatedAt()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_MFAValidatedAt);
 	}
 
 	/** Set Name.

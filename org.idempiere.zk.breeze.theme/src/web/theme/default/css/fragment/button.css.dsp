@@ -164,3 +164,7 @@
 	padding: 0px;
 	line-height: 14px;
 }
+
+.mobile .login-btn {
+    font-size: 0px !important;
+}

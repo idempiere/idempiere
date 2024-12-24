@@ -24,7 +24,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for B_Buyer
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="B_Buyer")
 public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_B_Buyer (Properties ctx, int B_Buyer_ID, String trxName)

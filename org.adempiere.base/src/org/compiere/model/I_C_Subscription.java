@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Subscription
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_Subscription 
 {
@@ -77,35 +77,6 @@ public interface I_C_Subscription
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
-    /** Column name C_Subscription_ID */
-    public static final String COLUMNNAME_C_Subscription_ID = "C_Subscription_ID";
-
-	/** Set Subscription.
-	  * Subscription of a Business Partner of a Product to renew
-	  */
-	public void setC_Subscription_ID (int C_Subscription_ID);
-
-	/** Get Subscription.
-	  * Subscription of a Business Partner of a Product to renew
-	  */
-	public int getC_Subscription_ID();
-
     /** Column name C_SubscriptionType_ID */
     public static final String COLUMNNAME_C_SubscriptionType_ID = "C_SubscriptionType_ID";
 
@@ -121,6 +92,19 @@ public interface I_C_Subscription
 
 	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException;
 
+    /** Column name C_Subscription_ID */
+    public static final String COLUMNNAME_C_Subscription_ID = "C_Subscription_ID";
+
+	/** Set Subscription.
+	  * Subscription of a Business Partner of a Product to renew
+	  */
+	public void setC_Subscription_ID (int C_Subscription_ID);
+
+	/** Get Subscription.
+	  * Subscription of a Business Partner of a Product to renew
+	  */
+	public int getC_Subscription_ID();
+
     /** Column name C_Subscription_UU */
     public static final String COLUMNNAME_C_Subscription_UU = "C_Subscription_UU";
 
@@ -129,6 +113,22 @@ public interface I_C_Subscription
 
 	/** Get C_Subscription_UU	  */
 	public String getC_Subscription_UU();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

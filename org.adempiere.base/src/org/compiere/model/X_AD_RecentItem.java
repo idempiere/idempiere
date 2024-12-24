@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_RecentItem
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_RecentItem")
 public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_RecentItem (Properties ctx, int AD_RecentItem_ID, String trxName)

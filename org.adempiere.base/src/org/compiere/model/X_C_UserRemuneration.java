@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UserRemuneration
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_UserRemuneration")
 public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_UserRemuneration (Properties ctx, int C_UserRemuneration_ID, String trxName)

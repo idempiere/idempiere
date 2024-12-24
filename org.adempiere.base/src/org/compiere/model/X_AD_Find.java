@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Find")
 public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
@@ -258,12 +258,12 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	public static final String OPERATION_GtEq = ">=";
 	/** &gt; = &gt;&gt; */
 	public static final String OPERATION_Gt = ">>";
-	/**  ~ = ~~ */
-	public static final String OPERATION_Like = "~~";
 	/** |&lt;x&gt;| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
+	/**  ~ = ~~ */
+	public static final String OPERATION_Like = "~~";
 	/** Set Operation.
 		@param Operation Compare Operation
 	*/

@@ -336,7 +336,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	// Setup global key listener
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@g@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
+		// do not listen for Q because Alt+Q is used by Mac for other purposes
+		keyListener.setCtrlKeys("@a@c@d@e@f@g@h@l@m@n@o@p@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create IDesktop instance
@@ -360,6 +361,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		BrowserToken.save(mSession, user);
 		
 		Env.setContext(ctx, Env.UI_CLIENT, "zk");
+		Env.setContext(ctx, Env.THEME, ThemeManager.getTheme());
 		Env.setContext(ctx, Env.DB_TYPE, DB.getDatabase().getName());
 		StringBuilder localHttpAddr = new StringBuilder(Executions.getCurrent().getScheme());
 		localHttpAddr.append("://").append(Executions.getCurrent().getLocalAddr());

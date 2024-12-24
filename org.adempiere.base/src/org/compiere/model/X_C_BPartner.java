@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BPartner
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BPartner")
 public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BPartner (Properties ctx, int C_BPartner_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
       super (ctx, C_BPartner_ID, trxName);
       /** if (C_BPartner_ID == 0)
         {
-			setC_BPartner_ID (0);
 			setC_BP_Group_ID (0);
+			setC_BPartner_ID (0);
 			setIs1099Vendor (false);
 // N
 			setIsCustomer (false);
@@ -57,9 +57,9 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 			setIsSummary (false);
 			setIsVendor (false);
 			setName (null);
-			setSendEMail (false);
 			setSO_CreditLimit (Env.ZERO);
 			setSO_CreditUsed (Env.ZERO);
+			setSendEMail (false);
 			setValue (null);
         } */
     }
@@ -70,8 +70,8 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
       super (ctx, C_BPartner_ID, trxName, virtualColumns);
       /** if (C_BPartner_ID == 0)
         {
-			setC_BPartner_ID (0);
 			setC_BP_Group_ID (0);
+			setC_BPartner_ID (0);
 			setIs1099Vendor (false);
 // N
 			setIsCustomer (false);
@@ -85,9 +85,9 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 			setIsSummary (false);
 			setIsVendor (false);
 			setName (null);
-			setSendEMail (false);
 			setSO_CreditLimit (Env.ZERO);
 			setSO_CreditUsed (Env.ZERO);
+			setSendEMail (false);
 			setValue (null);
         } */
     }
@@ -98,8 +98,8 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
       super (ctx, C_BPartner_UU, trxName);
       /** if (C_BPartner_UU == null)
         {
-			setC_BPartner_ID (0);
 			setC_BP_Group_ID (0);
+			setC_BPartner_ID (0);
 			setIs1099Vendor (false);
 // N
 			setIsCustomer (false);
@@ -113,9 +113,9 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 			setIsSummary (false);
 			setIsVendor (false);
 			setName (null);
-			setSendEMail (false);
 			setSO_CreditLimit (Env.ZERO);
 			setSO_CreditUsed (Env.ZERO);
+			setSendEMail (false);
 			setValue (null);
         } */
     }
@@ -126,8 +126,8 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
       super (ctx, C_BPartner_UU, trxName, virtualColumns);
       /** if (C_BPartner_UU == null)
         {
-			setC_BPartner_ID (0);
 			setC_BP_Group_ID (0);
+			setC_BPartner_ID (0);
 			setIs1099Vendor (false);
 // N
 			setIsCustomer (false);
@@ -141,9 +141,9 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 			setIsSummary (false);
 			setIsVendor (false);
 			setName (null);
-			setSendEMail (false);
 			setSO_CreditLimit (Env.ZERO);
 			setSO_CreditUsed (Env.ZERO);
+			setSendEMail (false);
 			setValue (null);
         } */
     }
@@ -175,44 +175,6 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	/** Set Acquisition Cost.
-		@param AcqusitionCost The cost of gaining the prospect as a customer
-	*/
-	public void setAcqusitionCost (BigDecimal AcqusitionCost)
-	{
-		set_Value (COLUMNNAME_AcqusitionCost, AcqusitionCost);
-	}
-
-	/** Get Acquisition Cost.
-		@return The cost of gaining the prospect as a customer
-	  */
-	public BigDecimal getAcqusitionCost()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AcqusitionCost);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Actual Life Time Value.
-		@param ActualLifeTimeValue Actual Life Time Revenue
-	*/
-	public void setActualLifeTimeValue (BigDecimal ActualLifeTimeValue)
-	{
-		set_Value (COLUMNNAME_ActualLifeTimeValue, ActualLifeTimeValue);
-	}
-
-	/** Get Actual Life Time Value.
-		@return Actual Life Time Revenue
-	  */
-	public BigDecimal getActualLifeTimeValue()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualLifeTimeValue);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
 
 	/** AD_Language AD_Reference_ID=327 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=327;
@@ -255,6 +217,44 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Acquisition Cost.
+		@param AcqusitionCost The cost of gaining the prospect as a customer
+	*/
+	public void setAcqusitionCost (BigDecimal AcqusitionCost)
+	{
+		set_Value (COLUMNNAME_AcqusitionCost, AcqusitionCost);
+	}
+
+	/** Get Acquisition Cost.
+		@return The cost of gaining the prospect as a customer
+	  */
+	public BigDecimal getAcqusitionCost()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AcqusitionCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Actual Life Time Value.
+		@param ActualLifeTimeValue Actual Life Time Revenue
+	*/
+	public void setActualLifeTimeValue (BigDecimal ActualLifeTimeValue)
+	{
+		set_Value (COLUMNNAME_ActualLifeTimeValue, ActualLifeTimeValue);
+	}
+
+	/** Get Actual Life Time Value.
+		@return Actual Life Time Revenue
+	  */
+	public BigDecimal getActualLifeTimeValue()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualLifeTimeValue);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Partner Parent.
 		@param BPartner_Parent_ID Business Partner Parent
 	*/
@@ -272,6 +272,34 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 	public int getBPartner_Parent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BPartner_Parent_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
+			.getPO(getC_BP_Group_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner Group.
+		@param C_BP_Group_ID Business Partner Group
+	*/
+	public void setC_BP_Group_ID (int C_BP_Group_ID)
+	{
+		if (C_BP_Group_ID < 1)
+			set_Value (COLUMNNAME_C_BP_Group_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
+	}
+
+	/** Get Business Partner Group.
+		@return Business Partner Group
+	  */
+	public int getC_BP_Group_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -312,34 +340,6 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 	public String getC_BPartner_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BPartner_UU);
-	}
-
-	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
-			.getPO(getC_BP_Group_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner Group.
-		@param C_BP_Group_ID Business Partner Group
-	*/
-	public void setC_BP_Group_ID (int C_BP_Group_ID)
-	{
-		if (C_BP_Group_ID < 1)
-			set_Value (COLUMNNAME_C_BP_Group_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
-	}
-
-	/** Get Business Partner Group.
-		@return Business Partner Group
-	  */
-	public int getC_BP_Group_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
@@ -496,6 +496,22 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_CustomerProfileID);
 	}
 
+	/** Set D-U-N-S.
+		@param DUNS Dun &amp; Bradstreet Number
+	*/
+	public void setDUNS (String DUNS)
+	{
+		set_Value (COLUMNNAME_DUNS, DUNS);
+	}
+
+	/** Get D-U-N-S.
+		@return Dun &amp; Bradstreet Number
+	  */
+	public String getDUNS()
+	{
+		return (String)get_Value(COLUMNNAME_DUNS);
+	}
+
 	public org.compiere.model.I_C_1099Box getDefault1099Box() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_1099Box)MTable.get(getCtx(), org.compiere.model.I_C_1099Box.Table_ID)
@@ -629,22 +645,6 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DunningGrace);
 	}
 
-	/** Set D-U-N-S.
-		@param DUNS Dun &amp; Bradstreet Number
-	*/
-	public void setDUNS (String DUNS)
-	{
-		set_Value (COLUMNNAME_DUNS, DUNS);
-	}
-
-	/** Get D-U-N-S.
-		@return Dun &amp; Bradstreet Number
-	  */
-	public String getDUNS()
-	{
-		return (String)get_Value(COLUMNNAME_DUNS);
-	}
-
 	/** Set First Sale.
 		@param FirstSale Date of First Sale
 	*/
@@ -709,6 +709,33 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_FreightCostRule);
 	}
 
+	/** InvoiceRule AD_Reference_ID=150 */
+	public static final int INVOICERULE_AD_Reference_ID=150;
+	/** After Delivery = D */
+	public static final String INVOICERULE_AfterDelivery = "D";
+	/** Immediate = I */
+	public static final String INVOICERULE_Immediate = "I";
+	/** After Order delivered = O */
+	public static final String INVOICERULE_AfterOrderDelivered = "O";
+	/** Customer Schedule after Delivery = S */
+	public static final String INVOICERULE_CustomerScheduleAfterDelivery = "S";
+	/** Set Invoice Rule.
+		@param InvoiceRule Frequency and method of invoicing 
+	*/
+	public void setInvoiceRule (String InvoiceRule)
+	{
+
+		set_Value (COLUMNNAME_InvoiceRule, InvoiceRule);
+	}
+
+	/** Get Invoice Rule.
+		@return Frequency and method of invoicing 
+	  */
+	public String getInvoiceRule()
+	{
+		return (String)get_Value(COLUMNNAME_InvoiceRule);
+	}
+
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -735,33 +762,6 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** InvoiceRule AD_Reference_ID=150 */
-	public static final int INVOICERULE_AD_Reference_ID=150;
-	/** After Delivery = D */
-	public static final String INVOICERULE_AfterDelivery = "D";
-	/** Immediate = I */
-	public static final String INVOICERULE_Immediate = "I";
-	/** After Order delivered = O */
-	public static final String INVOICERULE_AfterOrderDelivered = "O";
-	/** Customer Schedule after Delivery = S */
-	public static final String INVOICERULE_CustomerScheduleAfterDelivery = "S";
-	/** Set Invoice Rule.
-		@param InvoiceRule Frequency and method of invoicing 
-	*/
-	public void setInvoiceRule (String InvoiceRule)
-	{
-
-		set_Value (COLUMNNAME_InvoiceRule, InvoiceRule);
-	}
-
-	/** Get Invoice Rule.
-		@return Frequency and method of invoicing 
-	  */
-	public String getInvoiceRule()
-	{
-		return (String)get_Value(COLUMNNAME_InvoiceRule);
 	}
 
 	/** Set 1099 Vendor.
@@ -1190,70 +1190,20 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** PaymentRule AD_Reference_ID=195 */
-	public static final int PAYMENTRULE_AD_Reference_ID=195;
-	/** Cash = B */
-	public static final String PAYMENTRULE_Cash = "B";
-	/** Direct Debit = D */
-	public static final String PAYMENTRULE_DirectDebit = "D";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Mixed POS Payment = M */
-	public static final String PAYMENTRULE_MixedPOSPayment = "M";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Set Payment Rule.
-		@param PaymentRule How you pay the invoice
+	/** Set Order Reference.
+		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
 	*/
-	public void setPaymentRule (String PaymentRule)
+	public void setPOReference (String POReference)
 	{
-
-		set_Value (COLUMNNAME_PaymentRule, PaymentRule);
+		set_Value (COLUMNNAME_POReference, POReference);
 	}
 
-	/** Get Payment Rule.
-		@return How you pay the invoice
+	/** Get Order Reference.
+		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
 	  */
-	public String getPaymentRule()
+	public String getPOReference()
 	{
-		return (String)get_Value(COLUMNNAME_PaymentRule);
-	}
-
-	/** PaymentRulePO AD_Reference_ID=195 */
-	public static final int PAYMENTRULEPO_AD_Reference_ID=195;
-	/** Cash = B */
-	public static final String PAYMENTRULEPO_Cash = "B";
-	/** Direct Debit = D */
-	public static final String PAYMENTRULEPO_DirectDebit = "D";
-	/** Credit Card = K */
-	public static final String PAYMENTRULEPO_CreditCard = "K";
-	/** Mixed POS Payment = M */
-	public static final String PAYMENTRULEPO_MixedPOSPayment = "M";
-	/** On Credit = P */
-	public static final String PAYMENTRULEPO_OnCredit = "P";
-	/** Check = S */
-	public static final String PAYMENTRULEPO_Check = "S";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULEPO_DirectDeposit = "T";
-	/** Set Payment Rule.
-		@param PaymentRulePO Purchase payment option
-	*/
-	public void setPaymentRulePO (String PaymentRulePO)
-	{
-
-		set_Value (COLUMNNAME_PaymentRulePO, PaymentRulePO);
-	}
-
-	/** Get Payment Rule.
-		@return Purchase payment option
-	  */
-	public String getPaymentRulePO()
-	{
-		return (String)get_Value(COLUMNNAME_PaymentRulePO);
+		return (String)get_Value(COLUMNNAME_POReference);
 	}
 
 	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException
@@ -1340,20 +1290,70 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Order Reference.
-		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	/** PaymentRule AD_Reference_ID=195 */
+	public static final int PAYMENTRULE_AD_Reference_ID=195;
+	/** Cash = B */
+	public static final String PAYMENTRULE_Cash = "B";
+	/** Direct Debit = D */
+	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
+	/** Mixed POS Payment = M */
+	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
+	/** Set Payment Rule.
+		@param PaymentRule How you pay the invoice
 	*/
-	public void setPOReference (String POReference)
+	public void setPaymentRule (String PaymentRule)
 	{
-		set_Value (COLUMNNAME_POReference, POReference);
+
+		set_Value (COLUMNNAME_PaymentRule, PaymentRule);
 	}
 
-	/** Get Order Reference.
-		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	/** Get Payment Rule.
+		@return How you pay the invoice
 	  */
-	public String getPOReference()
+	public String getPaymentRule()
 	{
-		return (String)get_Value(COLUMNNAME_POReference);
+		return (String)get_Value(COLUMNNAME_PaymentRule);
+	}
+
+	/** PaymentRulePO AD_Reference_ID=195 */
+	public static final int PAYMENTRULEPO_AD_Reference_ID=195;
+	/** Cash = B */
+	public static final String PAYMENTRULEPO_Cash = "B";
+	/** Direct Debit = D */
+	public static final String PAYMENTRULEPO_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULEPO_CreditCard = "K";
+	/** Mixed POS Payment = M */
+	public static final String PAYMENTRULEPO_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULEPO_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULEPO_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULEPO_DirectDeposit = "T";
+	/** Set Payment Rule.
+		@param PaymentRulePO Purchase payment option
+	*/
+	public void setPaymentRulePO (String PaymentRulePO)
+	{
+
+		set_Value (COLUMNNAME_PaymentRulePO, PaymentRulePO);
+	}
+
+	/** Get Payment Rule.
+		@return Purchase payment option
+	  */
+	public String getPaymentRulePO()
+	{
+		return (String)get_Value(COLUMNNAME_PaymentRulePO);
 	}
 
 	/** Set Potential Life Time Value.
@@ -1405,6 +1405,89 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 	public String getReferenceNo()
 	{
 		return (String)get_Value(COLUMNNAME_ReferenceNo);
+	}
+
+	/** SOCreditStatus AD_Reference_ID=289 */
+	public static final int SOCREDITSTATUS_AD_Reference_ID=289;
+	/** Credit Hold = H */
+	public static final String SOCREDITSTATUS_CreditHold = "H";
+	/** Credit OK = O */
+	public static final String SOCREDITSTATUS_CreditOK = "O";
+	/** Credit Stop = S */
+	public static final String SOCREDITSTATUS_CreditStop = "S";
+	/** Credit Watch = W */
+	public static final String SOCREDITSTATUS_CreditWatch = "W";
+	/** No Credit Check = X */
+	public static final String SOCREDITSTATUS_NoCreditCheck = "X";
+	/** Set Credit Status.
+		@param SOCreditStatus Business Partner Credit Status
+	*/
+	public void setSOCreditStatus (String SOCreditStatus)
+	{
+
+		set_Value (COLUMNNAME_SOCreditStatus, SOCreditStatus);
+	}
+
+	/** Get Credit Status.
+		@return Business Partner Credit Status
+	  */
+	public String getSOCreditStatus()
+	{
+		return (String)get_Value(COLUMNNAME_SOCreditStatus);
+	}
+
+	/** Set Credit Limit.
+		@param SO_CreditLimit Total outstanding invoice amounts allowed
+	*/
+	public void setSO_CreditLimit (BigDecimal SO_CreditLimit)
+	{
+		set_Value (COLUMNNAME_SO_CreditLimit, SO_CreditLimit);
+	}
+
+	/** Get Credit Limit.
+		@return Total outstanding invoice amounts allowed
+	  */
+	public BigDecimal getSO_CreditLimit()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditLimit);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Credit Used.
+		@param SO_CreditUsed Current open balance
+	*/
+	public void setSO_CreditUsed (BigDecimal SO_CreditUsed)
+	{
+		set_ValueNoCheck (COLUMNNAME_SO_CreditUsed, SO_CreditUsed);
+	}
+
+	/** Get Credit Used.
+		@return Current open balance
+	  */
+	public BigDecimal getSO_CreditUsed()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditUsed);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Order Description.
+		@param SO_Description Description to be used on orders
+	*/
+	public void setSO_Description (String SO_Description)
+	{
+		set_Value (COLUMNNAME_SO_Description, SO_Description);
+	}
+
+	/** Get Order Description.
+		@return Description to be used on orders
+	  */
+	public String getSO_Description()
+	{
+		return (String)get_Value(COLUMNNAME_SO_Description);
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
@@ -1513,89 +1596,6 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Credit Limit.
-		@param SO_CreditLimit Total outstanding invoice amounts allowed
-	*/
-	public void setSO_CreditLimit (BigDecimal SO_CreditLimit)
-	{
-		set_Value (COLUMNNAME_SO_CreditLimit, SO_CreditLimit);
-	}
-
-	/** Get Credit Limit.
-		@return Total outstanding invoice amounts allowed
-	  */
-	public BigDecimal getSO_CreditLimit()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditLimit);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** SOCreditStatus AD_Reference_ID=289 */
-	public static final int SOCREDITSTATUS_AD_Reference_ID=289;
-	/** Credit Hold = H */
-	public static final String SOCREDITSTATUS_CreditHold = "H";
-	/** Credit OK = O */
-	public static final String SOCREDITSTATUS_CreditOK = "O";
-	/** Credit Stop = S */
-	public static final String SOCREDITSTATUS_CreditStop = "S";
-	/** Credit Watch = W */
-	public static final String SOCREDITSTATUS_CreditWatch = "W";
-	/** No Credit Check = X */
-	public static final String SOCREDITSTATUS_NoCreditCheck = "X";
-	/** Set Credit Status.
-		@param SOCreditStatus Business Partner Credit Status
-	*/
-	public void setSOCreditStatus (String SOCreditStatus)
-	{
-
-		set_Value (COLUMNNAME_SOCreditStatus, SOCreditStatus);
-	}
-
-	/** Get Credit Status.
-		@return Business Partner Credit Status
-	  */
-	public String getSOCreditStatus()
-	{
-		return (String)get_Value(COLUMNNAME_SOCreditStatus);
-	}
-
-	/** Set Credit Used.
-		@param SO_CreditUsed Current open balance
-	*/
-	public void setSO_CreditUsed (BigDecimal SO_CreditUsed)
-	{
-		set_ValueNoCheck (COLUMNNAME_SO_CreditUsed, SO_CreditUsed);
-	}
-
-	/** Get Credit Used.
-		@return Current open balance
-	  */
-	public BigDecimal getSO_CreditUsed()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SO_CreditUsed);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Order Description.
-		@param SO_Description Description to be used on orders
-	*/
-	public void setSO_Description (String SO_Description)
-	{
-		set_Value (COLUMNNAME_SO_Description, SO_Description);
-	}
-
-	/** Get Order Description.
-		@return Description to be used on orders
-	  */
-	public String getSO_Description()
-	{
-		return (String)get_Value(COLUMNNAME_SO_Description);
 	}
 
 	/** Set Tax ID.

@@ -153,5 +153,37 @@ public class CalloutBankStatement extends CalloutEngine
 		amount (ctx, WindowNo, mTab, mField, value);
 		return "";
 	}	//	payment
+	
+	/**
+	*	BankStmt - Payment Into Batch.
+	*   Update Transaction Amount and statement Amount when payment into batch is selected
+	*	@param ctx context
+	*	@param WindowNo window no
+	*	@param mTab tab
+	*	@param mField field
+	*	@param value value
+	*	@return null or error message
+	*/
+	public String paymentIntoBatch (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		Integer C_DepositBatch_ID = (Integer) value;
+		if (C_DepositBatch_ID == null || C_DepositBatch_ID.intValue() == 0)
+			return "";
+		//
+		BigDecimal stmt = (BigDecimal) mTab.getValue("StmtAmt");
+		if (stmt == null)
+			stmt = Env.ZERO;
+
+		BigDecimal depositAmt = DB.getSQLValueBDEx(null, "SELECT DepositAmt FROM C_DepositBatch WHERE C_DepositBatch_ID=?",
+				C_DepositBatch_ID.intValue());
+		mTab.setValue("TrxAmt", depositAmt);
+		if (stmt.compareTo(Env.ZERO) == 0)
+			mTab.setValue("StmtAmt", depositAmt);
+
+		// Recalculate Amounts
+		amount(ctx, WindowNo, mTab, mField, value);
+		return "";
+	}	//	payment into batch
+
 
 }	//	CalloutBankStatement

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Opportunity
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_Opportunity 
 {
@@ -122,32 +122,6 @@ public interface I_C_Opportunity
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
-    /** Column name CloseDate */
-    public static final String COLUMNNAME_CloseDate = "CloseDate";
-
-	/** Set Close Date.
-	  * Close Date
-	  */
-	public void setCloseDate (Timestamp CloseDate);
-
-	/** Get Close Date.
-	  * Close Date
-	  */
-	public Timestamp getCloseDate();
-
-    /** Column name Comments */
-    public static final String COLUMNNAME_Comments = "Comments";
-
-	/** Set Comments.
-	  * Comments or additional information
-	  */
-	public void setComments (String Comments);
-
-	/** Get Comments.
-	  * Comments or additional information
-	  */
-	public String getComments();
-
     /** Column name C_Opportunity_ID */
     public static final String COLUMNNAME_C_Opportunity_ID = "C_Opportunity_ID";
 
@@ -181,6 +155,47 @@ public interface I_C_Opportunity
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
+    /** Column name C_SalesStage_ID */
+    public static final String COLUMNNAME_C_SalesStage_ID = "C_SalesStage_ID";
+
+	/** Set Sales Stage.
+	  * Stages of the sales process
+	  */
+	public void setC_SalesStage_ID (int C_SalesStage_ID);
+
+	/** Get Sales Stage.
+	  * Stages of the sales process
+	  */
+	public int getC_SalesStage_ID();
+
+	public org.compiere.model.I_C_SalesStage getC_SalesStage() throws RuntimeException;
+
+    /** Column name CloseDate */
+    public static final String COLUMNNAME_CloseDate = "CloseDate";
+
+	/** Set Close Date.
+	  * Close Date
+	  */
+	public void setCloseDate (Timestamp CloseDate);
+
+	/** Get Close Date.
+	  * Close Date
+	  */
+	public Timestamp getCloseDate();
+
+    /** Column name Comments */
+    public static final String COLUMNNAME_Comments = "Comments";
+
+	/** Set Comments.
+	  * Comments or additional information
+	  */
+	public void setComments (String Comments);
+
+	/** Get Comments.
+	  * Comments or additional information
+	  */
+	public String getComments();
+
     /** Column name Cost */
     public static final String COLUMNNAME_Cost = "Cost";
 
@@ -209,21 +224,6 @@ public interface I_C_Opportunity
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_SalesStage_ID */
-    public static final String COLUMNNAME_C_SalesStage_ID = "C_SalesStage_ID";
-
-	/** Set Sales Stage.
-	  * Stages of the sales process
-	  */
-	public void setC_SalesStage_ID (int C_SalesStage_ID);
-
-	/** Get Sales Stage.
-	  * Stages of the sales process
-	  */
-	public int getC_SalesStage_ID();
-
-	public org.compiere.model.I_C_SalesStage getC_SalesStage() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

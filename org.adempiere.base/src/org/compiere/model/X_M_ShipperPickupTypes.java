@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_ShipperPickupTypes
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPickupTypes")
 public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
@@ -40,9 +40,9 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
         {
 			setIsDefault (false);
 // N
-			setM_Shipper_ID (0);
 			setM_ShipperPickupTypesCfg_ID (0);
 			setM_ShipperPickupTypes_ID (0);
+			setM_Shipper_ID (0);
 			setName (null);
         } */
     }
@@ -55,9 +55,9 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
         {
 			setIsDefault (false);
 // N
-			setM_Shipper_ID (0);
 			setM_ShipperPickupTypesCfg_ID (0);
 			setM_ShipperPickupTypes_ID (0);
+			setM_Shipper_ID (0);
 			setName (null);
         } */
     }
@@ -70,9 +70,9 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
         {
 			setIsDefault (false);
 // N
-			setM_Shipper_ID (0);
 			setM_ShipperPickupTypesCfg_ID (0);
 			setM_ShipperPickupTypes_ID (0);
+			setM_Shipper_ID (0);
 			setName (null);
         } */
     }
@@ -85,9 +85,9 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
         {
 			setIsDefault (false);
 // N
-			setM_Shipper_ID (0);
 			setM_ShipperPickupTypesCfg_ID (0);
 			setM_ShipperPickupTypes_ID (0);
+			setM_Shipper_ID (0);
 			setName (null);
         } */
     }
@@ -141,34 +141,6 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
-			.getPO(getM_Shipper_ID(), get_TrxName());
-	}
-
-	/** Set Shipper.
-		@param M_Shipper_ID Method or manner of product delivery
-	*/
-	public void setM_Shipper_ID (int M_Shipper_ID)
-	{
-		if (M_Shipper_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	public org.compiere.model.I_M_ShipperPickupTypesCfg getM_ShipperPickupTypesCfg() throws RuntimeException
@@ -232,6 +204,34 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	public String getM_ShipperPickupTypes_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperPickupTypes_UU);
+	}
+
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
+
+	/** Set Shipper.
+		@param M_Shipper_ID Method or manner of product delivery
+	*/
+	public void setM_Shipper_ID (int M_Shipper_ID)
+	{
+		if (M_Shipper_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
+	}
+
+	/** Get Shipper.
+		@return Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

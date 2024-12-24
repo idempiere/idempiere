@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TreeNodeCMC
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_TreeNodeCMC")
 public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeCMC (Properties ctx, int AD_TreeNodeCMC_ID, String trxName)
@@ -112,6 +112,21 @@ public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persiste
       return sb.toString();
     }
 
+	/** Set AD_TreeNodeCMC_UU.
+		@param AD_TreeNodeCMC_UU AD_TreeNodeCMC_UU
+	*/
+	public void setAD_TreeNodeCMC_UU (String AD_TreeNodeCMC_UU)
+	{
+		set_Value (COLUMNNAME_AD_TreeNodeCMC_UU, AD_TreeNodeCMC_UU);
+	}
+
+	/** Get AD_TreeNodeCMC_UU.
+		@return AD_TreeNodeCMC_UU	  */
+	public String getAD_TreeNodeCMC_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_TreeNodeCMC_UU);
+	}
+
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)
@@ -138,21 +153,6 @@ public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set AD_TreeNodeCMC_UU.
-		@param AD_TreeNodeCMC_UU AD_TreeNodeCMC_UU
-	*/
-	public void setAD_TreeNodeCMC_UU (String AD_TreeNodeCMC_UU)
-	{
-		set_Value (COLUMNNAME_AD_TreeNodeCMC_UU, AD_TreeNodeCMC_UU);
-	}
-
-	/** Get AD_TreeNodeCMC_UU.
-		@return AD_TreeNodeCMC_UU	  */
-	public String getAD_TreeNodeCMC_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_TreeNodeCMC_UU);
 	}
 
 	/** Set Node.

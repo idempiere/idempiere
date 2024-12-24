@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DistributionRunLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_DistributionRunLine 
 {
@@ -132,21 +132,6 @@ public interface I_M_DistributionRunLine
 
 	public org.compiere.model.I_M_DistributionList getM_DistributionList() throws RuntimeException;
 
-    /** Column name M_DistributionRun_ID */
-    public static final String COLUMNNAME_M_DistributionRun_ID = "M_DistributionRun_ID";
-
-	/** Set Distribution Run.
-	  * Distribution Run create Orders to distribute products to a selected list of partners
-	  */
-	public void setM_DistributionRun_ID (int M_DistributionRun_ID);
-
-	/** Get Distribution Run.
-	  * Distribution Run create Orders to distribute products to a selected list of partners
-	  */
-	public int getM_DistributionRun_ID();
-
-	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException;
-
     /** Column name M_DistributionRunLine_ID */
     public static final String COLUMNNAME_M_DistributionRunLine_ID = "M_DistributionRunLine_ID";
 
@@ -169,18 +154,20 @@ public interface I_M_DistributionRunLine
 	/** Get M_DistributionRunLine_UU	  */
 	public String getM_DistributionRunLine_UU();
 
-    /** Column name MinQty */
-    public static final String COLUMNNAME_MinQty = "MinQty";
+    /** Column name M_DistributionRun_ID */
+    public static final String COLUMNNAME_M_DistributionRun_ID = "M_DistributionRun_ID";
 
-	/** Set Minimum Quantity.
-	  * Minimum quantity for the business partner
+	/** Set Distribution Run.
+	  * Distribution Run create Orders to distribute products to a selected list of partners
 	  */
-	public void setMinQty (BigDecimal MinQty);
+	public void setM_DistributionRun_ID (int M_DistributionRun_ID);
 
-	/** Get Minimum Quantity.
-	  * Minimum quantity for the business partner
+	/** Get Distribution Run.
+	  * Distribution Run create Orders to distribute products to a selected list of partners
 	  */
-	public BigDecimal getMinQty();
+	public int getM_DistributionRun_ID();
+
+	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -196,6 +183,19 @@ public interface I_M_DistributionRunLine
 	public int getM_Product_ID();
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name MinQty */
+    public static final String COLUMNNAME_MinQty = "MinQty";
+
+	/** Set Minimum Quantity.
+	  * Minimum quantity for the business partner
+	  */
+	public void setMinQty (BigDecimal MinQty);
+
+	/** Get Minimum Quantity.
+	  * Minimum quantity for the business partner
+	  */
+	public BigDecimal getMinQty();
 
     /** Column name TotalQty */
     public static final String COLUMNNAME_TotalQty = "TotalQty";

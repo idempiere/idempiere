@@ -318,6 +318,7 @@
 }
 .activity-card .help-content {
 	font-size: 13px;
+	line-height: 1em;
 }
 .mobile .activity-card .help-content {
 	font-size: 16px;

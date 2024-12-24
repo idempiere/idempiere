@@ -92,3 +92,7 @@
 .z-bandbox-button [class*="z-icon-"], .z-combobox-button [class*="z-icon-"] {
 	font-size: 16px;
 }
+
+.mobile .login-btn {
+    font-size: 0px !important;
+}

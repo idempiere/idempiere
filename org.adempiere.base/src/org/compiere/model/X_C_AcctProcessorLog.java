@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_AcctProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctProcessorLog")
 public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_AcctProcessorLog (Properties ctx, int C_AcctProcessorLog_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
       super (ctx, C_AcctProcessorLog_ID, trxName);
       /** if (C_AcctProcessorLog_ID == 0)
         {
-			setC_AcctProcessor_ID (0);
 			setC_AcctProcessorLog_ID (0);
+			setC_AcctProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -50,8 +50,8 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
       super (ctx, C_AcctProcessorLog_ID, trxName, virtualColumns);
       /** if (C_AcctProcessorLog_ID == 0)
         {
-			setC_AcctProcessor_ID (0);
 			setC_AcctProcessorLog_ID (0);
+			setC_AcctProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -62,8 +62,8 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
       super (ctx, C_AcctProcessorLog_UU, trxName);
       /** if (C_AcctProcessorLog_UU == null)
         {
-			setC_AcctProcessor_ID (0);
 			setC_AcctProcessorLog_ID (0);
+			setC_AcctProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -74,8 +74,8 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
       super (ctx, C_AcctProcessorLog_UU, trxName, virtualColumns);
       /** if (C_AcctProcessorLog_UU == null)
         {
-			setC_AcctProcessor_ID (0);
 			setC_AcctProcessorLog_ID (0);
+			setC_AcctProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -124,34 +124,6 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
-	public org.compiere.model.I_C_AcctProcessor getC_AcctProcessor() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_AcctProcessor)MTable.get(getCtx(), org.compiere.model.I_C_AcctProcessor.Table_ID)
-			.getPO(getC_AcctProcessor_ID(), get_TrxName());
-	}
-
-	/** Set Accounting Processor.
-		@param C_AcctProcessor_ID Accounting Processor/Server Parameters
-	*/
-	public void setC_AcctProcessor_ID (int C_AcctProcessor_ID)
-	{
-		if (C_AcctProcessor_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_AcctProcessor_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_AcctProcessor_ID, Integer.valueOf(C_AcctProcessor_ID));
-	}
-
-	/** Get Accounting Processor.
-		@return Accounting Processor/Server Parameters
-	  */
-	public int getC_AcctProcessor_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Accounting Processor Log.
 		@param C_AcctProcessorLog_ID Result of the execution of the Accounting Processor
 	*/
@@ -187,6 +159,34 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	public String getC_AcctProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_AcctProcessorLog_UU);
+	}
+
+	public org.compiere.model.I_C_AcctProcessor getC_AcctProcessor() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_AcctProcessor)MTable.get(getCtx(), org.compiere.model.I_C_AcctProcessor.Table_ID)
+			.getPO(getC_AcctProcessor_ID(), get_TrxName());
+	}
+
+	/** Set Accounting Processor.
+		@param C_AcctProcessor_ID Accounting Processor/Server Parameters
+	*/
+	public void setC_AcctProcessor_ID (int C_AcctProcessor_ID)
+	{
+		if (C_AcctProcessor_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_AcctProcessor_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_AcctProcessor_ID, Integer.valueOf(C_AcctProcessor_ID));
+	}
+
+	/** Get Accounting Processor.
+		@return Accounting Processor/Server Parameters
+	  */
+	public int getC_AcctProcessor_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

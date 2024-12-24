@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ForecastLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_ForecastLine 
 {
@@ -119,21 +119,6 @@ public interface I_M_ForecastLine
 	  */
 	public boolean isActive();
 
-    /** Column name M_Forecast_ID */
-    public static final String COLUMNNAME_M_Forecast_ID = "M_Forecast_ID";
-
-	/** Set Forecast.
-	  * Material Forecast
-	  */
-	public void setM_Forecast_ID (int M_Forecast_ID);
-
-	/** Get Forecast.
-	  * Material Forecast
-	  */
-	public int getM_Forecast_ID();
-
-	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException;
-
     /** Column name M_ForecastLine_ID */
     public static final String COLUMNNAME_M_ForecastLine_ID = "M_ForecastLine_ID";
 
@@ -155,6 +140,21 @@ public interface I_M_ForecastLine
 
 	/** Get M_ForecastLine_UU	  */
 	public String getM_ForecastLine_UU();
+
+    /** Column name M_Forecast_ID */
+    public static final String COLUMNNAME_M_Forecast_ID = "M_Forecast_ID";
+
+	/** Set Forecast.
+	  * Material Forecast
+	  */
+	public void setM_Forecast_ID (int M_Forecast_ID);
+
+	/** Get Forecast.
+	  * Material Forecast
+	  */
+	public int getM_Forecast_ID();
+
+	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";

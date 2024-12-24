@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for SSO_PrincipalConfig
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="SSO_PrincipalConfig")
 public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName)

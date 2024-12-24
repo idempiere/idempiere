@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Ref_List
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Ref_List")
 public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Ref_List (Properties ctx, int AD_Ref_List_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
       super (ctx, AD_Ref_List_ID, trxName);
       /** if (AD_Ref_List_ID == 0)
         {
-			setAD_Reference_ID (0);
 			setAD_Ref_List_ID (0);
+			setAD_Reference_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -55,8 +55,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
       super (ctx, AD_Ref_List_ID, trxName, virtualColumns);
       /** if (AD_Ref_List_ID == 0)
         {
-			setAD_Reference_ID (0);
 			setAD_Ref_List_ID (0);
+			setAD_Reference_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -70,8 +70,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
       super (ctx, AD_Ref_List_UU, trxName);
       /** if (AD_Ref_List_UU == null)
         {
-			setAD_Reference_ID (0);
 			setAD_Ref_List_ID (0);
+			setAD_Reference_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -85,8 +85,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
       super (ctx, AD_Ref_List_UU, trxName, virtualColumns);
       /** if (AD_Ref_List_UU == null)
         {
-			setAD_Reference_ID (0);
 			setAD_Ref_List_ID (0);
+			setAD_Reference_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -121,34 +121,6 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
-			.getPO(getAD_Reference_ID(), get_TrxName());
-	}
-
-	/** Set Reference.
-		@param AD_Reference_ID System Reference and Validation
-	*/
-	public void setAD_Reference_ID (int AD_Reference_ID)
-	{
-		if (AD_Reference_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
-	}
-
-	/** Get Reference.
-		@return System Reference and Validation
-	  */
-	public int getAD_Reference_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Reference List.
 		@param AD_Ref_List_ID Reference List based on Table
@@ -185,6 +157,34 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	public String getAD_Ref_List_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Ref_List_UU);
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
+
+	/** Set Reference.
+		@param AD_Reference_ID System Reference and Validation
+	*/
+	public void setAD_Reference_ID (int AD_Reference_ID)
+	{
+		if (AD_Reference_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
+	}
+
+	/** Get Reference.
+		@return System Reference and Validation
+	  */
+	public int getAD_Reference_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

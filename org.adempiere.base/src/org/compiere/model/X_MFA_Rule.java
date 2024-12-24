@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for MFA_Rule
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Rule")
 public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)

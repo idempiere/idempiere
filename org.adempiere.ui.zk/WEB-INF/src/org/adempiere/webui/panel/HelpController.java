@@ -727,9 +727,9 @@ public class HelpController
     		} else {
             	pnlQuickInfo.setVisible(true);
             	StringBuilder sb = new StringBuilder();
-            	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
+            	sb.append("<div class=\"help-content\">\n");
        			sb.append(widget);
-            	sb.append("</div>\n</body>\n</html>");
+            	sb.append("</div>\n");
             	htmlQuickInfo.setContent(sb.toString());
     		}
     	}

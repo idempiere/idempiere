@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclarationLine")
 public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName)
@@ -43,8 +43,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
         {
 			setC_BPartner_ID (0);
 			setC_Currency_ID (0);
-			setC_TaxDeclaration_ID (0);
 			setC_TaxDeclarationLine_ID (0);
+			setC_TaxDeclaration_ID (0);
 			setC_Tax_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
 			setIsManual (true);
@@ -63,8 +63,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
         {
 			setC_BPartner_ID (0);
 			setC_Currency_ID (0);
-			setC_TaxDeclaration_ID (0);
 			setC_TaxDeclarationLine_ID (0);
+			setC_TaxDeclaration_ID (0);
 			setC_Tax_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
 			setIsManual (true);
@@ -83,8 +83,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
         {
 			setC_BPartner_ID (0);
 			setC_Currency_ID (0);
-			setC_TaxDeclaration_ID (0);
 			setC_TaxDeclarationLine_ID (0);
+			setC_TaxDeclaration_ID (0);
 			setC_Tax_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
 			setIsManual (true);
@@ -103,8 +103,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
         {
 			setC_BPartner_ID (0);
 			setC_Currency_ID (0);
-			setC_TaxDeclaration_ID (0);
 			setC_TaxDeclarationLine_ID (0);
+			setC_TaxDeclaration_ID (0);
 			setC_Tax_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
 			setIsManual (true);
@@ -227,34 +227,6 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
-			.getPO(getC_Invoice_ID(), get_TrxName());
-	}
-
-	/** Set Invoice.
-		@param C_Invoice_ID Invoice Identifier
-	*/
-	public void setC_Invoice_ID (int C_Invoice_ID)
-	{
-		if (C_Invoice_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
-	}
-
-	/** Get Invoice.
-		@return Invoice Identifier
-	  */
-	public int getC_Invoice_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -283,29 +255,29 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
-		return (org.compiere.model.I_C_TaxDeclaration)MTable.get(getCtx(), org.compiere.model.I_C_TaxDeclaration.Table_ID)
-			.getPO(getC_TaxDeclaration_ID(), get_TrxName());
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
 	}
 
-	/** Set Tax Declaration.
-		@param C_TaxDeclaration_ID Define the declaration to the tax authorities
+	/** Set Invoice.
+		@param C_Invoice_ID Invoice Identifier
 	*/
-	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID)
+	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_TaxDeclaration_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, null);
+		if (C_Invoice_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, Integer.valueOf(C_TaxDeclaration_ID));
+			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
-	/** Get Tax Declaration.
-		@return Define the declaration to the tax authorities
+	/** Get Invoice.
+		@return Invoice Identifier
 	  */
-	public int getC_TaxDeclaration_ID()
+	public int getC_Invoice_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclaration_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -346,6 +318,34 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	public String getC_TaxDeclarationLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxDeclarationLine_UU);
+	}
+
+	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_TaxDeclaration)MTable.get(getCtx(), org.compiere.model.I_C_TaxDeclaration.Table_ID)
+			.getPO(getC_TaxDeclaration_ID(), get_TrxName());
+	}
+
+	/** Set Tax Declaration.
+		@param C_TaxDeclaration_ID Define the declaration to the tax authorities
+	*/
+	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID)
+	{
+		if (C_TaxDeclaration_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, Integer.valueOf(C_TaxDeclaration_ID));
+	}
+
+	/** Get Tax Declaration.
+		@return Define the declaration to the tax authorities
+	  */
+	public int getC_TaxDeclaration_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclaration_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException

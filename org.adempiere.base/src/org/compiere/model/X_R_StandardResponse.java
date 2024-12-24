@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_StandardResponse
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_StandardResponse")
 public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
       /** if (R_StandardResponse_ID == 0)
         {
 			setName (null);
-			setResponseText (null);
 			setR_StandardResponse_ID (0);
+			setResponseText (null);
         } */
     }
 
@@ -52,8 +52,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
       /** if (R_StandardResponse_ID == 0)
         {
 			setName (null);
-			setResponseText (null);
 			setR_StandardResponse_ID (0);
+			setResponseText (null);
         } */
     }
 
@@ -64,8 +64,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
       /** if (R_StandardResponse_UU == null)
         {
 			setName (null);
-			setResponseText (null);
 			setR_StandardResponse_ID (0);
+			setResponseText (null);
         } */
     }
 
@@ -76,8 +76,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
       /** if (R_StandardResponse_UU == null)
         {
 			setName (null);
-			setResponseText (null);
 			setR_StandardResponse_ID (0);
+			setResponseText (null);
         } */
     }
 
@@ -133,22 +133,6 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
         return new KeyNamePair(get_ID(), getName());
     }
 
-	/** Set Response Text.
-		@param ResponseText Request Response Text
-	*/
-	public void setResponseText (String ResponseText)
-	{
-		set_Value (COLUMNNAME_ResponseText, ResponseText);
-	}
-
-	/** Get Response Text.
-		@return Request Response Text
-	  */
-	public String getResponseText()
-	{
-		return (String)get_Value(COLUMNNAME_ResponseText);
-	}
-
 	/** Set Standard Response.
 		@param R_StandardResponse_ID Request Standard Response 
 	*/
@@ -184,5 +168,21 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	public String getR_StandardResponse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_StandardResponse_UU);
+	}
+
+	/** Set Response Text.
+		@param ResponseText Request Response Text
+	*/
+	public void setResponseText (String ResponseText)
+	{
+		set_Value (COLUMNNAME_ResponseText, ResponseText);
+	}
+
+	/** Get Response Text.
+		@return Request Response Text
+	  */
+	public String getResponseText()
+	{
+		return (String)get_Value(COLUMNNAME_ResponseText);
 	}
 }

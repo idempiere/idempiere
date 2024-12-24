@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ToolBarButton
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_ToolBarButton 
 {
@@ -40,45 +40,6 @@ public interface I_AD_ToolBarButton
     BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
-
-    /** Column name Action */
-    public static final String COLUMNNAME_Action = "Action";
-
-	/** Set Action.
-	  * Indicates the Action to be performed
-	  */
-	public void setAction (String Action);
-
-	/** Get Action.
-	  * Indicates the Action to be performed
-	  */
-	public String getAction();
-
-    /** Column name ActionClassName */
-    public static final String COLUMNNAME_ActionClassName = "ActionClassName";
-
-	/** Set Service Component Name.
-	  * The service component name that implements the interface for toolbar actions
-	  */
-	public void setActionClassName (String ActionClassName);
-
-	/** Get Service Component Name.
-	  * The service component name that implements the interface for toolbar actions
-	  */
-	public String getActionClassName();
-
-    /** Column name ActionName */
-    public static final String COLUMNNAME_ActionName = "ActionName";
-
-	/** Set Action Name.
-	  * Action name on the toolbar
-	  */
-	public void setActionName (String ActionName);
-
-	/** Get Action Name.
-	  * Action name on the toolbar
-	  */
-	public String getActionName();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -148,6 +109,45 @@ public interface I_AD_ToolBarButton
 
 	/** Get AD_ToolBarButton_UU	  */
 	public String getAD_ToolBarButton_UU();
+
+    /** Column name Action */
+    public static final String COLUMNNAME_Action = "Action";
+
+	/** Set Action.
+	  * Indicates the Action to be performed
+	  */
+	public void setAction (String Action);
+
+	/** Get Action.
+	  * Indicates the Action to be performed
+	  */
+	public String getAction();
+
+    /** Column name ActionClassName */
+    public static final String COLUMNNAME_ActionClassName = "ActionClassName";
+
+	/** Set Service Component Name.
+	  * The service component name that implements the interface for toolbar actions
+	  */
+	public void setActionClassName (String ActionClassName);
+
+	/** Get Service Component Name.
+	  * The service component name that implements the interface for toolbar actions
+	  */
+	public String getActionClassName();
+
+    /** Column name ActionName */
+    public static final String COLUMNNAME_ActionName = "ActionName";
+
+	/** Set Action Name.
+	  * Action name on the toolbar
+	  */
+	public void setActionName (String ActionName);
+
+	/** Get Action Name.
+	  * Action name on the toolbar
+	  */
+	public String getActionName();
 
     /** Column name ComponentName */
     public static final String COLUMNNAME_ComponentName = "ComponentName";

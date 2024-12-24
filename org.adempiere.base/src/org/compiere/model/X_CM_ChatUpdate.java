@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for CM_ChatUpdate
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatUpdate")
 public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_CM_ChatUpdate (Properties ctx, int CM_ChatUpdate_ID, String trxName)
@@ -136,6 +136,21 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set CM_ChatUpdate_UU.
+		@param CM_ChatUpdate_UU CM_ChatUpdate_UU
+	*/
+	public void setCM_ChatUpdate_UU (String CM_ChatUpdate_UU)
+	{
+		set_Value (COLUMNNAME_CM_ChatUpdate_UU, CM_ChatUpdate_UU);
+	}
+
+	/** Get CM_ChatUpdate_UU.
+		@return CM_ChatUpdate_UU	  */
+	public String getCM_ChatUpdate_UU()
+	{
+		return (String)get_Value(COLUMNNAME_CM_ChatUpdate_UU);
+	}
+
 	public org.compiere.model.I_CM_Chat getCM_Chat() throws RuntimeException
 	{
 		return (org.compiere.model.I_CM_Chat)MTable.get(getCtx(), org.compiere.model.I_CM_Chat.Table_ID)
@@ -162,21 +177,6 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set CM_ChatUpdate_UU.
-		@param CM_ChatUpdate_UU CM_ChatUpdate_UU
-	*/
-	public void setCM_ChatUpdate_UU (String CM_ChatUpdate_UU)
-	{
-		set_Value (COLUMNNAME_CM_ChatUpdate_UU, CM_ChatUpdate_UU);
-	}
-
-	/** Get CM_ChatUpdate_UU.
-		@return CM_ChatUpdate_UU	  */
-	public String getCM_ChatUpdate_UU()
-	{
-		return (String)get_Value(COLUMNNAME_CM_ChatUpdate_UU);
 	}
 
 	/** Set Self-Service.

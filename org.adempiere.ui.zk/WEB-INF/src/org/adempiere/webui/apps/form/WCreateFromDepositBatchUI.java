@@ -43,6 +43,7 @@ import org.compiere.grid.CreateFromDepositBatch;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MDepositBatch;
 import org.compiere.model.MDepositBatchLine;
 import org.compiere.model.MLookup;
@@ -107,6 +108,9 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;
 	
+	protected Label currencyLabel = new Label(Msg.translate(Env.getCtx(), "C_Currency_ID"));
+	protected WTableDirEditor currencyField;
+	
 	protected Label documentNoLabel = new Label(Msg.translate(Env.getCtx(), "DocumentNo"));
 	protected WStringEditor documentNoField = new WStringEditor();
 
@@ -160,6 +164,14 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		//  Set Default
 		int C_BankAccount_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BankAccount_ID");
 		bankAccountField.setValue(Integer.valueOf(C_BankAccount_ID));
+		bankAccountField.setReadWrite(false);
+		
+		lookup = MLookupFactory.get(Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MCurrency.Table_Name, MCurrency.COLUMNNAME_C_Currency_ID), DisplayType.TableDir);
+		currencyField = new WTableDirEditor(MCurrency.COLUMNNAME_C_Currency_ID, false, false, true, lookup);
+		int C_Currency_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_Currency_ID");
+		currencyField.setValue(C_Currency_ID);
+		currencyField.setReadWrite(false);
+		
 		//  initial Loading
 		authorizationField = new WStringEditor ("authorization", false, false, true, 10, 30, null, null);
 
@@ -167,6 +179,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		documentTypeField = new WTableDirEditor (MPayment.COLUMNNAME_C_DocType_ID,false,false,true,lookup);
 		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_DocType_ID");
 		documentTypeField.setValue(Integer.valueOf(C_DocType_ID));
+		documentTypeField.setReadWrite(false);
 		
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_TenderType), DisplayType.List);
 		tenderTypeField = new WTableDirEditor (MPayment.COLUMNNAME_TenderType,false,false,true,lookup);
@@ -195,6 +208,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	 */
 	protected void zkInit() throws Exception
 	{
+    	ZKUpdateUtil.setWindowWidthX(window, 1100);
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
     	authorizationLabel.setText(Msg.translate(Env.getCtx(), "R_AuthCode"));
     	
@@ -208,7 +222,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
     	amtToField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtTo"));
     	
     	Borderlayout parameterLayout = new Borderlayout();
-    	ZKUpdateUtil.setHeight(parameterLayout, "130px");
+    	ZKUpdateUtil.setHeight(parameterLayout, "120px");
 		ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
 		parameterPanel.appendChild(parameterLayout);
@@ -226,45 +240,51 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		Column column = new Column();
 		columns.appendChild(column);		
 		column = new Column();
-		ZKUpdateUtil.setWidth(column, "15%");
+		ZKUpdateUtil.setWidth(column, "12%");
 		columns.appendChild(column);
-		ZKUpdateUtil.setWidth(column, "35%");
+		ZKUpdateUtil.setWidth(column, "19%");
 		column = new Column();
-		ZKUpdateUtil.setWidth(column, "15%");
+		ZKUpdateUtil.setWidth(column, "12%");
 		columns.appendChild(column);
 		column = new Column();
-		ZKUpdateUtil.setWidth(column, "35%");
+		ZKUpdateUtil.setWidth(column, "22%");
+		columns.appendChild(column);
+		column = new Column();
+		ZKUpdateUtil.setWidth(column, "12%");
+		columns.appendChild(column);
+		column = new Column();
+		ZKUpdateUtil.setWidth(column, "23%");
 		columns.appendChild(column);
 		
 		Rows rows = (Rows) parameterBankLayout.newRows();
 		Row row = rows.newRow();
 		row.appendChild(bankAccountLabel.rightAlign());
 		row.appendChild(bankAccountField.getComponent());
-		row.appendChild(documentNoLabel.rightAlign());
-		row.appendChild(documentNoField.getComponent());
-		
-		row = rows.newRow();
 		row.appendChild(documentTypeLabel.rightAlign());
 		row.appendChild(documentTypeField.getComponent());
+		row.appendChild(currencyLabel.rightAlign());
+		row.appendChild(currencyField.getComponent());
+		
+		
+		row = rows.newRow();
+		row.appendChild(documentNoLabel.rightAlign());
+		row.appendChild(documentNoField.getComponent());
+		row.appendChild(BPartner_idLabel.rightAlign());
+		row.appendChild(bPartnerLookup.getComponent());
 		row.appendChild(authorizationLabel.rightAlign());
 		row.appendChild(authorizationField.getComponent());
+
 		
 		row = rows.newRow();
 		row.appendChild(tenderTypeLabel.rightAlign());
 		row.appendChild(tenderTypeField.getComponent());
-
 		row.appendChild(amtFromLabel.rightAlign());
 		Hbox hbox = new Hbox();
 		hbox.appendChild(amtFromField.getComponent());
 		hbox.appendChild(amtToLabel.rightAlign());
 		hbox.appendChild(amtToField.getComponent());
 		row.appendChild(hbox);
-		
-		row = rows.newRow();
-		row.appendChild(BPartner_idLabel.rightAlign());
-		row.appendChild(bPartnerLookup.getComponent());
 		row.appendChild(dateFromLabel.rightAlign());
-		
 		hbox = new Hbox();
 		hbox.appendChild(dateFromField.getComponent());
 		hbox.appendChild(dateToLabel.rightAlign());
@@ -296,7 +316,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString()));
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString(), (Integer)currencyField.getValue()));
 	}
 	
 	/**

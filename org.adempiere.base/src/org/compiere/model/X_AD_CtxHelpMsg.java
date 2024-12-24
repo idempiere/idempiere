@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpMsg
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelpMsg")
 public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpMsg (Properties ctx, int AD_CtxHelpMsg_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
       super (ctx, AD_CtxHelpMsg_ID, trxName);
       /** if (AD_CtxHelpMsg_ID == 0)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelp_ID (0);
 			setMsgText (null);
         } */
     }
@@ -50,8 +50,8 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
       super (ctx, AD_CtxHelpMsg_ID, trxName, virtualColumns);
       /** if (AD_CtxHelpMsg_ID == 0)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelp_ID (0);
 			setMsgText (null);
         } */
     }
@@ -62,8 +62,8 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
       super (ctx, AD_CtxHelpMsg_UU, trxName);
       /** if (AD_CtxHelpMsg_UU == null)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelp_ID (0);
 			setMsgText (null);
         } */
     }
@@ -74,8 +74,8 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
       super (ctx, AD_CtxHelpMsg_UU, trxName, virtualColumns);
       /** if (AD_CtxHelpMsg_UU == null)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelp_ID (0);
 			setMsgText (null);
         } */
     }
@@ -107,33 +107,6 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());
-	}
-
-	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help
-	*/
-	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
-	{
-		if (AD_CtxHelp_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
-	}
-
-	/** Get Context Help.
-		@return Context Help	  */
-	public int getAD_CtxHelp_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Context Help Message.
 		@param AD_CtxHelpMsg_ID Context Help Message
@@ -169,6 +142,33 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
 	public String getAD_CtxHelpMsg_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_CtxHelpMsg_UU);
+	}
+
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
+
+	/** Set Context Help.
+		@param AD_CtxHelp_ID Context Help
+	*/
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
+	{
+		if (AD_CtxHelp_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
+	}
+
+	/** Get Context Help.
+		@return Context Help	  */
+	public int getAD_CtxHelp_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Message Text.

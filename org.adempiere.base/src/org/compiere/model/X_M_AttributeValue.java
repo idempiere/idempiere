@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeValue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeValue")
 public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
       super (ctx, M_AttributeValue_ID, trxName);
       /** if (M_AttributeValue_ID == 0)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeValue_ID (0);
+			setM_Attribute_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -52,8 +52,8 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
       super (ctx, M_AttributeValue_ID, trxName, virtualColumns);
       /** if (M_AttributeValue_ID == 0)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeValue_ID (0);
+			setM_Attribute_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -65,8 +65,8 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
       super (ctx, M_AttributeValue_UU, trxName);
       /** if (M_AttributeValue_UU == null)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeValue_ID (0);
+			setM_Attribute_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -78,8 +78,8 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
       super (ctx, M_AttributeValue_UU, trxName, virtualColumns);
       /** if (M_AttributeValue_UU == null)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeValue_ID (0);
+			setM_Attribute_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -129,34 +129,6 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
-			.getPO(getM_Attribute_ID(), get_TrxName());
-	}
-
-	/** Set Attribute.
-		@param M_Attribute_ID Product Attribute
-	*/
-	public void setM_Attribute_ID (int M_Attribute_ID)
-	{
-		if (M_Attribute_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
-	}
-
-	/** Get Attribute.
-		@return Product Attribute
-	  */
-	public int getM_Attribute_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Attribute Value.
 		@param M_AttributeValue_ID Product Attribute Value
 	*/
@@ -192,6 +164,34 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	public String getM_AttributeValue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeValue_UU);
+	}
+
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
+
+	/** Set Attribute.
+		@param M_Attribute_ID Product Attribute
+	*/
+	public void setM_Attribute_ID (int M_Attribute_ID)
+	{
+		if (M_Attribute_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+	}
+
+	/** Get Attribute.
+		@return Product Attribute
+	  */
+	public int getM_Attribute_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

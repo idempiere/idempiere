@@ -1,6 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2013 Heng Sin Low                                            *
- * Copyright (C) 2013 Trek Global                 							  *
+ * Copyright (C) 2013 Trek Global                                             *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -18,7 +18,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.FeedbackRequestWindow;
-import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.window.WEMailDialog;
@@ -34,7 +33,6 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Window.Mode;
 
 /**
  * Default implementation of {@link IFeedbackService}
@@ -78,14 +76,8 @@ public class DefaultFeedbackService implements IFeedbackService {
 		protected EmailSupportAction(boolean errorOnly) {
 			this.errorOnly = errorOnly;
 			SessionManager.getAppDesktop().getComponent().addEventListener("onEmailSupport", this);
-			
-			//client side script to capture screenshot and send onEmailSupport event to server
-			String script = "html2canvas(document.body).then(canvas => " +
-					"{ const dataUrl = canvas.toDataURL();" +
-					"  let widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
-		    		"  let event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event);" +
-		    		"});";
+
+			String script = getCaptureScreenshotScript("onEmailSupport", SessionManager.getAppDesktop().getComponent().getUuid());
 			Clients.response(new AuScript(script));
 		}
 		
@@ -126,8 +118,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 				MUser.get(Env.getCtx()),
 				"",			//	to
 				getFeedbackSubject(),
-				"", ds);
-			dialog.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);			
+				"", ds);		
 			
 			MSystem system = MSystem.get(Env.getCtx());
 
@@ -172,17 +163,11 @@ public class DefaultFeedbackService implements IFeedbackService {
 	protected static class CreateNewRequestAction implements EventListener<Event>{
 		protected CreateNewRequestAction() {
 			SessionManager.getAppDesktop().getComponent().addEventListener("onCreateFeedbackRequest", this);
-			
-			//client side script to capture screenshot and send onCreateFeedbackRequest event to server
-			String script = "html2canvas(document.body).then(canvas => " +
-					"{ let dataUrl = canvas.toDataURL();" +
-					"  let widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
-		    		"  let event = new zk.Event(widget, 'onCreateFeedbackRequest', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event); " +
-		    		"});";
+
+			String script = getCaptureScreenshotScript("onCreateFeedbackRequest", SessionManager.getAppDesktop().getComponent().getUuid());
 			Clients.response(new AuScript(script));
 		}
-		
+
 		@Override
 		public void onEvent(Event event) throws Exception {
 			SessionManager.getAppDesktop().getComponent().removeEventListener("onCreateFeedbackRequest", this);
@@ -216,4 +201,63 @@ public class DefaultFeedbackService implements IFeedbackService {
 			window.focus();
 		}
 	}
+
+	/**
+	 * Returns a java script to capture screenshot and trigger the eventName
+	 * @param eventName
+	 * @param uuid
+	 * @return
+	 */
+	private static String getCaptureScreenshotScript(String eventName, String uuid) {
+		//client side script to capture screenshot and send the event to server
+		String script = """
+				if (navigator.mediaDevices?.getDisplayMedia) {
+				  const promise = navigator.mediaDevices.getDisplayMedia({ preferCurrentTab: true, displaySurface: 'browser' });
+				  const canvas = document.createElement("canvas");
+				  const video = document.createElement("video");
+				  promise.then((stream) => {
+				    video.srcObject = stream;
+				    video.onloadedmetadata = () => {
+				      video.play();\
+				      // Draw one video frame to canvas.
+				      canvas.width = video.videoWidth;
+				      canvas.height = video.videoHeight;
+				      canvas.getContext("2d").drawImage(video, 0, 0);
+				      const dataUrl = canvas.toDataURL();
+				      // stop capture
+				      let tracks = video.srcObject.getTracks();
+				      tracks.forEach((track) => track.stop());
+				      video.srcObject = null;
+				      //clean up
+				      canvas.remove();
+				      video.remove();
+				      let widget = zk.Widget.$('#%s');
+				      let event = new zk.Event(widget, '%s', dataUrl, {toServer: true});
+				      zAu.send(event);
+				     };
+				  })
+				  .catch((err) => {
+				     console.log(err);
+				     //clean up
+				     canvas.remove();
+				     video.remove();
+				     html2canvas(document.body).then(canvas =>\s
+				     { const dataUrl = canvas.toDataURL();
+				       let widget = zk.Widget.$('#%s');
+				       let event = new zk.Event(widget, '%s', dataUrl, {toServer: true});
+				       zAu.send(event);
+				     });
+				  });
+				} else {
+				  html2canvas(document.body).then(canvas =>\s
+				  { const dataUrl = canvas.toDataURL();
+				    let widget = zk.Widget.$('#%s');
+				    let event = new zk.Event(widget, '%s', dataUrl, {toServer: true});
+				    zAu.send(event);
+				  });
+				}""";
+
+		return script.formatted(uuid, eventName, uuid, eventName, uuid, eventName);
+	}
+
 }

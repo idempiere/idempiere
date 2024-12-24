@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_QualityTestResult
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_QualityTestResult 
 {
@@ -137,17 +137,6 @@ public interface I_M_QualityTestResult
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
-    /** Column name M_QualityTest_ID */
-    public static final String COLUMNNAME_M_QualityTest_ID = "M_QualityTest_ID";
-
-	/** Set Quality Test	  */
-	public void setM_QualityTest_ID (int M_QualityTest_ID);
-
-	/** Get Quality Test	  */
-	public int getM_QualityTest_ID();
-
-	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException;
-
     /** Column name M_QualityTestResult_ID */
     public static final String COLUMNNAME_M_QualityTestResult_ID = "M_QualityTestResult_ID";
 
@@ -165,6 +154,17 @@ public interface I_M_QualityTestResult
 
 	/** Get M_QualityTestResult_UU	  */
 	public String getM_QualityTestResult_UU();
+
+    /** Column name M_QualityTest_ID */
+    public static final String COLUMNNAME_M_QualityTest_ID = "M_QualityTest_ID";
+
+	/** Set Quality Test	  */
+	public void setM_QualityTest_ID (int M_QualityTest_ID);
+
+	/** Get Quality Test	  */
+	public int getM_QualityTest_ID();
+
+	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException;
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

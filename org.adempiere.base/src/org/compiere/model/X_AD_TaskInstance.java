@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TaskInstance
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_TaskInstance")
 public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
       super (ctx, AD_TaskInstance_ID, trxName);
       /** if (AD_TaskInstance_ID == 0)
         {
-			setAD_Task_ID (0);
 			setAD_TaskInstance_ID (0);
+			setAD_Task_ID (0);
         } */
     }
 
@@ -50,8 +50,8 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
       super (ctx, AD_TaskInstance_ID, trxName, virtualColumns);
       /** if (AD_TaskInstance_ID == 0)
         {
-			setAD_Task_ID (0);
 			setAD_TaskInstance_ID (0);
+			setAD_Task_ID (0);
         } */
     }
 
@@ -61,8 +61,8 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
       super (ctx, AD_TaskInstance_UU, trxName);
       /** if (AD_TaskInstance_UU == null)
         {
-			setAD_Task_ID (0);
 			setAD_TaskInstance_ID (0);
+			setAD_Task_ID (0);
         } */
     }
 
@@ -72,8 +72,8 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
       super (ctx, AD_TaskInstance_UU, trxName, virtualColumns);
       /** if (AD_TaskInstance_UU == null)
         {
-			setAD_Task_ID (0);
 			setAD_TaskInstance_ID (0);
+			setAD_Task_ID (0);
         } */
     }
 
@@ -104,28 +104,6 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	/** Set OS Task.
-		@param AD_Task_ID Operation System Task
-	*/
-	public void setAD_Task_ID (int AD_Task_ID)
-	{
-		if (AD_Task_ID < 1)
-			set_Value (COLUMNNAME_AD_Task_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
-	}
-
-	/** Get OS Task.
-		@return Operation System Task
-	  */
-	public int getAD_Task_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Task Instance.
 		@param AD_TaskInstance_ID Task Instance
@@ -169,5 +147,27 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 	public String getAD_TaskInstance_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_TaskInstance_UU);
+	}
+
+	/** Set OS Task.
+		@param AD_Task_ID Operation System Task
+	*/
+	public void setAD_Task_ID (int AD_Task_ID)
+	{
+		if (AD_Task_ID < 1)
+			set_Value (COLUMNNAME_AD_Task_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
+	}
+
+	/** Get OS Task.
+		@return Operation System Task
+	  */
+	public int getAD_Task_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

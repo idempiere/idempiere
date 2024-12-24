@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InvoiceGL
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_InvoiceGL")
 public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_InvoiceGL (Properties ctx, int T_InvoiceGL_ID, String trxName)
@@ -183,6 +183,31 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 		return ii.intValue();
 	}
 
+	/** APAR AD_Reference_ID=332 */
+	public static final int APAR_AD_Reference_ID=332;
+	/** Receivables &amp; Payables = A */
+	public static final String APAR_ReceivablesPayables = "A";
+	/** Payables only = P */
+	public static final String APAR_PayablesOnly = "P";
+	/** Receivables only = R */
+	public static final String APAR_ReceivablesOnly = "R";
+	/** Set AP - AR.
+		@param APAR Include Receivables and/or Payables transactions
+	*/
+	public void setAPAR (String APAR)
+	{
+
+		set_Value (COLUMNNAME_APAR, APAR);
+	}
+
+	/** Get AP - AR.
+		@return Include Receivables and/or Payables transactions
+	  */
+	public String getAPAR()
+	{
+		return (String)get_Value(COLUMNNAME_APAR);
+	}
+
 	/** Set Accounted Balance.
 		@param AmtAcctBalance Accounted Balance Amount
 	*/
@@ -295,31 +320,6 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** APAR AD_Reference_ID=332 */
-	public static final int APAR_AD_Reference_ID=332;
-	/** Receivables &amp; Payables = A */
-	public static final String APAR_ReceivablesPayables = "A";
-	/** Payables only = P */
-	public static final String APAR_PayablesOnly = "P";
-	/** Receivables only = R */
-	public static final String APAR_ReceivablesOnly = "R";
-	/** Set AP - AR.
-		@param APAR Include Receivables and/or Payables transactions
-	*/
-	public void setAPAR (String APAR)
-	{
-
-		set_Value (COLUMNNAME_APAR, APAR);
-	}
-
-	/** Get AP - AR.
-		@return Include Receivables and/or Payables transactions
-	  */
-	public String getAPAR()
-	{
-		return (String)get_Value(COLUMNNAME_APAR);
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionTypeReval() throws RuntimeException

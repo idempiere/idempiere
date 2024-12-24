@@ -85,7 +85,7 @@ public final class ThemeManager {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
 					// Verify the theme.css.dsp exists in the theme folder
-					String themeCSSURL = getStyleSheet();
+					String themeCSSURL = getStyleSheet(theme);
 					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
 						// verify if is a v7 theme
 						themeCSSURL = ITheme.THEME_PATH_PREFIX_V7 + theme + ITheme.THEME_STYLESHEET;
@@ -108,11 +108,17 @@ public final class ThemeManager {
 	}
 
 	/**
-	 * Get theme stylesheet URL
-	 * @return url of theme stylesheet
+	 * @return url of active theme stylesheet
 	 */
 	public static String getStyleSheet() {
-		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET;
+		return getStyleSheet(getTheme());
+	}
+
+	/**
+	 * @return url of theme stylesheet
+	 */
+	public static String getStyleSheet(String theme) {
+		return THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET;
 	}
 
 	/**

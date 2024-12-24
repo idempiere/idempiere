@@ -10,7 +10,7 @@ Copyright (C) 2009 Idalica Corporation
 	<hbox align="center">
 		<a href="http://www.idempiere.org" target="_blank"><image src="~./theme/iceblue_c/images/login-logo.png" style="height: 85px;"/></a>
 		<div style="margin-left: 15px; margin-right: 5px;">
-			<label multiline="true" value="iDempiere 12&#10;Development Build&#10;Online Demonstration"
+			<label multiline="true" value="iDempiere 12&#10;Kudos&#10;Online Demonstration"
 				style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; color:#578BB8; font-size:1.3em; font-weight: bold;" />
 		</div>	
 	</hbox>
