@@ -220,8 +220,9 @@ public class PaySelectFormTest extends AbstractTestCase {
 				MPaySelectionLine[] lines = paySelection.getLines(true);
 				for(MPaySelectionLine l : lines)
 					l.deleteEx(true);
-				if (optionalPR.get() != null) {
-					MPaySelectionCheck[] pscs = MPaySelectionCheck.get(paySelection.get_ID(), optionalPR.get().getValue(), null);
+				ValueNamePair opt = optionalPR != null ? optionalPR.get() : null;
+				if (opt != null) {
+					MPaySelectionCheck[] pscs = MPaySelectionCheck.get(paySelection.get_ID(), opt.getValue(), null);
 					for(MPaySelectionCheck psc : pscs) {
 						int C_Payment_ID = psc.getC_Payment_ID();
 						psc.deleteEx(true);

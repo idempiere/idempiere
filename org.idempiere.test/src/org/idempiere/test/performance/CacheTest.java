@@ -165,8 +165,10 @@ public class CacheTest extends AbstractTestCase {
 		
 		//find table cache instance
 		CCache<?, ?> tblCache = findByTableNameAndKey(MTable.Table_Name, MOrder.Table_ID);
-		if (tblCache == null)
+		if (tblCache == null) {
 			fail("Table cache instance missing");
+			return;
+		}
 		
 		long hit = tblCache.getHit();
 		
@@ -180,8 +182,10 @@ public class CacheTest extends AbstractTestCase {
 		MRefTable refTable = MRefTable.get(Env.getCtx(), 197);
 		
 		tblCache = findByTableNameAndKey(MTable.Table_Name, MWarehouse.Table_ID);
-		if (tblCache == null)
+		if (tblCache == null) {
 			fail("Table cache instance missing");
+			return;
+		}
 		
 		hit = tblCache.getHit();
 		table2 = refTable.getAD_Table();
@@ -196,8 +200,10 @@ public class CacheTest extends AbstractTestCase {
 		//init cache
 		MProduct p1 = MProduct.get(Env.getCtx(), mulch);
 		CCache<Integer, MProduct> pc = (CCache<Integer, MProduct>) findByTableNameAndKey(MProduct.Table_Name, mulch);
-		if (pc == null)
+		if (pc == null) {
 			fail("Product cache instance missing");
+			return;
+		}
 		
 		//second get, hit should increase
 		long hit = pc.getHit();

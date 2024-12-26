@@ -250,6 +250,8 @@ public class GridTabTest extends AbstractTestCase {
 							if (gridTab.getAD_Table_ID() != e.AD_Table_ID)
 								throw new RuntimeException("Table doesn't match with updated tab");
 						}
+						if (gridTab == null)
+							throw new RuntimeException("Tab not found for table " + e.AD_Table_ID);
 						// Process Callout
 						GridField mField = gridTab.getField(col);
 						if (mField != null && (mField.getCallout().length() > 0

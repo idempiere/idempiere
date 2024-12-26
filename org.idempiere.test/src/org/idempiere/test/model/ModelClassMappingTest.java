@@ -99,8 +99,9 @@ public class ModelClassMappingTest extends AbstractTestCase {
 					Set<BeanDefinition> beans = provider.findCandidateComponents(p);
 					if (beans != null && beans.size() > 0) {
 						for (BeanDefinition bean : beans) {
-							if (!bean.getBeanClassName().equals(clazz.getName()))
-								fail("Using " + clazz.getName() + " for table " + table.getTableName() + " instead of " + bean.getBeanClassName());
+							String beanClassName = bean.getBeanClassName();
+							if (beanClassName != null && !beanClassName.equals(clazz.getName()))
+								fail("Using " + clazz.getName() + " for table " + table.getTableName() + " instead of " + beanClassName);
 						}
 					}
 				}

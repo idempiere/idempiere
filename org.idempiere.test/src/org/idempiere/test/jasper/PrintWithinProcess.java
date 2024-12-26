@@ -147,11 +147,11 @@ public class PrintWithinProcess extends AbstractTestCase {
 							}
 						}
 					}
+					return tmpOutputFile.getAbsolutePath();
 				}
 			} catch (Exception e) {
 				throw new AdempiereException(e);
 			}
-			return tmpOutputFile.getAbsolutePath();
 		}
 		throw new AdempiereException("Resource " + resource + " not found");
 	}
