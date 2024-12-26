@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.Timestamp;
 import java.util.Properties;
@@ -250,8 +251,11 @@ public class GridTabTest extends AbstractTestCase {
 							if (gridTab.getAD_Table_ID() != e.AD_Table_ID)
 								throw new RuntimeException("Table doesn't match with updated tab");
 						}
-						if (gridTab == null)
-							throw new RuntimeException("Tab not found for table " + e.AD_Table_ID);
+						if (gridTab == null) {
+							fail("Tab not found for table " + e.AD_Table_ID);
+							return;
+						}
+						
 						// Process Callout
 						GridField mField = gridTab.getField(col);
 						if (mField != null && (mField.getCallout().length() > 0
