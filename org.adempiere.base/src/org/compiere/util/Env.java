@@ -154,6 +154,7 @@ public final class Env
 	 * @param provider
 	 * @deprecated
 	 */
+	@Deprecated
 	public static void setContextProvider(ContextProvider provider)
 	{
 	}

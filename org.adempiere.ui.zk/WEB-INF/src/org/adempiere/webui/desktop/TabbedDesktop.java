@@ -269,6 +269,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @param query
      * @deprecated
      */
+    @Deprecated
     public void showWindow(int AD_Window_ID, MQuery query)
     {
     	openWindow(AD_Window_ID, query, null);

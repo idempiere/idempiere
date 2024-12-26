@@ -694,6 +694,7 @@ public final class DB
 	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static CPreparedStatement prepareStatement (String sql)
 	{
 		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
@@ -729,6 +730,7 @@ public final class DB
 	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static CPreparedStatement prepareStatement (String sql,
 		int resultSetType, int resultSetConcurrency)
 	{
@@ -866,6 +868,7 @@ public final class DB
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static int executeUpdate (String sql)
 	{
 		return executeUpdate(sql, null, false, null);
@@ -906,6 +909,7 @@ public final class DB
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static int executeUpdate (String sql, boolean ignoreError)
 	{
 		return executeUpdate (sql, null, ignoreError, null);
@@ -2030,6 +2034,7 @@ public final class DB
 	 *	@return document no or null
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static String getDocumentNo(int C_DocType_ID, String trxName)
 	{
 		return MSequence.getDocumentNo (C_DocType_ID, trxName, false);
