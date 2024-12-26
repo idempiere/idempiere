@@ -1766,6 +1766,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return info
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
+	@Deprecated
 	public String getTrxInfo()
 	{
 		//	InvoiceBatch

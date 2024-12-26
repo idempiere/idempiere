@@ -33,6 +33,7 @@ import org.compiere.util.Util;
  * @author hengsin
  * @deprecated
  */
+@Deprecated
 public class DefaultModelFactory extends AbstractModelFactory {
 
 	private CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>(null, "PO_Class", 100, 120, false, 2000);

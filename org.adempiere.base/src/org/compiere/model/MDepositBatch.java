@@ -185,6 +185,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
 	@Override
+	@Deprecated
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
@@ -198,6 +199,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *  @deprecated incomplete/abandon implementation of DocAction interface 
 	 */
 	@Override
+	@Deprecated
 	public boolean voidIt() {
 		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
 		// Before Void
