@@ -59,6 +59,7 @@ public class WArchive implements EventListener<Event>
 	 *	@param Record_ID record ID
 	 *  @deprecated - use {@link #WArchive(Component, int, int, String)} instead
 	 */
+	@Deprecated
 	public WArchive (Component invoker, int AD_Table_ID, int Record_ID)
 	{
 		this(invoker, AD_Table_ID, Record_ID, null);

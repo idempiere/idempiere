@@ -115,6 +115,7 @@ public class MChangeLog extends X_AD_ChangeLog
 	 * Preserved for backward compatibility
 	 * @deprecated
 	 */
+	@Deprecated
 	public MChangeLog (Properties ctx, 
 			int AD_ChangeLog_ID, String TrxName, int AD_Session_ID, 
 			int AD_Table_ID, int AD_Column_ID, int Record_ID,
