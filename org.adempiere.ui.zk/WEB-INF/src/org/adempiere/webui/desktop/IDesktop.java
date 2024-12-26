@@ -255,6 +255,17 @@ public interface IDesktop extends UIPart {
 	 * @param desc
 	 * @param help
 	 * @param otherContent
+	 */
+	public default void updateHelpTooltip(String hdr, String  desc, String help, String otherContent) {
+		updateHelpTooltip(hdr, desc, help, otherContent, null);
+	}
+
+	/**
+	 * Update tooltip content in help/info panel
+	 * @param hdr
+	 * @param desc
+	 * @param help
+	 * @param otherContent
 	 * @param entityType
 	 */
 	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent, String entityType);
