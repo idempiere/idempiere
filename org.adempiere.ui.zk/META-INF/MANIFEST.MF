@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: com.google.common.annotations;version="33.2.1",
@@ -195,11 +195,11 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.photobooth,
  web.js.zkforge.keylistener,
  web.js.zkforge.keylistener.mold
-Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
- org.adempiere.report.jasper;bundle-version="12.0.0",
- org.adempiere.server;bundle-version="12.0.0",
- org.adempiere.ui;bundle-version="12.0.0",
- org.idempiere.zk.extra;bundle-version="12.0.0",
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
+ org.adempiere.report.jasper;bundle-version="13.0.0",
+ org.adempiere.server;bundle-version="13.0.0",
+ org.adempiere.ui;bundle-version="13.0.0",
+ org.idempiere.zk.extra;bundle-version="13.0.0",
  zcommon;bundle-version="10.0.1",
  zel;bundle-version="10.0.1",
  zhtml;bundle-version="10.0.1",
@@ -212,10 +212,10 @@ Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
  org.atmosphere.runtime;bundle-version="2.7.2",
  zkwebfragment;bundle-version="10.0.1",
  com.sun.activation.jakarta.activation;bundle-version="1.2.2",
- org.adempiere.base.process;bundle-version="12.0.0",
+ org.adempiere.base.process;bundle-version="13.0.0",
  com.github.librepdf.openpdf;bundle-version="1.3.39",
  com.github.librepdf.openpdf-fonts-extra;bundle-version="1.3.39",
- org.idempiere.zk.billboard;bundle-version="12.0.0"
+ org.idempiere.zk.billboard;bundle-version="13.0.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui
