@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere 2Pack Core
 Bundle-SymbolicName: org.adempiere.pipo;singleton:=true
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: org.apache.commons.codec;version="1.16.1",
@@ -14,8 +14,8 @@ Import-Package: org.apache.commons.codec;version="1.16.1",
 Export-Package: org.adempiere.pipo.srv,
  org.adempiere.pipo2,
  org.adempiere.pipo2.exception
-Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
- org.adempiere.plugin.utils;bundle-version="12.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
+ org.adempiere.plugin.utils;bundle-version="13.0.0"
 Service-Component: OSGI-INF/*.xml
 Bundle-Activator: org.adempiere.plugin.utils.PackInApplicationActivator
 Bundle-ClassPath: .
