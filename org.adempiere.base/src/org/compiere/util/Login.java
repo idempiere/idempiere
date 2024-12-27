@@ -1580,7 +1580,7 @@ public class Login
 		else 
 		{
 			boolean foundLockedAccount = false;
-			for (MUser user : usersAuthenticated)
+			for (MUser user : users)
 			{
 				if (user.isLocked())
 				{
