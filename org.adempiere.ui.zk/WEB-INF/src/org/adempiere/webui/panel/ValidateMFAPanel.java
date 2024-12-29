@@ -32,13 +32,13 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -134,7 +134,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
     	m_showRolePanel = showRolePanel;
     	m_clientsKNPairs = clientsKNPairs;
 
-		String registerCookie = getCookie(getCookieName());
+		String registerCookie = AEnv.getCookie(getCookieName());
 		login = new Login(ctx);
 		if (login.isMFARequired(registerCookie)) {
 			initComponents(registerCookie != null);
@@ -426,23 +426,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setSecure(true);
 		((HttpServletResponse) Executions.getCurrent().getNativeResponse()).addCookie(cookie);
-	}
-
-	/**
-	 * Get a cookie by name
-	 * @param name
-	 * @return
-	 */
-	public static String getCookie(String name) {
-		Cookie[] cookies = ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(name)) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
 	}
 
 	/**
