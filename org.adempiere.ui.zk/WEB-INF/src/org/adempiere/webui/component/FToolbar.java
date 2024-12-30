@@ -23,7 +23,6 @@ import org.zkoss.zul.Toolbar;
  * Extend {@link Toolbar}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  * @deprecated Replace by {@link ToolBar} 
  */
 @Deprecated

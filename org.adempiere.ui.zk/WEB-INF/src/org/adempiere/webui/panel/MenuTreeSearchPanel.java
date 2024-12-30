@@ -36,9 +36,8 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
 /**
- * 
+ * Add open and new button to {@link TreeSearchPanel}
  * @author hengsin
- *
  */
 public class MenuTreeSearchPanel extends TreeSearchPanel {
 	/**

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AllocationLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_AllocationLine 
 {
@@ -112,21 +112,6 @@ public interface I_C_AllocationLine
 	/** Get C_AllocationLine_UU	  */
 	public String getC_AllocationLine_UU();
 
-    /** Column name C_BankTransfer_ID */
-    public static final String COLUMNNAME_C_BankTransfer_ID = "C_BankTransfer_ID";
-
-	/** Set Bank Transfer.
-	  * Bank Transfer
-	  */
-	public void setC_BankTransfer_ID (int C_BankTransfer_ID);
-
-	/** Get Bank Transfer.
-	  * Bank Transfer
-	  */
-	public int getC_BankTransfer_ID();
-
-	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException;
-
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
@@ -141,6 +126,21 @@ public interface I_C_AllocationLine
 	public int getC_BPartner_ID();
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_BankTransfer_ID */
+    public static final String COLUMNNAME_C_BankTransfer_ID = "C_BankTransfer_ID";
+
+	/** Set Bank Transfer.
+	  * Bank Transfer
+	  */
+	public void setC_BankTransfer_ID (int C_BankTransfer_ID);
+
+	/** Get Bank Transfer.
+	  * Bank Transfer
+	  */
+	public int getC_BankTransfer_ID();
+
+	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException;
 
     /** Column name C_CashLine_ID */
     public static final String COLUMNNAME_C_CashLine_ID = "C_CashLine_ID";

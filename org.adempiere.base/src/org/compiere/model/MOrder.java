@@ -41,12 +41,9 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -887,16 +884,7 @@ public class MOrder extends X_C_Order implements DocAction
 	@Override
 	public File createPDF ()
 	{
-		try
-		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
-			return createPDF (temp);
-		}
-		catch (Exception e)
-		{
-			log.severe("Could not create PDF - " + e.getMessage());
-		}
-		return null;
+		return createPDF (null);
 	}	//	getPDF
 
 	/**
@@ -909,22 +897,6 @@ public class MOrder extends X_C_Order implements DocAction
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.ORDER, getC_Order_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		MPrintFormat format = re.getPrintFormat();
-		// We have a Jasper Print Format
-		// ==============================
-		if(format.getJasperProcess_ID() > 0)
-		{
-			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Order_ID() );
-			pi.setIsBatch(true);
-			pi.setTransientObject(format);
-			
-			ServerProcessCtl.process(pi, null);
-			
-			return pi.getPDFReport();
-		}
-		// Standard Print Format (Non-Jasper)
-		// ==================================
 		return re.getPDF(file);
 	}	//	createPDF
 	
@@ -1271,7 +1243,7 @@ public class MOrder extends X_C_Order implements DocAction
 					set_ValueNoCheck(COLUMNNAME_C_BPartner_Location_ID, null);
 				}
 			}
-			if (getAD_User_ID() > 0) {
+			if (getAD_User_ID() >= 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getAD_User_ID());
 				if (bpId != getC_BPartner_ID()) {
 					set_Value(COLUMNNAME_AD_User_ID, null);
@@ -1286,7 +1258,7 @@ public class MOrder extends X_C_Order implements DocAction
 					set_Value(COLUMNNAME_Bill_Location_ID, null);
 				}
 			}
-			if (getBill_User_ID() > 0) {
+			if (getBill_User_ID() >= 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getBill_User_ID());
 				if (bpId != getBill_BPartner_ID()) {
 					setBill_User_ID(-1);
@@ -2195,7 +2167,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
 			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
 			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)			//	(W)alkIn(R)eceipt
-			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
+			|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInout())) 
 		{
 			if (!DELIVERYRULE_Force.equals(getDeliveryRule()))
 			{
@@ -2217,7 +2189,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Create SO Invoice - Always invoice complete Order
 		if ( MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)
 			|| MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO) 	
-			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
+			|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInvoice())) 
 		{
 			MInvoice invoice = createInvoice (dt, shipment, realTimePOS ? null : getDateOrdered());
 			if (invoice == null)

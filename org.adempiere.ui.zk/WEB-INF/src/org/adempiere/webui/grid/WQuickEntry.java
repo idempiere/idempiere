@@ -61,7 +61,7 @@ import org.zkoss.zul.Vlayout;
 
 /**
  * Quick Entry Window
- * Author: Carlos Ruiz
+ * @author Carlos Ruiz
  */
 
 public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Event>, ValueChangeListener
@@ -408,7 +408,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	}	//	loadRecord
 
 	/**
-	 *	Save.
+	 *	Save changes.
 	 * 	@return true if saved
 	 */
 	protected boolean actionSave()
@@ -509,7 +509,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	}	//	actionSave
 	
 	/**
-	 * 
+	 * Is field changed
 	 * @param index of field
 	 * @return true if changed
 	 */
@@ -549,6 +549,9 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 	}
 
+	/**
+	 * Cancel and close dialog
+	 */
 	private void onCancel() {
 		this.detach();
 	}

@@ -34,7 +34,6 @@ import org.zkoss.zul.Tabs;
  * Extend {@link org.zkoss.zul.Tabbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 {
@@ -79,6 +78,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
     }
     
 	/**
+	 * Get selected tab panel
 	 * @return selected Tabpanel
 	 */
     public Tabpanel getSelectedTabpanel()
@@ -121,13 +121,11 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	}
 
 	/**
-	 * add current selected tab to stack when a new tab is selected
+	 * Add current selected tab to stack when a new tab is selected
 	 */
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (event instanceof SelectEvent && isActiveBySeq()) {
-			@SuppressWarnings("rawtypes")
-			SelectEvent selectEvent = (SelectEvent)event;
+		if (event instanceof SelectEvent selectEvent && isActiveBySeq()) {
 			@SuppressWarnings("rawtypes")
 			Iterator itPrevSelectedTab = selectEvent.getPreviousSelectedItems().iterator();
 			if (itPrevSelectedTab.hasNext()) {
@@ -137,7 +135,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	}
 
 	/**
-	 * override to add active tab to stack when tab is selected by add to {@link Tabs}
+	 * Override to add active tab to stack when tab is selected by add to {@link Tabs}
 	 */
 	@Override
 	public void setSelectedTab(Tab tab) {

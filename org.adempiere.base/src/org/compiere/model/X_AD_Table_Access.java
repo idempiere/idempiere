@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for AD_Table_Access
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_Access")
 public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Table_Access (Properties ctx, int AD_Table_Access_ID, String trxName)
@@ -39,10 +39,10 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
       super (ctx, AD_Table_Access_ID, trxName);
       /** if (AD_Table_Access_ID == 0)
         {
-			setAccessTypeRule (null);
-// A
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
+			setAccessTypeRule (null);
+// A
 			setIsExclude (true);
 // Y
 			setIsReadOnly (false);
@@ -55,10 +55,10 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
       super (ctx, AD_Table_Access_ID, trxName, virtualColumns);
       /** if (AD_Table_Access_ID == 0)
         {
-			setAccessTypeRule (null);
-// A
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
+			setAccessTypeRule (null);
+// A
 			setIsExclude (true);
 // Y
 			setIsReadOnly (false);
@@ -71,10 +71,10 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
       super (ctx, AD_Table_Access_UU, trxName);
       /** if (AD_Table_Access_UU == null)
         {
-			setAccessTypeRule (null);
-// A
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
+			setAccessTypeRule (null);
+// A
 			setIsExclude (true);
 // Y
 			setIsReadOnly (false);
@@ -87,10 +87,10 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
       super (ctx, AD_Table_Access_UU, trxName, virtualColumns);
       /** if (AD_Table_Access_UU == null)
         {
-			setAccessTypeRule (null);
-// A
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
+			setAccessTypeRule (null);
+// A
 			setIsExclude (true);
 // Y
 			setIsReadOnly (false);
@@ -124,31 +124,6 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
         .append(get_UUID()).append("]");
       return sb.toString();
     }
-
-	/** AccessTypeRule AD_Reference_ID=293 */
-	public static final int ACCESSTYPERULE_AD_Reference_ID=293;
-	/** Accessing = A */
-	public static final String ACCESSTYPERULE_Accessing = "A";
-	/** Exporting = E */
-	public static final String ACCESSTYPERULE_Exporting = "E";
-	/** Reporting = R */
-	public static final String ACCESSTYPERULE_Reporting = "R";
-	/** Set Access Type.
-		@param AccessTypeRule The type of access for this rule
-	*/
-	public void setAccessTypeRule (String AccessTypeRule)
-	{
-
-		set_ValueNoCheck (COLUMNNAME_AccessTypeRule, AccessTypeRule);
-	}
-
-	/** Get Access Type.
-		@return The type of access for this rule
-	  */
-	public String getAccessTypeRule()
-	{
-		return (String)get_Value(COLUMNNAME_AccessTypeRule);
-	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
@@ -228,6 +203,31 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
     {
         return new ValueNamePair(get_UUID(), String.valueOf(getAD_Table_ID()));
     }
+
+	/** AccessTypeRule AD_Reference_ID=293 */
+	public static final int ACCESSTYPERULE_AD_Reference_ID=293;
+	/** Accessing = A */
+	public static final String ACCESSTYPERULE_Accessing = "A";
+	/** Exporting = E */
+	public static final String ACCESSTYPERULE_Exporting = "E";
+	/** Reporting = R */
+	public static final String ACCESSTYPERULE_Reporting = "R";
+	/** Set Access Type.
+		@param AccessTypeRule The type of access for this rule
+	*/
+	public void setAccessTypeRule (String AccessTypeRule)
+	{
+
+		set_ValueNoCheck (COLUMNNAME_AccessTypeRule, AccessTypeRule);
+	}
+
+	/** Get Access Type.
+		@return The type of access for this rule
+	  */
+	public String getAccessTypeRule()
+	{
+		return (String)get_Value(COLUMNNAME_AccessTypeRule);
+	}
 
 	/** Set Exclude.
 		@param IsExclude Exclude access to the data - if not selected Include access to the data

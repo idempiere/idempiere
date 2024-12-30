@@ -139,11 +139,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		return centerPanel;
 	}
 	
-	/**
-	 * Event Listener
-	 * 
-	 * @param e event
-	 */
+	@Override
 	public void onEvent(Event e) {
 		// Finish
 		if (e.getTarget().getId().equals(ConfirmPanel.A_OK)) {

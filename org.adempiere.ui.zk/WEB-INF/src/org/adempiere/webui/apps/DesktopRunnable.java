@@ -29,10 +29,9 @@ import java.lang.ref.WeakReference;
 import org.zkoss.zk.ui.Desktop;
 
 /**
- * If your background task need access to desktop, wrap your runnable with this, i.e new DesktopRunnable(yourRunnable, desktop).
+ * If your background task need access to desktop, wrap your runnable with this, i.e new DesktopRunnable(yourRunnable, desktop).<br/>
  * You can then use AEnv.getDesktop() in your runnable to get access to desktop.
  * @author hengsin
- *
  */
 public class DesktopRunnable implements Runnable {
 	/** wrapped runnable **/

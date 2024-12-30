@@ -43,7 +43,6 @@ import org.zkoss.zk.ui.event.Events;
  * 
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  *
  * @author Low Heng Sin
  * @author Cristina Ghita, www.arhipac.ro

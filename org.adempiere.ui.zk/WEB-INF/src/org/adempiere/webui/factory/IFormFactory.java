@@ -22,6 +22,7 @@ import org.adempiere.webui.panel.ADForm;
 public interface IFormFactory {
 
 	/**
+	 * Create new form instance
 	 * @param formName
 	 * @return new form instance
 	 */

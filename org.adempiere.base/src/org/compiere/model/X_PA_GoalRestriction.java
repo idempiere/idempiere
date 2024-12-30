@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_GoalRestriction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PA_GoalRestriction")
 public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_PA_GoalRestriction (Properties ctx, int PA_GoalRestriction_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
         {
 			setGoalRestrictionType (null);
 			setName (null);
-			setPA_Goal_ID (0);
 			setPA_GoalRestriction_ID (0);
+			setPA_Goal_ID (0);
         } */
     }
 
@@ -54,8 +54,8 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
         {
 			setGoalRestrictionType (null);
 			setName (null);
-			setPA_Goal_ID (0);
 			setPA_GoalRestriction_ID (0);
+			setPA_Goal_ID (0);
         } */
     }
 
@@ -67,8 +67,8 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
         {
 			setGoalRestrictionType (null);
 			setName (null);
-			setPA_Goal_ID (0);
 			setPA_GoalRestriction_ID (0);
+			setPA_Goal_ID (0);
         } */
     }
 
@@ -80,8 +80,8 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
         {
 			setGoalRestrictionType (null);
 			setName (null);
-			setPA_Goal_ID (0);
 			setPA_GoalRestriction_ID (0);
+			setPA_Goal_ID (0);
         } */
     }
 
@@ -113,34 +113,6 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
       return sb.toString();
     }
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -164,6 +136,34 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	public int getC_BP_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -300,34 +300,6 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_ID)
-			.getPO(getPA_Goal_ID(), get_TrxName());
-	}
-
-	/** Set Goal.
-		@param PA_Goal_ID Performance Goal
-	*/
-	public void setPA_Goal_ID (int PA_Goal_ID)
-	{
-		if (PA_Goal_ID < 1)
-			set_Value (COLUMNNAME_PA_Goal_ID, null);
-		else
-			set_Value (COLUMNNAME_PA_Goal_ID, Integer.valueOf(PA_Goal_ID));
-	}
-
-	/** Get Goal.
-		@return Performance Goal
-	  */
-	public int getPA_Goal_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Goal_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Goal Restriction.
 		@param PA_GoalRestriction_ID Performance Goal Restriction
 	*/
@@ -363,5 +335,33 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	public String getPA_GoalRestriction_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_GoalRestriction_UU);
+	}
+
+	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException
+	{
+		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_ID)
+			.getPO(getPA_Goal_ID(), get_TrxName());
+	}
+
+	/** Set Goal.
+		@param PA_Goal_ID Performance Goal
+	*/
+	public void setPA_Goal_ID (int PA_Goal_ID)
+	{
+		if (PA_Goal_ID < 1)
+			set_Value (COLUMNNAME_PA_Goal_ID, null);
+		else
+			set_Value (COLUMNNAME_PA_Goal_ID, Integer.valueOf(PA_Goal_ID));
+	}
+
+	/** Get Goal.
+		@return Performance Goal
+	  */
+	public int getPA_Goal_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Goal_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

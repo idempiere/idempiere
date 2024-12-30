@@ -18,8 +18,8 @@ import org.adempiere.base.IProcessFactory;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * Process factory for web client
  * @author hengsin
- *
  */
 @Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=1"})
 public class ProcessFactoryImpl extends AnnotationBasedProcessFactory {

@@ -40,6 +40,17 @@ public class Evaluator
 	
 	private static final Map<String, SQLLogicResult> sqlLogicCache = new ConcurrentHashMap<>();
 
+	public static final String VARIABLE_PO_PROPERTY_OPERATOR = "=";
+	public static final String VARIABLE_FORMATTING_OPERATOR_START = "<";
+	public static final String VARIABLE_FORMATTING_OPERATOR_END = ">";	
+	public static final String VARIABLE_DEFAULT_VALUE_OPERATOR = ":";
+	public static final String VARIABLE_START_END_MARKER = "@";
+	public static final String VARIABLE_SELF_TAB_OPERATOR = "~";
+	public static final String VARIABLE_REFERENCE_OPERATOR = ".";
+	public static final String VARIABLE_TAB_NO_SEPARATOR = "|";
+	
+	public static final String ID_COLUMN_SUFFIX = "_ID";
+	
 	/** Value object for SQL logic result */
 	public static class SQLLogicResult {
 		long timestamp;

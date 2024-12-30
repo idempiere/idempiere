@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="S_TimeType")
 public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_S_TimeType extends PO implements I_S_TimeType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_S_TimeType (Properties ctx, int S_TimeType_ID, String trxName)

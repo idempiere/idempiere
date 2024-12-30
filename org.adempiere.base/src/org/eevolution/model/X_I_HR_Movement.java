@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_HR_Movement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="I_HR_Movement")
 public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_I_HR_Movement (Properties ctx, int I_HR_Movement_ID, String trxName)
@@ -365,6 +365,22 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_I_IsImported);
 	}
 
+	/** Set Process Name.
+		@param ProcessName Name of the Process
+	*/
+	public void setProcessName (String ProcessName)
+	{
+		set_Value (COLUMNNAME_ProcessName, ProcessName);
+	}
+
+	/** Get Process Name.
+		@return Name of the Process
+	  */
+	public String getProcessName()
+	{
+		return (String)get_Value(COLUMNNAME_ProcessName);
+	}
+
 	/** Set Processed.
 		@param Processed The document has been processed
 	*/
@@ -408,22 +424,6 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set Process Name.
-		@param ProcessName Name of the Process
-	*/
-	public void setProcessName (String ProcessName)
-	{
-		set_Value (COLUMNNAME_ProcessName, ProcessName);
-	}
-
-	/** Get Process Name.
-		@return Name of the Process
-	  */
-	public String getProcessName()
-	{
-		return (String)get_Value(COLUMNNAME_ProcessName);
 	}
 
 	/** Set Quantity.

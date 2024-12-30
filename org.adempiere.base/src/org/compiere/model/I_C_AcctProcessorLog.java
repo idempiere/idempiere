@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_AcctProcessorLog 
 {
@@ -75,21 +75,6 @@ public interface I_C_AcctProcessorLog
 	  */
 	public byte[] getBinaryData();
 
-    /** Column name C_AcctProcessor_ID */
-    public static final String COLUMNNAME_C_AcctProcessor_ID = "C_AcctProcessor_ID";
-
-	/** Set Accounting Processor.
-	  * Accounting Processor/Server Parameters
-	  */
-	public void setC_AcctProcessor_ID (int C_AcctProcessor_ID);
-
-	/** Get Accounting Processor.
-	  * Accounting Processor/Server Parameters
-	  */
-	public int getC_AcctProcessor_ID();
-
-	public org.compiere.model.I_C_AcctProcessor getC_AcctProcessor() throws RuntimeException;
-
     /** Column name C_AcctProcessorLog_ID */
     public static final String COLUMNNAME_C_AcctProcessorLog_ID = "C_AcctProcessorLog_ID";
 
@@ -111,6 +96,21 @@ public interface I_C_AcctProcessorLog
 
 	/** Get C_AcctProcessorLog_UU	  */
 	public String getC_AcctProcessorLog_UU();
+
+    /** Column name C_AcctProcessor_ID */
+    public static final String COLUMNNAME_C_AcctProcessor_ID = "C_AcctProcessor_ID";
+
+	/** Set Accounting Processor.
+	  * Accounting Processor/Server Parameters
+	  */
+	public void setC_AcctProcessor_ID (int C_AcctProcessor_ID);
+
+	/** Get Accounting Processor.
+	  * Accounting Processor/Server Parameters
+	  */
+	public int getC_AcctProcessor_ID();
+
+	public org.compiere.model.I_C_AcctProcessor getC_AcctProcessor() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

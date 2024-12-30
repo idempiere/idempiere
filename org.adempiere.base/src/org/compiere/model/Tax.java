@@ -61,6 +61,7 @@ public class Tax
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public static int get (Properties ctx, int M_Product_ID, int C_Charge_ID,
 			Timestamp billDate, Timestamp shipDate,
 			int AD_Org_ID, int M_Warehouse_ID,
@@ -204,6 +205,7 @@ public class Tax
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public static int getCharge (Properties ctx, int C_Charge_ID,
 			Timestamp billDate, Timestamp shipDate,
 			int AD_Org_ID, int M_Warehouse_ID,
@@ -397,6 +399,7 @@ public class Tax
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public static int getProduct (Properties ctx, int M_Product_ID,
 			Timestamp billDate, Timestamp shipDate,
 			int AD_Org_ID, int M_Warehouse_ID,

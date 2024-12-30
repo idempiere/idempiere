@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_CtxHelpSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_CtxHelpSuggestion 
 {
@@ -41,19 +41,6 @@ public interface I_AD_CtxHelpSuggestion
 
     /** Load Meta Data */
 
-    /** Column name AcceptSuggestion */
-    public static final String COLUMNNAME_AcceptSuggestion = "AcceptSuggestion";
-
-	/** Set Accept.
-	  * Accept suggested changes
-	  */
-	public void setAcceptSuggestion (String AcceptSuggestion);
-
-	/** Get Accept.
-	  * Accept suggested changes
-	  */
-	public String getAcceptSuggestion();
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -61,17 +48,6 @@ public interface I_AD_CtxHelpSuggestion
 	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_CtxHelp_ID */
-    public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
-
-	/** Set Context Help	  */
-	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID);
-
-	/** Get Context Help	  */
-	public int getAD_CtxHelp_ID();
-
-	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
 
     /** Column name AD_CtxHelpMsg_ID */
     public static final String COLUMNNAME_AD_CtxHelpMsg_ID = "AD_CtxHelpMsg_ID";
@@ -101,6 +77,17 @@ public interface I_AD_CtxHelpSuggestion
 
 	/** Get Context Help Suggestion UUID	  */
 	public String getAD_CtxHelpSuggestion_UU();
+
+    /** Column name AD_CtxHelp_ID */
+    public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
+
+	/** Set Context Help	  */
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID);
+
+	/** Get Context Help	  */
+	public int getAD_CtxHelp_ID();
+
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
 
     /** Column name AD_Language */
     public static final String COLUMNNAME_AD_Language = "AD_Language";
@@ -153,6 +140,19 @@ public interface I_AD_CtxHelpSuggestion
 	public int getAD_User_ID();
 
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException;
+
+    /** Column name AcceptSuggestion */
+    public static final String COLUMNNAME_AcceptSuggestion = "AcceptSuggestion";
+
+	/** Set Accept.
+	  * Accept suggested changes
+	  */
+	public void setAcceptSuggestion (String AcceptSuggestion);
+
+	/** Get Accept.
+	  * Accept suggested changes
+	  */
+	public String getAcceptSuggestion();
 
     /** Column name CompareSuggestion */
     public static final String COLUMNNAME_CompareSuggestion = "CompareSuggestion";

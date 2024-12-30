@@ -27,8 +27,9 @@ package org.adempiere.webui.info;
 /**
  * Info window for M_AttributeSetInstance
  * @author hengsin
- *
+ * @deprecated not use
  */
+@Deprecated
 public class InfoPAttributeInstanceWindow extends InfoWindow {
 
 	/**

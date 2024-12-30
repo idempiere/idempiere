@@ -63,8 +63,8 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
 	}
 
 	/**
-	 * Construct the ListModel<Object> with a collection of objects.
-	 * A copy is made of the collection.
+	 * Construct the ListModel<Object> with a collection of objects.<br/>
+	 * A copy is made of the collection.<br/>
 	 * The element in collection should be vector of objects.
 	 *
 	 * @param collection	The collection of objects with which to initialise the list
@@ -287,7 +287,7 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
 
 	/**
 	 * Add a listener for events from the data model.
-     *
+     * <p>
      * The listener will only be added if it doesn't already exist.
 	 *
 	 * @param listener	A listener for changes in the table mode
@@ -333,6 +333,7 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
      * (non-Javadoc)
      * @see org.zkoss.zul.ListModelList#sort(java.util.Comparator, boolean)
      */
+	@Override
     public void sort(Comparator<Object> cmpr, boolean ascending)
     {
     	if (sorter != null)
@@ -348,7 +349,7 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
     }
 
     /**
-     * alias for getDataAt, to ease porting of swing form
+     * Alias for getDataAt, to ease porting of swing form
      * @param rowIndex
      * @param columnIndex
      * @return column value
@@ -358,7 +359,7 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
 	}
 
 	/**
-	 * alias for setDataAt, to ease porting of swing form
+	 * Alias for setDataAt, to ease porting of swing form
 	 * @param value
 	 * @param row
 	 * @param col
@@ -368,7 +369,7 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
 	}
 
 	/**
-	 * alias for getSize, to ease porting of swing form
+	 * Alias for getSize, to ease porting of swing form
 	 * @return size
 	 */
 	public int getRowCount() {

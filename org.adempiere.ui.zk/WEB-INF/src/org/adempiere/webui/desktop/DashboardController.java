@@ -39,6 +39,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -46,6 +47,8 @@ import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
+import org.adempiere.webui.component.Anchorchildren;
+import org.adempiere.webui.component.Anchorlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
@@ -80,6 +83,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MStatusLine;
+import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.print.MPrintFormat;
@@ -89,12 +93,14 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.json.JSONArray;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zhtml.Style;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -109,8 +115,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MaximizeEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Anchorchildren;
-import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -337,7 +341,7 @@ public class DashboardController implements EventListener<Event> {
 							}
 						}
 					};	        		
-	        		Adempiere.getThreadPoolExecutor().submit(cr);
+	        		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(cr, parent.getDesktop()));
 	        	}
 	        }
             
@@ -412,8 +416,9 @@ public class DashboardController implements EventListener<Event> {
 		panel.setMaximizable(dc.isMaximizable());
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
-		if(!Util.isEmpty(description, true) && !description.equalsIgnoreCase(dcName)) {
-			renderHelpButton(caption, description);
+		String help = dc.get_Translation(MDashboardContent.COLUMNNAME_Help);
+		if(!Util.isEmpty(description, true) || !Util.isEmpty(help, true) ) {
+			renderHelpButton(caption, description, help);
 		}
 		
 		panel.setCollapsible(dc.isCollapsible());
@@ -434,13 +439,17 @@ public class DashboardController implements EventListener<Event> {
 	 * @param caption
 	 * @param text
 	 */
-	private void renderHelpButton(Caption caption, String text) {
+	private void renderHelpButton(Caption caption, String text, String help) {
 		A icon = new A();
 		icon.setSclass("dashboard-content-help-icon");
 		if (ThemeManager.isUseFontIconForImage())
 			icon.setIconSclass("z-icon-Help");
 		else
 			icon.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		icon.addEventListener(Events.ON_CLICK, this);
+		icon.setAttribute("title", caption.getLabel());
+		icon.setAttribute("description", text);
+		icon.setAttribute("help", help);
 		caption.appendChild(icon);
 		Div popup = new Div();
 		Text t = new Text(text);
@@ -647,7 +656,7 @@ public class DashboardController implements EventListener<Event> {
 							}
 						}
 					};	        		
-	        		Adempiere.getThreadPoolExecutor().submit(cr);					
+	        		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(cr, parent.getDesktop()));				
 	        	}
 	        }
             
@@ -971,6 +980,15 @@ public class DashboardController implements EventListener<Event> {
     		final Html statusLineHtml = new Html();
     		statusLineHtml.setContent(sl.parseLine(0));
     		Div div = new Div();
+    		if (sl.getAD_Style_ID() > 0) {
+	    		MStyle style = MStyle.get(sl.getAD_Style_ID());
+				String css = style.buildStyle(ThemeManager.getTheme(), new DefaultEvaluatee(), false);				
+				if (!Util.isEmpty(css, true)) {
+					Style htmlStyle = new Style();
+					htmlStyle.setContent("@scope {\n"+css+"\n}\n");
+					div.appendChild(htmlStyle);
+				}			
+    		}
     		div.appendChild(statusLineHtml);
     		div.setSclass("statusline-gadget");
     		components.add(div);
@@ -1159,6 +1177,12 @@ public class DashboardController implements EventListener<Event> {
             		if (processId > 0)
             			openReportInViewer(processId, printFormatId, parameters);
             	}
+            }else if(comp instanceof A)
+            {	
+				String name = comp.getAttribute("title").toString();
+				String description = comp.getAttribute("description")!=null ? comp.getAttribute("description").toString() : null;
+				String help = comp.getAttribute("help")!=null ? comp.getAttribute("help").toString() : null;
+            	SessionManager.getAppDesktop().updateHelpTooltip(name, description, help, null, null);
             }
         }
 		else if (eventName.equals(Events.ON_DROP))
@@ -1587,9 +1611,7 @@ public class DashboardController implements EventListener<Event> {
 			.replace("<", "&lt;");
 		return htmlString;
 	}
-	
-	
-	
+		
 	/**
 	 * Run report
 	 * @param AD_Process_ID
@@ -1871,6 +1893,13 @@ public class DashboardController implements EventListener<Event> {
 		return true;
 	}
 
+	/**
+	 * Get display text for CSV values
+	 * @param i
+	 * @param ip
+	 * @param values comma separated value
+	 * @return display text
+	 */
 	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String values) {
 		String returnValue = "";
 		String[] splittedValues = values.split("[,]");
@@ -1882,6 +1911,13 @@ public class DashboardController implements EventListener<Event> {
 		return returnValue;
 	}
 	
+	/**
+	 * Get display text for value
+	 * @param i
+	 * @param ip
+	 * @param value
+	 * @return display text
+	 */
 	private String getDisplay(MPInstance i, MPInstancePara ip, Object value) {
 		try {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());

@@ -1938,7 +1938,8 @@ public class MPayment extends X_C_Payment
 				if (length > 0)		//	get last invoice
 					setC_Invoice_ID (invoices[length-1].getC_Invoice_ID());
 				//
-				if (getC_Invoice_ID() == 0)
+				MDocType orderDocType = MDocType.get(getCtx(), order.getC_DocType_ID());
+				if (orderDocType.isAutoGenerateInvoice() && getC_Invoice_ID() == 0)
 				{
 					m_processMsg = "@NotFound@ @C_Invoice_ID@";
 					return DocAction.STATUS_Invalid;
@@ -2558,6 +2559,11 @@ public class MPayment extends X_C_Payment
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());		
 		
+		if (getC_DepositBatch_ID() > 0 && getC_DepositBatch().isProcessed()) {
+			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
+			return false;
+		}
+		
 		if (DOCSTATUS_Closed.equals(getDocStatus())
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
@@ -2653,6 +2659,12 @@ public class MPayment extends X_C_Payment
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
+		
+		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
+			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed" )+ getC_DepositBatch();
+			return false;
+		}
+		
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -2693,6 +2705,17 @@ public class MPayment extends X_C_Payment
 			if (!allow) {
 				m_processMsg = Msg.getMsg(getCtx(), "NotAllowReversalOfReconciledPayment");
 				return null;
+			}
+		}
+		
+		if (getC_DepositBatch_ID() != 0) 
+		{
+			MDepositBatchLine batchLine = new Query(getCtx(),
+					MDepositBatchLine.Table_Name, "C_Payment_ID = ? AND C_DepositBatch_ID = ?", get_TrxName())
+							.setParameters(getC_Payment_ID(), getC_DepositBatch_ID()).first();
+			
+			if (batchLine != null) {
+				batchLine.deleteEx(false, get_TrxName());
 			}
 		}
 		
@@ -2819,6 +2842,11 @@ public class MPayment extends X_C_Payment
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
+		
+		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
+			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
+			return false;
+		}
 		
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);

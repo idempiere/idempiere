@@ -49,6 +49,7 @@ public class SystemProperties {
 	private static final String org_idempiere_db_debug_convert = "org.idempiere.db.debug.convert";
 	private static final String org_idempiere_db_debug_filter = "org.idempiere.db.debug.filter";
 	private static final String org_idempiere_FileLogPrefix = "org.idempiere.FileLogPrefix";
+	private static final String org_idempiere_FullExceptionTraceInLog = "org.idempiere.FullExceptionTraceInLog";
 	private static final String org_idempiere_postgresql_URLParameters = "org.idempiere.postgresql.URLParameters";
 	private static final String org_idempiere_po_useOptimisticLocking = "org.idempiere.po.useOptimisticLocking";
 	private static final String PostgreSQLNative = "PostgreSQLNative";
@@ -277,4 +278,11 @@ public class SystemProperties {
 		return "true".equals(System.getProperty(TRACE_NULL_TRX_CONNECTION));
 	}
 
+	/**
+	 * org_idempiere_FullExceptionTraceInLog=true to not cut trace log
+	 * @return
+	 */
+	public static boolean isFullExceptionTraceInLog() {
+		return "true".equals(System.getProperty(org_idempiere_FullExceptionTraceInLog));
+	}
 }

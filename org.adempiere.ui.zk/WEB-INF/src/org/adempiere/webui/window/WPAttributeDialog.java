@@ -48,6 +48,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -91,6 +92,7 @@ import org.zkoss.zul.Space;
 
 /**
  *  Product Instance/Non-Instance attribute Dialog.
+ *  @see WPAttributeEditor
  *  @author hengsin
  */
 public class WPAttributeDialog extends Window implements EventListener<Event>
@@ -329,16 +331,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			cell.appendChild(cbNewEdit);
 			row.appendChild(cell);
 						
-			String sql = "SELECT M_AttributeSetInstance_ID, Description"
-				+ " FROM M_AttributeSetInstance"
-				+ " WHERE M_AttributeSet_ID = " + as.getM_AttributeSet_ID()
-				+ " AND EXISTS ("
-				+ " SELECT 1 FROM M_AttributeInstance INNER JOIN M_Attribute"
-				+ " ON (M_AttributeInstance.M_Attribute_ID = M_Attribute.M_Attribute_ID)"
-				+ " WHERE M_AttributeInstance.M_AttributeSetInstance_ID = M_AttributeSetInstance.M_AttributeSetInstance_ID"
-				+ " AND M_Attribute.IsInstanceAttribute = 'N')";
-			existingCombo.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			KeyNamePair[] keyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(as.getM_AttributeSet_ID(), true);
+			existingCombo.setMold("select");			
 			for (KeyNamePair pair : keyNamePairs) {
 				existingCombo.appendItem(pair.getName(), pair.getKey());
 			}
@@ -413,10 +407,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				+ "FROM M_Lot l "
 				+ "WHERE EXISTS (SELECT M_Product_ID FROM M_Product p "
 					+ "WHERE p.M_AttributeSet_ID=" + m_masi.getM_AttributeSet_ID()
-					+ " AND p.M_Product_ID=l.M_Product_ID)";
+					+ " AND p.M_Product_ID=l.M_Product_ID) "
+					+ " AND l.M_Product_ID = ? ";
 			fieldLot = new Listbox();
 			fieldLot.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			KeyNamePair[] keyNamePairs = DB.getKeyNamePairsEx(sql, true, m_M_Product_ID);
 			for (KeyNamePair pair : keyNamePairs) {
 				fieldLot.appendItem(pair.getName(), pair.getKey());
 			}

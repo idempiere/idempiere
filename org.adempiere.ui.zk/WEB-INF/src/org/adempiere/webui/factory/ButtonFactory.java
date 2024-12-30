@@ -29,6 +29,7 @@ import org.compiere.util.Util;
 public class ButtonFactory {
 
 	/**
+	 * Is button with text label the current default UI preference
 	 * @return true if button should have text label
 	 */
 	public static final boolean isWithText() {
@@ -37,6 +38,7 @@ public class ButtonFactory {
 	}
 	
 	/**
+	 * Is button with image icon the current default UI preference
 	 * @return true if button should include an image icon
 	 */
 	public static final boolean isWithImage() {
@@ -55,9 +57,10 @@ public class ButtonFactory {
 	}
 	
 	/**
-	 * 
-	 * @param name button name. If withText is true, the name will be used to 
-	 * lookup the button label from ad_message
+	 * Create named button
+	 * @param name button name.<br/>
+	 * Button created with name="btn"+name and include css class of "btn-"+lower(name).<br/>
+	 * If withText is true, the name will be used to lookup the button label from ad_message.
 	 * @param withText text button
 	 * @param withImage image button 
 	 * @return new button instance
@@ -103,6 +106,7 @@ public class ButtonFactory {
     }
 	
 	/**
+	 * Create button
 	 * @param label
 	 * @param image
 	 * @param tooltiptext

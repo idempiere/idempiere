@@ -40,8 +40,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 
 /**
- * Adempiere Web UI custom form.
- * The form is abstract, so specific types of custom form must be implemented
+ * Abstract base class for iDempiere Web UI custom form (AD_Form).
  *
  * @author Andrew Kimball
  */
@@ -91,6 +90,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     }
 
     /**
+     * Get registered window number
      * @return window number
      */
     public int getWindowNo()
@@ -99,6 +99,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     }
 
     /**
+     * Get AD_Form_ID
      * @return AD_Form_ID
      */
     protected int getAdFormId()
@@ -136,6 +137,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     abstract protected void initForm();
 
 	/**
+	 * Get form name
      * @return form name
      */
     public String getFormName() {
@@ -157,7 +159,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	 * Open a form based on it's ID with the predefined context variables from menu
 	 *
 	 * @param formId
-	 * @param predefinedContextVariables
+	 * @param predefinedContextVariables optional predefined context variables from menu
 	 * @return The created form
 	 */
 	public static ADForm openForm(int formId, String predefinedContextVariables) {
@@ -195,7 +197,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
      * @param adFormID
      * @param gridTab
      * @param pi
-     * @param predefinedContextVariables
+     * @param predefinedContextVariables optional predefined context variables from menu
      * @param isSOTrx
      * @return The created form
      */
@@ -270,6 +272,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	}
 
 	/**
+	 * Set form controller
 	 * @param customForm
 	 */
 	public void setICustomForm(IFormController customForm)
@@ -278,6 +281,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	}
 
 	/**
+	 * Get form controller
 	 * @return IFormController
 	 */
 	public IFormController getICustomForm()

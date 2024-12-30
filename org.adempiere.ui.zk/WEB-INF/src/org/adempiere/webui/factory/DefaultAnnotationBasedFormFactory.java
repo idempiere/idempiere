@@ -27,7 +27,7 @@ package org.adempiere.webui.factory;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Core implementation of {@link AnnotationBasedFormFactory}
+ * Default implementation of {@link AnnotationBasedFormFactory}
  * @author hengsin
  *
  */

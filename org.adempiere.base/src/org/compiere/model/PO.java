@@ -114,10 +114,10 @@ import org.w3c.dom.Element;
 public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 6591172659109078284L;
+	private static final long serialVersionUID = 1335945052825334098L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -652,6 +652,7 @@ public abstract class PO
 	 * @param columnName
 	 * @return String value
 	 */
+	@Override
 	public String get_ValueAsString(String columnName)
 	{
 		int idx = get_ColumnIndex(columnName);
@@ -1957,6 +1958,7 @@ public abstract class PO
 	 */
 	private void setKeyInfo()
 	{
+		m_KeyColumns = null;
 		//	Search for Primary Key
 		for (int i = 0; i < p_info.getColumnCount(); i++)
 		{
@@ -2366,6 +2368,8 @@ public abstract class PO
 			return true;
 		}
 
+		if (!checkReadOnlySession())
+			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
@@ -2590,6 +2594,32 @@ public abstract class PO
 		}
 	}	//	save
 
+
+	/**
+	 * Tables allowed to be written in a read-only session
+	 */
+	final Set<String> ALLOWED_TABLES_IN_RO_SESSION = new HashSet<>(Arrays.asList(new String[] {
+			"AD_ChangeLog",
+			"AD_Preference",
+			"AD_Session",
+			"AD_UserPreference",
+			"AD_Wlistbox_Customization"
+	}));
+
+	/**
+	 * Do not allow saving if in a read-only session, except the allowed tables
+	 * @return
+	 */
+	private boolean checkReadOnlySession() {
+		if (Env.isReadOnlySession()) {
+			if (! ALLOWED_TABLES_IN_RO_SESSION.contains(get_TableName())) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ReadOnlySession") + " [" + get_TableName() + "]");
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Update or insert new record.
 	 * @throws AdempiereException if save fail
@@ -2598,15 +2628,23 @@ public abstract class PO
 	public void saveEx() throws AdempiereException
 	{
 		if (!save()) {
-			String msg = null;
+			StringBuilder msg = new StringBuilder();
 			ValueNamePair err = CLogger.retrieveError();
 			String val = err != null ? Msg.translate(getCtx(), err.getValue()) : "";
-			if (err != null)
-				msg = (val != null ? val + ": " : "") + err.getName();
-			if (msg == null || msg.length() == 0)
-				msg = "SaveError";
+			if (err != null) {
+				if (val != null) {
+					msg.append(val);
+					if (val.endsWith(":"))
+						msg.append(" ");
+					else if (! val.endsWith(": "))
+						msg.append(": ");
+				}
+				msg.append(err.getName());
+			}
+			if (msg.length() == 0)
+				msg.append("SaveError");
 			Exception ex = CLogger.retrieveException();
-			throw new AdempiereException(msg, ex);
+			throw new AdempiereException(msg.toString(), ex);
 		}
 	}
 
@@ -4028,6 +4066,8 @@ public abstract class PO
 		if (is_new())
 			return true;
 
+		if (!checkReadOnlySession())
+			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
@@ -5051,7 +5091,6 @@ public abstract class PO
 	 * @param tableName
 	 * @param clientID
 	 * @param trxName
-	 * @param parent id 
 	 */
 	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName) {
 		return retrieveIdOfParentValue(value, tableName, null, 0, clientID, trxName);

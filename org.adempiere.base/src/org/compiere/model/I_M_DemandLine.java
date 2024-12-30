@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DemandLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_DemandLine 
 {
@@ -106,21 +106,6 @@ public interface I_M_DemandLine
 	  */
 	public boolean isActive();
 
-    /** Column name M_Demand_ID */
-    public static final String COLUMNNAME_M_Demand_ID = "M_Demand_ID";
-
-	/** Set Demand.
-	  * Material Demand
-	  */
-	public void setM_Demand_ID (int M_Demand_ID);
-
-	/** Get Demand.
-	  * Material Demand
-	  */
-	public int getM_Demand_ID();
-
-	public org.compiere.model.I_M_Demand getM_Demand() throws RuntimeException;
-
     /** Column name M_DemandLine_ID */
     public static final String COLUMNNAME_M_DemandLine_ID = "M_DemandLine_ID";
 
@@ -142,6 +127,21 @@ public interface I_M_DemandLine
 
 	/** Get M_DemandLine_UU	  */
 	public String getM_DemandLine_UU();
+
+    /** Column name M_Demand_ID */
+    public static final String COLUMNNAME_M_Demand_ID = "M_Demand_ID";
+
+	/** Set Demand.
+	  * Material Demand
+	  */
+	public void setM_Demand_ID (int M_Demand_ID);
+
+	/** Get Demand.
+	  * Material Demand
+	  */
+	public int getM_Demand_ID();
+
+	public org.compiere.model.I_M_Demand getM_Demand() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";

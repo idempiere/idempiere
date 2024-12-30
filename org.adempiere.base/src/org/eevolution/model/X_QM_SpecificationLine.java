@@ -24,7 +24,7 @@ import org.compiere.model.*;
 
 /** Generated Model for QM_SpecificationLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="QM_SpecificationLine")
 public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_QM_SpecificationLine (Properties ctx, int QM_SpecificationLine_ID, String trxName)
@@ -179,12 +179,12 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	public static final String OPERATION_GtEq = ">=";
 	/** &gt; = &gt;&gt; */
 	public static final String OPERATION_Gt = ">>";
-	/**  ~ = ~~ */
-	public static final String OPERATION_Like = "~~";
 	/** |&lt;x&gt;| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
+	/**  ~ = ~~ */
+	public static final String OPERATION_Like = "~~";
 	/** Set Operation.
 		@param Operation Compare Operation
 	*/
@@ -200,33 +200,6 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	public String getOperation()
 	{
 		return (String)get_Value(COLUMNNAME_Operation);
-	}
-
-	public org.eevolution.model.I_QM_Specification getQM_Specification() throws RuntimeException
-	{
-		return (org.eevolution.model.I_QM_Specification)MTable.get(getCtx(), org.eevolution.model.I_QM_Specification.Table_ID)
-			.getPO(getQM_Specification_ID(), get_TrxName());
-	}
-
-	/** Set Quality Specification.
-		@param QM_Specification_ID Quality Specification
-	*/
-	public void setQM_Specification_ID (int QM_Specification_ID)
-	{
-		if (QM_Specification_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_QM_Specification_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_QM_Specification_ID, Integer.valueOf(QM_Specification_ID));
-	}
-
-	/** Get Quality Specification.
-		@return Quality Specification	  */
-	public int getQM_Specification_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_QM_Specification_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set QM Specification Line.
@@ -263,6 +236,33 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	public String getQM_SpecificationLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_QM_SpecificationLine_UU);
+	}
+
+	public org.eevolution.model.I_QM_Specification getQM_Specification() throws RuntimeException
+	{
+		return (org.eevolution.model.I_QM_Specification)MTable.get(getCtx(), org.eevolution.model.I_QM_Specification.Table_ID)
+			.getPO(getQM_Specification_ID(), get_TrxName());
+	}
+
+	/** Set Quality Specification.
+		@param QM_Specification_ID Quality Specification
+	*/
+	public void setQM_Specification_ID (int QM_Specification_ID)
+	{
+		if (QM_Specification_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_QM_Specification_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_QM_Specification_ID, Integer.valueOf(QM_Specification_ID));
+	}
+
+	/** Get Quality Specification.
+		@return Quality Specification	  */
+	public int getQM_Specification_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_QM_Specification_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sequence.

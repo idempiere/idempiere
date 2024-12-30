@@ -1,6 +1,16 @@
 <%@ taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" %>
 <%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 <%-- z-grid customization --%>
+.z-grid .z-column, .z-listheader {
+	background-color: #e0f2ff;
+	border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.z-grid-header {
+	background-color: #e0f2ff;
+}
+
 .z-grid tbody tr.grid-inactive-row td.z-cell {
 	background-image: none !important;
 }
@@ -70,7 +80,21 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 	}	
 }
 .z-column-content, .z-listheader-content, .z-listcell-content {
+	color: #333;
 	padding: 2px 3px 1px;
+}
+
+.z-column-content:hover, .z-listheader-content:hover, .z-listcell-content:hover {
+	color: #000;
+}
+
+.z-listheader-sort .z-listheader-content:active, .z-column-sort .z-column-content:active  {
+    background: #C7E8FF;
+    color: #000;
+}
+
+.z-column-sort .z-column-sorticon, .z-listheader-sort .z-listheader-sorticon {
+	color: #333;
 }
 
 <%-- grid layout for form --%>
@@ -92,6 +116,11 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 }
 
 <%-- z-listbox customization --%>
+.z-listbox-header {
+	background-color: #e0f2ff;
+	border-left: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
 tbody.z-listbox-empty-body td {
 	text-align: left;
 }
@@ -100,9 +129,6 @@ div.z-listbox-body .z-listcell {
 }
 .z-listbox-autopaging .z-listcell-cnt {
 	height: 20px;
-}
-.z-listheader-content .z-label {
-	color: #FFF;
 }
 .z-row .z-cell, .z-listitem .z-listcell, .z-listitem.z-listitem-selected>.z-listcell {
 	border-left: 1px solid #cfcfcf;

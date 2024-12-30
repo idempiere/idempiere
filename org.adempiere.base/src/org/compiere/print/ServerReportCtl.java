@@ -107,7 +107,10 @@ public class ServerReportCtl {
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)	
 			{
-				boolean result = runJasperProcess(Record_ID, re, true, printerName, pi);
+				int jasperRecordId = Record_ID;
+				if (re.getPrintInfo() != null && re.getPrintInfo().getRecord_ID() > 0)
+					jasperRecordId = re.getPrintInfo().getRecord_ID();
+				boolean result = runJasperProcess(jasperRecordId, re, true, printerName, pi);
 				return(result);
 			}
 			else
@@ -116,6 +119,7 @@ public class ServerReportCtl {
 			{
 				if (pi != null && pi.isBatch() && pi.isPrintPreview())
 				{
+					re.setProcessInfo(pi);
 					if ("HTML".equals(pi.getReportType())) 
 					{
 						pi.setExport(true);
@@ -185,6 +189,7 @@ public class ServerReportCtl {
 		if (pi != null) {
 			jasperProcessInfo.setPrintPreview(pi.isPrintPreview());
 			jasperProcessInfo.setIsBatch(pi.isBatch());
+		    jasperProcessInfo.setPDFFileName(pi.getPDFFileName());
 		} else {
 			jasperProcessInfo.setPrintPreview( !IsDirectPrint );
 		}

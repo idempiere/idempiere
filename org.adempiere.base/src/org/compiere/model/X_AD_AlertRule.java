@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertRule
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertRule")
 public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_AlertRule (Properties ctx, int AD_AlertRule_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
       super (ctx, AD_AlertRule_ID, trxName);
       /** if (AD_AlertRule_ID == 0)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertRule_ID (0);
+			setAD_Alert_ID (0);
 			setFromClause (null);
 			setIsValid (true);
 // Y
@@ -55,8 +55,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
       super (ctx, AD_AlertRule_ID, trxName, virtualColumns);
       /** if (AD_AlertRule_ID == 0)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertRule_ID (0);
+			setAD_Alert_ID (0);
 			setFromClause (null);
 			setIsValid (true);
 // Y
@@ -71,8 +71,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
       super (ctx, AD_AlertRule_UU, trxName);
       /** if (AD_AlertRule_UU == null)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertRule_ID (0);
+			setAD_Alert_ID (0);
 			setFromClause (null);
 			setIsValid (true);
 // Y
@@ -87,8 +87,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
       super (ctx, AD_AlertRule_UU, trxName, virtualColumns);
       /** if (AD_AlertRule_UU == null)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertRule_ID (0);
+			setAD_Alert_ID (0);
 			setFromClause (null);
 			setIsValid (true);
 // Y
@@ -125,34 +125,6 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Alert)MTable.get(getCtx(), org.compiere.model.I_AD_Alert.Table_ID)
-			.getPO(getAD_Alert_ID(), get_TrxName());
-	}
-
-	/** Set Alert.
-		@param AD_Alert_ID iDempiere Alert
-	*/
-	public void setAD_Alert_ID (int AD_Alert_ID)
-	{
-		if (AD_Alert_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, Integer.valueOf(AD_Alert_ID));
-	}
-
-	/** Get Alert.
-		@return iDempiere Alert
-	  */
-	public int getAD_Alert_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Alert_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Alert Rule.
 		@param AD_AlertRule_ID Definition of the alert element
 	*/
@@ -188,6 +160,34 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	public String getAD_AlertRule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AlertRule_UU);
+	}
+
+	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Alert)MTable.get(getCtx(), org.compiere.model.I_AD_Alert.Table_ID)
+			.getPO(getAD_Alert_ID(), get_TrxName());
+	}
+
+	/** Set Alert.
+		@param AD_Alert_ID iDempiere Alert
+	*/
+	public void setAD_Alert_ID (int AD_Alert_ID)
+	{
+		if (AD_Alert_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, Integer.valueOf(AD_Alert_ID));
+	}
+
+	/** Get Alert.
+		@return iDempiere Alert
+	  */
+	public int getAD_Alert_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Alert_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException

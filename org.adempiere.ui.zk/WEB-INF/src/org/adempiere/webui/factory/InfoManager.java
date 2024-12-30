@@ -36,7 +36,7 @@ public class InfoManager
 	private final static CCache<Long, IServiceReferenceHolder<IInfoFactory>> s_infoFactoryCache = new CCache<Long, IServiceReferenceHolder<IInfoFactory>>(null, "IInfoFactory", 10, false);
 	
 	/**
-	 * 
+	 * Create info panel or info window
 	 * @param WindowNo
 	 * @param tableName
 	 * @param keyColumn
@@ -91,7 +91,7 @@ public class InfoManager
     }
 
 	/**
-	 * 
+	 * Create info panel or info window
 	 * @param lookup
 	 * @param field
 	 * @param tableName
@@ -150,7 +150,7 @@ public class InfoManager
 	}
 	
 	/**
-	 * 
+	 * Create info window
 	 * @param AD_InfoWindow_ID
 	 * @return {@link InfoWindow}
 	 */
@@ -160,7 +160,7 @@ public class InfoManager
 	}
 
 	/**
-	 * 
+	 * Create info window
 	 * @param AD_InfoWindow_ID
 	 * @param predefinedContextVariables
 	 * @return {@link InfoWindow}
@@ -171,7 +171,7 @@ public class InfoManager
 	}
 
 	/**
-	 * 
+	 * Create info window
 	 * @param windowNo
 	 * @param AD_InfoWindow_ID
 	 * @param predefinedContextVariables

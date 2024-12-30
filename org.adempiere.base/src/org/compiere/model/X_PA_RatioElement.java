@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_RatioElement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PA_RatioElement")
 public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_PA_RatioElement (Properties ctx, int PA_RatioElement_ID, String trxName)
@@ -271,34 +271,6 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 		return (String)get_Value(COLUMNNAME_PA_RatioElement_UU);
 	}
 
-	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_ID)
-			.getPO(getPA_Ratio_ID(), get_TrxName());
-	}
-
-	/** Set Ratio.
-		@param PA_Ratio_ID Performance Ratio
-	*/
-	public void setPA_Ratio_ID (int PA_Ratio_ID)
-	{
-		if (PA_Ratio_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PA_Ratio_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PA_Ratio_ID, Integer.valueOf(PA_Ratio_ID));
-	}
-
-	/** Get Ratio.
-		@return Performance Ratio
-	  */
-	public int getPA_Ratio_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Ratio_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_PA_Ratio getPA_RatioUsed() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_ID)
@@ -322,6 +294,34 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	public int getPA_RatioUsed_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_RatioUsed_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException
+	{
+		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_ID)
+			.getPO(getPA_Ratio_ID(), get_TrxName());
+	}
+
+	/** Set Ratio.
+		@param PA_Ratio_ID Performance Ratio
+	*/
+	public void setPA_Ratio_ID (int PA_Ratio_ID)
+	{
+		if (PA_Ratio_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_Ratio_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_Ratio_ID, Integer.valueOf(PA_Ratio_ID));
+	}
+
+	/** Get Ratio.
+		@return Performance Ratio
+	  */
+	public int getPA_Ratio_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Ratio_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

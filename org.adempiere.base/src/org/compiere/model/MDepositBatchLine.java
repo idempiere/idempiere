@@ -139,6 +139,13 @@ import org.compiere.util.Util;
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_DepositBatch_ID"));
 			return false;
 		}
+		
+		if (getC_DepositBatch().getC_Currency_ID() != getC_Payment().getC_Currency_ID())
+		{
+			log.saveError("SaveError", Msg.getMsg(getCtx(), "ErrorMultipleCurrencyPaymentsRestricted", new Object[] { getC_DepositBatch().getC_Currency().getISO_Code()} )); 
+			return false;
+		} 
+		
 		//	Set Line No
 		if (getLine() == 0)
 		{
@@ -148,13 +155,32 @@ import org.compiere.util.Util;
 		}
 		
 		//	Set DepositBatch_ID into C_Payment table
-		if (getC_Payment_ID() != 0 )
+		if (getC_Payment_ID() != 0 && (getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_Drafted))
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_InProgress)
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_Invalid)
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_Approved)
+				|| getC_DepositBatch().getDocStatus().equals(MDepositBatch.STATUS_NotApproved))
 		{
-			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID=? WHERE p.C_Payment_ID=?";			
-			DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID(), getC_Payment_ID()}, get_TrxName());
+			//if payment is changed then clear reference of deposit batch from old payment and mark reconciled flag as N
+			if (!newRecord && is_ValueChanged(COLUMNNAME_C_Payment_ID))
+			{
+				MPayment payment = new Query(getCtx(),
+						MPayment.Table_Name, "C_Payment_ID = ? AND C_DepositBatch_ID = ?", get_TrxName())
+								.setParameters(get_ValueOldAsInt(COLUMNNAME_C_Payment_ID), getC_DepositBatch_ID()).first();
+				
+				if (payment != null) {
+					payment.setC_DepositBatch_ID(0);
+					payment.setIsReconciled(false);
+					payment.saveEx(get_TrxName());
+				}
+				
+			}
 			
-			MPayment payment = new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
-			setPayment(payment);	// set payment amount
+            MPayment payment = new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+			payment.setC_DepositBatch_ID(getC_DepositBatch_ID());
+			payment.saveEx(get_TrxName());
+
+			setPayment(payment); // set payment amount
 		}
 		
 		return true;
@@ -196,5 +222,10 @@ import org.compiere.util.Util;
 				+ "WHERE C_DepositBatch_ID=?";
 		DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID()}, get_TrxName());
 	}	//	updateHeader
+	
+	@Override
+	public MPayment getC_Payment() throws RuntimeException {
+		return getC_Payment_ID() > 0 ? new MPayment(getCtx(), getC_Payment_ID(), get_TrxName()) : null;
+	}
 	
  }	//	MDepositBatchLine

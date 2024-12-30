@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriberOnly
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ_TopicSubscriberOnly")
 public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubscriberOnly, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RfQ_TopicSubscriberOnly (Properties ctx, int C_RfQ_TopicSubscriberOnly_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
       super (ctx, C_RfQ_TopicSubscriberOnly_ID, trxName);
       /** if (C_RfQ_TopicSubscriberOnly_ID == 0)
         {
-			setC_RfQ_TopicSubscriber_ID (0);
 			setC_RfQ_TopicSubscriberOnly_ID (0);
+			setC_RfQ_TopicSubscriber_ID (0);
         } */
     }
 
@@ -50,8 +50,8 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
       super (ctx, C_RfQ_TopicSubscriberOnly_ID, trxName, virtualColumns);
       /** if (C_RfQ_TopicSubscriberOnly_ID == 0)
         {
-			setC_RfQ_TopicSubscriber_ID (0);
 			setC_RfQ_TopicSubscriberOnly_ID (0);
+			setC_RfQ_TopicSubscriber_ID (0);
         } */
     }
 
@@ -61,8 +61,8 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
       super (ctx, C_RfQ_TopicSubscriberOnly_UU, trxName);
       /** if (C_RfQ_TopicSubscriberOnly_UU == null)
         {
-			setC_RfQ_TopicSubscriber_ID (0);
 			setC_RfQ_TopicSubscriberOnly_ID (0);
+			setC_RfQ_TopicSubscriber_ID (0);
         } */
     }
 
@@ -72,8 +72,8 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
       super (ctx, C_RfQ_TopicSubscriberOnly_UU, trxName, virtualColumns);
       /** if (C_RfQ_TopicSubscriberOnly_UU == null)
         {
-			setC_RfQ_TopicSubscriber_ID (0);
 			setC_RfQ_TopicSubscriberOnly_ID (0);
+			setC_RfQ_TopicSubscriber_ID (0);
         } */
     }
 
@@ -104,34 +104,6 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_C_RfQ_TopicSubscriber getC_RfQ_TopicSubscriber() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RfQ_TopicSubscriber)MTable.get(getCtx(), org.compiere.model.I_C_RfQ_TopicSubscriber.Table_ID)
-			.getPO(getC_RfQ_TopicSubscriber_ID(), get_TrxName());
-	}
-
-	/** Set RfQ Subscriber.
-		@param C_RfQ_TopicSubscriber_ID Request for Quotation Topic Subscriber
-	*/
-	public void setC_RfQ_TopicSubscriber_ID (int C_RfQ_TopicSubscriber_ID)
-	{
-		if (C_RfQ_TopicSubscriber_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, Integer.valueOf(C_RfQ_TopicSubscriber_ID));
-	}
-
-	/** Get RfQ Subscriber.
-		@return Request for Quotation Topic Subscriber
-	  */
-	public int getC_RfQ_TopicSubscriber_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_TopicSubscriber_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set RfQ Topic Subscriber Restriction.
 		@param C_RfQ_TopicSubscriberOnly_ID Include Subscriber only for certain products or product categories
@@ -168,6 +140,34 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	public String getC_RfQ_TopicSubscriberOnly_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU);
+	}
+
+	public org.compiere.model.I_C_RfQ_TopicSubscriber getC_RfQ_TopicSubscriber() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RfQ_TopicSubscriber)MTable.get(getCtx(), org.compiere.model.I_C_RfQ_TopicSubscriber.Table_ID)
+			.getPO(getC_RfQ_TopicSubscriber_ID(), get_TrxName());
+	}
+
+	/** Set RfQ Subscriber.
+		@param C_RfQ_TopicSubscriber_ID Request for Quotation Topic Subscriber
+	*/
+	public void setC_RfQ_TopicSubscriber_ID (int C_RfQ_TopicSubscriber_ID)
+	{
+		if (C_RfQ_TopicSubscriber_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, Integer.valueOf(C_RfQ_TopicSubscriber_ID));
+	}
+
+	/** Get RfQ Subscriber.
+		@return Request for Quotation Topic Subscriber
+	  */
+	public int getC_RfQ_TopicSubscriber_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_TopicSubscriber_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

@@ -16,6 +16,7 @@
 * Validate all Eclipse application launch configuration is working.
 * Validate unit test launch configuration is working.
 * Validate application created by mvn verify is working as expected.
+* Validate unit test can be completed successfully using maven (mvn verify -DskipTests=false).
 * If necessary, update name and "idempiere.target.platform" setup task in utils_dev/oomph/idempiere.setup
 
 #Auto generation of local mirror

@@ -34,6 +34,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILENAME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILEPATH;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_IMAGE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_IMAGE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_INTEGER;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATION;
@@ -154,6 +155,8 @@ public final class DisplayType
 	public static final int Locator    = REFERENCE_DATATYPE_LOCATOR;
 	/** Display Type 32 Image	*/
 	public static final int Image      = REFERENCE_DATATYPE_IMAGE;
+	/** Display Type Image URL */
+	public static final int ImageURL      = REFERENCE_DATATYPE_IMAGE_URL;
 	/** Display Type 33 Assignment	*/
 	public static final int Assignment = REFERENCE_DATATYPE_ASSIGNMENT;
 	/** Display Type 34	Memo	*/
@@ -422,7 +425,8 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionSearch
 			|| displayType == TimeZoneId
 			|| displayType == UUID || displayType == RecordUU
-			|| displayType == TableDirUU || displayType == TableUU || displayType == SearchUU)
+			|| displayType == TableDirUU || displayType == TableUU || displayType == SearchUU
+			|| displayType == ImageURL)
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -1137,6 +1141,8 @@ public final class DisplayType
 			return "ID";
 		case Image:
 			return "Image";
+		case ImageURL:
+			return "Image URL";
 		case Integer:
 			return "Integer";
 		case List:

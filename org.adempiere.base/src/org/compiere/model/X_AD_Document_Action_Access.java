@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Document_Action_Access
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Document_Action_Access")
 public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Action_Access, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Document_Action_Access (Properties ctx, int AD_Document_Action_Access_ID, String trxName)

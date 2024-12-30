@@ -51,7 +51,8 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * Abstract base class for Menu Panel
+ * Abstract base class for Menu Tree Panel.<br/>
+ * Menu tree component is loaded and created but not added to panel.
  * @author Elaine
  * @date July 31, 2012
  */
@@ -263,12 +264,14 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
      */
     public Toolbarbutton createNewButton()
     {
-    	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
+    	Toolbarbutton newBtn = new Toolbarbutton(null);
     	if (ThemeManager.isUseFontIconForImage())
 		{
-			newBtn.setImage(null);
 			newBtn.setIconSclass("z-icon-New");
 		}
+    	else {
+    		newBtn.setImage(ThemeManager.getThemeResource("images/New10.png"));
+    	}
     	newBtn.setSclass("menu-href-newbtn");
     	return newBtn;
     }
@@ -390,7 +393,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 	}
 
 	/**
-	 * @return Tree
+	 * @return Menu Tree
 	 */
 	public Tree getMenuTree() 
 	{

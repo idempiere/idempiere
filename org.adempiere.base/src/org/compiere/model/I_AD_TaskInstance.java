@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TaskInstance
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_TaskInstance 
 {
@@ -62,19 +62,6 @@ public interface I_AD_TaskInstance
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Task_ID */
-    public static final String COLUMNNAME_AD_Task_ID = "AD_Task_ID";
-
-	/** Set OS Task.
-	  * Operation System Task
-	  */
-	public void setAD_Task_ID (int AD_Task_ID);
-
-	/** Get OS Task.
-	  * Operation System Task
-	  */
-	public int getAD_Task_ID();
-
     /** Column name AD_TaskInstance_ID */
     public static final String COLUMNNAME_AD_TaskInstance_ID = "AD_TaskInstance_ID";
 
@@ -92,6 +79,19 @@ public interface I_AD_TaskInstance
 
 	/** Get AD_TaskInstance_UU	  */
 	public String getAD_TaskInstance_UU();
+
+    /** Column name AD_Task_ID */
+    public static final String COLUMNNAME_AD_Task_ID = "AD_Task_ID";
+
+	/** Set OS Task.
+	  * Operation System Task
+	  */
+	public void setAD_Task_ID (int AD_Task_ID);
+
+	/** Get OS Task.
+	  * Operation System Task
+	  */
+	public int getAD_Task_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

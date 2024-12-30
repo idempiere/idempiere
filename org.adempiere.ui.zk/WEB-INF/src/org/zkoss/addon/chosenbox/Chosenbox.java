@@ -1,7 +1,4 @@
-/******************************************************************************
- * Project: Trek Global ERP                                                   *
- * 															
- * Chosenbox.java
+/* Chosenbox.java
 
 	Purpose:
 		
@@ -869,9 +866,6 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 									return new ForEachStatus() {
 										public ForEachStatus getPrevious() {
 											return null;
-										}
-										public Object getEach() {
-											return data;
 										}
 										public int getIndex() {
 											return index;

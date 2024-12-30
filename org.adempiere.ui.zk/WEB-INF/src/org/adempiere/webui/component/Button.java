@@ -24,7 +24,6 @@ import org.zkoss.zk.ui.event.Events;
  * Extend {@link org.zkoss.zul.Button}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class Button extends org.zkoss.zul.Button
 {
@@ -86,7 +85,7 @@ public class Button extends org.zkoss.zul.Button
     }
 
     /**
-     * shortcut for addEventListener(Events.ON_CLICK, listener) to ease porting of swing form
+     * Shortcut for addEventListener(Events.ON_CLICK, listener) to ease porting of swing form
      * @param listener
      */
 	public void addActionListener(EventListener<?> listener) {

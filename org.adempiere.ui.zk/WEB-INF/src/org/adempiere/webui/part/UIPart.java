@@ -15,7 +15,7 @@ package org.adempiere.webui.part;
 import org.zkoss.zk.ui.Component;
 
 /**
- * Interface for UI block
+ * Controller interface for UI block
  * @author Low Heng Sin
  *
  */
@@ -29,6 +29,7 @@ public interface UIPart {
 	public Component createPart(Object parent);
 	
 	/**
+	 * Get root component of UI block
 	 * @return Component
 	 */
 	public Component getComponent();

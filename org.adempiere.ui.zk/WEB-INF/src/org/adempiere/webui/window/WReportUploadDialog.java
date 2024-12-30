@@ -58,6 +58,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Vlayout;
 
 /**
+ * Dialog to upload report to external storage service (for e.g Google Drive)
  * @author hengsin
  */
 public class WReportUploadDialog extends Window implements EventListener<Event> {

@@ -48,7 +48,7 @@ public class FilenameBox extends EditorBox
     }
 
 	/**
-	 * If evtnm is ON_UPLOAD, add listener to button.<br/>
+	 * If evtnm is ON_UPLOAD, add listener to button. Otherwise, delegate to EditorBox<br/>
 	 * {@inheritDoc}
 	 */
 	@Override

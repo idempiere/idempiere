@@ -23,7 +23,6 @@ import org.zkoss.zk.ui.Component;
  * Event for context menu (right-click menu) action
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
- * @version $Revision: 0.10 $
  */
 public class ContextMenuEvent
 {
@@ -41,7 +40,7 @@ public class ContextMenuEvent
     }
     
     /**
-     * 
+     * Get event name
      * @return event name
      */
     public String getContextEvent()
@@ -50,7 +49,7 @@ public class ContextMenuEvent
     }
     
     /**
-     * 
+     * Set event target
      * @param target
      */
     public void setTarget(Component target) {
@@ -58,7 +57,7 @@ public class ContextMenuEvent
 	}
 	
     /**
-     * 
+     * Get event target
      * @return target component
      */
 	public Component getTarget() {

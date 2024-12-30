@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ShippingTransactionLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_ShippingTransactionLine 
 {
@@ -62,22 +62,6 @@ public interface I_M_ShippingTransactionLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_UOM_Length_ID */
     public static final String COLUMNNAME_C_UOM_Length_ID = "C_UOM_Length_ID";
 
@@ -107,6 +91,22 @@ public interface I_M_ShippingTransactionLine
 	public int getC_UOM_Weight_ID();
 
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -152,15 +152,6 @@ public interface I_M_ShippingTransactionLine
 	/** Get Length	  */
 	public BigDecimal getLength();
 
-    /** Column name MasterTrackingNo */
-    public static final String COLUMNNAME_MasterTrackingNo = "MasterTrackingNo";
-
-	/** Set Master Tracking No	  */
-	public void setMasterTrackingNo (String MasterTrackingNo);
-
-	/** Get Master Tracking No	  */
-	public String getMasterTrackingNo();
-
     /** Column name M_PackageMPS_ID */
     public static final String COLUMNNAME_M_PackageMPS_ID = "M_PackageMPS_ID";
 
@@ -171,17 +162,6 @@ public interface I_M_ShippingTransactionLine
 	public int getM_PackageMPS_ID();
 
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException;
-
-    /** Column name M_ShippingTransaction_ID */
-    public static final String COLUMNNAME_M_ShippingTransaction_ID = "M_ShippingTransaction_ID";
-
-	/** Set Shipping Transaction	  */
-	public void setM_ShippingTransaction_ID (int M_ShippingTransaction_ID);
-
-	/** Get Shipping Transaction	  */
-	public int getM_ShippingTransaction_ID();
-
-	public org.compiere.model.I_M_ShippingTransaction getM_ShippingTransaction() throws RuntimeException;
 
     /** Column name M_ShippingTransactionLine_ID */
     public static final String COLUMNNAME_M_ShippingTransactionLine_ID = "M_ShippingTransactionLine_ID";
@@ -200,6 +180,26 @@ public interface I_M_ShippingTransactionLine
 
 	/** Get M_ShippingTransactionLine_UU	  */
 	public String getM_ShippingTransactionLine_UU();
+
+    /** Column name M_ShippingTransaction_ID */
+    public static final String COLUMNNAME_M_ShippingTransaction_ID = "M_ShippingTransaction_ID";
+
+	/** Set Shipping Transaction	  */
+	public void setM_ShippingTransaction_ID (int M_ShippingTransaction_ID);
+
+	/** Get Shipping Transaction	  */
+	public int getM_ShippingTransaction_ID();
+
+	public org.compiere.model.I_M_ShippingTransaction getM_ShippingTransaction() throws RuntimeException;
+
+    /** Column name MasterTrackingNo */
+    public static final String COLUMNNAME_MasterTrackingNo = "MasterTrackingNo";
+
+	/** Set Master Tracking No	  */
+	public void setMasterTrackingNo (String MasterTrackingNo);
+
+	/** Get Master Tracking No	  */
+	public String getMasterTrackingNo();
 
     /** Column name Price */
     public static final String COLUMNNAME_Price = "Price";

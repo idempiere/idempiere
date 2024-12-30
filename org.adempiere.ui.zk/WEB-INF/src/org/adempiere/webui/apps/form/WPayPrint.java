@@ -153,7 +153,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	protected Label lSumPayments = new Label();
 	/** Sum of C_PaySelectionCheck.PayAmt */
 	protected WNumberEditor fSumPayments = new WNumberEditor();
-
 	
 	/**
 	 *  Layout {@link #form}
@@ -275,7 +274,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		paySelectSearch.setValue(Integer.valueOf(m_C_PaySelection_ID));
 		loadPaySelectInfo();
 	}	//	setsetPaySelection
-
 
 	/**
 	 * Event Listener
@@ -436,10 +434,9 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			if (no >= 0)
 			{
 				//  Get File Info
-				tempFile = File.createTempFile(m_PaymentExport.getFilenamePrefix(), m_PaymentExport.getFilenameSuffix());
-				filenameForDownload = m_PaymentExport.getFilenamePrefix() + m_PaymentExport.getFilenameSuffix();
-				
+				tempFile = File.createTempFile(m_PaymentExport.getFilenamePrefix(), null);
 				no = m_PaymentExport.exportToFile(m_checks,(Boolean) fDepositBatch.getValue(),PaymentRule, tempFile, err);
+				filenameForDownload = m_PaymentExport.getFilenamePrefix() + m_PaymentExport.getFilenameSuffix();
 			}
 			
 			if (no >= 0) {
@@ -577,7 +574,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			}
 		});
 	}   //  cmd_print
-
 
 	/**
 	 *  Get Checks

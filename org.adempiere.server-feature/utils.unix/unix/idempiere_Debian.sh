@@ -58,7 +58,7 @@ start () {
         ITERATIONS=0
         while [ $STATUSTEST -eq 0 ] ; do
             sleep 2
-            grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' < "$LOGFILE" && STATUSTEST=1
+            grep -q '.*LoggedSessionListener.contextInitialized: iDempiere context initialized.*' < "$LOGFILE" && STATUSTEST=1
             echo -n "."
             ITERATIONS=$((ITERATIONS + 1))
             if [ "$ITERATIONS" -gt $MAXITERATIONS ]

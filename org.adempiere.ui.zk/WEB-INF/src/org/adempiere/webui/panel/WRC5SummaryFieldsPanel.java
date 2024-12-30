@@ -36,7 +36,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Row;
 
 /**
- * Panel to edit summary related properties of print format items (IsSummary, IsCounted, IsAveraged, etc)
+ * Wizard panel to edit summary related properties of print format items (IsSummary, IsCounted, IsAveraged, etc)
  */
 public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener<Event> {
 	/**

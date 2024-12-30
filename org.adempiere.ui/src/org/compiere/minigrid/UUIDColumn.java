@@ -26,9 +26,9 @@
 package org.compiere.minigrid;
 
 /**
-* UUID Column for MiniGrid allows to select a column and maintains the record UUID
-* @author Carlos Ruiz - globalqss - bxservice
-*/
+ * UUID Column for {@link IMiniTable}, allows to select a column and maintains the record UUID
+ * @author Carlos Ruiz - globalqss - bxservice
+ */
 public class UUIDColumn implements SelectableIDColumn
 {
 	/**
@@ -47,9 +47,8 @@ public class UUIDColumn implements SelectableIDColumn
 	/** The Record_UU               */
 	private String     m_record_UU;
 
-
 	/**
-	 *  Set Selection
+	 *  Set Selected
 	 *  @param selected
 	 */
 	public void setSelected(boolean selected)
@@ -57,7 +56,7 @@ public class UUIDColumn implements SelectableIDColumn
 		m_selected = selected;
 	}
 	/**
-	 *  Is Selected
+	 *  Is Column Selected
 	 *  @return true if selected
 	 */
 	public boolean isSelected()
@@ -86,6 +85,7 @@ public class UUIDColumn implements SelectableIDColumn
 	 *  To String
 	 *  @return String representation
 	 */
+	@Override
 	public String toString()
 	{
 		return "UUIDColumn - UU=" + m_record_UU + ", Selected=" + m_selected;

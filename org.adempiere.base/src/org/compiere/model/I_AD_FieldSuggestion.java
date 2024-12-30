@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_FieldSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_FieldSuggestion 
 {
@@ -41,19 +41,6 @@ public interface I_AD_FieldSuggestion
 
     /** Load Meta Data */
 
-    /** Column name AcceptSuggestion */
-    public static final String COLUMNNAME_AcceptSuggestion = "AcceptSuggestion";
-
-	/** Set Accept.
-	  * Accept suggested changes
-	  */
-	public void setAcceptSuggestion (String AcceptSuggestion);
-
-	/** Get Accept.
-	  * Accept suggested changes
-	  */
-	public String getAcceptSuggestion();
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -61,21 +48,6 @@ public interface I_AD_FieldSuggestion
 	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_Field_ID */
-    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
-
-	/** Set Field.
-	  * Field on a database table
-	  */
-	public void setAD_Field_ID (int AD_Field_ID);
-
-	/** Get Field.
-	  * Field on a database table
-	  */
-	public int getAD_Field_ID();
-
-	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_FieldSuggestion_ID */
     public static final String COLUMNNAME_AD_FieldSuggestion_ID = "AD_FieldSuggestion_ID";
@@ -94,6 +66,21 @@ public interface I_AD_FieldSuggestion
 
 	/** Get Field Suggestions UUID	  */
 	public String getAD_FieldSuggestion_UU();
+
+    /** Column name AD_Field_ID */
+    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
+
+	/** Set Field.
+	  * Field on a database table
+	  */
+	public void setAD_Field_ID (int AD_Field_ID);
+
+	/** Get Field.
+	  * Field on a database table
+	  */
+	public int getAD_Field_ID();
+
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_Language */
     public static final String COLUMNNAME_AD_Language = "AD_Language";
@@ -176,6 +163,19 @@ public interface I_AD_FieldSuggestion
 	public int getAD_Window_ID();
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
+
+    /** Column name AcceptSuggestion */
+    public static final String COLUMNNAME_AcceptSuggestion = "AcceptSuggestion";
+
+	/** Set Accept.
+	  * Accept suggested changes
+	  */
+	public void setAcceptSuggestion (String AcceptSuggestion);
+
+	/** Get Accept.
+	  * Accept suggested changes
+	  */
+	public String getAcceptSuggestion();
 
     /** Column name CompareSuggestion */
     public static final String COLUMNNAME_CompareSuggestion = "CompareSuggestion";

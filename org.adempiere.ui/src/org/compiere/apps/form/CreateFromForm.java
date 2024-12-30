@@ -31,26 +31,26 @@ public abstract class CreateFromForm
 	private String title;
 	
 	/**
-	 * initialize form
+	 * Initialize form
 	 */
 	public abstract void initForm();
 
 	/**
-	 * dynamic initialization, usually for loading of data
+	 * Dynamic initialization, usually for loading of data
 	 * @return true if initialization is ok
 	 * @throws Exception
 	 */
 	protected abstract boolean dynInit() throws Exception;
 
 	/**
-	 * update status bar with info from miniTable
+	 * Update status bar with info from miniTable
 	 * @param miniTable
 	 * @param statusBar
 	 */
 	public abstract void info(IMiniTable miniTable, IStatusBar statusBar);
 
 	/**
-	 * save changes
+	 * Save changes
 	 * @param miniTable
 	 * @param trxName
 	 * @param gridTab
@@ -75,7 +75,7 @@ public abstract class CreateFromForm
 	}
 	
 	/**
-	 * execute query
+	 * Execute query
 	 */
 	public abstract void executeQuery();
 }

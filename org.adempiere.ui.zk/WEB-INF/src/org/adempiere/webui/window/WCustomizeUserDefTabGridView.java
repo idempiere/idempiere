@@ -43,9 +43,7 @@ public class WCustomizeUserDefTabGridView extends ADForm {
 	private CustomizeUserDefTabGridView customizePanel;
 
 	/**
-	 *	Standard Constructor
-	 * 	@param windowNo window no
-	 *  @param AD_UserDef_Tab_ID tab
+	 * Default Constructor
 	 */
 	public WCustomizeUserDefTabGridView() {
 	}

@@ -156,7 +156,6 @@ import net.sf.jasperreports.engine.JasperPrint;
  *	Report Viewer.
  *
  * 	@author 	Jorg Janke
- * 	@version 	$Id: Viewer.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  * globalqss: integrate phib contribution from 
  *   https://sourceforge.net/p/adempiere/patches/4/
  * globalqss: integrate Teo Sarca bug fixing
@@ -242,7 +241,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
 	/** Row count label */
-	private Label rowCount;
+	private Label rowCount; 
 	
 	private final Map<ExportFormat, String> exportMap = new LinkedHashMap<>();
 	private final Map<String, IReportViewerRenderer> rendererMap = new TreeMap<>();
@@ -967,7 +966,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private void dynInit()
 	{
 		summary.addActionListener(this);
-		summary.setStyle("font-size: 14px");
 		
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
@@ -1726,8 +1724,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		{
 			if (find == null) 
 			{
-				find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-	            if (!find.initialize()) 
+
+				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID, null);
+	            
+				if (!find.initialize()) 
 	            {
 	            	find = null;
 	            	return;

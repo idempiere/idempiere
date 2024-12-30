@@ -293,15 +293,14 @@ public class CLogFormatter extends Formatter
 		int adempiereTraceNo = 0;
         for (int i=0; i < trace.length; i++)
         {
-        	adempiereTrace = trace[i].getClassName().startsWith("org.compiere.");
+        	adempiereTrace = trace[i].getClassName().startsWith("org.compiere.") || trace[i].getClassName().startsWith("org.adempiere.") || trace[i].getClassName().startsWith("org.idempiere.");
         	if (thrown instanceof ServerException	//	RMI
         		|| adempiereTrace)
         	{
         		if (adempiereTrace)
                 	sb.append("\tat ").append(trace[i]).append(NL);
         	}
-        	else if (i > 20
-        		|| (i > 10 && adempiereTraceNo > 8))
+        	else if (!SystemProperties.isFullExceptionTraceInLog() && (i > 20 || (i > 10 && adempiereTraceNo > 8)))
         		break;
         	else
         		sb.append("\tat ").append(trace[i]).append(NL);

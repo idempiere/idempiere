@@ -26,7 +26,7 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * {@link Desktop} listener for onUserToken {@link AuRequest}.<br/>
+ * {@link Desktop} listener for onUserToken {@link AuRequest} command.<br/>
  * Create {@link TokenEvent} from {@link AuRequest} and post to the component that send the {@link AuRequest}.
  * @author hengsin
  */

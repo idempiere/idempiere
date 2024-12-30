@@ -15,6 +15,8 @@
 package org.adempiere.webui.panel;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Anchorchildren;
+import org.adempiere.webui.component.Anchorlayout;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.ZoomEvent;
@@ -50,8 +52,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Anchorchildren;
-import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Panel;
@@ -61,9 +61,8 @@ import org.zkoss.zul.Style;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 
+ * Controller for context help, context tool tip and context quick info gadget.
  * @author Elaine
- *
  */
 public class HelpController
 {	
@@ -145,9 +144,9 @@ public class HelpController
         htmlToolTip.setWidgetOverride("onFieldTooltip", "function(origin,opts,header,description,help,entityType)" +
         		"{let s='<html><body><div class=\"help-content\">';" +
         		"if (typeof header == 'undefined') {s=s+'<i>'+this.defaultMessage+'</i>';} " +
-        		"else {s=s+'<b>'+header+'</b>';" +
-        		"if (typeof description=='string' && description.length > 0) {s=s+'<br><br><i>'+description+'</i>';}" +
-        		"if (typeof help=='string' && help.length > 0) {s=s+'<br><br>'+help;}" +
+        		"else {s=s+'<p><strong>'+header+'</strong></p>';" +
+        		"if (typeof description=='string' && description.length > 0) {s=s+'<p><em>'+description+'</em></p>';}" +
+        		"if (typeof help=='string' && help.length > 0) {s=s+'<p>'+help+'</p>';}" +
         		"if (typeof entityType=='string' && entityType.length > 0) {s=s+'<p class=\"help-entitytype\">[ '+entityType+' ]</p>';}}" +
         		"s=s+'</div></body></html>';this.setContent(s);}");
         setupFieldTooltip();
@@ -236,24 +235,24 @@ public class HelpController
     			otherContent = Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField");
     		}
     		
-			sb.append("<i>(");
+			sb.append("<p><em>(");
 			sb.append (otherContent);
-			sb.append (")</i>");
+			sb.append (")</em></p>");
     	}else{
-    		sb.append("<b>");
+    		sb.append("<p><strong>");
     		sb.append(hdr);
-    		sb.append("</b>");
+    		sb.append("</strong></p>");
     		
     		if (desc != null && desc.trim().length() > 0){
-    			sb.append("<br><br>\n<i>");
+    			sb.append("<p><i>");
     			sb.append(desc);
-    			sb.append("</i>");
+    			sb.append("</i></p>");
     		}
     		
     		if (help != null && help.trim().length() > 0){
-    			sb.append("<br><br>\n");
+    			sb.append("<p>");
     			sb.append(help);
-    		}
+    			sb.append("</p>");   		}
     		
     		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
     		{
@@ -337,9 +336,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, tab.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 
 				}
@@ -359,9 +355,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, tab.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -389,9 +382,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, process.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 
 				} 
@@ -411,9 +401,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, process.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -441,9 +428,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, form.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				} 
 
@@ -462,9 +446,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, form.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -503,9 +484,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, info.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				}
         		
@@ -536,9 +514,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, info.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -565,9 +540,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, workflow.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				}
         		
@@ -586,9 +558,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, workflow.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -617,9 +586,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, task.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}					
 				} 
 	
@@ -638,9 +604,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, task.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -668,9 +631,6 @@ public class HelpController
 					if (translatedContent.length() > 0)
 					{
 						appendEntityType(translatedContent, node.getEntityType());
-						
-						translatedContent.insert(0, "<p>\n");
-						translatedContent.append("</p>");
 					}
 				}
 	    		
@@ -689,9 +649,6 @@ public class HelpController
 				if (baseContent.length() > 0)
 				{
 					appendEntityType(baseContent, node.getEntityType());
-					
-					baseContent.insert(0, "<p>\n");
-					baseContent.append("</p>");
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
@@ -770,9 +727,9 @@ public class HelpController
     		} else {
             	pnlQuickInfo.setVisible(true);
             	StringBuilder sb = new StringBuilder();
-            	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
+            	sb.append("<div class=\"help-content\">\n");
        			sb.append(widget);
-            	sb.append("</div>\n</body>\n</html>");
+            	sb.append("</div>\n");
             	htmlQuickInfo.setContent(sb.toString());
     		}
     	}
@@ -849,7 +806,7 @@ public class HelpController
 	
 	private class ContextHelpMenupopup extends Menupopup implements EventListener<Event> {
 		/**
-		 * 
+		 * generated serial id
 		 */
 		private static final long serialVersionUID = 5430991475805225567L;
 

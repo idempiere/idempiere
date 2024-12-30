@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_StandardResponse
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_R_StandardResponse 
 {
@@ -104,19 +104,6 @@ public interface I_R_StandardResponse
 	  */
 	public String getName();
 
-    /** Column name ResponseText */
-    public static final String COLUMNNAME_ResponseText = "ResponseText";
-
-	/** Set Response Text.
-	  * Request Response Text
-	  */
-	public void setResponseText (String ResponseText);
-
-	/** Get Response Text.
-	  * Request Response Text
-	  */
-	public String getResponseText();
-
     /** Column name R_StandardResponse_ID */
     public static final String COLUMNNAME_R_StandardResponse_ID = "R_StandardResponse_ID";
 
@@ -138,6 +125,19 @@ public interface I_R_StandardResponse
 
 	/** Get R_StandardResponse_UU	  */
 	public String getR_StandardResponse_UU();
+
+    /** Column name ResponseText */
+    public static final String COLUMNNAME_ResponseText = "ResponseText";
+
+	/** Set Response Text.
+	  * Request Response Text
+	  */
+	public void setResponseText (String ResponseText);
+
+	/** Get Response Text.
+	  * Request Response Text
+	  */
+	public String getResponseText();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

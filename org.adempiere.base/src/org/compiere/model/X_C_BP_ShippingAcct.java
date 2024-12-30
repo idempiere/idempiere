@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_ShippingAcct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_ShippingAcct")
 public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, int C_BP_ShippingAcct_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_ID, trxName);
       /** if (C_BP_ShippingAcct_ID == 0)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -49,8 +49,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_ID, trxName, virtualColumns);
       /** if (C_BP_ShippingAcct_ID == 0)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -60,8 +60,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_UU, trxName);
       /** if (C_BP_ShippingAcct_UU == null)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -71,8 +71,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_UU, trxName, virtualColumns);
       /** if (C_BP_ShippingAcct_UU == null)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -103,6 +103,42 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Business Partner Shipping Account.
+		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
+	*/
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
+	{
+		if (C_BP_ShippingAcct_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_BP_ShippingAcct_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
+	}
+
+	/** Get Business Partner Shipping Account.
+		@return Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_BP_ShippingAcct_UU.
+		@param C_BP_ShippingAcct_UU C_BP_ShippingAcct_UU
+	*/
+	public void setC_BP_ShippingAcct_UU (String C_BP_ShippingAcct_UU)
+	{
+		set_Value (COLUMNNAME_C_BP_ShippingAcct_UU, C_BP_ShippingAcct_UU);
+	}
+
+	/** Get C_BP_ShippingAcct_UU.
+		@return C_BP_ShippingAcct_UU	  */
+	public String getC_BP_ShippingAcct_UU()
+	{
+		return (String)get_Value(COLUMNNAME_C_BP_ShippingAcct_UU);
+	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
@@ -158,42 +194,6 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Business Partner Shipping Account.
-		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
-	*/
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
-	{
-		if (C_BP_ShippingAcct_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BP_ShippingAcct_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
-	}
-
-	/** Get Business Partner Shipping Account.
-		@return Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_BP_ShippingAcct_UU.
-		@param C_BP_ShippingAcct_UU C_BP_ShippingAcct_UU
-	*/
-	public void setC_BP_ShippingAcct_UU (String C_BP_ShippingAcct_UU)
-	{
-		set_Value (COLUMNNAME_C_BP_ShippingAcct_UU, C_BP_ShippingAcct_UU);
-	}
-
-	/** Get C_BP_ShippingAcct_UU.
-		@return C_BP_ShippingAcct_UU	  */
-	public String getC_BP_ShippingAcct_UU()
-	{
-		return (String)get_Value(COLUMNNAME_C_BP_ShippingAcct_UU);
 	}
 
 	/** Set Duties Shipper Account.

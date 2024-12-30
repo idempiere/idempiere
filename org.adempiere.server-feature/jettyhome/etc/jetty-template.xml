@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd">
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://jetty.org/configure_10_0.dtd">
 
 <!-- =============================================================== -->
 <!-- Documentation of this file format can be found at:              -->
@@ -24,24 +24,15 @@
 <!-- configuration that may be set here.                             -->
 <!-- =============================================================== -->
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
-    <Arg name="threadpool"><Ref refid="threadPool"/></Arg>
-
-    <Call name="addBean">
-      <Arg><Ref refid="byteBufferPool"/></Arg>
-    </Call>
-
-    <!-- =========================================================== -->
-    <!-- Add shared Scheduler instance                               -->
-    <!-- =========================================================== -->
-    <Call name="addBean">
-      <Arg>
-        <New class="org.eclipse.jetty.util.thread.ScheduledExecutorScheduler">
-          <Arg name="name"><Property name="jetty.scheduler.name"/></Arg>
-          <Arg name="daemon" type="boolean"><Property name="jetty.scheduler.daemon" default="false" /></Arg>
-          <Arg name="threads" type="int"><Property name="jetty.scheduler.threads" default="-1" /></Arg>
-        </New>
-      </Arg>
-    </Call>
+    <Arg name="threadPool"><Ref refid="threadPool"/></Arg>
+    <Arg>
+		<New class="org.eclipse.jetty.util.thread.ScheduledExecutorScheduler">
+		  <Arg name="name"><Property name="jetty.scheduler.name"/></Arg>
+		  <Arg name="daemon" type="boolean"><Property name="jetty.scheduler.daemon" default="false" /></Arg>
+		  <Arg name="threads" type="int"><Property name="jetty.scheduler.threads" default="-1" /></Arg>
+		</New>
+	</Arg>
+    <Arg><Ref refid="byteBufferPool"/></Arg>
 
     <!-- =========================================================== -->
     <!-- Http Configuration.                                         -->
@@ -59,47 +50,39 @@
     <!-- for all configuration that may be set here.                 -->
     <!-- =========================================================== -->
     <New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
-      <Set name="secureScheme"><Property name="jetty.httpConfig.secureScheme" default="https" /></Set>
-      <Set name="securePort"><Property name="jetty.httpConfig.securePort" deprecated="jetty.secure.port" default="@ADEMPIERE_SSL_PORT@" /></Set>
-      <Set name="outputBufferSize"><Property name="jetty.httpConfig.outputBufferSize" deprecated="jetty.output.buffer.size" default="32768" /></Set>
-      <Set name="outputAggregationSize"><Property name="jetty.httpConfig.outputAggregationSize" deprecated="jetty.output.aggregation.size" default="8192" /></Set>
-      <Set name="requestHeaderSize"><Property name="jetty.httpConfig.requestHeaderSize" deprecated="jetty.request.header.size" default="8192" /></Set>
-      <Set name="responseHeaderSize"><Property name="jetty.httpConfig.responseHeaderSize" deprecated="jetty.response.header.size" default="8192" /></Set>
-      <Set name="sendServerVersion"><Property name="jetty.httpConfig.sendServerVersion" deprecated="jetty.send.server.version" default="true" /></Set>
-      <Set name="sendDateHeader"><Property name="jetty.httpConfig.sendDateHeader" deprecated="jetty.send.date.header" default="false" /></Set>
-      <Set name="headerCacheSize"><Property name="jetty.httpConfig.headerCacheSize" default="1024" /></Set>
-      <Set name="delayDispatchUntilContent"><Property name="jetty.httpConfig.delayDispatchUntilContent" deprecated="jetty.delayDispatchUntilContent" default="true"/></Set>
-      <Set name="maxErrorDispatches"><Property name="jetty.httpConfig.maxErrorDispatches" default="10"/></Set>
-      <Set name="persistentConnectionsEnabled"><Property name="jetty.httpConfig.persistentConnectionsEnabled" default="true"/></Set>
+      <Set name="secureScheme" property="jetty.httpConfig.secureScheme"/>
+      <Set name="securePort" property="jetty.httpConfig.securePort"/>
+      <Set name="outputBufferSize" property="jetty.httpConfig.outputBufferSize"/>
+      <Set name="outputAggregationSize" property="jetty.httpConfig.outputAggregationSize"/>
+      <Set name="requestHeaderSize" property="jetty.httpConfig.requestHeaderSize"/>
+      <Set name="responseHeaderSize" property="jetty.httpConfig.responseHeaderSize"/>
+      <Set name="sendServerVersion" property="jetty.httpConfig.sendServerVersion"/>
+      <Set name="sendDateHeader"><Property name="jetty.httpConfig.sendDateHeader" default="false"/></Set>
+      <Set name="headerCacheSize" property="jetty.httpConfig.headerCacheSize"/>
+      <Set name="delayDispatchUntilContent" property="jetty.httpConfig.delayDispatchUntilContent"/>
+      <Set name="maxErrorDispatches" property="jetty.httpConfig.maxErrorDispatches"/>
+      <Set name="persistentConnectionsEnabled" property="jetty.httpConfig.persistentConnectionsEnabled"/>
       <Set name="httpCompliance"><Call class="org.eclipse.jetty.http.HttpCompliance" name="from"><Arg><Property name="jetty.httpConfig.compliance" deprecated="jetty.http.compliance" default="RFC7230"/></Arg></Call></Set>
-      <Set name="requestCookieCompliance"><Call class="org.eclipse.jetty.http.CookieCompliance" name="valueOf"><Arg><Property name="jetty.httpConfig.requestCookieCompliance" deprecated="jetty.httpConfig.cookieCompliance" default="RFC6265"/></Arg></Call></Set>
-      <Set name="responseCookieCompliance"><Call class="org.eclipse.jetty.http.CookieCompliance" name="valueOf"><Arg><Property name="jetty.httpConfig.responseCookieCompliance" default="RFC6265"/></Arg></Call></Set>
+      <Set name="uriCompliance"><Call class="org.eclipse.jetty.http.UriCompliance" name="from"><Arg><Property name="jetty.httpConfig.uriCompliance" default="DEFAULT"/></Arg></Call></Set>
+      <Set name="requestCookieCompliance"><Call class="org.eclipse.jetty.http.CookieCompliance" name="from"><Arg><Property name="jetty.httpConfig.requestCookieCompliance" default="RFC6265"/></Arg></Call></Set>
+      <Set name="responseCookieCompliance"><Call class="org.eclipse.jetty.http.CookieCompliance" name="from"><Arg><Property name="jetty.httpConfig.responseCookieCompliance" default="RFC6265"/></Arg></Call></Set>
       <Set name="relativeRedirectAllowed"><Property name="jetty.httpConfig.relativeRedirectAllowed" default="false"/></Set>
+      <Set name="useInputDirectByteBuffers" property="jetty.httpConfig.useInputDirectByteBuffers"/>
+      <Set name="useOutputDirectByteBuffers" property="jetty.httpConfig.useOutputDirectByteBuffers"/>
     </New>
 
     <!-- =========================================================== -->
-    <!-- Set the default handler structure for the Server            -->
-    <!-- A handler collection is used to pass received requests to   -->
-    <!-- both the ContextHandlerCollection, which selects the next   -->
-    <!-- handler by context path and virtual host, and the           -->
-    <!-- DefaultHandler, which handles any requests not handled by   -->
-    <!-- the context handlers.                                       -->
-    <!-- Other handlers may be added to the "Handlers" collection,   -->
-    <!-- for example the jetty-requestlog.xml file adds the          -->
-    <!-- RequestLogHandler after the default handler                 -->
+    <!-- Set the handler structure for the Server                    -->
     <!-- =========================================================== -->
+    <Set name="defaultHandler">
+      <New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler">
+        <Arg name="serveFavIcon" type="boolean"><Property name="jetty.server.default.serveFavIcon" default="true"/></Arg>
+        <Arg name="showContexts" type="boolean"><Property name="jetty.server.default.showContexts" default="true"/></Arg>
+      </New>
+    </Set>
     <Set name="handler">
-      <New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
-        <Set name="handlers">
-         <Array type="org.eclipse.jetty.server.Handler">
-           <Item>
-             <New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
-           </Item>
-           <Item>
-             <New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"/>
-           </Item>
-         </Array>
-        </Set>
+      <New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
+        <Set name="dynamic" property="jetty.server.contexts.dynamic"/>
       </New>
     </Set>
 
@@ -108,40 +91,10 @@
     <!-- =========================================================== -->
     <Set name="stopAtShutdown"><Property name="jetty.server.stopAtShutdown" default="true"/></Set>
     <Set name="stopTimeout"><Property name="jetty.server.stopTimeout" default="5000"/></Set>
-    <Set name="dumpAfterStart"><Property name="jetty.server.dumpAfterStart" deprecated="jetty.dump.start" default="false"/></Set>
-    <Set name="dumpBeforeStop"><Property name="jetty.server.dumpBeforeStop" deprecated="jetty.dump.stop" default="false"/></Set>
+    <Set name="dumpAfterStart" property="jetty.server.dumpAfterStart"/>
+    <Set name="dumpBeforeStop" property="jetty.server.dumpBeforeStop"/>
+    <Set name="tempDirectory" property="jetty.server.tempDirectory"/>
 	
-    <!-- IDEMPIERE-2761 -->
-    <Set class="org.eclipse.jetty.util.resource.Resource" name="defaultUseCaches">false</Set>
-    
-    <Call class="org.eclipse.jetty.webapp.Configurations" name="setServerDefault">
-		<Arg>
-			<Ref refid="Server"/>
-		</Arg>
-		<Call name="add">
-			<Arg name="configClass">
-				<Array type="String">
-					<Item>org.eclipse.jetty.webapp.FragmentConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.JettyWebXmlConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.WebXmlConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.WebAppConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.ServletsConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.JspConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.JaasConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.JndiConfiguration</Item>
-					<Item>org.eclipse.jetty.plus.webapp.PlusConfiguration</Item>
-					<Item>org.eclipse.jetty.plus.webapp.EnvConfiguration</Item>
-					<Item>org.eclipse.jetty.webapp.JmxConfiguration</Item>
-					<Item>org.eclipse.jetty.osgi.annotations.AnnotationConfiguration</Item>
-					<Item>org.eclipse.jetty.websocket.server.config.JettyWebSocketConfiguration</Item>
-					<Item>org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketConfiguration</Item>
-					<Item>org.eclipse.jetty.osgi.boot.OSGiWebInfConfiguration</Item>
-					<Item>org.eclipse.jetty.osgi.boot.OSGiMetaInfConfiguration</Item>
-				</Array>
-			</Arg>
-		</Call>
-	</Call>
-    
     <!-- for jndi -->
     <Call class="java.lang.System" name="setProperty">
       <Arg>java.naming.factory.initial</Arg>

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_SchedulerLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_SchedulerLog 
 {
@@ -62,21 +62,6 @@ public interface I_AD_SchedulerLog
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Scheduler_ID */
-    public static final String COLUMNNAME_AD_Scheduler_ID = "AD_Scheduler_ID";
-
-	/** Set Scheduler.
-	  * Schedule Processes
-	  */
-	public void setAD_Scheduler_ID (int AD_Scheduler_ID);
-
-	/** Get Scheduler.
-	  * Schedule Processes
-	  */
-	public int getAD_Scheduler_ID();
-
-	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException;
-
     /** Column name AD_SchedulerLog_ID */
     public static final String COLUMNNAME_AD_SchedulerLog_ID = "AD_SchedulerLog_ID";
 
@@ -98,6 +83,21 @@ public interface I_AD_SchedulerLog
 
 	/** Get AD_SchedulerLog_UU	  */
 	public String getAD_SchedulerLog_UU();
+
+    /** Column name AD_Scheduler_ID */
+    public static final String COLUMNNAME_AD_Scheduler_ID = "AD_Scheduler_ID";
+
+	/** Set Scheduler.
+	  * Schedule Processes
+	  */
+	public void setAD_Scheduler_ID (int AD_Scheduler_ID);
+
+	/** Get Scheduler.
+	  * Schedule Processes
+	  */
+	public int getAD_Scheduler_ID();
+
+	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException;
 
     /** Column name BinaryData */
     public static final String COLUMNNAME_BinaryData = "BinaryData";

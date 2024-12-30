@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Run
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition_Run")
 public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecognition_Run, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Run (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
@@ -112,6 +112,33 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
       return sb.toString();
     }
 
+	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RevenueRecog_Service)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecog_Service.Table_ID)
+			.getPO(getC_RevenueRecog_Service_ID(), get_TrxName());
+	}
+
+	/** Set Revenue Recognition Service.
+		@param C_RevenueRecog_Service_ID Revenue Recognition Service
+	*/
+	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID)
+	{
+		if (C_RevenueRecog_Service_ID < 1)
+			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, null);
+		else
+			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, Integer.valueOf(C_RevenueRecog_Service_ID));
+	}
+
+	/** Get Revenue Recognition Service.
+		@return Revenue Recognition Service	  */
+	public int getC_RevenueRecog_Service_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecog_Service_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RevenueRecognition_Plan)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition_Plan.Table_ID)
@@ -183,33 +210,6 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	public String getC_RevenueRecognition_Run_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RevenueRecognition_Run_UU);
-	}
-
-	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RevenueRecog_Service)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecog_Service.Table_ID)
-			.getPO(getC_RevenueRecog_Service_ID(), get_TrxName());
-	}
-
-	/** Set Revenue Recognition Service.
-		@param C_RevenueRecog_Service_ID Revenue Recognition Service
-	*/
-	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID)
-	{
-		if (C_RevenueRecog_Service_ID < 1)
-			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, null);
-		else
-			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, Integer.valueOf(C_RevenueRecog_Service_ID));
-	}
-
-	/** Get Revenue Recognition Service.
-		@return Revenue Recognition Service	  */
-	public int getC_RevenueRecog_Service_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecog_Service_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Recognition Date.

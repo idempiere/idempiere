@@ -86,7 +86,6 @@ import org.zkoss.zul.Menuitem;
  * Implemented with {@link EditorCombobox} or {@link EditorAutoComplete} (AD_Field.IsAutoComplete=Y) component.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class WTableDirEditor extends WEditor implements ListDataListener, 
 ContextMenuListener, IZoomableEditor
@@ -467,10 +466,13 @@ ContextMenuListener, IZoomableEditor
             getComponent().setValue(null);
             getComponent().setSelectedItem(null);
             oldValue = value;
+            if (gridField!=null)
+        		gridField.setLockedRecord(false);
             
             if (getComponent() instanceof EditorAutoComplete && gridField!=null)	// IDEMPIERE-4442 Fix NPE, for Autocomplete in non Grid Usage.
             	updateStyle();
-        }                                
+        }       
+		popupMenu.showDrillAssistant(value != null);                         
     }
     
     @Override

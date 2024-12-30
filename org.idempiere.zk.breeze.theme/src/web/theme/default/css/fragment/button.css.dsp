@@ -95,7 +95,7 @@
 	background-color: transparent;
 }
 
-.txt-btn img, .small-img-btn img {
+.txt-btn img, .small-img-btn img, .img-txt-btn img {
 	height: 16px;
 	width: 16px;
 	background-color: transparent;
@@ -163,4 +163,8 @@
 	font-size: 14px;
 	padding: 0px;
 	line-height: 14px;
+}
+
+.mobile .login-btn {
+    font-size: 0px !important;
 }

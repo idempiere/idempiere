@@ -60,7 +60,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Dialog to view, remove or upload new image
+ *  Dialog to view, remove or upload new image (AD_Image)
  *  @author Low Heng Sin 
  *  
  */
@@ -225,7 +225,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		ZKUpdateUtil.setHflex(image, "true");
 		ZKUpdateUtil.setVflex(image, "true");
 		center.setParent(mainLayout);
-		image.setSclass("image-fit-contain");
+		image.setSclass("image-fit");
 		center.appendChild(image);
 		
 		South south = new South();

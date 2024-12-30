@@ -17,6 +17,8 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -303,6 +305,48 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 			return super.getPrintName();
 		return get_Translation (COLUMNNAME_PrintName, AD_Language);
 	}	//	getPrintName
+	
+	/** List of document sub-types which are always auto-generating Shipment */
+	public static final List<String> autoGenerateInOutList = Collections.unmodifiableList(Arrays.asList(
+		DOCSUBTYPESO_POSOrder,
+	    DOCSUBTYPESO_OnCreditOrder,
+	    DOCSUBTYPESO_WarehouseOrder
+	));
+
+	/** List of document sub-types which are always auto-generating Invoice */
+	public static final List<String> autoGenerateInvoiceList = Collections.unmodifiableList(Arrays.asList(
+		DOCSUBTYPESO_POSOrder,
+	    DOCSUBTYPESO_OnCreditOrder
+	));
+	
+	/**
+	 * Get AutogenerateInout based on DocSubTypeSO
+	 * @param docSubTypeSO
+	 * @return
+	 */
+	public static boolean getIsAutoGenerateInout(String docSubTypeSO) {
+		return autoGenerateInOutList.contains(docSubTypeSO);
+	}
+	
+	/**
+	 * Get AutogenerateInvoice based on DocSubTypeSO
+	 * @param docSubTypeSO
+	 * @return
+	 */
+	public static boolean getIsAutoGenerateInvoice(String docSubTypeSO) {
+		return autoGenerateInvoiceList.contains(docSubTypeSO);
+	}
+	
+	@Override
+	protected boolean beforeSave (boolean newRecord) {
+		if(newRecord || is_ValueChanged(COLUMNNAME_IsAutoGenerateInout) || is_ValueChanged(COLUMNNAME_IsAutoGenerateInvoice)) {
+			if(!DOCSUBTYPESO_PrepayOrder.equals(getDocSubTypeSO())) {
+				setIsAutoGenerateInout(getIsAutoGenerateInout(getDocSubTypeSO()));
+				setIsAutoGenerateInvoice(getIsAutoGenerateInvoice(getDocSubTypeSO()));
+			}
+		}
+		return true;
+	} // beforeSave
 	
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)

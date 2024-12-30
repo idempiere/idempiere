@@ -1084,8 +1084,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		String sysconfig_desc = MSysConfig.getValue(MSysConfig.ALLOCATION_DESCRIPTION, "@#AD_User_Name@", getAD_Client_ID());
 		String description = "";
 		if (sysconfig_desc.contains("@")) {
-			description = Env.parseVariable(sysconfig_desc, new MBPartner(getCtx(), bpartnerID, null), trxName, true);
-			description = Env.parseVariable(description, this, trxName, true);
+			description = Env.parseVariable(sysconfig_desc, new MBPartner(getCtx(), bpartnerID, null), trxName, false, false, true, true); // keep escape sequence
+			description = Env.parseVariable(description, this, trxName, false, false, true, false);
 			description = Msg.parseTranslation(getCtx(), description);
 		} else
 			description = Env.getContext(getCtx(), Env.AD_USER_NAME); // just to be sure

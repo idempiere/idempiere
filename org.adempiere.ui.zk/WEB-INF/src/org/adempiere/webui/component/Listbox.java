@@ -33,7 +33,6 @@ import org.zkoss.zul.Listitem;
  * Extend {@link org.zkoss.zul.Listbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Event>
 {
@@ -119,6 +118,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
      * @param index
      * @return ListItem at index
      */
+    @Override
     public ListItem getItemAtIndex(int index)
     {
         return (ListItem)super.getItemAtIndex(index);
@@ -127,6 +127,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
     /**
      * @return Current selected ListItem
      */
+    @Override
     public ListItem getSelectedItem()
     {
         return (ListItem)super.getSelectedItem();
@@ -178,6 +179,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
     }
 
     /**
+     * Get selected indices
      * @return int[] selected indices
      */
 	public int[] getSelectedIndices() {
@@ -208,7 +210,8 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * Add listener for ON_DROP event
+	 * Add listener for ON_DROP event for list item.<br/>
+	 * This should be called before the adding of any list items.
 	 * @param listener
 	 */
 	public void addOnDropListener(EventListener<Event> listener) {
@@ -216,7 +219,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * Add listener for DOUBLE_CLICK event
+	 * Add listener for DOUBLE_CLICK event for list item
 	 * @param listener
 	 */
 	public void addDoubleClickListener(EventListener<Event> listener) {
@@ -266,7 +269,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * shortcut for appendItem(pp.getName(), pp.getKey()), to ease porting of swing form
+	 * Shortcut for appendItem(pp.getName(), pp.getKey()), to ease porting of swing form
 	 * @param pp
 	 */
 	public void addItem(KeyNamePair pp) {
@@ -274,7 +277,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * remove all items, to ease porting of swing form
+	 * Remove all items, to ease porting of swing form
 	 */
 	public void removeAllItems() {
 		int cnt = getItemCount();
@@ -284,7 +287,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * alias for removeEventListener(Events.ON_SELECT, listener), to ease porting of swing form
+	 * Shortcut for removeEventListener(Events.ON_SELECT, listener), to ease porting of swing form
 	 * @param listener
 	 */
 	public void removeActionListener(EventListener<Event> listener) {
@@ -292,7 +295,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * alias for addEventListener(Events.ON_SELECT, listener), to ease porting of swing form
+	 * Shortcut for addEventListener(Events.ON_SELECT, listener), to ease porting of swing form
 	 * @param listener
 	 */
 	public void addActionListener(EventListener<Event> listener) {
@@ -300,7 +303,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * shortcut for appendItem(pp.getName(), pp.getValue()), to ease porting of swing form
+	 * Shortcut for appendItem(pp.getName(), pp.getValue()), to ease porting of swing form
 	 * @param pp
 	 */
 	public void addItem(ValueNamePair pp) {
@@ -308,7 +311,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	}
 
 	/**
-	 * select selected item base on vp.getValue, to ease porting of swing form
+	 * Set selected item base on vp.getValue, to ease porting of swing form
 	 * @param vp ValueNamePair
 	 */
 	public void setSelectedValueNamePair(ValueNamePair vp) {
@@ -324,7 +327,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	
 
 	/**
-	 * select selected item base on kp.getKey, to ease porting of swing form
+	 * Set selected item base on kp.getKey, to ease porting of swing form
 	 * @param kp KeyNamePair
 	 */
 	public void setSelectedKeyNamePair(KeyNamePair kp) {
@@ -340,6 +343,10 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 		}
 	}
 
+	/**
+	 * Override to eset selected index.<br/>
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void afterInsert(Component comp) {
 		super.afterInsert(comp);
@@ -350,6 +357,10 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 		}
 	}
 	 
+	/**
+	 * Override to eset selected index.<br/>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean removeChild(Component child) {
 		boolean b = super.removeChild(child);

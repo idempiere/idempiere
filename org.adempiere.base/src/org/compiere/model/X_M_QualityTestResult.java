@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_QualityTestResult
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_QualityTestResult")
 public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_QualityTestResult (Properties ctx, int M_QualityTestResult_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 			setIsQCPass (false);
 // N
 			setM_AttributeSetInstance_ID (0);
-			setM_QualityTest_ID (0);
 			setM_QualityTestResult_ID (0);
+			setM_QualityTest_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -57,8 +57,8 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 			setIsQCPass (false);
 // N
 			setM_AttributeSetInstance_ID (0);
-			setM_QualityTest_ID (0);
 			setM_QualityTestResult_ID (0);
+			setM_QualityTest_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -73,8 +73,8 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 			setIsQCPass (false);
 // N
 			setM_AttributeSetInstance_ID (0);
-			setM_QualityTest_ID (0);
 			setM_QualityTestResult_ID (0);
+			setM_QualityTest_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -89,8 +89,8 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 			setIsQCPass (false);
 // N
 			setM_AttributeSetInstance_ID (0);
-			setM_QualityTest_ID (0);
 			setM_QualityTestResult_ID (0);
+			setM_QualityTest_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -203,33 +203,6 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_ID)
-			.getPO(getM_QualityTest_ID(), get_TrxName());
-	}
-
-	/** Set Quality Test.
-		@param M_QualityTest_ID Quality Test
-	*/
-	public void setM_QualityTest_ID (int M_QualityTest_ID)
-	{
-		if (M_QualityTest_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, Integer.valueOf(M_QualityTest_ID));
-	}
-
-	/** Get Quality Test.
-		@return Quality Test	  */
-	public int getM_QualityTest_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_QualityTest_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Quality Test Result.
 		@param M_QualityTestResult_ID Quality Test Result
 	*/
@@ -264,6 +237,33 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 	public String getM_QualityTestResult_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_QualityTestResult_UU);
+	}
+
+	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_ID)
+			.getPO(getM_QualityTest_ID(), get_TrxName());
+	}
+
+	/** Set Quality Test.
+		@param M_QualityTest_ID Quality Test
+	*/
+	public void setM_QualityTest_ID (int M_QualityTest_ID)
+	{
+		if (M_QualityTest_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, Integer.valueOf(M_QualityTest_ID));
+	}
+
+	/** Get Quality Test.
+		@return Quality Test	  */
+	public int getM_QualityTest_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_QualityTest_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Processed.

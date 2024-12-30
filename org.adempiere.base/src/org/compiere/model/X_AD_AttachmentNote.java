@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AttachmentNote
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_AttachmentNote")
 public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
       super (ctx, AD_AttachmentNote_ID, trxName);
       /** if (AD_AttachmentNote_ID == 0)
         {
-			setAD_Attachment_ID (0);
 			setAD_AttachmentNote_ID (0);
+			setAD_Attachment_ID (0);
 			setAD_User_ID (0);
 			setTextMsg (null);
 			setTitle (null);
@@ -53,8 +53,8 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
       super (ctx, AD_AttachmentNote_ID, trxName, virtualColumns);
       /** if (AD_AttachmentNote_ID == 0)
         {
-			setAD_Attachment_ID (0);
 			setAD_AttachmentNote_ID (0);
+			setAD_Attachment_ID (0);
 			setAD_User_ID (0);
 			setTextMsg (null);
 			setTitle (null);
@@ -67,8 +67,8 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
       super (ctx, AD_AttachmentNote_UU, trxName);
       /** if (AD_AttachmentNote_UU == null)
         {
-			setAD_Attachment_ID (0);
 			setAD_AttachmentNote_ID (0);
+			setAD_Attachment_ID (0);
 			setAD_User_ID (0);
 			setTextMsg (null);
 			setTitle (null);
@@ -81,8 +81,8 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
       super (ctx, AD_AttachmentNote_UU, trxName, virtualColumns);
       /** if (AD_AttachmentNote_UU == null)
         {
-			setAD_Attachment_ID (0);
 			setAD_AttachmentNote_ID (0);
+			setAD_Attachment_ID (0);
 			setAD_User_ID (0);
 			setTextMsg (null);
 			setTitle (null);
@@ -116,34 +116,6 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Attachment)MTable.get(getCtx(), org.compiere.model.I_AD_Attachment.Table_ID)
-			.getPO(getAD_Attachment_ID(), get_TrxName());
-	}
-
-	/** Set Attachment.
-		@param AD_Attachment_ID Attachment for the document
-	*/
-	public void setAD_Attachment_ID (int AD_Attachment_ID)
-	{
-		if (AD_Attachment_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Attachment_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Attachment_ID, Integer.valueOf(AD_Attachment_ID));
-	}
-
-	/** Get Attachment.
-		@return Attachment for the document
-	  */
-	public int getAD_Attachment_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Attachment_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Attachment Note.
 		@param AD_AttachmentNote_ID Personal Attachment Note
@@ -180,6 +152,34 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 	public String getAD_AttachmentNote_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AttachmentNote_UU);
+	}
+
+	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Attachment)MTable.get(getCtx(), org.compiere.model.I_AD_Attachment.Table_ID)
+			.getPO(getAD_Attachment_ID(), get_TrxName());
+	}
+
+	/** Set Attachment.
+		@param AD_Attachment_ID Attachment for the document
+	*/
+	public void setAD_Attachment_ID (int AD_Attachment_ID)
+	{
+		if (AD_Attachment_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Attachment_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Attachment_ID, Integer.valueOf(AD_Attachment_ID));
+	}
+
+	/** Get Attachment.
+		@return Attachment for the document
+	  */
+	public int getAD_Attachment_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Attachment_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AttachmentNote
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_AttachmentNote 
 {
@@ -40,21 +40,6 @@ public interface I_AD_AttachmentNote
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
-
-    /** Column name AD_Attachment_ID */
-    public static final String COLUMNNAME_AD_Attachment_ID = "AD_Attachment_ID";
-
-	/** Set Attachment.
-	  * Attachment for the document
-	  */
-	public void setAD_Attachment_ID (int AD_Attachment_ID);
-
-	/** Get Attachment.
-	  * Attachment for the document
-	  */
-	public int getAD_Attachment_ID();
-
-	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException;
 
     /** Column name AD_AttachmentNote_ID */
     public static final String COLUMNNAME_AD_AttachmentNote_ID = "AD_AttachmentNote_ID";
@@ -77,6 +62,21 @@ public interface I_AD_AttachmentNote
 
 	/** Get AD_AttachmentNote_UU	  */
 	public String getAD_AttachmentNote_UU();
+
+    /** Column name AD_Attachment_ID */
+    public static final String COLUMNNAME_AD_Attachment_ID = "AD_Attachment_ID";
+
+	/** Set Attachment.
+	  * Attachment for the document
+	  */
+	public void setAD_Attachment_ID (int AD_Attachment_ID);
+
+	/** Get Attachment.
+	  * Attachment for the document
+	  */
+	public int getAD_Attachment_ID();
+
+	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

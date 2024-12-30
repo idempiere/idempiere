@@ -60,7 +60,7 @@ public class CalloutRequest extends CalloutEngine
 		if (bpID != null)
 			mailtext.setBPartner(bpID.intValue());
 		
-		String txt = mailtext.getMailText();
+		String txt = mailtext.getMailText(false, true, true);
 		txt = Env.parseContext(ctx, WindowNo, txt, false, true);
 		mTab.setValue("Result", txt);
 

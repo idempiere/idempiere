@@ -21,7 +21,6 @@ package org.adempiere.webui.component;
  * Extend {@link org.zkoss.zul.Bandbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  */
 public class Bandbox extends org.zkoss.zul.Bandbox
 {

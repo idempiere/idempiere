@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQResponseLineQty
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_RfQResponseLineQty 
 {
@@ -62,22 +62,6 @@ public interface I_C_RfQResponseLineQty
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_RfQLineQty_ID */
     public static final String COLUMNNAME_C_RfQLineQty_ID = "C_RfQLineQty_ID";
 
@@ -92,21 +76,6 @@ public interface I_C_RfQResponseLineQty
 	public int getC_RfQLineQty_ID();
 
 	public org.compiere.model.I_C_RfQLineQty getC_RfQLineQty() throws RuntimeException;
-
-    /** Column name C_RfQResponseLine_ID */
-    public static final String COLUMNNAME_C_RfQResponseLine_ID = "C_RfQResponseLine_ID";
-
-	/** Set RfQ Response Line.
-	  * Request for Quotation Response Line
-	  */
-	public void setC_RfQResponseLine_ID (int C_RfQResponseLine_ID);
-
-	/** Get RfQ Response Line.
-	  * Request for Quotation Response Line
-	  */
-	public int getC_RfQResponseLine_ID();
-
-	public org.compiere.model.I_C_RfQResponseLine getC_RfQResponseLine() throws RuntimeException;
 
     /** Column name C_RfQResponseLineQty_ID */
     public static final String COLUMNNAME_C_RfQResponseLineQty_ID = "C_RfQResponseLineQty_ID";
@@ -129,6 +98,37 @@ public interface I_C_RfQResponseLineQty
 
 	/** Get C_RfQResponseLineQty_UU	  */
 	public String getC_RfQResponseLineQty_UU();
+
+    /** Column name C_RfQResponseLine_ID */
+    public static final String COLUMNNAME_C_RfQResponseLine_ID = "C_RfQResponseLine_ID";
+
+	/** Set RfQ Response Line.
+	  * Request for Quotation Response Line
+	  */
+	public void setC_RfQResponseLine_ID (int C_RfQResponseLine_ID);
+
+	/** Get RfQ Response Line.
+	  * Request for Quotation Response Line
+	  */
+	public int getC_RfQResponseLine_ID();
+
+	public org.compiere.model.I_C_RfQResponseLine getC_RfQResponseLine() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Discount */
     public static final String COLUMNNAME_Discount = "Discount";

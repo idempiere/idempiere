@@ -30,7 +30,7 @@ public class X_M_AttributeInstanceLine extends PO implements I_M_AttributeInstan
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240227L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_AttributeInstanceLine (Properties ctx, int M_AttributeInstanceLine_ID, String trxName)

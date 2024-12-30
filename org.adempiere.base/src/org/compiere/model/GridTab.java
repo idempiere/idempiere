@@ -1574,6 +1574,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *	@param variableName name
 	 *	@return value as string 
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
 		return get_ValueAsString (m_vo.ctx, variableName);
@@ -1765,6 +1766,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return info
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
+	@Deprecated
 	public String getTrxInfo()
 	{
 		//	InvoiceBatch
@@ -2026,7 +2028,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			for (MStatusLine wl : wls) {
 				String line = wl.parseLine(getWindowNo());
 				if (line != null) {
-					lines.append(line).append("<br>");
+					if (wl.getAD_Style_ID() > 0) {
+			    		MStyle style = MStyle.get(wl.getAD_Style_ID());
+						String css = style.buildStyle(Env.getContext(Env.getCtx(), Env.THEME), new DefaultEvaluatee(), false);				
+						if (!Util.isEmpty(css, true)) {
+							lines.append("<div>\n")
+								.append("<style>\n")
+								.append("@scope {\n")
+								.append(css)
+								.append("\n}\n")
+								.append("</style>\n")
+								.append(line)
+								.append("\n")
+								.append("</div>\n");
+						} else {
+							lines.append(line).append("<br>");
+						}
+		    		} else {
+		    			lines.append(line).append("<br>");
+		    		}
 				}
 			}
 			if (lines.length() > 0)
@@ -2763,7 +2783,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *  Get Field by DB column name
 	 *  @param columnName column name
-	 *  @return GridField
+	 *  @return GridField or null
 	 */
 	public GridField getField (String columnName)
 	{
@@ -2878,7 +2898,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				MLookup mLookup = (MLookup)dependentField.getLookup();
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
 				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-						|| mLookup.getValidation().matches(".*[@]"+columnName+"[:].+[@].*$"))
+						|| mLookup.getValidation().matches(".*[@]"+getTabNo()+"[|]"+columnName+"([:].+)?[@].*")
+						|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");

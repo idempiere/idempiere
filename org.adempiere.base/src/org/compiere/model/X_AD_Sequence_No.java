@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Sequence_No
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence_No")
 public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)

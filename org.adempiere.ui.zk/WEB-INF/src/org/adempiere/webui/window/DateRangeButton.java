@@ -28,10 +28,12 @@ import java.util.Properties;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -74,9 +76,24 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 			setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HISTORY_PNG));
 		
 		DateRangePicker popup = new DateRangePicker(editor, editor2);
-		this.setTooltip(popup);
 		this.addEventListener(Events.ON_CLICK, event -> {
-			popup.setPage(this.getPage());
+			Window window = null;
+			Component component = this.getParent();
+			while(component != null) {
+				if (component instanceof Window w) {
+					window = w;
+					break;
+				} else {
+					component = component.getParent();
+				}
+			}
+			// Popup must be a child of highlighted parent, otherwise combobox wouldn't work
+			// https://tracker.zkoss.org/browse/ZK-5740
+			if (window != null && "highlighted".equals(window.getMode())) {
+				window.appendChild(popup);
+			} else {
+				popup.setPage(this.getPage());
+			}
 			popup.open(this, "after_center");
 			LayoutUtils.autoDetachOnClose(popup);
 		});

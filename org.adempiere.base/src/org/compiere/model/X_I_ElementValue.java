@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ElementValue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="I_ElementValue")
 public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)
@@ -105,6 +105,34 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
+
+	/** Set Column.
+		@param AD_Column_ID Column in the table
+	*/
+	public void setAD_Column_ID (int AD_Column_ID)
+	{
+		if (AD_Column_ID < 1)
+			set_Value (COLUMNNAME_AD_Column_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
+	}
+
+	/** Get Column.
+		@return Column in the table
+	  */
+	public int getAD_Column_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** AccountSign AD_Reference_ID=118 */
 	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
 	/** Credit = C */
@@ -161,29 +189,29 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 		return (String)get_Value(COLUMNNAME_AccountType);
 	}
 
-	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
 	{
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
-			.getPO(getAD_Column_ID(), get_TrxName());
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
 	}
 
-	/** Set Column.
-		@param AD_Column_ID Column in the table
+	/** Set Account Element.
+		@param C_ElementValue_ID Account Element
 	*/
-	public void setAD_Column_ID (int AD_Column_ID)
+	public void setC_ElementValue_ID (int C_ElementValue_ID)
 	{
-		if (AD_Column_ID < 1)
-			set_Value (COLUMNNAME_AD_Column_ID, null);
+		if (C_ElementValue_ID < 1)
+			set_Value (COLUMNNAME_C_ElementValue_ID, null);
 		else
-			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
+			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
 	}
 
-	/** Get Column.
-		@return Column in the table
+	/** Get Account Element.
+		@return Account Element
 	  */
-	public int getAD_Column_ID()
+	public int getC_ElementValue_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -212,34 +240,6 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public int getC_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
-			.getPO(getC_ElementValue_ID(), get_TrxName());
-	}
-
-	/** Set Account Element.
-		@param C_ElementValue_ID Account Element
-	*/
-	public void setC_ElementValue_ID (int C_ElementValue_ID)
-	{
-		if (C_ElementValue_ID < 1)
-			set_Value (COLUMNNAME_C_ElementValue_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
-	}
-
-	/** Get Account Element.
-		@return Account Element
-	  */
-	public int getC_ElementValue_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

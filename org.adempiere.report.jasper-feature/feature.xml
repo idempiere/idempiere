@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.adempiere.report.jasper.feature"
-      label="JasperReport-feature"
-      version="12.0.0.qualifier"
+      label="iDempiere Jasper Report Integration"
+      version="13.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -26,18 +26,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="com.github.librepdf.openpdf"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.net.sourceforge.barbecue.barbecue"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.krysalis.barcode4j"
-         version="0.0.0"/>
-
-   <plugin
          id="bctsp"
          version="0.0.0"/>
 
@@ -46,7 +34,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.servicemix.bundles.jaxen"
+         id="jaxen"
          version="0.0.0"/>
 
    <plugin
@@ -55,22 +43,6 @@
 
    <plugin
          id="net.sf.jasperreports.engine"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.w3c.dom.svg"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.w3c.css.sac"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.commons.logging"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.google.zxing.core"
          version="0.0.0"/>
 
    <plugin
@@ -130,10 +102,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="com.google.guava"
-         version="0.0.0"/>
-
-   <plugin
          id="com.fasterxml.jackson.datatype.jackson-datatype-json-org"
          version="0.0.0"/>
 
@@ -146,23 +114,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.commons.math3"
-         version="0.0.0"/>
-
-   <plugin
          id="com.sun.xml.bind.external.relaxng-datatype"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.antlr.antlr4-runtime"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.servicemix.bundles.batik"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.w3c.dom.smil"
          version="0.0.0"/>
 
    <plugin
@@ -174,55 +126,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="wrapped.org.apache.poi.poi"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.apache.poi.poi-ooxml"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.apache.poi.poi-ooxml-lite"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.apache.xmlgraphics.xmlgraphics-commons"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.dom4j.dom4j"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.jfree.jcommon"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.jfree.jfreechart"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.w3c.dom.events"
-         version="0.0.0"/>
-
-   <plugin
          id="org.apache.commons.digester"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.com.zaxxer.SparseBitSet"
-         version="0.0.0"/>
-
-   <plugin
-         id="wrapped.org.apache.xmlbeans.xmlbeans"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.logging.log4j.api"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.logging.log4j.to-slf4j"
          version="0.0.0"/>
 
 </feature>

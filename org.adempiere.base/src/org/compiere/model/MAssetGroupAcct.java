@@ -48,6 +48,7 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	 * @return
 	 * @deprecated use the version with postingType and trxName
 	 */
+	@Deprecated
 	public static List<MAssetGroupAcct> forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID)
 	{
 		return forA_Asset_Group_ID(ctx, A_Asset_Group_ID, null, null);
@@ -60,6 +61,7 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	 * @return
 	 * @deprecated use the version with trxName
 	 */
+	@Deprecated
 	public static List<MAssetGroupAcct>  forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType)
 	{
 		return forA_Asset_Group_ID(ctx, A_Asset_Group_ID, postingType, null);

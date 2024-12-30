@@ -38,16 +38,15 @@ import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 
 /**
- * UI part for AD_Window
+ * Controller for AD_Window UI
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class ADWindow extends AbstractUIPart
 {
 	/** Component attribute to hold reference to ancestor ADWindow instance **/
     public static final String AD_WINDOW_ATTRIBUTE_KEY = "org.adempiere.webui.adwindow";
-    /** Content part for AD_Window (toolbar, tabbox, statusbar, etc) **/
+    /** Controller for AD_Window content (toolbar, tabbox, statusbar, etc) **/
 	private ADWindowContent windowContent;
 	/** Environment Context **/
     private Properties ctx;
@@ -72,7 +71,6 @@ public class ADWindow extends AbstractUIPart
 	private String adWindowUUID;
 	
 	/**
-	 * 
 	 * @param ctx
 	 * @param adWindowId
 	 */
@@ -82,7 +80,6 @@ public class ADWindow extends AbstractUIPart
     }
     
     /**
-     * 
      * @param ctx
      * @param adWindowId
      * @param query
@@ -108,7 +105,7 @@ public class ADWindow extends AbstractUIPart
     }
     
     /**
-     * Init ADWindowContent
+     * Create ADWindowContent
      */
     private void init()
     {
@@ -119,7 +116,7 @@ public class ADWindow extends AbstractUIPart
     }
     
     /**
-     * 
+     * Get window title
      * @return title of window
      */
     public String getTitle()
@@ -128,6 +125,7 @@ public class ADWindow extends AbstractUIPart
     }
     
     /**
+     * Get image for window title
      * @return image for window title
      */
     public MImage getMImage()
@@ -162,6 +160,7 @@ public class ADWindow extends AbstractUIPart
 	}	
 	
 	/**
+	 * Get ADWindowContent instance
 	 * @return ADWindowContent
 	 */
 	public ADWindowContent getADWindowContent() {
@@ -169,6 +168,7 @@ public class ADWindow extends AbstractUIPart
 	}
 	
 	/**
+	 * Get list of toolbar button to exclude/restrict for current login role
 	 * @param AD_Tab_ID
 	 * @return list of toolbar button to exclude/restrict for current login role
 	 */
@@ -193,6 +193,7 @@ public class ADWindow extends AbstractUIPart
 	}
 	
 	/**
+	 * Get list of window toolbar button to exclude/restrict for current login role
 	 * @return list of window toolbar button to exclude/restrict for current login role
 	 */
 	public List<String> getWindowToolbarRestrictList() {		
@@ -214,6 +215,7 @@ public class ADWindow extends AbstractUIPart
 	}
 	
 	/**
+	 * Get list of advance (IsAdvancedButton=Y) toolbar buttons for window
 	 * @return list of advance (IsAdvancedButton=Y) toolbar buttons for window
 	 */
 	public List<String> getWindowAdvancedButtonList() {		
@@ -232,6 +234,7 @@ public class ADWindow extends AbstractUIPart
 	}
 
 	/**
+	 * Get AD_Window_ID
 	 * @return AD_Window_ID
 	 */
 	public int getAD_Window_ID() {
@@ -239,6 +242,7 @@ public class ADWindow extends AbstractUIPart
 	}
 	
 	/**
+	 * Get AD_Window_UU
 	 * @return AD_Window_UU
 	 */
 	public String getAD_Window_UU() {
@@ -246,6 +250,7 @@ public class ADWindow extends AbstractUIPart
 	}
 	
 	/**
+	 * Get ADWindow instance by window number
 	 * @param windowNo
 	 * @return {@link ADWindow} instance for windowNo ( if any )
 	 */

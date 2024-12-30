@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for MFA_Method
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_MFA_Method 
 {
@@ -126,15 +126,6 @@ public interface I_MFA_Method
 	  */
 	public boolean isActive();
 
-    /** Column name Method */
-    public static final String COLUMNNAME_Method = "Method";
-
-	/** Set Method	  */
-	public void setMethod (String Method);
-
-	/** Get Method	  */
-	public String getMethod();
-
     /** Column name MFAAllowedTimeDiscrepancy */
     public static final String COLUMNNAME_MFAAllowedTimeDiscrepancy = "MFAAllowedTimeDiscrepancy";
 
@@ -144,17 +135,6 @@ public interface I_MFA_Method
 	/** Get Allowed Time Period Discrepancy	  */
 	public int getMFAAllowedTimeDiscrepancy();
 
-    /** Column name MFA_ElementPrm_ID */
-    public static final String COLUMNNAME_MFA_ElementPrm_ID = "MFA_ElementPrm_ID";
-
-	/** Set Parameter Element	  */
-	public void setMFA_ElementPrm_ID (int MFA_ElementPrm_ID);
-
-	/** Get Parameter Element	  */
-	public int getMFA_ElementPrm_ID();
-
-	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException;
-
     /** Column name MFAIssuer */
     public static final String COLUMNNAME_MFAIssuer = "MFAIssuer";
 
@@ -163,28 +143,6 @@ public interface I_MFA_Method
 
 	/** Get Issuer	  */
 	public String getMFAIssuer();
-
-    /** Column name MFA_Method_ID */
-    public static final String COLUMNNAME_MFA_Method_ID = "MFA_Method_ID";
-
-	/** Set MFA Method.
-	  * Multi-factor Authentication Method
-	  */
-	public void setMFA_Method_ID (int MFA_Method_ID);
-
-	/** Get MFA Method.
-	  * Multi-factor Authentication Method
-	  */
-	public int getMFA_Method_ID();
-
-    /** Column name MFA_Method_UU */
-    public static final String COLUMNNAME_MFA_Method_UU = "MFA_Method_UU";
-
-	/** Set MFA_Method_UU	  */
-	public void setMFA_Method_UU (String MFA_Method_UU);
-
-	/** Get MFA_Method_UU	  */
-	public String getMFA_Method_UU();
 
     /** Column name MFATimeProvider */
     public static final String COLUMNNAME_MFATimeProvider = "MFATimeProvider";
@@ -216,6 +174,48 @@ public interface I_MFA_Method
 	  * Multi-factor authentication type (Something you Know/Have/Are, Location)
 	  */
 	public String getMFAType();
+
+    /** Column name MFA_ElementPrm_ID */
+    public static final String COLUMNNAME_MFA_ElementPrm_ID = "MFA_ElementPrm_ID";
+
+	/** Set Parameter Element	  */
+	public void setMFA_ElementPrm_ID (int MFA_ElementPrm_ID);
+
+	/** Get Parameter Element	  */
+	public int getMFA_ElementPrm_ID();
+
+	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException;
+
+    /** Column name MFA_Method_ID */
+    public static final String COLUMNNAME_MFA_Method_ID = "MFA_Method_ID";
+
+	/** Set MFA Method.
+	  * Multi-factor Authentication Method
+	  */
+	public void setMFA_Method_ID (int MFA_Method_ID);
+
+	/** Get MFA Method.
+	  * Multi-factor Authentication Method
+	  */
+	public int getMFA_Method_ID();
+
+    /** Column name MFA_Method_UU */
+    public static final String COLUMNNAME_MFA_Method_UU = "MFA_Method_UU";
+
+	/** Set MFA_Method_UU	  */
+	public void setMFA_Method_UU (String MFA_Method_UU);
+
+	/** Get MFA_Method_UU	  */
+	public String getMFA_Method_UU();
+
+    /** Column name Method */
+    public static final String COLUMNNAME_Method = "Method";
+
+	/** Set Method	  */
+	public void setMethod (String Method);
+
+	/** Get Method	  */
+	public String getMethod();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

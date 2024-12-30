@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -56,7 +56,8 @@ public class CLogMgt
 	private static final CLogErrorBuffer ERROR_BUFFER_HANDLER = new CLogErrorBuffer();
 	private static CLogFile fileHandler;
 	
-	private static final Map<String, Level> levelMap = new HashMap<String, Level>();
+	private static final Map<String, Level> levelMap = new ConcurrentHashMap<String, Level>();
+	private static final Map<String, Logger> loggerMap = new ConcurrentHashMap<String, Logger>();
 	
 	private final static Runnable configurationListener = new Runnable() {
 		@Override
@@ -71,6 +72,7 @@ public class CLogMgt
 	private static synchronized void reInit() {
 		CLogMgt.initialize(Ini.isClient());
 		if (!levelMap.isEmpty()) {
+			loggerMap.clear();
 			for(String key : levelMap.keySet()) {
 				setLevel(key, levelMap.get(key));
 			}
@@ -340,8 +342,10 @@ public class CLogMgt
 			}
 		}
 		String key = loggerName == null ? "" : loggerName;
-		if (!levelMap.containsKey(key))
+		if (!levelMap.containsKey(key)) {
 			levelMap.put(key, level);
+			loggerMap.put(key, logger);
+		}
 	}	//	setHandlerLevel
 
 	/**
@@ -481,6 +485,7 @@ public class CLogMgt
 	 *	@param enableLogging true if logging enabled
 	 *  @deprecated not recommended to use, problematic method to enable/disable the log globally 
 	 */
+	@Deprecated
 	public static void enable (boolean enableLogging)
 	{
 		Logger rootLogger = getRootLogger();

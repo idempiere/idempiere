@@ -51,7 +51,6 @@ import org.zkoss.zk.ui.sys.ComponentCtrl;
  * Implemented with {@link Textbox} or {@link Combobox} (AD_Field.IsAutocomplete=Y) component and {@link WTextEditorDialog} dialog.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  */
 public class WStringEditor extends WEditor implements ContextMenuListener
 {

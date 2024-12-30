@@ -38,6 +38,7 @@ public class HTMLReportRendererConfiguration implements IReportRendererConfigura
 	private File file;
 	private Writer writer;
 	private Language language;
+	private String contextPath;
 	
 	public static final String ID = "HTML";
 	public static final String FILE_EXTENSION = "html";
@@ -139,5 +140,22 @@ public class HTMLReportRendererConfiguration implements IReportRendererConfigura
 	 */
 	public Language getLanguage() {
 		return language;
+	}
+	
+	/**
+	 * Set web context path
+	 * @param contextPath
+	 */
+	public HTMLReportRendererConfiguration setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+		return this;
+	}
+
+	/**
+	 * Get web context path
+	 * @return web context path
+	 */
+	public String getContextPath() {
+		return contextPath;
 	}
 }

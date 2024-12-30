@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_RMATax
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_RMATax")
 public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_RMATax (Properties ctx, int M_RMATax_ID, String trxName)
@@ -122,6 +122,33 @@ public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
       return sb.toString();
     }
 
+	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_ID)
+			.getPO(getC_TaxProvider_ID(), get_TrxName());
+	}
+
+	/** Set Tax Provider.
+		@param C_TaxProvider_ID Tax Provider
+	*/
+	public void setC_TaxProvider_ID (int C_TaxProvider_ID)
+	{
+		if (C_TaxProvider_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_TaxProvider_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_TaxProvider_ID, Integer.valueOf(C_TaxProvider_ID));
+	}
+
+	/** Get Tax Provider.
+		@return Tax Provider	  */
+	public int getC_TaxProvider_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxProvider_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -150,33 +177,6 @@ public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_ID)
-			.getPO(getC_TaxProvider_ID(), get_TrxName());
-	}
-
-	/** Set Tax Provider.
-		@param C_TaxProvider_ID Tax Provider
-	*/
-	public void setC_TaxProvider_ID (int C_TaxProvider_ID)
-	{
-		if (C_TaxProvider_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_TaxProvider_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_TaxProvider_ID, Integer.valueOf(C_TaxProvider_ID));
-	}
-
-	/** Get Tax Provider.
-		@return Tax Provider	  */
-	public int getC_TaxProvider_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxProvider_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Price includes Tax.
 		@param IsTaxIncluded Tax is included in the price 
 	*/
@@ -198,6 +198,21 @@ public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set M_RMATax_UU.
+		@param M_RMATax_UU M_RMATax_UU
+	*/
+	public void setM_RMATax_UU (String M_RMATax_UU)
+	{
+		set_Value (COLUMNNAME_M_RMATax_UU, M_RMATax_UU);
+	}
+
+	/** Get M_RMATax_UU.
+		@return M_RMATax_UU	  */
+	public String getM_RMATax_UU()
+	{
+		return (String)get_Value(COLUMNNAME_M_RMATax_UU);
 	}
 
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException
@@ -226,21 +241,6 @@ public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set M_RMATax_UU.
-		@param M_RMATax_UU M_RMATax_UU
-	*/
-	public void setM_RMATax_UU (String M_RMATax_UU)
-	{
-		set_Value (COLUMNNAME_M_RMATax_UU, M_RMATax_UU);
-	}
-
-	/** Get M_RMATax_UU.
-		@return M_RMATax_UU	  */
-	public String getM_RMATax_UU()
-	{
-		return (String)get_Value(COLUMNNAME_M_RMATax_UU);
 	}
 
 	/** Set Processed.

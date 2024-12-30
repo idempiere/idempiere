@@ -111,6 +111,17 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getDefault
 	
 	/**
+	 * Get role records readable by current effective role
+	 * @return role records (AD_Role_ID, Name), order by Name
+	 */
+	public static KeyNamePair[] getRoleKeyNamePairs() {
+		String sql = MRole.getDefault().addAccessSQL(
+				"SELECT AD_Role_ID, Name FROM AD_Role WHERE AD_Client_ID=? AND IsActive='Y' ORDER BY 2", 
+				"AD_Role", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		return DB.getKeyNamePairsEx(sql, false, Env.getAD_Client_ID(Env.getCtx()));
+	}
+	
+	/**
 	 * Set role for current session/context
 	 * @param defaultRole
 	 */
@@ -1657,6 +1668,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (log.isLoggable(Level.FINE)) log.fine("#" + m_windowAccess.size());
 		}	//	reload
 		Boolean retValue = m_windowAccess.get(AD_Window_ID);
+		// User Preference window is excluded - otherwise the user would not be able to reset the read-only session preference
+		if (retValue != null && AD_Window_ID != SystemIDs.WINDOW_USER_PREFERENCE && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		if (log.isLoggable(Level.FINE)) log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
 		return retValue;
 	}	//	getWindowAccess
@@ -1749,6 +1763,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getProcessAccess
 
@@ -1838,6 +1854,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getTaskAccess
 
@@ -1927,6 +1945,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getFormAccess
 
@@ -2016,6 +2036,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getWorkflowAccess
 	
@@ -2130,7 +2152,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			keyColumnName += getIdColumnName(TableName); 
 	
 			//log.fine("addAccessSQL - " + TableName + "(" + AD_Table_ID + ") " + keyColumnName);
-			String recordWhere = getRecordWhere (AD_Table_ID, keyColumnName, rw);
+			String recordWhere = getRecordWhere (AD_Table_ID, keyColumnName, rw, TableName, ti[i].getSynonym());
 			if (recordWhere.length() > 0)
 			{
 				retSQL.append(" AND ").append(recordWhere);
@@ -2465,9 +2487,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@param AD_Table_ID table
 	 *	@param keyColumnName (fully qualified) key column name
 	 *	@param rw true if read write
+	 *  @param tableName 
+	 *  @param alias 
 	 *	@return where clause or ""
 	 */
-	private String getRecordWhere (int AD_Table_ID, String keyColumnName, boolean rw)
+	private String getRecordWhere (int AD_Table_ID, String keyColumnName, boolean rw, String tableName, String alias)
 	{
 		loadRecordAccess(false);
 		//
@@ -2529,6 +2553,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (sb.length() > 0)
 				sb.append(" AND ");
 			String wherevr = Env.parseContext(p_ctx, 0, tvr.getCode(), false);
+			if (! Util.isEmpty(alias) && ! alias.equals(tableName))
+				wherevr = wherevr.replaceAll("\\b" + tableName + "\\b", alias);
 			sb.append(" (").append(wherevr).append(") ");
 		}
 
@@ -3433,4 +3459,29 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Check record access through {@link #addAccessSQL(String, String, boolean, boolean)} using<br/>
+	 * either record id or record uuid
+	 * @param table
+	 * @param recordId ignore if uuid is use
+	 * @param uuid null to use recordId
+	 * @param rw true for writable, false for readonly
+	 * @return true if role has access to record
+	 */
+	public boolean checkAccessSQL(MTable table, int recordId, String uuid, boolean rw) {
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM ")
+				.append(table.getTableName())
+				.append(" WHERE ")
+				.append(table.getTableName())
+				.append(".");
+		if (!Util.isEmpty(uuid, true) ) {
+			sql.append(PO.getUUIDColumnName(table.getTableName()))
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), uuid) == 1;
+		} else {
+			sql.append(table.getKeyColumns()[0])
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
+		}
+	}
 }	//	MRole

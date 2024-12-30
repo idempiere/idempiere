@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.adempiere.ui.zk.feature"
-      label="Zk Client-feature"
-      version="12.0.0.qualifier"
+      label="iDempiere Web Client"
+      version="13.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -17,20 +17,12 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import feature="org.adempiere.base.feature" version="0.0.0"/>
-   </requires>
-
    <plugin
          id="org.adempiere.ui.zk"
          version="0.0.0"/>
 
    <plugin
          id="org.atmosphere.runtime"
-         version="0.0.0"/>
-
-   <plugin
-         id="zweb-dsp"
          version="0.0.0"/>
 
    <plugin
@@ -55,6 +47,14 @@
 
    <plugin
          id="org.idempiere.zk.iceblue_c.theme"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.zk.datatable"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.zk.pivot"
          version="0.0.0"/>
 
 </feature>

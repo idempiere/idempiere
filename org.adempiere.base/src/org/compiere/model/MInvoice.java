@@ -25,7 +25,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -2319,8 +2321,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				}
 			}
 		}
-
-		if (PAYMENTRULE_Cash.equals(getPaymentRule())) {
+		MOrder order = getC_Order_ID() > 0 ? new MOrder(getCtx(), getC_Order_ID(), get_TrxName()) : null;
+		MDocType orderDocType = order != null ? MDocType.get(getCtx(), order.getC_DocType_ID()) : null;
+		if (PAYMENTRULE_Cash.equals(getPaymentRule())
+				|| (orderDocType != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(orderDocType.getDocSubTypeSO()) && !orderDocType.isAutoGenerateInvoice() && allocateFromOrder()))
+		{
 			if (testAllocation(true)) {
 				saveEx();
 			}
@@ -3347,4 +3352,55 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 	}
+	
+	/**
+	 * Allocate Invoice for Completed Unallocated Pre-payments
+	 */
+	private boolean allocateFromOrder() {
+		// Get Set Of OrderIds from Lines
+		HashSet<Integer> orderIDSet = new HashSet<>();
+
+		if(getC_Order_ID() > 0)
+			orderIDSet.add(getC_Order_ID());
+
+		MInvoiceLine[] lines = getLines();
+		for(MInvoiceLine line : lines) {
+			if (line.getC_OrderLine_ID() > 0)
+			     orderIDSet.add(line.getC_OrderLine().getC_Order_ID());
+		   }
+
+		if(orderIDSet.isEmpty())
+			return false;
+
+		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND C_Invoice_ID IS NULL ");
+
+		// Parse Orders
+		whereClause.append(" AND C_Order_ID IN ( ");
+		Iterator<Integer> iterator = orderIDSet.iterator();
+		while(iterator.hasNext()) {
+			iterator.next();
+			whereClause.append("?");
+			if(iterator.hasNext())
+				whereClause.append(", ");
+		}
+
+		whereClause.append(" ) ");
+
+		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause.toString(), get_TrxName())
+		.setParameters(orderIDSet.toArray())
+		.setOrderBy(MPayment.COLUMNNAME_DateAcct)
+		.list();
+
+		for(MPayment payment : paymentsList) {
+			payment.setC_Invoice_ID(getC_Invoice_ID());
+			if(!payment.allocateIt())
+				throw new AdempiereException(Msg.getMsg(getCtx(), "PaymentNotAllocated"));
+
+			payment.saveEx();
+		}
+
+		return paymentsList.size() > 0;
+
+	}
+	
 }	//	MInvoice

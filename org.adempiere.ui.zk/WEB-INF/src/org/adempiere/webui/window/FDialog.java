@@ -51,7 +51,6 @@ import org.zkoss.zk.ui.event.EventListener;
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 @Deprecated(since="10", forRemoval=true)
 public class FDialog
@@ -115,6 +114,7 @@ public class FDialog
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String, String)
 	 */
+    @Deprecated
     public static void warn(int windowNo, Component comp, String adMessage, String message)
     {
     	warn(windowNo, comp, adMessage, message, null);
