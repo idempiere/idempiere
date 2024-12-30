@@ -79,6 +79,8 @@ public final class ThemeManager {
 		String theme = SystemProperties.getZkTheme();
 		if (Util.isEmpty(theme))
 			theme = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
+		if (theme.contains(","))
+			theme = theme.split(",")[0];
 		if (theme.equals(m_brokenTheme)) {
 			theme = ITheme.ZK_THEME_DEFAULT;
 		} else {

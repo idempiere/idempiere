@@ -458,10 +458,11 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstTheme.setAutodrop(true);
         lstTheme.setId("lstTheme");
 
-        // Update Language List
+        // Update Themes List
         lstTheme.getItems().clear();
         String[] themes = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT).split(",");
         for (String themeName : themes) {
+            // NOTE: The theme "default" is displayed in the list as "breeze"
         	if ("default".equals(themeName))
             	lstTheme.appendItem("breeze", themeName);
         	else
@@ -475,7 +476,11 @@ public class LoginPanel extends Window implements EventListener<Event>
             		lstTheme.setValue("breeze");
             	else
             		lstTheme.setValue(initTheme);
-            	SystemProperties.setZkTheme(initTheme);
+                // NOTE: The zktheme cookie saves the default theme as breeze in preference.zul
+            	if ("breeze".equals(initTheme))
+            		SystemProperties.setZkTheme("default");
+            	else
+            		SystemProperties.setZkTheme(initTheme);
             }
             lstTheme.addEventListener(Events.ON_SELECT, this);
         } else {
