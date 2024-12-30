@@ -932,6 +932,16 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		}
 	}
 
+	/**
+	 * Is Virtual UI Column (using @SQL= and loaded separately from main query)
+	 * 
+	 * @return true if column is virtual UI
+	 */
+	protected boolean isGridFieldVirtualUIColumn()
+	{
+		return gridField != null && gridField.isVirtualUIColumn();
+	}
+
     /**
      * Add text editor dialog entry to context menu
      * @param popupMenu
