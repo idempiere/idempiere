@@ -519,7 +519,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 				String theme = lstTheme.getSelectedItem().getValue();
 				SystemProperties.setZkTheme(theme);
 				// NOTE: The cookie zktheme is saved in preference.zul of each theme
-				Themes.setTheme(Executions.getCurrent(), theme);
+				if ("default".equals(theme))
+					Themes.setTheme(Executions.getCurrent(), "breeze");
+				else
+					Themes.setTheme(Executions.getCurrent(), theme);
 				Executions.sendRedirect("");
 			}
 

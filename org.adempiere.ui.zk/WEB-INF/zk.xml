@@ -128,7 +128,7 @@
     </library-property>
     <library-property>
         <name>org.zkoss.theme.preferred</name>
-        <value>breeze</value>
+        <value>iceblue_c</value>
     </library-property>
 	<preference>
     	<name>org.zkoss.zk.ui.WebApp.name</name>
