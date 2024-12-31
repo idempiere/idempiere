@@ -733,11 +733,11 @@ public class MenuSearchController implements EventListener<Event>{
 			}
 			
 			// Highlight search text
-			if (!Util.isEmpty(highlightText, true) && data.getLabel().toLowerCase().contains(highlightText.toLowerCase())) {
+			if (!Util.isEmpty(highlightText, true) && Util.deleteAccents(data.getLabel()).toLowerCase().contains(Util.deleteAccents(highlightText).toLowerCase())) {
 				// Space to maintain proper gap between icon and label
 				cell.setLabel(" ");
-				String label = data.getLabel();
-				String matchString = highlightText.toLowerCase();
+				String label = Util.deleteAccents(data.getLabel());
+				String matchString = Util.deleteAccents(highlightText.toLowerCase());
 				int match = label.toLowerCase().indexOf(matchString);
     			while (match >= 0) {
     				if (match > 0) {
