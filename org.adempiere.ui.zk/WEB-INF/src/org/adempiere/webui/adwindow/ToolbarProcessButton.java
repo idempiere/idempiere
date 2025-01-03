@@ -20,6 +20,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MToolBarButton;
+import org.compiere.model.MUserDefProc;
 import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -63,7 +64,15 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		MProcess process = MProcess.get(Env.getCtx(), getProcess_ID());
 		name = process.get_Translation(I_AD_Process.COLUMNNAME_Name);
 		description = process.get_Translation(I_AD_Process.COLUMNNAME_Description);
-		
+
+		MUserDefProc userDef = MUserDefProc.getBestMatch(Env.getCtx(), process.getAD_Process_ID());
+		if (userDef != null) {
+			if (userDef.getName() != null)
+				name = userDef.getName();
+			if (userDef.getDescription() != null)
+				description = userDef.getDescription();
+		}
+
 		button = new Button();
     	button.setLabel(name);
     	if (description != null && description.trim().length() > 0)
