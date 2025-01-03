@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserMail
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_UserMail 
 {
@@ -62,21 +62,6 @@ public interface I_AD_UserMail
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
-
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public void setAD_User_ID (int AD_User_ID);
-
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID();
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
-
     /** Column name AD_UserMail_ID */
     public static final String COLUMNNAME_AD_UserMail_ID = "AD_UserMail_ID";
 
@@ -98,6 +83,21 @@ public interface I_AD_UserMail
 
 	/** Get AD_UserMail_UU	  */
 	public String getAD_UserMail_UU();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -185,6 +185,21 @@ public interface I_AD_UserMail
 	  */
 	public String getMessageID();
 
+    /** Column name R_MailText_ID */
+    public static final String COLUMNNAME_R_MailText_ID = "R_MailText_ID";
+
+	/** Set Mail Template.
+	  * Text templates for mailings
+	  */
+	public void setR_MailText_ID (int R_MailText_ID);
+
+	/** Get Mail Template.
+	  * Text templates for mailings
+	  */
+	public int getR_MailText_ID();
+
+	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
+
     /** Column name RecipientBcc */
     public static final String COLUMNNAME_RecipientBcc = "RecipientBcc";
 
@@ -211,21 +226,6 @@ public interface I_AD_UserMail
 
 	/** Get To	  */
 	public String getRecipientTo();
-
-    /** Column name R_MailText_ID */
-    public static final String COLUMNNAME_R_MailText_ID = "R_MailText_ID";
-
-	/** Set Mail Template.
-	  * Text templates for mailings
-	  */
-	public void setR_MailText_ID (int R_MailText_ID);
-
-	/** Get Mail Template.
-	  * Text templates for mailings
-	  */
-	public int getR_MailText_ID();
-
-	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
 
     /** Column name Subject */
     public static final String COLUMNNAME_Subject = "Subject";

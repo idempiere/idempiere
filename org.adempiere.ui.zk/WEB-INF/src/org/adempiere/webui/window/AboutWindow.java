@@ -21,6 +21,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -161,10 +162,15 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		southPane.appendChild(btnOk);
 
 		this.setBorder("normal");
-		if (!ThemeManager.isUseCSSForWindowSize())
+
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
+			this.setMaximized(true);
+			this.setSizable(false);
+			this.setMaximizable(false);
+		}else if (!ThemeManager.isUseCSSForWindowSize())
 		{
-			ZKUpdateUtil.setWindowWidthX(this, 600);
-			ZKUpdateUtil.setWindowHeightX(this, 450);
+			ZKUpdateUtil.setWindowWidthX(this, 800);
+			ZKUpdateUtil.setWindowHeightX(this, 600);
 		}
 		else
 		{
@@ -302,17 +308,20 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		bErrorsOnly.addEventListener(Events.ON_CHECK, this);
 		hbox.appendChild(bErrorsOnly);
 		hbox.appendChild(new Space());
-		btnDownload = new Button(Msg.getMsg(Env.getCtx(), "SaveFile"));
+        btnDownload = new Button(Msg.getMsg(Env.getCtx(), "SaveFile"));
+		btnDownload.setIconSclass("z-icon-Save");	
 		btnDownload .setTooltiptext("Download session log");
 		LayoutUtils.addSclass("txt-btn", btnDownload);
 		btnDownload.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnDownload);
-		btnErrorEmail = new Button(Msg.getMsg(Env.getCtx(), "SendEMail"));
+        btnErrorEmail = new Button(Msg.getMsg(Env.getCtx(), "SendEMail"));
+		btnErrorEmail.setIconSclass("z-icon-SendMail");
 		btnErrorEmail.setTooltiptext("Email session log");
 		LayoutUtils.addSclass("txt-btn", btnErrorEmail);
 		btnErrorEmail.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnErrorEmail);
-		btnViewLog = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "View")));
+        btnViewLog = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "View")));
+		btnViewLog.setIconSclass("z-icon-File");
 		btnViewLog.setTooltiptext("View session log");
 		LayoutUtils.addSclass("txt-btn", btnViewLog);
 		btnViewLog.addEventListener(Events.ON_CLICK, this);
@@ -320,6 +329,11 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setHflex(hbox, "1");
 		ZKUpdateUtil.setVflex(hbox, "0");
 		vbox.appendChild(hbox);
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
+			btnDownload.setLabel("");
+			btnErrorEmail.setLabel("");
+			btnViewLog.setLabel("");
+		}
 
 		Vector<String> columnNames = CLogErrorBuffer.get(true).getColumnNames(Env.getCtx());
 

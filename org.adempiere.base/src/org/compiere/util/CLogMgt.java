@@ -485,6 +485,7 @@ public class CLogMgt
 	 *	@param enableLogging true if logging enabled
 	 *  @deprecated not recommended to use, problematic method to enable/disable the log globally 
 	 */
+	@Deprecated
 	public static void enable (boolean enableLogging)
 	{
 		Logger rootLogger = getRootLogger();

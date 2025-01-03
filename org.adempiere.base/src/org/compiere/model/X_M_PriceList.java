@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_PriceList")
 public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_PriceList (Properties ctx, int M_PriceList_ID, String trxName)
@@ -274,28 +274,6 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 		return false;
 	}
 
-	/** Set Is Present For Product.
-		@param isPresentForProduct Is Present For Product
-	*/
-	public void setisPresentForProduct (boolean isPresentForProduct)
-	{
-		set_Value (COLUMNNAME_isPresentForProduct, Boolean.valueOf(isPresentForProduct));
-	}
-
-	/** Get Is Present For Product.
-		@return Is Present For Product	  */
-	public boolean isPresentForProduct()
-	{
-		Object oo = get_Value(COLUMNNAME_isPresentForProduct);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Sales Price list.
 		@param IsSOPriceList This is a Sales Price List
 	*/
@@ -420,5 +398,27 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Is Present For Product.
+		@param isPresentForProduct Is Present For Product
+	*/
+	public void setisPresentForProduct (boolean isPresentForProduct)
+	{
+		set_Value (COLUMNNAME_isPresentForProduct, Boolean.valueOf(isPresentForProduct));
+	}
+
+	/** Get Is Present For Product.
+		@return Is Present For Product	  */
+	public boolean isPresentForProduct()
+	{
+		Object oo = get_Value(COLUMNNAME_isPresentForProduct);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

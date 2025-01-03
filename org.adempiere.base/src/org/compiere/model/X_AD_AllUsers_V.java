@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllUsers_V
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_AllUsers_V")
 public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_AllUsers_V (Properties ctx, int AD_AllUsers_V_ID, String trxName)

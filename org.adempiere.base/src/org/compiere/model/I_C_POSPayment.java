@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_POSPayment
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_POSPayment 
 {
@@ -40,19 +40,6 @@ public interface I_C_POSPayment
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name AccountNo */
-    public static final String COLUMNNAME_AccountNo = "AccountNo";
-
-	/** Set Account No.
-	  * Account Number
-	  */
-	public void setAccountNo (String AccountNo);
-
-	/** Get Account No.
-	  * Account Number
-	  */
-	public String getAccountNo();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -88,27 +75,18 @@ public interface I_C_POSPayment
 	  */
 	public String getA_Name();
 
-    /** Column name CheckNo */
-    public static final String COLUMNNAME_CheckNo = "CheckNo";
+    /** Column name AccountNo */
+    public static final String COLUMNNAME_AccountNo = "AccountNo";
 
-	/** Set Check No.
-	  * Check Number
+	/** Set Account No.
+	  * Account Number
 	  */
-	public void setCheckNo (String CheckNo);
+	public void setAccountNo (String AccountNo);
 
-	/** Get Check No.
-	  * Check Number
+	/** Get Account No.
+	  * Account Number
 	  */
-	public String getCheckNo();
-
-    /** Column name CheckStatus */
-    public static final String COLUMNNAME_CheckStatus = "CheckStatus";
-
-	/** Set Check Status	  */
-	public void setCheckStatus (String CheckStatus);
-
-	/** Get Check Status	  */
-	public String getCheckStatus();
+	public String getAccountNo();
 
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
@@ -124,21 +102,6 @@ public interface I_C_POSPayment
 	public int getC_Order_ID();
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
-
-    /** Column name C_Payment_ID */
-    public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
-
-	/** Set Payment.
-	  * Payment identifier
-	  */
-	public void setC_Payment_ID (int C_Payment_ID);
-
-	/** Get Payment.
-	  * Payment identifier
-	  */
-	public int getC_Payment_ID();
-
-	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name C_POSPayment_ID */
     public static final String COLUMNNAME_C_POSPayment_ID = "C_POSPayment_ID";
@@ -168,6 +131,43 @@ public interface I_C_POSPayment
 	public int getC_POSTenderType_ID();
 
 	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException;
+
+    /** Column name C_Payment_ID */
+    public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
+
+	/** Set Payment.
+	  * Payment identifier
+	  */
+	public void setC_Payment_ID (int C_Payment_ID);
+
+	/** Get Payment.
+	  * Payment identifier
+	  */
+	public int getC_Payment_ID();
+
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
+
+    /** Column name CheckNo */
+    public static final String COLUMNNAME_CheckNo = "CheckNo";
+
+	/** Set Check No.
+	  * Check Number
+	  */
+	public void setCheckNo (String CheckNo);
+
+	/** Get Check No.
+	  * Check Number
+	  */
+	public String getCheckNo();
+
+    /** Column name CheckStatus */
+    public static final String COLUMNNAME_CheckStatus = "CheckStatus";
+
+	/** Set Check Status	  */
+	public void setCheckStatus (String CheckStatus);
+
+	/** Get Check Status	  */
+	public String getCheckStatus();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

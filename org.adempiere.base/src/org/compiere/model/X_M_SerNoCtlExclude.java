@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_SerNoCtlExclude
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_SerNoCtlExclude")
 public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_SerNoCtlExclude (Properties ctx, int M_SerNoCtlExclude_ID, String trxName)

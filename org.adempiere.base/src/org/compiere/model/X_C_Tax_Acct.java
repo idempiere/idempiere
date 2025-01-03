@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Tax_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_Tax_Acct")
 public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_Tax_Acct (Properties ctx, int C_Tax_Acct_ID, String trxName)

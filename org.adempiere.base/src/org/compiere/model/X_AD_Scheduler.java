@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Scheduler
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Scheduler")
 public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -387,6 +387,34 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		return false;
 	}
 
+	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
+
+	/** Set Mail Template.
+		@param R_MailText_ID Text templates for mailings
+	*/
+	public void setR_MailText_ID (int R_MailText_ID)
+	{
+		if (R_MailText_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
+	}
+
+	/** Get Mail Template.
+		@return Text templates for mailings
+	  */
+	public int getR_MailText_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Record ID.
 		@param Record_ID Direct internal record ID
 	*/
@@ -435,34 +463,6 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	public String getReportOutputType()
 	{
 		return (String)get_Value(COLUMNNAME_ReportOutputType);
-	}
-
-	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
-			.getPO(getR_MailText_ID(), get_TrxName());
-	}
-
-	/** Set Mail Template.
-		@param R_MailText_ID Text templates for mailings
-	*/
-	public void setR_MailText_ID (int R_MailText_ID)
-	{
-		if (R_MailText_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
-	}
-
-	/** Get Mail Template.
-		@return Text templates for mailings
-	  */
-	public int getR_MailText_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Scheduler State.

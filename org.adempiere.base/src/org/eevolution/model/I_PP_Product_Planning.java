@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Product_Planning
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 @SuppressWarnings("all")
 public interface I_PP_Product_Planning 
@@ -281,17 +281,6 @@ public interface I_PP_Product_Planning
 	/** Get Order Qty	  */
 	public BigDecimal getOrder_Qty();
 
-    /** Column name Planner_ID */
-    public static final String COLUMNNAME_Planner_ID = "Planner_ID";
-
-	/** Set Planner	  */
-	public void setPlanner_ID (int Planner_ID);
-
-	/** Get Planner	  */
-	public int getPlanner_ID();
-
-	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException;
-
     /** Column name PP_Product_BOM_ID */
     public static final String COLUMNNAME_PP_Product_BOM_ID = "PP_Product_BOM_ID";
 
@@ -329,18 +318,16 @@ public interface I_PP_Product_Planning
 	/** Get PP_Product_Planning_UU	  */
 	public String getPP_Product_Planning_UU();
 
-    /** Column name SafetyStock */
-    public static final String COLUMNNAME_SafetyStock = "SafetyStock";
+    /** Column name Planner_ID */
+    public static final String COLUMNNAME_Planner_ID = "Planner_ID";
 
-	/** Set Safety Stock Qty.
-	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
-	  */
-	public void setSafetyStock (BigDecimal SafetyStock);
+	/** Set Planner	  */
+	public void setPlanner_ID (int Planner_ID);
 
-	/** Get Safety Stock Qty.
-	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
-	  */
-	public BigDecimal getSafetyStock();
+	/** Get Planner	  */
+	public int getPlanner_ID();
+
+	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException;
 
     /** Column name S_Resource_ID */
     public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
@@ -356,6 +343,19 @@ public interface I_PP_Product_Planning
 	public int getS_Resource_ID();
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
+
+    /** Column name SafetyStock */
+    public static final String COLUMNNAME_SafetyStock = "SafetyStock";
+
+	/** Set Safety Stock Qty.
+	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	  */
+	public void setSafetyStock (BigDecimal SafetyStock);
+
+	/** Get Safety Stock Qty.
+	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	  */
+	public BigDecimal getSafetyStock();
 
     /** Column name TimeFence */
     public static final String COLUMNNAME_TimeFence = "TimeFence";

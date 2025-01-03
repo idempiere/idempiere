@@ -108,6 +108,7 @@ public class EmailSrv {
 	 * @param imapUser
 	 * @param imapPass
 	 */
+	@Deprecated
 	public EmailSrv (String imapHost, String  imapUser, String  imapPass){
 		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false);
 	}

@@ -873,6 +873,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     /**
      * @deprecated
      */
+    @Deprecated
 	public void updateLabelStyle() {				
 		updateStyle();
 	}

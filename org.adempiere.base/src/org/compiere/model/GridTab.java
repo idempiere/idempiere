@@ -1766,6 +1766,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return info
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
+	@Deprecated
 	public String getTrxInfo()
 	{
 		//	InvoiceBatch
@@ -2027,7 +2028,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			for (MStatusLine wl : wls) {
 				String line = wl.parseLine(getWindowNo());
 				if (line != null) {
-					lines.append(line).append("<br>");
+					if (wl.getAD_Style_ID() > 0) {
+			    		MStyle style = MStyle.get(wl.getAD_Style_ID());
+						String css = style.buildStyle(Env.getContext(Env.getCtx(), Env.THEME), new DefaultEvaluatee(), false);				
+						if (!Util.isEmpty(css, true)) {
+							lines.append("<div>\n")
+								.append("<style>\n")
+								.append("@scope {\n")
+								.append(css)
+								.append("\n}\n")
+								.append("</style>\n")
+								.append(line)
+								.append("\n")
+								.append("</div>\n");
+						} else {
+							lines.append(line).append("<br>");
+						}
+		    		} else {
+		    			lines.append(line).append("<br>");
+		    		}
 				}
 			}
 			if (lines.length() > 0)

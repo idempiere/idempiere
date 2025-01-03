@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankAccount
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount")
 public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BankAccount (Properties ctx, int C_BankAccount_ID, String trxName)
@@ -155,6 +155,22 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 		return (String)get_Value(COLUMNNAME_AccountNo);
 	}
 
+	/** Set BBAN.
+		@param BBAN Basic Bank Account Number
+	*/
+	public void setBBAN (String BBAN)
+	{
+		set_Value (COLUMNNAME_BBAN, BBAN);
+	}
+
+	/** Get BBAN.
+		@return Basic Bank Account Number
+	  */
+	public String getBBAN()
+	{
+		return (String)get_Value(COLUMNNAME_BBAN);
+	}
+
 	/** BankAccountType AD_Reference_ID=216 */
 	public static final int BANKACCOUNTTYPE_AD_Reference_ID=216;
 	/** Cash = B */
@@ -180,22 +196,6 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	public String getBankAccountType()
 	{
 		return (String)get_Value(COLUMNNAME_BankAccountType);
-	}
-
-	/** Set BBAN.
-		@param BBAN Basic Bank Account Number
-	*/
-	public void setBBAN (String BBAN)
-	{
-		set_Value (COLUMNNAME_BBAN, BBAN);
-	}
-
-	/** Get BBAN.
-		@return Basic Bank Account Number
-	  */
-	public String getBBAN()
-	{
-		return (String)get_Value(COLUMNNAME_BBAN);
 	}
 
 	/** Set Bank Account.

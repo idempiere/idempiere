@@ -79,6 +79,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return Connection Descriptor
 	 *  @deprecated
 	 */
+	@Deprecated
 	public synchronized static CConnection get (String apps_host)
 	{
 		return get();
@@ -439,6 +440,7 @@ public class CConnection implements Serializable, Cloneable
 	 * 	@return true if RMI over HTTP (Wan Connection Profile)
 	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isRMIoverHTTP ()
 	{
 		return false;
@@ -449,6 +451,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return true if client and VPN/WAN
 	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isServerObjects()
 	{
 		return false;
@@ -459,6 +462,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return true if client and Terminal/VPN/WAN
 	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isServerProcess()
 	{
 		return false;
@@ -469,6 +473,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return true if client and Terminal
 	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isTerminalServer()
 	{
 		return false;

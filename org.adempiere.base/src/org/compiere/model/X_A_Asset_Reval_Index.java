@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval_Index
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Reval_Index")
 public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval_Index (Properties ctx, int A_Asset_Reval_Index_ID, String trxName)

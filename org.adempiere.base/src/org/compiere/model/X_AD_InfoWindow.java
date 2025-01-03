@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoWindow
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoWindow")
 public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -418,29 +418,6 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 		return false;
 	}
 
-	/** Set Load Page Num.
-		@param isLoadPageNum When load data for info window, also load number of paging
-	*/
-	public void setisLoadPageNum (boolean isLoadPageNum)
-	{
-		set_Value (COLUMNNAME_isLoadPageNum, Boolean.valueOf(isLoadPageNum));
-	}
-
-	/** Get Load Page Num.
-		@return When load data for info window, also load number of paging
-	  */
-	public boolean isLoadPageNum()
-	{
-		Object oo = get_Value(COLUMNNAME_isLoadPageNum);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Show in Dashboard.
 		@param IsShowInDashboard Show the dashlet in the dashboard
 	*/
@@ -562,24 +539,6 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 		return (String)get_Value(COLUMNNAME_OtherClause);
 	}
 
-	/** Set Paging Size.
-		@param PagingSize Paging Size
-	*/
-	public void setPagingSize (int PagingSize)
-	{
-		set_Value (COLUMNNAME_PagingSize, Integer.valueOf(PagingSize));
-	}
-
-	/** Get Paging Size.
-		@return Paging Size	  */
-	public int getPagingSize()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PagingSize);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -603,6 +562,24 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public int getPO_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PO_Window_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Paging Size.
+		@param PagingSize Paging Size
+	*/
+	public void setPagingSize (int PagingSize)
+	{
+		set_Value (COLUMNNAME_PagingSize, Integer.valueOf(PagingSize));
+	}
+
+	/** Get Paging Size.
+		@return Paging Size	  */
+	public int getPagingSize()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PagingSize);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -663,5 +640,28 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
+	}
+
+	/** Set Load Page Num.
+		@param isLoadPageNum When load data for info window, also load number of paging
+	*/
+	public void setisLoadPageNum (boolean isLoadPageNum)
+	{
+		set_Value (COLUMNNAME_isLoadPageNum, Boolean.valueOf(isLoadPageNum));
+	}
+
+	/** Get Load Page Num.
+		@return When load data for info window, also load number of paging
+	  */
+	public boolean isLoadPageNum()
+	{
+		Object oo = get_Value(COLUMNNAME_isLoadPageNum);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

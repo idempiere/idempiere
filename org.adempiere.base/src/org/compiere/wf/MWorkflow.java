@@ -746,6 +746,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 *  @deprecated
 	 *	@return process
 	 */
+	@Deprecated
 	public MWFProcess start (ProcessInfo pi)
 	{
 		return start(pi, null);

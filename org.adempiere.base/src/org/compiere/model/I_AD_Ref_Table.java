@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Ref_Table
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Ref_Table 
 {
@@ -107,6 +107,15 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Ref_Table_UU */
+    public static final String COLUMNNAME_AD_Ref_Table_UU = "AD_Ref_Table_UU";
+
+	/** Set AD_Ref_Table_UU	  */
+	public void setAD_Ref_Table_UU (String AD_Ref_Table_UU);
+
+	/** Get AD_Ref_Table_UU	  */
+	public String getAD_Ref_Table_UU();
+
     /** Column name AD_Reference_ID */
     public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
 
@@ -121,15 +130,6 @@ public interface I_AD_Ref_Table
 	public int getAD_Reference_ID();
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
-
-    /** Column name AD_Ref_Table_UU */
-    public static final String COLUMNNAME_AD_Ref_Table_UU = "AD_Ref_Table_UU";
-
-	/** Set AD_Ref_Table_UU	  */
-	public void setAD_Ref_Table_UU (String AD_Ref_Table_UU);
-
-	/** Get AD_Ref_Table_UU	  */
-	public String getAD_Ref_Table_UU();
 
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";

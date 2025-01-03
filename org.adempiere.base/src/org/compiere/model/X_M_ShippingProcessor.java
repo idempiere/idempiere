@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_ShippingProcessor
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingProcessor")
 public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)

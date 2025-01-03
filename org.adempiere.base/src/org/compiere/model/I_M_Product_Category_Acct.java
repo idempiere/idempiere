@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product_Category_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_Product_Category_Acct 
 {
@@ -321,15 +321,6 @@ public interface I_M_Product_Category_Acct
 
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException;
 
-    /** Column name Processing */
-    public static final String COLUMNNAME_Processing = "Processing";
-
-	/** Set Process Now	  */
-	public void setProcessing (boolean Processing);
-
-	/** Get Process Now	  */
-	public boolean isProcessing();
-
     /** Column name P_TradeDiscountGrant_Acct */
     public static final String COLUMNNAME_P_TradeDiscountGrant_Acct = "P_TradeDiscountGrant_Acct";
 
@@ -359,6 +350,15 @@ public interface I_M_Product_Category_Acct
 	public int getP_TradeDiscountRec_Acct();
 
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException;
+
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_HouseKeeping
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_HouseKeeping")
 public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_HouseKeeping (Properties ctx, int AD_HouseKeeping_ID, String trxName)

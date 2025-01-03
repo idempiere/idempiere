@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Entry
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Entry")
 public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Entry (Properties ctx, int A_Depreciation_Entry_ID, String trxName)

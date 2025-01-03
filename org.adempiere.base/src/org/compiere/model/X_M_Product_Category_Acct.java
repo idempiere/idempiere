@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_Product_Category_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_Category_Acct")
 public class X_M_Product_Category_Acct extends PO implements I_M_Product_Category_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Product_Category_Acct (Properties ctx, int M_Product_Category_Acct_ID, String trxName)
@@ -207,18 +207,18 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 	public static final String COSTINGMETHOD_AveragePO = "A";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last Invoice = i */
-	public static final String COSTINGMETHOD_LastInvoice = "i";
 	/** Average Invoice = I */
 	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Lifo = L */
 	public static final String COSTINGMETHOD_Lifo = "L";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** Standard Costing = S */
 	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
+	/** Last Invoice = i */
+	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** _ = x */
 	public static final String COSTINGMETHOD__ = "x";
 	/** Set Costing Method.
@@ -556,28 +556,6 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
-	/** Set Process Now.
-		@param Processing Process Now
-	*/
-	public void setProcessing (boolean Processing)
-	{
-		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
-	}
-
-	/** Get Process Now.
-		@return Process Now	  */
-	public boolean isProcessing()
-	{
-		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -626,5 +604,27 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Process Now.
+		@param Processing Process Now
+	*/
+	public void setProcessing (boolean Processing)
+	{
+		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
+	}
+
+	/** Get Process Now.
+		@return Process Now	  */
+	public boolean isProcessing()
+	{
+		Object oo = get_Value(COLUMNNAME_Processing);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

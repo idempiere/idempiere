@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Requisition
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Requisition")
 public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Requisition (Properties ctx, int M_Requisition_ID, String trxName)

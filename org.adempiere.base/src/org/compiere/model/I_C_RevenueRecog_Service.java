@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RevenueRecog_Service
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_RevenueRecog_Service 
 {
@@ -62,37 +62,6 @@ public interface I_C_RevenueRecog_Service
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
-    /** Column name C_RevenueRecognition_ID */
-    public static final String COLUMNNAME_C_RevenueRecognition_ID = "C_RevenueRecognition_ID";
-
-	/** Set Revenue Recognition.
-	  * Method for recording revenue
-	  */
-	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID);
-
-	/** Get Revenue Recognition.
-	  * Method for recording revenue
-	  */
-	public int getC_RevenueRecognition_ID();
-
-	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException;
-
     /** Column name C_RevenueRecog_Service_ID */
     public static final String COLUMNNAME_C_RevenueRecog_Service_ID = "C_RevenueRecog_Service_ID";
 
@@ -110,6 +79,37 @@ public interface I_C_RevenueRecog_Service
 
 	/** Get C_RevenueRecog_Service_UU	  */
 	public String getC_RevenueRecog_Service_UU();
+
+    /** Column name C_RevenueRecognition_ID */
+    public static final String COLUMNNAME_C_RevenueRecognition_ID = "C_RevenueRecognition_ID";
+
+	/** Set Revenue Recognition.
+	  * Method for recording revenue
+	  */
+	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID);
+
+	/** Get Revenue Recognition.
+	  * Method for recording revenue
+	  */
+	public int getC_RevenueRecognition_ID();
+
+	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

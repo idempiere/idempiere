@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestUpdates
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_R_RequestUpdates 
 {
@@ -119,6 +119,15 @@ public interface I_R_RequestUpdates
 	  */
 	public boolean isSelfService();
 
+    /** Column name R_RequestUpdates_UU */
+    public static final String COLUMNNAME_R_RequestUpdates_UU = "R_RequestUpdates_UU";
+
+	/** Set R_RequestUpdates_UU	  */
+	public void setR_RequestUpdates_UU (String R_RequestUpdates_UU);
+
+	/** Get R_RequestUpdates_UU	  */
+	public String getR_RequestUpdates_UU();
+
     /** Column name R_Request_ID */
     public static final String COLUMNNAME_R_Request_ID = "R_Request_ID";
 
@@ -133,15 +142,6 @@ public interface I_R_RequestUpdates
 	public int getR_Request_ID();
 
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
-
-    /** Column name R_RequestUpdates_UU */
-    public static final String COLUMNNAME_R_RequestUpdates_UU = "R_RequestUpdates_UU";
-
-	/** Set R_RequestUpdates_UU	  */
-	public void setR_RequestUpdates_UU (String R_RequestUpdates_UU);
-
-	/** Get R_RequestUpdates_UU	  */
-	public String getR_RequestUpdates_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

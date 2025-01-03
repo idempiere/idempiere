@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DepositBatch
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_DepositBatch 
 {
@@ -77,6 +77,21 @@ public interface I_C_DepositBatch
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
+    /** Column name C_Currency_ID */
+    public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
+
+	/** Set Currency.
+	  * The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID);
+
+	/** Get Currency.
+	  * The Currency for this record
+	  */
+	public int getC_Currency_ID();
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
     /** Column name C_DepositBatch_ID */
     public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
 
@@ -110,6 +125,19 @@ public interface I_C_DepositBatch
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
+    /** Column name CreateFrom */
+    public static final String COLUMNNAME_CreateFrom = "CreateFrom";
+
+	/** Set Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateFrom (String CreateFrom);
+
+	/** Get Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateFrom();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -125,19 +153,6 @@ public interface I_C_DepositBatch
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name CreateFrom */
-    public static final String COLUMNNAME_CreateFrom = "CreateFrom";
-
-	/** Set Create lines from.
-	  * Process which will generate a new document lines based on an existing document
-	  */
-	public void setCreateFrom (String CreateFrom);
-
-	/** Get Create lines from.
-	  * Process which will generate a new document lines based on an existing document
-	  */
-	public String getCreateFrom();
 
     /** Column name DateDeposit */
     public static final String COLUMNNAME_DateDeposit = "DateDeposit";
@@ -182,6 +197,19 @@ public interface I_C_DepositBatch
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name DocAction */
+    public static final String COLUMNNAME_DocAction = "DocAction";
+
+	/** Set Document Action.
+	  * The targeted status of the document
+	  */
+	public void setDocAction (String DocAction);
+
+	/** Get Document Action.
+	  * The targeted status of the document
+	  */
+	public String getDocAction();
 
     /** Column name DocStatus */
     public static final String COLUMNNAME_DocStatus = "DocStatus";
@@ -234,15 +262,6 @@ public interface I_C_DepositBatch
 	  * The document has been processed
 	  */
 	public boolean isProcessed();
-
-    /** Column name Processing */
-    public static final String COLUMNNAME_Processing = "Processing";
-
-	/** Set Process Now	  */
-	public void setProcessing (boolean Processing);
-
-	/** Get Process Now	  */
-	public boolean isProcessing();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

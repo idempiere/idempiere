@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningLevel
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DunningLevel")
 public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_DunningLevel (Properties ctx, int C_DunningLevel_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
       super (ctx, C_DunningLevel_ID, trxName);
       /** if (C_DunningLevel_ID == 0)
         {
-			setC_Dunning_ID (0);
 			setC_DunningLevel_ID (0);
+			setC_Dunning_ID (0);
 			setChargeFee (false);
 			setChargeInterest (false);
 			setDaysAfterDue (Env.ZERO);
@@ -64,8 +64,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
       super (ctx, C_DunningLevel_ID, trxName, virtualColumns);
       /** if (C_DunningLevel_ID == 0)
         {
-			setC_Dunning_ID (0);
 			setC_DunningLevel_ID (0);
+			setC_Dunning_ID (0);
 			setChargeFee (false);
 			setChargeInterest (false);
 			setDaysAfterDue (Env.ZERO);
@@ -87,8 +87,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
       super (ctx, C_DunningLevel_UU, trxName);
       /** if (C_DunningLevel_UU == null)
         {
-			setC_Dunning_ID (0);
 			setC_DunningLevel_ID (0);
+			setC_Dunning_ID (0);
 			setChargeFee (false);
 			setChargeInterest (false);
 			setDaysAfterDue (Env.ZERO);
@@ -110,8 +110,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
       super (ctx, C_DunningLevel_UU, trxName, virtualColumns);
       /** if (C_DunningLevel_UU == null)
         {
-			setC_Dunning_ID (0);
 			setC_DunningLevel_ID (0);
+			setC_Dunning_ID (0);
 			setChargeFee (false);
 			setChargeInterest (false);
 			setDaysAfterDue (Env.ZERO);
@@ -155,34 +155,6 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
       return sb.toString();
     }
 
-	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
-			.getPO(getC_Dunning_ID(), get_TrxName());
-	}
-
-	/** Set Dunning.
-		@param C_Dunning_ID Dunning Rules for overdue invoices
-	*/
-	public void setC_Dunning_ID (int C_Dunning_ID)
-	{
-		if (C_Dunning_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
-	}
-
-	/** Get Dunning.
-		@return Dunning Rules for overdue invoices
-	  */
-	public int getC_Dunning_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Dunning Level.
 		@param C_DunningLevel_ID Dunning Level
 	*/
@@ -217,6 +189,62 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public String getC_DunningLevel_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DunningLevel_UU);
+	}
+
+	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
+			.getPO(getC_Dunning_ID(), get_TrxName());
+	}
+
+	/** Set Dunning.
+		@param C_Dunning_ID Dunning Rules for overdue invoices
+	*/
+	public void setC_Dunning_ID (int C_Dunning_ID)
+	{
+		if (C_Dunning_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
+	}
+
+	/** Get Dunning.
+		@return Dunning Rules for overdue invoices
+	  */
+	public int getC_Dunning_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
+
+	/** Set Payment Term.
+		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	*/
+	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
+	{
+		if (C_PaymentTerm_ID < 1)
+			set_Value (COLUMNNAME_C_PaymentTerm_ID, null);
+		else
+			set_Value (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
+	}
+
+	/** Get Payment Term.
+		@return The terms of Payment (timing, discount)
+	  */
+	public int getC_PaymentTerm_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Charge fee.
@@ -263,34 +291,6 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());
-	}
-
-	/** Set Payment Term.
-		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
-	*/
-	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
-	{
-		if (C_PaymentTerm_ID < 1)
-			set_Value (COLUMNNAME_C_PaymentTerm_ID, null);
-		else
-			set_Value (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
-	}
-
-	/** Get Payment Term.
-		@return The terms of Payment (timing, discount)
-	  */
-	public int getC_PaymentTerm_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Days after due date.

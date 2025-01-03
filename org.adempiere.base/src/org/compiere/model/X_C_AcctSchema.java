@@ -31,7 +31,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240903L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)

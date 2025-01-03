@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReportView_Col
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReportView_Col")
 public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Col (Properties ctx, int AD_ReportView_Col_ID, String trxName)

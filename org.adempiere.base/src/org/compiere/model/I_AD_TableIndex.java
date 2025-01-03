@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TableIndex
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_TableIndex 
 {
@@ -77,21 +77,6 @@ public interface I_AD_TableIndex
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Table_ID */
-    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
-
-	/** Set Table.
-	  * Database Table information
-	  */
-	public void setAD_Table_ID (int AD_Table_ID);
-
-	/** Get Table.
-	  * Database Table information
-	  */
-	public int getAD_Table_ID();
-
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
-
     /** Column name AD_TableIndex_ID */
     public static final String COLUMNNAME_AD_TableIndex_ID = "AD_TableIndex_ID";
 
@@ -109,6 +94,21 @@ public interface I_AD_TableIndex
 
 	/** Get AD_TableIndex_UU	  */
 	public String getAD_TableIndex_UU();
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

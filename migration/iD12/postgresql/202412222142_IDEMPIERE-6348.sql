@@ -1,0 +1,11 @@
+-- IDEMPIERE-6348 Release 12 Kudos
+SELECT register_migration_script('202412222142_IDEMPIERE-6348.sql') FROM dual;
+
+-- Dec 22, 2024, 9:42:23 PM CET
+UPDATE AD_Column SET AD_Reference_ID=30,Updated=TO_TIMESTAMP('2024-12-22 21:42:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=216591
+;
+
+-- Dec 22, 2024, 9:43:11 PM CET
+UPDATE AD_Column SET FieldLength=36, AD_Reference_ID=200231, FKConstraintType=NULL,Updated=TO_TIMESTAMP('2024-12-22 21:43:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215294
+;
+

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxProvider
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_TaxProvider 
 {
@@ -40,15 +40,6 @@ public interface I_C_TaxProvider
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name Account */
-    public static final String COLUMNNAME_Account = "Account";
-
-	/** Set Account	  */
-	public void setAccount (String Account);
-
-	/** Get Account	  */
-	public String getAccount();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -71,30 +62,14 @@ public interface I_C_TaxProvider
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name CompanyCode */
-    public static final String COLUMNNAME_CompanyCode = "CompanyCode";
+    /** Column name Account */
+    public static final String COLUMNNAME_Account = "Account";
 
-	/** Set Company Code	  */
-	public void setCompanyCode (String CompanyCode);
+	/** Set Account	  */
+	public void setAccount (String Account);
 
-	/** Get Company Code	  */
-	public String getCompanyCode();
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
+	/** Get Account	  */
+	public String getAccount();
 
     /** Column name C_TaxProviderCfg_ID */
     public static final String COLUMNNAME_C_TaxProviderCfg_ID = "C_TaxProviderCfg_ID";
@@ -124,6 +99,31 @@ public interface I_C_TaxProvider
 
 	/** Get C_TaxProvider_UU	  */
 	public String getC_TaxProvider_UU();
+
+    /** Column name CompanyCode */
+    public static final String COLUMNNAME_CompanyCode = "CompanyCode";
+
+	/** Set Company Code	  */
+	public void setCompanyCode (String CompanyCode);
+
+	/** Get Company Code	  */
+	public String getCompanyCode();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

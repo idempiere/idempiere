@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMProduct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMProduct")
 public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_BOMProduct (Properties ctx, int M_BOMProduct_ID, String trxName)
@@ -49,8 +49,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 			setLeadTimeOffset (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
-			setM_BOM_ID (0);
 			setM_BOMProduct_ID (0);
+			setM_BOM_ID (0);
         } */
     }
 
@@ -68,8 +68,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 			setLeadTimeOffset (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
-			setM_BOM_ID (0);
 			setM_BOMProduct_ID (0);
+			setM_BOM_ID (0);
         } */
     }
 
@@ -87,8 +87,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 			setLeadTimeOffset (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
-			setM_BOM_ID (0);
 			setM_BOMProduct_ID (0);
+			setM_BOM_ID (0);
         } */
     }
 
@@ -106,8 +106,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 			setLeadTimeOffset (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
-			setM_BOM_ID (0);
 			setM_BOMProduct_ID (0);
+			setM_BOM_ID (0);
         } */
     }
 
@@ -344,34 +344,6 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_BOM)MTable.get(getCtx(), org.compiere.model.I_M_BOM.Table_ID)
-			.getPO(getM_BOM_ID(), get_TrxName());
-	}
-
-	/** Set BOM.
-		@param M_BOM_ID Bill of Material
-	*/
-	public void setM_BOM_ID (int M_BOM_ID)
-	{
-		if (M_BOM_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_BOM_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_BOM_ID, Integer.valueOf(M_BOM_ID));
-	}
-
-	/** Get BOM.
-		@return Bill of Material
-	  */
-	public int getM_BOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_BOM_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set BOM Component.
 		@param M_BOMProduct_ID Bill of Material Component (Product)
 	*/
@@ -407,6 +379,34 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	public String getM_BOMProduct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_BOMProduct_UU);
+	}
+
+	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_BOM)MTable.get(getCtx(), org.compiere.model.I_M_BOM.Table_ID)
+			.getPO(getM_BOM_ID(), get_TrxName());
+	}
+
+	/** Set BOM.
+		@param M_BOM_ID Bill of Material
+	*/
+	public void setM_BOM_ID (int M_BOM_ID)
+	{
+		if (M_BOM_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_BOM_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_BOM_ID, Integer.valueOf(M_BOM_ID));
+	}
+
+	/** Get BOM.
+		@return Bill of Material
+	  */
+	public int getM_BOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_BOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException

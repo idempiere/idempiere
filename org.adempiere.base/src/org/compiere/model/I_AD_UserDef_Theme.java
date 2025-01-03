@@ -80,10 +80,10 @@ public interface I_AD_UserDef_Theme
     /** Column name AD_UserDef_Theme_ID */
     public static final String COLUMNNAME_AD_UserDef_Theme_ID = "AD_UserDef_Theme_ID";
 
-	/** Set User defined Theme	  */
+	/** Set Theme Customization	  */
 	public void setAD_UserDef_Theme_ID (int AD_UserDef_Theme_ID);
 
-	/** Get User defined Theme	  */
+	/** Get Theme Customization	  */
 	public int getAD_UserDef_Theme_ID();
 
     /** Column name AD_UserDef_Theme_UU */

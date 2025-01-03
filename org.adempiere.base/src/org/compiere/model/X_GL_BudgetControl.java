@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_BudgetControl
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="GL_BudgetControl")
 public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName)

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecog_Service
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecog_Service")
 public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Service, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RevenueRecog_Service (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
       super (ctx, C_RevenueRecog_Service_ID, trxName);
       /** if (C_RevenueRecog_Service_ID == 0)
         {
-			setC_RevenueRecognition_ID (0);
 			setC_RevenueRecog_Service_ID (0);
+			setC_RevenueRecognition_ID (0);
         } */
     }
 
@@ -52,8 +52,8 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
       super (ctx, C_RevenueRecog_Service_ID, trxName, virtualColumns);
       /** if (C_RevenueRecog_Service_ID == 0)
         {
-			setC_RevenueRecognition_ID (0);
 			setC_RevenueRecog_Service_ID (0);
+			setC_RevenueRecognition_ID (0);
         } */
     }
 
@@ -63,8 +63,8 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
       super (ctx, C_RevenueRecog_Service_UU, trxName);
       /** if (C_RevenueRecog_Service_UU == null)
         {
-			setC_RevenueRecognition_ID (0);
 			setC_RevenueRecog_Service_ID (0);
+			setC_RevenueRecognition_ID (0);
         } */
     }
 
@@ -74,8 +74,8 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
       super (ctx, C_RevenueRecog_Service_UU, trxName, virtualColumns);
       /** if (C_RevenueRecog_Service_UU == null)
         {
-			setC_RevenueRecognition_ID (0);
 			setC_RevenueRecog_Service_ID (0);
+			setC_RevenueRecognition_ID (0);
         } */
     }
 
@@ -105,42 +105,6 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
       StringBuilder sb = new StringBuilder ("X_C_RevenueRecog_Service[")
         .append(get_ID()).append("]");
       return sb.toString();
-    }
-
-	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
-			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
-	}
-
-	/** Set Revenue Recognition.
-		@param C_RevenueRecognition_ID Method for recording revenue
-	*/
-	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID)
-	{
-		if (C_RevenueRecognition_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_ID, Integer.valueOf(C_RevenueRecognition_ID));
-	}
-
-	/** Get Revenue Recognition.
-		@return Method for recording revenue
-	  */
-	public int getC_RevenueRecognition_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_RevenueRecognition_ID()));
     }
 
 	/** Set Revenue Recognition Service.
@@ -178,6 +142,42 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	{
 		return (String)get_Value(COLUMNNAME_C_RevenueRecog_Service_UU);
 	}
+
+	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
+			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
+	}
+
+	/** Set Revenue Recognition.
+		@param C_RevenueRecognition_ID Method for recording revenue
+	*/
+	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID)
+	{
+		if (C_RevenueRecognition_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_ID, Integer.valueOf(C_RevenueRecognition_ID));
+	}
+
+	/** Get Revenue Recognition.
+		@return Method for recording revenue
+	  */
+	public int getC_RevenueRecognition_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_RevenueRecognition_ID()));
+    }
 
 	/** Set Description.
 		@param Description Optional short description of the record

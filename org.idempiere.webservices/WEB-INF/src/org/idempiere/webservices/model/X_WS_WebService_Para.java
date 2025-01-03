@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for WS_WebService_Para
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebService_Para")
 public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
       /** if (WS_WebService_Para_ID == 0)
         {
 			setParameterType (null);
-			setWS_WebService_Para_ID (0);
 			setWS_WebServiceType_ID (0);
+			setWS_WebService_Para_ID (0);
         } */
     }
 
@@ -52,8 +52,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
       /** if (WS_WebService_Para_ID == 0)
         {
 			setParameterType (null);
-			setWS_WebService_Para_ID (0);
 			setWS_WebServiceType_ID (0);
+			setWS_WebService_Para_ID (0);
         } */
     }
 
@@ -64,8 +64,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
       /** if (WS_WebService_Para_UU == null)
         {
 			setParameterType (null);
-			setWS_WebService_Para_ID (0);
 			setWS_WebServiceType_ID (0);
+			setWS_WebService_Para_ID (0);
         } */
     }
 
@@ -76,8 +76,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
       /** if (WS_WebService_Para_UU == null)
         {
 			setParameterType (null);
-			setWS_WebService_Para_ID (0);
 			setWS_WebServiceType_ID (0);
+			setWS_WebService_Para_ID (0);
         } */
     }
 
@@ -162,6 +162,33 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 		return (String)get_Value(COLUMNNAME_ParameterType);
 	}
 
+	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
+	{
+		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_ID)
+			.getPO(getWS_WebServiceType_ID(), get_TrxName());
+	}
+
+	/** Set Web Service Type.
+		@param WS_WebServiceType_ID Web Service Type
+	*/
+	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
+	{
+		if (WS_WebServiceType_ID < 1)
+			set_Value (COLUMNNAME_WS_WebServiceType_ID, null);
+		else
+			set_Value (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
+	}
+
+	/** Get Web Service Type.
+		@return Web Service Type	  */
+	public int getWS_WebServiceType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Web Service Parameters.
 		@param WS_WebService_Para_ID Web Service Parameters
 	*/
@@ -196,32 +223,5 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	public String getWS_WebService_Para_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebService_Para_UU);
-	}
-
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
-	{
-		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_ID)
-			.getPO(getWS_WebServiceType_ID(), get_TrxName());
-	}
-
-	/** Set Web Service Type.
-		@param WS_WebServiceType_ID Web Service Type
-	*/
-	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
-	{
-		if (WS_WebServiceType_ID < 1)
-			set_Value (COLUMNNAME_WS_WebServiceType_ID, null);
-		else
-			set_Value (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
-	}
-
-	/** Get Web Service Type.
-		@return Web Service Type	  */
-	public int getWS_WebServiceType_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

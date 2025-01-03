@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ReportView_Column
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReportView_Column")
 public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Column (Properties ctx, int AD_ReportView_Column_ID, String trxName)

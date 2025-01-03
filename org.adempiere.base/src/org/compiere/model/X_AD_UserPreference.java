@@ -30,7 +30,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240706L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -192,16 +192,17 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set Automatic Commit.
-		@param AutoCommit Automatic Commit
+	/** Set Save on Navigate.
+		@param AutoCommit Automatically save changes to the current record upon user navigation.
 	*/
 	public void setAutoCommit (boolean AutoCommit)
 	{
 		set_Value (COLUMNNAME_AutoCommit, Boolean.valueOf(AutoCommit));
 	}
 
-	/** Get Automatic Commit.
-		@return Automatic Commit	  */
+	/** Get Save on Navigate.
+		@return Automatically save changes to the current record upon user navigation.
+	  */
 	public boolean isAutoCommit()
 	{
 		Object oo = get_Value(COLUMNNAME_AutoCommit);

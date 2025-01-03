@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process_Para
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_Para")
 public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -804,6 +804,22 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
+	/** Set Value Format.
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;, or ~regex
+	*/
+	public void setVFormat (String VFormat)
+	{
+		set_Value (COLUMNNAME_VFormat, VFormat);
+	}
+
+	/** Get Value Format.
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;, or ~regex
+	  */
+	public String getVFormat()
+	{
+		return (String)get_Value(COLUMNNAME_VFormat);
+	}
+
 	/** Set Max. Value.
 		@param ValueMax Maximum Value for a field
 	*/
@@ -834,21 +850,5 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getValueMin()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMin);
-	}
-
-	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	*/
-	public void setVFormat (String VFormat)
-	{
-		set_Value (COLUMNNAME_VFormat, VFormat);
-	}
-
-	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	  */
-	public String getVFormat()
-	{
-		return (String)get_Value(COLUMNNAME_VFormat);
 	}
 }
