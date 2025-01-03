@@ -8,53 +8,55 @@ Copyright (C) 2009 Idalica Corporation
 <style>
 	.section-head {
 		margin-top: 20px;
+		padding: 10px 3px 10px 5px;
 		font-size: 9pt;
 	}
 
 	.loginInfoBox {
-		background-color: #9CBDFF;
+		background-color: #e0f2ff;
 		margin: 5px;
-		padding: 3px;
+		padding: 6px 3px 6px 3px;
 		margin-top: 20px;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 	}
 </style>
 <div class="loginInfoBox">
-<span class="section-head">Initially you can log into the system with the following users:
+<span class="section-head">Initially, you can log in with:
 </span>
 
-<table cellpadding="5" cellspacing="0" style="margin-top: 10px; font-size: 8pt; background-color: transparent;">
+<table cellpadding="5" cellspacing="0" style="width: 100%; margin-top: 10px; font-size: 9pt; background-color: transparent;">
 
-<tbody><tr valign="top">
-</th><th><i><b>User</b></i>
-</th><th><i><b>EMail</b></i>
-</th><th><i><b>Password</b></i>
-</th></tr>
+<tbody>
+<tr valign="top">
+<th><b>User</b></th>
+<th><b>Email</b></th>
+<th><b>Password</b></th>
+</tr>
 
 <tr valign="top">
-</td><td>GardenAdmin
-</td><td>admin @ gardenworld.com
-</td><td>GardenAdmin
-</td></tr>
+<td>GardenAdmin</td>
+<td>admin @ gardenworld.com</td>
+<td>GardenAdmin</td>
+</tr>
 
 <tr valign="top">
-</td><td>GardenUser
-</td><td>user @ gardenworld.com
-</td><td>GardenUser
-</td></tr>
+<td>GardenUser</td>
+<td>user @ gardenworld.com</td>
+<td>GardenUser</td>
+</tr>
 
 <tr valign="top">
-</td><td>SuperUser
-</td><td>superuser @ idempiere.com
-</td><td>System
-</td></tr>
+<td>SuperUser</td>
+<td>superuser @ idempiere.com</td>
+<td>System</td>
+</tr>
 
 <tr valign="top">
-</td><td>System
-</td><td>system @ idempiere.com
-</td><td>System
-</td></tr>
+<td>System</td>
+<td>system @ idempiere.com</td>
+<td>System</td>
+</tr>
 
 </tbody>
 </table>

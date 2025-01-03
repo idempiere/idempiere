@@ -30,7 +30,7 @@ public class X_AD_TableValRule extends PO implements I_AD_TableValRule, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240125L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_TableValRule (Properties ctx, String AD_TableValRule_UU, String trxName)
@@ -110,6 +110,21 @@ public class X_AD_TableValRule extends PO implements I_AD_TableValRule, I_Persis
 		return ii.intValue();
 	}
 
+	/** Set AD_TableValRule_UU.
+		@param AD_TableValRule_UU AD_TableValRule_UU
+	*/
+	public void setAD_TableValRule_UU (String AD_TableValRule_UU)
+	{
+		set_Value (COLUMNNAME_AD_TableValRule_UU, AD_TableValRule_UU);
+	}
+
+	/** Get AD_TableValRule_UU.
+		@return AD_TableValRule_UU	  */
+	public String getAD_TableValRule_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_TableValRule_UU);
+	}
+
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -136,21 +151,6 @@ public class X_AD_TableValRule extends PO implements I_AD_TableValRule, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set AD_TableValRule_UU.
-		@param AD_TableValRule_UU AD_TableValRule_UU
-	*/
-	public void setAD_TableValRule_UU (String AD_TableValRule_UU)
-	{
-		set_Value (COLUMNNAME_AD_TableValRule_UU, AD_TableValRule_UU);
-	}
-
-	/** Get AD_TableValRule_UU.
-		@return AD_TableValRule_UU	  */
-	public String getAD_TableValRule_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_TableValRule_UU);
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException

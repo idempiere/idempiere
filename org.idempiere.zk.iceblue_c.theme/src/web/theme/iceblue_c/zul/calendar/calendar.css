@@ -628,7 +628,7 @@
 
 .z-calendars-day-over,z-calendars-month-day-over{
 	cursor:pointer;
-	text-decoration:underline
+	text-decoration: none;
 }
 
 .z-calendars-month .z-calendars-inner{
@@ -691,8 +691,13 @@
 }
 
 .z-calendars-day-of-month-bg td{
-    border-left: 4px solid #FFFFFF;
+    border: 1px solid #d9d9d9;
     background: #FFFFFF;
+}
+
+.z-calendars-day-of-month-bg td:hover{
+	cursor: pointer;
+    background: #0093f9 !important;
 }
 
 .z-calendars-day-of-month-body{
@@ -702,15 +707,13 @@
 }
 
 .z-calendars-month-date{
-	background-color: #f0f3f5;
-    border-left: 4px solid #FFFFFF;
-    border-top: 4px solid #FFFFFF;
-    color: #000000;
-    line-height: 16px;
-    overflow: hidden;
-    padding-right: 2px;
-    text-align: center;
-    font-size: 14px;
+	background-color: transparent;
+	color: #000000;
+	line-height: 16px;
+	overflow: hidden;
+	padding-right: 2px;
+	text-align: right;
+	font-size: 14px;
 	padding-top: 4px;
 	padding-bottom: 3px;
 }
@@ -721,15 +724,27 @@
 	line-height:14px
 }
 
-.z-calendars-month-date-off{
+.z-calendars-month-date-off:hover{
+	background: transparent;
+}
+
+.z-calendars-month-date-off>.z-calendars-month-date-cnt{
     background-color: #74777b;
     color: #FFFFFF;
+	border-radius: 2px;
+	padding: 1px;
 }
 
 .z-calendars-month-date.z-calendars-week-today{
+	background: transparent;
+}
+
+.z-calendars-month-date.z-calendars-week-today>.z-calendars-month-date-cnt{
 	 background-color:#0093f9 !important;
+	 border-radius: 2px;
 	 color: #ffffff;
 	 font-weight: bold;
+	 padding: 1px;
 }
 
 .z-calendars-day-of-month-bg .z-calendars-week-today{

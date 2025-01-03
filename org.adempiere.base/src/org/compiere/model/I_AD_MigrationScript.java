@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_MigrationScript
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_MigrationScript 
 {
@@ -148,15 +148,6 @@ public interface I_AD_MigrationScript
 	  */
 	public boolean isActive();
 
-    /** Column name isApply */
-    public static final String COLUMNNAME_isApply = "isApply";
-
-	/** Set Apply Script	  */
-	public void setisApply (boolean isApply);
-
-	/** Get Apply Script	  */
-	public boolean isApply();
-
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -244,6 +235,19 @@ public interface I_AD_MigrationScript
 	  */
 	public String getStatus();
 
+    /** Column name URL */
+    public static final String COLUMNNAME_URL = "URL";
+
+	/** Set URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public void setURL (String URL);
+
+	/** Get URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public String getURL();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -260,16 +264,12 @@ public interface I_AD_MigrationScript
 	  */
 	public int getUpdatedBy();
 
-    /** Column name URL */
-    public static final String COLUMNNAME_URL = "URL";
+    /** Column name isApply */
+    public static final String COLUMNNAME_isApply = "isApply";
 
-	/** Set URL.
-	  * Full URL address - e.g. http://www.idempiere.org
-	  */
-	public void setURL (String URL);
+	/** Set Apply Script	  */
+	public void setisApply (boolean isApply);
 
-	/** Get URL.
-	  * Full URL address - e.g. http://www.idempiere.org
-	  */
-	public String getURL();
+	/** Get Apply Script	  */
+	public boolean isApply();
 }

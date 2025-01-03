@@ -102,7 +102,7 @@
 .z-icon-Find:before {	 
 	content: "\f002";
 }
-.z-icon-FirstRecord:before {	 
+.z-icon-FirstRecord:before, .z-icon-angle-double-left:before {	 
 	content: "\f048";
 }
 .z-icon-Folder:before {
@@ -191,7 +191,7 @@
 	content: "\f0d1";
 	font-weight: 900;
 }
-.z-icon-LastRecord:before {
+.z-icon-LastRecord:before, .z-icon-angle-double-right:before {
 	content: "\f051";
 }
 .z-icon-Location:before {
@@ -235,7 +235,7 @@
 .z-icon-Next:before {
 	content: "\f0da";
 }
-.z-icon-NextRecord:before {
+.z-icon-NextRecord:before, .z-icon-angle-right:before {
 	content: "\f061";
 }
 .z-icon-Notice:before {
@@ -280,7 +280,7 @@
 .z-icon-Previous:before {
 	content: "\f0d9";
 }
-.z-icon-PreviousRecord:before {
+.z-icon-PreviousRecord:before, z-icon-angle-left:before {
 	content: "\f060";
 }
 .z-icon-Print:before {
@@ -358,6 +358,9 @@
 .z-icon-StepForward:before {
 	content: "\f04e";
 }
+.z-icon-Tab::before {
+	content: "\f24d";
+}
 .z-icon-Task:before {
 	content: "\f0ae";
 	font-weight: 900;
@@ -386,6 +389,9 @@
 .z-icon-UnSort:before {
 	content: "\f074";
 	font-weight: 900;
+}
+.z-icon-File:before {
+	content: "\f15b";
 }
 .z-icon-VPreference:before {
 	content: "\f039";

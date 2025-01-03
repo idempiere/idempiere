@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Label
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Label")
 public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Label (Properties ctx, int AD_Label_ID, String trxName)
@@ -128,28 +128,6 @@ public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Label.
-		@param AD_Label_ID Record Label
-	*/
-	public void setAD_Label_ID (int AD_Label_ID)
-	{
-		if (AD_Label_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Label_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Label_ID, Integer.valueOf(AD_Label_ID));
-	}
-
-	/** Get Label.
-		@return Record Label
-	  */
-	public int getAD_Label_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Label_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -173,6 +151,28 @@ public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
 	public int getAD_LabelStyle_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelStyle_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Label.
+		@param AD_Label_ID Record Label
+	*/
+	public void setAD_Label_ID (int AD_Label_ID)
+	{
+		if (AD_Label_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Label_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Label_ID, Integer.valueOf(AD_Label_ID));
+	}
+
+	/** Get Label.
+		@return Record Label
+	  */
+	public int getAD_Label_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Label_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

@@ -136,8 +136,8 @@ public class AlertProcessor extends AdempiereServer
 		MSystem system = MSystem.get(Env.getCtx());
 		MClient client = MClient.get(Env.getCtx(), alert.getAD_Client_ID());
 		// parse variables from Client, then from System
-		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, true);
-		alertMessage = Env.parseVariable(alertMessage, system, null, true);
+		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, false, false, true, true); // keep escape sequence
+		alertMessage = Env.parseVariable(alertMessage, system, null, false, false, true, false);
 		StringBuilder message = new StringBuilder(alertMessage).append(Env.NL);
 		//
 		boolean valid = true;

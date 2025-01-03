@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_FixedAsset
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="I_FixedAsset")
 public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_I_FixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
@@ -364,22 +364,6 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_Type_Value);
 	}
 
-	/** Set Account Schema Name.
-		@param AcctSchemaName Name of the Accounting Schema
-	*/
-	public void setAcctSchemaName (String AcctSchemaName)
-	{
-		set_Value (COLUMNNAME_AcctSchemaName, AcctSchemaName);
-	}
-
-	/** Get Account Schema Name.
-		@return Name of the Accounting Schema
-	  */
-	public String getAcctSchemaName()
-	{
-		return (String)get_Value(COLUMNNAME_AcctSchemaName);
-	}
-
 	/** Set Current Period.
 		@param A_Current_Period Current Period
 	*/
@@ -432,6 +416,22 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Account Schema Name.
+		@param AcctSchemaName Name of the Accounting Schema
+	*/
+	public void setAcctSchemaName (String AcctSchemaName)
+	{
+		set_Value (COLUMNNAME_AcctSchemaName, AcctSchemaName);
+	}
+
+	/** Get Account Schema Name.
+		@return Name of the Accounting Schema
+	  */
+	public String getAcctSchemaName()
+	{
+		return (String)get_Value(COLUMNNAME_AcctSchemaName);
 	}
 
 	/** Set Entered Amount.
@@ -771,6 +771,22 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
 
+	/** Set ISO Currency Code.
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code()
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
+	}
+
 	/** Set Import Error Message.
 		@param I_ErrorMsg Messages generated from import process
 	*/
@@ -859,22 +875,6 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public String getInventoryNo()
 	{
 		return (String)get_Value(COLUMNNAME_InventoryNo);
-	}
-
-	/** Set ISO Currency Code.
-		@param ISO_Code Three letter ISO 4217 Code of the Currency
-	*/
-	public void setISO_Code (String ISO_Code)
-	{
-		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
-	}
-
-	/** Get ISO Currency Code.
-		@return Three letter ISO 4217 Code of the Currency
-	  */
-	public String getISO_Code()
-	{
-		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Locator Key.

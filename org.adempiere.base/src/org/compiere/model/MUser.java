@@ -38,6 +38,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
@@ -69,6 +70,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 * @return array of users
 	 * @deprecated Since 3.5.3a. Please use {@link #getOfBPartner(Properties, int, String)}.
 	 */
+	@Deprecated
 	public static MUser[] getOfBPartner (Properties ctx, int C_BPartner_ID)
 	{
 		return getOfBPartner(ctx, C_BPartner_ID, null);
@@ -295,7 +297,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			return "?";
 		return user.getName();
 	}	//	getNameOfUser
-
 	
 	/**
 	 * 	User is SalesRep
@@ -312,6 +313,24 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		int no = DB.getSQLValue(null, sql, AD_User_ID);
 		return no == AD_User_ID;
 	}	//	isSalesRep
+	
+	/**
+	 * Get users with role assignment that is readable by current effective role.<br/>
+	 * @param withEmptyElement if true, first element of the return array is an empty element with (-1,"")
+	 * @param trxName optional transaction name
+	 * @return user records (AD_User_ID, Name), order by name
+	 */
+	public static KeyNamePair[] getWithRoleKeyNamePairs(boolean withEmptyElement, String trxName) 
+	{
+		//Internal Users
+		String sql = "SELECT AD_User_ID, Name "
+			+ "FROM AD_User u WHERE EXISTS "
+				+"(SELECT * FROM AD_User_Roles ur WHERE u.AD_User_ID=ur.AD_User_ID) "
+			+ "ORDER BY 2";
+		MRole role = MRole.getDefault();
+		sql = role.addAccessSQL(sql, "u", true, false);
+		return DB.getKeyNamePairsEx(trxName, sql, withEmptyElement);
+	}
 	
 	/**	Cache					*/
 	static private ImmutableIntPOCache<Integer,MUser> s_cache = new ImmutableIntPOCache<Integer,MUser>(Table_Name, 30, 60);

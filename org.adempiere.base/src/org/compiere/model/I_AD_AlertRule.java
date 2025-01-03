@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertRule
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_AlertRule 
 {
@@ -40,21 +40,6 @@ public interface I_AD_AlertRule
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
-
-    /** Column name AD_Alert_ID */
-    public static final String COLUMNNAME_AD_Alert_ID = "AD_Alert_ID";
-
-	/** Set Alert.
-	  * iDempiere Alert
-	  */
-	public void setAD_Alert_ID (int AD_Alert_ID);
-
-	/** Get Alert.
-	  * iDempiere Alert
-	  */
-	public int getAD_Alert_ID();
-
-	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException;
 
     /** Column name AD_AlertRule_ID */
     public static final String COLUMNNAME_AD_AlertRule_ID = "AD_AlertRule_ID";
@@ -77,6 +62,21 @@ public interface I_AD_AlertRule
 
 	/** Get AD_AlertRule_UU	  */
 	public String getAD_AlertRule_UU();
+
+    /** Column name AD_Alert_ID */
+    public static final String COLUMNNAME_AD_Alert_ID = "AD_Alert_ID";
+
+	/** Set Alert.
+	  * iDempiere Alert
+	  */
+	public void setAD_Alert_ID (int AD_Alert_ID);
+
+	/** Get Alert.
+	  * iDempiere Alert
+	  */
+	public int getAD_Alert_ID();
+
+	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_CashFlow
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_CashFlow")
 public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_CashFlow (Properties ctx, int T_CashFlow_ID, String trxName)
@@ -193,56 +193,6 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** CashFlowSource AD_Reference_ID=53387 */
-	public static final int CASHFLOWSOURCE_AD_Reference_ID=53387;
-	/** 1_Initial Balance = 1 */
-	public static final String CASHFLOWSOURCE_1_InitialBalance = "1";
-	/** 2_Plan = 2 */
-	public static final String CASHFLOWSOURCE_2_Plan = "2";
-	/** 3_Commitments (Orders) = 3 */
-	public static final String CASHFLOWSOURCE_3_CommitmentsOrders = "3";
-	/** 4_Actual Debt (Invoices) = 4 */
-	public static final String CASHFLOWSOURCE_4_ActualDebtInvoices = "4";
-	/** Set Cash Flow Source.
-		@param CashFlowSource Cash Flow Source
-	*/
-	public void setCashFlowSource (String CashFlowSource)
-	{
-
-		set_Value (COLUMNNAME_CashFlowSource, CashFlowSource);
-	}
-
-	/** Get Cash Flow Source.
-		@return Cash Flow Source	  */
-	public String getCashFlowSource()
-	{
-		return (String)get_Value(COLUMNNAME_CashFlowSource);
-	}
-
-	/** CashFlowType AD_Reference_ID=53385 */
-	public static final int CASHFLOWTYPE_AD_Reference_ID=53385;
-	/** Financing = F */
-	public static final String CASHFLOWTYPE_Financing = "F";
-	/** Investment = I */
-	public static final String CASHFLOWTYPE_Investment = "I";
-	/** Operational = O */
-	public static final String CASHFLOWTYPE_Operational = "O";
-	/** Set Cash Flow Type.
-		@param CashFlowType Cash Flow Type
-	*/
-	public void setCashFlowType (String CashFlowType)
-	{
-
-		set_Value (COLUMNNAME_CashFlowType, CashFlowType);
-	}
-
-	/** Get Cash Flow Type.
-		@return Cash Flow Type	  */
-	public String getCashFlowType()
-	{
-		return (String)get_Value(COLUMNNAME_CashFlowType);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
@@ -466,6 +416,56 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** CashFlowSource AD_Reference_ID=53387 */
+	public static final int CASHFLOWSOURCE_AD_Reference_ID=53387;
+	/** 1_Initial Balance = 1 */
+	public static final String CASHFLOWSOURCE_1_InitialBalance = "1";
+	/** 2_Plan = 2 */
+	public static final String CASHFLOWSOURCE_2_Plan = "2";
+	/** 3_Commitments (Orders) = 3 */
+	public static final String CASHFLOWSOURCE_3_CommitmentsOrders = "3";
+	/** 4_Actual Debt (Invoices) = 4 */
+	public static final String CASHFLOWSOURCE_4_ActualDebtInvoices = "4";
+	/** Set Cash Flow Source.
+		@param CashFlowSource Cash Flow Source
+	*/
+	public void setCashFlowSource (String CashFlowSource)
+	{
+
+		set_Value (COLUMNNAME_CashFlowSource, CashFlowSource);
+	}
+
+	/** Get Cash Flow Source.
+		@return Cash Flow Source	  */
+	public String getCashFlowSource()
+	{
+		return (String)get_Value(COLUMNNAME_CashFlowSource);
+	}
+
+	/** CashFlowType AD_Reference_ID=53385 */
+	public static final int CASHFLOWTYPE_AD_Reference_ID=53385;
+	/** Financing = F */
+	public static final String CASHFLOWTYPE_Financing = "F";
+	/** Investment = I */
+	public static final String CASHFLOWTYPE_Investment = "I";
+	/** Operational = O */
+	public static final String CASHFLOWTYPE_Operational = "O";
+	/** Set Cash Flow Type.
+		@param CashFlowType Cash Flow Type
+	*/
+	public void setCashFlowType (String CashFlowType)
+	{
+
+		set_Value (COLUMNNAME_CashFlowType, CashFlowType);
+	}
+
+	/** Get Cash Flow Type.
+		@return Cash Flow Type	  */
+	public String getCashFlowType()
+	{
+		return (String)get_Value(COLUMNNAME_CashFlowType);
 	}
 
 	/** Set Date To.

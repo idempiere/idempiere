@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Element
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Element 
 {
@@ -180,15 +180,6 @@ public interface I_AD_Element
 	  */
 	public String getName();
 
-    /** Column name Placeholder */
-    public static final String COLUMNNAME_Placeholder = "Placeholder";
-
-	/** Set Placeholder	  */
-	public void setPlaceholder (String Placeholder);
-
-	/** Get Placeholder	  */
-	public String getPlaceholder();
-
     /** Column name PO_Description */
     public static final String COLUMNNAME_PO_Description = "PO_Description";
 
@@ -240,6 +231,15 @@ public interface I_AD_Element
 	  * Print name on PO Screens/Reports
 	  */
 	public String getPO_PrintName();
+
+    /** Column name Placeholder */
+    public static final String COLUMNNAME_Placeholder = "Placeholder";
+
+	/** Set Placeholder	  */
+	public void setPlaceholder (String Placeholder);
+
+	/** Get Placeholder	  */
+	public String getPlaceholder();
 
     /** Column name PrintName */
     public static final String COLUMNNAME_PrintName = "PrintName";

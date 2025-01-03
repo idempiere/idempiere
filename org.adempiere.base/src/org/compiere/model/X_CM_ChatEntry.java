@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatEntry
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatEntry")
 public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_CM_ChatEntry (Properties ctx, int CM_ChatEntry_ID, String trxName)
@@ -39,11 +39,11 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
       super (ctx, CM_ChatEntry_ID, trxName);
       /** if (CM_ChatEntry_ID == 0)
         {
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
 			setCharacterData (null);
 			setChatEntryType (null);
 // N
-			setCM_ChatEntry_ID (0);
-			setCM_Chat_ID (0);
 			setConfidentialType (null);
         } */
     }
@@ -54,11 +54,11 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
       super (ctx, CM_ChatEntry_ID, trxName, virtualColumns);
       /** if (CM_ChatEntry_ID == 0)
         {
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
 			setCharacterData (null);
 			setChatEntryType (null);
 // N
-			setCM_ChatEntry_ID (0);
-			setCM_Chat_ID (0);
 			setConfidentialType (null);
         } */
     }
@@ -69,11 +69,11 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
       super (ctx, CM_ChatEntry_UU, trxName);
       /** if (CM_ChatEntry_UU == null)
         {
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
 			setCharacterData (null);
 			setChatEntryType (null);
 // N
-			setCM_ChatEntry_ID (0);
-			setCM_Chat_ID (0);
 			setConfidentialType (null);
         } */
     }
@@ -84,11 +84,11 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
       super (ctx, CM_ChatEntry_UU, trxName, virtualColumns);
       /** if (CM_ChatEntry_UU == null)
         {
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
 			setCharacterData (null);
 			setChatEntryType (null);
 // N
-			setCM_ChatEntry_ID (0);
-			setCM_Chat_ID (0);
 			setConfidentialType (null);
         } */
     }
@@ -149,47 +149,6 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Character Data.
-		@param CharacterData Long Character Field
-	*/
-	public void setCharacterData (String CharacterData)
-	{
-		set_ValueNoCheck (COLUMNNAME_CharacterData, CharacterData);
-	}
-
-	/** Get Character Data.
-		@return Long Character Field
-	  */
-	public String getCharacterData()
-	{
-		return (String)get_Value(COLUMNNAME_CharacterData);
-	}
-
-	/** ChatEntryType AD_Reference_ID=398 */
-	public static final int CHATENTRYTYPE_AD_Reference_ID=398;
-	/** Forum (threaded) = F */
-	public static final String CHATENTRYTYPE_ForumThreaded = "F";
-	/** Note (flat) = N */
-	public static final String CHATENTRYTYPE_NoteFlat = "N";
-	/** Wiki = W */
-	public static final String CHATENTRYTYPE_Wiki = "W";
-	/** Set Chat Entry Type.
-		@param ChatEntryType Type of Chat/Forum Entry
-	*/
-	public void setChatEntryType (String ChatEntryType)
-	{
-
-		set_Value (COLUMNNAME_ChatEntryType, ChatEntryType);
-	}
-
-	/** Get Chat Entry Type.
-		@return Type of Chat/Forum Entry
-	  */
-	public String getChatEntryType()
-	{
-		return (String)get_Value(COLUMNNAME_ChatEntryType);
-	}
-
 	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryGrandParent() throws RuntimeException
 	{
 		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_ID)
@@ -213,6 +172,34 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	public int getCM_ChatEntryGrandParent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatEntryGrandParent_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryParent() throws RuntimeException
+	{
+		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_ID)
+			.getPO(getCM_ChatEntryParent_ID(), get_TrxName());
+	}
+
+	/** Set Chat Entry Parent.
+		@param CM_ChatEntryParent_ID Link to direct Parent
+	*/
+	public void setCM_ChatEntryParent_ID (int CM_ChatEntryParent_ID)
+	{
+		if (CM_ChatEntryParent_ID < 1)
+			set_Value (COLUMNNAME_CM_ChatEntryParent_ID, null);
+		else
+			set_Value (COLUMNNAME_CM_ChatEntryParent_ID, Integer.valueOf(CM_ChatEntryParent_ID));
+	}
+
+	/** Get Chat Entry Parent.
+		@return Link to direct Parent
+	  */
+	public int getCM_ChatEntryParent_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatEntryParent_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -247,34 +234,6 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
     {
         return new KeyNamePair(get_ID(), String.valueOf(getCM_ChatEntry_ID()));
     }
-
-	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryParent() throws RuntimeException
-	{
-		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_ID)
-			.getPO(getCM_ChatEntryParent_ID(), get_TrxName());
-	}
-
-	/** Set Chat Entry Parent.
-		@param CM_ChatEntryParent_ID Link to direct Parent
-	*/
-	public void setCM_ChatEntryParent_ID (int CM_ChatEntryParent_ID)
-	{
-		if (CM_ChatEntryParent_ID < 1)
-			set_Value (COLUMNNAME_CM_ChatEntryParent_ID, null);
-		else
-			set_Value (COLUMNNAME_CM_ChatEntryParent_ID, Integer.valueOf(CM_ChatEntryParent_ID));
-	}
-
-	/** Get Chat Entry Parent.
-		@return Link to direct Parent
-	  */
-	public int getCM_ChatEntryParent_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatEntryParent_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set CM_ChatEntry_UU.
 		@param CM_ChatEntry_UU CM_ChatEntry_UU
@@ -317,6 +276,47 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Character Data.
+		@param CharacterData Long Character Field
+	*/
+	public void setCharacterData (String CharacterData)
+	{
+		set_ValueNoCheck (COLUMNNAME_CharacterData, CharacterData);
+	}
+
+	/** Get Character Data.
+		@return Long Character Field
+	  */
+	public String getCharacterData()
+	{
+		return (String)get_Value(COLUMNNAME_CharacterData);
+	}
+
+	/** ChatEntryType AD_Reference_ID=398 */
+	public static final int CHATENTRYTYPE_AD_Reference_ID=398;
+	/** Forum (threaded) = F */
+	public static final String CHATENTRYTYPE_ForumThreaded = "F";
+	/** Note (flat) = N */
+	public static final String CHATENTRYTYPE_NoteFlat = "N";
+	/** Wiki = W */
+	public static final String CHATENTRYTYPE_Wiki = "W";
+	/** Set Chat Entry Type.
+		@param ChatEntryType Type of Chat/Forum Entry
+	*/
+	public void setChatEntryType (String ChatEntryType)
+	{
+
+		set_Value (COLUMNNAME_ChatEntryType, ChatEntryType);
+	}
+
+	/** Get Chat Entry Type.
+		@return Type of Chat/Forum Entry
+	  */
+	public String getChatEntryType()
+	{
+		return (String)get_Value(COLUMNNAME_ChatEntryType);
 	}
 
 	/** ConfidentialType AD_Reference_ID=340 */

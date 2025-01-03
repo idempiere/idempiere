@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_EDI
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_EDI")
 public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BP_EDI (Properties ctx, int C_BP_EDI_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
       /** if (C_BP_EDI_ID == 0)
         {
 			setAD_Sequence_ID (0);
-			setC_BPartner_ID (0);
 			setC_BP_EDI_ID (0);
+			setC_BPartner_ID (0);
 			setCustomerNo (null);
 			setEDIType (null);
 			setEMail_Error_To (null);
@@ -64,8 +64,8 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
       /** if (C_BP_EDI_ID == 0)
         {
 			setAD_Sequence_ID (0);
-			setC_BPartner_ID (0);
 			setC_BP_EDI_ID (0);
+			setC_BPartner_ID (0);
 			setCustomerNo (null);
 			setEDIType (null);
 			setEMail_Error_To (null);
@@ -88,8 +88,8 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
       /** if (C_BP_EDI_UU == null)
         {
 			setAD_Sequence_ID (0);
-			setC_BPartner_ID (0);
 			setC_BP_EDI_ID (0);
+			setC_BPartner_ID (0);
 			setCustomerNo (null);
 			setEDIType (null);
 			setEMail_Error_To (null);
@@ -112,8 +112,8 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
       /** if (C_BP_EDI_UU == null)
         {
 			setAD_Sequence_ID (0);
-			setC_BPartner_ID (0);
 			setC_BP_EDI_ID (0);
+			setC_BPartner_ID (0);
 			setCustomerNo (null);
 			setEDIType (null);
 			setEMail_Error_To (null);
@@ -185,34 +185,6 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set EDI Definition.
 		@param C_BP_EDI_ID Electronic Data Interchange
 	*/
@@ -248,6 +220,34 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 	public String getC_BP_EDI_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BP_EDI_UU);
+	}
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Customer No.

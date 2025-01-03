@@ -18,9 +18,9 @@ package org.compiere.print;
 
 
 /**
- * 
+ * Report viewer provider interface
  * @author Low Heng Sin
- *
+ * @see ReportCtl#getReportViewerProvider()
  */
 public interface ReportViewerProvider {
 	/**

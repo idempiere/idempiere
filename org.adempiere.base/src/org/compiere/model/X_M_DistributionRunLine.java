@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionRunLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionRunLine")
 public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName)
@@ -44,11 +44,11 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
 			setM_DistributionList_ID (0);
-			setM_DistributionRun_ID (0);
 			setM_DistributionRunLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_Product_ID (0);
 			setMinQty (Env.ZERO);
 // 0
-			setM_Product_ID (0);
 			setTotalQty (Env.ZERO);
         } */
     }
@@ -62,11 +62,11 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
 			setM_DistributionList_ID (0);
-			setM_DistributionRun_ID (0);
 			setM_DistributionRunLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_Product_ID (0);
 			setMinQty (Env.ZERO);
 // 0
-			setM_Product_ID (0);
 			setTotalQty (Env.ZERO);
         } */
     }
@@ -80,11 +80,11 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
 			setM_DistributionList_ID (0);
-			setM_DistributionRun_ID (0);
 			setM_DistributionRunLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_Product_ID (0);
 			setMinQty (Env.ZERO);
 // 0
-			setM_Product_ID (0);
 			setTotalQty (Env.ZERO);
         } */
     }
@@ -98,11 +98,11 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
 			setM_DistributionList_ID (0);
-			setM_DistributionRun_ID (0);
 			setM_DistributionRunLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_Product_ID (0);
 			setMinQty (Env.ZERO);
 // 0
-			setM_Product_ID (0);
 			setTotalQty (Env.ZERO);
         } */
     }
@@ -198,42 +198,6 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_ID)
-			.getPO(getM_DistributionRun_ID(), get_TrxName());
-	}
-
-	/** Set Distribution Run.
-		@param M_DistributionRun_ID Distribution Run create Orders to distribute products to a selected list of partners
-	*/
-	public void setM_DistributionRun_ID (int M_DistributionRun_ID)
-	{
-		if (M_DistributionRun_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, Integer.valueOf(M_DistributionRun_ID));
-	}
-
-	/** Get Distribution Run.
-		@return Distribution Run create Orders to distribute products to a selected list of partners
-	  */
-	public int getM_DistributionRun_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionRun_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_DistributionRun_ID()));
-    }
-
 	/** Set Distribution Run Line.
 		@param M_DistributionRunLine_ID Distribution Run Lines define Distribution List, the Product and Quantities
 	*/
@@ -271,24 +235,41 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		return (String)get_Value(COLUMNNAME_M_DistributionRunLine_UU);
 	}
 
-	/** Set Minimum Quantity.
-		@param MinQty Minimum quantity for the business partner
-	*/
-	public void setMinQty (BigDecimal MinQty)
+	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException
 	{
-		set_Value (COLUMNNAME_MinQty, MinQty);
+		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_ID)
+			.getPO(getM_DistributionRun_ID(), get_TrxName());
 	}
 
-	/** Get Minimum Quantity.
-		@return Minimum quantity for the business partner
-	  */
-	public BigDecimal getMinQty()
+	/** Set Distribution Run.
+		@param M_DistributionRun_ID Distribution Run create Orders to distribute products to a selected list of partners
+	*/
+	public void setM_DistributionRun_ID (int M_DistributionRun_ID)
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinQty);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		if (M_DistributionRun_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, Integer.valueOf(M_DistributionRun_ID));
 	}
+
+	/** Get Distribution Run.
+		@return Distribution Run create Orders to distribute products to a selected list of partners
+	  */
+	public int getM_DistributionRun_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionRun_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getM_DistributionRun_ID()));
+    }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
@@ -316,6 +297,25 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Minimum Quantity.
+		@param MinQty Minimum quantity for the business partner
+	*/
+	public void setMinQty (BigDecimal MinQty)
+	{
+		set_Value (COLUMNNAME_MinQty, MinQty);
+	}
+
+	/** Get Minimum Quantity.
+		@return Minimum quantity for the business partner
+	  */
+	public BigDecimal getMinQty()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Total Quantity.

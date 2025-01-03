@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Exp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Package_Exp_Detail 
 {
@@ -406,15 +406,6 @@ public interface I_AD_Package_Exp_Detail
 	/** Get Execution Code	  */
 	public String getExecCode();
 
-    /** Column name File_Directory */
-    public static final String COLUMNNAME_File_Directory = "File_Directory";
-
-	/** Set File_Directory	  */
-	public void setFile_Directory (String File_Directory);
-
-	/** Get File_Directory	  */
-	public String getFile_Directory();
-
     /** Column name FileName */
     public static final String COLUMNNAME_FileName = "FileName";
 
@@ -427,6 +418,15 @@ public interface I_AD_Package_Exp_Detail
 	  * Name of the local file or URL
 	  */
 	public String getFileName();
+
+    /** Column name File_Directory */
+    public static final String COLUMNNAME_File_Directory = "File_Directory";
+
+	/** Set File_Directory	  */
+	public void setFile_Directory (String File_Directory);
+
+	/** Get File_Directory	  */
+	public String getFile_Directory();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

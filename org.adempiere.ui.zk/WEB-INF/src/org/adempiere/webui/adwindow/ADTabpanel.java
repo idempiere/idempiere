@@ -83,6 +83,7 @@ import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.MUserPreference;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.SystemProperties;
@@ -561,7 +562,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	fieldGroupTabHeaders = new HashMap<String, List<Tab>>();
     	
     	int numCols=gridTab.getNumColumns();
-    	if (numCols <= 0) {
+    	if (numCols <= 0) { 
     		numCols=6;
     	}
 
@@ -918,12 +919,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		div.setSclass("form-label-heading");
         		if (field.getAD_LabelStyle_ID() > 0) {
             		MStyle style = MStyle.get(Env.getCtx(), field.getAD_LabelStyle_ID());
-            		String cssStyle = style.buildStyle(ThemeManager.getTheme(), new Evaluatee() {
-    					@Override
-    					public String get_ValueAsString(String variableName) {
-    						return field.get_ValueAsString(variableName);
-    					}
-    				});
+            		String cssStyle = style.buildStyle(ThemeManager.getTheme(), field);
             		if (cssStyle != null && cssStyle.startsWith(MStyle.SCLASS_PREFIX)) {
     					String sclass = cssStyle.substring(MStyle.SCLASS_PREFIX.length());
     					div.setSclass(sclass);
@@ -957,6 +953,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	loadToolbarButtons();
         		
         //create tree
+
         if (!update && gridTab.isTreeTab() && treePanel != null) {
         	int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);
         	int AD_Tree_ID_Default = MTree.getDefaultAD_Tree_ID (Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
@@ -976,9 +973,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
     		}        	
         }
-
+        
         if (!update && !gridTab.isSingleRow() && !isGridView())
-        	switchRowPresentation();                
+        	switchRowPresentation(); 
+        
     }
 
     /**
@@ -1946,6 +1944,45 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		
 		Events.sendEvent(this, new Event(ON_SWITCH_VIEW_EVENT, this));
 	}
+	
+
+    
+    /**
+     * After Find window closes switch to grid view if configured
+     * @return void
+     */
+    public void onAfterFind() {
+
+ 		if(!isGridView()) {
+ 			
+ 			String userPreference = Env.getContext(Env.getCtx(), MUserPreference.COLUMNNAME_ViewFindResult);
+ 			
+ 			// User preference "View find result" has priority, if "Always In Grid" is set
+ 			if( userPreference.equals(MUserPreference.VIEWFINDRESULT_AlwaysInGridView) ) {
+ 				switchRowPresentation();
+ 			}
+ 			
+ 			// If User preference "View find result" is set to "According To Threshold"
+ 			else if( 
+ 				userPreference.equals(MUserPreference.VIEWFINDRESULT_AccordingToThreshold) &&
+ 				this.getGridTab().getRowCount() >= Env.getContextAsInt(Env.getCtx(), MUserPreference.COLUMNNAME_GridAfterFindThreshold)
+ 			) {
+ 				switchRowPresentation();
+ 			}
+ 			
+ 			// If user preference for View is set to "Default" we will check ZK_GRID_AFTER_FIND system configuration
+ 			else if( MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AFTER_FIND, false, Env.getAD_Client_ID(Env.getCtx())) ) {
+ 				switchRowPresentation();
+ 			}
+ 			
+ 			// Last, fallback to default behavior - "Is single row" option for specific tab
+ 			else if( !gridTab.isSingleRow() ) {
+ 				switchRowPresentation();
+ 			}
+ 			
+		}
+    	
+    }
 
 	/**
 	 * Listener for zoom event

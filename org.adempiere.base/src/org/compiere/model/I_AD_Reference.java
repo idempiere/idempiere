@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Reference 
 {
@@ -224,6 +224,25 @@ public interface I_AD_Reference
 	  */
 	public int getUpdatedBy();
 
+    /** Column name VFormat */
+    public static final String COLUMNNAME_VFormat = "VFormat";
+
+	/** Set Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+, or ~regex
+	  */
+	public void setVFormat (String VFormat);
+
+	/** Get Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+, or ~regex
+	  */
+	public String getVFormat();
+
     /** Column name ValidationType */
     public static final String COLUMNNAME_ValidationType = "ValidationType";
 
@@ -236,23 +255,4 @@ public interface I_AD_Reference
 	  * Different method of validating data
 	  */
 	public String getValidationType();
-
-    /** Column name VFormat */
-    public static final String COLUMNNAME_VFormat = "VFormat";
-
-	/** Set Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: &quot;
-_lLoOaAcCa09&quot;
-
-	  */
-	public void setVFormat (String VFormat);
-
-	/** Get Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: &quot;
-_lLoOaAcCa09&quot;
-
-	  */
-	public String getVFormat();
 }

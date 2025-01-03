@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StyleLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_StyleLine")
 public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName)
@@ -39,9 +39,9 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
       super (ctx, AD_StyleLine_ID, trxName);
       /** if (AD_StyleLine_ID == 0)
         {
-			setAD_Style_ID (0);
 			setAD_StyleLine_ID (0);
 			setAD_StyleLine_UU (null);
+			setAD_Style_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setInlineStyle (null);
@@ -56,9 +56,9 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
       super (ctx, AD_StyleLine_ID, trxName, virtualColumns);
       /** if (AD_StyleLine_ID == 0)
         {
-			setAD_Style_ID (0);
 			setAD_StyleLine_ID (0);
 			setAD_StyleLine_UU (null);
+			setAD_Style_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setInlineStyle (null);
@@ -73,9 +73,9 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
       super (ctx, AD_StyleLine_UU, trxName);
       /** if (AD_StyleLine_UU == null)
         {
-			setAD_Style_ID (0);
 			setAD_StyleLine_ID (0);
 			setAD_StyleLine_UU (null);
+			setAD_Style_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setInlineStyle (null);
@@ -90,9 +90,9 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
       super (ctx, AD_StyleLine_UU, trxName, virtualColumns);
       /** if (AD_StyleLine_UU == null)
         {
-			setAD_Style_ID (0);
 			setAD_StyleLine_ID (0);
 			setAD_StyleLine_UU (null);
+			setAD_Style_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setInlineStyle (null);
@@ -128,34 +128,6 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
-			.getPO(getAD_Style_ID(), get_TrxName());
-	}
-
-	/** Set Style.
-		@param AD_Style_ID CSS style for field and label
-	*/
-	public void setAD_Style_ID (int AD_Style_ID)
-	{
-		if (AD_Style_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Style_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Style_ID, Integer.valueOf(AD_Style_ID));
-	}
-
-	/** Get Style.
-		@return CSS style for field and label
-	  */
-	public int getAD_Style_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Style_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Style Line.
 		@param AD_StyleLine_ID CSS Style Line
@@ -193,6 +165,34 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	public String getAD_StyleLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StyleLine_UU);
+	}
+
+	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_Style_ID(), get_TrxName());
+	}
+
+	/** Set Style.
+		@param AD_Style_ID CSS style for field and label
+	*/
+	public void setAD_Style_ID (int AD_Style_ID)
+	{
+		if (AD_Style_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Style_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Style_ID, Integer.valueOf(AD_Style_ID));
+	}
+
+	/** Get Style.
+		@return CSS style for field and label
+	  */
+	public int getAD_Style_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Style_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Display Logic.

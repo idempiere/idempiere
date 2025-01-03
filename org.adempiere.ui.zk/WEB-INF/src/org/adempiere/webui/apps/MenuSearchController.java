@@ -759,7 +759,7 @@ public class MenuSearchController implements EventListener<Event>{
 			}
 			
 			item.appendChild(cell);
-			cell.setTooltip(data.getDescription());
+			cell.setTooltiptext(data.getDescription());
 			item.setValue(data);
 			item.addEventListener(Events.ON_CLICK, MenuSearchController.this);
 			

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -587,6 +588,13 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 					pfi.setIsOrderBy(true);
 					pfi.setSortNo(idSeqNo);
 				}
+				if (displayType == DisplayType.ImageURL)
+				{
+					pfi.setPrintFormatType(PRINTFORMATTYPE_Image);
+					pfi.setIsImageField(true);
+					pfi.setMaxWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx())));
+					pfi.setMaxHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx())));
+				}
 			}
 			else
 				s_log.log(Level.SEVERE, "Not Found AD_Column_ID=" + AD_Column_ID
@@ -679,6 +687,13 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 				{
 					pfi.setIsOrderBy(true);
 					pfi.setSortNo(idSeqNo);
+				}
+				if (displayType == DisplayType.ImageURL)
+				{
+					pfi.setPrintFormatType(PRINTFORMATTYPE_Image);
+					pfi.setIsImageField(true);
+					pfi.setMaxWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx())));
+					pfi.setMaxHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx())));
 				}
 			}
 			else

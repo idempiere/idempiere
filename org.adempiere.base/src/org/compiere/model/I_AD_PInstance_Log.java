@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance_Log
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_PInstance_Log 
 {
@@ -102,6 +102,19 @@ public interface I_AD_PInstance_Log
 	/** Get Log	  */
 	public int getLog_ID();
 
+    /** Column name PInstanceLogType */
+    public static final String COLUMNNAME_PInstanceLogType = "PInstanceLogType";
+
+	/** Set Log Type.
+	  * Process Audit Log Type
+	  */
+	public void setPInstanceLogType (String PInstanceLogType);
+
+	/** Get Log Type.
+	  * Process Audit Log Type
+	  */
+	public String getPInstanceLogType();
+
     /** Column name P_Date */
     public static final String COLUMNNAME_P_Date = "P_Date";
 
@@ -123,19 +136,6 @@ public interface I_AD_PInstance_Log
 
 	/** Get Process ID	  */
 	public int getP_ID();
-
-    /** Column name PInstanceLogType */
-    public static final String COLUMNNAME_PInstanceLogType = "PInstanceLogType";
-
-	/** Set Log Type.
-	  * Process Audit Log Type
-	  */
-	public void setPInstanceLogType (String PInstanceLogType);
-
-	/** Get Log Type.
-	  * Process Audit Log Type
-	  */
-	public String getPInstanceLogType();
 
     /** Column name P_Msg */
     public static final String COLUMNNAME_P_Msg = "P_Msg";

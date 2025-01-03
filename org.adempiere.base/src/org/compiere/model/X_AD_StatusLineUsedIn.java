@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_StatusLineUsedIn")
 public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
       super (ctx, AD_StatusLineUsedIn_ID, trxName);
       /** if (AD_StatusLineUsedIn_ID == 0)
         {
-			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
+			setAD_StatusLine_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStatusLine (true);
@@ -53,8 +53,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
       super (ctx, AD_StatusLineUsedIn_ID, trxName, virtualColumns);
       /** if (AD_StatusLineUsedIn_ID == 0)
         {
-			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
+			setAD_StatusLine_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStatusLine (true);
@@ -68,8 +68,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
       super (ctx, AD_StatusLineUsedIn_UU, trxName);
       /** if (AD_StatusLineUsedIn_UU == null)
         {
-			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
+			setAD_StatusLine_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStatusLine (true);
@@ -83,8 +83,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
       super (ctx, AD_StatusLineUsedIn_UU, trxName, virtualColumns);
       /** if (AD_StatusLineUsedIn_UU == null)
         {
-			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
+			setAD_StatusLine_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStatusLine (true);
@@ -148,33 +148,6 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_ID)
-			.getPO(getAD_StatusLine_ID(), get_TrxName());
-	}
-
-	/** Set Status Line.
-		@param AD_StatusLine_ID Status Line
-	*/
-	public void setAD_StatusLine_ID (int AD_StatusLine_ID)
-	{
-		if (AD_StatusLine_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, Integer.valueOf(AD_StatusLine_ID));
-	}
-
-	/** Get Status Line.
-		@return Status Line	  */
-	public int getAD_StatusLine_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set AD_StatusLineUsedIn.
 		@param AD_StatusLineUsedIn_ID AD_StatusLineUsedIn
 	*/
@@ -209,6 +182,33 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	public String getAD_StatusLineUsedIn_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StatusLineUsedIn_UU);
+	}
+
+	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_ID)
+			.getPO(getAD_StatusLine_ID(), get_TrxName());
+	}
+
+	/** Set Status Line.
+		@param AD_StatusLine_ID Status Line
+	*/
+	public void setAD_StatusLine_ID (int AD_StatusLine_ID)
+	{
+		if (AD_StatusLine_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, Integer.valueOf(AD_StatusLine_ID));
+	}
+
+	/** Get Status Line.
+		@return Status Line	  */
+	public int getAD_StatusLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException

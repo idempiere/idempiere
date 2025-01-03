@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Journal
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="GL_Journal")
 public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_GL_Journal (Properties ctx, int GL_Journal_ID, String trxName)
@@ -356,6 +356,34 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
+
+	/** Set Period.
+		@param C_Period_ID Period of the Calendar
+	*/
+	public void setC_Period_ID (int C_Period_ID)
+	{
+		if (C_Period_ID < 1)
+			set_Value (COLUMNNAME_C_Period_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
+	}
+
+	/** Get Period.
+		@return Period of the Calendar
+	  */
+	public int getC_Period_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Control Amount.
 		@param ControlAmt If not zero, the Debit amount of the document must be equal this amount
 	*/
@@ -389,34 +417,6 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
-	}
-
-	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
-			.getPO(getC_Period_ID(), get_TrxName());
-	}
-
-	/** Set Period.
-		@param C_Period_ID Period of the Calendar
-	*/
-	public void setC_Period_ID (int C_Period_ID)
-	{
-		if (C_Period_ID < 1)
-			set_Value (COLUMNNAME_C_Period_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
-	}
-
-	/** Get Period.
-		@return Period of the Calendar
-	  */
-	public int getC_Period_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Rate.

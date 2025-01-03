@@ -137,6 +137,7 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	/**@deprecated*/
+	@Deprecated
 	public Servlet getServlet(String arg0) throws ServletException {
 		return servletContext.getServlet(arg0);
 	}
@@ -146,16 +147,19 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	/**@deprecated*/
+	@Deprecated
 	public Enumeration<String> getServletNames() {
 		return servletContext.getServletNames();
 	}
 
 	/**@deprecated*/
+	@Deprecated
 	public Enumeration<Servlet> getServlets() {
 		return servletContext.getServlets();
 	}
 
 	/**@deprecated*/
+	@Deprecated
 	public void log(Exception arg0, String arg1) {
 		servletContext.log(arg0, arg1);
 	}

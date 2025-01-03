@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_DocBaseGroupLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DocBaseGroupLine")
 public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_DocBaseGroupLine (Properties ctx, int C_DocBaseGroupLine_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
       super (ctx, C_DocBaseGroupLine_ID, trxName);
       /** if (C_DocBaseGroupLine_ID == 0)
         {
-			setC_DocBaseGroup_ID (0);
 			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
@@ -50,8 +50,8 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
       super (ctx, C_DocBaseGroupLine_ID, trxName, virtualColumns);
       /** if (C_DocBaseGroupLine_ID == 0)
         {
-			setC_DocBaseGroup_ID (0);
 			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
@@ -62,8 +62,8 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
       super (ctx, C_DocBaseGroupLine_UU, trxName);
       /** if (C_DocBaseGroupLine_UU == null)
         {
-			setC_DocBaseGroup_ID (0);
 			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
@@ -74,8 +74,8 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
       super (ctx, C_DocBaseGroupLine_UU, trxName, virtualColumns);
       /** if (C_DocBaseGroupLine_UU == null)
         {
-			setC_DocBaseGroup_ID (0);
 			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
@@ -107,34 +107,6 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_DocBaseGroup)MTable.get(getCtx(), org.compiere.model.I_C_DocBaseGroup.Table_ID)
-			.getPO(getC_DocBaseGroup_ID(), get_TrxName());
-	}
-
-	/** Set Document Base Type Group.
-		@param C_DocBaseGroup_ID Group of Document Base Type for Period Control
-	*/
-	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID)
-	{
-		if (C_DocBaseGroup_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, Integer.valueOf(C_DocBaseGroup_ID));
-	}
-
-	/** Get Document Base Type Group.
-		@return Group of Document Base Type for Period Control
-	  */
-	public int getC_DocBaseGroup_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocBaseGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Document Base Type Group Line.
 		@param C_DocBaseGroupLine_ID Line Items of a Document Base Type Group
@@ -171,6 +143,34 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
 	public String getC_DocBaseGroupLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DocBaseGroupLine_UU);
+	}
+
+	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_DocBaseGroup)MTable.get(getCtx(), org.compiere.model.I_C_DocBaseGroup.Table_ID)
+			.getPO(getC_DocBaseGroup_ID(), get_TrxName());
+	}
+
+	/** Set Document Base Type Group.
+		@param C_DocBaseGroup_ID Group of Document Base Type for Period Control
+	*/
+	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID)
+	{
+		if (C_DocBaseGroup_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, Integer.valueOf(C_DocBaseGroup_ID));
+	}
+
+	/** Get Document Base Type Group.
+		@return Group of Document Base Type for Period Control
+	  */
+	public int getC_DocBaseGroup_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocBaseGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** DocBaseType AD_Reference_ID=183 */

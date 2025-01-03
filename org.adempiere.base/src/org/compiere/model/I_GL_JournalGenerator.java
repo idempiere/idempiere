@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_JournalGenerator
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_GL_JournalGenerator 
 {
@@ -143,15 +143,6 @@ public interface I_GL_JournalGenerator
 	  */
 	public String getDescription();
 
-    /** Column name GenerateGLJournal */
-    public static final String COLUMNNAME_GenerateGLJournal = "GenerateGLJournal";
-
-	/** Set Generate GL Journal	  */
-	public void setGenerateGLJournal (String GenerateGLJournal);
-
-	/** Get Generate GL Journal	  */
-	public String getGenerateGLJournal();
-
     /** Column name GL_Category_ID */
     public static final String COLUMNNAME_GL_Category_ID = "GL_Category_ID";
 
@@ -184,6 +175,15 @@ public interface I_GL_JournalGenerator
 
 	/** Get GL_JournalGenerator_UU	  */
 	public String getGL_JournalGenerator_UU();
+
+    /** Column name GenerateGLJournal */
+    public static final String COLUMNNAME_GenerateGLJournal = "GenerateGLJournal";
+
+	/** Set Generate GL Journal	  */
+	public void setGenerateGLJournal (String GenerateGLJournal);
+
+	/** Get Generate GL Journal	  */
+	public String getGenerateGLJournal();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";

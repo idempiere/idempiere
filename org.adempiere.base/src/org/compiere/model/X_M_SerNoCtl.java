@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_SerNoCtl
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_SerNoCtl")
 public class X_M_SerNoCtl extends PO implements I_M_SerNoCtl, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_SerNoCtl extends PO implements I_M_SerNoCtl, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_SerNoCtl (Properties ctx, int M_SerNoCtl_ID, String trxName)

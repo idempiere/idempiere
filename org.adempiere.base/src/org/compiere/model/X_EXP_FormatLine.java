@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for EXP_FormatLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="EXP_FormatLine")
 public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_EXP_FormatLine (Properties ctx, int EXP_FormatLine_ID, String trxName)
@@ -231,33 +231,6 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_EXP_Format getEXP_Format() throws RuntimeException
-	{
-		return (org.compiere.model.I_EXP_Format)MTable.get(getCtx(), org.compiere.model.I_EXP_Format.Table_ID)
-			.getPO(getEXP_Format_ID(), get_TrxName());
-	}
-
-	/** Set Export Format.
-		@param EXP_Format_ID Export Format
-	*/
-	public void setEXP_Format_ID (int EXP_Format_ID)
-	{
-		if (EXP_Format_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_EXP_Format_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_EXP_Format_ID, Integer.valueOf(EXP_Format_ID));
-	}
-
-	/** Get Export Format.
-		@return Export Format	  */
-	public int getEXP_Format_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Format_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Format Line.
 		@param EXP_FormatLine_ID Format Line
 	*/
@@ -292,6 +265,33 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	public String getEXP_FormatLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_EXP_FormatLine_UU);
+	}
+
+	public org.compiere.model.I_EXP_Format getEXP_Format() throws RuntimeException
+	{
+		return (org.compiere.model.I_EXP_Format)MTable.get(getCtx(), org.compiere.model.I_EXP_Format.Table_ID)
+			.getPO(getEXP_Format_ID(), get_TrxName());
+	}
+
+	/** Set Export Format.
+		@param EXP_Format_ID Export Format
+	*/
+	public void setEXP_Format_ID (int EXP_Format_ID)
+	{
+		if (EXP_Format_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_EXP_Format_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_EXP_Format_ID, Integer.valueOf(EXP_Format_ID));
+	}
+
+	/** Get Export Format.
+		@return Export Format	  */
+	public int getEXP_Format_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Format_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Comment/Help.

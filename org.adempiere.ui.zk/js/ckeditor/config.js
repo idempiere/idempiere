@@ -5,6 +5,7 @@ CKEDITOR.editorConfig = function(config) {
     config.coreStyles_bold = { element: 'b', overrides: 'strong' };
     config.coreStyles_italic = { element: 'i', overrides: 'em' };
     config.coreStyles_strike = { element: 'strike', overrides: 's' };
+    config.shouldNotGroupWhenFull = true;
     config.toolbar_MyToolbar =
 [
 	{ name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
@@ -12,7 +13,6 @@ CKEDITOR.editorConfig = function(config) {
 	{ name: 'tools', items : [ 'Maximize', '-','About' ] },
 	{ name: 'clipboard', items : [ 'Undo','Redo' ] },
 	{ name: 'editing', items : [ 'Find','Replace','-','SelectAll' ] },
-	'/',
 	{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
 	{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
 	{ name: 'links', items : [ 'Link','Unlink' ] },

@@ -53,6 +53,26 @@
 								    <artifactId>yuicompressor</artifactId>
 								    <version>2.4.8</version>
 								</artifactItem>
+								<artifactItem>
+								    <groupId>org.commonmark</groupId>
+								    <artifactId>commonmark</artifactId>
+								    <version>0.24.0</version>
+								</artifactItem>
+								<artifactItem>
+								    <groupId>org.commonmark</groupId>
+								    <artifactId>commonmark-ext-gfm-tables</artifactId>
+								    <version>0.24.0</version>
+								</artifactItem>
+								<artifactItem>
+								    <groupId>org.commonmark</groupId>
+								    <artifactId>commonmark-ext-autolink</artifactId>
+								    <version>0.24.0</version>
+								</artifactItem>
+								<artifactItem>
+								    <groupId>org.nibor.autolink</groupId>
+								    <artifactId>autolink</artifactId>
+								    <version>0.11.0</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>

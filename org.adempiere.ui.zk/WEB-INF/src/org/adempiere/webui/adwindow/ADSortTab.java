@@ -49,6 +49,7 @@ import org.compiere.model.PO;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -1040,10 +1041,14 @@ public class ADSortTab extends Panel implements IADTabpanel
 	@Override
 	public void switchRowPresentation() {
 	}
+	
+	@Override
+	public void onAfterFind() {
+	}
 
 	@Override
 	public String get_ValueAsString(String variableName) {
-		return Env.getContext(Env.getCtx(), m_WindowNo, variableName);
+		return new DefaultEvaluatee(getGridTab(), m_WindowNo, tabNo).get_ValueAsString(Env.getCtx(), variableName);
 	}
 
 	@Override

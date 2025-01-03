@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DepositBatchLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_DepositBatchLine 
 {
@@ -62,17 +62,6 @@ public interface I_C_DepositBatchLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_DepositBatch_ID */
-    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
-
-	/** Set Deposit Batch	  */
-	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
-
-	/** Get Deposit Batch	  */
-	public int getC_DepositBatch_ID();
-
-	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
-
     /** Column name C_DepositBatchLine_ID */
     public static final String COLUMNNAME_C_DepositBatchLine_ID = "C_DepositBatchLine_ID";
 
@@ -90,6 +79,17 @@ public interface I_C_DepositBatchLine
 
 	/** Get C_DepositBatchLine_UU	  */
 	public String getC_DepositBatchLine_UU();
+
+    /** Column name C_DepositBatch_ID */
+    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
+
+	/** Set Deposit Batch	  */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
+
+	/** Get Deposit Batch	  */
+	public int getC_DepositBatch_ID();
+
+	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";

@@ -98,10 +98,14 @@ public interface I_AD_UserPreference
     /** Column name AutoCommit */
     public static final String COLUMNNAME_AutoCommit = "AutoCommit";
 
-	/** Set Automatic Commit	  */
+	/** Set Save on Navigate.
+	  * Automatically save changes to the current record upon user navigation.
+	  */
 	public void setAutoCommit (boolean AutoCommit);
 
-	/** Get Automatic Commit	  */
+	/** Get Save on Navigate.
+	  * Automatically save changes to the current record upon user navigation.
+	  */
 	public boolean isAutoCommit();
 
     /** Column name AutoNew */

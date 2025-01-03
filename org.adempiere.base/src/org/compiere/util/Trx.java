@@ -653,6 +653,7 @@ public class Trx
 	 * @return Trx[]
 	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
 	 */
+	@Deprecated
 	public static Trx[] getActiveTransactions()
 	{
 		return getOpenTransactions();

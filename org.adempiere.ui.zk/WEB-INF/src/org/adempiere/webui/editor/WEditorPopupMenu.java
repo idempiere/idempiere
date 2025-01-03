@@ -373,6 +373,14 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 	}
 
 	/**
+	 * Remove drill assistant menu item
+	 */
+	public void showDrillAssistant(boolean show) {
+        if (drillItem != null)
+            drillItem.setVisible(show);
+	}	
+
+	/**
 	 * Remove the new and update items from the menu - for ChosenList
 	 */
 	public void removeNewUpdateMenu() {

@@ -422,6 +422,7 @@ public class MArchive extends X_AD_Archive {
 	 * @return int[], [0] = report count and [1] = document count
 	 * @deprecated - use {@link #getReportAndDocumentCountByRecordId(int, int, String, String)} instead
 	 */
+	@Deprecated
 	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String trxName) {
 		return getReportAndDocumentCountByRecordId(AD_Table_ID, Record_ID, null, trxName);
 	}

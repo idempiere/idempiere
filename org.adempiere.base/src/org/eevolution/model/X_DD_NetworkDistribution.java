@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for DD_NetworkDistribution
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="DD_NetworkDistribution")
 public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribution, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistribution (Properties ctx, int DD_NetworkDistribution_ID, String trxName)

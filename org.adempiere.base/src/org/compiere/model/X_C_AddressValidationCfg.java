@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressValidationCfg
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressValidationCfg")
 public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidationCfg, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName)
