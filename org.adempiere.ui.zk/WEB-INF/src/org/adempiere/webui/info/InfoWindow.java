@@ -2499,10 +2499,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	@Override
 	public void onEvent(Event event)
     {
-		for (ColumnInfo ci : p_layout) {
-			if (ci.getGridField() != null )
-				System.out.println(ci.getGridField().getColumnName() + " / " + ci.getColumnName());
-		}
 		if (event.getName().equals(Events.ON_FOCUS) && event.getTarget() != null && 
 				event.getTarget().getAttribute(ATT_INFO_PROCESS_KEY) != null){
 			
