@@ -83,6 +83,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			report.setImage(ThemeManager.getThemeResource("images/mReport.png"));		
 		report.setChecked(true);
 		report.setId("report");
+		report.setLabel(Msg.getMsg(Env.getCtx(), "Report"));
 		report.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(report);
 
@@ -93,6 +94,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			process.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
 		process.setChecked(true);
 		process.setId("process");
+		process.setLabel(Msg.getMsg(Env.getCtx(), "Process"));
 		process.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(process);
 
@@ -103,6 +105,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			workflow.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
 		workflow.setChecked(true);
 		workflow.setId("workflow");
+		workflow.setLabel(Msg.getMsg(Env.getCtx(), "WorkflowPanel"));
 		workflow.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(workflow);
 
@@ -113,6 +116,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			window.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		window.setChecked(true);
 		window.setId("window");
+		window.setLabel(Msg.getMsg(Env.getCtx(), "Window"));
 		window.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(window);
 		
@@ -123,6 +127,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			form.setImage(ThemeManager.getThemeResource("images/mForm.png"));
 		form.setChecked(true);
 		form.setId("form");
+		form.setLabel(Msg.getElement(Env.getCtx(), "AD_Form_ID"));
 		form.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(form);
 
@@ -133,6 +138,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			info.setImage(ThemeManager.getThemeResource("images/mInfo.png"));
 		info.setChecked(true);
 		info.setId("info");
+		info.setLabel(Msg.getElement(Env.getCtx(), "AD_InfoWindow_ID"));
 		info.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(info);
 
