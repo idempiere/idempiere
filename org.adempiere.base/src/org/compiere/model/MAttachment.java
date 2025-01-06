@@ -234,6 +234,21 @@ public class MAttachment extends X_AD_Attachment
 					po = table.getPOByUU(getRecord_UU(), get_TrxName());
 				else
 					po = table.getPO(getRecord_ID(), get_TrxName());
+				if (po == null) {
+					StringBuilder sqlExists = new StringBuilder("SELECT 1 FROM ")
+							.append(table.getTableName())
+							.append(" WHERE ");
+					int testExists = -1;
+					if (table.isUUIDKeyTable()) {
+						sqlExists.append(PO.getUUIDColumnName(table.getTableName())).append("=?");
+						testExists = DB.getSQLValueEx(get_TrxName(), sqlExists.toString(), getRecord_UU());
+					} else {
+						sqlExists.append(table.getKeyColumns()[0]).append("=?");
+						testExists = DB.getSQLValueEx(get_TrxName(), sqlExists.toString(), getRecord_ID());
+					}
+					if (testExists == -1) // Orphan Record, not read-only as it can be deleted
+						isReadOnly = false;
+				}
 				if (po != null && ! po.is_new() && po.getAD_Client_ID() == Env.getAD_Client_ID(getCtx()))
 					isReadOnly = false;
 			}
