@@ -61,7 +61,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5422581050563711060L;
+	private static final long serialVersionUID = 3367088113045249966L;
 
 	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
 	
@@ -222,9 +222,10 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * If the related record is on System and the user is operating on Tenant, the attachment is read-only
+	 * @param isDelete
 	 * @return
 	 */
-	public boolean isReadOnly() {
+	public boolean isReadOnly(boolean isDelete) {
 		if (isReadOnly == null) {
 			isReadOnly = true;
 			MTable table = MTable.get(getAD_Table_ID());
@@ -234,7 +235,7 @@ public class MAttachment extends X_AD_Attachment
 					po = table.getPOByUU(getRecord_UU(), get_TrxName());
 				else
 					po = table.getPO(getRecord_ID(), get_TrxName());
-				if (po == null) {
+				if (isDelete && po == null) {
 					StringBuilder sqlExists = new StringBuilder("SELECT 1 FROM ")
 							.append(table.getTableName())
 							.append(" WHERE ");
@@ -473,7 +474,7 @@ public class MAttachment extends X_AD_Attachment
 	 * @return true if deleted
 	 */
 	public boolean deleteEntry(int index) {
-		if (isReadOnly())
+		if (isReadOnly(false))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
 		if (m_items == null)
 			loadLOBData();
@@ -613,7 +614,7 @@ public class MAttachment extends X_AD_Attachment
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (isReadOnly())
+		if (isReadOnly(false))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
 		if (Util.isEmpty(getTitle()))
 			setTitle(NONE);
@@ -629,7 +630,7 @@ public class MAttachment extends X_AD_Attachment
 
 	@Override
 	protected boolean beforeDelete() {
-		if (isReadOnly())
+		if (isReadOnly(true))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
 		return true;
 	}
