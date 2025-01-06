@@ -182,7 +182,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
     /** A list of event listeners for this component.	*/
     protected EventListenerList m_listenerList = new EventListenerList();
     /** Current Data Status Event						*/
-	private volatile DataStatusEvent 	m_DataStatusEvent = null;
+	private DataStatusEvent 	m_DataStatusEvent = null;
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
 	private String 				m_oldQuery = "0=9";
@@ -1766,6 +1766,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return info
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
+	@Deprecated
 	public String getTrxInfo()
 	{
 		//	InvoiceBatch
@@ -2318,7 +2319,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param e event
 	 */
 	@Override
-	public void dataStatusChanged (DataStatusEvent e)
+	public synchronized void dataStatusChanged (DataStatusEvent e)
 	{		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + e.toString());
 		int oldCurrentRow = e.getCurrentRow();
@@ -2608,7 +2609,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param fireEvents fire events
 	 *  @return current row index
 	 */
-	public int setCurrentRow (int newCurrentRow, boolean fireEvents)
+	public synchronized int setCurrentRow (int newCurrentRow, boolean fireEvents)
 	{
 		boolean changingRow = (m_currentRow != newCurrentRow);
 		int oldCurrentRow = m_currentRow;

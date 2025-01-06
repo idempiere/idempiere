@@ -1227,6 +1227,7 @@ public class GridField
 	 *  @return true if valid
 	 *  @deprecated use validateValueNoDirect instead
 	 */
+	@Deprecated
 	public boolean validateValue()
 	{
 		//  null

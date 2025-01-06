@@ -9,7 +9,7 @@ Copyright (C) 2009 Idalica Corporation
 	if="${desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) or desktop.execution.serverName.startsWith(&quot;demo&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;)  or desktop.execution.serverName.startsWith(&quot;test-&quot;) or desktop.execution.serverName.startsWith(&quot;triage&quot;)}">
 	<hbox align="center">
 		<a href="http://www.idempiere.org" target="_blank"><image src="~./theme/default/images/login-logo.png"/></a>
-		<label value="iDempiere 12 Kudos Online Demonstration"
+		<label value="iDempiere 13 Dev Build Online Demonstration"
 			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
 	</hbox>
 </div>

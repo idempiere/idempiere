@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: zk keikai
 Bundle-SymbolicName: org.idempiere.keikai
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Bundle-ClassPath: .,
@@ -187,7 +187,7 @@ Require-Bundle: zcommon;bundle-version="10.0.1",
  zul;bundle-version="10.0.1",
  zweb;bundle-version="10.0.1",
  org.apache.commons.commons-fileupload;bundle-version="1.5.0",
- org.adempiere.base;bundle-version="12.0.0"
+ org.adempiere.base;bundle-version="13.0.0"
 Import-Package: javax.imageio,
  javax.servlet;version="4.0.0",
  javax.servlet.annotation;version="4.0.0",
@@ -206,5 +206,5 @@ Import-Package: javax.imageio,
 Automatic-Module-Name: org.idempiere.keikai
 Bundle-Vendor: iDempiere Community
 Bundle-ActivationPolicy: lazy
-Fragment-Host: org.adempiere.ui.zk;bundle-version="12.0.0"
+Fragment-Host: org.adempiere.ui.zk;bundle-version="13.0.0"
 Service-Component: OSGI-INF/org.idempiere.keikai.view.KeikaiMediaViewProvider.xml

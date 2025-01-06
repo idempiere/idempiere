@@ -96,6 +96,7 @@ public class MAlertRule extends X_AD_AlertRule
 	 *	@return sql
 	 *  @deprecated Use {@link #getSql(boolean)} instead
 	 */
+	@Deprecated
 	public String getSql()
 	{
 		return getSql(false);

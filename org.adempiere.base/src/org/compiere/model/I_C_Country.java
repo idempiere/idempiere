@@ -138,12 +138,12 @@ public interface I_C_Country
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
 	/** Set ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public void setCountryCode (String CountryCode);
 
 	/** Get ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode();
 
@@ -311,6 +311,19 @@ _lLoOaAcCa09&quot;
 	  */
 	public boolean isHasRegion();
 
+    /** Column name ISOCountryCodeAlpha3 */
+    public static final String COLUMNNAME_ISOCountryCodeAlpha3 = "ISOCountryCodeAlpha3";
+
+	/** Set ISO Alpha-3 Code.
+	  * ISO Alpha-3 country code - a three-letter code that represents a country name, which is usually more closely related to the country name
+	  */
+	public void setISOCountryCodeAlpha3 (String ISOCountryCodeAlpha3);
+
+	/** Get ISO Alpha-3 Code.
+	  * ISO Alpha-3 country code - a three-letter code that represents a country name, which is usually more closely related to the country name
+	  */
+	public String getISOCountryCodeAlpha3();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -414,6 +427,19 @@ _lLoOaAcCa09&quot;
 	  * The URL of the web service that the plugin connects to in order to retrieve postcode data
 	  */
 	public String getLookupUrl();
+
+    /** Column name M49Code */
+    public static final String COLUMNNAME_M49Code = "M49Code";
+
+	/** Set M49 Code.
+	  * Standard country codes for statistical use (M49) defined by the United Nations
+	  */
+	public void setM49Code (String M49Code);
+
+	/** Get M49 Code.
+	  * Standard country codes for statistical use (M49) defined by the United Nations
+	  */
+	public String getM49Code();
 
     /** Column name MediaSize */
     public static final String COLUMNNAME_MediaSize = "MediaSize";

@@ -31,9 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.adempiere.base.LookupFactoryHelper;
@@ -118,6 +118,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserDefInfo;
+import org.compiere.model.MUserDefProc;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -445,10 +446,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			
    			// make process button
 			MProcess process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
-   			Button btProcess = confirmPanel.addProcessButton(process.get_Translation(MProcess.COLUMNNAME_Name), infoProcess.getImageURL());
+			String name = process.get_Translation(MProcess.COLUMNNAME_Name);
+
+   			MUserDefProc userDef = MUserDefProc.getBestMatch(Env.getCtx(), process.getAD_Process_ID());
+   			if (userDef != null) {
+   				if (userDef.getName() != null)
+   					name = userDef.getName();
+   			}
+
+   			Button btProcess = confirmPanel.addProcessButton(name, infoProcess.getImageURL());
    			if (Util.isEmpty(infoProcess.getImageURL(), true)) {
    				btProcess.setImage(null);
-   				btProcess.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+   				btProcess.setLabel(name);
    			}
    			
    			// save process_id, handle event will use
@@ -480,8 +489,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			cbbProcess.setItemRenderer(new ComboitemRenderer<MInfoProcess>() {
    				public void render(Comboitem item, MInfoProcess data, int index){
    					MProcess process = MProcess.get(Env.getCtx(), data.getAD_Process_ID());
+   					String name = process.get_Translation(MProcess.COLUMNNAME_Name);
+
+   					MUserDefProc userDef = MUserDefProc.getBestMatch(Env.getCtx(), process.getAD_Process_ID());
+   					if (userDef != null) {
+   						if (userDef.getName() != null)
+   							name = userDef.getName();
+   					}
+
    					item.setValue(process);
-   					item.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+
+   					item.setLabel(name);
    					if (!Util.isEmpty(data.getImageURL(), true)) {
    						if (MAttachment.isAttachmentURLPath(data.getImageURL()))
    						{
@@ -610,9 +628,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			
 			MProcess process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
+			String name = process.get_Translation(MProcess.COLUMNNAME_Name);
+
+			MUserDefProc userDef = MUserDefProc.getBestMatch(Env.getCtx(), process.getAD_Process_ID());
+			if (userDef != null) {
+				if (userDef.getName() != null)
+					name = userDef.getName();
+			}
+
    			// Create menu item for each info process
    	   		Menuitem ipMenuItem = new Menuitem();
-   	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+   	   		ipMenuItem.setLabel(name);
    	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
    	   			if (infoProcess.getImageURL().indexOf("://") > 0)
    	   			{
@@ -1070,11 +1096,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		List<InfoColumnVO> gridDisplayedIC = new ArrayList<>();				
 		gridDisplayedIC.add(null); // First column does not have any matching info column		
 		
-		boolean haveNotProcess = !haveProcess; // A field is editabile only if is not readonly and theres a process
-				
-		int i = 0;
+		boolean haveNotProcess = !haveProcess; // A field is editable only if is not read-only and there is a process
+
+		int i = -1;
 		for(InfoColumnVO infoColumn : infoColumns) 
-		{						
+		{
+			i++;
 			if (infoColumn.isDisplayed(infoContext, p_WindowNo)) 
 			{
 				ColumnInfo columnInfo = null;
@@ -1121,8 +1148,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						isIDColumnKeyOfView = true;
 					indexKeyOfView = list.size() - 1;
 				}
-			}		
-			i++;
+			}
 		}
 		
 		if (keyColumnOfView == null){
