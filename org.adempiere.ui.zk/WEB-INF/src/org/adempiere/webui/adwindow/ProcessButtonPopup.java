@@ -105,15 +105,14 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 		//document actions
 		if (docActionBtn != null) {
 			IProcessButton processButton = (IProcessButton) docActionBtn.getAttribute(WButtonEditor.EDITOR_ATTRIBUTE);
-			GridTab gridTab = processButton.getADTabpanel().getGridTab();
-			Boolean isReadOnly = gridTab.getVO().IsReadOnly;
 			WDocActionPanel actionPanel = new WDocActionPanel(processButton.getADTabpanel().getGridTab(), true);
 			List<Listitem> actions = actionPanel.getDocActionItems();
 			if (actions.size() > 0) {
 				if (this.getChildren().size() > 0)
 					appendChild(new Menuseparator());
 				Menu menu = new Menu(Msg.getElement(Env.getCtx(), "DocAction"));
-				menu.setDisabled(isReadOnly);
+				if (docActionBtn.isDisabled())
+					menu.setDisabled(true);
 				appendChild(menu);
 				Menupopup popup = new Menupopup();
 				popup.setAttribute(BUTTON_ATTRIBUTE, docActionBtn);
