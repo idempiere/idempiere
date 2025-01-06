@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Inventory
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Inventory")
 public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Inventory (Properties ctx, int M_Inventory_ID, String trxName)
@@ -329,43 +329,6 @@ public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 		return ii.intValue();
 	}
 
-	/** CostingMethod AD_Reference_ID=122 */
-	public static final int COSTINGMETHOD_AD_Reference_ID=122;
-	/** Average PO = A */
-	public static final String COSTINGMETHOD_AveragePO = "A";
-	/** Fifo = F */
-	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last Invoice = i */
-	public static final String COSTINGMETHOD_LastInvoice = "i";
-	/** Average Invoice = I */
-	public static final String COSTINGMETHOD_AverageInvoice = "I";
-	/** Lifo = L */
-	public static final String COSTINGMETHOD_Lifo = "L";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
-	/** Standard Costing = S */
-	public static final String COSTINGMETHOD_StandardCosting = "S";
-	/** User Defined = U */
-	public static final String COSTINGMETHOD_UserDefined = "U";
-	/** _ = x */
-	public static final String COSTINGMETHOD__ = "x";
-	/** Set Costing Method.
-		@param CostingMethod Indicates how Costs will be calculated
-	*/
-	public void setCostingMethod (String CostingMethod)
-	{
-
-		set_Value (COLUMNNAME_CostingMethod, CostingMethod);
-	}
-
-	/** Get Costing Method.
-		@return Indicates how Costs will be calculated
-	  */
-	public String getCostingMethod()
-	{
-		return (String)get_Value(COLUMNNAME_CostingMethod);
-	}
-
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -392,6 +355,43 @@ public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** CostingMethod AD_Reference_ID=122 */
+	public static final int COSTINGMETHOD_AD_Reference_ID=122;
+	/** Average PO = A */
+	public static final String COSTINGMETHOD_AveragePO = "A";
+	/** Fifo = F */
+	public static final String COSTINGMETHOD_Fifo = "F";
+	/** Average Invoice = I */
+	public static final String COSTINGMETHOD_AverageInvoice = "I";
+	/** Lifo = L */
+	public static final String COSTINGMETHOD_Lifo = "L";
+	/** Standard Costing = S */
+	public static final String COSTINGMETHOD_StandardCosting = "S";
+	/** User Defined = U */
+	public static final String COSTINGMETHOD_UserDefined = "U";
+	/** Last Invoice = i */
+	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
+	/** _ = x */
+	public static final String COSTINGMETHOD__ = "x";
+	/** Set Costing Method.
+		@param CostingMethod Indicates how Costs will be calculated
+	*/
+	public void setCostingMethod (String CostingMethod)
+	{
+
+		set_Value (COLUMNNAME_CostingMethod, CostingMethod);
+	}
+
+	/** Get Costing Method.
+		@return Indicates how Costs will be calculated
+	  */
+	public String getCostingMethod()
+	{
+		return (String)get_Value(COLUMNNAME_CostingMethod);
 	}
 
 	/** Set Description.
@@ -600,22 +600,6 @@ public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Inventory_UU);
 	}
 
-	/** Set Movement Date.
-		@param MovementDate Date a product was moved in or out of inventory
-	*/
-	public void setMovementDate (Timestamp MovementDate)
-	{
-		set_Value (COLUMNNAME_MovementDate, MovementDate);
-	}
-
-	/** Get Movement Date.
-		@return Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
-	}
-
 	public org.compiere.model.I_M_PerpetualInv getM_PerpetualInv() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PerpetualInv)MTable.get(getCtx(), org.compiere.model.I_M_PerpetualInv.Table_ID)
@@ -670,6 +654,22 @@ public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Movement Date.
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
+	public void setMovementDate (Timestamp MovementDate)
+	{
+		set_Value (COLUMNNAME_MovementDate, MovementDate);
+	}
+
+	/** Get Movement Date.
+		@return Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
 	}
 
 	/** Set Posted.

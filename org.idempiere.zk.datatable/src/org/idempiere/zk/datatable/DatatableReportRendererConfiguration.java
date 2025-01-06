@@ -39,6 +39,7 @@ public class DatatableReportRendererConfiguration implements IReportRendererConf
 	private File file;
 	private Writer writer;
 	private Language language;
+	private String contextPath;
 	
 	public DatatableReportRendererConfiguration() {
 	}
@@ -138,4 +139,20 @@ public class DatatableReportRendererConfiguration implements IReportRendererConf
 		return language;
 	}
 	
+	/**
+	 * Set web context path
+	 * @param contextPath
+	 */
+	public DatatableReportRendererConfiguration setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+		return this;
+	}
+	
+	/**
+	 * Get web context path
+	 * @return web context path
+	 */
+	public String getContextPath() {
+		return contextPath;
+	}
 }

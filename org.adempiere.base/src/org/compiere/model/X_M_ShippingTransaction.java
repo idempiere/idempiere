@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShippingTransaction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingTransaction")
 public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_ShippingTransaction (Properties ctx, int M_ShippingTransaction_ID, String trxName)
@@ -263,31 +263,6 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
       return sb.toString();
     }
 
-	/** Action AD_Reference_ID=200042 */
-	public static final int ACTION_AD_Reference_ID=200042;
-	/** Process Shipment = PS */
-	public static final String ACTION_ProcessShipment = "PS";
-	/** Rate Inquiry = RI */
-	public static final String ACTION_RateInquiry = "RI";
-	/** Void Shipment = VS */
-	public static final String ACTION_VoidShipment = "VS";
-	/** Set Action.
-		@param Action Indicates the Action to be performed
-	*/
-	public void setAction (String Action)
-	{
-
-		set_Value (COLUMNNAME_Action, Action);
-	}
-
-	/** Get Action.
-		@return Indicates the Action to be performed
-	  */
-	public String getAction()
-	{
-		return (String)get_Value(COLUMNNAME_Action);
-	}
-
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -314,6 +289,31 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Action AD_Reference_ID=200042 */
+	public static final int ACTION_AD_Reference_ID=200042;
+	/** Process Shipment = PS */
+	public static final String ACTION_ProcessShipment = "PS";
+	/** Rate Inquiry = RI */
+	public static final String ACTION_RateInquiry = "RI";
+	/** Void Shipment = VS */
+	public static final String ACTION_VoidShipment = "VS";
+	/** Set Action.
+		@param Action Indicates the Action to be performed
+	*/
+	public void setAction (String Action)
+	{
+
+		set_Value (COLUMNNAME_Action, Action);
+	}
+
+	/** Get Action.
+		@return Indicates the Action to be performed
+	  */
+	public String getAction()
+	{
+		return (String)get_Value(COLUMNNAME_Action);
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getBill_Location() throws RuntimeException
@@ -362,26 +362,49 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		return ii.intValue();
 	}
 
-	/** Set COD.
-		@param CashOnDelivery COD
+	/** Set COD Amount.
+		@param CODAmount COD Amount
 	*/
-	public void setCashOnDelivery (boolean CashOnDelivery)
+	public void setCODAmount (BigDecimal CODAmount)
 	{
-		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
+		set_Value (COLUMNNAME_CODAmount, CODAmount);
 	}
 
-	/** Get COD.
-		@return COD	  */
-	public boolean isCashOnDelivery()
+	/** Get COD Amount.
+		@return COD Amount	  */
+	public BigDecimal getCODAmount()
 	{
-		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CODAmount);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
+			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner Shipping Account.
+		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
+	*/
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
+	{
+		if (C_BP_ShippingAcct_ID < 1)
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
+	}
+
+	/** Get Business Partner Shipping Account.
+		@return Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
@@ -435,33 +458,6 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
-			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner Shipping Account.
-		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
-	*/
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
-	{
-		if (C_BP_ShippingAcct_ID < 1)
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
-	}
-
-	/** Get Business Partner Shipping Account.
-		@return Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -521,24 +517,6 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set COD Amount.
-		@param CODAmount COD Amount
-	*/
-	public void setCODAmount (BigDecimal CODAmount)
-	{
-		set_Value (COLUMNNAME_CODAmount, CODAmount);
-	}
-
-	/** Get COD Amount.
-		@return COD Amount	  */
-	public BigDecimal getCODAmount()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CODAmount);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
@@ -623,6 +601,28 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set COD.
+		@param CashOnDelivery COD
+	*/
+	public void setCashOnDelivery (boolean CashOnDelivery)
+	{
+		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
+	}
+
+	/** Get COD.
+		@return COD	  */
+	public boolean isCashOnDelivery()
+	{
+		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Customs Value.
@@ -1506,34 +1506,6 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
-			.getPO(getM_Shipper_ID(), get_TrxName());
-	}
-
-	/** Set Shipper.
-		@param M_Shipper_ID Method or manner of product delivery
-	*/
-	public void setM_Shipper_ID (int M_Shipper_ID)
-	{
-		if (M_Shipper_ID < 1)
-			set_Value (COLUMNNAME_M_Shipper_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_ID)
@@ -1610,6 +1582,34 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public int getM_ShipperPickupTypes_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypes_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
+
+	/** Set Shipper.
+		@param M_Shipper_ID Method or manner of product delivery
+	*/
+	public void setM_Shipper_ID (int M_Shipper_ID)
+	{
+		if (M_Shipper_ID < 1)
+			set_Value (COLUMNNAME_M_Shipper_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
+	}
+
+	/** Get Shipper.
+		@return Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -1746,6 +1746,22 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		return (String)get_Value(COLUMNNAME_NotificationType);
 	}
 
+	/** Set Order Reference.
+		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	*/
+	public void setPOReference (String POReference)
+	{
+		set_Value (COLUMNNAME_POReference, POReference);
+	}
+
+	/** Get Order Reference.
+		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	  */
+	public String getPOReference()
+	{
+		return (String)get_Value(COLUMNNAME_POReference);
+	}
+
 	/** PaymentRule AD_Reference_ID=195 */
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
@@ -1777,22 +1793,6 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public String getPaymentRule()
 	{
 		return (String)get_Value(COLUMNNAME_PaymentRule);
-	}
-
-	/** Set Order Reference.
-		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	*/
-	public void setPOReference (String POReference)
-	{
-		set_Value (COLUMNNAME_POReference, POReference);
-	}
-
-	/** Get Order Reference.
-		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	  */
-	public String getPOReference()
-	{
-		return (String)get_Value(COLUMNNAME_POReference);
 	}
 
 	/** Set Price.

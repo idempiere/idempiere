@@ -119,7 +119,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 						addLog(Level.WARNING, msg);
 						if (getProcessInfo() != null) {
 							getProcessInfo().setError(true);
-							getProcessInfo().setSummary("@Error@: " + msg);
+							getProcessInfo().setSummary("@Error@ " + msg);
 						}
 						break;
 					}
@@ -264,6 +264,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 				continue;
 			}
 			
+			logger.warning("Processing " + filePath);
 			processFilePath(toProcess);
 		}
 		

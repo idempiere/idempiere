@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_BankRegister
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_T_BankRegister 
 {
@@ -40,15 +40,6 @@ public interface I_T_BankRegister
     BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
-
-    /** Column name Account */
-    public static final String COLUMNNAME_Account = "Account";
-
-	/** Set Account	  */
-	public void setAccount (String Account);
-
-	/** Get Account	  */
-	public String getAccount();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -86,6 +77,15 @@ public interface I_T_BankRegister
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
+    /** Column name Account */
+    public static final String COLUMNNAME_Account = "Account";
+
+	/** Set Account	  */
+	public void setAccount (String Account);
+
+	/** Get Account	  */
+	public String getAccount();
+
     /** Column name AmtAcctCr */
     public static final String COLUMNNAME_AmtAcctCr = "AmtAcctCr";
 
@@ -112,6 +112,15 @@ public interface I_T_BankRegister
 	  */
 	public BigDecimal getAmtAcctDr();
 
+    /** Column name BPartner */
+    public static final String COLUMNNAME_BPartner = "BPartner";
+
+	/** Set Business Partner	  */
+	public void setBPartner (String BPartner);
+
+	/** Get Business Partner	  */
+	public String getBPartner();
+
     /** Column name Balance */
     public static final String COLUMNNAME_Balance = "Balance";
 
@@ -130,14 +139,20 @@ public interface I_T_BankRegister
 	/** Get Bank Name	  */
 	public String getBankName();
 
-    /** Column name BPartner */
-    public static final String COLUMNNAME_BPartner = "BPartner";
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner	  */
-	public void setBPartner (String BPartner);
+	/** Set Business Partner.
+	  * Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner	  */
-	public String getBPartner();
+	/** Get Business Partner.
+	  * Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID();
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Bank_ID */
     public static final String COLUMNNAME_C_Bank_ID = "C_Bank_ID";
@@ -153,21 +168,6 @@ public interface I_T_BankRegister
 	public int getC_Bank_ID();
 
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException;
-
-    /** Column name C_BPartner_ID */
-    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
-
-	/** Set Business Partner.
-	  * Identifies a Business Partner
-	  */
-	public void setC_BPartner_ID (int C_BPartner_ID);
-
-	/** Get Business Partner.
-	  * Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";

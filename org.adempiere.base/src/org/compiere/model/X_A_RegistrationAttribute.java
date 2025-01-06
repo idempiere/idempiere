@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationAttribute
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationAttribute")
 public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAttribute, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName)

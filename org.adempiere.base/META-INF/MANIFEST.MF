@@ -2,14 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-ClassPath: .,
  lib/bsh.jar,
  lib/commons-validator.jar,
  lib/cron4j.jar,
  lib/avalon-framework-api.jar,
  lib/htmlcompressor.jar,
- lib/yuicompressor.jar
+ lib/yuicompressor.jar,
+ lib/autolink.jar,
+ lib/commonmark.jar,
+ lib/commonmark-ext-autolink.jar,
+ lib/commonmark-ext-gfm-tables.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,
@@ -32,6 +36,7 @@ Export-Package: bsh,
  org.adempiere.base.event.annotations.imp,
  org.adempiere.base.event.annotations.po,
  org.adempiere.base.event.annotations.process,
+ org.adempiere.base.markdown,
  org.adempiere.base.sso,
  org.adempiere.base.upload,
  org.adempiere.exceptions,

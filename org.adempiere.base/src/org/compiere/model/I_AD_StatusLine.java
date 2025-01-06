@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StatusLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_StatusLine 
 {
@@ -94,6 +94,21 @@ public interface I_AD_StatusLine
 
 	/** Get AD_StatusLine_UU	  */
 	public String getAD_StatusLine_UU();
+
+    /** Column name AD_Style_ID */
+    public static final String COLUMNNAME_AD_Style_ID = "AD_Style_ID";
+
+	/** Set Style.
+	  * CSS style for field and label
+	  */
+	public void setAD_Style_ID (int AD_Style_ID);
+
+	/** Get Style.
+	  * CSS style for field and label
+	  */
+	public int getAD_Style_ID();
+
+	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

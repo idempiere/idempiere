@@ -78,6 +78,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	 */
 	private static final long serialVersionUID = -224914882522997787L;
 	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
+	private static final String ON_DAY_CLICK_EVENT = "onDayClick";
 	private static final String ON_EVENT_EDIT_EVENT = "onEventEdit";
 	private static final String ON_EVENT_CREATE_EVENT = "onEventCreate";
 	private static final String ON_MOVE_DATE_EVENT = "onMoveDate";
@@ -142,6 +143,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 		calendars.addEventListener(ON_EVENT_CREATE_EVENT, this);
 		calendars.addEventListener(ON_EVENT_EDIT_EVENT, this);	
+		calendars.addEventListener(ON_DAY_CLICK_EVENT, this);
 				
 		createStaticListeners();
 		
@@ -229,6 +231,13 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 				SessionManager.getAppDesktop().showWindow(requestWin);
 			}
 		}	
+		else if (type.equals(ON_DAY_CLICK_EVENT) && ! Env.isReadOnlySession()) {
+			if (e.getData() instanceof Date date) {
+				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_EVENT_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
+				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
+				SessionManager.getAppDesktop().showWindow(requestWin);
+			}
+		}
 		else if (type.equals(ON_EVENT_EDIT_EVENT)) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;

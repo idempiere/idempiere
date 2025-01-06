@@ -25,6 +25,9 @@
 
 package org.compiere.minigrid;
 
+/**
+ * Interface for ID column that support selection
+ */
 public interface SelectableIDColumn {
 
 	public void setSelected(boolean selected);

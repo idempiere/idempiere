@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_Replenish
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_Replenish")
 public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_Replenish (Properties ctx, int T_Replenish_ID, String trxName)
@@ -276,34 +276,6 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
-			.getPO(getM_Warehouse_ID(), get_TrxName());
-	}
-
-	/** Set Warehouse.
-		@param M_Warehouse_ID Storage Warehouse and Service Point
-	*/
-	public void setM_Warehouse_ID (int M_Warehouse_ID)
-	{
-		if (M_Warehouse_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
-	}
-
-	/** Get Warehouse.
-		@return Storage Warehouse and Service Point
-	  */
-	public int getM_Warehouse_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -327,6 +299,34 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	public int getM_WarehouseSource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_WarehouseSource_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
+	{
+		if (M_Warehouse_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
+	}
+
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -445,33 +445,6 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 		return bd;
 	}
 
-	/** ReplenishmentCreate AD_Reference_ID=329 */
-	public static final int REPLENISHMENTCREATE_AD_Reference_ID=329;
-	/** Distribution Order = DOO */
-	public static final String REPLENISHMENTCREATE_DistributionOrder = "DOO";
-	/** Inventory Move = MMM */
-	public static final String REPLENISHMENTCREATE_InventoryMove = "MMM";
-	/** Purchase Order = POO */
-	public static final String REPLENISHMENTCREATE_PurchaseOrder = "POO";
-	/** Requisition = POR */
-	public static final String REPLENISHMENTCREATE_Requisition = "POR";
-	/** Set Create.
-		@param ReplenishmentCreate Create from Replenishment
-	*/
-	public void setReplenishmentCreate (String ReplenishmentCreate)
-	{
-
-		set_Value (COLUMNNAME_ReplenishmentCreate, ReplenishmentCreate);
-	}
-
-	/** Get Create.
-		@return Create from Replenishment
-	  */
-	public String getReplenishmentCreate()
-	{
-		return (String)get_Value(COLUMNNAME_ReplenishmentCreate);
-	}
-
 	/** ReplenishType AD_Reference_ID=164 */
 	public static final int REPLENISHTYPE_AD_Reference_ID=164;
 	/** Manual = 0 */
@@ -497,6 +470,33 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	public String getReplenishType()
 	{
 		return (String)get_Value(COLUMNNAME_ReplenishType);
+	}
+
+	/** ReplenishmentCreate AD_Reference_ID=329 */
+	public static final int REPLENISHMENTCREATE_AD_Reference_ID=329;
+	/** Distribution Order = DOO */
+	public static final String REPLENISHMENTCREATE_DistributionOrder = "DOO";
+	/** Inventory Move = MMM */
+	public static final String REPLENISHMENTCREATE_InventoryMove = "MMM";
+	/** Purchase Order = POO */
+	public static final String REPLENISHMENTCREATE_PurchaseOrder = "POO";
+	/** Requisition = POR */
+	public static final String REPLENISHMENTCREATE_Requisition = "POR";
+	/** Set Create.
+		@param ReplenishmentCreate Create from Replenishment
+	*/
+	public void setReplenishmentCreate (String ReplenishmentCreate)
+	{
+
+		set_Value (COLUMNNAME_ReplenishmentCreate, ReplenishmentCreate);
+	}
+
+	/** Get Create.
+		@return Create from Replenishment
+	  */
+	public String getReplenishmentCreate()
+	{
+		return (String)get_Value(COLUMNNAME_ReplenishmentCreate);
 	}
 
 	/** Set T_Replenish_UU.

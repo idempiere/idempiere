@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Charge_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_Charge_Acct")
 public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_Charge_Acct (Properties ctx, int C_Charge_Acct_ID, String trxName)

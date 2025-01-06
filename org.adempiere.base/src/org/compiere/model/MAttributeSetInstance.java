@@ -98,6 +98,26 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 		return retValue;
 	}	//	get
 
+	/**
+	 * Get attribute set instance records with product attribute (M_Attribute.IsInstanceAttribute=N).
+	 * @param M_AttributeSet_ID
+	 * @param withEmptyElement if true, first element of the return array is an empty element with (-1,"")
+	 * @return attribute set instance records (M_AttributeSetInstance_ID, Description)
+	 */
+	public static KeyNamePair[] getWithProductAttributeKeyNamePairs(int M_AttributeSet_ID, boolean withEmptyElement) {
+		String sql = """
+			SELECT M_AttributeSetInstance_ID, Description
+			 FROM M_AttributeSetInstance
+			 WHERE M_AttributeSet_ID = ?
+			 AND EXISTS (
+			 SELECT 1 FROM M_AttributeInstance INNER JOIN M_Attribute
+			 ON (M_AttributeInstance.M_Attribute_ID = M_Attribute.M_Attribute_ID)
+			 WHERE M_AttributeInstance.M_AttributeSetInstance_ID = M_AttributeSetInstance.M_AttributeSetInstance_ID
+			 AND M_Attribute.IsInstanceAttribute = 'N')""";
+		KeyNamePair[] keyNamePairs = DB.getKeyNamePairsEx(sql, withEmptyElement, M_AttributeSet_ID);
+		return keyNamePairs;
+	}
+	
 	private static CLogger		s_log = CLogger.getCLogger (MAttributeSetInstance.class);
 	
     /**

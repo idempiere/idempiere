@@ -35,7 +35,7 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
 
 /**
- *	Process Interface Controller.
+ *	Process Controller Interface.
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: ProcessCtl.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -43,36 +43,35 @@ import org.compiere.wf.MWFProcess;
  *  - Added support for having description and parameter in one dialog
  *  - Added support to run db process remotely on server
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1757523 ] Server Processes are using Server's context
  * 				<li>FR [ 1807922 ] Pocess threads should have a better name
  * 				<li>BF [ 1960523 ] Server Process functionality not working
  */
 public abstract class AbstractProcessCtl implements Runnable
 {
-	/**************************************************************************
+	/**
 	 *  Constructor
 	 *  @param aProcessUI
 	 *  @param WindowNo
 	 *  @param pi Process info
 	 *  @param trx Transaction
-	 *  Created in process(), VInvoiceGen.generateInvoices
 	 */
 	public AbstractProcessCtl (IProcessUI aProcessUI, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		windowno = WindowNo;
 		m_processUI = aProcessUI;
 		m_pi = pi;
-		m_trx = trx;	//	handled correctly
-	}   //  ProcessCtl
+		m_trx = trx;
+	}
 
 	/** Windowno */
 	private int windowno;
-	/** Parenr */
+	/** Interface to UI (null when process is running as background job, for e.g by scheduler) */
 	private IProcessUI m_processUI;
 	/** Process Info */
 	private ProcessInfo m_pi;
-	private Trx				m_trx;
+	private Trx	m_trx;
 	
 	/**	Static Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (AbstractProcessCtl.class);
@@ -90,13 +89,13 @@ public abstract class AbstractProcessCtl implements Runnable
 	}
 	
 	/**
-	 *	Execute Process Instance and Lock UI.
+	 *	Execute Process Instance and Lock UI.<br/>
 	 *  Calls lockUI and unlockUI if parent is a ASyncProcess
 	 *  <pre>
-	 *		- Get Process Information
+	 *      - Get Process Information
 	 *      - Call Class
-	 *		- Submit SQL Procedure
-	 *		- Run SQL Procedure
+	 *      - Submit SQL Procedure
+	 *      - Run SQL Procedure
 	 *	</pre>
 	 */
 	public void run ()
@@ -157,12 +156,11 @@ public abstract class AbstractProcessCtl implements Runnable
 			return;
 		}
 
-		//  No PL/SQL Procedure
+		//  Not Database Procedure
 		if (ProcedureName == null)
 			ProcedureName = "";
-
 		
-		/**********************************************************************
+		/**
 		 *	Workflow
 		 */
 		if (AD_Workflow_ID > 0)	
@@ -186,7 +184,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			return;
 		}
 
-		// Clear Jasper Report class if default - to be executed later
+		// Clear Jasper Report class if it is set to the default Jasper report starter class
 		boolean isJasper = false;
 		if (JasperReport != null && JasperReport.trim().length() > 0) {
 			isJasper = true;
@@ -195,8 +193,8 @@ public abstract class AbstractProcessCtl implements Runnable
 			}
 		}
 		
-		/**********************************************************************
-		 *	Start Optional Class
+		/**
+		 *	Call Process Class
 		 */
 		if (m_pi.getClassName() != null)
 		{
@@ -226,10 +224,10 @@ public abstract class AbstractProcessCtl implements Runnable
 			}
 		}
 
-		/**********************************************************************
+		/**
 		 *	Report submission
 		 */
-		//	Optional Pre-Report Process
+		//	Optional Pre-Report DB Process
 		if (IsReport && ProcedureName.length() > 0)
 		{
 			m_pi.setReportingProcess(true);
@@ -275,8 +273,8 @@ public abstract class AbstractProcessCtl implements Runnable
 			pinstance.saveEx();
 			unlock ();
 		}
-		/**********************************************************************
-		 * 	Process submission
+		/**
+		 * 	Run DB Process
 		 */
 		else
 		{
@@ -288,7 +286,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			//	Success - getResult
 			ProcessInfoUtil.setSummaryFromDB(m_pi);
 			unlock();
-		}			//	*** Process submission ***
+		}
 	}   //  run
 
 	protected abstract void updateProgressWindowTimerEstimate(int estSeconds);
@@ -296,13 +294,12 @@ public abstract class AbstractProcessCtl implements Runnable
 	protected abstract void updateProgressWindowTitle(String title);
 
 	/**
-	 *  Lock UI and show Waiting
+	 *  Lock UI and show in progress dialog
 	 */
 	protected abstract void lock ();
 
 	/**
-	 *  Unlock UI and dispose Waiting.
-	 * 	Called from run()
+	 *  Unlock UI and dispose in progress dialog.<br/>
 	 */
 	protected abstract void unlock ();
 	
@@ -332,7 +329,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		return false;
 	}
 	
-	/**************************************************************************
+	/**
 	 *  Start Workflow.
 	 *
 	 *  @param AD_Workflow_ID workflow
@@ -349,12 +346,9 @@ public abstract class AbstractProcessCtl implements Runnable
 		return started;
 	}   //  startWorkflow
 
-	/**************************************************************************
-	 *  Start Java Process Class.
-	 *      instantiate the class implementing the interface ProcessCall.
-	 *  The class can be a Server/Client class (when in Package
-	 *  org adempiere.process or org.compiere.model) or a client only class
-	 *  (e.g. in org.compiere.report)
+	/**
+	 *  Start Java Process Class.<br/>
+	 *  Instantiate the class implementing the interface ProcessCall.
 	 *
 	 *  @return     true if success
 	 */
@@ -369,8 +363,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		}
 	}   //  startProcess
 
-
-	/**************************************************************************
+	/**
 	 *  Start Database Process
 	 *  @param ProcedureName PL/SQL procedure name
 	 *  @return true if success

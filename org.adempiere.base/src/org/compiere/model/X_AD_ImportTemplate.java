@@ -31,7 +31,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240513L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setAD_ImportTemplate_ID (0);
 			setAD_Tab_ID (0);
 			setAD_Window_ID (0);
-			setCharacterSet (null);
 			setCSVHeader (null);
+			setCharacterSet (null);
 			setImportTemplateType (null);
 // CSV
 			setName (null);
@@ -63,8 +63,8 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setAD_ImportTemplate_ID (0);
 			setAD_Tab_ID (0);
 			setAD_Window_ID (0);
-			setCharacterSet (null);
 			setCSVHeader (null);
+			setCharacterSet (null);
 			setImportTemplateType (null);
 // CSV
 			setName (null);
@@ -84,8 +84,8 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setAD_ImportTemplate_ID (0);
 			setAD_Tab_ID (0);
 			setAD_Window_ID (0);
-			setCharacterSet (null);
 			setCSVHeader (null);
+			setCharacterSet (null);
 			setImportTemplateType (null);
 // CSV
 			setName (null);
@@ -105,8 +105,8 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 			setAD_ImportTemplate_ID (0);
 			setAD_Tab_ID (0);
 			setAD_Window_ID (0);
-			setCharacterSet (null);
 			setCSVHeader (null);
+			setCharacterSet (null);
 			setImportTemplateType (null);
 // CSV
 			setName (null);
@@ -237,21 +237,6 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set Character Set.
-		@param CharacterSet Character Set
-	*/
-	public void setCharacterSet (String CharacterSet)
-	{
-		set_Value (COLUMNNAME_CharacterSet, CharacterSet);
-	}
-
-	/** Get Character Set.
-		@return Character Set	  */
-	public String getCharacterSet()
-	{
-		return (String)get_Value(COLUMNNAME_CharacterSet);
-	}
-
 	/** Set CSV Alias Header.
 		@param CSVAliasHeader CSV Alias Header
 	*/
@@ -280,6 +265,21 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	public String getCSVHeader()
 	{
 		return (String)get_Value(COLUMNNAME_CSVHeader);
+	}
+
+	/** Set Character Set.
+		@param CharacterSet Character Set
+	*/
+	public void setCharacterSet (String CharacterSet)
+	{
+		set_Value (COLUMNNAME_CharacterSet, CharacterSet);
+	}
+
+	/** Get Character Set.
+		@return Character Set	  */
+	public String getCharacterSet()
+	{
+		return (String)get_Value(COLUMNNAME_CharacterSet);
 	}
 
 	/** Set Description.

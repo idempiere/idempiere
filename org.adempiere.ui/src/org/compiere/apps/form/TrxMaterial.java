@@ -33,6 +33,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+/**
+ * Form to view Material Transaction History.
+ */
 public class TrxMaterial {
 
 	/**	Window No			*/
@@ -47,8 +50,9 @@ public class TrxMaterial {
 	public static final CLogger log = CLogger.getCLogger(TrxMaterial.class);
 	
 	/**
-	 *  Dynamic Layout (Grid).
+	 *  Dynamic Layout (Grid).<br/>
 	 * 	Based on AD_Window: Material Transactions
+	 *  @param statusBar
 	 */
 	public void dynInit(IStatusBar statusBar)
 	{
@@ -68,8 +72,15 @@ public class TrxMaterial {
 		statusBar.setStatusDB(" ");
 	}   //  dynInit
 	
-	/**************************************************************************
+	/**
 	 *  Refresh - Create Query and refresh grid
+	 *  @param organization optional AD_Org_ID filter
+	 *  @param locator optional M_Locator_ID filter
+	 *  @param product optional M_Product_ID filter
+	 *  @param movementType optional MovementType filter
+	 *  @param movementDateFrom optional MovementDate filter (&gt;=)
+	 *  @param movementDateTo optional MovementDate filter (&lt;=)
+	 *  @param statusBar
 	 */
 	public void refresh(Object organization, Object locator, Object product, Object movementType, 
 			Timestamp movementDateFrom, Timestamp movementDateTo, IStatusBar statusBar)
@@ -113,12 +124,13 @@ public class TrxMaterial {
 	
 	public int AD_Table_ID;
 	public int Record_ID;
+	
 	/**
-	 *  Zoom
+	 *  Prepare for Zoom.<br/>
+	 *  Set value for {@link #AD_Table_ID} and {@link #Record_ID}
 	 */
 	public void zoom()
 	{
-		log.info("");
 		//
 		AD_Table_ID = 0;
 		Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, I_M_Transaction.COLUMNNAME_M_InOutLine_ID);
@@ -148,6 +160,4 @@ public class TrxMaterial {
 			}
 		}
 	}   //  zoom
-
-
 }

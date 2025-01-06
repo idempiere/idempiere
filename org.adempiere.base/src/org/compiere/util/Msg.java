@@ -708,6 +708,7 @@ public final class Msg
 	/**
 	 *	"Translate" text.
 	 *  <pre>
+	 *		- Check Context
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
 	 *  </pre>

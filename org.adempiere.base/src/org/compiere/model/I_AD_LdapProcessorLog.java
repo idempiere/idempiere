@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LdapProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_LdapProcessorLog 
 {
@@ -49,21 +49,6 @@ public interface I_AD_LdapProcessorLog
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_LdapProcessor_ID */
-    public static final String COLUMNNAME_AD_LdapProcessor_ID = "AD_LdapProcessor_ID";
-
-	/** Set Ldap Processor.
-	  * LDAP Server to authenticate and authorize external systems based on iDempiere
-	  */
-	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID);
-
-	/** Get Ldap Processor.
-	  * LDAP Server to authenticate and authorize external systems based on iDempiere
-	  */
-	public int getAD_LdapProcessor_ID();
-
-	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException;
-
     /** Column name AD_LdapProcessorLog_ID */
     public static final String COLUMNNAME_AD_LdapProcessorLog_ID = "AD_LdapProcessorLog_ID";
 
@@ -85,6 +70,21 @@ public interface I_AD_LdapProcessorLog
 
 	/** Get AD_LdapProcessorLog_UU	  */
 	public String getAD_LdapProcessorLog_UU();
+
+    /** Column name AD_LdapProcessor_ID */
+    public static final String COLUMNNAME_AD_LdapProcessor_ID = "AD_LdapProcessor_ID";
+
+	/** Set Ldap Processor.
+	  * LDAP Server to authenticate and authorize external systems based on iDempiere
+	  */
+	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID);
+
+	/** Get Ldap Processor.
+	  * LDAP Server to authenticate and authorize external systems based on iDempiere
+	  */
+	public int getAD_LdapProcessor_ID();
+
+	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

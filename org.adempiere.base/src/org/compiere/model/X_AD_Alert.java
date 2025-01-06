@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Alert
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Alert")
 public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Alert (Properties ctx, int AD_Alert_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
       super (ctx, AD_Alert_ID, trxName);
       /** if (AD_Alert_ID == 0)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertProcessor_ID (0);
+			setAD_Alert_ID (0);
 			setAlertMessage (null);
 			setAlertSubject (null);
 			setEnforceClientSecurity (true);
@@ -59,8 +59,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
       super (ctx, AD_Alert_ID, trxName, virtualColumns);
       /** if (AD_Alert_ID == 0)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertProcessor_ID (0);
+			setAD_Alert_ID (0);
 			setAlertMessage (null);
 			setAlertSubject (null);
 			setEnforceClientSecurity (true);
@@ -79,8 +79,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
       super (ctx, AD_Alert_UU, trxName);
       /** if (AD_Alert_UU == null)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertProcessor_ID (0);
+			setAD_Alert_ID (0);
 			setAlertMessage (null);
 			setAlertSubject (null);
 			setEnforceClientSecurity (true);
@@ -99,8 +99,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
       super (ctx, AD_Alert_UU, trxName, virtualColumns);
       /** if (AD_Alert_UU == null)
         {
-			setAD_Alert_ID (0);
 			setAD_AlertProcessor_ID (0);
+			setAD_Alert_ID (0);
 			setAlertMessage (null);
 			setAlertSubject (null);
 			setEnforceClientSecurity (true);
@@ -141,28 +141,6 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
       return sb.toString();
     }
 
-	/** Set Alert.
-		@param AD_Alert_ID iDempiere Alert
-	*/
-	public void setAD_Alert_ID (int AD_Alert_ID)
-	{
-		if (AD_Alert_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, Integer.valueOf(AD_Alert_ID));
-	}
-
-	/** Get Alert.
-		@return iDempiere Alert
-	  */
-	public int getAD_Alert_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Alert_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_ID)
@@ -186,6 +164,28 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	public int getAD_AlertProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AlertProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Alert.
+		@param AD_Alert_ID iDempiere Alert
+	*/
+	public void setAD_Alert_ID (int AD_Alert_ID)
+	{
+		if (AD_Alert_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, Integer.valueOf(AD_Alert_ID));
+	}
+
+	/** Get Alert.
+		@return iDempiere Alert
+	  */
+	public int getAD_Alert_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Alert_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

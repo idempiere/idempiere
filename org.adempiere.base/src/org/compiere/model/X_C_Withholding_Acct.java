@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Withholding_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_Withholding_Acct")
 public class X_C_Withholding_Acct extends PO implements I_C_Withholding_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_Withholding_Acct extends PO implements I_C_Withholding_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_Withholding_Acct (Properties ctx, int C_Withholding_Acct_ID, String trxName)

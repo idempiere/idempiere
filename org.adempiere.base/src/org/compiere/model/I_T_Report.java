@@ -21,7 +21,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Report
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_T_Report 
 {

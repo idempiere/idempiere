@@ -16,9 +16,8 @@ package org.compiere.grid;
 import org.compiere.model.GridTab;
 
 /**
- * 
+ * Factory interface for payment form instantiation
  * @author Elaine
- *
  */
 public interface IPaymentFormFactory {
 	

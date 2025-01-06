@@ -22,6 +22,7 @@ import javax.servlet.ServletRequest;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.LoginWindow;
+import org.compiere.model.MSysConfig;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -83,12 +84,16 @@ public class WLogin extends AbstractUIPart
 			if (ua.contains("ipad") || ua.contains("iphone") || ua.contains("android"))
 				mobile = true;
 		}
+
+		var leftPanelConfig =  MSysConfig.getValue(MSysConfig.APPLICATION_LOGIN_LEFT_PANEL_SHOWN, "Y");
     	
         West west = layout.getWest();
         if (west.getFirstChild() != null && west.getFirstChild().getFirstChild() != null) {
     		west.setCollapsible(true);
     		west.setSplittable(true);
-        	if (mobile) {    		
+    		if(leftPanelConfig.equals("I")) {
+    			west.setVisible(false);
+    		}else if (mobile || leftPanelConfig.equals("H")) {    		
         		west.setOpen(false);
         	}
         } else {

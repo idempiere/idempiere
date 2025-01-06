@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductOperation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductOperation")
 public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
       super (ctx, M_ProductOperation_ID, trxName);
       /** if (M_ProductOperation_ID == 0)
         {
-			setM_Product_ID (0);
 			setM_ProductOperation_ID (0);
+			setM_Product_ID (0);
 			setName (null);
         } */
     }
@@ -53,8 +53,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
       super (ctx, M_ProductOperation_ID, trxName, virtualColumns);
       /** if (M_ProductOperation_ID == 0)
         {
-			setM_Product_ID (0);
 			setM_ProductOperation_ID (0);
+			setM_Product_ID (0);
 			setName (null);
         } */
     }
@@ -65,8 +65,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
       super (ctx, M_ProductOperation_UU, trxName);
       /** if (M_ProductOperation_UU == null)
         {
-			setM_Product_ID (0);
 			setM_ProductOperation_ID (0);
+			setM_Product_ID (0);
 			setName (null);
         } */
     }
@@ -77,8 +77,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
       super (ctx, M_ProductOperation_UU, trxName, virtualColumns);
       /** if (M_ProductOperation_UU == null)
         {
-			setM_Product_ID (0);
 			setM_ProductOperation_ID (0);
+			setM_Product_ID (0);
 			setName (null);
         } */
     }
@@ -143,34 +143,6 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
-			.getPO(getM_Product_ID(), get_TrxName());
-	}
-
-	/** Set Product.
-		@param M_Product_ID Product, Service, Item
-	*/
-	public void setM_Product_ID (int M_Product_ID)
-	{
-		if (M_Product_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
-	}
-
-	/** Get Product.
-		@return Product, Service, Item
-	  */
-	public int getM_Product_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Product Operation.
 		@param M_ProductOperation_ID Product Manufacturing Operation
 	*/
@@ -206,6 +178,34 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	public String getM_ProductOperation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ProductOperation_UU);
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
+
+	/** Set Product.
+		@param M_Product_ID Product, Service, Item
+	*/
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

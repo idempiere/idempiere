@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQResponse
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponse")
 public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RfQResponse (Properties ctx, int C_RfQResponse_ID, String trxName)
@@ -46,8 +46,8 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 			setC_BPartner_Location_ID (0);
 			setC_Currency_ID (0);
 // @C_Currency_ID@
-			setC_RfQ_ID (0);
 			setC_RfQResponse_ID (0);
+			setC_RfQ_ID (0);
 			setIsComplete (false);
 			setIsSelectedWinner (false);
 			setIsSelfService (false);
@@ -67,8 +67,8 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 			setC_BPartner_Location_ID (0);
 			setC_Currency_ID (0);
 // @C_Currency_ID@
-			setC_RfQ_ID (0);
 			setC_RfQResponse_ID (0);
+			setC_RfQ_ID (0);
 			setIsComplete (false);
 			setIsSelectedWinner (false);
 			setIsSelfService (false);
@@ -88,8 +88,8 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 			setC_BPartner_Location_ID (0);
 			setC_Currency_ID (0);
 // @C_Currency_ID@
-			setC_RfQ_ID (0);
 			setC_RfQResponse_ID (0);
+			setC_RfQ_ID (0);
 			setIsComplete (false);
 			setIsSelectedWinner (false);
 			setIsSelfService (false);
@@ -109,8 +109,8 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 			setC_BPartner_Location_ID (0);
 			setC_Currency_ID (0);
 // @C_Currency_ID@
-			setC_RfQ_ID (0);
 			setC_RfQResponse_ID (0);
+			setC_RfQ_ID (0);
 			setIsComplete (false);
 			setIsSelectedWinner (false);
 			setIsSelfService (false);
@@ -260,21 +260,6 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Check Complete.
-		@param CheckComplete Check Complete
-	*/
-	public void setCheckComplete (String CheckComplete)
-	{
-		set_Value (COLUMNNAME_CheckComplete, CheckComplete);
-	}
-
-	/** Get Check Complete.
-		@return Check Complete	  */
-	public String getCheckComplete()
-	{
-		return (String)get_Value(COLUMNNAME_CheckComplete);
-	}
-
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -298,34 +283,6 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RfQ)MTable.get(getCtx(), org.compiere.model.I_C_RfQ.Table_ID)
-			.getPO(getC_RfQ_ID(), get_TrxName());
-	}
-
-	/** Set RfQ.
-		@param C_RfQ_ID Request for Quotation
-	*/
-	public void setC_RfQ_ID (int C_RfQ_ID)
-	{
-		if (C_RfQ_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, Integer.valueOf(C_RfQ_ID));
-	}
-
-	/** Get RfQ.
-		@return Request for Quotation
-	  */
-	public int getC_RfQ_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -366,6 +323,49 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 	public String getC_RfQResponse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQResponse_UU);
+	}
+
+	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RfQ)MTable.get(getCtx(), org.compiere.model.I_C_RfQ.Table_ID)
+			.getPO(getC_RfQ_ID(), get_TrxName());
+	}
+
+	/** Set RfQ.
+		@param C_RfQ_ID Request for Quotation
+	*/
+	public void setC_RfQ_ID (int C_RfQ_ID)
+	{
+		if (C_RfQ_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, Integer.valueOf(C_RfQ_ID));
+	}
+
+	/** Get RfQ.
+		@return Request for Quotation
+	  */
+	public int getC_RfQ_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Check Complete.
+		@param CheckComplete Check Complete
+	*/
+	public void setCheckComplete (String CheckComplete)
+	{
+		set_Value (COLUMNNAME_CheckComplete, CheckComplete);
+	}
+
+	/** Get Check Complete.
+		@return Check Complete	  */
+	public String getCheckComplete()
+	{
+		return (String)get_Value(COLUMNNAME_CheckComplete);
 	}
 
 	/** Set Invited.

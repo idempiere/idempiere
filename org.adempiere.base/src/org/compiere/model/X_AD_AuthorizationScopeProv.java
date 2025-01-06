@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AuthorizationScopeProv
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationScopeProv")
 public class X_AD_AuthorizationScopeProv extends PO implements I_AD_AuthorizationScopeProv, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationScopeProv (Properties ctx, int AD_AuthorizationScopeProv_ID, String trxName)

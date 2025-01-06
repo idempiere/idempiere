@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Tab
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Tab")
 public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)

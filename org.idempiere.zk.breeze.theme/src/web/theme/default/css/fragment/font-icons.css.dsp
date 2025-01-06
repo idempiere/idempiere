@@ -358,6 +358,9 @@
 .z-icon-StepForward:before {
 	content: "\f04e";
 }
+.z-icon-Tab::before {
+	content: "\f24d";
+}
 .z-icon-Task:before {
 	content: "\f0ae";
 	font-weight: 900;
@@ -386,6 +389,9 @@
 .z-icon-UnSort:before {
 	content: "\f074";
 	font-weight: 900;
+}
+.z-icon-File:before {
+	content: "\f15b";
 }
 .z-icon-VPreference:before {
 	content: "\f039";

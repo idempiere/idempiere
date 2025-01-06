@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Lot
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Lot")
 public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Lot (Properties ctx, int M_Lot_ID, String trxName)

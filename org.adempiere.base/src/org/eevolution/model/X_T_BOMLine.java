@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BOMLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_BOMLine")
 public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName)
@@ -182,43 +182,6 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return bd;
 	}
 
-	/** CostingMethod AD_Reference_ID=122 */
-	public static final int COSTINGMETHOD_AD_Reference_ID=122;
-	/** Average PO = A */
-	public static final String COSTINGMETHOD_AveragePO = "A";
-	/** Fifo = F */
-	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last Invoice = i */
-	public static final String COSTINGMETHOD_LastInvoice = "i";
-	/** Average Invoice = I */
-	public static final String COSTINGMETHOD_AverageInvoice = "I";
-	/** Lifo = L */
-	public static final String COSTINGMETHOD_Lifo = "L";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
-	/** Standard Costing = S */
-	public static final String COSTINGMETHOD_StandardCosting = "S";
-	/** User Defined = U */
-	public static final String COSTINGMETHOD_UserDefined = "U";
-	/** _ = x */
-	public static final String COSTINGMETHOD__ = "x";
-	/** Set Costing Method.
-		@param CostingMethod Indicates how Costs will be calculated
-	*/
-	public void setCostingMethod (String CostingMethod)
-	{
-
-		set_Value (COLUMNNAME_CostingMethod, CostingMethod);
-	}
-
-	/** Get Costing Method.
-		@return Indicates how Costs will be calculated
-	  */
-	public String getCostingMethod()
-	{
-		return (String)get_Value(COLUMNNAME_CostingMethod);
-	}
-
 	/** Set Standard Cost.
 		@param CostStandard Standard Costs
 	*/
@@ -236,6 +199,43 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** CostingMethod AD_Reference_ID=122 */
+	public static final int COSTINGMETHOD_AD_Reference_ID=122;
+	/** Average PO = A */
+	public static final String COSTINGMETHOD_AveragePO = "A";
+	/** Fifo = F */
+	public static final String COSTINGMETHOD_Fifo = "F";
+	/** Average Invoice = I */
+	public static final String COSTINGMETHOD_AverageInvoice = "I";
+	/** Lifo = L */
+	public static final String COSTINGMETHOD_Lifo = "L";
+	/** Standard Costing = S */
+	public static final String COSTINGMETHOD_StandardCosting = "S";
+	/** User Defined = U */
+	public static final String COSTINGMETHOD_UserDefined = "U";
+	/** Last Invoice = i */
+	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
+	/** _ = x */
+	public static final String COSTINGMETHOD__ = "x";
+	/** Set Costing Method.
+		@param CostingMethod Indicates how Costs will be calculated
+	*/
+	public void setCostingMethod (String CostingMethod)
+	{
+
+		set_Value (COLUMNNAME_CostingMethod, CostingMethod);
+	}
+
+	/** Get Costing Method.
+		@return Indicates how Costs will be calculated
+	  */
+	public String getCostingMethod()
+	{
+		return (String)get_Value(COLUMNNAME_CostingMethod);
 	}
 
 	/** Set Current Cost Price.
@@ -475,34 +475,6 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-	{
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());
-	}
-
-	/** Set BOM &amp; Formula.
-		@param PP_Product_BOM_ID BOM &amp; Formula
-	*/
-	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
-	{
-		if (PP_Product_BOM_ID < 1)
-			set_Value (COLUMNNAME_PP_Product_BOM_ID, null);
-		else
-			set_Value (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
-	}
-
-	/** Get BOM &amp; Formula.
-		@return BOM &amp; Formula
-	  */
-	public int getPP_Product_BOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.eevolution.model.I_PP_Product_BOMLine getPP_Product_BOMLine() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Product_BOMLine)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOMLine.Table_ID)
@@ -526,6 +498,34 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	public int getPP_Product_BOMLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOMLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
+
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
+	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
+	{
+		if (PP_Product_BOM_ID < 1)
+			set_Value (COLUMNNAME_PP_Product_BOM_ID, null);
+		else
+			set_Value (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
+	}
+
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
+	  */
+	public int getPP_Product_BOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

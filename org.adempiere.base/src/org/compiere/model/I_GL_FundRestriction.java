@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_FundRestriction
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_GL_FundRestriction 
 {
@@ -106,21 +106,6 @@ public interface I_GL_FundRestriction
 	  */
 	public String getDescription();
 
-    /** Column name GL_Fund_ID */
-    public static final String COLUMNNAME_GL_Fund_ID = "GL_Fund_ID";
-
-	/** Set GL Fund.
-	  * General Ledger Funds Control
-	  */
-	public void setGL_Fund_ID (int GL_Fund_ID);
-
-	/** Get GL Fund.
-	  * General Ledger Funds Control
-	  */
-	public int getGL_Fund_ID();
-
-	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException;
-
     /** Column name GL_FundRestriction_ID */
     public static final String COLUMNNAME_GL_FundRestriction_ID = "GL_FundRestriction_ID";
 
@@ -142,6 +127,21 @@ public interface I_GL_FundRestriction
 
 	/** Get GL_FundRestriction_UU	  */
 	public String getGL_FundRestriction_UU();
+
+    /** Column name GL_Fund_ID */
+    public static final String COLUMNNAME_GL_Fund_ID = "GL_Fund_ID";
+
+	/** Set GL Fund.
+	  * General Ledger Funds Control
+	  */
+	public void setGL_Fund_ID (int GL_Fund_ID);
+
+	/** Get GL Fund.
+	  * General Ledger Funds Control
+	  */
+	public int getGL_Fund_ID();
+
+	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

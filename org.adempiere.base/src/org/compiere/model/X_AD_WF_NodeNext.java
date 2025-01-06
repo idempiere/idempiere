@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NodeNext
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_NodeNext")
 public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_WF_NodeNext (Properties ctx, int AD_WF_NodeNext_ID, String trxName)
@@ -40,9 +40,9 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
       /** if (AD_WF_NodeNext_ID == 0)
         {
 			setAD_WF_Next_ID (0);
+			setAD_WF_NodeNext_ID (0);
 			setAD_WF_Node_ID (0);
 // @1|AD_WF_Node_ID@
-			setAD_WF_NodeNext_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStdUserWorkflow (false);
@@ -58,9 +58,9 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
       /** if (AD_WF_NodeNext_ID == 0)
         {
 			setAD_WF_Next_ID (0);
+			setAD_WF_NodeNext_ID (0);
 			setAD_WF_Node_ID (0);
 // @1|AD_WF_Node_ID@
-			setAD_WF_NodeNext_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStdUserWorkflow (false);
@@ -76,9 +76,9 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
       /** if (AD_WF_NodeNext_UU == null)
         {
 			setAD_WF_Next_ID (0);
+			setAD_WF_NodeNext_ID (0);
 			setAD_WF_Node_ID (0);
 // @1|AD_WF_Node_ID@
-			setAD_WF_NodeNext_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStdUserWorkflow (false);
@@ -94,9 +94,9 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
       /** if (AD_WF_NodeNext_UU == null)
         {
 			setAD_WF_Next_ID (0);
+			setAD_WF_NodeNext_ID (0);
 			setAD_WF_Node_ID (0);
 // @1|AD_WF_Node_ID@
-			setAD_WF_NodeNext_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStdUserWorkflow (false);
@@ -161,42 +161,6 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());
-	}
-
-	/** Set Node.
-		@param AD_WF_Node_ID Workflow Node (activity), step or process
-	*/
-	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
-	{
-		if (AD_WF_Node_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
-	}
-
-	/** Get Node.
-		@return Workflow Node (activity), step or process
-	  */
-	public int getAD_WF_Node_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Node_ID()));
-    }
-
 	/** Set Node Transition.
 		@param AD_WF_NodeNext_ID Workflow Node Transition
 	*/
@@ -233,6 +197,42 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_NodeNext_UU);
 	}
+
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
+
+	/** Set Node.
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
+	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
+	{
+		if (AD_WF_Node_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
+	}
+
+	/** Get Node.
+		@return Workflow Node (activity), step or process
+	  */
+	public int getAD_WF_Node_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Node_ID()));
+    }
 
 	/** Set Description.
 		@param Description Optional short description of the record

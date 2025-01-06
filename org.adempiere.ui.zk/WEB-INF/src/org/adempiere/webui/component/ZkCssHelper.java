@@ -19,6 +19,7 @@ package org.adempiere.webui.component;
 
 import java.awt.Color;
 
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 
 /**
@@ -75,14 +76,18 @@ public final class ZkCssHelper
      */
     public static void appendStyle(HtmlBasedComponent component, String style)
     {
-    	String oldStyle = "";
-
 		if (component.getStyle() != null)
 		{
-			oldStyle = component.getStyle();
+			String oldStyle = component.getStyle().trim();
+			if (!oldStyle.endsWith(";"))
+				component.setStyle(oldStyle + ";" + style);
+			else
+				component.setStyle(oldStyle + style);
+		}		
+		else
+		{
+			component.setStyle(style);
 		}
-		component.setStyle(oldStyle
-						+ "; " + style);
     }
 
     /**
@@ -151,5 +156,29 @@ public final class ZkCssHelper
         String colorString = createHexColorString(color);
         String colorStyleString = STYLE_BACKGROUND_COLOR + colorString;
         component.setStyle(colorStyleString);
+    }
+    
+    /**
+     * Remove named style property (for e.g width) from component
+     * @param component
+     * @param styleName
+     */
+    public static void removeStyle(HtmlBasedComponent component, String styleName) {
+    	if (component.getStyle() != null) {
+    		String style = component.getStyle();
+    		int index = style.indexOf(styleName+":"); 
+    		if (index >= 0) {
+    			int end = style.indexOf(";", index);
+    			if (end > index) {
+    				style = style.replace(style.substring(index, end+1), "");
+    			} else {
+    				style = style.replace(style.substring(index, style.length()), "");
+    			}
+    			if (Util.isEmpty(style, true))
+    				component.setStyle(null);
+    			else
+    				component.setStyle(style);
+    		}
+    	}
     }
 }

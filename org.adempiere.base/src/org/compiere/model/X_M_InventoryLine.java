@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_InventoryLine")
 public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -44,8 +44,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -63,8 +63,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -82,8 +82,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -101,8 +101,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -280,34 +280,6 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)
-			.getPO(getM_Inventory_ID(), get_TrxName());
-	}
-
-	/** Set Phys.Inventory.
-		@param M_Inventory_ID Parameters for a Physical Inventory
-	*/
-	public void setM_Inventory_ID (int M_Inventory_ID)
-	{
-		if (M_Inventory_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, Integer.valueOf(M_Inventory_ID));
-	}
-
-	/** Get Phys.Inventory.
-		@return Parameters for a Physical Inventory
-	  */
-	public int getM_Inventory_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Inventory_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Phys.Inventory Line.
 		@param M_InventoryLine_ID Unique line in an Inventory document
 	*/
@@ -343,6 +315,34 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	public String getM_InventoryLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_InventoryLine_UU);
+	}
+
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)
+			.getPO(getM_Inventory_ID(), get_TrxName());
+	}
+
+	/** Set Phys.Inventory.
+		@param M_Inventory_ID Parameters for a Physical Inventory
+	*/
+	public void setM_Inventory_ID (int M_Inventory_ID)
+	{
+		if (M_Inventory_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, Integer.valueOf(M_Inventory_ID));
+	}
+
+	/** Get Phys.Inventory.
+		@return Parameters for a Physical Inventory
+	  */
+	public int getM_Inventory_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Inventory_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException

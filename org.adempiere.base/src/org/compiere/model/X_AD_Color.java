@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Color
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Color")
 public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Color (Properties ctx, int AD_Color_ID, String trxName)

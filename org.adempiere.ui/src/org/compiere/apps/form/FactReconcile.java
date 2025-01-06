@@ -51,6 +51,9 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
+/**
+ * GL Reconciliation Form
+ */
 public class FactReconcile {
 	
 	/**	Logger			*/
@@ -83,7 +86,7 @@ public class FactReconcile {
 	protected BigDecimal m_selectedAmt;
 	
 	/**
-	 * dynamic initialization
+	 * Dynamic initialization
 	 * @throws Exception
 	 */
 	public void dynInit() throws Exception
@@ -92,7 +95,7 @@ public class FactReconcile {
 	}
 	
 	/**
-	 * 
+	 * Get column names for {@link #getData()}
 	 * @return column header labels
 	 */
 	public Vector<String> getColumnNames()
@@ -116,7 +119,7 @@ public class FactReconcile {
 	}
 	
 	/**
-	 * 
+	 * Get not reconcile or reconciled Fact_Acct records
 	 * @return list of Fact_Acct records
 	 */
 	public Vector<Vector<Object>> getData() {
@@ -240,8 +243,10 @@ public class FactReconcile {
 	}
 	
 	/**
-	 * set class type of column
+	 * Set class type of column
 	 * @param miniTable
+	 * @see #getColumnNames()
+	 * @see #getData()
 	 */
 	public void setColumnClass(IMiniTable miniTable)
 	{
@@ -263,8 +268,7 @@ public class FactReconcile {
 	}
 	
 	/**
-	 *  Calculate selected rows.
-	 *  - add up selected rows
+	 *  Calculate total of selected rows.
 	 */
 	public void calculateSelection(IMiniTable miniTable)
 	{
@@ -318,6 +322,8 @@ public class FactReconcile {
 	
 	/**
 	 * Generate Reconciliation record
+	 * @param factId Fact_Acct_ID
+	 * @param time time stamp 
 	 * @return true if save successfully 
 	 */
 	public boolean generate(int factId, String time)
@@ -365,6 +371,7 @@ public class FactReconcile {
 	
 	/**
 	 * Reset/delete Reconciliation record
+	 * @param factId Fact_Acct_ID
 	 * @return true if reset/delete successfully
 	 */
 	public boolean reset(int factId)
@@ -381,8 +388,8 @@ public class FactReconcile {
 	}
 	
 	/**
-	 * 
-	 * @return list of account element records
+	 * Get account element records
+	 * @return list of account element records (C_ElementValue_ID, Value)
 	 */
 	protected Vector<KeyNamePair> getAccount(){
 		Vector<KeyNamePair> vector = new Vector<KeyNamePair>();

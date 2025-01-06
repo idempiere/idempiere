@@ -39,8 +39,8 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
       super (ctx, M_AttributeUse_ID, trxName);
       /** if (M_AttributeUse_ID == 0)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSet_ID (0);
+			setM_Attribute_ID (0);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_AttributeUse WHERE M_AttributeSet_ID=@M_AttributeSet_ID@
         } */
@@ -52,8 +52,8 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
       super (ctx, M_AttributeUse_ID, trxName, virtualColumns);
       /** if (M_AttributeUse_ID == 0)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSet_ID (0);
+			setM_Attribute_ID (0);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_AttributeUse WHERE M_AttributeSet_ID=@M_AttributeSet_ID@
         } */
@@ -65,8 +65,8 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
       super (ctx, M_AttributeUse_UU, trxName);
       /** if (M_AttributeUse_UU == null)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSet_ID (0);
+			setM_Attribute_ID (0);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_AttributeUse WHERE M_AttributeSet_ID=@M_AttributeSet_ID@
         } */
@@ -78,8 +78,8 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
       super (ctx, M_AttributeUse_UU, trxName, virtualColumns);
       /** if (M_AttributeUse_UU == null)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSet_ID (0);
+			setM_Attribute_ID (0);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_AttributeUse WHERE M_AttributeSet_ID=@M_AttributeSet_ID@
         } */
@@ -206,6 +206,34 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	public String getM_AttributeUse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeUse_UU);
+	}
+
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
+
+	/** Set Attribute.
+		@param M_Attribute_ID Product Attribute
+	*/
+	public void setM_Attribute_ID (int M_Attribute_ID)
+	{
+		if (M_Attribute_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+	}
+
+	/** Get Attribute.
+		@return Product Attribute
+	  */
+	public int getM_Attribute_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sequence.

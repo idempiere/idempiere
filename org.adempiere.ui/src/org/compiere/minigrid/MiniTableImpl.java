@@ -40,7 +40,6 @@ import org.compiere.model.PO;
 import org.compiere.util.KeyNamePair;
 
 /**
- * 
  * Headless implementation of {@link IMiniTable}.<br/>
  * This support the use/test of some UI API (for e.g {@link Match} in headless environment (for e.g unit test).
  * @author hengsin

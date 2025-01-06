@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Disposed
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_A_Asset_Disposed 
 {
@@ -40,6 +40,27 @@ public interface I_A_Asset_Disposed
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name A_Accumulated_Depr */
     public static final String COLUMNNAME_A_Accumulated_Depr = "A_Accumulated_Depr";
@@ -130,14 +151,6 @@ public interface I_A_Asset_Disposed
 
 	public org.compiere.model.I_A_Asset getA_Asset_Trade() throws RuntimeException;
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Disposal_Amt */
     public static final String COLUMNNAME_A_Disposal_Amt = "A_Disposal_Amt";
 
@@ -174,19 +187,6 @@ public interface I_A_Asset_Disposed
 	/** Get Disposed Reason	  */
 	public String getA_Disposed_Reason();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name A_Proceeds */
     public static final String COLUMNNAME_A_Proceeds = "A_Proceeds";
 
@@ -211,21 +211,6 @@ public interface I_A_Asset_Disposed
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
-    /** Column name C_Invoice_ID */
-    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
-
-	/** Set Invoice.
-	  * Invoice Identifier
-	  */
-	public void setC_Invoice_ID (int C_Invoice_ID);
-
-	/** Get Invoice.
-	  * Invoice Identifier
-	  */
-	public int getC_Invoice_ID();
-
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
-
     /** Column name C_InvoiceLine_ID */
     public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
 
@@ -240,6 +225,21 @@ public interface I_A_Asset_Disposed
 	public int getC_InvoiceLine_ID();
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
+
+    /** Column name C_Invoice_ID */
+    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
+
+	/** Set Invoice.
+	  * Invoice Identifier
+	  */
+	public void setC_Invoice_ID (int C_Invoice_ID);
+
+	/** Get Invoice.
+	  * Invoice Identifier
+	  */
+	public int getC_Invoice_ID();
+
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Period_ID */
     public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";

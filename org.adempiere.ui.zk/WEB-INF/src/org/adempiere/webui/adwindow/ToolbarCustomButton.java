@@ -19,6 +19,7 @@ import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.ToolBarButton;
 import org.compiere.model.MColumn;
 import org.compiere.model.MToolBarButton;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -96,9 +97,14 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 		
 		int tabNo = this.tabNo >= 0 ? this.tabNo : adTabpanel.getTabNo();
 		if( tabNo == 0)
+		{
 	    	return adTabpanel.get_ValueAsString(variableName);
+		}
 	    else
-	    	return Env.getContext (Env.getCtx(), windowNo, tabNo, variableName, false, true);
+	    {
+	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(adTabpanel.getGridTab(), windowNo, tabNo, false, true);
+	    	return evaluatee.get_ValueAsString(variableName);
+	    }
 	}
 	
 	/**

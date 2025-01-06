@@ -225,6 +225,7 @@ public final class ImpFormat
 	 *  @param newBPartner (value)
 	 *  @deprecated
 	 */
+	@Deprecated
 	public void setBPartner(String newBPartner)
 	{
 		m_BPartner = newBPartner;
@@ -235,6 +236,7 @@ public final class ImpFormat
 	 *  @return BPartner (value)
 	 *  @deprecated
 	 */
+	@Deprecated
 	public String getBPartner()
 	{
 		return m_BPartner;

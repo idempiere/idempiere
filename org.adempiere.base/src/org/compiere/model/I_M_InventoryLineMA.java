@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InventoryLineMA
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_InventoryLineMA 
 {
@@ -128,6 +128,15 @@ public interface I_M_InventoryLineMA
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
+    /** Column name M_InventoryLineMA_UU */
+    public static final String COLUMNNAME_M_InventoryLineMA_UU = "M_InventoryLineMA_UU";
+
+	/** Set M_InventoryLineMA_UU	  */
+	public void setM_InventoryLineMA_UU (String M_InventoryLineMA_UU);
+
+	/** Get M_InventoryLineMA_UU	  */
+	public String getM_InventoryLineMA_UU();
+
     /** Column name M_InventoryLine_ID */
     public static final String COLUMNNAME_M_InventoryLine_ID = "M_InventoryLine_ID";
 
@@ -142,15 +151,6 @@ public interface I_M_InventoryLineMA
 	public int getM_InventoryLine_ID();
 
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
-
-    /** Column name M_InventoryLineMA_UU */
-    public static final String COLUMNNAME_M_InventoryLineMA_UU = "M_InventoryLineMA_UU";
-
-	/** Set M_InventoryLineMA_UU	  */
-	public void setM_InventoryLineMA_UU (String M_InventoryLineMA_UU);
-
-	/** Get M_InventoryLineMA_UU	  */
-	public String getM_InventoryLineMA_UU();
 
     /** Column name MovementQty */
     public static final String COLUMNNAME_MovementQty = "MovementQty";
