@@ -517,7 +517,7 @@ public class MLookupFactory
 			}
 			realSQL.append(",").append(TableName).append(".IsActive");
 
-			String realKeyColumn = TableName + (MTable.get(ctx, TableName).isUUIDKeyTable() ? "_UU" : "_ID");
+			String realKeyColumn = KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU") ? KeyColumn : (MTable.get(ctx, TableName).isUUIDKeyTable() ? PO.getUUIDColumnName(TableName) : TableName + "_ID");
 
 			realSQL.append(" FROM ").append(TableName)
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
