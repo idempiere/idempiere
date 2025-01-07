@@ -15,11 +15,11 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -40,10 +40,10 @@ public class MTableAttribute extends X_AD_TableAttribute
 	/** Get Default value of the attribute **/
 	private static final String TABLE_ATTRIBUTE_DEFAULTVALUE_SQL = """
 														SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, COALESCE(atsu.DefaultValue , a.DefaultValue)
-																FROM AD_Table tb
-																INNER JOIN M_AttributeUse atsu ON (atsu.M_AttributeSet_ID = tb.M_AttributeSet_ID)
+																FROM AD_TableAttributeSet tas
+																INNER JOIN M_AttributeUse atsu ON (atsu.M_AttributeSet_ID = tas.M_AttributeSet_ID)
 																INNER JOIN M_Attribute a ON (a.M_Attribute_ID = atsu.M_Attribute_ID)
-																WHERE a.Name = ? AND a.IsActive = 'Y' AND tb.AD_Table_ID = ?	""";
+																WHERE a.Name = ? AND a.IsActive = 'Y' AND tas.AD_Table_ID = ?	""";
 
 	private static CCache<String, Object> s_tableAttributeDefault = new CCache<String, Object>("AD_TableAttribute_Default", 30);	
 	
@@ -56,11 +56,17 @@ public class MTableAttribute extends X_AD_TableAttribute
 	{
 		super(ctx, rs, trxName);
 	}
+	
+	public static List<MTableAttribute> get(int tableID, int recordID)
+	{
+		final String whereClause = "AD_Table_ID=? AND Record_ID=? ";
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, whereClause, null).setParameters(tableID, recordID).list();
+	}
 
 	public static MTableAttribute get(int tableID, int recordID, int attrID)
 	{
-		String whereClause = MTableAttribute.COLUMNNAME_AD_Table_ID + " = ? AND " + MTableAttribute.COLUMNNAME_Record_ID + " = ? AND " + MTableAttribute.COLUMNNAME_M_Attribute_ID + " = ? ";
-		return new Query(Env.getCtx(), MTableAttribute.Table_Name, whereClause, null).setParameters(tableID, recordID, attrID).first();
+		final String whereClause = "AD_Table_ID=? AND Record_ID=? AND M_Attribute_ID=? ";
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, whereClause, null).setParameters(tableID, recordID, attrID).firstOnly();
 	}
 
 	/**
@@ -135,8 +141,7 @@ public class MTableAttribute extends X_AD_TableAttribute
 			}
 			catch (Exception e)
 			{
-				CLogger.get().log(Level.SEVERE, "Failed: Get Attribute = " + attributeName, e);
-				return null;
+				throw new AdempiereException("Failed: Get Attribute = " + attributeName, e);
 			}
 			finally
 			{

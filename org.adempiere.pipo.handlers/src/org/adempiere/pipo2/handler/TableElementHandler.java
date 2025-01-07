@@ -38,6 +38,7 @@ import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.MColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableAttributeSet;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.MViewComponent;
 import org.compiere.model.Query;
@@ -57,6 +58,8 @@ public class TableElementHandler extends AbstractElementHandler {
 	private ColumnElementHandler columnHandler = new ColumnElementHandler();
 	private TableIndexElementHandler tableIndexHandler = new TableIndexElementHandler();
 	private ViewComponentElementHandler viewComponentHandler = new ViewComponentElementHandler();
+	private TableAttributeSetElementHandler tableAttributeSetElementHandler = new TableAttributeSetElementHandler();
+
 
 	private List<Integer>tables = new ArrayList<Integer>();
 
@@ -180,18 +183,6 @@ public class TableElementHandler extends AbstractElementHandler {
 		PackOut packOut = ctx.packOut;
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Table m_Table = new X_AD_Table (ctx.ctx, AD_Table_ID, null);
-		if (m_Table.getM_AttributeSet_ID() > 0)
-		{
-			try
-			{
-				new AttributeSetElementHandler().packOut(ctx.packOut, document, null, m_Table.getM_AttributeSet_ID());
-			}
-			catch (Exception e)
-			{
-				if (log.isLoggable(Level.INFO))
-					log.info(e.toString());
-			}
-		}
 		boolean createElement = isPackOutElement(ctx, m_Table);
 		if (createElement) {
 			verifyPackOutRequirement(m_Table);
@@ -278,6 +269,23 @@ public class TableElementHandler extends AbstractElementHandler {
 				createViewComponent(ctx, document, vc.getAD_ViewComponent_ID());
 			}
 		} catch (Exception e)	{
+			throw new AdempiereException(e);
+		}
+		
+		List<MTableAttributeSet> mTableAttributeSets = new Query(ctx.ctx, MTableAttributeSet.Table_Name, "AD_Table_ID=?", getTrxName(ctx))
+						.setParameters(AD_Table_ID)
+						.list();
+		try
+		{
+			for (MTableAttributeSet attributeSet : mTableAttributeSets)
+			{
+				Env.setContext(ctx.ctx, MTableAttributeSet.COLUMNNAME_AD_TableAttributeSet_UU, attributeSet.getAD_TableAttributeSet_UU());
+				tableAttributeSetElementHandler.packOut(ctx.packOut, document, null, 0, attributeSet.getAD_TableAttributeSet_UU());
+				ctx.ctx.remove(MTableAttributeSet.COLUMNNAME_AD_TableAttributeSet_UU);
+			}
+		}
+		catch (Exception e)
+		{
 			throw new AdempiereException(e);
 		}
 		

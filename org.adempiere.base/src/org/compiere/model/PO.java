@@ -6257,7 +6257,7 @@ public abstract class PO
 		Object value = getAttribute(attributeName);
 		return value != null ? (int) value : 0;
 	} // getAttributeAsInt
-
+	
 	/**
 	 * Return attribute value for table and record.
 	 * Load All attribute first time, then only query attribute that are not in map.
@@ -6359,6 +6359,15 @@ public abstract class PO
 
 		return MTableAttribute.getAttributeDefaultValue(attributeName, get_Table_ID());
 	} // getAttribute
-
-
+	
+	/**
+	 * Retrieves the table attributes associated with the current record.
+	 * 
+	 * @return a list of {@link PO} objects representing table attributes
+	 *         filtered by the table ID and record ID.
+	 */
+	public List<PO> getTableAttributes()
+	{
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", null).setParameters(get_Table_ID(), get_ID()).list();
+	}
 }   //  PO

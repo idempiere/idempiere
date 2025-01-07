@@ -111,6 +111,7 @@ import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableAttributeSet;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.StateChangeEvent;
@@ -1814,10 +1815,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		toolbar.enableQuickForm(adTabbox.getSelectedTabpanel().isEnableQuickFormButton() && !adTabbox.getSelectedGridTab().isReadOnly());
 
-		toolbar.enableAttributeForm((MTable.get(Env.getCtx(), adTabbox.getSelectedGridTab().getAD_Table_ID()).getM_AttributeSet_ID() > 0));
-
+		toolbar.enableAttributeForm(MTableAttributeSet.hasTableAttributeSet(adTabbox.getSelectedGridTab().getAD_Table_ID()));
+		
 		boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
-        
 		IADTabpanel adtab = adTabbox.getSelectedTabpanel();
         toolbar.enableProcessButton(adtab != null && adtab.isEnableProcessButton());
         toolbar.enableCustomize(adtab.isEnableCustomizeButton());

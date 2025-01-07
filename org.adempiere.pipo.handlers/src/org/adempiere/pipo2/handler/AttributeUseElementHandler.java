@@ -120,8 +120,8 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String uuid) throws Exception
 	{
-		String sql = "SELECT * FROM " + MAttributeUse.Table_Name + " WHERE " + MAttributeUse.COLUMNNAME_M_AttributeUse_UU + " = '" + uuid + "'";
-		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
+		StringBuilder sql = new StringBuilder("SELECT * FROM M_AttributeUse WHERE M_AttributeUse_UU = '").append(uuid).append("'");
+		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql.toString());
 		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}

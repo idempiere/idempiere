@@ -14,6 +14,7 @@ package org.adempiere.webui.window;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -35,9 +36,9 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.MAttribute;
-import org.compiere.model.MAttributeSet;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableAttribute;
+import org.compiere.model.MTableAttributeSet;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -64,7 +65,6 @@ public class WTableAttribute extends Window implements EventListener<Event>
 	private static final long serialVersionUID = -6423631584481652137L;
 
 	/** the attribute set selected on the InfoProduct window */
-	private int					p_M_AttributeSet_ID	= 0;
 	private int					p_AD_Table_ID		= 0;
 	private int					p_Record_ID			= 0;
 	protected int				m_WindowNo;
@@ -81,7 +81,6 @@ public class WTableAttribute extends Window implements EventListener<Event>
 		super();
 		p_AD_Table_ID = tableID;
 		p_Record_ID = recordID;
-		p_M_AttributeSet_ID = MTable.get(Env.getCtx(), tableID).getM_AttributeSet_ID();
 		setTitle(Msg.getMsg(Env.getCtx(), "TableAttribute"));
 		this.setBorder("normal");
 		this.setMaximizable(false);
@@ -103,10 +102,10 @@ public class WTableAttribute extends Window implements EventListener<Event>
 	/** Attribute Editors */
 	private Map<Integer, WEditor>	m_attEditors	= new HashMap<Integer, WEditor>();
 	/** Logger */
-	private static final CLogger	log				= CLogger.getCLogger(WTableAttribute.class);
+	private static final CLogger			log				= CLogger.getCLogger(WTableAttribute.class);
 
-	private Rows					rows			= null;
-	private ConfirmPanel			confirmPanel	= new ConfirmPanel(true);
+	private Rows							rows			= null;
+	private ConfirmPanel					confirmPanel	= new ConfirmPanel(true);
 
 	/**
 	 * Layout dialog
@@ -149,32 +148,21 @@ public class WTableAttribute extends Window implements EventListener<Event>
 	private int addAttributes()
 	{
 		PO po = MTable.get(Env.getCtx(), p_AD_Table_ID).getPO(p_Record_ID, null);
-		MAttribute[] attributes = MAttributeSet.get(Env.getCtx(), p_M_AttributeSet_ID).getMAttributes(false);
+		ArrayList<MAttribute> attributes = MTableAttributeSet.getMAttributes(p_AD_Table_ID, null);
 		for (MAttribute attribute : attributes)
 		{
-
 			WEditor editor = null;
-			//
+
 			if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attribute.getAttributeValueType()))
-			{
 				editor = WebEditorFactory.getEditor(getListTypeGridField(attribute), true);
-			}
 			else if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attribute.getAttributeValueType()))
-			{
 				editor = WebEditorFactory.getEditor(getNumberGridField(attribute), true);
-			}
 			else if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attribute.getAttributeValueType()))
-			{
 				editor = WebEditorFactory.getEditor(getGridField(attribute), true);
-			}
 			else if (MAttribute.ATTRIBUTEVALUETYPE_Date.equals(attribute.getAttributeValueType()))
-			{
 				editor = WebEditorFactory.getEditor(getDateGridField(attribute), true);
-			}
 			else // Text Field
-			{
 				editor = WebEditorFactory.getEditor(getStringGridField(attribute), true);
-			}
 
 			if (editor != null)
 			{
@@ -184,7 +172,7 @@ public class WTableAttribute extends Window implements EventListener<Event>
 				if (!Util.isEmpty(attribute.getDescription(), true))
 					label.setValue(attribute.getDescription());
 				else if (Util.isEmpty(label.getValue(), true))
-					label.setValue(attribute.getName());
+					label.setValue(Msg.translate(Env.getCtx(), attribute.get_Translation("Name")));
 
 				row.appendCellChild(label.rightAlign());
 
@@ -311,12 +299,12 @@ public class WTableAttribute extends Window implements EventListener<Event>
 	 */
 	private void saveAttribute()
 	{
-		for (Integer att_ID : m_attEditors.keySet())
+		for (Integer attributeID : m_attEditors.keySet())
 		{
-			WEditor editor = m_attEditors.get(att_ID);
+			WEditor editor = m_attEditors.get(attributeID);
 			Object value = editor.getValue();
 
-			MAttribute att = new MAttribute(Env.getCtx(), att_ID, null);
+			MAttribute att = new MAttribute(Env.getCtx(), attributeID, null);
 			MTableAttribute tableAtt = MTableAttribute.get(p_AD_Table_ID, p_Record_ID, att.getM_Attribute_ID());
 			if (tableAtt == null)
 			{
@@ -328,7 +316,7 @@ public class WTableAttribute extends Window implements EventListener<Event>
 				tableAtt.setRecord_ID(p_Record_ID);
 				tableAtt.setM_Attribute_ID(att.getM_Attribute_ID());
 			}
-			
+
 			if (value == null)
 			{
 				tableAtt.delete(true);

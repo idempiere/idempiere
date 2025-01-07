@@ -870,6 +870,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	public void enableAttributeForm(boolean enabled)
 	{
 		btnAttributeForm.setDisabled(!enabled);
+		btnAttributeForm.setVisible(enabled);
 	}
 
 	/**
