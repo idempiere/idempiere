@@ -61,7 +61,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3367088113045249966L;
+	private static final long serialVersionUID = 8555678512288694221L;
 
 	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
 	
@@ -219,6 +219,14 @@ public class MAttachment extends X_AD_Attachment
 
 	/* Attachment files can be read, but not written/deleted */
 	private Boolean isReadOnly = null;
+
+	/**
+	 * If the related record is on System and the user is operating on Tenant, the attachment is read-only
+	 * @return
+	 */
+	public boolean isReadOnly() {
+		return isReadOnly(false);
+	}
 
 	/**
 	 * If the related record is on System and the user is operating on Tenant, the attachment is read-only
