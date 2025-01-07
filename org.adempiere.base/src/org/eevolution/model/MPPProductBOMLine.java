@@ -30,6 +30,7 @@ import org.compiere.model.MUOM;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -224,6 +225,11 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		MProduct product = MProduct.get(getM_Product_ID());
+        if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType())) {
+        	log.saveError("BOMExpenseTypeComponentNotAllowed", "");
+        	return false;
+        }
 		// For Co/By Products, Qty should be always negative:
 		if (isCoProduct() && getQty(false).signum() >= 0)
 		{

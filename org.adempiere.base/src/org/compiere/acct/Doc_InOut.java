@@ -202,6 +202,11 @@ public class Doc_InOut extends Doc
 				Map<String, BigDecimal> batchLotCostMap = null;
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];				
 				MProduct product = line.getProduct();
+				//If expense type stocked product, no impact on COGS as it not deducting inventory
+	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	                continue;
+	            }
+
 				BigDecimal costs = null;
 				if (!isReversal(line))
 				{
@@ -431,6 +436,11 @@ public class Doc_InOut extends Doc
 			{
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
 				MProduct product = line.getProduct();
+				//If expense type stocked product, no impact on COGS as it not deducting inventory
+	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	                continue;
+	            }
+				
 				BigDecimal costs = null;
 				Map<String, BigDecimal> batchLotCostMap = null;
 				if (!isReversal(line)) 
@@ -635,6 +645,10 @@ public class Doc_InOut extends Doc
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
+				//If expense type stocked product, no impact on inventory
+	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	                continue;
+	            }
 				MOrderLine orderLine = null;
 				BigDecimal landedCost = BigDecimal.ZERO;
 				String costingMethod = product.getCostingMethod(as);
@@ -880,6 +894,11 @@ public class Doc_InOut extends Doc
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
+				//If expense type stocked product, no impact on inventory
+	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	                continue;
+	            }
+	            
 				if (!isReversal(line))
 				{
 					MInOutLine ioLine = (MInOutLine) line.getPO();
